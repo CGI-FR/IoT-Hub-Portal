@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>AzureIoTHub.Portal.Server-DDED92B6-DADB-4B27-88BD-450D1F21395C</UserSecretsId>
+    <WebProject_DirectoryAccessLevelKey>0</WebProject_DirectoryAccessLevelKey>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.4" />
+    <PackageReference Include="Microsoft.Azure.Devices" Version="1.31.0" />
+    <PackageReference Include="Microsoft.Azure.Devices.Provisioning.Service" Version="1.16.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Client\AzureIoTHub.Portal.Client.csproj" />
+    <ProjectReference Include="..\Shared\AzureIoTHub.Portal.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.4" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.4" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.8.2" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.8.2" />
+  </ItemGroup>
+
+  <!-- StyleCop Setup -->
+  <ItemGroup>
+    <AdditionalFiles Include="../../stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>../../stylecop.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <Import Project="../../stylecop.props" />
+  <ItemGroup>
+    <PackageReference Update="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

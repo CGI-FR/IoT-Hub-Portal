@@ -1,0 +1,69 @@
+﻿@page "/devices"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Shared
+@attribute [Authorize]
+@inject HttpClient Http
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-primary">
+                    <h2 class="card-title ">Devices</h2>
+                    <p class="card-category">This shows the IoT Hub Devices availiable</p>
+                </div>
+                <div class="card-body">
+                    @if (result == null)
+                    {
+                        <p><em>Loading...</em></p>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="text-primary">
+                                    <tr>
+                                        <th>Device ID</th>
+                                        <th>Connection State</th>
+                                        <th>Last Activity Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in result)
+                                    {
+                                        <tr>
+                                            <td>@item.DeviceID</td>
+                                            <td>
+                                                <span class="material-icons @(item.IsConnected ? "text-success" : "text-warning")">
+                                                    @(item.IsConnected ? "signal_wifi_0_bar" : "signal_wifi_connected_no_internet_4")
+                                                </span>
+                                            </td>
+                                        <td>@item.LastActivityDate</td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private DeviceListItem[] result;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            result = await Http.GetFromJsonAsync<DeviceListItem[]>("Devices");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+}

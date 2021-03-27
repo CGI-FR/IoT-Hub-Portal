@@ -9,11 +9,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00. Solution Items", "00. S
 		stylecop.ruleset = stylecop.ruleset
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureIoTHub.Portal.Server", "AzureIoTHub.Portal\Server\AzureIoTHub.Portal.Server.csproj", "{EF219BC4-0C53-4DE7-92D1-F970C6E56E71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Server", "AzureIoTHub.Portal\Server\AzureIoTHub.Portal.Server.csproj", "{EF219BC4-0C53-4DE7-92D1-F970C6E56E71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureIoTHub.Portal.Client", "AzureIoTHub.Portal\Client\AzureIoTHub.Portal.Client.csproj", "{24B26D0B-F293-484E-8175-1CF69FBEE992}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Client", "AzureIoTHub.Portal\Client\AzureIoTHub.Portal.Client.csproj", "{24B26D0B-F293-484E-8175-1CF69FBEE992}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureIoTHub.Portal.Shared", "AzureIoTHub.Portal\Shared\AzureIoTHub.Portal.Shared.csproj", "{9F0A43D6-D7C2-4C92-AE22-BE48B7F83ACB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Shared", "AzureIoTHub.Portal\Shared\AzureIoTHub.Portal.Shared.csproj", "{9F0A43D6-D7C2-4C92-AE22-BE48B7F83ACB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
