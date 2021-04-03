@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Server
 {
     using System;
+    using System.Net.Http.Headers;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Identity;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,6 +15,8 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Graph;
+    using Microsoft.Identity.Client;
     using Microsoft.Identity.Web;
 
     public class Startup
@@ -40,7 +43,10 @@ namespace AzureIoTHub.Portal.Server
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
              .AddMicrosoftIdentityWebApi(
-                 jwtOopts => { },
+                 jwtOopts =>
+                 {
+                     jwtOopts.TokenValidationParameters.RoleClaimType = "extension_Role";
+                 },
                  identityOpts =>
                  {
                      identityOpts.Instance = msalSettings[MsalSettingsConstants.Instance].ToString();
@@ -64,6 +70,40 @@ namespace AzureIoTHub.Portal.Server
             services.AddTransient(t =>
             {
                 return ProvisioningServiceClient.CreateFromConnectionString(t.GetService<IConfiguration>()["IoTDPS:ConnectionString"]);
+            });
+
+            services.AddSingleton<IB2CExtensionHelper, B2CExtensionHelper>();
+
+            services.AddSingleton(t =>
+            {
+                // Initialize the client credential auth provider
+                IConfidentialClientApplication confidentialClient = ConfidentialClientApplicationBuilder
+                    .Create(msalSettings[MsalSettingsConstants.ApiClientId].ToString())
+                    .WithTenantId(msalSettings[MsalSettingsConstants.TenantId].ToString())
+                    .WithClientSecret(msalSettings[MsalSettingsConstants.ApiClientSecret].ToString())
+                    .Build();
+
+                IAuthenticationProvider authProvider = new DelegateAuthenticationProvider(async (requestMessage) =>
+                {
+                    try
+                    {
+                        // Retrieve an access token for Microsoft Graph (gets a fresh token if needed).
+                        var authResult = await confidentialClient.AcquireTokenForClient(new[]
+                        {
+                            "https://graph.microsoft.com/.default"
+                        }).ExecuteAsync();
+
+                        // Add the access token in the Authorization header of the API
+                        requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.ToString());
+                        throw;
+                    }
+                });
+
+                return new GraphServiceClient(authProvider);
             });
         }
 

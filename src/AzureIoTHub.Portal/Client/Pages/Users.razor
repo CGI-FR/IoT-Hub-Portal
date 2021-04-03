@@ -1,0 +1,72 @@
+﻿@page "/users"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Shared
+@using AzureIoTHub.Portal.Shared.Security;
+@attribute [Authorize(Roles = RoleNames.Admin)]
+@inject HttpClient Http
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-primary">
+                    <h2 class="card-title ">Users</h2>
+                    <p class="card-category">This shows the authorized users.</p>
+                </div>
+                <div class="card-body">
+                    @if (result == null)
+                    {
+                        <p><em>Loading...</em></p>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="text-primary">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>User Name</th>
+                                        <th>Role Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in result.Items)
+                                    {
+                                    <tr>
+                                        <td>@item.DisplayName</td>
+                                        <td>@item.UserName</td>
+                                        <td>@item.Role</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private PaginationResult<UserListItem> result;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync("Users", new PaginationRequest
+            {
+                PageIndex = 0,
+                PageSize = 10
+            });
+
+            result = await response.Content.ReadFromJsonAsync<PaginationResult<UserListItem>>();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+}

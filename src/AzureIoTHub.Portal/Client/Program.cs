@@ -47,6 +47,8 @@ namespace AzureIoTHub.Portal.Client
                 options.ProviderOptions.DefaultAccessTokenScopes.Add("openid");
                 options.ProviderOptions.DefaultAccessTokenScopes.Add(settings.ScopeUri);
                 options.ProviderOptions.LoginMode = "redirect";
+
+                options.UserOptions.RoleClaim = "extension_Role";
             });
         }
     }

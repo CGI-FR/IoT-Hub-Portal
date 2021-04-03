@@ -1,4 +1,16 @@
-﻿
+﻿@using AzureIoTHub.Portal.Shared.Security;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@code{
+    AuthenticationState authenticationState = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    }
+}
+
 <div class="sidebar" data-color="azure">
     <div class="logo">
         <span class="simple-text logo-normal">
@@ -13,6 +25,15 @@
                     <p>Dashboard</p>
                 </NavLink>
             </li>
+            @if (authenticationState != null && authenticationState.User.IsInRole(RoleNames.Admin))
+            {
+                <li class="nav-item ">
+                    <NavLink class="nav-link" href="users">
+                        <i class="material-icons">people</i>
+                        <p>Users</p>
+                    </NavLink>
+                </li>
+            }
             <li class="nav-item ">
                 <NavLink class="nav-link" href="devices">
                     <i class="material-icons">devices_other</i>

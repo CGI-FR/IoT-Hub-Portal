@@ -15,8 +15,14 @@ namespace AzureIoTHub.Portal.Server.Identity
 
         public const string ApiClientId = "ApiClientId";
 
+        public const string TenantId = "TenantId";
+
+        public const string ApiClientSecret = "ApiClientSecret";
+
         public const string Domain = "Domain";
 
         public const string SignUpSignInPolicyId = "SignUpSignInPolicyId";
+
+        public const string B2CExtensionAppId = "B2CExtensionAppId";
     }
 }
