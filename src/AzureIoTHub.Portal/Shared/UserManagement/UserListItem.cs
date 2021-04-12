@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Kevin BEAUGRAND. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Shared
+namespace AzureIoTHub.Portal.Shared.UserManagement
 {
     public class UserListItem
     {
@@ -10,6 +10,8 @@ namespace AzureIoTHub.Portal.Shared
         public string UserName { get; set; }
 
         public string DisplayName { get; set; }
+
+        public string UserType { get; set; }
 
         public string Role { get; set; }
     }

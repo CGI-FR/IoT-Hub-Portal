@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Client
     using System.Threading.Tasks;
 
     using AzureIoTHub.Portal.Shared.Settings;
+    using Blazored.Modal;
     using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,7 @@ namespace AzureIoTHub.Portal.Client
 
             // Supply HttpClient instances that include access tokens when making requests to the server project
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
+            builder.Services.AddBlazoredModal();
 
             await ConfigureMsalAuthentication(builder);
 

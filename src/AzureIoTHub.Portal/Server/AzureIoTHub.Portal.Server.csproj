@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.4" />
     <PackageReference Include="Microsoft.Azure.Devices" Version="1.31.0" />
     <PackageReference Include="Microsoft.Azure.Devices.Provisioning.Service" Version="1.16.3" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="5.0.1" />
     <PackageReference Include="Microsoft.Graph" Version="3.28.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>

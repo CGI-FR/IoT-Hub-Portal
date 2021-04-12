@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Server
 {
     using System;
+    using System.Net;
     using System.Net.Http.Headers;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Identity;
@@ -18,6 +19,8 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.Graph;
     using Microsoft.Identity.Client;
     using Microsoft.Identity.Web;
+    using Polly;
+    using Polly.Extensions.Http;
 
     public class Startup
     {
@@ -41,8 +44,9 @@ namespace AzureIoTHub.Portal.Server
                 opts.ScopeUri = $"https://{msalSettings[MsalSettingsConstants.Domain]}/{msalSettings[MsalSettingsConstants.ApiClientId]}/{msalSettings[MsalSettingsConstants.ScopeName]}";
             });
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-             .AddMicrosoftIdentityWebApi(
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi(
                  jwtOopts =>
                  {
                      jwtOopts.TokenValidationParameters.RoleClaimType = "extension_Role";
@@ -74,6 +78,12 @@ namespace AzureIoTHub.Portal.Server
 
             services.AddSingleton<IB2CExtensionHelper, B2CExtensionHelper>();
 
+            services.AddHttpClient("RestClient")
+                    .AddPolicyHandler(HttpPolicyExtensions
+                                        .HandleTransientHttpError()
+                                        .OrResult(c => c.StatusCode == HttpStatusCode.NotFound)
+                                        .WaitAndRetryAsync(3, attempt => TimeSpan.FromMilliseconds(100)));
+
             services.AddSingleton(t =>
             {
                 // Initialize the client credential auth provider
@@ -102,7 +112,6 @@ namespace AzureIoTHub.Portal.Server
                         throw;
                     }
                 });
-
                 return new GraphServiceClient(authProvider);
             });
         }

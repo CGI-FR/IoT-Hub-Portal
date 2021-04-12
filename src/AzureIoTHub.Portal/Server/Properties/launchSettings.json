@@ -23,8 +23,18 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": "true",
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "applicationUrl": "https://localhost:8001;http://localhost:8000",
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}"
+    },
+    "WSL 2": {
+      "commandName": "WSL2",
+      "launchBrowser": true,
+      "launchUrl": "https://localhost:8001",
+      "environmentVariables": {
+        "ASPNETCORE_URLS": "https://localhost:8001;http://localhost:8000",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "distributionName": "ubuntu-20.04"
     }
   }
 }

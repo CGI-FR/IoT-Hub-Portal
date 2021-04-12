@@ -3,3 +3,16 @@
 #blazor-error-ui {
     display: none;
 }
+
+.sidebar-wrapper {
+    .nav {
+        .nav-item {
+            a {
+                &.active {
+                    background-color: $brand-primary;
+                    color: $white-color;
+                }
+            }
+        }
+    }
+}

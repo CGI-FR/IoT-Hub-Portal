@@ -1,0 +1,149 @@
+﻿@page "/users"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Shared
+@using AzureIoTHub.Portal.Shared.Security;
+@using AzureIoTHub.Portal.Shared.UserManagement;
+@using Blazored.Modal
+@using Blazored.Modal.Services
+
+@attribute [Authorize(Roles = RoleNames.Admin)]
+@inject HttpClient Http
+@inject IModalService modal
+@inject IJSRuntime JS
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-primary">
+                    <h2 class="card-title ">Invite</h2>
+                    <p class="card-category">This shows the authorized users.</p>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        @if (result == null)
+                        {
+                            <p><em>Loading...</em></p>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="text-primary">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>User Name</th>
+                                            <th>Role Name</th>
+                                            <th>
+
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in result.Items)
+                                        {
+                                            <tr>
+                                                <td>@item.DisplayName</td>
+                                                <td>@item.UserName</td>
+                                                <td>@item.Role</td>
+                                                <td>
+                                                    <button type="button" rel="tooltip" title="" class="btn btn-primary btn-link btn-sm" data-original-title="Edit User">
+                                                        <i class="material-icons">edit</i>
+                                                    </button>
+                                                    <button type="button" rel="tooltip" title="" @onclick="@(async () => await DeleteUser(item))" class="btn btn-danger btn-link btn-sm" data-original-title="Remove">
+                                                        <i class="material-icons">close</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 pull-right">
+                            <button @onclick="@ShowInviteDialog" class="btn btn-primary pull-right">Invite user</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private PaginationResult<UserListItem> result;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync("Users", new PaginationRequest
+            {
+                PageIndex = 0,
+                PageSize = 10
+            });
+
+            result = await response.Content.ReadFromJsonAsync<PaginationResult<UserListItem>>();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private async Task ShowInviteDialog()
+    {
+        var result = await modal.Show<Invite>("Invite user").Result;
+
+        if (!result.Cancelled)
+        {
+            await LoadUsers();
+        }
+    }
+
+    private async Task DeleteUser(UserListItem model)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(UserListItem.Id), model.Id);
+
+        var result = await modal.Show<Delete>("Delete user").Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+        var response = await Http.DeleteAsync($"Users/{model.Id}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await JS.InvokeVoidAsync("$.notify", new
+            {
+                type = "error",
+                title = "User Deletion",
+                message = $"Failed to delete user {model.UserName}"
+            });
+
+            return;
+        }
+
+        await JS.InvokeVoidAsync("$.notify", new
+        {
+            type = "success",
+            title = "User Deletion",
+            message = $"Successfully delete user {model.UserName}"
+        });
+
+        await LoadUsers();
+    }
+}
+}

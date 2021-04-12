@@ -1,0 +1,41 @@
+﻿@page "/users/delete"
+
+@using Microsoft.AspNetCore.Authorization
+@using Blazored.Modal
+@using Blazored.Modal.Services
+
+@using AzureIoTHub.Portal.Shared.Security
+
+@attribute [Authorize(Roles = RoleNames.Admin)]
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="card">
+                <div class="card-header card-header-primary">
+                    <h4 class="card-title">Delete User</h4>
+                    <p>The deletion of a user is irrevocable.</p>
+                </div>
+                <div class="card-body">
+                    <p>Delete the user ?</p>
+                    <button @onclick="@DeleteUser" class="btn btn-primary">Yes</button>
+                    <button class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+    [Parameter] public int Id { get; set; }
+
+    private async Task DeleteUser()
+    {
+        await ModalInstance.CloseAsync(ModalResult.Ok(Id));
+    }
+}
