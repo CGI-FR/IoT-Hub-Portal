@@ -1,4 +1,4 @@
-﻿// Copyright (c) Kevin BEAUGRAND. All rights reserved.
+﻿// Copyright (c) CGI France - Grand Est. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Filters
@@ -23,12 +23,14 @@ namespace AzureIoTHub.Portal.Server.Filters
         {
             base.OnActionExecuting(context);
 
+            /*
             if (context.Controller.GetType().CustomAttributes.Any(c => c.AttributeType == typeof(AllowAnonymousAttribute)))
             {
                 return;
             }
 
             context.HttpContext.VerifyUserHasAnyAcceptedScope(this.configurationSection[MsalSettingsConstants.ScopeName]);
+            */
         }
     }
 }

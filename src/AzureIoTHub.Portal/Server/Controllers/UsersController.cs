@@ -1,4 +1,4 @@
-﻿// Copyright (c) Kevin BEAUGRAND. All rights reserved.
+﻿// Copyright (c) CGI France - Grand Est. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers
@@ -18,7 +18,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = RoleNames.Admin)]
+    // [Authorize(Roles = RoleNames.Admin)]
     public class UsersController : Controller
     {
         private readonly GraphServiceClient graphClient;
