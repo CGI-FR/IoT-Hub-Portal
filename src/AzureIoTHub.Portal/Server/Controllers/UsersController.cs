@@ -18,7 +18,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    // [Authorize(Roles = RoleNames.Admin)]
+    [Authorize(Roles = RoleNames.Admin)]
     public class UsersController : Controller
     {
         private readonly GraphServiceClient graphClient;
@@ -47,15 +47,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     .Select($"id,displayName,userPrincipalName,{this.extensionHelper.RoleExtensionName}")
                     .GetAsync();
 
-            /*
-            foreach (var item in collectionPage)
+            /* foreach (var item in collectionPage)
             {
                 await this.graphClient.Users[item.Id].Request().UpdateAsync(new User
                 {
                     AdditionalData = new Dictionary<string, object> { { this.extensionHelper.RoleExtensionName, "Admin" } }
                 });
-            }
-            */
+            }*/
 
             var pageResult = new PaginationResult<UserListItem>
             {

@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Shared;
+    using AzureIoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
@@ -19,6 +20,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
     [Authorize]
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = RoleNames.Admin)]
+
     public class DevicesController : ControllerBase
     {
         private static readonly string[] Summaries = new[]

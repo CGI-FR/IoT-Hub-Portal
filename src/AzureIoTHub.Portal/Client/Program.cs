@@ -22,7 +22,7 @@ namespace AzureIoTHub.Portal.Client
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddHttpClient("api", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
-                                                    /*.AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>()*/;
+                                                    .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
             // Supply HttpClient instances that include access tokens when making requests to the server project
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"));

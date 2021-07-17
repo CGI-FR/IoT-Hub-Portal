@@ -23,14 +23,12 @@ namespace AzureIoTHub.Portal.Server.Filters
         {
             base.OnActionExecuting(context);
 
-            /*
             if (context.Controller.GetType().CustomAttributes.Any(c => c.AttributeType == typeof(AllowAnonymousAttribute)))
             {
                 return;
             }
 
             context.HttpContext.VerifyUserHasAnyAcceptedScope(this.configurationSection[MsalSettingsConstants.ScopeName]);
-            */
         }
     }
 }
