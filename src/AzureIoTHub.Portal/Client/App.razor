@@ -1,5 +1,8 @@
-@using Blazored
+
 @using Blazored.Modal
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
 
 <CascadingBlazoredModal>
     <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
