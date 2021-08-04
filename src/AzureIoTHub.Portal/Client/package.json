@@ -8,6 +8,7 @@
     "node-sass": "^5.0.0"
   },
   "scripts": {
+    "prebuild-css": "npm install",
     "build-css": "node-sass --include-path wwwroot/scss --output-style compressed wwwroot/scss/app.scss --output wwwroot/css"
   },
   "author": "",
