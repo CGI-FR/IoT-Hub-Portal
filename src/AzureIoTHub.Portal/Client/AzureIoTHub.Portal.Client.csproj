@@ -45,7 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\libs\material-dashboard\" />
+    <Folder Include="wwwroot\css\" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
