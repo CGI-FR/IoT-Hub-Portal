@@ -1,7 +1,71 @@
 ﻿@using AzureIoTHub.Portal.Shared.Security;
 @using Microsoft.AspNetCore.Components.Authorization
 
-<div class="sidebar" data-color="azure">
+<div class="offcanvas offcanvas-start sidebar-nav bg-dark" tabindex="-1" id="sidebar">
+    <div class="offcanvas-body p-0">
+        <AuthorizeView>
+            <Authorized>
+                <nav class="navbar-dark">
+                    <ul class="navbar-nav">
+                        <li>
+                            <NavLink Match="NavLinkMatch.Prefix" href="devices" class="nav-link px-3 active">
+                                <span class="me-2"><i class="bi bi-tablet"></i></span>
+                                <span>Devices</span>
+                            </NavLink>
+                        </li>
+                        <li class="my-4">
+                            <hr class="dropdown-divider bg-light" />
+                        </li>
+                        <li>
+                            <div class="text-muted small fw-bold text-uppercase px-3 mb-3">
+                                Gateways
+                            </div>
+                        </li>
+                        <li>
+                            <NavLink Match="NavLinkMatch.Prefix" href="gateways" class="nav-link px-3 active">
+                                <span class="me-2"><i class="bi bi-tablet"></i></span>
+                                <span>Gateway List</span>
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink Match="NavLinkMatch.Prefix" href="#" class="nav-link px-3">
+                                <span class="me-2"><i class="bi bi-book-fill"></i></span>
+                                <span>Gateways configuration</span>
+                            </NavLink>
+                        </li>
+                        <li class="my-4">
+                            <hr class="dropdown-divider bg-light" />
+                        </li>
+                        <li>
+                            <div class="text-muted small fw-bold text-uppercase px-3 mb-3">
+                                Addons
+                            </div>
+                        </li>
+                        @if (context.User.IsInRole(RoleNames.Admin))
+                        {
+                            <li>
+                                <NavLink Match="NavLinkMatch.Prefix" href="users" class="nav-link px-3">
+                                    <span class="me-2"><i class="bi bi-people"></i></span>
+                                    <span>Users</span>
+                                </NavLink>
+                            </li>
+                        }
+                        <li>
+                            <NavLink Match="NavLinkMatch.Prefix" href="#" class="nav-link px-3">
+                                <span class="me-2"><i class="bi bi-table"></i></span>
+                                <span>Sensor Model</span>
+                            </NavLink>
+                        </li>
+                    </ul>
+                </nav>
+            </Authorized>
+        </AuthorizeView>
+    </div>
+</div>
+
+
+
+@*<div class="sidebar" data-color="azure">
     <div class="logo">
         <span class="simple-text logo-normal">
             Azure IoT Hub Portal
@@ -36,5 +100,5 @@
                 <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps-scrollbar-y-rail" style="top: 0px; right: 0px;"><div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
             </div>
         </Authorized>
-     </AuthorizeView>
-</div>
+    </AuthorizeView>
+</div>*@
