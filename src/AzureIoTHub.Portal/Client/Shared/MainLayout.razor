@@ -1,22 +1,13 @@
 ﻿@inherits LayoutComponentBase
-
-
-<div class="wrapper">
-    <NavMenu />
-
-    <div class="main-panel ps-container ps-theme-default ps-active-y">
-
-        <NavBar />
-        <div class="content">
-            @Body
-        </div>
-
-        <footer class="footer">
-            <div class="container-fluid">
-                <div class="copyright float-right">
-                    © 2021 Copyright:&nbsp;<a href="#"> CGI France - Grand Est</a>
-                </div>
+ <NavBar /> 
+ <NavMenu /> 
+<main class="mt-5 pt-3">
+    @Body
+    <footer class="footer">
+        <div class="container-fluid">
+            <div class="copyright float-right">
+                © 2021 Copyright:&nbsp;<a href="#"> CGI France - Grand Est</a>
             </div>
-        </footer>
-    </div>
-</div>
+        </div>
+    </footer>
+</main>
