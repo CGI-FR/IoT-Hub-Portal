@@ -52,6 +52,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             {
                 DeviceID = c.DeviceId,
                 IsConnected = c.ConnectionState == DeviceConnectionState.Connected,
+                IsEnabled = c.Status == DeviceStatus.Enabled,
                 LastActivityDate = c.LastActivityTime.GetValueOrDefault(DateTime.MinValue)
             });
         }

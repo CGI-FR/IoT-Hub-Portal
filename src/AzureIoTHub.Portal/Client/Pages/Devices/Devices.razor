@@ -21,27 +21,44 @@
                     else
                     {
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table table-striped align-middle text-center">
+                                <colgroup>
+                                    <col class="col-md-7">
+                                    <col class="col-md-1">
+                                    <col class="col-md-1">
+                                    <col class="col-md-2">
+                                    <col class="col-md-1">
+                                </colgroup>
                                 <thead class="text-primary">
                                     <tr>
-                                        <th>Device ID</th>
+                                        <th align="left">Device ID</th>
+                                        <th>Status</th>
                                         <th>Connection State</th>
-                                        <th>Last Activity Date</th>
+                                        <th>Last Activity Time</th>
+                                        <th>See details</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var item in result)
                                     {
                                         <tr>
-                                            <td>@item.DeviceID</td>
+                                            <td class="text-break" align="left">@item.DeviceID</td>
                                             <td>
-                                                <span class="material-icons @(item.IsConnected ? "text-success" : "text-warning")">
-                                                    @(item.IsConnected ? "signal_wifi_0_bar" : "signal_wifi_connected_no_internet_4")
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" checked=@(item.IsEnabled) disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="material-icons @(item.IsConnected ? "text-success" : "text-dark")">
+                                                    <i class=@(item.IsConnected ? "bi-wifi" : "bi-wifi-off")></i>
                                                 </span>
                                             </td>
-                                        <td>@item.LastActivityDate</td>
-                                    </tr>
-                                }
+                                            <td>@item.LastActivityDate</td>
+                                            <td>
+                                                <a href="@($" devicedetail /{ item.DeviceID} ")" class="btn btn-primary table-btn btn-sm"> <i class="bi-search"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>

@@ -11,6 +11,8 @@ namespace AzureIoTHub.Portal.Shared
 
         public bool IsConnected { get; set; }
 
+        public bool IsEnabled { get; set; }
+
         public DateTime LastActivityDate { get; set; }
     }
 }
