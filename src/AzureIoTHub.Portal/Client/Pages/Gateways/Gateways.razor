@@ -1,0 +1,94 @@
+﻿@page "/gateways"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Shared.Models
+@attribute [Authorize]
+@inject HttpClient Http
+
+<button type="button" @onclick="@LoadGateway">load gateway</button>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-primary">
+                    <h2 class="card-title ">Gateways</h2>
+                    <p class="card-category">This shows the IoT Hub Edge Devices availiable</p>
+                </div>
+                <div class="card-body">
+                    @if (result == null)
+                    {
+                        <p><em>Loading...</em></p>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="text-primary">
+                                    <tr>
+                                        <th>Device ID</th>
+                                        <th>type</th>
+                                        <th>Number of device</th>
+                                        <th>Status</th>
+                                        <th>Détail</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in result)
+                                    {
+                                        <tr>
+                                            <td>@item.DeviceID</td>
+                                            <td>@item.TypeOfGateway</td>
+                                            <td>@item.NbDevice</td>
+                                            <td>@item.Status</td>
+                                            <td><button type="button" class="btn btn-primary">détail</button></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private List<Gateway> result;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await LoadGatewaysList();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private async Task LoadGatewaysList()
+    {
+        result = await Http.GetFromJsonAsync<List<Gateway>>("Gateways");
+    }
+
+    private async Task LoadGateway()
+    {
+        var test = await Http.GetAsync("Gateways/rasp-lora-gateway");
+    }
+
+    private async Task Search(string query)
+    {
+        try
+        {
+            var result = await Http.GetAsync("");
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+}
