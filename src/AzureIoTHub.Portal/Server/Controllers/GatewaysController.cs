@@ -34,55 +34,51 @@ namespace AzureIoTHub.Portal.Server.Controllers
             this.registryManager = registryManager;
         }
 
+        /// <summary>
+        /// Fonction permettant de récupèrer la liste des appareils Edge .
+        /// Après avoir éxecuté la query du registryManager on récupère le resultat
+        /// sous la forme d'une liste de Twin.
+        /// </summary>
+        /// <returns>Retourne un IEnumerable de GatewayListItem avec les propriètés que l'on souhaite.</returns>
         [HttpGet]
-        public async Task<IEnumerable<Gateway>> Get()
+        public async Task<IEnumerable<GatewayListItem>> Get()
         {
-            try
+            var query = this.registryManager.CreateQuery("SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' GROUP BY deviceId", 10);
+            var query2 = this.registryManager.CreateQuery("SELECT * FROM devices where devices.capabilities.iotEdge = true", 10);
+            List<GatewayListItem> gatewayList = new List<GatewayListItem>();
+
+            while (query.HasMoreResults)
             {
-                var query = this.registryManager.CreateQuery("SELECT * FROM devices where devices.capabilities.iotEdge = true", 10);
-                var items = await query.GetNextAsTwinAsync();
-                List<Gateway> gatewayList = new ();
+                var page = await query.GetNextAsTwinAsync();
+                var pageBis = await query2.GetNextAsTwinAsync();
+                int index = 0;
 
-                foreach (var gateway in items)
+                foreach (var twin in page)
                 {
-                    var typeGate = "unknow";
-                    var environementGate = "unknow";
-
-                    if (gateway.Tags.Count > 1)
+                    var result = new GatewayListItem
                     {
-                        if (gateway.Tags["type"] != null)
-                        {
-                            typeGate = gateway.Tags["type"];
-                        }
+                        DeviceId = twin.DeviceId,
+                        Status = twin.Status.Value.ToString(),
+                        NbDevices = 0,
+                        Type = "unknow"
+                    };
 
-                        if (gateway.Tags["env"] != null)
-                        {
-                            environementGate = gateway.Tags["env"];
-                        }
+                    if (twin.Properties.Reported.Contains("clients"))
+                    {
+                        result.NbDevices = twin.Properties.Reported["clients"].Count;
                     }
 
-                    gatewayList.Add(new Gateway
+                    if (pageBis.ElementAt(index).Tags.Contains("purpose"))
                     {
-                        DeviceID = gateway.DeviceId,
-                        Status = gateway.Status.Value.ToString(),
-                        TypeOfGateway = typeGate,
-                        Environement = environementGate
-                    });
-                }
+                        result.Type = pageBis.ElementAt(index).Tags["purpose"];
+                    }
 
-                return gatewayList;
-                // return items.Select(c => new GatewayListItem
-                // {
-                //    ID = c.DeviceId,
-                //    Type = c.AuthenticationType.Value.ToString(),
-                //    Status = c.Status.Value.ToString(),
-                //    Tags = c.Tags
-                // });
+                    gatewayList.Add(result);
+                    index++;
+                }
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
+            return gatewayList;
         }
 
         [HttpGet("deviceID")]
@@ -91,55 +87,10 @@ namespace AzureIoTHub.Portal.Server.Controllers
             var device = await this.registryManager.GetTwinAsync(deviceID);
             return new Gateway
             {
-                DeviceID = device.DeviceId,
+                DeviceId = device.DeviceId,
                 Status = device.Status.Value.ToString(),
-                TypeOfGateway = device.Tags["type"]
+                Type = device.Tags["purpose"]
             };
         }
-
-        //// POST: GatewaysController/Create
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public ActionResult Create(IFormCollection collection)
-        // {
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        // }
-
-        //// POST: GatewaysController/Edit/5
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public ActionResult Edit(int id, IFormCollection collection)
-        // {
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        // }
-
-        //// POST: GatewaysController/Delete/5
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public ActionResult Delete(int id, IFormCollection collection)
-        // {
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        // }
     }
 }
