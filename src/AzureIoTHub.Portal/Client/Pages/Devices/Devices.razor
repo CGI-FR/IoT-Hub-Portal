@@ -33,36 +33,27 @@
             <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
         </MudRadioGroup>
         <MudDivider />
-        
         <MudGrid>
-            <MudItem xs="2">
+            <MudItem xs="1">
                 <MudText>Location : </MudText>
             </MudItem>
-            <MudItem xs="2">
-                <MudSelect T="string" Label="Domain">
-                    <MudSelectItem Value="@("D1")" />
-                    <MudSelectItem Value="@("D2")" />
-                    <MudSelectItem Value="@("D3")" />
-                    <MudSelectItem Value="@("D4")" />
-                </MudSelect>
+            <MudItem xs="11">
+                <MudTextField @bind-Value="searchLocation" Placeholder="Location" Margin="Margin.Dense"></MudTextField>
             </MudItem>
-            <MudItem xs="2">
-                <MudSelect T="string" Label="Zone">
-                    <MudSelectItem Value="@("Z1")" />
-                    <MudSelectItem Value="@("Z2")" />
-                    <MudSelectItem Value="@("Z3")" />
-                    <MudSelectItem Value="@("Z4")" />
-                </MudSelect>
+            <MudItem xs="1">
+                <MudText>AppEUI : </MudText>
             </MudItem>
-            <MudItem xs="2">
-                <MudSelect T="string" Label="...">
-                    <MudSelectItem Value="@("W1")" />
-                    <MudSelectItem Value="@("W2")" />
-                    <MudSelectItem Value="@("W3")" />
-                    <MudSelectItem Value="@("W4")" />
-                </MudSelect>
+            <MudItem xs="11">
+                <MudTextField @bind-Value="searchAppEUI" Placeholder="AppEUI" Margin="Margin.Dense"></MudTextField>
+            </MudItem>
+            <MudItem xs="1">
+                <MudText>AppKey : </MudText>
+            </MudItem>
+            <MudItem xs="11">
+                <MudTextField @bind-Value="searchAppKey" Placeholder="AppKey" Margin="Margin.Dense"></MudTextField>
             </MudItem>
         </MudGrid>
+
 
     </MudCardContent>
     <MudCardActions>
@@ -107,6 +98,11 @@
     private string searchString1 = "";
     private string searchStatus1 = "";
     private string searchState1 = "";
+    private string searchLocation = "";
+    private string searchAppEUI = "";
+    private string searchAppKey = "";
+
+
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
 
     protected override async Task OnInitializedAsync()
@@ -126,6 +122,10 @@
         searchString1 = "";
         searchStatus1 = "";
         searchState1 = "";
+        searchLocation = "";
+        searchAppEUI = "";
+        searchAppKey = "";
+
     }
 
     private bool FilterFunc1(DeviceListItem item) => FilterFunc(item, searchString1, searchStatus1, searchState1);
@@ -135,8 +135,11 @@
         bool flagName = string.IsNullOrWhiteSpace(searchString) || item.DeviceID.Contains(searchString, StringComparison.OrdinalIgnoreCase);
         bool flagStatus = string.IsNullOrWhiteSpace(searchStatus) || item.IsEnabled.ToString().Contains(searchStatus, StringComparison.OrdinalIgnoreCase);
         bool flagState = string.IsNullOrWhiteSpace(searchState) || item.IsConnected.ToString().Contains(searchState, StringComparison.OrdinalIgnoreCase);
+        bool flagLocation = string.IsNullOrWhiteSpace(searchLocation) || item.LocationCode.Contains(searchLocation, StringComparison.OrdinalIgnoreCase);
+        bool flagAppEUI = string.IsNullOrWhiteSpace(searchAppEUI) || item.AppEUI.Contains(searchAppEUI, StringComparison.OrdinalIgnoreCase);
+        bool flagAppKey = string.IsNullOrWhiteSpace(searchAppKey) || item.AppKey.Contains(searchAppKey, StringComparison.OrdinalIgnoreCase);
 
-        if (flagName && flagStatus && flagState)
+        if (flagName && flagStatus && flagState && flagLocation && flagAppEUI && flagAppKey)
             return true;
         return false;
     }

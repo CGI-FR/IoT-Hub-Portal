@@ -1,48 +1,19 @@
 ﻿@inherits LayoutComponentBase
-<NavBar />
-<NavMenu />
+
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-@*<main class="mt-5 pt-3">
-        @Body
-        <footer class="footer">
-            <div class="container-fluid">
-                <div class="copyright float-right">
-                    © 2021 Copyright:&nbsp;<a href="#"> CGI France - Grand Est</a>
-                </div>
-            </div>
-        </footer>
-    </main>*@
-
 <MudLayout>
-    <MudAppBar>
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        Azure IoT Hub Portal
-    </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen">
-        <MudNavMenu>
-            <MudNavLink Href="/devices">Devices</MudNavLink>
-            <MudNavLink Href="/users">Users</MudNavLink>
-            <MudNavGroup Title="Gateways" Expanded="true">
-                <MudNavLink Href="/gateways">Overview</MudNavLink>
-                <MudNavLink Href="/config">Configuration</MudNavLink>
-            </MudNavGroup>
-            <MudNavLink Href="#">Sensor Model</MudNavLink>
-        </MudNavMenu>
-    </MudDrawer>
+    <NavBar />
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Medium">
+        <MudContainer>
             @Body
         </MudContainer>
     </MudMainContent>
+    <MudAppBar Elevation="1" Style="top: auto; bottom: 0" Dense="true" Fixed="true">
+        <MudGrid Justify="Justify.Center">
+            <MudText Style="font-size:small">© 2021 Copyright:&nbsp; CGI France - Grand Est</MudText>
+        </MudGrid>
+    </MudAppBar>
 </MudLayout>
-@code {
-    bool _drawerOpen = true;
-
-    void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
-}
