@@ -95,7 +95,7 @@
         <MudTd DataLabel="Status" Style="text-align: center"><MudSwitch Class="mx-0" @bind-Checked="@context.IsEnabled" Color="Color.Info" ReadOnly=true /></MudTd>
         <MudTd DataLabel="Connection" Style="text-align: center">@context.IsConnected</MudTd>
         <MudTd DataLabel="LAT" Style="text-align: center">@context.LastActivityDate</MudTd>
-        <MudTd DataLabel="Details" Style="text-align: center">...</MudTd>
+        <MudTd DataLabel="Details" Style="text-align: center">@context.AppEUI @context.AppKey @context.LocationCode</MudTd>
     </RowTemplate>
     <PagerContent>
         <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
