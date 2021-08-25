@@ -85,12 +85,16 @@ namespace AzureIoTHub.Portal.Server.Controllers
         public async Task<Gateway> Get(string deviceID)
         {
             var device = await this.registryManager.GetTwinAsync(deviceID);
-            return new Gateway
-            {
-                DeviceId = device.DeviceId,
-                Status = device.Status.Value.ToString(),
-                Type = device.Tags["purpose"]
-            };
+            Gateway gateway = new Gateway();
+
+            gateway.DeviceId = device.DeviceId;
+            gateway.Status = device.Status.Value.ToString() == "enabled";
+            gateway.Type = device.Tags["type"];
+            gateway.Environement = device.Tags["env"];
+            gateway.NbDevices = device.Properties.Reported["clients"].Count;
+            gateway.NbModule = device.Properties.Desired["modules"].Count;
+
+            return gateway;
         }
     }
 }
