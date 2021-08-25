@@ -44,16 +44,48 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             var rng = new Random();
 
-            var query = this.registryManager.CreateQuery("select * from devices", 10);
+            var query = this.registryManager.CreateQuery("SELECT * FROM devices WHERE devices.capabilities.iotEdge = false");
 
             var items = await query.GetNextAsTwinAsync();
 
-            return items.Select(c => new DeviceListItem
+            var results = new List<DeviceListItem>();
+
+            foreach (var item in items)
             {
-                DeviceID = c.DeviceId,
-                IsConnected = c.ConnectionState == DeviceConnectionState.Connected,
-                LastActivityDate = c.LastActivityTime.GetValueOrDefault(DateTime.MinValue)
-            });
+                var result = new DeviceListItem
+                {
+                    DeviceID = item.DeviceId,
+                    IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
+                    IsEnabled = item.Status == DeviceStatus.Enabled,
+                    LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
+                    AppEUI = "AppEUI",
+                    AppKey = "AppKey",
+                    LocationCode = "Location"
+                };
+
+                if (item.Properties.Desired.Contains("AppEUI"))
+                    result.AppEUI = item.Properties.Desired["AppEUI"];
+
+                if (item.Properties.Desired.Contains("AppKey"))
+                    result.AppKey = item.Properties.Desired["AppKey"];
+
+                if (item.Tags.Contains("locationCode"))
+                    result.LocationCode = item.Tags["locationCode"];
+
+                results.Add(result);
+            }
+
+            return results;
+
+            // return items.Select(c => new DeviceListItem
+            // {
+            //    DeviceID = c.DeviceId,
+            //    IsConnected = c.ConnectionState == DeviceConnectionState.Connected,
+            //    IsEnabled = c.Status == DeviceStatus.Enabled,
+            //    LastActivityDate = c.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
+            //    Tags = c.Tags.ToJson()
+            //    // Tags = c.Properties.Desired[""]
+            // });
         }
     }
 }

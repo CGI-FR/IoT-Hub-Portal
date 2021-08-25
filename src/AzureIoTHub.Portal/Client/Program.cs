@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Client
     using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.DependencyInjection;
+    using MudBlazor.Services;
 
     public class Program
     {
@@ -27,6 +28,9 @@ namespace AzureIoTHub.Portal.Client
             // Supply HttpClient instances that include access tokens when making requests to the server project
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
             builder.Services.AddBlazoredModal();
+
+            // builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddMudServices();
 
             await ConfigureMsalAuthentication(builder);
 

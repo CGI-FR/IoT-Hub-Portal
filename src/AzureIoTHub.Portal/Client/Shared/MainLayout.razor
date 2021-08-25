@@ -1,13 +1,19 @@
 ﻿@inherits LayoutComponentBase
- <NavBar /> 
- <NavMenu /> 
-<main class="mt-5 pt-3">
-    @Body
-    <footer class="footer">
-        <div class="container-fluid">
-            <div class="copyright float-right">
-                © 2021 Copyright:&nbsp;<a href="#"> CGI France - Grand Est</a>
-            </div>
-        </div>
-    </footer>
-</main>
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <NavBar />
+    <MudMainContent>
+        <MudContainer>
+            @Body
+        </MudContainer>
+    </MudMainContent>
+    <MudAppBar Elevation="1" Style="top: auto; bottom: 0" Dense="true" Fixed="true">
+        <MudGrid Justify="Justify.Center">
+            <MudText Style="font-size:small">© 2021 Copyright:&nbsp; CGI France - Grand Est</MudText>
+        </MudGrid>
+    </MudAppBar>
+</MudLayout>

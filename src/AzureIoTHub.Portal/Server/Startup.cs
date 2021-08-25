@@ -19,6 +19,7 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.Graph;
     using Microsoft.Identity.Client;
     using Microsoft.Identity.Web;
+    using MudBlazor.Services;
     using Polly;
     using Polly.Extensions.Http;
 
@@ -114,6 +115,8 @@ namespace AzureIoTHub.Portal.Server
                 });
                 return new GraphServiceClient(authProvider);
             });
+
+            services.AddMudServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

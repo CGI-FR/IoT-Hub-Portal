@@ -5,55 +5,105 @@
 @attribute [Authorize]
 @inject HttpClient Http
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header card-header-primary">
-                    <h2 class="card-title ">Devices</h2>
-                    <p class="card-category">This shows the IoT Hub Devices availiable</p>
-                </div>
-                <div class="card-body">
-                    @if (result == null)
-                    {
-                        <p><em>Loading...</em></p>
-                    }
-                    else
-                    {
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead class="text-primary">
-                                    <tr>
-                                        <th>Device ID</th>
-                                        <th>Connection State</th>
-                                        <th>Last Activity Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in result)
-                                    {
-                                        <tr>
-                                            <td>@item.DeviceID</td>
-                                            <td>
-                                                <span class="material-icons @(item.IsConnected ? "text-success" : "text-warning")">
-                                                    @(item.IsConnected ? "signal_wifi_0_bar" : "signal_wifi_connected_no_internet_4")
-                                                </span>
-                                            </td>
-                                        <td>@item.LastActivityDate</td>
-                                    </tr>
-                                }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<MudCard>
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Search panel</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudDivider />
+
+        <MudRadioGroup @bind-SelectedOption="@searchStatus1">
+            <MudText>Status : </MudText>
+            <MudRadio Option="@("true")" Color="Color.Primary">Enabled</MudRadio>
+            <MudRadio Option="@("false")" Color="Color.Primary">Disabled</MudRadio>
+            <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
+        </MudRadioGroup>
+        <MudDivider />
+        <MudText>Connection state : </MudText>
+        <MudRadioGroup @bind-SelectedOption="@searchState1">
+            <MudRadio Option="@("true")" Color="Color.Primary">Connected</MudRadio>
+            <MudRadio Option="@("false")" Color="Color.Primary">Disconnected</MudRadio>
+            <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
+        </MudRadioGroup>
+        <MudDivider />
+        <MudGrid>
+            <MudItem xs="1">
+                <MudText>Location : </MudText>
+            </MudItem>
+            <MudItem xs="11">
+                <MudTextField @bind-Value="searchLocation" Placeholder="Location" Margin="Margin.Dense"></MudTextField>
+            </MudItem>
+            <MudItem xs="1">
+                <MudText>AppEUI : </MudText>
+            </MudItem>
+            <MudItem xs="11">
+                <MudTextField @bind-Value="searchAppEUI" Placeholder="AppEUI" Margin="Margin.Dense"></MudTextField>
+            </MudItem>
+            <MudItem xs="1">
+                <MudText>AppKey : </MudText>
+            </MudItem>
+            <MudItem xs="11">
+                <MudTextField @bind-Value="searchAppKey" Placeholder="AppKey" Margin="Margin.Dense"></MudTextField>
+            </MudItem>
+        </MudGrid>
+
+
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="Reset">Reset</MudButton>
+    </MudCardActions>
+</MudCard>
+
+<MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<DeviceListItem, bool>(FilterFunc1)">
+
+    <ColGroup>
+        <col style="width: 50%;" />
+        <col style="width: 10%;" />
+        <col style="width: 10%;" />
+        <col style="width: 20%;" />
+        <col style="width: 10%;" />
+    </ColGroup>
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Devices</MudText>
+        <MudSpacer />
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Device</MudTh>
+        <MudTh Style="text-align: center">Status</MudTh>
+        <MudTh Style="text-align: center">Connection state</MudTh>
+        <MudTh Style="text-align: center">Last activity time</MudTh>
+        <MudTh Style="text-align: center">See details</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Device" Style="word-break: break-all;">@context.DeviceID</MudTd>
+        <MudTd DataLabel="Status" Style="text-align: center"><MudSwitch Class="mx-0" @bind-Checked="@context.IsEnabled" Color="Color.Info" ReadOnly=true /></MudTd>
+        <MudTd DataLabel="Connection" Style="text-align: center">@context.IsConnected</MudTd>
+        <MudTd DataLabel="LAT" Style="text-align: center">@context.LastActivityDate</MudTd>
+        <MudTd DataLabel="Details" Style="text-align: center">@context.AppEUI @context.AppKey @context.LocationCode</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+    </PagerContent>
+</MudTable>
 
 @code {
     private DeviceListItem[] result;
+    private string searchString1 = "";
+    private string searchStatus1 = "";
+    private string searchState1 = "";
+    private string searchLocation = "";
+    private string searchAppEUI = "";
+    private string searchAppKey = "";
+
+
+    private int[] pageSizeOptions = new int[] { 2, 5, 10 };
 
     protected override async Task OnInitializedAsync()
     {
@@ -65,5 +115,32 @@
         {
             exception.Redirect();
         }
+    }
+
+    private void Reset()
+    {
+        searchString1 = "";
+        searchStatus1 = "";
+        searchState1 = "";
+        searchLocation = "";
+        searchAppEUI = "";
+        searchAppKey = "";
+
+    }
+
+    private bool FilterFunc1(DeviceListItem item) => FilterFunc(item, searchString1, searchStatus1, searchState1);
+
+    private bool FilterFunc(DeviceListItem item, string searchString, string searchStatus, string searchState)
+    {
+        bool flagName = string.IsNullOrWhiteSpace(searchString) || item.DeviceID.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+        bool flagStatus = string.IsNullOrWhiteSpace(searchStatus) || item.IsEnabled.ToString().Contains(searchStatus, StringComparison.OrdinalIgnoreCase);
+        bool flagState = string.IsNullOrWhiteSpace(searchState) || item.IsConnected.ToString().Contains(searchState, StringComparison.OrdinalIgnoreCase);
+        bool flagLocation = string.IsNullOrWhiteSpace(searchLocation) || item.LocationCode.Contains(searchLocation, StringComparison.OrdinalIgnoreCase);
+        bool flagAppEUI = string.IsNullOrWhiteSpace(searchAppEUI) || item.AppEUI.Contains(searchAppEUI, StringComparison.OrdinalIgnoreCase);
+        bool flagAppKey = string.IsNullOrWhiteSpace(searchAppKey) || item.AppKey.Contains(searchAppKey, StringComparison.OrdinalIgnoreCase);
+
+        if (flagName && flagStatus && flagState && flagLocation && flagAppEUI && flagAppKey)
+            return true;
+        return false;
     }
 }
