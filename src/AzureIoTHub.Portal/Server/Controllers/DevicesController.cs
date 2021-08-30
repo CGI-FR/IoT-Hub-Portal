@@ -42,8 +42,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpGet]
         public async Task<IEnumerable<DeviceListItem>> Get()
         {
-            var rng = new Random();
-
             var query = this.registryManager.CreateQuery("SELECT * FROM devices WHERE devices.capabilities.iotEdge = false");
 
             var items = await query.GetNextAsTwinAsync();
@@ -76,16 +74,24 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
 
             return results;
+        }
 
-            // return items.Select(c => new DeviceListItem
-            // {
-            //    DeviceID = c.DeviceId,
-            //    IsConnected = c.ConnectionState == DeviceConnectionState.Connected,
-            //    IsEnabled = c.Status == DeviceStatus.Enabled,
-            //    LastActivityDate = c.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
-            //    Tags = c.Tags.ToJson()
-            //    // Tags = c.Properties.Desired[""]
-            // });
+        [HttpGet("{deviceID}")]
+        public async Task<DeviceListItem> Get(string deviceID)
+        {
+            var item = await this.registryManager.GetTwinAsync(deviceID);
+
+            var result = new DeviceListItem
+            {
+                DeviceID = item.DeviceId,
+                IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
+                IsEnabled = item.Status == DeviceStatus.Enabled,
+                LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
+                AppEUI = "AppEUI",
+                AppKey = "AppKey",
+                LocationCode = "Location"
+            };
+            return result;
         }
     }
 }

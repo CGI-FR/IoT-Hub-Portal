@@ -1,0 +1,75 @@
+﻿@page "/devicedetail/{DeviceID}"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Shared
+@attribute [Authorize]
+@inject HttpClient Http
+
+<h1>Details</h1>
+<h2>...</h2>
+
+<strong>Name</strong>@DeviceID
+<strong>Location asset ID</strong>@Device.LocationCode
+<strong>IoT Asset ID</strong><strong>TODO</strong>
+<strong>Status</strong>@Device.IsEnabled
+<strong>Connection state</strong>@Device.IsConnected
+<strong>Last Activity date</strong>@Device.LastActivityDate
+<strong>Type</strong><strong>TODO</strong>
+<strong>Model Type</strong><strong>TODO</strong>
+<strong>OTAA AppEUI</strong>@Device.AppEUI
+<strong>OTAA AppKey</strong>@Device.AppKey
+
+<MudGrid>
+    <MudItem md="3">
+        <MudText Typo="Typo.h6">Name</MudText>
+    </MudItem>
+    <MudItem md="3">
+        <MudTextField @bind-Value="@DeviceID" Margin="Margin.Dense" Variant="Variant.Filled" Disabled="true" />
+    </MudItem>
+    <MudItem xs="3">
+        <MudText Typo="Typo.h6">Location asset ID</MudText>
+    </MudItem>
+    <MudItem xs="3">
+        <MudTextField @bind-Value="@Device.LocationCode" Label="Location asset ID" ReadOnly="true" Variant="Variant.Filled" />
+    </MudItem>
+</MudGrid>
+
+<MudGrid>
+    <MudItem md="3">
+        <MudText Typo="Typo.h6">Status</MudText>
+    </MudItem>
+    <MudItem md="3">
+        <MudTextField @bind-Value="@Device.IsEnabled" Margin="Margin.Dense" Variant="Variant.Filled" Disabled="true" />
+    </MudItem>
+</MudGrid>
+
+    @code {
+
+        [Parameter]
+        public string DeviceID { get; set; }
+
+        private DeviceListItem Device { get; set; } = new DeviceListItem();
+
+        protected override async Task OnInitializedAsync()
+        {
+            try
+            {
+                // Device = new DeviceListItem();
+                Device = await Http.GetFromJsonAsync<DeviceListItem>($"Devices/{DeviceID}");
+            }
+            catch
+            {
+                DeviceID = "blop";
+            }
+            //Device = await Http.GetFromJsonAsync<DeviceListItem>($"Devices/{DeviceID}");
+            //try
+            //{
+            //    Device = await Http.GetFromJsonAsync<DeviceListItem>($"DeviceDetail/{DeviceID}");
+            //}
+            //catch (AccessTokenNotAvailableException exception)
+            //{
+            //    exception.Redirect();
+            //}
+        }
+    }
+

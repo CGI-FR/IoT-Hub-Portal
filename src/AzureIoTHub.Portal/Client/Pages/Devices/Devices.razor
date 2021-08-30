@@ -5,93 +5,104 @@
 @attribute [Authorize]
 @inject HttpClient Http
 
+<MudContainer Class="mt-16" MaxWidth="MaxWidth.ExtraLarge">
+    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Devices</MudText>
+    
+    <MudCard>
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6">Search panel</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudGrid Spacing="12" Class="mt-1">
+                
+                <MudItem xs=6>
+                    <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    <MudDivider />
+                    <MudRadioGroup @bind-SelectedOption="@searchStatus1">
+                        <MudText>Status : </MudText>
+                        <MudRadio Option="@("true")" Color="Color.Primary">Enabled</MudRadio>
+                        <MudRadio Option="@("false")" Color="Color.Primary">Disabled</MudRadio>
+                        <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
+                    </MudRadioGroup>
+                    <MudDivider />
+                    <MudText>Connection state : </MudText>
+                    <MudRadioGroup @bind-SelectedOption="@searchState1">
+                        <MudRadio Option="@("true")" Color="Color.Primary">Connected</MudRadio>
+                        <MudRadio Option="@("false")" Color="Color.Primary">Disconnected</MudRadio>
+                        <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
+                    </MudRadioGroup>
+                    <MudDivider />
+                </MudItem>
 
-<MudContainer MaxWidth="MaxWidth.False">
-    <MudGrid>
-        <MudItem xs="12">
-            <MudCard>
-                <MudCardHeader>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.h6">Search panel</MudText>
-                    </CardHeaderContent>
-                    <CardHeaderActions>
-                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="Reset">Reset</MudButton>
-                        @*<MudIconButton Icon="@Icons.Material.Filled" Color="Color.Default" />*@
-                    </CardHeaderActions>
-                </MudCardHeader>
-                <MudCardContent>
-                    <MudGrid>
-                        <MudItem xs="12">
-                            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+                <MudItem xs=6>
+                    <MudItem xs="12">
+                        <MudItem xs="3" Class="m-0">
+                            <MudText>Location</MudText>
                         </MudItem>
-
-                        <MudItem xs="6">
-
-                            <MudRadioGroup @bind-SelectedOption="@searchStatus1">
-                                <MudText>Status : </MudText>
-                                <MudRadio Option="@("true")" Color="Color.Primary">Enabled</MudRadio>
-                                <MudRadio Option="@("false")" Color="Color.Primary">Disabled</MudRadio>
-                                <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
-                            </MudRadioGroup>
-
-                            <MudText>Connection state : </MudText>
-
-                            <MudRadioGroup @bind-SelectedOption="@searchState1">
-                                <MudRadio Option="@("true")" Color="Color.Primary">Connected</MudRadio>
-                                <MudRadio Option="@("false")" Color="Color.Primary">Disconnected</MudRadio>
-                                <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
-                            </MudRadioGroup>
+                        <MudItem xs="3" Class="m-0">
+                            <MudTextField @bind-Value="searchLocation" Placeholder="Location" Margin="Margin.Dense"></MudTextField>
                         </MudItem>
+                    </MudItem>
+                    <MudItem xs="3">
+                        <MudText>AppEUI</MudText>
+                    </MudItem>
+                    <MudItem xs="7">
+                        <MudTextField @bind-Value="searchAppEUI" Placeholder="AppEUI" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="1">
+                        <MudText>AppKey</MudText>
+                    </MudItem>
+                    <MudItem xs="9">
+                        <MudTextField @bind-Value="searchAppKey" Placeholder="AppKey" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                </MudItem>
 
-                        <MudItem xs="6">
-                            <MudTextField @bind-Value="searchLocation" Placeholder="Location"></MudTextField>
-                            <MudTextField @bind-Value="searchAppEUI" Placeholder="AppEUI"></MudTextField>
-                            <MudTextField @bind-Value="searchAppKey" Placeholder="AppKey"></MudTextField>
-
-                        </MudItem>
-
-                    </MudGrid>
-                </MudCardContent>
-            </MudCard>
-        </MudItem>
+            </MudGrid>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="Reset">Reset</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>
 
         <MudItem xs="12">
             <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<DeviceListItem, bool>(FilterFunc1)">
 
-                <ColGroup>
-                    <col style="width: 50%;" />
-                    <col style="width: 10%;" />
-                    <col style="width: 10%;" />
-                    <col style="width: 20%;" />
-                    <col style="width: 10%;" />
-                </ColGroup>
-                <ToolBarContent>
-                    <MudText Typo="Typo.h6">Devices</MudText>
-                    <MudSpacer />
-                </ToolBarContent>
-                <HeaderContent>
-                    <MudTh>Device</MudTh>
-                    <MudTh Style="text-align: center">Status</MudTh>
-                    <MudTh Style="text-align: center">Connection state</MudTh>
-                    <MudTh Style="text-align: center">Last activity time</MudTh>
-                    <MudTh Style="text-align: center">See details</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Device" Style="word-break: break-all;">@context.DeviceID</MudTd>
-                    <MudTd DataLabel="Status" Style="text-align: center"><MudSwitch Class="mx-0" @bind-Checked="@context.IsEnabled" Color="Color.Info" ReadOnly=true /></MudTd>
-                    <MudTd DataLabel="Connection" Style="text-align: center">@context.IsConnected</MudTd>
-                    <MudTd DataLabel="LAT" Style="text-align: center">@context.LastActivityDate</MudTd>
-                    <MudTd DataLabel="Details" Style="text-align: center">@context.AppEUI @context.AppKey @context.LocationCode</MudTd>
-                </RowTemplate>
-                <PagerContent>
-                    <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
-                </PagerContent>
-            </MudTable>
-        </MudItem>
-    </MudGrid>
+    <ColGroup>
+        <col style="width: 50%;" />
+        <col style="width: 10%;" />
+        <col style="width: 10%;" />
+        <col style="width: 20%;" />
+        <col style="width: 10%;" />
+    </ColGroup>
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Devices</MudText>
+        <MudSpacer />
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Device</MudTh>
+        <MudTh Style="text-align: center">Status</MudTh>
+        <MudTh Style="text-align: center">Connection state</MudTh>
+        <MudTh Style="text-align: center">Last activity time</MudTh>
+        <MudTh Style="text-align: center">See details</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Device" Style="word-break: break-all;">@context.DeviceID</MudTd>
+        <MudTd DataLabel="Status" Style="text-align: center"><MudSwitch Class="mx-0" @bind-Checked="@context.IsEnabled" Color="Color.Info" ReadOnly=true /></MudTd>
+        <MudTd DataLabel="Connection" Style="text-align: center">@context.IsConnected</MudTd>
+        <MudTd DataLabel="LAT" Style="text-align: center">@context.LastActivityDate</MudTd>
+        <MudTd DataLabel="Details" Style="text-align: center">@context.AppEUI @context.AppKey @context.LocationCode</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+    </PagerContent>
+</MudTable>
 
-   
-</MudContainer>
 @code {
     private DeviceListItem[] result;
     private string searchString1 = "";
