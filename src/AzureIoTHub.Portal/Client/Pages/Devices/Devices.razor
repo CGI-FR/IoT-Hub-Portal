@@ -61,7 +61,7 @@
                                 <MudItem md="8" sm="12">
                                     <MudTextField @bind-Value="searchLocation" Placeholder="Location" Margin="Margin.Dense"></MudTextField>
                                 </MudItem>
-                                </MudItem>
+                            </MudItem>
                             <MudItem xs="12" Style="display:flex;align-items:baseline">
                                 <MudItem md="4" sm="12">
                                     <MudText>AppEUI : </MudText>
@@ -69,7 +69,7 @@
                                 <MudItem md="8" sm="12" Class="custom-form">
                                     <MudTextField @bind-Value="searchAppEUI" Placeholder="AppEUI" Margin="Margin.Dense"></MudTextField>
                                 </MudItem>
-                                </MudItem>
+                            </MudItem>
                             <MudItem xs="12">
                                 <MudItem md="4" sm="12">
                                     <MudText>AppKey : </MudText>
@@ -77,8 +77,8 @@
                                 <MudItem md="8" sm="12">
                                     <MudTextField @bind-Value="searchAppKey" Placeholder="AppKey" Margin="Margin.Dense"></MudTextField>
                                 </MudItem>
-                                </MudItem>
                             </MudItem>
+                        </MudItem>
                     </MudGrid>
                 </MudCardContent>
             </MudCard>
@@ -106,11 +106,34 @@
                     <MudTh Style="text-align: center">See details</MudTh>
                 </HeaderContent>
                 <RowTemplate>
-                    <MudTd DataLabel="Device" Style="word-break: break-all;">@context.DeviceID</MudTd>
-                    <MudTd DataLabel="Status" Style="text-align: center"><MudSwitch Class="mx-0" @bind-Checked="@context.IsEnabled" Color="Color.Info" ReadOnly=true /></MudTd>
-                    <MudTd DataLabel="Connection" Style="text-align: center">@context.IsConnected</MudTd>
+                    <MudTd DataLabel="Device" Style="word-break: break-all;">
+                        <a href="devicedetail/@context.DeviceID">@context.DeviceID</a>
+                    </MudTd>
+
+                    <MudTd DataLabel="Status" Style="text-align: center">
+                        @if (context.IsEnabled)
+                        {
+                            <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                        }
+                        else
+                        {
+                            <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                        }
+                    </MudTd>
+                    <MudTd DataLabel="Connection" Style="text-align: center">
+                        @if (context.IsConnected)
+                        {
+                            <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
+                        }
+                        else
+                        {
+                            <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
+                        }
+                    </MudTd>
                     <MudTd DataLabel="LAT" Style="text-align: center">@context.LastActivityDate</MudTd>
-                    <MudTd DataLabel="Details" Style="text-align: center">@context.AppEUI @context.AppKey @context.LocationCode</MudTd>
+                    <MudTd DataLabel="Details" Style="text-align: center">
+                        <a href="devicedetail/@context.DeviceID"><MudIcon Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a
+                    </MudTd>
                 </RowTemplate>
                 <PagerContent>
                     <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
