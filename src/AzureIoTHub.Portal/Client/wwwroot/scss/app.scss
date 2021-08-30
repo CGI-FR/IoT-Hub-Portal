@@ -1,6 +1,11 @@
 ﻿@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
 
-body,
+.custom-form {
+    display: flex !important;
+    align-items: baseline !important;
+}
+
+/*body,
 button {
     font-family: "Inter", sans-serif;
 }
@@ -35,9 +40,9 @@ button {
 
     main {
         margin-left: var(--offcanvas-width);
-    }
+    }*/
     /* this is to remove the backdrop */
-    .offcanvas-backdrop::before {
+    /*.offcanvas-backdrop::before {
         display: none;
     }
 
@@ -48,4 +53,4 @@ button {
         height: calc(100% - var(--topNavbarHeight));
         top: var(--topNavbarHeight);
     }
-}
+}*/
