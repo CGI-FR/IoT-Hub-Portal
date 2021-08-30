@@ -1,15 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider Theme="currentTheme"/>
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudLayout>
     <NavBar />
     <MudMainContent>
-        <MudContainer>
-            @Body
-        </MudContainer>
+        @Body
     </MudMainContent>
     <MudAppBar Elevation="1" Style="top: auto; bottom: 0" Dense="true" Fixed="true">
         <MudGrid Justify="Justify.Center">
@@ -17,3 +15,14 @@
         </MudGrid>
     </MudAppBar>
 </MudLayout>
+
+@code{
+    MudTheme currentTheme = new MudTheme()
+    {
+        Palette = new Palette()
+        {
+            
+            Background = "#efefef"
+        }
+    };
+}
