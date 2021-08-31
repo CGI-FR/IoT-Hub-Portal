@@ -56,24 +56,31 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
                     IsEnabled = item.Status == DeviceStatus.Enabled,
                     LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
-                    AppEUI = "AppEUI",
-                    AppKey = "AppKey",
-                    LocationCode = "Location"
+                    AppEUI = RetrievePropertyValue(item, "AppEUI"),
+                    AppKey = RetrievePropertyValue(item, "AppKey"),
+                    LocationCode = RetrieveTagValue(item, "locationCode")
                 };
-
-                if (item.Properties.Desired.Contains("AppEUI"))
-                    result.AppEUI = item.Properties.Desired["AppEUI"];
-
-                if (item.Properties.Desired.Contains("AppKey"))
-                    result.AppKey = item.Properties.Desired["AppKey"];
-
-                if (item.Tags.Contains("locationCode"))
-                    result.LocationCode = item.Tags["locationCode"];
 
                 results.Add(result);
             }
 
             return results;
+        }
+
+        private static string RetrieveTagValue(Twin item, string tagName)
+        {
+            if (item.Tags.Contains(tagName))
+                return item.Tags[tagName];
+            else
+                return "mock_" + tagName;
+        }
+
+        private static string RetrievePropertyValue(Twin item, string propertyName)
+        {
+            if (item.Properties.Desired.Contains(propertyName))
+                return item.Properties.Desired[propertyName];
+            else
+                return "mock_" + propertyName;
         }
 
         [HttpGet("{deviceID}")]
@@ -87,9 +94,12 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = item.Status == DeviceStatus.Enabled,
                 LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
-                AppEUI = "AppEUI",
-                AppKey = "AppKey",
-                LocationCode = "Location"
+                AppEUI = RetrievePropertyValue(item, "AppEUI"),
+                AppKey = RetrievePropertyValue(item, "AppKey"),
+                LocationCode = RetrieveTagValue(item, "locationCode"),
+                AssetID = RetrieveTagValue(item, "assetID"),
+                DeviceType = RetrieveTagValue(item, "deviceType"),
+                ModelType = RetrieveTagValue(item, "modelType")
             };
             return result;
         }

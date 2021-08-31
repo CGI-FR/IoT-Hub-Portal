@@ -8,8 +8,6 @@
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
         <MudItem xs="12">
-
-
             <MudCard>
                 <MudCardHeader>
                     <CardHeaderContent>
@@ -55,26 +53,26 @@
 
                         <MudItem xs=6>
                             <MudItem xs="12" Class="custom-form">
-                                <MudItem md="4" sm="12">
+                                <MudItem md="2" sm="12">
                                     <MudText>Location : </MudText>
                                 </MudItem>
-                                <MudItem md="8" sm="12">
+                                <MudItem md="10" sm="12">
                                     <MudTextField @bind-Value="searchLocation" Placeholder="Location" Margin="Margin.Dense"></MudTextField>
                                 </MudItem>
                             </MudItem>
-                            <MudItem xs="12" Style="display:flex;align-items:baseline">
-                                <MudItem md="4" sm="12">
+                            <MudItem xs="12" Class="custom-form">
+                                <MudItem md="2" sm="12">
                                     <MudText>AppEUI : </MudText>
                                 </MudItem>
-                                <MudItem md="8" sm="12" Class="custom-form">
+                                <MudItem md="10" sm="12" Class="custom-form">
                                     <MudTextField @bind-Value="searchAppEUI" Placeholder="AppEUI" Margin="Margin.Dense"></MudTextField>
                                 </MudItem>
                             </MudItem>
-                            <MudItem xs="12">
-                                <MudItem md="4" sm="12">
+                            <MudItem xs="12" Class="custom-form">
+                                <MudItem md="2" sm="12">
                                     <MudText>AppKey : </MudText>
                                 </MudItem>
-                                <MudItem md="8" sm="12">
+                                <MudItem md="10" sm="12">
                                     <MudTextField @bind-Value="searchAppKey" Placeholder="AppKey" Margin="Margin.Dense"></MudTextField>
                                 </MudItem>
                             </MudItem>
@@ -86,7 +84,6 @@
 
         <MudItem xs="12">
             <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<DeviceListItem, bool>(FilterFunc1)">
-
                 <ColGroup>
                     <col style="width: 50%;" />
                     <col style="width: 10%;" />
