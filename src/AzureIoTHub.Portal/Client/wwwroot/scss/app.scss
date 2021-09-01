@@ -1,9 +1,26 @@
 ﻿.search-panel {
-    max-width: 100%;
-    padding: 50px 50px 50px 50px;
-    margin: 2px 2px 70px 2px;
+    max-width: 70%;
+    padding: 0px 50px 25px 50px;
+    margin: 0px 0px 0px 200px;
 
-    .select-form {
-        width: 220px;
+    .form-group {
+        display: flex;
+        align-items: baseline;
+        max-width: 50%;
     }
+}
+
+.mud-input-control {
+    max-width: 70%;
+    padding-left: 30px;
+}
+
+.mud-grid-spacing-xs-3 {
+    display: contents;
+}
+.mud-input-control > .mud-input-control-input-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 150px;
 }

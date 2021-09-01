@@ -6,42 +6,8 @@
 
 @attribute [Authorize]
 @inject HttpClient Http
-@*<button type="button" @onclick="@LoadGateway">load gateway</button>*@
 
 <div class="container-fluid">
-
-    <div class="search-panel">
-        <MudCard>
-            <MudCardContent>
-                <MudForm @ref="form" @bind-IsValid="@success">
-                    <div class="form-group">
-                        <label>Name : </label>
-                        <MudTextField T="string" Label="Name" />
-                    </div>
-                    <div class="form-group">
-                        <label>Type : </label>
-                        <MudItem xs="10" sm="4" md="4">
-                            <MudSelect T="string" Label="Type of the gateway" Variant="Variant.Outlined" OffsetY="true">
-                                @foreach (var item in listeType)
-                                {
-                                    <MudSelectItem Value="@item" />
-                                }
-                            </MudSelect>
-                        </MudItem>
-                    </div>
-                </MudForm>
-            </MudCardContent>
-            <MudCardActions>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto">Register</MudButton>
-            </MudCardActions>
-        </MudCard>
-
-        <MudPaper Class="pa-4 justify-center my-4 mud-text-align-center">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(()=>form.Validate())">Validate</MudButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(()=>form.Reset())" Class="mx-2">Reset</MudButton>
-        </MudPaper>
-    </div>
-
     <div class="">
         @if (result == null)
         {
@@ -49,22 +15,74 @@
         }
         else
         {
-            <MudTable Items="@result" Hover="true" SortLabel="Sort By">
-                <HeaderContent>
-                    <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<GatewayListItem, object>(x=>x.DeviceId)">ID</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<GatewayListItem, object>(x=>x.Type)">Type</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<GatewayListItem, object>(x=>x.NbDevices)">Nb Device</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<GatewayListItem, object>(x=>x.Status)">Status</MudTableSortLabel></MudTh>
-                    <MudTh>  </MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="DeviceId"><a href="/details/@context.DeviceId" >@context.DeviceId</a></MudTd>
-                    <MudTd DataLabel="Type">@context.Type</MudTd>
-                    <MudTd DataLabel="NbDevices">@context.NbDevices</MudTd>
-                    <MudTd DataLabel="Status">@context.Status</MudTd>
-                    <MudTd DataLabel="detail"></MudTd>
-                </RowTemplate>
-            </MudTable>
+            <MudContainer>
+                <MudGrid>
+                    <div class="search-panel">
+                        <MudItem xs="12">
+                            <MudCard>
+                                <MudCardHeader>
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6">Search panel</MudText>
+                                    </CardHeaderContent>
+                                    <CardHeaderActions>
+                                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="ResetFiltre">Reset</MudButton>
+                                    </CardHeaderActions>
+                                </MudCardHeader>
+                                <MudCardContent>
+                                    <MudGrid>
+                                        @*<MudItem xs="12">*@
+                                            <div class="form-group">
+                                                <MudText>Name : </MudText>
+                                                <MudTextField @bind-Value="model.DeviceId" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+                                            </div>
+                                        @*</MudItem>*@
+                                        @*<MudItem xs="12" sm="6" md="4">*@
+                                            <div class="form-group">
+                                                <MudText>Type : </MudText>
+                                                <MudSelect T="string" Label="Type" @bind-Value="model.Type" Variant="Variant.Outlined" Format="F2">
+                                                    <MudSelectItem Value="@("")" />
+                                                    @foreach (var item in listeType)
+                                                    {
+                                                        <MudSelectItem Value="@item" />
+                                                    }
+                                                </MudSelect>
+                                            </div>
+                                        @*</MudItem>*@
+                                        @*<MudItem xs="6">*@
+                                            <div class="form-group">
+                                                <MudRadioGroup @bind-SelectedOption="@model.Status">
+                                                    <MudText>Status : </MudText>
+                                                    <MudRadio Option="@("Enabled")" Color="Color.Primary">Enabled</MudRadio>
+                                                    <MudRadio Option="@("Disabled")" Color="Color.Primary">Disabled</MudRadio>
+                                                    <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
+                                                </MudRadioGroup>
+                                            </div>
+                                        @*</MudItem>*@
+                                    </MudGrid>
+                                </MudCardContent>
+                            </MudCard>
+                        </MudItem>
+                    </div>
+
+
+                    <MudTable Items="@result" Hover="true" SortLabel="Sort By" Filter="new Func<GatewayListItem, bool>(FilterFunc)">
+                        <HeaderContent>
+                            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<GatewayListItem, object>(x=>x.DeviceId)">ID</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<GatewayListItem, object>(x=>x.Type)">Type</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<GatewayListItem, object>(x=>x.NbDevices)">Nb Device</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<GatewayListItem, object>(x=>x.Status)">Status</MudTableSortLabel></MudTh>
+                            <MudTh>  </MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="DeviceId"><a href="/details/@context.DeviceId">@context.DeviceId</a></MudTd>
+                            <MudTd DataLabel="Type">@context.Type</MudTd>
+                            <MudTd DataLabel="NbDevices">@context.NbDevices</MudTd>
+                            <MudTd DataLabel="Status">@context.Status</MudTd>
+                            <MudTd DataLabel="detail"></MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </MudGrid>
+            </MudContainer>
         }
     </div>
 </div>
@@ -73,9 +91,11 @@
 
 @code {
     private List<GatewayListItem> result;
-    private List<string> listeType = new List<string>() { "Lora" };
-    private MudForm form;
-    private bool success;
+    private List<string> listeType = new List<string>() { "lora", "unknow" };
+    //private MudForm form;
+    //private bool success;
+
+    private SearchModel model = new SearchModel();
 
     protected override async Task OnInitializedAsync()
     {
@@ -93,4 +113,24 @@
     {
         result = await Http.GetFromJsonAsync<List<GatewayListItem>>("Gateways");
     }
+
+    private bool FilterFunc(GatewayListItem element)
+    {
+        if (
+            (string.IsNullOrWhiteSpace(this.model.DeviceId) || element.DeviceId.Contains(model.DeviceId, StringComparison.OrdinalIgnoreCase))
+            && (string.IsNullOrWhiteSpace(this.model.Type) || element.Type.Contains(model.Type, StringComparison.OrdinalIgnoreCase))
+            && (string.IsNullOrWhiteSpace(this.model.Status) || element.Status.Contains(model.Status, StringComparison.OrdinalIgnoreCase))
+            )
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void ResetFiltre()
+    {
+        this.model = new SearchModel();
+    }
+
 }
