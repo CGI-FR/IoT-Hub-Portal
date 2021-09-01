@@ -1,51 +1,26 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+﻿.search-panel {
+    max-width: 70%;
+    padding: 0px 50px 25px 50px;
+    margin: 0px 0px 0px 200px;
 
-body,
-button {
-    font-family: "Inter", sans-serif;
+    .form-group {
+        display: flex;
+        align-items: baseline;
+        max-width: 50%;
+    }
 }
 
-:root {
-    --offcanvas-width: 270px;
-    --topNavbarHeight: 56px;
+.mud-input-control {
+    max-width: 70%;
+    padding-left: 30px;
 }
 
-.sidebar-nav {
-    width: var(--offcanvas-width);
+.mud-grid-spacing-xs-3 {
+    display: contents;
 }
-
-.sidebar-link {
+.mud-input-control > .mud-input-control-input-container {
+    position: relative;
     display: flex;
-    align-items: center;
-
-    .right-icon {
-        display: inline-flex;
-    }
-}
-
-
-.sidebar-link[aria-expanded="true"] .right-icon {
-    transform: rotate(180deg);
-}
-
-@media (min-width: 992px) {
-    body {
-        overflow: auto !important;
-    }
-
-    main {
-        margin-left: var(--offcanvas-width);
-    }
-    /* this is to remove the backdrop */
-    .offcanvas-backdrop::before {
-        display: none;
-    }
-
-    .sidebar-nav {
-        -webkit-transform: none;
-        transform: none;
-        visibility: visible !important;
-        height: calc(100% - var(--topNavbarHeight));
-        top: var(--topNavbarHeight);
-    }
+    flex-direction: column;
+    width: 150px;
 }

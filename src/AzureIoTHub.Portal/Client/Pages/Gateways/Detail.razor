@@ -1,0 +1,31 @@
+﻿@page "/gateways/details/{deviceId}"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Shared.Models
+@using System.Net.Http.Json
+
+@attribute [Authorize]
+@inject HttpClient Http
+@inject IJSRuntime JS7
+
+<h3>Detail parametre: @result.DeviceId</h3>
+
+
+
+@code {
+    [Parameter]
+    public string deviceId { get; set; }
+
+    private Gateway result;
+
+    protected override async Task OnInitializedAsync()
+    {
+        result = new Gateway();
+        await LoadDevice();
+    }
+
+    public async Task LoadDevice()
+    {
+        result = await Http.GetFromJsonAsync<Gateway>($"Gateways/{deviceId}");
+    }
+}
