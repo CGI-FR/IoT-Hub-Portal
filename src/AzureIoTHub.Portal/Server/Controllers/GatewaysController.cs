@@ -85,14 +85,61 @@ namespace AzureIoTHub.Portal.Server.Controllers
         public async Task<Gateway> Get(string deviceId)
         {
             var device = await this.registryManager.GetTwinAsync(deviceId);
+            var query = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']");
+            var query2 = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{deviceId}']");
+            var deviceWithModules = await query.GetNextAsTwinAsync();
+            var deviceWithClient = await query2.GetNextAsTwinAsync();
+
             Gateway gateway = new Gateway();
 
             gateway.DeviceId = device.DeviceId;
-            gateway.Status = device.Status.Value.ToString() == "enabled";
-            gateway.Type = device.Tags["type"];
-            gateway.Environement = device.Tags["env"];
-            // gateway.NbDevices = device.Properties.Reported["clients"].Count;
-            // gateway.NbModule = device.Properties.Desired["modules"].Count;
+            gateway.Status = device.Status.Value.ToString() == "Enabled";
+            if (device.Tags.Contains("purpose"))
+            {
+                gateway.Type = device.Tags["purpose"];
+            }
+            else
+            {
+                gateway.Type = "unknow";
+            }
+
+            if (device.Tags.Contains("env"))
+            {
+                gateway.Environement = device.Tags["env"];
+            }
+            else
+            {
+                gateway.Environement = "unknow";
+            }
+
+            // récupération des informations sur les clients connceté à la gateway
+            while (query2.HasMoreResults)
+            {
+                foreach (var item in deviceWithClient)
+                {
+                    if (item.Properties.Reported.Contains("clients") && item.DeviceId == deviceId)
+                    {
+                        gateway.NbDevices = item.Properties.Reported["clients"].Count;
+                    }
+                }
+            }
+
+            // récupération des informations sur le modules de la gateways
+            while (query.HasMoreResults)
+            {
+                foreach (var item in deviceWithModules)
+                {
+                    if (item.Properties.Desired.Contains("modules") && item.DeviceId == deviceId)
+                    {
+                        gateway.NbModule = item.Properties.Desired["modules"].Count;
+                        if (item.Properties.Desired.Contains("systemModules"))
+                        {
+                            gateway.NbModule += item.Properties.Desired["systemModules"].Count;
+                        }
+                    }
+                }
+            }
+
             return gateway;
         }
     }

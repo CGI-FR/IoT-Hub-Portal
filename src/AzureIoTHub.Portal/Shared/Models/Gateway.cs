@@ -24,5 +24,7 @@ namespace AzureIoTHub.Portal.Shared.Models
         public int NbModule { get; set; }
 
         public string Environement { get; set; }
+
+        public IEnumerable<GatewayModule> Modules { get; set; }
     }
 }
