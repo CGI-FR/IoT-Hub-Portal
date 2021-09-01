@@ -9,7 +9,7 @@ namespace AzureIoTHub.Portal.Shared.Models
     using System.Text;
     using System.Threading.Tasks;
 
-    class GatewayModule
+    public class GatewayModule
     {
         public string ModuleName { get; set; }
 
