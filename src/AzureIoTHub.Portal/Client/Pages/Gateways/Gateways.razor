@@ -6,6 +6,7 @@
 
 @attribute [Authorize]
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <div class="container-fluid">
     <div class="">
@@ -31,32 +32,32 @@
                                 <MudCardContent>
                                     <MudGrid>
                                         @*<MudItem xs="12">*@
-                                            <div class="form-group">
-                                                <MudText>Name : </MudText>
-                                                <MudTextField @bind-Value="model.DeviceId" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
-                                            </div>
+                                        <div class="form-group">
+                                            <MudText>Name : </MudText>
+                                            <MudTextField @bind-Value="model.DeviceId" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+                                        </div>
                                         @*</MudItem>*@
                                         @*<MudItem xs="12" sm="6" md="4">*@
-                                            <div class="form-group">
-                                                <MudText>Type : </MudText>
-                                                <MudSelect T="string" Label="Type" @bind-Value="model.Type" Variant="Variant.Outlined" Format="F2">
-                                                    <MudSelectItem Value="@("")" />
-                                                    @foreach (var item in listeType)
-                                                    {
-                                                        <MudSelectItem Value="@item" />
-                                                    }
-                                                </MudSelect>
-                                            </div>
+                                        <div class="form-group">
+                                            <MudText>Type : </MudText>
+                                            <MudSelect T="string" Label="Type" @bind-Value="model.Type" Variant="Variant.Outlined" Format="F2">
+                                                <MudSelectItem Value="@("")" />
+                                                @foreach (var item in listeType)
+                                                {
+                                                    <MudSelectItem Value="@item" />
+                                                }
+                                            </MudSelect>
+                                        </div>
                                         @*</MudItem>*@
                                         @*<MudItem xs="6">*@
-                                            <div class="form-group">
-                                                <MudRadioGroup @bind-SelectedOption="@model.Status">
-                                                    <MudText>Status : </MudText>
-                                                    <MudRadio Option="@("Enabled")" Color="Color.Primary">Enabled</MudRadio>
-                                                    <MudRadio Option="@("Disabled")" Color="Color.Primary">Disabled</MudRadio>
-                                                    <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
-                                                </MudRadioGroup>
-                                            </div>
+                                        <div class="form-group">
+                                            <MudRadioGroup @bind-SelectedOption="@model.Status">
+                                                <MudText>Status : </MudText>
+                                                <MudRadio Option="@("Enabled")" Color="Color.Primary">Enabled</MudRadio>
+                                                <MudRadio Option="@("Disabled")" Color="Color.Primary">Disabled</MudRadio>
+                                                <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
+                                            </MudRadioGroup>
+                                        </div>
                                         @*</MudItem>*@
                                     </MudGrid>
                                 </MudCardContent>
@@ -74,12 +75,15 @@
                             <MudTh>  </MudTh>
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd DataLabel="DeviceId"><a href="/details/@context.DeviceId">@context.DeviceId</a></MudTd>
+                            <MudTd DataLabel="DeviceId" Style="word-break: break-all;"><a href="/gateways/details/@context.DeviceId">@context.DeviceId</a></MudTd>
                             <MudTd DataLabel="Type">@context.Type</MudTd>
                             <MudTd DataLabel="NbDevices">@context.NbDevices</MudTd>
                             <MudTd DataLabel="Status">@context.Status</MudTd>
-                            <MudTd DataLabel="detail"></MudTd>
+                            <MudTd DataLabel="detail"> <MudButton Variant="Variant.Outlined" OnClick="@(() => RedirectToDetail(context.DeviceId))">détail</MudButton></MudTd>
                         </RowTemplate>
+                        <PagerContent>
+                            <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+                        </PagerContent>
                     </MudTable>
                 </MudGrid>
             </MudContainer>
@@ -92,8 +96,7 @@
 @code {
     private List<GatewayListItem> result;
     private List<string> listeType = new List<string>() { "lora", "unknow" };
-    //private MudForm form;
-    //private bool success;
+    private int[] pageSizeOptions = new int[] { 2, 5, 10 };
 
     private SearchModel model = new SearchModel();
 
@@ -131,6 +134,11 @@
     private void ResetFiltre()
     {
         this.model = new SearchModel();
+    }
+
+    private void RedirectToDetail(string id)
+    {
+        NavigationManager.NavigateTo($"/gateways/details/{id}");
     }
 
 }
