@@ -129,13 +129,16 @@
                     </MudTd>
                     <MudTd DataLabel="LAT" Style="text-align: center">@context.LastActivityDate</MudTd>
                     <MudTd DataLabel="Details" Style="text-align: center">
-                        <a href="devicedetail/@context.DeviceID"><MudIcon Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a
+                        <a href="devicedetail/@context.DeviceID"><MudIcon Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
                     </MudTd>
                 </RowTemplate>
                 <PagerContent>
                     <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
                 </PagerContent>
             </MudTable>
+        </MudItem>
+        <MudItem xs="12">
+            <a href="devicedetail/create"><MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add a new device" /></a>
         </MudItem>
     </MudGrid>
 </MudContainer>

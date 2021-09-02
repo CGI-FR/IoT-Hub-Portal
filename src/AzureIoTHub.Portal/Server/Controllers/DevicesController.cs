@@ -103,5 +103,53 @@ namespace AzureIoTHub.Portal.Server.Controllers
             };
             return result;
         }
+
+        [HttpPost("{isNew}")]
+        public async Task<DeviceListItem> Post(DeviceListItem device, bool isNew)
+        {
+            // await Task.Delay(1);
+            // var test = new Device();
+            // await this.registryManager.AddDeviceAsync(test);
+            if (isNew)
+            {
+                Device newDevice = new Device();
+
+                Twin newTwin = new Twin
+                {
+                    DeviceId = "newDevice"
+                };
+
+                await this.registryManager.AddDeviceWithTwinAsync(newDevice, newTwin);
+
+                var test = new DeviceListItem();
+                Console.WriteLine($"New device! {isNew.ToString()}");
+                return test;
+            }
+            else
+            {
+                Twin currentTwin = await this.registryManager.GetTwinAsync(device.DeviceID);
+
+                // await this.registryManager.ReplaceTwinAsync(device.DeviceID, newTwin, "etag");
+                var item = await this.registryManager.GetTwinAsync(device.DeviceID);
+
+                var result = new DeviceListItem
+                {
+                    DeviceID = item.DeviceId,
+                    IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
+                    IsEnabled = item.Status == DeviceStatus.Enabled,
+                    LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
+                    AppEUI = RetrievePropertyValue(item, "AppEUI"),
+                    AppKey = RetrievePropertyValue(item, "AppKey"),
+                    LocationCode = RetrieveTagValue(item, "locationCode"),
+                    AssetID = RetrieveTagValue(item, "assetID"),
+                    DeviceType = RetrieveTagValue(item, "deviceType"),
+                    ModelType = RetrieveTagValue(item, "modelType")
+                };
+
+                Console.WriteLine($"Test? {isNew.ToString()}");
+                Console.WriteLine(result.AppEUI);
+                return result;
+            }
+        }
     }
 }

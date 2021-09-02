@@ -8,117 +8,148 @@
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
         <MudItem xs="12">
-            <MudCard>
-                <MudCardHeader>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.h4">Device detail</MudText>
-                    </CardHeaderContent>
-                </MudCardHeader>
-                <MudCardContent>
-                    <MudGrid>
-                        <MudItem xs="12">
-                            <MudText>@Device.DeviceID</MudText>
-                        </MudItem>
-                        <MudItem md="6" xs="12">
-                            <MudItem xs="12" Class="custom-form">
-                                <MudItem md="3" sm="12">
-                                    <MudText>Location Asset ID : </MudText>
-                                </MudItem>
-                                <MudItem md="9" sm="12">
-                                    <MudTextField @bind-Value="@Device.LocationCode" Class="custom-disabled" Margin="Margin.Dense" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
-                                </MudItem>
-                            </MudItem>
-                            <MudItem xs="12" Class="custom-form">
-                                <MudItem md="3" sm="12">
-                                    <MudText>IoT Asset ID : </MudText>
-                                </MudItem>
-                                <MudItem md="9" sm="12">
-                                    <MudTextField @bind-Value="@Device.AssetID" Class="custom-disabled" Margin="Margin.Dense" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
-                                </MudItem>
-                            </MudItem>
-                            <MudItem xs="12" Class="custom-form">
-                                <MudItem md="3" sm="12">
-                                    <MudText>Status : </MudText>
-                                </MudItem>
-                                <MudItem md="9" sm="12">
-                                    <MudRadioGroup @bind-SelectedOption="@DeviceState" Style="display:flex;align-items:baseline">
-                                        <MudItem md="4" sm="12">
-                                            <MudRadio Option="@("true")" Color="Color.Primary">Enabled</MudRadio>
+            <EditForm Model="@Device" OnValidSubmit="SaveDevice">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            @if (IsNew)
+                            {
+                                <MudText Typo="Typo.h4">New device</MudText>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.h4">Device detail</MudText>
+                            }
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12">
+                                    <MudItem xs="6" Class="custom-form">
+                                        <MudItem md="3" sm="12">
+                                            <MudText>Device ID : </MudText>
                                         </MudItem>
-                                        <MudItem md="4" sm="12">
-                                            <MudRadio Option="@("false")" Color="Color.Primary">Disabled</MudRadio>
+                                        <MudItem md="9" sm="12">
+                                            @if (IsNew)
+                                            {
+                                                <MudTextField @bind-Value="@Device.DeviceID" Class="" Margin="Margin.Dense" ReadOnly="false" Variant="Variant.Outlined"></MudTextField>
+                                            }
+                                            else
+                                            {
+                                                <MudText Typo="Typo.h6">@Device.DeviceID</MudText>
+                                            }
                                         </MudItem>
-                                    </MudRadioGroup>
                                 </MudItem>
-                            </MudItem>
-                            <MudItem xs="12" Class="custom-form">
-                                <MudItem md="3" sm="12">
-                                    <MudText>Connection state : </MudText>
+                                <MudItem md="6" xs="12"></MudItem>
                                 </MudItem>
-                                <MudItem md="9" sm="12">
-                                    @if (Device.IsConnected)
+                                <MudItem md="6" xs="12">
+                                    <MudItem xs="12" Class="custom-form">
+                                        <MudItem md="3" sm="12">
+                                            <MudText>Location Asset ID : </MudText>
+                                        </MudItem>
+                                        <MudItem md="9" sm="12">
+                                            <MudTextField @bind-Value="@Device.LocationCode" Class="" Margin="Margin.Dense" ReadOnly="false" Variant="Variant.Outlined"></MudTextField>
+                                        </MudItem>
+                                    </MudItem>
+                                    <MudItem xs="12" Class="custom-form">
+                                        <MudItem md="3" sm="12">
+                                            <MudText>IoT Asset ID : </MudText>
+                                        </MudItem>
+                                        <MudItem md="9" sm="12">
+                                            <MudTextField @bind-Value="@Device.AssetID" Class="" Margin="Margin.Dense" ReadOnly="false" Variant="Variant.Outlined"></MudTextField>
+                                        </MudItem>
+                                    </MudItem>
+                                    <MudItem xs="12" Class="custom-form">
+                                        <MudItem md="3" sm="12">
+                                            <MudText>Status : </MudText>
+                                        </MudItem>
+                                        <MudItem md="9" sm="12">
+                                            <MudRadioGroup @bind-SelectedOption="@IsDeviceEnabled" Style="display:flex;align-items:baseline">
+                                                <MudItem md="4" sm="12">
+                                                    <MudRadio Option="@("true")" Color="Color.Primary">Enabled</MudRadio>
+                                                </MudItem>
+                                                <MudItem md="4" sm="12">
+                                                    <MudRadio Option="@("false")" Color="Color.Primary">Disabled</MudRadio>
+                                                </MudItem>
+                                            </MudRadioGroup>
+                                        </MudItem>
+                                    </MudItem>
+
+                                    @if (!IsNew)
                                     {
-                                        <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
+
+                                        <MudItem xs="12" Class="custom-form">
+                                            <MudItem md="3" sm="12">
+                                                <MudText>Connection state : </MudText>
+                                            </MudItem>
+                                            <MudItem md="9" sm="12">
+                                                @if (Device.IsConnected)
+                                                {
+                                                    <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
+                                                }
+                                                else
+                                                {
+                                                    <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
+                                                }
+                                            </MudItem>
+                                        </MudItem>
+                                        <MudItem xs="12" Class="custom-form">
+                                            <MudItem md="3" sm="12">
+                                                <MudText>Last activity time : </MudText>
+                                            </MudItem>
+                                            <MudItem md="9" sm="12">
+                                                <MudTextField @bind-Value="@LastActivityDateString" Class=@CustomClass Margin="Margin.Dense" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
+                                            </MudItem>
+
+                                        </MudItem>
                                     }
-                                    else
-                                    {
-                                        <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
-                                    }
                                 </MudItem>
-                            </MudItem>
-                            <MudItem xs="12" Class="custom-form">
-                                <MudItem md="3" sm="12">
-                                    <MudText>Last activity time : </MudText>
-                                </MudItem>
-                                <MudItem md="9" sm="12">
-                                    <MudTextField @bind-Value="@Device.LastActivityDate" Class="custom-disabled" Margin="Margin.Dense" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
-                                </MudItem>
-                            </MudItem>
-                        </MudItem>
-                        
-                        <MudItem md="6" xs="12">
-                            <MudItem xs="12" Class="custom-form">
-                                <MudItem md="3" sm="12">
-                                    <MudText>Type : </MudText>
-                                </MudItem>
-                                <MudItem md="9" sm="12">
-                                    <MudSelect T="string" Label="LoRa Device" Variant="Variant.Filled" Dense="true" ReadOnly="true">
-                                        <MudSelectItem Value="@("LoRa Device")" />
-                                    </MudSelect>
-                                </MudItem>
-                            </MudItem>
-                            <MudItem xs="12" Class="custom-form">
-                                <MudItem md="3" sm="12">
-                                    <MudText>Model Type : </MudText>
-                                </MudItem>
-                                <MudItem md="9" sm="12">
-                                    <MudTextField @bind-Value="@Device.ModelType" Class="custom-disabled" Margin="Margin.Dense" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
-                                </MudItem>
-                            </MudItem>
-                            <MudItem xs="12" Class="custom-form">
-                                <MudItem md="3" sm="12">
-                                    <MudText>OTAA AppEUI : </MudText>
-                                </MudItem>
-                                <MudItem md="9" sm="12">
-                                    @*<MudTextField @bind-Value="@Device.AppEUI" Margin="Margin.Dense" ReadOnly="true" Variant="Variant.Filled"></MudTextField>*@
-                                    <MudTextField @bind-Value="@Device.AppEUI" Class="custom-disabled" Margin="Margin.Dense" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
 
-                                </MudItem>
-                            </MudItem>
-                            <MudItem xs="12" Class="custom-form">
-                                <MudItem md="3" sm="12">
-                                    <MudText>OTAA AppKey : </MudText>
-                                </MudItem>
-                                <MudItem md="9" sm="12">
-                                    <MudTextField @bind-Value="@Device.AppKey" Class="custom-disabled" Margin="Margin.Dense" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
-                                </MudItem>
-                            </MudItem>
+                                <MudItem md="6" xs="12">
+                                    <MudItem xs="12" Class="custom-form">
+                                        <MudItem md="3" sm="12">
+                                            <MudText>Type : </MudText>
+                                        </MudItem>
+                                        <MudItem md="9" sm="12">
+                                            <MudSelect T="string" Value="@Device.DeviceType" Class=@CustomClass Variant="Variant.Outlined" Dense="true" ReadOnly="@IsFieldDisabled">
+                                                <MudSelectItem Value="@("LoRa Device")" />
+                                                <MudSelectItem Value="@("Other")" />
+                                            </MudSelect>
+                                        </MudItem>
+                                    </MudItem>
+                                    <MudItem xs="12" Class="custom-form">
+                                        <MudItem md="3" sm="12">
+                                            <MudText>Model Type : </MudText>
+                                        </MudItem>
+                                        <MudItem md="9" sm="12">
+                                            <MudTextField @bind-Value="@Device.ModelType" Class=@CustomClass Margin="Margin.Dense" ReadOnly="@IsFieldDisabled" Variant="Variant.Outlined"></MudTextField>
+                                        </MudItem>
+                                    </MudItem>
+                                    <MudItem xs="12" Class="custom-form">
+                                        <MudItem md="3" sm="12">
+                                            <MudText>OTAA AppEUI : </MudText>
+                                        </MudItem>
+                                        <MudItem md="9" sm="12">
+                                            <MudTextField @bind-Value="@Device.AppEUI" Class="" Margin="Margin.Dense" ReadOnly="false" Variant="Variant.Outlined"></MudTextField>
 
-
-                        </MudItem>
-                    </MudGrid>
-                </MudCardContent>
-            </MudCard>
+                                        </MudItem>
+                                    </MudItem>
+                                    <MudItem xs="12" Class="custom-form">
+                                        <MudItem md="3" sm="12">
+                                            <MudText>OTAA AppKey : </MudText>
+                                        </MudItem>
+                                        <MudItem md="9" sm="12">
+                                            <MudTextField @bind-Value="@Device.AppKey" Class="" Margin="Margin.Dense" ReadOnly="false" Variant="Variant.Outlined"></MudTextField>
+                                        </MudItem>
+                                    </MudItem>
+                                </MudItem>
+</MudGrid>
+                    </MudCardContent>
+                </MudCard>
+                <MudCardActions>
+                    <MudFab ButtonType="ButtonType.Submit" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Label="Save" Disabled="@(!success)" Class="ml-auto" /> @*OnClick="@SaveDevice" />*@
+                </MudCardActions>
+            </EditForm>
         </MudItem>
 
     </MudGrid>
@@ -129,21 +160,53 @@
     [Parameter]
     public string DeviceID { get; set; }
 
-    public string DeviceState { get; set; }
-
     private DeviceListItem Device { get; set; } = new DeviceListItem();
+
+    private bool success = true;
+    private string[] errors = { };
+    private bool IsNew = false;
+
+    private string IsDeviceEnabled { get; set; }
+    private bool IsFieldDisabled { get; set; }
+    private string CustomClass { get; set; }
+    private string LastActivityDateString { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        try
+        if (DeviceID == "create")
         {
-            Device = await Http.GetFromJsonAsync<DeviceListItem>($"Devices/{DeviceID}");
-            DeviceState = Device.IsEnabled.ToString();
+            IsFieldDisabled = false;
+            CustomClass = string.Empty;
+            Device.DeviceID = "new_device";
+            IsNew = true;
+            IsDeviceEnabled = "";
         }
-        catch (AccessTokenNotAvailableException exception)
+        else
         {
-            exception.Redirect();
+            IsFieldDisabled = true;
+            CustomClass = "custom-disabled";
+
+            try
+            {
+                Device = await Http.GetFromJsonAsync<DeviceListItem>($"Devices/{DeviceID}");
+                IsDeviceEnabled = Device.IsEnabled.ToString();
+                LastActivityDateString = Device.LastActivityDate.ToString();
+            }
+            catch (AccessTokenNotAvailableException exception)
+            {
+                exception.Redirect();
+            }
+
         }
+
+    }
+
+    public async void SaveDevice()
+    {
+        // await Task.Delay(200);
+        //success = false;
+        // Console.WriteLine(Device.DeviceID);
+        await Http.PostAsJsonAsync<DeviceListItem>($"Devices/{IsNew}", Device);
     }
 }
 
