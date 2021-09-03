@@ -87,9 +87,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             var device = await this.registryManager.GetTwinAsync(deviceId);
             var query = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']");
             var query2 = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{deviceId}']");
-            var deviceWithModules = await query.GetNextAsTwinAsync();
-            var deviceWithClient = await query2.GetNextAsTwinAsync();
-            // var test = this.registryManager.GetConfigurationAsync();
+
             Gateway gateway = new Gateway();
 
             gateway.DeviceId = device.DeviceId;
@@ -112,46 +110,65 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 gateway.Environement = "unknow";
             }
 
-            // récupération des informations sur les clients connceté à la gateway
-            foreach (var item in deviceWithClient)
+            while (query2.HasMoreResults)
             {
-                if (item.Properties.Reported.Contains("clients") && item.DeviceId == deviceId)
+                var deviceWithClient = await query2.GetNextAsTwinAsync();
+                // récupération des informations sur les clients connceté à la gateway
+                foreach (var item in deviceWithClient)
                 {
-                    gateway.NbDevices = item.Properties.Reported["clients"].Count;
+                    if (item.Properties.Reported.Contains("clients") && item.DeviceId == deviceId)
+                    {
+                        gateway.NbDevices = item.Properties.Reported["clients"].Count;
+                    }
                 }
             }
 
-            // récupération des informations sur le modules de la gateways
-            foreach (var item in deviceWithModules)
+            while (query.HasMoreResults)
             {
-                if (item.Properties.Desired.Contains("modules") && item.DeviceId == deviceId)
+                var deviceWithModules = await query.GetNextAsTwinAsync();
+                // récupération des informations sur le modules de la gateways
+                foreach (var item in deviceWithModules)
                 {
-                    gateway.NbModule = item.Properties.Desired["modules"].Count;
-                }
-
-                if (gateway.NbModule > 0)
-                {
-                    foreach (var element in item.Properties.Reported["modules"])
+                    if (item.Properties.Desired.Contains("modules") && item.DeviceId == deviceId)
                     {
-                        var module = new GatewayModule();
-                        module.ModuleName = element.Key;
-                        if (element.Value.Contains("status"))
-                        {
-                            module.Status = element.Value["status"];
-                        }
+                        gateway.NbModule = item.Properties.Desired["modules"].Count;
+                    }
 
-                        if (element.Value.Contains("version"))
+                    if (item.Properties.Reported.Contains("systemModules") && item.DeviceId == deviceId)
+                    {
+                        foreach (var element in item.Properties.Reported["systemModules"])
                         {
-                            module.Version = element.Value["version"];
+                            if (element.Key == "edgeAgent")
+                            {
+                                gateway.RuntimeResponse = element.Value["runtimeStatus"];
+                            }
                         }
+                    }
 
-                        gateway.Modules.Add(module);
-                        // gateway.Modules.Add(new GatewayModule
-                        // {
-                        //    // ModuleName = element,
-                        //    Version = element["version"],
-                        //    Status = element["status"]
-                        // });
+                    if (gateway.NbModule > 0)
+                    {
+                        foreach (var element in item.Properties.Reported["modules"])
+                        {
+                            var module = new GatewayModule();
+                            module.ModuleName = element.Key;
+                            if (element.Value.Contains("status"))
+                            {
+                                module.Status = element.Value["status"];
+                            }
+
+                            if (element.Value.Contains("version"))
+                            {
+                                module.Version = element.Value["version"];
+                            }
+
+                            gateway.Modules.Add(module);
+                            // gateway.Modules.Add(new GatewayModule
+                            // {
+                            //    // ModuleName = element,
+                            //    Version = element["version"],
+                            //    Status = element["status"]
+                            // });
+                        }
                     }
                 }
             }
