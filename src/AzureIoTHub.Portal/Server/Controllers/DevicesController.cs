@@ -104,13 +104,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return result;
         }
 
-        [HttpPost("{isNew}")]
-        public async Task<DeviceListItem> Post(DeviceListItem device, bool isNew)
+        [HttpPost("{deviceID}")]
+        public async Task<DeviceListItem> Post(DeviceListItem device, string deviceID)
         {
             // await Task.Delay(1);
             // var test = new Device();
             // await this.registryManager.AddDeviceAsync(test);
-            if (isNew)
+            if (deviceID == "new")
             {
                 Device newDevice = new Device();
 
@@ -122,7 +122,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 await this.registryManager.AddDeviceWithTwinAsync(newDevice, newTwin);
 
                 var test = new DeviceListItem();
-                Console.WriteLine($"New device! {isNew.ToString()}");
+                Console.WriteLine($"New device! {deviceID}");
                 return test;
             }
             else
@@ -146,7 +146,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     ModelType = RetrieveTagValue(item, "modelType")
                 };
 
-                Console.WriteLine($"Test? {isNew.ToString()}");
+                Console.WriteLine($"Test? {deviceID}");
                 Console.WriteLine(result.AppEUI);
                 return result;
             }

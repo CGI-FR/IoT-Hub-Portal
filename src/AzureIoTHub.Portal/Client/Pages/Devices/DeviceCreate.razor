@@ -106,10 +106,10 @@
                                     <MudItem md="9" sm="12">
                                         <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled" Style="display:flex;align-items:baseline">
                                             <MudItem md="4" sm="12">
-                                                <MudRadio Option="@(1)" Color="Color.Primary">Enabled</MudRadio>
+                                                <MudRadio Option="@(true)" Color="Color.Primary">Enabled</MudRadio>
                                             </MudItem>
                                             <MudItem md="4" sm="12">
-                                                <MudRadio Option="@(0)" Color="Color.Primary">Disabled</MudRadio>
+                                                <MudRadio Option="@(false)" Color="Color.Primary">Disabled</MudRadio>
                                             </MudItem>
                                         </MudRadioGroup>
                                     </MudItem>
@@ -142,14 +142,11 @@
     private bool success = true;
     private string[] errors = { };
 
-    string CustomClass = string.Empty;
-
     public async void SaveDevice()
     {
         await Task.Delay(200);
-        //success = false;
-        // Console.WriteLine(Device.DeviceID);
-        // await Http.PostAsJsonAsync<DeviceListItem>($"Devices/{IsNew}", Device);
+        Console.WriteLine(Device.DeviceID);
+        await Http.PostAsJsonAsync<DeviceListItem>($"Devices/new", Device);
     }
 }
 
