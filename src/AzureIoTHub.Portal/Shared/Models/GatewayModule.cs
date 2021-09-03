@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Shared.Models
     {
         public string ModuleName { get; set; }
 
-        public long Version { get; set; }
+        public string Version { get; set; }
 
         public string Status { get; set; }
     }
