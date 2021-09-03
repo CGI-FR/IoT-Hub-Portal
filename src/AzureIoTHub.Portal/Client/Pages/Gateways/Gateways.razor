@@ -8,14 +8,15 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<div class="container-fluid">
-    <div class="">
-        @if (result == null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
+
+@if (result == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.False">
+        <MudGrid>
             <div class="search-panel">
                 <MudItem xs="12">
                     <MudCard>
@@ -63,31 +64,54 @@
                 </MudItem>
             </div>
 
+            <MudItem xs="12">
+                <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<GatewayListItem, bool>(FilterFunc)">
+                    <ColGroup>
+                        <col style="width: 50%;" />
+                        <col style="width: 10%;" />
+                        <col style="width: 20%;" />
+                        <col style="width: 10%;" />
+                        <col style="width: 10%;" />
+                    </ColGroup>
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Devices</MudText>
+                        <MudSpacer />
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>ID</MudTh>
+                        <MudTh Style="text-align: center">Status</MudTh>
+                        <MudTh Style="text-align: center">Type</MudTh>
+                        <MudTh Style="text-align: center">Nb Device</MudTh>
+                        <MudTh Style="text-align: center">See details</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Device" Style="word-break: break-all;">
+                            <a href="/gateways/details/@context.DeviceId">@context.DeviceId</a>
+                        </MudTd>
 
-            <MudTable Items="@result" Hover="true" SortLabel="Sort By" Filter="new Func<GatewayListItem, bool>(FilterFunc)">
-                <HeaderContent>
-                    <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<GatewayListItem, object>(x=>x.DeviceId)">ID</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<GatewayListItem, object>(x=>x.Type)">Type</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<GatewayListItem, object>(x=>x.NbDevices)">Nb Device</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<GatewayListItem, object>(x=>x.Status)">Status</MudTableSortLabel></MudTh>
-                    <MudTh>  </MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="DeviceId" Style="word-break: break-all;"><a href="/gateways/details/@context.DeviceId">@context.DeviceId</a></MudTd>
-                    <MudTd DataLabel="Type">@context.Type</MudTd>
-                    <MudTd DataLabel="NbDevices">@context.NbDevices</MudTd>
-                    <MudTd DataLabel="Status">@context.Status</MudTd>
-                    <MudTd DataLabel="detail"> <MudButton Variant="Variant.Outlined" OnClick="@(() => RedirectToDetail(context.DeviceId))">détail</MudButton></MudTd>
-                </RowTemplate>
-                <PagerContent>
-                    <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
-                </PagerContent>
-            </MudTable>
-
+                        <MudTd DataLabel="Status" Style="text-align: center">
+                            @if (context.Status == "Enabled")
+                                {
+                                <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" /> }
+                                else
+                                {
+                                <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />}
+                        </MudTd>
+                        <MudTd DataLabel="Type">@context.Type</MudTd>
+                        <MudTd DataLabel="NbDevices">@context.NbDevices</MudTd>
+                        <MudTd DataLabel="Details" Style="text-align: center">
+                            <a href="/gateways/details/@context.DeviceId"><MudIcon Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+                    </PagerContent>
+                </MudTable>
+            </MudItem>
             <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary">Add</MudButton>
-        }
-    </div>
-</div>
+        </MudGrid>
+    </MudContainer>
+}
 
 
 

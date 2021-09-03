@@ -15,7 +15,7 @@ namespace AzureIoTHub.Portal.Shared.Models
 
         public string Type { get; set; }
 
-        public bool Status { get; set; }
+        public string Status { get; set; }
 
         public string RuntimeResponse { get; set; }
 
@@ -25,6 +25,11 @@ namespace AzureIoTHub.Portal.Shared.Models
 
         public string Environement { get; set; }
 
-        public IEnumerable<GatewayModule> Modules { get; set; }
+        public List<GatewayModule> Modules { get; set; }
+
+        public Gateway()
+        {
+            this.Modules = new List<GatewayModule>();
+        }
     }
 }
