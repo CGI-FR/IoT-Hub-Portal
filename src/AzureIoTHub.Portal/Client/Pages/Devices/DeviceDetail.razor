@@ -88,13 +88,12 @@
                                         <MudText>Status : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        @*<MudRadioGroup @bind-SelectedOption="@IsDeviceEnabled" Style="display:flex;align-items:baseline">*@
-                                        <MudRadioGroup @bind-SelectedOption="@IsDeviceEnabled" Class="custom-form">
+                                        <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled" Class="custom-form">
                                             <MudItem md="4" sm="12">
-                                                <MudRadio Option="@("true")" Color="Color.Primary">Enabled</MudRadio>
+                                                <MudRadio Option="@(true)" Color="Color.Primary">Enabled</MudRadio>
                                             </MudItem>
                                             <MudItem md="4" sm="12">
-                                                <MudRadio Option="@("false")" Color="Color.Primary">Disabled</MudRadio>
+                                                <MudRadio Option="@(false)" Color="Color.Primary">Disabled</MudRadio>
                                             </MudItem>
                                         </MudRadioGroup>
                                     </MudItem>
@@ -144,8 +143,6 @@
     private DeviceListItem Device { get; set; } = new DeviceListItem();
 
     private bool success = true;
-
-    private string IsDeviceEnabled { get; set; }
     private string LastActivityDateString { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -153,7 +150,6 @@
         try
         {
             Device = await Http.GetFromJsonAsync<DeviceListItem>($"Devices/{DeviceID}");
-            IsDeviceEnabled = Device.IsEnabled.ToString();
             LastActivityDateString = Device.LastActivityDate.ToString();
         }
         catch (AccessTokenNotAvailableException exception)
@@ -164,10 +160,9 @@
 
     public async void SaveDevice()
     {
-        await Task.Delay(200);
-        //success = false;
-        // Console.WriteLine(Device.DeviceID);
-        // await Http.PostAsJsonAsync<DeviceListItem>($"Devices/{IsNew}", Device);
+        Console.WriteLine(Device.DeviceID);
+        await Http.PostAsJsonAsync<DeviceListItem>($"Devices/update", Device);
+
     }
 }
 

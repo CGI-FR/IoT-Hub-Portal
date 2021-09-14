@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
@@ -107,49 +108,50 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpPost("{deviceID}")]
         public async Task<DeviceListItem> Post(DeviceListItem device, string deviceID)
         {
-            // await Task.Delay(1);
-            // var test = new Device();
-            // await this.registryManager.AddDeviceAsync(test);
             if (deviceID == "new")
             {
-                Device newDevice = new Device();
-
                 Twin newTwin = new Twin
                 {
-                    DeviceId = "newDevice"
+                    DeviceId = device.DeviceID,
                 };
 
-                await this.registryManager.AddDeviceWithTwinAsync(newDevice, newTwin);
+                newTwin.Tags["locationCode"] = device.LocationCode;
+                newTwin.Tags["deviceType"] = device.DeviceType;
+                newTwin.Tags["modelType"] = device.ModelType;
+                newTwin.Tags["assetID"] = device.AssetID;
+                newTwin.Properties.Desired["AppEUI"] = device.AppEUI;
+                newTwin.Properties.Desired["AppKey"] = device.AppKey;
 
-                var test = new DeviceListItem();
-                Console.WriteLine($"New device! {deviceID}");
-                return test;
+                try
+                {
+                    await this.registryManager.AddDeviceWithTwinAsync(new Device(device.DeviceID), newTwin);
+                }
+                catch (DeviceAlreadyExistsException)
+                {
+                    // newDevice = await this.registryManager.GetDeviceAsync(deviceId);
+                    Console.WriteLine("ERRORERRORERROR");
+                }
+
+                // Console.WriteLine("Generated device key: {0}", newDevice.Authentication.SymmetricKey.PrimaryKey);
             }
             else
             {
                 Twin currentTwin = await this.registryManager.GetTwinAsync(device.DeviceID);
-
-                // await this.registryManager.ReplaceTwinAsync(device.DeviceID, newTwin, "etag");
-                var item = await this.registryManager.GetTwinAsync(device.DeviceID);
-
-                var result = new DeviceListItem
-                {
-                    DeviceID = item.DeviceId,
-                    IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
-                    IsEnabled = item.Status == DeviceStatus.Enabled,
-                    LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
-                    AppEUI = RetrievePropertyValue(item, "AppEUI"),
-                    AppKey = RetrievePropertyValue(item, "AppKey"),
-                    LocationCode = RetrieveTagValue(item, "locationCode"),
-                    AssetID = RetrieveTagValue(item, "assetID"),
-                    DeviceType = RetrieveTagValue(item, "deviceType"),
-                    ModelType = RetrieveTagValue(item, "modelType")
-                };
-
-                Console.WriteLine($"Test? {deviceID}");
-                Console.WriteLine(result.AppEUI);
-                return result;
+                currentTwin.Tags["locationCode"] = device.LocationCode;
+                currentTwin.Tags["assetID"] = device.AssetID;
+                currentTwin.Properties.Desired["AppEUI"] = device.AppEUI;
+                currentTwin.Properties.Desired["AppKey"] = device.AppKey;
+                // currentTwin.Status = device.IsEnabled;
+                Twin twin = await this.registryManager.ReplaceTwinAsync(device.DeviceID, currentTwin, currentTwin.ETag);
             }
+
+            // Statut du device (enabled/disabled)
+            Device currentDevice = await this.registryManager.GetDeviceAsync(device.DeviceID);
+            currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+            await this.registryManager.UpdateDeviceAsync(currentDevice);
+
+            var test = new DeviceListItem();
+            return test;
         }
     }
 }
