@@ -4,6 +4,8 @@
 @using AzureIoTHub.Portal.Shared
 @attribute [Authorize]
 @inject HttpClient Http
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
@@ -129,6 +131,7 @@
                 </MudCard>
                 <MudCardActions>
                     <MudFab ButtonType="ButtonType.Submit" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Label="Save" Disabled="@(!success)" Class="ml-auto" />
+                    <MudFab Color="Color.Dark" Icon="@Icons.Material.Filled.Delete" Label="Delete" OnClick="DeleteDevice" />
                 </MudCardActions>
             </EditForm>
         </MudItem>
@@ -162,7 +165,28 @@
     {
         Console.WriteLine(Device.DeviceID);
         await Http.PostAsJsonAsync<DeviceListItem>($"Devices/update", Device);
+        Snackbar.Add("Modification OK", Severity.Success);
+    }
 
+    //public async void DeleteDevice()
+    //{
+    //    // await Task.Delay(300);
+    //    await Http.PostAsJsonAsync<DeviceListItem>($"Devices/delete", Device);
+    //    Snackbar.Add("Suppression OK", Severity.Success);
+    //}
+
+    private async Task DeleteDevice()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("device", Device);
+        var result = await DialogService.Show<DeviceDelete>("Simple Dialog", parameters).Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+        await Task.Delay(1); //Remplacer par redirection
     }
 }
 

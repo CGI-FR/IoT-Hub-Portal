@@ -4,6 +4,7 @@
 @using AzureIoTHub.Portal.Shared
 @attribute [Authorize]
 @inject HttpClient Http
+@inject IDialogService DialogService
 
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
@@ -85,10 +86,11 @@
         <MudItem xs="12">
             <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<DeviceListItem, bool>(FilterFunc1)">
                 <ColGroup>
-                    <col style="width: 50%;" />
+                    <col style="width: 45%;" />
                     <col style="width: 10%;" />
                     <col style="width: 10%;" />
-                    <col style="width: 20%;" />
+                    <col style="width: 15%;" />
+                    <col style="width: 10%;" />
                     <col style="width: 10%;" />
                 </ColGroup>
                 <ToolBarContent>
@@ -101,6 +103,7 @@
                     <MudTh Style="text-align: center">Connection state</MudTh>
                     <MudTh Style="text-align: center">Last activity time</MudTh>
                     <MudTh Style="text-align: center">See details</MudTh>
+                    <MudTh Style="text-align: center">Delete</MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Device" Style="word-break: break-all;">
@@ -129,7 +132,10 @@
                     </MudTd>
                     <MudTd DataLabel="LAT" Style="text-align: center">@context.LastActivityDate</MudTd>
                     <MudTd DataLabel="Details" Style="text-align: center">
-                        <a href="devicedetail/@context.DeviceID"><MudIcon Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                        <a href="devicedetail/@context.DeviceID"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                    </MudTd>
+                    <MudTd DataLabel="Delete" Style="text-align: center">
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDevice(context))"></MudIconButton>
                     </MudTd>
                 </RowTemplate>
                 <PagerContent>
@@ -157,6 +163,11 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadDevices();
+    }
+
+    private async Task LoadDevices()
+    {
         try
         {
             result = await Http.GetFromJsonAsync<DeviceListItem[]>("Devices");
@@ -176,6 +187,20 @@
         searchAppEUI = "";
         searchAppKey = "";
 
+    }
+
+    private async Task DeleteDevice(DeviceListItem device)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("device", device);
+        var result = await DialogService.Show<DeviceDelete>("Simple Dialog", parameters).Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+        await LoadDevices();
     }
 
     private bool FilterFunc1(DeviceListItem item) => FilterFunc(item, searchString1, searchStatus1, searchState1);
