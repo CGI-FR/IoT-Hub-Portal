@@ -6,6 +6,7 @@
 @inject HttpClient Http
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
+@inject NavigationManager NavManager
 
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
@@ -166,14 +167,8 @@
         Console.WriteLine(Device.DeviceID);
         await Http.PostAsJsonAsync<DeviceListItem>($"Devices/update", Device);
         Snackbar.Add("Modification OK", Severity.Success);
+        NavManager.NavigateTo("devices");
     }
-
-    //public async void DeleteDevice()
-    //{
-    //    // await Task.Delay(300);
-    //    await Http.PostAsJsonAsync<DeviceListItem>($"Devices/delete", Device);
-    //    Snackbar.Add("Suppression OK", Severity.Success);
-    //}
 
     private async Task DeleteDevice()
     {
@@ -186,7 +181,7 @@
             return;
         }
 
-        await Task.Delay(1); //Remplacer par redirection
+        NavManager.NavigateTo("devices");
     }
 }
 

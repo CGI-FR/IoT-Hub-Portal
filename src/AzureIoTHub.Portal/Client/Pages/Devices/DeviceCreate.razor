@@ -5,6 +5,7 @@
 @attribute [Authorize]
 @inject HttpClient Http
 @inject ISnackbar Snackbar
+@inject NavigationManager NavManager
 
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
@@ -139,6 +140,8 @@
         Console.WriteLine(Device.DeviceID);
         await Http.PostAsJsonAsync<DeviceListItem>($"Devices/create", Device);
         Snackbar.Add("Creation OK", Severity.Success);
+        NavManager.NavigateTo("devices");
+
     }
 }
 
