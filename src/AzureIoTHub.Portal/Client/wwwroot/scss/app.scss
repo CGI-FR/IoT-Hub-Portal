@@ -1,3 +1,4 @@
+<<<<<<< src/AzureIoTHub.Portal/Client/wwwroot/scss/app.scss
 ﻿@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
 
 .custom-form {
@@ -7,4 +8,30 @@
 
 .custom-disabled{
     background-color : #e2e2e2;
+}
+﻿.search-panel {
+    max-width: 70%;
+    padding: 0px 50px 25px 50px;
+    margin: 0px 0px 0px 200px;
+
+    .form-group {
+        display: flex;
+        align-items: baseline;
+        max-width: 50%;
+    }
+}
+
+.mud-input-control {
+    max-width: 70%;
+    padding-left: 30px;
+}
+
+.mud-grid-spacing-xs-3 {
+    display: contents;
+}
+.mud-input-control > .mud-input-control-input-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 150px;
 }
