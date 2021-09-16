@@ -21,11 +21,11 @@
                 <MudCardContent>
                     <MudGrid>
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                            <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                         </MudItem>
                         <MudItem xs="6">
                             <MudText>Status : </MudText>
-                            <MudRadioGroup @bind-SelectedOption="@searchStatus1" Style="display:flex;align-items:baseline">
+                            <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline">
                                 <MudItem md="4" sm="12">
                                     <MudRadio Option="@("true")" Color="Color.Primary">Enabled</MudRadio>
                                 </MudItem>
@@ -38,7 +38,7 @@
                             </MudRadioGroup>
                             <MudDivider />
                             <MudText>Connection state : </MudText>
-                            <MudRadioGroup @bind-SelectedOption="@searchState1" Style="display:flex;align-items:baseline">
+                            <MudRadioGroup @bind-SelectedOption="@searchState" Style="display:flex;align-items:baseline">
                                 <MudItem md="4" sm="12">
                                     <MudRadio Option="@("true")" Color="Color.Primary">Connected</MudRadio>
                                 </MudItem>
@@ -83,7 +83,7 @@
         </MudItem>
 
         <MudItem xs="12">
-            <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<DeviceListItem, bool>(FilterFunc1)">
+            <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<DeviceListItem, bool>(FilterFunc)">
                 <ColGroup>
                     <col style="width: 45%;" />
                     <col style="width: 10%;" />
@@ -96,7 +96,6 @@
                     <MudText Typo="Typo.h6">Devices</MudText>
                     <MudSpacer />
                     <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadDevices" Class="ma-2"></MudIconButton>
-                    @*<MudFab Color="Color.Default" Icon="@Icons.Material.Filled.Refresh" Label="Reload" OnClick="LoadDevices" />*@
                 </ToolBarContent>
                 <HeaderContent>
                     <MudTh>Device</MudTh>
@@ -152,9 +151,9 @@
 
 @code {
     private DeviceListItem[] result;
-    private string searchString1 = "";
-    private string searchStatus1 = "";
-    private string searchState1 = "";
+    private string searchString = "";
+    private string searchStatus = "";
+    private string searchState = "";
     private string searchLocation = "";
     private string searchAppEUI = "";
     private string searchAppKey = "";
@@ -169,7 +168,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-            await LoadDevices();
+        await LoadDevices();
     }
 
     private async Task LoadDevices()
@@ -186,9 +185,9 @@
 
     private void Reset()
     {
-        searchString1 = "";
-        searchStatus1 = "";
-        searchState1 = "";
+        searchString = "";
+        searchStatus = "";
+        searchState = "";
         searchLocation = "";
         searchAppEUI = "";
         searchAppKey = "";
@@ -209,9 +208,7 @@
         await LoadDevices();
     }
 
-    private bool FilterFunc1(DeviceListItem item) => FilterFunc(item, searchString1, searchStatus1, searchState1);
-
-    private bool FilterFunc(DeviceListItem item, string searchString, string searchStatus, string searchState)
+    private bool FilterFunc(DeviceListItem item)
     {
         bool flagName = string.IsNullOrWhiteSpace(searchString) || item.DeviceID.Contains(searchString, StringComparison.OrdinalIgnoreCase);
         bool flagStatus = string.IsNullOrWhiteSpace(searchStatus) || item.IsEnabled.ToString().Contains(searchStatus, StringComparison.OrdinalIgnoreCase);
