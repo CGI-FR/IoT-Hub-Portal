@@ -4,7 +4,7 @@
 @using AzureIoTHub.Portal.Shared
 @attribute [Authorize]
 @inject HttpClient Http
-
+@inject IDialogService DialogService
 
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
@@ -16,58 +16,86 @@
                     </CardHeaderContent>
                     <CardHeaderActions>
                         <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="Reset">Reset</MudButton>
-                        @*<MudIconButton Icon="@Icons.Material.Filled" Color="Color.Default" />*@
                     </CardHeaderActions>
                 </MudCardHeader>
                 <MudCardContent>
                     <MudGrid>
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+                            <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                         </MudItem>
-
                         <MudItem xs="6">
-
-                            <MudRadioGroup @bind-SelectedOption="@searchStatus1">
-                                <MudText>Status : </MudText>
-                                <MudRadio Option="@("true")" Color="Color.Primary">Enabled</MudRadio>
-                                <MudRadio Option="@("false")" Color="Color.Primary">Disabled</MudRadio>
-                                <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
+                            <MudText>Status : </MudText>
+                            <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline">
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option="@("true")" Color="Color.Primary">Enabled</MudRadio>
+                                </MudItem>
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option="@("false")" Color="Color.Primary">Disabled</MudRadio>
+                                </MudItem>
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
+                                </MudItem>
                             </MudRadioGroup>
-
+                            <MudDivider />
                             <MudText>Connection state : </MudText>
-
-                            <MudRadioGroup @bind-SelectedOption="@searchState1">
-                                <MudRadio Option="@("true")" Color="Color.Primary">Connected</MudRadio>
-                                <MudRadio Option="@("false")" Color="Color.Primary">Disconnected</MudRadio>
-                                <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
+                            <MudRadioGroup @bind-SelectedOption="@searchState" Style="display:flex;align-items:baseline">
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option="@("true")" Color="Color.Primary">Connected</MudRadio>
+                                </MudItem>
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option="@("false")" Color="Color.Primary">Disconnected</MudRadio>
+                                </MudItem>
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
+                                </MudItem>
                             </MudRadioGroup>
                         </MudItem>
 
-                        <MudItem xs="6">
-                            <MudTextField @bind-Value="searchLocation" Placeholder="Location"></MudTextField>
-                            <MudTextField @bind-Value="searchAppEUI" Placeholder="AppEUI"></MudTextField>
-                            <MudTextField @bind-Value="searchAppKey" Placeholder="AppKey"></MudTextField>
-
+                        <MudItem xs=6>
+                            <MudItem xs="12" Class="custom-form">
+                                <MudItem md="2" sm="12">
+                                    <MudText>Location : </MudText>
+                                </MudItem>
+                                <MudItem md="10" sm="12">
+                                    <MudTextField @bind-Value="searchLocation" Placeholder="Location" Margin="Margin.Dense"></MudTextField>
+                                </MudItem>
+                            </MudItem>
+                            <MudItem xs="12" Class="custom-form">
+                                <MudItem md="2" sm="12">
+                                    <MudText>AppEUI : </MudText>
+                                </MudItem>
+                                <MudItem md="10" sm="12" Class="custom-form">
+                                    <MudTextField @bind-Value="searchAppEUI" Placeholder="AppEUI" Margin="Margin.Dense"></MudTextField>
+                                </MudItem>
+                            </MudItem>
+                            <MudItem xs="12" Class="custom-form">
+                                <MudItem md="2" sm="12">
+                                    <MudText>AppKey : </MudText>
+                                </MudItem>
+                                <MudItem md="10" sm="12">
+                                    <MudTextField @bind-Value="searchAppKey" Placeholder="AppKey" Margin="Margin.Dense"></MudTextField>
+                                </MudItem>
+                            </MudItem>
                         </MudItem>
-
                     </MudGrid>
                 </MudCardContent>
             </MudCard>
         </MudItem>
 
         <MudItem xs="12">
-            <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<DeviceListItem, bool>(FilterFunc1)">
-
+            <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<DeviceListItem, bool>(FilterFunc)">
                 <ColGroup>
-                    <col style="width: 50%;" />
+                    <col style="width: 45%;" />
                     <col style="width: 10%;" />
                     <col style="width: 10%;" />
-                    <col style="width: 20%;" />
+                    <col style="width: 15%;" />
+                    <col style="width: 10%;" />
                     <col style="width: 10%;" />
                 </ColGroup>
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Devices</MudText>
                     <MudSpacer />
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadDevices" Class="ma-2"></MudIconButton>
                 </ToolBarContent>
                 <HeaderContent>
                     <MudTh>Device</MudTh>
@@ -75,28 +103,57 @@
                     <MudTh Style="text-align: center">Connection state</MudTh>
                     <MudTh Style="text-align: center">Last activity time</MudTh>
                     <MudTh Style="text-align: center">See details</MudTh>
+                    <MudTh Style="text-align: center">Delete</MudTh>
                 </HeaderContent>
                 <RowTemplate>
-                    <MudTd DataLabel="Device" Style="word-break: break-all;">@context.DeviceID</MudTd>
-                    <MudTd DataLabel="Status" Style="text-align: center"><MudSwitch Class="mx-0" @bind-Checked="@context.IsEnabled" Color="Color.Info" ReadOnly=true /></MudTd>
-                    <MudTd DataLabel="Connection" Style="text-align: center">@context.IsConnected</MudTd>
+                    <MudTd DataLabel="Device" Style="word-break: break-all;">
+                        <a href="devicedetail/@context.DeviceID">@context.DeviceID</a>
+                    </MudTd>
+
+                    <MudTd DataLabel="Status" Style="text-align: center">
+                        @if (context.IsEnabled)
+                        {
+                            <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                        }
+                        else
+                        {
+                            <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                        }
+                    </MudTd>
+                    <MudTd DataLabel="Connection" Style="text-align: center">
+                        @if (context.IsConnected)
+                        {
+                            <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
+                        }
+                        else
+                        {
+                            <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
+                        }
+                    </MudTd>
                     <MudTd DataLabel="LAT" Style="text-align: center">@context.LastActivityDate</MudTd>
-                    <MudTd DataLabel="Details" Style="text-align: center">@context.AppEUI @context.AppKey @context.LocationCode</MudTd>
+                    <MudTd DataLabel="Details" Style="text-align: center">
+                        <a href="devicedetail/@context.DeviceID"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                    </MudTd>
+                    <MudTd DataLabel="Delete" Style="text-align: center">
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDevice(context))"></MudIconButton>
+                    </MudTd>
                 </RowTemplate>
                 <PagerContent>
                     <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
                 </PagerContent>
             </MudTable>
         </MudItem>
+        <MudItem xs="12">
+            <a href="devicecreate"><MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add a new device" /></a>
+        </MudItem>
     </MudGrid>
-
-   
 </MudContainer>
+
 @code {
     private DeviceListItem[] result;
-    private string searchString1 = "";
-    private string searchStatus1 = "";
-    private string searchState1 = "";
+    private string searchString = "";
+    private string searchStatus = "";
+    private string searchState = "";
     private string searchLocation = "";
     private string searchAppEUI = "";
     private string searchAppKey = "";
@@ -105,6 +162,16 @@
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
 
     protected override async Task OnInitializedAsync()
+    {
+        await LoadDevices();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await LoadDevices();
+    }
+
+    private async Task LoadDevices()
     {
         try
         {
@@ -118,18 +185,30 @@
 
     private void Reset()
     {
-        searchString1 = "";
-        searchStatus1 = "";
-        searchState1 = "";
+        searchString = "";
+        searchStatus = "";
+        searchState = "";
         searchLocation = "";
         searchAppEUI = "";
         searchAppKey = "";
 
     }
 
-    private bool FilterFunc1(DeviceListItem item) => FilterFunc(item, searchString1, searchStatus1, searchState1);
+    private async Task DeleteDevice(DeviceListItem device)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("device", device);
+        var result = await DialogService.Show<DeviceDelete>("Confirm Deletion", parameters).Result;
 
-    private bool FilterFunc(DeviceListItem item, string searchString, string searchStatus, string searchState)
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+        await LoadDevices();
+    }
+
+    private bool FilterFunc(DeviceListItem item)
     {
         bool flagName = string.IsNullOrWhiteSpace(searchString) || item.DeviceID.Contains(searchString, StringComparison.OrdinalIgnoreCase);
         bool flagStatus = string.IsNullOrWhiteSpace(searchStatus) || item.IsEnabled.ToString().Contains(searchStatus, StringComparison.OrdinalIgnoreCase);

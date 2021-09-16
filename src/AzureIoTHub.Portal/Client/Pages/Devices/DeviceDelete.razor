@@ -1,0 +1,38 @@
+﻿@using AzureIoTHub.Portal.Shared
+@inject HttpClient Http
+@inject IJSRuntime JS
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <p>Delete @device.DeviceID ?</p>
+        <br />
+        <p><i><p>Warning : this cannot  be undone.</p></i></p>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="DeleteDevice">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public DeviceListItem device { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+    private async Task DeleteDevice()
+    {
+        var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/delete", device);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Oh oh, something went wrong while deleting device {device.DeviceID}... ", Severity.Error);
+            return;
+        }
+
+        Snackbar.Add($"Device {device.DeviceID} has been successfully deleted!", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}
