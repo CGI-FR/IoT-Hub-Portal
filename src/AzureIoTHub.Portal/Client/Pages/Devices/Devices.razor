@@ -198,7 +198,7 @@
     {
         var parameters = new DialogParameters();
         parameters.Add("device", device);
-        var result = await DialogService.Show<DeviceDelete>("Simple Dialog", parameters).Result;
+        var result = await DialogService.Show<DeviceDelete>("Confirm Deletion", parameters).Result;
 
         if (result.Cancelled)
         {

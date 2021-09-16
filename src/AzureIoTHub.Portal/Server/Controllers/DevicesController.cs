@@ -106,10 +106,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
         }
 
         [HttpPost("{actionToPerform}")]
-        public async Task<DeviceListItem> Post(DeviceListItem device, string actionToPerform)
+        public async Task Post(DeviceListItem device, string actionToPerform)
         {
-            Console.WriteLine(actionToPerform);
-
             if (actionToPerform == "delete")
             {
                 await this.registryManager.RemoveDeviceAsync(device.DeviceID);
@@ -155,10 +153,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
                 await this.registryManager.UpdateDeviceAsync(currentDevice);
             }
-
-            // Probleme de type de retour à résoudre
-            var test = new DeviceListItem();
-            return test;
         }
     }
 }

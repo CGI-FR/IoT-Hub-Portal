@@ -166,7 +166,7 @@
     {
         Console.WriteLine(Device.DeviceID);
         await Http.PostAsJsonAsync<DeviceListItem>($"Devices/update", Device);
-        Snackbar.Add("Modification OK", Severity.Success);
+        Snackbar.Add($"Device {Device.DeviceID} has been successfully updated!", Severity.Success);
         NavManager.NavigateTo("devices");
     }
 
@@ -174,7 +174,7 @@
     {
         var parameters = new DialogParameters();
         parameters.Add("device", Device);
-        var result = await DialogService.Show<DeviceDelete>("Simple Dialog", parameters).Result;
+        var result = await DialogService.Show<DeviceDelete>("Confirm Deletion", parameters).Result;
 
         if (result.Cancelled)
         {

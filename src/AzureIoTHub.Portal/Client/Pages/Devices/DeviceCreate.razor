@@ -137,9 +137,8 @@
 
     public async void SaveDevice()
     {
-        Console.WriteLine(Device.DeviceID);
         await Http.PostAsJsonAsync<DeviceListItem>($"Devices/create", Device);
-        Snackbar.Add("Creation OK", Severity.Success);
+        Snackbar.Add($"Device {Device.DeviceID} has been successfully created!", Severity.Success);
         NavManager.NavigateTo("devices");
 
     }

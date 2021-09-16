@@ -5,11 +5,13 @@
 
 <MudDialog>
     <DialogContent>
-        Supprimer @device.DeviceID
+        <p>Delete @device.DeviceID ?</p>
+        <br />
+        <p><i><p>Warning : this cannot  be undone.</p></i></p>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="DeleteDeviceTmp">Ok</MudButton>
+        <MudButton Color="Color.Primary" OnClick="DeleteDevice">Delete</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -20,13 +22,12 @@
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
 
-    private async Task DeleteDeviceTmp()
+    private async Task DeleteDevice()
     {
         var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/delete", device);
 
         if (!response.IsSuccessStatusCode)
         {
-            Console.WriteLine("ERROR");
             Snackbar.Add($"Oh oh, something went wrong while deleting device {device.DeviceID}... ", Severity.Error);
             return;
         }
