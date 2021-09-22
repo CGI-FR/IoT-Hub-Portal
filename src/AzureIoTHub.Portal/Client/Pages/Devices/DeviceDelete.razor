@@ -1,4 +1,4 @@
-﻿@using AzureIoTHub.Portal.Shared
+﻿@using AzureIoTHub.Portal.Shared.Models
 @inject HttpClient Http
 @inject IJSRuntime JS
 @inject ISnackbar Snackbar
@@ -7,7 +7,7 @@
     <DialogContent>
         <p>Delete @device.DeviceID ?</p>
         <br />
-        <p><i><p>Warning : this cannot  be undone.</p></i></p>
+        <p><i>Warning : this cannot  be undone.</i></p>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
