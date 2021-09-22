@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Linq;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Filters;
-    using AzureIoTHub.Portal.Shared;
+    using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
