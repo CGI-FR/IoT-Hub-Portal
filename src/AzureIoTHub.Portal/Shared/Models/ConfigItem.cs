@@ -9,12 +9,17 @@ namespace AzureIoTHub.Portal.Shared.Models
     using System.Text;
     using System.Threading.Tasks;
 
-    public class GatewayModule
+    public class ConfigItem
     {
-        public string ModuleName { get; set; }
+        public string Name { get; set; }
 
-        public string Version { get; set; }
+        public DateTime DateCreation { get; set; }
 
         public string Status { get; set; }
+
+        public ConfigItem()
+        {
+            this.DateCreation = new DateTime(1999, 1, 1);
+        }
     }
 }

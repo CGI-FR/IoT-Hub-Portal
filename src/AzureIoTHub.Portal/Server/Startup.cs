@@ -74,6 +74,11 @@ namespace AzureIoTHub.Portal.Server
 
             services.AddTransient(t =>
             {
+                return ServiceClient.CreateFromConnectionString(t.GetService<IConfiguration>()["IoTHub:ConnectionString"]);
+            });
+
+            services.AddTransient(t =>
+            {
                 return ProvisioningServiceClient.CreateFromConnectionString(t.GetService<IConfiguration>()["IoTDPS:ConnectionString"]);
             });
 

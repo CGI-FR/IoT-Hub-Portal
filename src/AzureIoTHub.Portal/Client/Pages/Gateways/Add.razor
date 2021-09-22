@@ -1,8 +1,21 @@
 ﻿@page "/gateways/add"
 @using Microsoft.AspNetCore.Authorization
+@using Blazored.Modal
+@using Blazored.Modal.Services
+
+@inject HttpClient Http
+@inject IJSRuntime JS
 
 <h3>Add</h3>
+<EditForm OnInvalidSubmit="OnValidation">
+
+</EditForm>
 
 @code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
 
+    private void OnValidation()
+    {
+
+    }
 }

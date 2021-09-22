@@ -29,9 +29,72 @@
 .mud-grid-spacing-xs-3 {
     display: contents;
 }
+
 .mud-input-control > .mud-input-control-input-container {
     position: relative;
     display: flex;
     flex-direction: column;
     width: 150px;
+}
+
+/*.mud-container {
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 16px;
+    padding-right: 16px;
+}*/
+
+.mud-button-filled.mud-button-filled-dark:hover {
+    background-color: var(--mud-palette-dark-darken);
+    color: black;
+}
+
+.card-detail {
+    width: 90%;
+    /* margin-right: 20px; */
+    /*margin-left: 150px;*/
+
+    .content-box {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+
+        .contentCardItem {
+            padding: 20px;
+
+                .content-item {
+                    display: flex;
+                }
+
+                .last-deployment {
+                    background: gainsboro;
+                    width: 60%;
+                }
+        }
+
+        .form-group {
+            display: flex;
+            align-items: baseline;
+            padding: 10px;
+
+            label {
+                padding: 5px;
+            }
+        }
+    }
+}
+
+.connectionString-modal-card {
+    .form-group {
+        align-items: baseline;
+        margin: 10px;
+        width:max-content;
+
+        label {
+            padding-right: 2px;
+        }
+    }
 }
