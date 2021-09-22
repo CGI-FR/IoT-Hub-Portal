@@ -3,16 +3,18 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Shared.Models
 @using System.Net.Http.Json
+@using Blazored.Modal
+@using Blazored.Modal.Services
 
 @attribute [Authorize]
-@inject HttpClient Http
 @inject IJSRuntime JS7
+@inject HttpClient Http
+@inject IModalService modal
 
-<h3>Detail parametre: @result.DeviceId</h3>
 
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
-        <MudItem xs="12">
+        <div xs="12" class="card-detail">
             <MudCard>
                 <MudCardHeader>
                     <CardHeaderContent>
@@ -21,50 +23,95 @@
                 </MudCardHeader>
                 <MudCardContent>
                     <MudGrid>
-                        <MudItem xs="12">
-                            <MudText><span>Name : </span>  @result.DeviceId</MudText>
-                        </MudItem>
-                        <MudItem xs="12">
-                            <MudText><span>Type : </span>  @result.Type</MudText>
-                        </MudItem>
-                        <MudItem xs="12" Class="form-group">
-                            <MudText>
-                                <span>Environement : </span>
-                                <MudSelect T="string">
-                                    <MudSelectItem Value="@("Dev")">Dev</MudSelectItem>
-                                    <MudSelectItem Value="@("Prod")">Prod</MudSelectItem>
-                                    <MudSelectItem Value="@("Indus")">Indus</MudSelectItem>
-                                </MudSelect>
-                            </MudText>
-                        </MudItem>
-                        <div class="form-group">
-                            <MudRadioGroup @bind-SelectedOption="@result.Status">
-                                <MudText>Status : </MudText>
-                                <MudRadio Option="@("Enabled")" Color="Color.Primary">Enabled</MudRadio>
-                                <MudRadio Option="@("Disabled")" Color="Color.Primary">Disabled</MudRadio>
-                            </MudRadioGroup>
-                        </div>
-                        <MudItem xs="12">
-                            <MudText><span>Nombre de device : </span>  @result.NbDevices</MudText>
-                        </MudItem>
-                        <MudItem xs="12">
-                            <MudText><span>Nombre de module : </span>  @result.NbModule</MudText>
-                        </MudItem>
-                        <MudItem xs="12">
-                            <MudText><span>Runtime response : </span>  @result.RuntimeResponse</MudText>
-                        </MudItem>
+                        <div class="content-box">
+                            <div class="contentCardItem">
+                                <div class="form-group">
+                                    <label>Name : </label>
+                                    <span> @gateway.DeviceId </span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Type : </label>
+                                    <span> @gateway.Type </span>
+                                </div>
+                                <div class="form-group">
 
+                                    <label>Environement : </label>
+                                    <span>
+                                        <MudSelect T="string">
+                                            <MudSelectItem Value="@("Dev")">Dev</MudSelectItem>
+                                            <MudSelectItem Value="@("Prod")">Prod</MudSelectItem>
+                                            <MudSelectItem Value="@("Indus")">Indus</MudSelectItem>
+                                        </MudSelect>
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status : </label>
+                                    <span>
+                                        <MudRadioGroup @bind-SelectedOption="@gateway.Status">
+                                            <MudRadio Option="@("Enabled")" Color="Color.Primary">Enabled</MudRadio>
+                                            <MudRadio Option="@("Disabled")" Color="Color.Primary">Disabled</MudRadio>
+                                        </MudRadioGroup>
+                                    </span>
+                                </div>
+                                <MudButton Variant="Variant.Filled" Color="Color.Dark" OnClick="UpdateDevice">Save Settings</MudButton>
+                            </div>
+
+                            <div class="contentCardItem">
+
+                                <div class="content-part2">
+                                    <div class="content-item">
+                                        <div>
+                                            <div class="form-group">
+                                                <label>Runtime response : </label>
+                                                <span>@gateway.RuntimeResponse</span>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Nombre de device : </label>
+                                                <span>@gateway.NbDevices</span>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Nombre de module : </label>
+                                                <span>@gateway.NbModule</span>
+                                            </div>
+                                        </div>
+                                        <div class="content-button">
+                                            <MudButton Variant="Variant.Filled" Color="Color.Dark" OnClick="ShowConnectionString">Show Connection String</MudButton>
+                                            <MudButton Variant="Variant.Filled" Color="Color.Dark">Delete Gateway</MudButton>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="last-deployment">
+                                    <div class="form-group">
+                                        <label>Name : </label>
+                                        <span>@gateway.LastDeployment.Name</span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Date : </label>
+                                        <span>@gateway.LastDeployment.DateCreation</span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Status : </label>
+                                        <span>@gateway.LastDeployment.Status</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </MudGrid>
                 </MudCardContent>
             </MudCard>
-        </MudItem>
+        </div>
     </MudGrid>
 </MudContainer>
 
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
         <MudItem xs="12">
-            <MudTable Items="@result.Modules" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true >
+            <MudTable Items="@gateway.Modules" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
                 <ColGroup>
                     <col style="width: 40%;" />
                     <col style="width: 10%;" />
@@ -79,11 +126,11 @@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Module Name" Style="word-break: break-all;">@context.ModuleName</MudTd>
-                    <MudTd DataLabel="Version" >@context.Version</MudTd>
-                    <MudTd DataLabel="Status" >@context.Status</MudTd>
-                    <MudTd DataLabel="Device">
-                        <MudButton Variant="Variant.Filled"  Color="Color.Dark">logs</MudButton>
-                        <MudButton Variant="Variant.Filled"  Color="Color.Primary">detail</MudButton>
+                    <MudTd DataLabel="Version" Style="text-align: center">@context.Version</MudTd>
+                    <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
+                    <MudTd DataLabel="Device" Style="text-align: center">
+                        <MudButton Variant="Variant.Filled" Color="Color.Dark">logs</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await OnReboot(context.ModuleName) )">reboot</MudButton>
                     </MudTd>
                 </RowTemplate>
             </MudTable>
@@ -97,16 +144,37 @@
     [Parameter]
     public string deviceId { get; set; }
 
-    private Gateway result;
+    private Gateway gateway;
 
     protected override async Task OnInitializedAsync()
     {
-        result = new Gateway();
+        gateway = new Gateway();
         await LoadDevice();
     }
 
     public async Task LoadDevice()
     {
-        result = await Http.GetFromJsonAsync<Gateway>($"Gateways/{deviceId}");
+        gateway = await Http.GetFromJsonAsync<Gateway>($"Gateways/{deviceId}");
+    }
+
+    public async Task UpdateDevice()
+    {
+        var gatewayat = await Http.PutAsJsonAsync($"Gateways/{gateway.DeviceId}", gateway);
+    }
+
+    public async Task OnReboot(string moduleId)
+    {
+        var gatewayat = await Http.GetFromJsonAsync<string>($"Gateways/{gateway.DeviceId}/{moduleId}");
+    }
+
+    public async Task ShowConnectionString()
+    {
+        var parameter = new ModalParameters();
+        parameter.Add(nameof(Gateway.EndPoint), gateway.EndPoint);
+        parameter.Add("Scope", gateway.Scope);
+        parameter.Add("SymmetricKey", gateway.SymmetricKey);
+
+        var result = await modal.Show<ConnectionString>("ConnectionString gateway ",parameter).Result;
+
     }
 }

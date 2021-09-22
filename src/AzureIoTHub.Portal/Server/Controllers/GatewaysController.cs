@@ -6,6 +6,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Security.Cryptography;
+    using System.Text;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Shared.Models;
@@ -14,6 +16,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
@@ -27,11 +30,22 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private readonly ILogger<GatewaysController> logger;
 
         private readonly RegistryManager registryManager;
+        private readonly ProvisioningServiceClient dps;
+        private readonly ServiceClient serviceClient;
+        private readonly IConfiguration configuration;
 
-        public GatewaysController(ILogger<GatewaysController> logger, RegistryManager registryManager)
+        public GatewaysController(
+            IConfiguration configuration,
+            ILogger<GatewaysController> logger,
+            RegistryManager registryManager,
+            ProvisioningServiceClient dps,
+            ServiceClient serviceClient)
         {
             this.logger = logger;
             this.registryManager = registryManager;
+            this.dps = dps;
+            this.serviceClient = serviceClient;
+            this.configuration = configuration;
         }
 
         /// <summary>
@@ -84,26 +98,38 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpGet("{deviceId}")]
         public async Task<Gateway> Get(string deviceId)
         {
-            var device = await this.registryManager.GetTwinAsync(deviceId);
+            var deviceTwin = await this.registryManager.GetTwinAsync(deviceId);
             var query = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']");
             var query2 = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{deviceId}']");
 
             Gateway gateway = new Gateway();
 
-            gateway.DeviceId = device.DeviceId;
-            gateway.Status = device.Status.Value.ToString();
-            if (device.Tags.Contains("purpose"))
+            gateway.DeviceId = deviceTwin.DeviceId;
+            gateway.Status = deviceTwin.Status.Value.ToString();
+            // var attestationMechanism = await this.dps.GetEnrollmentGroupAttestationAsync("DemoGatewayEnrollmentGroup");
+            var attestationMechanism = await this.dps.GetEnrollmentGroupAttestationAsync(this.configuration["IoTDPS:DefaultEnrollmentGroupe"]);
+            gateway.EndPoint = this.configuration["IoTDPS:ServiceEndpoint"];
+            gateway.Scope = deviceTwin.DeviceScope;
+
+            // on récupère la symmetric Key
+            SymmetricKeyAttestation symmetricKey = attestationMechanism.GetAttestation() as SymmetricKeyAttestation;
+            using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(symmetricKey.PrimaryKey)))
             {
-                gateway.Type = device.Tags["purpose"];
+                gateway.SymmetricKey = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(gateway.DeviceId)));
+            }
+
+            if (deviceTwin.Tags.Contains("purpose"))
+            {
+                gateway.Type = deviceTwin.Tags["purpose"];
             }
             else
             {
                 gateway.Type = "unknow";
             }
 
-            if (device.Tags.Contains("env"))
+            if (deviceTwin.Tags.Contains("env"))
             {
-                gateway.Environement = device.Tags["env"];
+                gateway.Environement = deviceTwin.Tags["env"];
             }
             else
             {
@@ -162,18 +188,84 @@ namespace AzureIoTHub.Portal.Server.Controllers
                             }
 
                             gateway.Modules.Add(module);
-                            // gateway.Modules.Add(new GatewayModule
-                            // {
-                            //    // ModuleName = element,
-                            //    Version = element["version"],
-                            //    Status = element["status"]
-                            // });
+                        }
+                    }
+
+                    // recup du dernier deployment
+                    if (item.Configurations.Count > 0)
+                    {
+                        foreach (var config in item.Configurations)
+                        {
+                            var confObj = await this.registryManager.GetConfigurationAsync(config.Key);
+                            if (gateway.LastDeployment.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
+                            {
+                                gateway.LastDeployment.Name = config.Key;
+                                gateway.LastDeployment.DateCreation = confObj.CreatedTimeUtc;
+                                gateway.LastDeployment.Status = ConfigurationStatus.Applied.ToString();
+                            }
                         }
                     }
                 }
             }
 
             return gateway;
+        }
+
+        /// <summary>
+        /// this function update the environment and the status of a edge device.
+        /// </summary>
+        /// <param name="gateway">a gateways object.</param>
+        /// <returns>the twin of the device.</returns>
+        [HttpPut("{gateway}")]
+        public async Task<IActionResult> UpdateDeviceAsync(Gateway gateway)
+        {
+            var device = await this.registryManager.GetDeviceAsync(gateway.DeviceId);
+            if (gateway.Status == DeviceStatus.Enabled.ToString())
+            {
+                device.Status = DeviceStatus.Enabled;
+            }
+            else
+            {
+                device.Status = DeviceStatus.Disabled;
+            }
+
+            device = await this.registryManager.UpdateDeviceAsync(device);
+
+            var deviceTwin = await this.registryManager.GetTwinAsync(gateway.DeviceId);
+            deviceTwin.Tags["env"] = gateway.Environement;
+            deviceTwin = await this.registryManager.UpdateTwinAsync(device.Id, deviceTwin, deviceTwin.ETag);
+
+            this.logger.LogInformation($"iot hub device was updated  {device.Id}");
+            return this.Ok(deviceTwin);
+        }
+
+        [HttpDelete("{deviceId}")]
+        public async Task<IActionResult> DeleteDeviceAsync(string deviceId)
+        {
+            await this.registryManager.RemoveDeviceAsync(deviceId);
+            this.logger.LogInformation($"iot hub device was delete  {deviceId}");
+
+            return this.Ok();
+        }
+
+        [HttpGet("{deviceId}/{moduleId}")]
+        public async Task<IActionResult> RebootDeviceModule(string moduleId, string deviceId)
+        {
+            CloudToDeviceMethod method = new CloudToDeviceMethod("reboot");
+            method.ResponseTimeout = TimeSpan.FromSeconds(30);
+
+            CloudToDeviceMethodResult result = await this.serviceClient.InvokeDeviceMethodAsync($"{deviceId}", method);
+            this.logger.LogInformation($"iot hub device : {deviceId} module : {moduleId} reboot.");
+            return this.Ok(result);
+        }
+
+        [HttpPost("{gateway}")]
+        public async Task<IActionResult> Post(Gateway gateway)
+        {
+            var device = new Device(gateway.DeviceId);
+            var result = await this.registryManager.AddDeviceAsync(device);
+
+            return this.Ok(result);
         }
     }
 }

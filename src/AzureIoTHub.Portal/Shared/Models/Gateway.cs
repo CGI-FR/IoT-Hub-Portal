@@ -13,6 +13,12 @@ namespace AzureIoTHub.Portal.Shared.Models
     {
         public string DeviceId { get; set; }
 
+        public string SymmetricKey { get; set; }
+
+        public string Scope { get; set; }
+
+        public string EndPoint { get; set; }
+
         public string Type { get; set; }
 
         public string Status { get; set; }
@@ -25,11 +31,14 @@ namespace AzureIoTHub.Portal.Shared.Models
 
         public string Environement { get; set; }
 
+        public ConfigItem LastDeployment { get; set; }
+
         public List<GatewayModule> Modules { get; set; }
 
         public Gateway()
         {
             this.Modules = new List<GatewayModule>();
+            this.LastDeployment = new ConfigItem();
         }
     }
 }

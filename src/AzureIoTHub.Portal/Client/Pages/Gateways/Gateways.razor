@@ -3,10 +3,14 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Shared.Models
 @using System.Net.Http.Json
+@using Blazored.Modal
+@using Blazored.Modal.Services
 
 @attribute [Authorize]
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject IModalService modal
+@inject IJSRuntime JS
 
 
 @if (result == null)
@@ -30,13 +34,11 @@ else
                         </MudCardHeader>
                         <MudCardContent>
                             <MudGrid>
-                                @*<MudItem xs="12">*@
                                 <div class="form-group">
                                     <MudText>Name : </MudText>
                                     <MudTextField @bind-Value="model.DeviceId" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
                                 </div>
-                                @*</MudItem>*@
-                                @*<MudItem xs="12" sm="6" md="4">*@
+
                                 <div class="form-group">
                                     <MudText>Type : </MudText>
                                     <MudSelect T="string" Label="Type" @bind-Value="model.Type" Variant="Variant.Outlined" Format="F2">
@@ -97,8 +99,8 @@ else
                                 {
                                 <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />}
                         </MudTd>
-                        <MudTd DataLabel="Type">@context.Type</MudTd>
-                        <MudTd DataLabel="NbDevices">@context.NbDevices</MudTd>
+                        <MudTd DataLabel="Type" Style="text-align: center">@context.Type</MudTd>
+                        <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>
                         <MudTd DataLabel="Details" Style="text-align: center">
                             <a href="/gateways/details/@context.DeviceId"><MudIcon Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
                         </MudTd>
@@ -108,7 +110,7 @@ else
                     </PagerContent>
                 </MudTable>
             </MudItem>
-            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary">Add</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick="ShowAddDialog" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary">Add</MudButton>
         </MudGrid>
     </MudContainer>
 }
@@ -163,4 +165,13 @@ else
         NavigationManager.NavigateTo($"/gateways/details/{id}");
     }
 
+    private async Task ShowAddDialog()
+    {
+        var result = await modal.Show<Add>("Add gateways").Result;
+
+        if (!result.Cancelled)
+        {
+            await LoadGatewaysList();
+        }
+    }
 }
