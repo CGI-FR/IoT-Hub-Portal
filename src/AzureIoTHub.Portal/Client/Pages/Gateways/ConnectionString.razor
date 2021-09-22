@@ -1,0 +1,32 @@
+﻿@page "/gateways/ConnectionString"
+
+@using Microsoft.AspNetCore.Authorization
+@using Blazored.Modal
+@using Blazored.Modal.Services
+
+@inject HttpClient Http
+
+
+<MudCard Outlined="true" Style="width:min-content">
+    <MudCardContent Style="" Class="connectionString-modal-card">
+        <div class="form-group">
+            <label>Scope : </label>
+            <MudText>@Scope</MudText>
+        </div> 
+        <div class="form-group">
+            <label>Symmetric Key : </label>
+            <MudText>@SymmetricKey</MudText>
+        </div>
+        <div class="form-group">
+            <label>Service Endpoint : </label>
+            <MudText>@Endpoint</MudText>
+        </div>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+    [Parameter] public string Endpoint { get; set; }
+    [Parameter] public string Scope { get; set; }
+    [Parameter] public string SymmetricKey { get; set; }
+}
