@@ -7,9 +7,11 @@
 @using Blazored.Modal.Services
 
 @attribute [Authorize]
-@inject IJSRuntime JS7
+@inject IJSRuntime JS
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 @inject IModalService modal
+@inject ISnackbar Snackbar
 
 
 <MudContainer MaxWidth="MaxWidth.False">
@@ -78,7 +80,7 @@
                                         </div>
                                         <div class="content-button">
                                             <MudButton Variant="Variant.Filled" Color="Color.Dark" OnClick="ShowConnectionString">Show Connection String</MudButton>
-                                            <MudButton Variant="Variant.Filled" Color="Color.Dark">Delete Gateway</MudButton>
+                                            <MudButton Variant="Variant.Filled" Color="Color.Dark" OnClick="DeleteDeviceAsync">Delete Gateway</MudButton>
                                         </div>
                                     </div>
                                 </div>
@@ -159,12 +161,12 @@
 
     public async Task UpdateDevice()
     {
-        var gatewayat = await Http.PutAsJsonAsync($"Gateways/{gateway.DeviceId}", gateway);
+        var result = await Http.PutAsJsonAsync($"Gateways/{gateway.DeviceId}", gateway);
     }
 
     public async Task OnReboot(string moduleId)
     {
-        var gatewayat = await Http.GetFromJsonAsync<string>($"Gateways/{gateway.DeviceId}/{moduleId}");
+        var result = await Http.GetFromJsonAsync<string>($"Gateways/{gateway.DeviceId}/{moduleId}");
     }
 
     public async Task ShowConnectionString()
@@ -174,7 +176,27 @@
         parameter.Add("Scope", gateway.Scope);
         parameter.Add("SymmetricKey", gateway.SymmetricKey);
 
-        var result = await modal.Show<ConnectionString>("ConnectionString gateway ",parameter).Result;
+        var result = await modal.Show<ConnectionString>("ConnectionString gateway ", parameter).Result;
 
+    }
+
+    public async Task DeleteDeviceAsync()
+    {
+        var result = await Http.DeleteAsync($"Gateways/{gateway.DeviceId}");
+
+        if (result.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Device {gateway.DeviceId} has been successfully delete!", Severity.Success);
+            NavigationManager.NavigateTo("/gateways");
+
+            //var notification = new
+            //{
+            //    type = "success",
+            //    title = "Gateways Delete",
+            //    message = $"Successfully delete device {gateway.DeviceId}"
+            //};
+
+            //await JS.InvokeVoidAsync("$.notify", notification);
+        }
     }
 }

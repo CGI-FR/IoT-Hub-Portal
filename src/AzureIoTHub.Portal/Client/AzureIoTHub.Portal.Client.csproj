@@ -51,7 +51,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="npm run build-css" />
+    <!--<Exec Command="npm run build-css" />-->
   </Target>
 
 </Project>
