@@ -11,6 +11,7 @@
 @inject NavigationManager NavigationManager
 @inject IModalService modal
 @inject IJSRuntime JS
+@inject ISnackbar Snackbar
 
 
 @if (result == null)
@@ -171,6 +172,16 @@ else
 
         if (!result.Cancelled)
         {
+            //var notification = new
+            //{
+            //    type = "success",
+            //    title = "Gateways Add new",
+            //    message = $"Successfully create the device"
+            //};
+
+            // await JS.InvokeVoidAsync("$.notify", notification);
+            Snackbar.Add($"Device has been successfully created!", Severity.Success);
+
             await LoadGatewaysList();
         }
     }

@@ -2,20 +2,53 @@
 @using Microsoft.AspNetCore.Authorization
 @using Blazored.Modal
 @using Blazored.Modal.Services
+@using AzureIoTHub.Portal.Shared.Models;
 
 @inject HttpClient Http
 @inject IJSRuntime JS
+@inject ISnackbar Snackbar
 
 <h3>Add</h3>
-<EditForm OnInvalidSubmit="OnValidation">
-
+<EditForm Model="@gateway" OnSubmit="@OnValidation">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <p>
+        <label for="DeviceId">Name : </label>
+        <InputText id="DeviceId" @bind-Value="gateway.DeviceId" />
+        <ValidationMessage For="() => gateway.DeviceId" />
+    </p>
+    <p>
+        <label for="Type">Type : </label>
+        <InputSelect id="Type" @bind-Value="gateway.Type">
+            <option value="">Select classification ...</option>
+            <option value="lora">Lora</option>
+        </InputSelect>
+        <ValidationMessage For="() => gateway.Type" />
+    </p><p>
+        <label for="Environement">Environement : </label>
+        <InputSelect id="Environement" @bind-Value="gateway.Environement">
+            <option value="">Select classification ...</option>
+            <option value="dev">Developpement</option>
+            <option value="prod">Production</option>
+            <option value="indus">Industrie</option>
+        </InputSelect>
+        <ValidationMessage For="() => gateway.Type" />
+    </p>
+    <button type="submit">Submit</button>
 </EditForm>
 
 @code {
     [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+    private Gateway gateway = new Gateway();
 
-    private void OnValidation()
+    private async Task OnValidation()
     {
+        var result = await Http.PostAsJsonAsync("Gateways", gateway);
 
+        if (result.IsSuccessStatusCode)
+        {
+            await ModalInstance.CloseAsync(ModalResult.Ok($"Device create successfully."));
+            //Snackbar.Add($"Device {gateway.DeviceId} has been successfully created!", Severity.Success);
+        }
     }
 }
