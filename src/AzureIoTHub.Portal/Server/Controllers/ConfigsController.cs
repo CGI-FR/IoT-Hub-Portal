@@ -52,6 +52,27 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
             foreach (Configuration config in configList)
             {
+                List<GatewayModule> tmp = new ();
+                if (config.Content.ModulesContent != null)
+                    {
+                        foreach (var module in config.Content.ModulesContent)
+                        {
+                            var newModule = new GatewayModule
+                            {
+                                ModuleName = module.Key
+                            };
+                            tmp.Add(newModule);
+                        }
+                    }
+                else
+                {
+                    var newModule = new GatewayModule
+                    {
+                        ModuleName = "JePlante"
+                    };
+                    tmp.Add(newModule);
+                }
+
                 var result = new ConfigListItem
                 {
                     ConfigurationID = config.Id,
@@ -61,12 +82,55 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     MetricsSuccess = RetrieveMetricValue(config, "reportedSuccessfulCount"),
                     MetricsFailure = RetrieveMetricValue(config, "reportedFailedCount"),
                     Priority = config.Priority,
-                    CreationDate = config.CreatedTimeUtc
+                    CreationDate = config.CreatedTimeUtc,
+                    Modules = tmp
                 };
                 results.Add(result);
             }
 
             return results;
+        }
+
+        [HttpGet("{configurationID}")]
+        public async Task<ConfigListItem> Get(string configurationID)
+        {
+            // var item = await this.registryManager.GetTwinAsync(deviceID);
+            var config = await this.registryManager.GetConfigurationAsync(configurationID);
+            // await Task.Delay(0);
+            List<GatewayModule> tmp = new ();
+            if (config.Content.ModulesContent != null)
+            {
+                foreach (var module in config.Content.ModulesContent)
+                {
+                    var newModule = new GatewayModule
+                    {
+                        ModuleName = module.Key
+                    };
+                    tmp.Add(newModule);
+                }
+            }
+            else
+            {
+                var newModule = new GatewayModule
+                {
+                    ModuleName = "JePlante"
+                };
+                tmp.Add(newModule);
+            }
+
+            var result = new ConfigListItem
+            {
+                ConfigurationID = config.Id,
+                Conditions = config.TargetCondition,
+                MetricsTargeted = RetrieveMetricValue(config, "targetedCount"),
+                MetricsApplied = RetrieveMetricValue(config, "appliedCount"),
+                MetricsSuccess = RetrieveMetricValue(config, "reportedSuccessfulCount"),
+                MetricsFailure = RetrieveMetricValue(config, "reportedFailedCount"),
+                Priority = config.Priority,
+                CreationDate = config.CreatedTimeUtc,
+                Modules = tmp
+            };
+            return result;
         }
     }
 }

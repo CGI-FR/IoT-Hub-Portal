@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Shared.Models
 {
     using System;
+    using System.Collections.Generic;
 
     public class ConfigListItem
     {
@@ -22,5 +23,7 @@ namespace AzureIoTHub.Portal.Shared.Models
         public int Priority { get; set; }
 
         public DateTime CreationDate { get; set; }
+
+        public IEnumerable<GatewayModule> Modules { get; set; }
     }
 }
