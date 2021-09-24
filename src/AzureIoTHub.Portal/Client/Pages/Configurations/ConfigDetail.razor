@@ -2,6 +2,8 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Shared.Models
+@using System.Text.RegularExpressions;
+@using System.Collections.Generic;
 @attribute [Authorize]
 @inject HttpClient Http
 @inject IDialogService DialogService
@@ -33,19 +35,32 @@
                             <MudItem md="6" xs="12">
                                 <MudItem xs="12" Class="custom-form">
                                     <MudItem md="3" sm="12">
-                                        <MudText>Type : </MudText>
+                                        <MudText>Owner : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudSelect T="string" Value="@Config.Conditions" Variant="Variant.Outlined" Dense="true" Class="custom-disabled" ReadOnly="true">
-                                            <MudSelectItem Value="@("LoRa Device")" />
-                                            <MudSelectItem Value="@("Other")" />
-                                        </MudSelect>
+                                        <MudTextField @bind-Value="@ConditionOwner" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
                                     </MudItem>
                                 </MudItem>
                             </MudItem>
                             <MudItem md="6" xs="12">
+                                <MudItem xs="12" Class="custom-form">
+                                    <MudItem md="3" sm="12">
+                                        <MudText>Environment : </MudText>
+                                    </MudItem>
+                                    <MudItem md="9" sm="12">
+                                        <MudTextField @bind-Value="@ConditionEnv" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
+                                    </MudItem>
+                                </MudItem>
                             </MudItem>
                             <MudItem md="6" xs="12">
+                                <MudItem xs="12" Class="custom-form">
+                                    <MudItem md="3" sm="12">
+                                        <MudText>Type : </MudText>
+                                    </MudItem>
+                                    <MudItem md="9" sm="12">
+                                        <MudTextField @bind-Value="@ConditionType" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
+                                    </MudItem>
+                                </MudItem>
                             </MudItem>
                             <MudItem md="6" xs="12">
                             </MudItem>
@@ -72,6 +87,10 @@
 
     private bool success = true;
 
+    public string ConditionEnv { get; set; }
+    public string ConditionType { get; set; }
+    public string ConditionOwner { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -79,10 +98,27 @@
             Config = await Http.GetFromJsonAsync<ConfigListItem>($"Configs/{ConfigurationID}");
             Console.WriteLine(Config.Modules.Count().ToString());
             Console.WriteLine(Config.Modules.First().ModuleName);
+
+            ConditionOwner = RetrieveCondition("owner");
+            ConditionEnv = RetrieveCondition("env");
+            ConditionType = RetrieveCondition("type");
         }
         catch (AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
+        }
+    }
+
+    private string RetrieveCondition(string field)
+    {
+        string regex =@"tags\."+field+@"\s?=\s?'(?<field>\S*)'";
+        if(Regex.IsMatch(Config.Conditions, regex))
+        {
+            return Regex.Matches(Config.Conditions, regex).First().Groups[1].Value;
+        }
+        else
+        {
+            return "no_match";
         }
     }
 
