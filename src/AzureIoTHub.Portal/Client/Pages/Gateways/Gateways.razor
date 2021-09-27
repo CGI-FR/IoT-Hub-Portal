@@ -12,6 +12,7 @@
 @inject IModalService modal
 @inject IJSRuntime JS
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
 
 
 @if (result == null)
@@ -122,6 +123,7 @@ else
     private List<GatewayListItem> result;
     private List<string> listeType = new List<string>() { "lora", "unknow" };
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
+    DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Small, FullWidth = true };
 
     private SearchModel model = new SearchModel();
 
@@ -168,21 +170,13 @@ else
 
     private async Task ShowAddDialog()
     {
-        var result = await modal.Show<Add>("Add gateways").Result;
+        //var result = await modal.Show<Add>("Add gateways").Result;
+        var result = await DialogService.Show<Add>("Add new Gateway", maxWidth).Result;
 
-        if (!result.Cancelled)
+        if (result.Cancelled)
         {
-            //var notification = new
-            //{
-            //    type = "success",
-            //    title = "Gateways Add new",
-            //    message = $"Successfully create the device"
-            //};
-
-            // await JS.InvokeVoidAsync("$.notify", notification);
-            Snackbar.Add($"Device has been successfully created!", Severity.Success);
-
-            await LoadGatewaysList();
+            return;
         }
+        await LoadGatewaysList();
     }
 }

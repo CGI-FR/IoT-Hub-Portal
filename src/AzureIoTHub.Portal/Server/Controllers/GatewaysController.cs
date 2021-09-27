@@ -195,16 +195,19 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     }
 
                     // recup du dernier deployment
-                    if (item.Configurations.Count > 0)
+                    if (item.Configurations != null)
                     {
-                        foreach (var config in item.Configurations)
+                        if (item.Configurations.Count > 0)
                         {
-                            var confObj = await this.registryManager.GetConfigurationAsync(config.Key);
-                            if (gateway.LastDeployment.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
+                            foreach (var config in item.Configurations)
                             {
-                                gateway.LastDeployment.Name = config.Key;
-                                gateway.LastDeployment.DateCreation = confObj.CreatedTimeUtc;
-                                gateway.LastDeployment.Status = ConfigurationStatus.Applied.ToString();
+                                var confObj = await this.registryManager.GetConfigurationAsync(config.Key);
+                                if (gateway.LastDeployment.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
+                                {
+                                    gateway.LastDeployment.Name = config.Key;
+                                    gateway.LastDeployment.DateCreation = confObj.CreatedTimeUtc;
+                                    gateway.LastDeployment.Status = ConfigurationStatus.Applied.ToString();
+                                }
                             }
                         }
                     }
