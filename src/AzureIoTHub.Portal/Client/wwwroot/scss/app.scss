@@ -1,13 +1,15 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+﻿<<<<<<< src/AzureIoTHub.Portal/Client/wwwroot/scss/app.scss
+﻿@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
 
 .custom-form {
     display: flex !important;
     align-items: baseline !important;
 }
 
-.custom-disabled{
-    background-color : #e2e2e2;
+.custom-disabled {
+    background-color: #e2e2e2;
 }
+
 ﻿.search-panel {
     max-width: 70%;
     padding: 0px 50px 25px 50px;
@@ -17,6 +19,13 @@
         display: flex;
         align-items: baseline;
         max-width: 50%;
+    }
+
+    .mud-input-control > .mud-input-control-input-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 200px;
     }
 }
 
@@ -29,32 +38,21 @@
     display: contents;
 }
 
-.mud-input-control > .mud-input-control-input-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 150px;
-}
-
-/*.mud-container {
-    width: 100%;
-    display: block;
-    box-sizing: border-box;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 16px;
-    padding-right: 16px;
-}*/
-
 .mud-button-filled.mud-button-filled-dark:hover {
     background-color: var(--mud-palette-dark-darken);
     color: black;
 }
 
+.Add-dialog {
+    .mud-input-control {
+        .mud-input-control-input-container {
+            width: 300px !important;
+        }
+    }
+}
+
 .card-detail {
     width: 90%;
-    /* margin-right: 20px; */
-    /*margin-left: 150px;*/
 
     .content-box {
         align-items: center;
@@ -64,14 +62,14 @@
         .contentCardItem {
             padding: 20px;
 
-                .content-item {
-                    display: flex;
-                }
+            .content-item {
+                display: flex;
+            }
 
-                .last-deployment {
-                    background: gainsboro;
-                    width: 60%;
-                }
+            .last-deployment {
+                background: gainsboro;
+                width: 60%;
+            }
         }
 
         .form-group {
@@ -90,7 +88,7 @@
     .form-group {
         align-items: baseline;
         margin: 10px;
-        width:max-content;
+        width: max-content;
 
         label {
             padding-right: 2px;

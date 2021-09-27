@@ -8,38 +8,74 @@
 @inject IJSRuntime JS
 @inject ISnackbar Snackbar
 
-<h3>Add</h3>
-<EditForm Model="@gateway" OnSubmit="@OnValidation">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <p>
-        <label for="DeviceId">Name : </label>
-        <InputText id="DeviceId" @bind-Value="gateway.DeviceId" />
-        <ValidationMessage For="() => gateway.DeviceId" />
-    </p>
-    <p>
-        <label for="Type">Type : </label>
-        <InputSelect id="Type" @bind-Value="gateway.Type">
-            <option value="">Select classification ...</option>
-            <option value="lora">Lora</option>
-        </InputSelect>
-        <ValidationMessage For="() => gateway.Type" />
-    </p><p>
-        <label for="Environement">Environement : </label>
-        <InputSelect id="Environement" @bind-Value="gateway.Environement">
-            <option value="">Select classification ...</option>
-            <option value="dev">Developpement</option>
-            <option value="prod">Production</option>
-            <option value="indus">Industrie</option>
-        </InputSelect>
-        <ValidationMessage For="() => gateway.Type" />
-    </p>
-    <button type="submit">Submit</button>
-</EditForm>
+<div class="Add-dialog">
+    <MudDialog>
+        <DialogContent>
+
+            @*<EditForm Model="@gateway" OnSubmit="@OnValidation">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <p>
+                    <label for="DeviceId">Name : </label>
+                    <InputText id="DeviceId" @bind-Value="gateway.DeviceId" />
+                    <ValidationMessage For="() => gateway.DeviceId" />
+                </p>
+                <p>
+                    <label for="Type">Type : </label>
+                    <InputSelect id="Type" @bind-Value="gateway.Type">
+                        <option value="">Select classification ...</option>
+                        <option value="lora">Lora</option>
+                    </InputSelect>
+                    <ValidationMessage For="() => gateway.Type" />
+                </p><p>
+                    <label for="Environement">Environement : </label>
+                    <InputSelect id="Environement" @bind-Value="gateway.Environement">
+                        <option value="">Select classification ...</option>
+                        <option value="dev">Developpement</option>
+                        <option value="prod">Production</option>
+                        <option value="indus">Industrie</option>
+                    </InputSelect>
+                    <ValidationMessage For="() => gateway.Type" />
+                </p>
+                <button type="submit">Submit</button>
+            </EditForm>*@
+
+            <EditForm Model="@gateway" OnValidSubmit="OnValidation">
+                <DataAnnotationsValidator />
+                <MudCard>
+                    <MudCardContent>
+                        <MudTextField Style="width:300px" Class="add-dialog-input" Label="Name :" @bind-Value="gateway.DeviceId" For="@(() => gateway.DeviceId)" />
+                        <MudSelect Style="width:300px" Class="add-dialog-input"  @bind-Value="gateway.Type" Placeholder="Please Select the type" OffsetY="true" AdornmentColor="Color.Primary">
+                            <MudSelectItem Style="width:300px" Value="@("lora")">Lora</MudSelectItem>
+                            <MudSelectItem Value="@("unknow")">Unknow</MudSelectItem>
+                        </MudSelect>
+                        <MudSelect Style="width:300px" Class="add-dialog-input" @bind-Value="gateway.Environement" Placeholder="Please Select the environement" OffsetY="true" AdornmentColor="Color.Primary">
+                            <MudSelectItem Value="@("dev")">Développement</MudSelectItem>
+                            <MudSelectItem Value="@("prod")">Production</MudSelectItem>
+                            <MudSelectItem Value="@("indus")">Industrie</MudSelectItem>
+                        </MudSelect>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Create</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </EditForm>
+
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</div>
 
 @code {
     [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
     private Gateway gateway = new Gateway();
+
+    // void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
 
     private async Task OnValidation()
     {
@@ -47,8 +83,13 @@
 
         if (result.IsSuccessStatusCode)
         {
-            await ModalInstance.CloseAsync(ModalResult.Ok($"Device create successfully."));
-            //Snackbar.Add($"Device {gateway.DeviceId} has been successfully created!", Severity.Success);
+            Snackbar.Add($"Device {gateway.DeviceId} has been successfully created !", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        else
+        {
+            Snackbar.Add($"Oh oh, something went wrong while creating device {gateway.DeviceId}... ", Severity.Error);
+            return;
         }
     }
 }
