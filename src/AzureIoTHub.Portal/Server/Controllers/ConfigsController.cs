@@ -4,9 +4,11 @@
 namespace AzureIoTHub.Portal.Server.Controllers
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
+    using System.Text.Json;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Shared.Models;
@@ -18,6 +20,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
 
     [Authorize]
     [ApiController]
@@ -54,16 +57,16 @@ namespace AzureIoTHub.Portal.Server.Controllers
             {
                 List<GatewayModule> tmp = new ();
                 if (config.Content.ModulesContent != null)
+                {
+                    foreach (var module in config.Content.ModulesContent)
                     {
-                        foreach (var module in config.Content.ModulesContent)
+                        var newModule = new GatewayModule
                         {
-                            var newModule = new GatewayModule
-                            {
-                                ModuleName = module.Key
-                            };
-                            tmp.Add(newModule);
-                        }
+                            ModuleName = module.Key
+                        };
+                        tmp.Add(newModule);
                     }
+                }
                 else
                 {
                     var newModule = new GatewayModule
@@ -94,17 +97,31 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpGet("{configurationID}")]
         public async Task<ConfigListItem> Get(string configurationID)
         {
-            // var item = await this.registryManager.GetTwinAsync(deviceID);
             var config = await this.registryManager.GetConfigurationAsync(configurationID);
-            // await Task.Delay(0);
             List<GatewayModule> tmp = new ();
             if (config.Content.ModulesContent != null)
             {
-                foreach (var module in config.Content.ModulesContent)
+                Newtonsoft.Json.Linq.JObject mod = (Newtonsoft.Json.Linq.JObject)config.Content.ModulesContent["$edgeAgent"]["properties.desired"];
+                Newtonsoft.Json.Linq.JObject modules = (Newtonsoft.Json.Linq.JObject)mod["modules"];
+                Newtonsoft.Json.Linq.JObject systemModules = (Newtonsoft.Json.Linq.JObject)mod["systemModules"];
+                foreach (var m in modules)
                 {
                     var newModule = new GatewayModule
                     {
-                        ModuleName = module.Key
+                        ModuleName = m.Key,
+                        Version = (string)m.Value["version"],
+                        Status = (string)m.Value["status"]
+                    };
+                    tmp.Add(newModule);
+                }
+
+                foreach (var sm in systemModules)
+                {
+                    var newModule = new GatewayModule
+                    {
+                        ModuleName = sm.Key,
+                        Version = "SYSTEM",
+                        Status = (string)sm.Value["status"]
                     };
                     tmp.Add(newModule);
                 }
