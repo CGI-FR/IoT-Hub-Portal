@@ -9,79 +9,105 @@
     background-color: #e2e2e2;
 }
 
-﻿.search-panel {
-    max-width: 70%;
-    padding: 0px 50px 25px 50px;
-    margin: 0px 0px 0px 200px;
+/*//////////////////// Search Panel ////////////////*/
+.search-panel {
+    width: max-content;
+    padding: 5px;
+    /*margin-left: 30%;*/
+
+    .mud-grid-spacing-xs-3 {
+        display: contents;
+    }
 
     .form-group {
         display: flex;
         align-items: baseline;
-        max-width: 50%;
-    }
+        margin: 10px;
 
-    .mud-input-control > .mud-input-control-input-container {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        width: 200px;
-    }
-}
-
-.mud-input-control {
-    max-width: 70%;
-    padding-left: 30px;
-}
-
-.mud-grid-spacing-xs-3 {
-    display: contents;
-}
-
-.mud-button-filled.mud-button-filled-dark:hover {
-    background-color: var(--mud-palette-dark-darken);
-    color: black;
-}
-
-.Add-dialog {
-    .mud-input-control {
-        .mud-input-control-input-container {
-            width: 300px !important;
+        .label-search {
+            /* padding-right: 30px; */
+            margin-right: 30px;
+            width: max-content;
         }
     }
 }
+////////////////////////////////////////////////////////
 
-.card-detail {
-    width: 90%;
 
-    .content-box {
-        align-items: center;
-        display: flex;
-        justify-content: center;
+///////////// pop up ajout gateway ///////////
+.mud-dialog-width-sm {
+    max-width: fit-content;
 
-        .contentCardItem {
-            padding: 20px;
+    .Add-dialog {
+        width: fit-content;
 
-            .content-item {
-                display: flex;
-            }
-
-            .last-deployment {
-                background: gainsboro;
-                width: 60%;
+        .mud-input-control {
+            .mud-input-control-input-container {
+                width: 300px;
             }
         }
+    }
+}
+////////////////////////////////////////////////
+//// Detail gateway //////////////
+.detail-gateway {
+    width: fit-content;
+    margin-left: 10%;
 
-        .form-group {
+    .module-table {
+        margin-top: 15px;
+    }
+
+    .card-detail {
+
+        .content-box {
+            align-items: center;
             display: flex;
-            align-items: baseline;
-            padding: 10px;
+            justify-content: center;
 
-            label {
-                padding: 5px;
+            .contentCardItem {
+                padding: 20px;
+
+                .content-item {
+                    display: flex;
+
+                    .content-button {
+                        display: grid;
+                        justify-items: center;
+                        align-content: center;
+
+                        .btn {
+                            height: fit-content;
+                            width: fit-content;
+                            margin: 2px;
+
+                            :hover {
+                                color: black;
+                            }
+                        }
+                    }
+                }
+
+                .last-deployment {
+                    background: gainsboro;
+                    width: 60%;
+                }
+            }
+
+            .form-group {
+                display: flex;
+                align-items: baseline;
+                padding: 10px;
+
+                label {
+                    padding: 5px;
+                }
             }
         }
     }
 }
+
+
 
 .connectionString-modal-card {
     .form-group {
@@ -91,6 +117,10 @@
 
         label {
             padding-right: 2px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-decoration: underline;
         }
     }
 }
+//////////////////////
