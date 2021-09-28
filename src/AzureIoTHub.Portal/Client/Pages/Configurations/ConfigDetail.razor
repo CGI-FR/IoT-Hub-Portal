@@ -76,7 +76,13 @@
     </MudGrid>
 </MudContainer>
 
-@*<MudText>@Config.Modules.First().ModuleName</MudText>*@
+<MudText Typo="Typo.h4">@Config.ConfigurationID</MudText>
+@foreach (var mod in Config.Modules)
+{
+    <MudText Typo="Typo.h6">@mod.ModuleName</MudText>
+    <MudText>@mod.Version</MudText>
+    <MudText>@mod.Status</MudText>
+}
 
 @code {
 
@@ -98,6 +104,11 @@
             Config = await Http.GetFromJsonAsync<ConfigListItem>($"Configs/{ConfigurationID}");
             Console.WriteLine(Config.Modules.Count().ToString());
             Console.WriteLine(Config.Modules.First().ModuleName);
+            Console.WriteLine("_______________________________");
+            foreach (var mod in Config.Modules)
+            {
+                Console.WriteLine(mod.ModuleName);
+            }
 
             ConditionOwner = RetrieveCondition("owner");
             ConditionEnv = RetrieveCondition("env");
@@ -111,8 +122,8 @@
 
     private string RetrieveCondition(string field)
     {
-        string regex =@"tags\."+field+@"\s?=\s?'(?<field>\S*)'";
-        if(Regex.IsMatch(Config.Conditions, regex))
+        string regex = @"tags\." + field + @"\s?=\s?'(?<field>\S*)'";
+        if (Regex.IsMatch(Config.Conditions, regex))
         {
             return Regex.Matches(Config.Conditions, regex).First().Groups[1].Value;
         }

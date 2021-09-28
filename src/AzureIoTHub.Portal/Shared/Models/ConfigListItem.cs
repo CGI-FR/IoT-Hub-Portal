@@ -8,6 +8,11 @@ namespace AzureIoTHub.Portal.Shared.Models
 
     public class ConfigListItem
     {
+        public ConfigListItem()
+        {
+            this.Modules = new List<GatewayModule>();
+        }
+
         public string ConfigurationID { get; set; }
 
         public string Conditions { get; set; }
@@ -24,6 +29,6 @@ namespace AzureIoTHub.Portal.Shared.Models
 
         public DateTime CreationDate { get; set; }
 
-        public IEnumerable<GatewayModule> Modules { get; set; }
+        public List<GatewayModule> Modules { get; set; }
     }
 }
