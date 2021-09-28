@@ -11,35 +11,6 @@
 <div class="Add-dialog">
     <MudDialog>
         <DialogContent>
-
-            @*<EditForm Model="@gateway" OnSubmit="@OnValidation">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-                <p>
-                    <label for="DeviceId">Name : </label>
-                    <InputText id="DeviceId" @bind-Value="gateway.DeviceId" />
-                    <ValidationMessage For="() => gateway.DeviceId" />
-                </p>
-                <p>
-                    <label for="Type">Type : </label>
-                    <InputSelect id="Type" @bind-Value="gateway.Type">
-                        <option value="">Select classification ...</option>
-                        <option value="lora">Lora</option>
-                    </InputSelect>
-                    <ValidationMessage For="() => gateway.Type" />
-                </p><p>
-                    <label for="Environement">Environement : </label>
-                    <InputSelect id="Environement" @bind-Value="gateway.Environement">
-                        <option value="">Select classification ...</option>
-                        <option value="dev">Developpement</option>
-                        <option value="prod">Production</option>
-                        <option value="indus">Industrie</option>
-                    </InputSelect>
-                    <ValidationMessage For="() => gateway.Type" />
-                </p>
-                <button type="submit">Submit</button>
-            </EditForm>*@
-
             <EditForm Model="@gateway" OnValidSubmit="OnValidation">
                 <DataAnnotationsValidator />
                 <MudCard>
@@ -74,7 +45,6 @@
 
     private Gateway gateway = new Gateway();
 
-    // void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
 
     private async Task OnValidation()
@@ -88,7 +58,7 @@
         }
         else
         {
-            Snackbar.Add($"Oh oh, something went wrong while creating device {gateway.DeviceId}... ", Severity.Error);
+            Snackbar.Add($"Something went wrong while creating device {gateway.DeviceId}... ", Severity.Error);
             return;
         }
     }

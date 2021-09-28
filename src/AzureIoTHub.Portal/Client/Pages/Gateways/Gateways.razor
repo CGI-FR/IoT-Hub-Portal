@@ -37,12 +37,12 @@ else
                         <MudCardContent>
                             <MudGrid>
                                 <div class="form-group">
-                                    <MudText>Name : </MudText>
+                                    <MudText Class="label-search">Name : </MudText>
                                     <MudTextField @bind-Value="model.DeviceId" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
                                 </div>
 
                                 <div class="form-group">
-                                    <MudText>Type : </MudText>
+                                    <MudText Class="label-search">Type : </MudText>
                                     <MudSelect T="string" Label="Type" @bind-Value="model.Type" Variant="Variant.Outlined" Format="F2">
                                         <MudSelectItem Value="@("")" />
                                         @foreach (var item in listeType)
@@ -51,11 +51,9 @@ else
                                         }
                                     </MudSelect>
                                 </div>
-                                @*</MudItem>*@
-                                @*<MudItem xs="6">*@
                                 <div class="form-group">
                                     <MudRadioGroup @bind-SelectedOption="@model.Status">
-                                        <MudText>Status : </MudText>
+                                        <MudText Class="label-search">Status : </MudText>
                                         <MudRadio Option="@("Enabled")" Color="Color.Primary">Enabled</MudRadio>
                                         <MudRadio Option="@("Disabled")" Color="Color.Primary">Disabled</MudRadio>
                                         <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
