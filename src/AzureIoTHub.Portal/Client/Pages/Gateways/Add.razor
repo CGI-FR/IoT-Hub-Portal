@@ -2,20 +2,64 @@
 @using Microsoft.AspNetCore.Authorization
 @using Blazored.Modal
 @using Blazored.Modal.Services
+@using AzureIoTHub.Portal.Shared.Models;
 
 @inject HttpClient Http
 @inject IJSRuntime JS
+@inject ISnackbar Snackbar
 
-<h3>Add</h3>
-<EditForm OnInvalidSubmit="OnValidation">
+<div class="Add-dialog">
+    <MudDialog>
+        <DialogContent>
+            <EditForm Model="@gateway" OnValidSubmit="OnValidation">
+                <DataAnnotationsValidator />
+                <MudCard>
+                    <MudCardContent>
+                        <MudTextField Style="width:300px" Class="add-dialog-input" Label="Name :" @bind-Value="gateway.DeviceId" For="@(() => gateway.DeviceId)" />
+                        <MudSelect Style="width:300px" Class="add-dialog-input"  @bind-Value="gateway.Type" Placeholder="Please Select the type" OffsetY="true" AdornmentColor="Color.Primary">
+                            <MudSelectItem Style="width:300px" Value="@("lora")">Lora</MudSelectItem>
+                            <MudSelectItem Value="@("unknow")">Unknow</MudSelectItem>
+                        </MudSelect>
+                        <MudSelect Style="width:300px" Class="add-dialog-input" @bind-Value="gateway.Environement" Placeholder="Please Select the environement" OffsetY="true" AdornmentColor="Color.Primary">
+                            <MudSelectItem Value="@("dev")">Développement</MudSelectItem>
+                            <MudSelectItem Value="@("prod")">Production</MudSelectItem>
+                            <MudSelectItem Value="@("indus")">Industrie</MudSelectItem>
+                        </MudSelect>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Create</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </EditForm>
 
-</EditForm>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</div>
 
 @code {
     [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    private void OnValidation()
+    private Gateway gateway = new Gateway();
+
+    void Cancel() => MudDialog.Cancel();
+
+    private async Task OnValidation()
     {
+        var result = await Http.PostAsJsonAsync("Gateways", gateway);
 
+        if (result.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Device {gateway.DeviceId} has been successfully created !", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        else
+        {
+            Snackbar.Add($"Something went wrong while creating device {gateway.DeviceId}... ", Severity.Error);
+            return;
+        }
     }
 }

@@ -139,7 +139,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             while (query2.HasMoreResults)
             {
                 var deviceWithClient = await query2.GetNextAsTwinAsync();
-                // récupération des informations sur les clients connceté à la gateway
+                // récupération des informations sur les clients connecté à la gateway
                 foreach (var item in deviceWithClient)
                 {
                     if (item.Properties.Reported.Contains("clients") && item.DeviceId == deviceId)
@@ -173,35 +173,41 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
                     if (gateway.NbModule > 0)
                     {
-                        foreach (var element in item.Properties.Reported["modules"])
+                        if (item.Properties.Reported.Contains("modules"))
                         {
-                            var module = new GatewayModule();
-                            module.ModuleName = element.Key;
-                            if (element.Value.Contains("status"))
+                            foreach (var element in item.Properties.Reported["modules"])
                             {
-                                module.Status = element.Value["status"];
-                            }
+                                var module = new GatewayModule();
+                                module.ModuleName = element.Key;
+                                if (element.Value.Contains("status"))
+                                {
+                                    module.Status = element.Value["status"];
+                                }
 
-                            if (element.Value.Contains("version"))
-                            {
-                                module.Version = element.Value["version"];
-                            }
+                                if (element.Value.Contains("version"))
+                                {
+                                    module.Version = element.Value["version"];
+                                }
 
-                            gateway.Modules.Add(module);
+                                gateway.Modules.Add(module);
+                            }
                         }
                     }
 
                     // recup du dernier deployment
-                    if (item.Configurations.Count > 0)
+                    if (item.Configurations != null)
                     {
-                        foreach (var config in item.Configurations)
+                        if (item.Configurations.Count > 0)
                         {
-                            var confObj = await this.registryManager.GetConfigurationAsync(config.Key);
-                            if (gateway.LastDeployment.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
+                            foreach (var config in item.Configurations)
                             {
-                                gateway.LastDeployment.Name = config.Key;
-                                gateway.LastDeployment.DateCreation = confObj.CreatedTimeUtc;
-                                gateway.LastDeployment.Status = ConfigurationStatus.Applied.ToString();
+                                var confObj = await this.registryManager.GetConfigurationAsync(config.Key);
+                                if (gateway.LastDeployment.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
+                                {
+                                    gateway.LastDeployment.Name = config.Key;
+                                    gateway.LastDeployment.DateCreation = confObj.CreatedTimeUtc;
+                                    gateway.LastDeployment.Status = ConfigurationStatus.Applied.ToString();
+                                }
                             }
                         }
                     }
@@ -209,6 +215,33 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
 
             return gateway;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(Gateway gateway)
+        {
+            var device = new Device(gateway.DeviceId)
+            {
+                Capabilities = new DeviceCapabilities
+                {
+                    IotEdge = true,
+                }
+            };
+            // Création de l'appareil
+            await this.registryManager.AddDeviceAsync(device).ConfigureAwait(false);
+
+            this.logger.LogInformation($"Created edge device {device.Id}");
+            // Configuration du Twin
+            var twin = await this.registryManager.GetTwinAsync(device.Id).ConfigureAwait(false);
+
+            this.logger.LogInformation($"\tTwin is {twin.ToJson()}");
+
+            twin.Tags["env"] = gateway.Environement;
+            twin.Tags["purpose"] = gateway.Type;
+            await this.registryManager.UpdateTwinAsync(device.Id, twin, twin.ETag);
+            this.logger.LogInformation($"\tUpdated twin to {twin.ToJson()}");
+
+            return this.Ok(device);
         }
 
         /// <summary>

@@ -11,6 +11,8 @@
 @inject NavigationManager NavigationManager
 @inject IModalService modal
 @inject IJSRuntime JS
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
 
 
 @if (result == null)
@@ -35,12 +37,12 @@ else
                         <MudCardContent>
                             <MudGrid>
                                 <div class="form-group">
-                                    <MudText>Name : </MudText>
+                                    <MudText Class="label-search">Name : </MudText>
                                     <MudTextField @bind-Value="model.DeviceId" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
                                 </div>
 
                                 <div class="form-group">
-                                    <MudText>Type : </MudText>
+                                    <MudText Class="label-search">Type : </MudText>
                                     <MudSelect T="string" Label="Type" @bind-Value="model.Type" Variant="Variant.Outlined" Format="F2">
                                         <MudSelectItem Value="@("")" />
                                         @foreach (var item in listeType)
@@ -49,11 +51,9 @@ else
                                         }
                                     </MudSelect>
                                 </div>
-                                @*</MudItem>*@
-                                @*<MudItem xs="6">*@
                                 <div class="form-group">
                                     <MudRadioGroup @bind-SelectedOption="@model.Status">
-                                        <MudText>Status : </MudText>
+                                        <MudText Class="label-search">Status : </MudText>
                                         <MudRadio Option="@("Enabled")" Color="Color.Primary">Enabled</MudRadio>
                                         <MudRadio Option="@("Disabled")" Color="Color.Primary">Disabled</MudRadio>
                                         <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
@@ -121,6 +121,7 @@ else
     private List<GatewayListItem> result;
     private List<string> listeType = new List<string>() { "lora", "unknow" };
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
+    DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Small, FullWidth = true };
 
     private SearchModel model = new SearchModel();
 
@@ -167,11 +168,13 @@ else
 
     private async Task ShowAddDialog()
     {
-        var result = await modal.Show<Add>("Add gateways").Result;
+        //var result = await modal.Show<Add>("Add gateways").Result;
+        var result = await DialogService.Show<Add>("Add new Gateway", maxWidth).Result;
 
-        if (!result.Cancelled)
+        if (result.Cancelled)
         {
-            await LoadGatewaysList();
+            return;
         }
+        await LoadGatewaysList();
     }
 }
