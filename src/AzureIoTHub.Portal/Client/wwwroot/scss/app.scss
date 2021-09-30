@@ -12,8 +12,8 @@
 /*//////////////////// Search Panel ////////////////*/
 .search-panel {
     width: max-content;
-    padding: 5px;
-    /*margin-left: 30%;*/
+    /*padding: 5px;*/
+    margin-left: 25%;
 
     .mud-grid-spacing-xs-3 {
         display: contents;
@@ -51,8 +51,8 @@
 ////////////////////////////////////////////////
 //// Detail gateway //////////////
 .detail-gateway {
-    width: fit-content;
-    margin-left: 10%;
+    // width: fit-content;
+    //margin-left: 10%;
 
     .module-table {
         margin-top: 15px;
@@ -91,6 +91,7 @@
                 .last-deployment {
                     background: gainsboro;
                     width: 60%;
+                    margin-left:15%;
                 }
             }
 
@@ -99,16 +100,46 @@
                 align-items: baseline;
                 padding: 10px;
 
-                label {
-                    padding: 5px;
+                span {
+                    //display:contents;
                 }
             }
         }
     }
 }
 
+@media (max-width: 1087px) {
+    .detail-gateway {
+        .content-box {
 
+            .contentCardItem {
 
+                .content-item {
+
+                    .content-button {
+
+                        .btn {
+                            font-size: 0.9em;
+
+                            :hover {
+                            }
+                        }
+                    }
+                }
+
+                .last-deployment {
+                }
+            }
+
+            .form-group {
+                font-size: 0.9em;
+
+                label {
+                }
+            }
+        }
+    }
+}
 .connectionString-modal-card {
     .form-group {
         align-items: baseline;
