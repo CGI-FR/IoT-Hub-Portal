@@ -9,15 +9,13 @@
 @attribute [Authorize]
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
-@inject IModalService modal
-@inject IJSRuntime JS
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
 
 @if (result == null)
 {
-    <p><em>Loading...</em></p>
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
 }
 else
 {
@@ -76,7 +74,7 @@ else
                         <col style="width: 10%;" />
                     </ColGroup>
                     <ToolBarContent>
-                        <MudText Typo="Typo.h6">Devices</MudText>
+                        <MudText Typo="Typo.h6" Style="text-align:center;">Gateway available</MudText>
                         <MudSpacer />
                     </ToolBarContent>
                     <HeaderContent>
