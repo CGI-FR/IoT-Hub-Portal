@@ -109,8 +109,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     var newModule = new GatewayModule
                     {
                         ModuleName = m.Key,
-                        Version = (string)m.Value["version"],
+                        Version = (string)m.Value["settings"]["image"],
                         Status = (string)m.Value["status"]
+                        // EnvironmentVariables = this.GetEnvironmentVariables(m)
                     };
                     tmp.Add(newModule);
                 }
@@ -149,5 +150,17 @@ namespace AzureIoTHub.Portal.Server.Controllers
             };
             return result;
         }
+
+        // Dictionary<string, string> GetEnvironmentVariables(System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> module)
+        // {
+        //    Dictionary<string, string> envVariables = new ();
+        //    foreach (var envVar in module.Value["env"])
+        //    {
+        //        Console.WriteLine(envVar);
+
+        // }
+
+        // return envVariables;
+        // }
     }
 }
