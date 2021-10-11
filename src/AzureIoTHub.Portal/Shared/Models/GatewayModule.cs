@@ -16,5 +16,7 @@ namespace AzureIoTHub.Portal.Shared.Models
         public string Version { get; set; }
 
         public string Status { get; set; }
+
+        public Dictionary<string, string> EnvironmentVariables { get; set; }
     }
 }

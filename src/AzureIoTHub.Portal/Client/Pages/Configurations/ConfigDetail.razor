@@ -105,6 +105,10 @@
                     <MudTd DataLabel="Version" Style="text-align: center">@context.Version</MudTd>
                     <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
                     <MudTd DataLabel="Device" Style="text-align: center">
+                        @foreach(var blah in context.EnvironmentVariables)
+                                {
+                                    @blah
+                                }
                         @*<MudButton Variant="Variant.Filled" Color="Color.Dark">logs</MudButton>*@
                         @*<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await OnReboot(context.ModuleName) )">reboot</MudButton>*@
                     </MudTd>
