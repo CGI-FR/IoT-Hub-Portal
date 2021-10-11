@@ -110,8 +110,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     {
                         ModuleName = m.Key,
                         Version = (string)m.Value["settings"]["image"],
-                        Status = (string)m.Value["status"]
-                        // EnvironmentVariables = this.GetEnvironmentVariables(m)
+                        Status = (string)m.Value["status"],
+                        EnvironmentVariables = this.GetEnvironmentVariables(m)
                     };
                     tmp.Add(newModule);
                 }
@@ -151,16 +151,26 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return result;
         }
 
-        // Dictionary<string, string> GetEnvironmentVariables(System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> module)
-        // {
-        //    Dictionary<string, string> envVariables = new ();
-        //    foreach (var envVar in module.Value["env"])
-        //    {
-        //        Console.WriteLine(envVar);
+        Dictionary<string, string> GetEnvironmentVariables(System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> module)
+        {
+            Dictionary<string, string> envVariables = new ();
 
-        // }
+            Console.WriteLine(module.Key);
+            Newtonsoft.Json.Linq.JObject test = (Newtonsoft.Json.Linq.JObject)module.Value;
+            // Console.WriteLine(test.ContainsKey("env"));
+            // Console.WriteLine(module.Value.Contains("env"));
+            // Console.WriteLine(module.Value.Contains("version"));
+            // Console.WriteLine(module.Value.Contains("type"));
+            Console.WriteLine("._._._._._._._._._._._._._._._._.");
+            if (test.ContainsKey("env"))
+            {
+                foreach (var val in module.Value["env"])
+                {
+                    Console.WriteLine(val);
+                }
+            }
 
-        // return envVariables;
-        // }
+            return envVariables;
+        }
     }
 }
