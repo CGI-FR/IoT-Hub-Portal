@@ -4,9 +4,11 @@
 namespace AzureIoTHub.Portal.Server.Controllers
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
+    using System.Text.Json;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Shared.Models;
@@ -18,6 +20,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
 
     [Authorize]
     [ApiController]
@@ -52,6 +55,27 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
             foreach (Configuration config in configList)
             {
+                List<GatewayModule> tmp = new ();
+                if (config.Content.ModulesContent != null)
+                {
+                    foreach (var module in config.Content.ModulesContent)
+                    {
+                        var newModule = new GatewayModule
+                        {
+                            ModuleName = module.Key
+                        };
+                        tmp.Add(newModule);
+                    }
+                }
+                else
+                {
+                    var newModule = new GatewayModule
+                    {
+                        ModuleName = "JePlante"
+                    };
+                    tmp.Add(newModule);
+                }
+
                 var result = new ConfigListItem
                 {
                     ConfigurationID = config.Id,
@@ -61,12 +85,82 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     MetricsSuccess = RetrieveMetricValue(config, "reportedSuccessfulCount"),
                     MetricsFailure = RetrieveMetricValue(config, "reportedFailedCount"),
                     Priority = config.Priority,
-                    CreationDate = config.CreatedTimeUtc
+                    CreationDate = config.CreatedTimeUtc,
+                    Modules = tmp
                 };
                 results.Add(result);
             }
 
             return results;
         }
+
+        [HttpGet("{configurationID}")]
+        public async Task<ConfigListItem> Get(string configurationID)
+        {
+            var config = await this.registryManager.GetConfigurationAsync(configurationID);
+            List<GatewayModule> tmp = new ();
+            if (config.Content.ModulesContent != null)
+            {
+                Newtonsoft.Json.Linq.JObject mod = (Newtonsoft.Json.Linq.JObject)config.Content.ModulesContent["$edgeAgent"]["properties.desired"];
+                Newtonsoft.Json.Linq.JObject modules = (Newtonsoft.Json.Linq.JObject)mod["modules"];
+                Newtonsoft.Json.Linq.JObject systemModules = (Newtonsoft.Json.Linq.JObject)mod["systemModules"];
+                foreach (var m in modules)
+                {
+                    var newModule = new GatewayModule
+                    {
+                        ModuleName = m.Key,
+                        Version = (string)m.Value["settings"]["image"],
+                        Status = (string)m.Value["status"]
+                        // EnvironmentVariables = this.GetEnvironmentVariables(m)
+                    };
+                    tmp.Add(newModule);
+                }
+
+                foreach (var sm in systemModules)
+                {
+                    var newModule = new GatewayModule
+                    {
+                        ModuleName = sm.Key,
+                        Version = "SYSTEM",
+                        Status = (string)sm.Value["status"]
+                    };
+                    tmp.Add(newModule);
+                }
+            }
+            else
+            {
+                var newModule = new GatewayModule
+                {
+                    ModuleName = "JePlante"
+                };
+                tmp.Add(newModule);
+            }
+
+            var result = new ConfigListItem
+            {
+                ConfigurationID = config.Id,
+                Conditions = config.TargetCondition,
+                MetricsTargeted = RetrieveMetricValue(config, "targetedCount"),
+                MetricsApplied = RetrieveMetricValue(config, "appliedCount"),
+                MetricsSuccess = RetrieveMetricValue(config, "reportedSuccessfulCount"),
+                MetricsFailure = RetrieveMetricValue(config, "reportedFailedCount"),
+                Priority = config.Priority,
+                CreationDate = config.CreatedTimeUtc,
+                Modules = tmp
+            };
+            return result;
+        }
+
+        // Dictionary<string, string> GetEnvironmentVariables(System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> module)
+        // {
+        //    Dictionary<string, string> envVariables = new ();
+        //    foreach (var envVar in module.Value["env"])
+        //    {
+        //        Console.WriteLine(envVar);
+
+        // }
+
+        // return envVariables;
+        // }
     }
 }

@@ -37,23 +37,23 @@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="ID" Style="word-break: break-all;">
-                        <a href="#">@context.ConfigurationID</a>
+                        <a href="configdetail/@context.ConfigurationID">@context.ConfigurationID</a>
                     </MudTd>
                     <MudTd DataLabel="Conditions" Style="word-break: break-all; ">
                         <a href="#">@context.Conditions</a>
                     </MudTd>
                     <MudTd DataLabel="System Metrics" Style="text-align: center;">
-                        @context.MetricsTargeted targeted<br/>
-                        @context.MetricsApplied applied <br/>
+                        @context.MetricsTargeted targeted<br />
+                        @context.MetricsApplied applied <br />
                     </MudTd>
                     <MudTd DataLabel="Device Metrics" Style="text-align: center;">
-                        @context.MetricsSuccess reporting success <br/>
-                        @context.MetricsFailure reporting failure <br/>
+                        @context.MetricsSuccess reporting success <br />
+                        @context.MetricsFailure reporting failure <br />
                     </MudTd>
                     <MudTd DataLabel="Priority" Style="text-align: center">@context.Priority</MudTd>
                     <MudTd DataLabel="Creation date" Style="text-align: center;">@context.CreationDate</MudTd>
-                    <MudTd DataLabel="Detail" Style="text-align: center">
-                        <a href="#"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                    <MudTd DataLabel="Details" Style="text-align: center">
+                        <a href="configdetail/@context.ConfigurationID"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
                     </MudTd>
                     <MudTd DataLabel="Delete" Style="text-align: center">
                         <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteConfiguration(context))"></MudIconButton>
