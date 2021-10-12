@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
@@ -220,28 +221,40 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(Gateway gateway)
         {
-            var device = new Device(gateway.DeviceId)
+            try
             {
-                Capabilities = new DeviceCapabilities
+                var device = new Device(gateway.DeviceId)
                 {
-                    IotEdge = true,
-                }
-            };
-            // Création de l'appareil
-            await this.registryManager.AddDeviceAsync(device).ConfigureAwait(false);
+                    Capabilities = new DeviceCapabilities
+                    {
+                        IotEdge = true,
+                    }
+                };
+                // Création de l'appareil
+                await this.registryManager.AddDeviceAsync(device).ConfigureAwait(false);
 
-            this.logger.LogInformation($"Created edge device {device.Id}");
-            // Configuration du Twin
-            var twin = await this.registryManager.GetTwinAsync(device.Id).ConfigureAwait(false);
+                this.logger.LogInformation($"Created edge device {device.Id}");
+                // Configuration du Twin
+                var twin = await this.registryManager.GetTwinAsync(device.Id).ConfigureAwait(false);
 
-            this.logger.LogInformation($"\tTwin is {twin.ToJson()}");
+                this.logger.LogInformation($"\tTwin is {twin.ToJson()}");
 
-            twin.Tags["env"] = gateway.Environement;
-            twin.Tags["purpose"] = gateway.Type;
-            await this.registryManager.UpdateTwinAsync(device.Id, twin, twin.ETag);
-            this.logger.LogInformation($"\tUpdated twin to {twin.ToJson()}");
+                twin.Tags["env"] = gateway.Environement;
+                twin.Tags["purpose"] = gateway.Type;
+                await this.registryManager.UpdateTwinAsync(device.Id, twin, twin.ETag);
+                this.logger.LogInformation($"\tUpdated twin to {twin.ToJson()}");
 
-            return this.Ok(device);
+                return this.Ok(device);
+            }
+            catch (DeviceAlreadyExistsException)
+            {
+                this.logger.LogInformation("Device already exist.");
+                return this.Ok("device already exist");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -289,15 +302,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
             CloudToDeviceMethodResult result = await this.serviceClient.InvokeDeviceMethodAsync($"{deviceId}", method);
             this.logger.LogInformation($"iot hub device : {deviceId} module : {moduleId} reboot.");
-            return this.Ok(result);
-        }
-
-        [HttpPost("{gateway}")]
-        public async Task<IActionResult> Post(Gateway gateway)
-        {
-            var device = new Device(gateway.DeviceId);
-            var result = await this.registryManager.AddDeviceAsync(device);
-
             return this.Ok(result);
         }
     }
