@@ -20,7 +20,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
-    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     [Authorize]
     [ApiController]
@@ -164,9 +164,18 @@ namespace AzureIoTHub.Portal.Server.Controllers
             Console.WriteLine("._._._._._._._._._._._._._._._._.");
             if (test.ContainsKey("env"))
             {
-                foreach (var val in module.Value["env"])
+                foreach (Newtonsoft.Json.Linq.JProperty val in module.Value["env"])
                 {
-                    Console.WriteLine(val);
+                    var test1 = val.Name;
+                    var test2 = val.Value;
+                    Newtonsoft.Json.Linq.JObject test3 = (Newtonsoft.Json.Linq.JObject)test2;
+                    var test4 = test3["value"];
+
+                    Console.Write(test1);
+                    Console.Write(" ==> ");
+                    Console.WriteLine(test4);
+                    Console.WriteLine("......................");
+                    // Console.WriteLine(val.Value);
                 }
             }
 
