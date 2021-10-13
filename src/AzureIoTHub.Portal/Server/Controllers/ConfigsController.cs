@@ -56,6 +56,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
             foreach (Configuration config in configList)
             {
                 List<GatewayModule> tmp = new ();
+
+                // S'il n'y a pas de module, il s'agit d'une configuration et non d'un déploiement -> L'exclure
                 if (config.Content.ModulesContent != null)
                 {
                     foreach (var module in config.Content.ModulesContent)
@@ -66,29 +68,21 @@ namespace AzureIoTHub.Portal.Server.Controllers
                         };
                         tmp.Add(newModule);
                     }
-                }
-                else
-                {
-                    var newModule = new GatewayModule
-                    {
-                        ModuleName = "JePlante"
-                    };
-                    tmp.Add(newModule);
-                }
 
-                var result = new ConfigListItem
-                {
-                    ConfigurationID = config.Id,
-                    Conditions = config.TargetCondition,
-                    MetricsTargeted = RetrieveMetricValue(config, "targetedCount"),
-                    MetricsApplied = RetrieveMetricValue(config, "appliedCount"),
-                    MetricsSuccess = RetrieveMetricValue(config, "reportedSuccessfulCount"),
-                    MetricsFailure = RetrieveMetricValue(config, "reportedFailedCount"),
-                    Priority = config.Priority,
-                    CreationDate = config.CreatedTimeUtc,
-                    Modules = tmp
-                };
-                results.Add(result);
+                    var result = new ConfigListItem
+                    {
+                        ConfigurationID = config.Id,
+                        Conditions = config.TargetCondition,
+                        MetricsTargeted = RetrieveMetricValue(config, "targetedCount"),
+                        MetricsApplied = RetrieveMetricValue(config, "appliedCount"),
+                        MetricsSuccess = RetrieveMetricValue(config, "reportedSuccessfulCount"),
+                        MetricsFailure = RetrieveMetricValue(config, "reportedFailedCount"),
+                        Priority = config.Priority,
+                        CreationDate = config.CreatedTimeUtc,
+                        Modules = tmp
+                    };
+                    results.Add(result);
+                }
             }
 
             return results;
