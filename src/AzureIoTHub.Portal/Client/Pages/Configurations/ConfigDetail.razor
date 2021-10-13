@@ -128,14 +128,6 @@
         try
         {
             Config = await Http.GetFromJsonAsync<ConfigListItem>($"Configs/{ConfigurationID}");
-            Console.WriteLine(Config.Modules.Count().ToString());
-            Console.WriteLine(Config.Modules.First().ModuleName);
-            Console.WriteLine("_______________________________");
-            foreach (var mod in Config.Modules)
-            {
-                Console.WriteLine(mod.ModuleName);
-            }
-
             ConditionOwner = RetrieveCondition("owner");
             ConditionEnv = RetrieveCondition("env");
             ConditionType = RetrieveCondition("type");
