@@ -94,7 +94,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                             Newtonsoft.Json.Linq.JObject modules = (Newtonsoft.Json.Linq.JObject)modObject["modules"];
                             foreach (var m in modules)
                             {
-                                GatewayModule newModule = this.CreateGatewayModule(m);
+                                GatewayModule newModule = this.CreateGatewayModule(config, m);
                                 moduleList.Add(newModule);
                             }
                         }
@@ -105,7 +105,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
                             foreach (var sm in systemModules)
                             {
-                                GatewayModule newModule = this.CreateGatewayModule(sm);
+                                GatewayModule newModule = this.CreateGatewayModule(config, sm);
                                 moduleList.Add(newModule);
                             }
                         }
@@ -133,28 +133,54 @@ namespace AzureIoTHub.Portal.Server.Controllers
             };
         }
 
-        GatewayModule CreateGatewayModule(System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> module)
+        GatewayModule CreateGatewayModule(Configuration config, System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> module)
         {
             return new GatewayModule
             {
                 ModuleName = module.Key,
                 Version = (string)module.Value["settings"]["image"],
                 Status = (string)module.Value["status"],
-                EnvironmentVariables = this.GetEnvironmentVariables(module)
+                EnvironmentVariables = this.GetEnvironmentVariables(module),
+                ModuleIdentityTwinSettings = this.GetModuleIdentityTwinSettings(config, module)
             };
+        }
+
+        Dictionary<string, string> GetModuleIdentityTwinSettings(Configuration config, System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> module)
+        {
+            Dictionary<string, string> twinSettings = new ();
+            Console.WriteLine(module.Key);
+            Console.WriteLine("................................");
+
+            if (config.Content.ModulesContent != null)
+            {
+                foreach (var val in config.Content.ModulesContent)
+                {
+                    Console.WriteLine("<><><><><><><><><><><><><><><><><><><><><>");
+                    Console.WriteLine(val);
+                }
+
+                if (config.Content.ModulesContent.ContainsKey(module.Key))
+                {
+                    Newtonsoft.Json.Linq.JObject test = (Newtonsoft.Json.Linq.JObject)config.Content.ModulesContent[module.Key];
+                    Console.WriteLine("________________________________________________________________");
+                    Console.WriteLine(test);
+                }
+            }
+
+            return twinSettings;
         }
 
         Dictionary<string, string> GetEnvironmentVariables(System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> module)
         {
             Dictionary<string, string> envVariables = new ();
 
-            Console.WriteLine(module.Key);
+            // Console.WriteLine(module.Key);
             Newtonsoft.Json.Linq.JObject test = (Newtonsoft.Json.Linq.JObject)module.Value;
             // Console.WriteLine(test.ContainsKey("env"));
             // Console.WriteLine(module.Value.Contains("env"));
             // Console.WriteLine(module.Value.Contains("version"));
             // Console.WriteLine(module.Value.Contains("type"));
-            Console.WriteLine("._._._._._._._._._._._._._._._._.");
+            // Console.WriteLine("._._._._._._._._._._._._._._._._.");
             if (test.ContainsKey("env"))
             {
                 foreach (Newtonsoft.Json.Linq.JProperty val in module.Value["env"])
@@ -164,10 +190,10 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     Newtonsoft.Json.Linq.JObject test3 = (Newtonsoft.Json.Linq.JObject)test2;
                     var test4 = test3["value"];
 
-                    Console.Write(test1);
-                    Console.Write(" ==> ");
-                    Console.WriteLine(test4);
-                    Console.WriteLine("......................");
+                    // Console.Write(test1);
+                    // Console.Write(" ==> ");
+                    // Console.WriteLine(test4);
+                    // Console.WriteLine("......................");
                     // Console.WriteLine(val.Value);
                 }
             }
