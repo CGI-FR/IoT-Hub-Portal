@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
@@ -106,10 +107,10 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
             gateway.DeviceId = deviceTwin.DeviceId;
             gateway.Status = deviceTwin.Status.Value.ToString();
-            // var attestationMechanism = await this.dps.GetEnrollmentGroupAttestationAsync("DemoGatewayEnrollmentGroup");
             var attestationMechanism = await this.dps.GetEnrollmentGroupAttestationAsync(this.configuration["IoTDPS:DefaultEnrollmentGroupe"]);
             gateway.EndPoint = this.configuration["IoTDPS:ServiceEndpoint"];
             gateway.Scope = deviceTwin.DeviceScope;
+            gateway.Connection_state = deviceTwin.ConnectionState.Value.ToString();
 
             // on récupère la symmetric Key
             SymmetricKeyAttestation symmetricKey = attestationMechanism.GetAttestation() as SymmetricKeyAttestation;
@@ -220,28 +221,40 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(Gateway gateway)
         {
-            var device = new Device(gateway.DeviceId)
+            try
             {
-                Capabilities = new DeviceCapabilities
+                var device = new Device(gateway.DeviceId)
                 {
-                    IotEdge = true,
-                }
-            };
-            // Création de l'appareil
-            await this.registryManager.AddDeviceAsync(device).ConfigureAwait(false);
+                    Capabilities = new DeviceCapabilities
+                    {
+                        IotEdge = true,
+                    }
+                };
+                // Création de l'appareil
+                await this.registryManager.AddDeviceAsync(device).ConfigureAwait(false);
 
-            this.logger.LogInformation($"Created edge device {device.Id}");
-            // Configuration du Twin
-            var twin = await this.registryManager.GetTwinAsync(device.Id).ConfigureAwait(false);
+                this.logger.LogInformation($"Created edge device {device.Id}");
+                // Configuration du Twin
+                var twin = await this.registryManager.GetTwinAsync(device.Id).ConfigureAwait(false);
 
-            this.logger.LogInformation($"\tTwin is {twin.ToJson()}");
+                this.logger.LogInformation($"\tTwin is {twin.ToJson()}");
 
-            twin.Tags["env"] = gateway.Environement;
-            twin.Tags["purpose"] = gateway.Type;
-            await this.registryManager.UpdateTwinAsync(device.Id, twin, twin.ETag);
-            this.logger.LogInformation($"\tUpdated twin to {twin.ToJson()}");
+                twin.Tags["env"] = gateway.Environement;
+                twin.Tags["purpose"] = gateway.Type;
+                await this.registryManager.UpdateTwinAsync(device.Id, twin, twin.ETag);
+                this.logger.LogInformation($"\tUpdated twin to {twin.ToJson()}");
 
-            return this.Ok(device);
+                return this.Ok(device);
+            }
+            catch (DeviceAlreadyExistsException)
+            {
+                this.logger.LogInformation("Device already exist.");
+                return this.Ok("device already exist");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -281,24 +294,21 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return this.Ok();
         }
 
-        [HttpGet("{deviceId}/{moduleId}")]
-        public async Task<IActionResult> RebootDeviceModule(string moduleId, string deviceId)
+        [HttpGet("{deviceId}/{moduleId}/{methodName}")]
+        public async Task<IActionResult> RebootDeviceModule(string moduleId, string deviceId, string methodName)
         {
-            CloudToDeviceMethod method = new CloudToDeviceMethod("reboot");
-            method.ResponseTimeout = TimeSpan.FromSeconds(30);
-
-            CloudToDeviceMethodResult result = await this.serviceClient.InvokeDeviceMethodAsync($"{deviceId}", method);
-            this.logger.LogInformation($"iot hub device : {deviceId} module : {moduleId} reboot.");
-            return this.Ok(result);
-        }
-
-        [HttpPost("{gateway}")]
-        public async Task<IActionResult> Post(Gateway gateway)
-        {
-            var device = new Device(gateway.DeviceId);
-            var result = await this.registryManager.AddDeviceAsync(device);
-
-            return this.Ok(result);
+            try
+            {
+                CloudToDeviceMethod method = new CloudToDeviceMethod(methodName);
+                // method.ResponseTimeout = TimeSpan.FromSeconds(30);
+                CloudToDeviceMethodResult result = await this.serviceClient.InvokeDeviceMethodAsync($"{deviceId}", $"{moduleId}", method);
+                this.logger.LogInformation($"iot hub device : {deviceId} module : {moduleId} execute methode {methodName}.");
+                return this.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return this.Ok(ex.Message);
+            }
         }
     }
 }

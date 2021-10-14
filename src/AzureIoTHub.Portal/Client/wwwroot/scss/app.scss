@@ -11,25 +11,16 @@
 
 /*//////////////////// Search Panel ////////////////*/
 .search-panel {
-    width: max-content;
-    padding: 5px;
-    /*margin-left: 30%;*/
+    /*width: max-content;*/
+    /*padding: 5px;*/
+    /*margin-left: 25%;*/
+    justify-content: center;
+    margin-bottom: 15px;
 
-    .mud-grid-spacing-xs-3 {
+/*    .mud-grid-spacing-xs-3 {
         display: contents;
-    }
+    }*/
 
-    .form-group {
-        display: flex;
-        align-items: baseline;
-        margin: 10px;
-
-        .label-search {
-            /* padding-right: 30px; */
-            margin-right: 30px;
-            width: max-content;
-        }
-    }
 }
 ////////////////////////////////////////////////////////
 
@@ -50,64 +41,24 @@
 }
 ////////////////////////////////////////////////
 //// Detail gateway //////////////
-.detail-gateway {
-    width: fit-content;
-    margin-left: 10%;
-
-    .module-table {
-        margin-top: 15px;
-    }
-
-    .card-detail {
-
-        .content-box {
-            align-items: center;
-            display: flex;
-            justify-content: center;
-
-            .contentCardItem {
-                padding: 20px;
-
-                .content-item {
-                    display: flex;
-
-                    .content-button {
-                        display: grid;
-                        justify-items: center;
-                        align-content: center;
-
-                        .btn {
-                            height: fit-content;
-                            width: fit-content;
-                            margin: 2px;
-
-                            :hover {
-                                color: black;
-                            }
-                        }
-                    }
-                }
-
-                .last-deployment {
-                    background: gainsboro;
-                    width: 60%;
-                }
-            }
-
-            .form-group {
-                display: flex;
-                align-items: baseline;
-                padding: 10px;
-
-                label {
-                    padding: 5px;
-                }
-            }
-        }
+.grid-custom {
+    .last-deployment {
+        background: gainsboro;
+        padding: 4px;
     }
 }
 
+.btn {
+    font-size: 0.9em;
 
+    &:hover {
+        color: #000000;
+    }
+}
+
+.form-group {
+    font-size: 0.9em;
+}
 
 .connectionString-modal-card {
     .form-group {
