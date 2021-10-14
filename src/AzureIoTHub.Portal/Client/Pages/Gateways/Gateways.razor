@@ -20,27 +20,34 @@
 else
 {
     <MudContainer MaxWidth="MaxWidth.False">
-        <MudGrid>
-            <div class="search-panel">
-                <MudItem xs="12">
-                    <MudCard>
-                        <MudCardHeader>
-                            <CardHeaderContent>
-                                <MudText Typo="Typo.h6">Search panel</MudText>
-                            </CardHeaderContent>
-                            <CardHeaderActions>
-                                <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="ResetFiltre">Reset</MudButton>
-                            </CardHeaderActions>
-                        </MudCardHeader>
-                        <MudCardContent>
-                            <MudGrid>
-                                <div class="form-group">
-                                    <MudText Class="label-search">Name : </MudText>
-                                    <MudTextField @bind-Value="model.DeviceId" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
-                                </div>
+        <MudGrid Class="search-panel">
+            <MudItem xs="12" md="6">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Search panel</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="ResetFiltre">Reset</MudButton>
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid Class="search-content">
 
-                                <div class="form-group">
-                                    <MudText Class="label-search">Type : </MudText>
+                            <MudItem xs="12" Class="custom-form">
+                                <MudItem xs="12" md="3" sm="7">
+                                    <MudText>Name : </MudText>
+                                </MudItem>
+                                <MudItem xs="12" sm="10" md="5">
+                                    <MudTextField @bind-Value="model.DeviceId" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+                                </MudItem>
+                            </MudItem>
+
+                            <MudItem xs="12" Class="custom-form">
+                                <MudItem xs="12" md="3" sm="7">
+                                    <MudText>Type : </MudText>
+                                </MudItem>
+                                <MudItem xs="12" sm="10" md="5">
                                     <MudSelect T="string" Label="Type" @bind-Value="model.Type" Variant="Variant.Outlined" Format="F2">
                                         <MudSelectItem Value="@("")" />
                                         @foreach (var item in listeType)
@@ -48,22 +55,27 @@ else
                                             <MudSelectItem Value="@item" />
                                         }
                                     </MudSelect>
-                                </div>
-                                <div class="form-group">
-                                    <MudRadioGroup @bind-SelectedOption="@model.Status">
-                                        <MudText Class="label-search">Status : </MudText>
+                                </MudItem>
+                            </MudItem>
+
+                            <MudItem xs="12" Class="custom-form">
+                                <MudItem xs="12" md="3" sm="7">
+                                    <MudText>Status :</MudText>
+                                </MudItem>
+                                <MudItem xs="12" sm="10" md="5">
+                                    <MudRadioGroup @bind-SelectedOption="@model.Status" Style="display:flex">
                                         <MudRadio Option="@("Enabled")" Color="Color.Primary">Enabled</MudRadio>
                                         <MudRadio Option="@("Disabled")" Color="Color.Primary">Disabled</MudRadio>
                                         <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
                                     </MudRadioGroup>
-                                </div>
-                                @*</MudItem>*@
-                            </MudGrid>
-                        </MudCardContent>
-                    </MudCard>
-                </MudItem>
-            </div>
-
+                                </MudItem>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+        <MudGrid>
             <MudItem xs="12">
                 <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<GatewayListItem, bool>(FilterFunc)">
                     <ColGroup>

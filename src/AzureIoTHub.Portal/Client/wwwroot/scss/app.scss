@@ -11,13 +11,15 @@
 
 /*//////////////////// Search Panel ////////////////*/
 .search-panel {
-    width: max-content;
+    /*width: max-content;*/
     /*padding: 5px;*/
-    margin-left: 25%;
+    /*margin-left: 25%;*/
+    justify-content: center;
+    margin-bottom: 15px;
 
-    .mud-grid-spacing-xs-3 {
+/*    .mud-grid-spacing-xs-3 {
         display: contents;
-    }
+    }*/
 
     .form-group {
         display: flex;
@@ -58,33 +60,20 @@
 }
 
 .btn {
+    font-size: 0.9em;
+
     &:hover {
         color: #000000;
     }
 }
 
-                        .btn {
-                            font-size: 0.9em;
+.form-group {
+    font-size: 0.9em;
 
-                            :hover {
-                            }
-                        }
-                    }
-                }
-
-                .last-deployment {
-                }
-            }
-
-            .form-group {
-                font-size: 0.9em;
-
-                label {
-                }
-            }
-        }
+    label {
     }
 }
+
 .connectionString-modal-card {
     .form-group {
         align-items: baseline;
