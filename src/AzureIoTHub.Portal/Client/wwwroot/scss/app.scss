@@ -50,96 +50,19 @@
 }
 ////////////////////////////////////////////////
 //// Detail gateway //////////////
-.detail-gateway {
-    // width: fit-content;
-    //margin-left: 10%;
-
-    .module-table {
-        margin-top: 15px;
-    }
-
-    .card-detail {
-
-        .content-box {
-            align-items: center;
-            display: flex;
-            justify-content: center;
-
-            .contentCardItem {
-                padding: 20px;
-
-                .content-item {
-                    display: flex;
-
-                    .content-button {
-                        display: grid;
-                        justify-items: center;
-                        align-content: center;
-
-                        .btn {
-                            height: fit-content;
-                            width: fit-content;
-                            margin: 2px;
-
-                            :hover {
-                                color: black;
-                            }
-                        }
-                    }
-                }
-
-                .last-deployment {
-                    background: gainsboro;
-                    width: 60%;
-                    margin-left:15%;
-                }
-            }
-
-            .form-group {
-                display: flex;
-                align-items: baseline;
-                padding: 10px;
-
-                span {
-                    //display:contents;
-                }
-            }
-        }
+.grid-custom {
+    .last-deployment {
+        background: gainsboro;
+        padding: 4px;
     }
 }
 
-@media (max-width: 1087px) {
-    .detail-gateway {
-        .content-box {
-
-            .contentCardItem {
-
-                .content-item {
-
-                    .content-button {
-
-                        .btn {
-                            font-size: 0.9em;
-
-                            :hover {
-                            }
-                        }
-                    }
-                }
-
-                .last-deployment {
-                }
-            }
-
-            .form-group {
-                font-size: 0.9em;
-
-                label {
-                }
-            }
-        }
+.btn {
+    &:hover {
+        color: #000000;
     }
 }
+
 .connectionString-modal-card {
     .form-group {
         align-items: baseline;

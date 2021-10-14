@@ -107,10 +107,10 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
             gateway.DeviceId = deviceTwin.DeviceId;
             gateway.Status = deviceTwin.Status.Value.ToString();
-            // var attestationMechanism = await this.dps.GetEnrollmentGroupAttestationAsync("DemoGatewayEnrollmentGroup");
             var attestationMechanism = await this.dps.GetEnrollmentGroupAttestationAsync(this.configuration["IoTDPS:DefaultEnrollmentGroupe"]);
             gateway.EndPoint = this.configuration["IoTDPS:ServiceEndpoint"];
             gateway.Scope = deviceTwin.DeviceScope;
+            gateway.Connection_state = deviceTwin.ConnectionState.Value.ToString();
 
             // on récupère la symmetric Key
             SymmetricKeyAttestation symmetricKey = attestationMechanism.GetAttestation() as SymmetricKeyAttestation;
@@ -294,15 +294,21 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return this.Ok();
         }
 
-        [HttpGet("{deviceId}/{moduleId}")]
-        public async Task<IActionResult> RebootDeviceModule(string moduleId, string deviceId)
+        [HttpGet("{deviceId}/{moduleId}/{methodName}")]
+        public async Task<IActionResult> RebootDeviceModule(string moduleId, string deviceId, string methodName)
         {
-            CloudToDeviceMethod method = new CloudToDeviceMethod("reboot");
-            method.ResponseTimeout = TimeSpan.FromSeconds(30);
-
-            CloudToDeviceMethodResult result = await this.serviceClient.InvokeDeviceMethodAsync($"{deviceId}", method);
-            this.logger.LogInformation($"iot hub device : {deviceId} module : {moduleId} reboot.");
-            return this.Ok(result);
+            try
+            {
+                CloudToDeviceMethod method = new CloudToDeviceMethod(methodName);
+                // method.ResponseTimeout = TimeSpan.FromSeconds(30);
+                CloudToDeviceMethodResult result = await this.serviceClient.InvokeDeviceMethodAsync($"{deviceId}", $"{moduleId}", method);
+                this.logger.LogInformation($"iot hub device : {deviceId} module : {moduleId} execute methode {methodName}.");
+                return this.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return this.Ok(ex.Message);
+            }
         }
     }
 }

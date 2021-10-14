@@ -92,10 +92,12 @@ else
                         <MudTd DataLabel="Status" Style="text-align: center">
                             @if (context.Status == "Enabled")
                                 {
-                                <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" /> }
+                                <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                                }
                                 else
                                 {
-                                <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />}
+                                <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                                }
                         </MudTd>
                         <MudTd DataLabel="Type" Style="text-align: center">@context.Type</MudTd>
                         <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>

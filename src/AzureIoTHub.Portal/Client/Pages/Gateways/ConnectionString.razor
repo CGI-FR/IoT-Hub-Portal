@@ -10,8 +10,8 @@
             <MudCard Outlined="true" Style="width:min-content">
                 <MudCardContent Style="" Class="connectionString-modal-card">
                     <div class="form-group">
-                        <label>Scope : </label>
-                        <MudText>@Scope</MudText>
+                        <label>Device Id : </label>
+                        <MudText>@DeviceId</MudText>
                     </div>
                     <div class="form-group">
                         <label>Symmetric Key : </label>
@@ -33,8 +33,8 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string Endpoint { get; set; }
-    [Parameter] public string Scope { get; set; }
     [Parameter] public string SymmetricKey { get; set; }
+    [Parameter] public string DeviceId { get; set; }
 
     void Cancel() => MudDialog.Cancel();
 }

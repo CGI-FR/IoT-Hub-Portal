@@ -15,6 +15,8 @@ namespace AzureIoTHub.Portal.Shared.Models
 
         public string SymmetricKey { get; set; }
 
+        public string Connection_state { get; set; }
+
         public string Scope { get; set; }
 
         public string EndPoint { get; set; }
