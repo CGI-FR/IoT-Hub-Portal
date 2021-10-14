@@ -21,17 +21,6 @@
         display: contents;
     }*/
 
-    .form-group {
-        display: flex;
-        align-items: baseline;
-        margin: 10px;
-
-        .label-search {
-            /* padding-right: 30px; */
-            margin-right: 30px;
-            width: max-content;
-        }
-    }
 }
 ////////////////////////////////////////////////////////
 
@@ -69,9 +58,6 @@
 
 .form-group {
     font-size: 0.9em;
-
-    label {
-    }
 }
 
 .connectionString-modal-card {
