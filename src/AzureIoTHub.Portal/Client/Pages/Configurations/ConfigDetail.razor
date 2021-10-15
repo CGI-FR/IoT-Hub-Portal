@@ -97,15 +97,7 @@
                     <MudTd DataLabel="Version" Style="text-align: center">@context.Version</MudTd>
                     <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
                     <MudTd DataLabel="Device" Style="text-align: center">
-                        @foreach(var test in context.EnvironmentVariables)
-                                {
-                                    @test.Key @test.Value
-                                }
-                        @foreach(var test in context.ModuleIdentityTwinSettings)
-                                {
-                                    @test.Key @test.Value
-                                }
-                        @*<MudButton Variant="Variant.Filled" Color="Color.Dark">logs</MudButton>*@
+                        <MudButton Variant="Variant.Filled" Color="Color.Dark" OnClick="@(async () => await ShowModuleDetail(context) )">Voir</MudButton>
                         @*<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await OnReboot(context.ModuleName) )">reboot</MudButton>*@
                     </MudTd>
                 </RowTemplate>
@@ -116,8 +108,8 @@
 
 @code {
 
-    [Parameter]
-    public string ConfigurationID { get; set; }
+        [Parameter]
+        public string ConfigurationID { get; set; }
 
     private ConfigListItem Config { get; set; } = new ConfigListItem();
 
@@ -163,6 +155,18 @@
     private async Task DeleteDevice()
     {
         await Task.Delay(0);
+    }
+
+    public async Task ShowModuleDetail(GatewayModule module)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("module", module);
+        var result = await DialogService.Show<ModuleDetail>(module.ModuleName, parameters).Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
     }
 }
 
