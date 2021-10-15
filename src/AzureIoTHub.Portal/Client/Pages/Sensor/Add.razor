@@ -1,0 +1,155 @@
+﻿@page "/add_sensor"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Shared.Models
+@using System.Net.Http.Json
+@using Blazored.Modal
+@using Blazored.Modal.Services
+
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<MudContainer MaxWidth="MaxWidth.False">
+    <EditForm Model="@_sensorModel" OnValidSubmit="OnValidation">
+        <DataAnnotationsValidator />
+        <MudCard>
+            <MudCardContent>
+
+                <MudGrid>
+                    <MudItem md="6" xs="12">
+
+                        <MudItem xs="12" Class="custom-form">
+                            <MudItem xs="12" md="2" sm="7">
+                                <MudText>Name :</MudText>
+                            </MudItem>
+                            <MudItem xs="12" md="6" sm="10">
+                                <MudTextField @bind-Value="@_sensorModel.Name" For="@(() => _sensorModel.Name)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                            </MudItem>
+                        </MudItem>
+                        <MudItem xs="12" Class="custom-form">
+                            <MudItem xs="12" md="2" sm="7">
+                                <MudText>Description :</MudText>
+                            </MudItem>
+                            <MudItem xs="12" md="6" sm="6">
+                                <MudTextField @bind-Value="@_sensorModel.Description" For="@(() => _sensorModel.Description)" Margin="Margin.Dense" Variant="Variant.Outlined" Lines="5" />
+                            </MudItem>
+                        </MudItem>
+                    </MudItem>
+
+                    <MudItem md="6" xs="12">
+                        <MudItem xs="12" Class="custom-form">
+                            <MudItem xs="12" md="2" sm="7">
+                                <MudText>AppEUI :</MudText>
+                            </MudItem>
+                            <MudItem xs="12" md="4" sm="10">
+                                <MudTextField @bind-Value="@_sensorModel.AppEUI" For="@(() => _sensorModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                            </MudItem>
+                        </MudItem>
+                        <MudItem xs="12" Class="custom-form">
+                            <MudItem xs="12" md="2" sm="7">
+                                <MudText>Image :</MudText>
+                            </MudItem>
+                            <MudItem xs="12" md="4" sm="10">
+                                <MudTextField @bind-Value="@_sensorModel.AppEUI" For="@(() => _sensorModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                            </MudItem>
+                        </MudItem>
+                    </MudItem>
+                    @* ********************************************************* *@
+
+                </MudGrid>
+
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Create</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+
+    <EditForm Model="@_sensorCommand" OnValidSubmit="AddCommand">
+        <DataAnnotationsValidator />
+        <MudCard>
+            <MudCardContent>
+                <MudGrid>
+                    @* ********************************************************* *@
+                    <MudItem md="6" xs="12">
+                        <MudItem md="12" xs="12">
+                            <MudText>Commands :</MudText>
+                        </MudItem>
+
+                        @if (_sensorModel.Commands.Count > 0)
+                        {
+                            @*@for (int i = 0; i < _sensorModel.Commands.length; i++)
+                            {
+
+                            }*@
+                            @foreach (var element in _sensorModel.Commands)
+                            {
+                                <MudItem xs="12" Class="custom-form">
+                                    <MudItem xs="3" md="1" sm="3">
+                                        <MudIconButton Icon="@Icons.Material.Filled.HighlightOff" Color="Color.Error" OnClick="@(() => DeleteCommand(_sensorModel.Commands.IndexOf(element)))" />
+                                    </MudItem>
+                                    <MudItem xs="12" md="7" sm="10" Style="margin-right: 10px;">
+                                        <MudTextField @bind-Value="@element.Name" Label="Command Name" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
+                                    </MudItem>
+                                    <MudItem xs="12" md="8" sm="10" Style="margin-right: 10px;">
+                                        <MudTextField @bind-Value="@element.Trame" Label="Hex Trame" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
+                                    </MudItem>
+                                    <MudItem xs="12" md="3" sm="10" Style="margin-right: 10px;">
+                                        <MudTextField @bind-Value="@element.Port"  Label="Port" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
+                                    </MudItem>
+                                </MudItem>
+                            }
+                        }
+
+                        <MudItem xs="12" Class="custom-form">
+                            @* Add new Command :  *@
+                            <MudItem xs="3" md="1" sm="3">
+                                <MudIconButton ButtonType="ButtonType.Submit" Icon="@Icons.Material.Filled.AddCircle" Color="Color.Tertiary" />
+                            </MudItem>
+                            <MudItem xs="12" md="7" sm="10" Style="margin-right: 10px;">
+                                <MudTextField @bind-Value="@_sensorCommand.Name" Label="Command Name" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                            </MudItem>
+                            <MudItem xs="12" md="8" sm="10" Style="margin-right: 10px;">
+                                <MudTextField @bind-Value="@_sensorCommand.Trame" Label="Hex Trame" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                            </MudItem>
+                            <MudItem xs="12" md="3" sm="10">
+                                <MudTextField @bind-Value="@_sensorCommand.Port" Label="Port" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                            </MudItem>
+                        </MudItem>
+
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    </EditForm>
+
+</MudContainer>
+    @code {
+
+        private SensorModel _sensorModel { get; set; }
+        private SensorCommand _sensorCommand { get; set; }
+
+        protected override void OnInitialized()
+        {
+            _sensorModel = new SensorModel();
+            _sensorCommand = new SensorCommand();
+        }
+
+        private void OnValidation()
+        {
+        }
+
+        private void AddCommand()
+        {
+            _sensorModel.Commands.Add(_sensorCommand);
+            _sensorCommand = new SensorCommand();
+        }
+
+        private void DeleteCommand(int index)
+        {
+            _sensorModel.Commands.RemoveAt(index);
+        }
+    }
