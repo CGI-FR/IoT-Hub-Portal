@@ -148,22 +148,20 @@ namespace AzureIoTHub.Portal.Server.Controllers
         Dictionary<string, string> GetModuleIdentityTwinSettings(Configuration config, System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> module)
         {
             Dictionary<string, string> twinSettings = new ();
-            Console.WriteLine(module.Key);
-            Console.WriteLine("................................");
+            Console.WriteLine($"=============== MODULE : {module.Key} ===============");
 
             if (config.Content.ModulesContent != null)
             {
-                foreach (var val in config.Content.ModulesContent)
-                {
-                    Console.WriteLine("<><><><><><><><><><><><><><><><><><><><><>");
-                    Console.WriteLine(val);
-                }
-
                 if (config.Content.ModulesContent.ContainsKey(module.Key))
                 {
-                    Newtonsoft.Json.Linq.JObject test = (Newtonsoft.Json.Linq.JObject)config.Content.ModulesContent[module.Key];
-                    Console.WriteLine("________________________________________________________________");
-                    Console.WriteLine(test);
+                    Console.WriteLine($"________________________________________________________________ {module.Key}");
+                    var test = config.Content.ModulesContent[module.Key];
+                    foreach (var val in test)
+                    {
+                        Console.WriteLine(val.Key);
+                        Console.WriteLine(val.Value);
+                        twinSettings.Add(val.Key, val.Value.ToString());
+                    }
                 }
             }
 
@@ -189,6 +187,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     var test2 = val.Value;
                     Newtonsoft.Json.Linq.JObject test3 = (Newtonsoft.Json.Linq.JObject)test2;
                     var test4 = test3["value"];
+                    envVariables.Add(test1, test4.ToString());
 
                     // Console.Write(test1);
                     // Console.Write(" ==> ");
