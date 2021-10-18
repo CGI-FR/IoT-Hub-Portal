@@ -1,0 +1,60 @@
+﻿@using AzureIoTHub.Portal.Shared.Models
+@inject HttpClient Http
+@inject IJSRuntime JS
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h5">Environment Variables</MudText>
+        @if (Module.EnvironmentVariables.Count != 0)
+        {
+            @foreach (var val in Module.EnvironmentVariables)
+            {
+                <MudItem xs="12" Class="custom-form">
+                    <MudItem md="4" sm="12">
+                        <MudText>@val.Key</MudText>
+                    </MudItem>
+                    <MudItem md="8" sm="12">
+                        <MudTextField Value="@val.Value" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
+                    </MudItem>
+                </MudItem>
+            }
+        }
+        else
+        {
+            <MudText Class="custom-disabled">No values</MudText>
+        }
+
+        <MudText Typo="Typo.h5">Module Identity Twin Settings</MudText>
+        @if (Module.ModuleIdentityTwinSettings.Count != 0)
+        {
+            @foreach (var val in Module.ModuleIdentityTwinSettings)
+            {
+                <MudItem xs="12" Class="custom-form">
+                    <MudItem md="4" sm="12">
+                        <MudText>@val.Key</MudText>
+                    </MudItem>
+                    <MudItem md="8" sm="12">
+                        <MudTextField Value="@val.Value" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
+                    </MudItem>
+                </MudItem>
+            }
+        }
+        else
+        {
+            <MudText Class="custom-disabled">No values</MudText>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+    [Parameter]
+    public GatewayModule Module { get; set; }
+
+    void Cancel() => MudDialog.Cancel();
+}

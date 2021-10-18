@@ -76,14 +76,6 @@
     </MudGrid>
 </MudContainer>
 
-@*<MudText Typo="Typo.h4">@Config.ConfigurationID</MudText>
-@foreach (var mod in Config.Modules)
-{
-    <MudText Typo="Typo.h6">@mod.ModuleName</MudText>
-    <MudText>@mod.Version</MudText>
-    <MudText>@mod.Status</MudText>
-}*@
-
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
         <MudItem xs="12">
@@ -105,12 +97,7 @@
                     <MudTd DataLabel="Version" Style="text-align: center">@context.Version</MudTd>
                     <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
                     <MudTd DataLabel="Device" Style="text-align: center">
-                        @*@foreach(var test in context.EnvironmentVariables)
-                                {
-                                    @test
-                                }*@
-                        @*<MudButton Variant="Variant.Filled" Color="Color.Dark">logs</MudButton>*@
-                        @*<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await OnReboot(context.ModuleName) )">reboot</MudButton>*@
+                        <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" OnClick="@(async () => await ShowModuleDetail(context))" />
                     </MudTd>
                 </RowTemplate>
             </MudTable>
@@ -136,14 +123,6 @@
         try
         {
             Config = await Http.GetFromJsonAsync<ConfigListItem>($"Configs/{ConfigurationID}");
-            Console.WriteLine(Config.Modules.Count().ToString());
-            Console.WriteLine(Config.Modules.First().ModuleName);
-            Console.WriteLine("_______________________________");
-            foreach (var mod in Config.Modules)
-            {
-                Console.WriteLine(mod.ModuleName);
-            }
-
             ConditionOwner = RetrieveCondition("owner");
             ConditionEnv = RetrieveCondition("env");
             ConditionType = RetrieveCondition("type");
@@ -175,6 +154,20 @@
     private async Task DeleteDevice()
     {
         await Task.Delay(0);
+    }
+
+    public async Task ShowModuleDetail(GatewayModule module)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("module", module);
+
+        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Large, FullWidth = true, CloseButton = true };
+        var result = await DialogService.Show<ModuleDetail>(module.ModuleName, parameters, options).Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
     }
 }
 
