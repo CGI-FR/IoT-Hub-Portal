@@ -108,8 +108,8 @@
 
 @code {
 
-        [Parameter]
-        public string ConfigurationID { get; set; }
+    [Parameter]
+    public string ConfigurationID { get; set; }
 
     private ConfigListItem Config { get; set; } = new ConfigListItem();
 
@@ -161,7 +161,9 @@
     {
         var parameters = new DialogParameters();
         parameters.Add("module", module);
-        var result = await DialogService.Show<ModuleDetail>(module.ModuleName, parameters).Result;
+
+        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Large, FullWidth = true, CloseButton = true };
+        var result = await DialogService.Show<ModuleDetail>(module.ModuleName, parameters, options).Result;
 
         if (result.Cancelled)
         {
