@@ -9,6 +9,15 @@
     background-color: #e2e2e2;
 }
 
+.custom-centered-container {
+    display: flex !important;
+    justify-content: center !important;
+}
+
+.custom-centered-item {
+    margin : auto;
+}
+
 /*//////////////////// Search Panel ////////////////*/
 .search-panel {
     /*width: max-content;*/
