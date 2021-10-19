@@ -53,27 +53,24 @@
                                 <MudText>Image :</MudText>
                             </MudItem>
                             <MudItem xs="12" md="4" sm="10">
-                                <MudTextField @bind-Value="@_sensorModel.AppEUI" For="@(() => _sensorModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                @*<MudTextField @bind-Value="@_sensorModel.AppEUI" For="@(() => _sensorModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>*@
+                                <InputFile id="fileInput" OnChange="UploadFiles" hidden accept=".jpg, .jpeg, .png" />
+                                <MudButton HtmlTag="label"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           StartIcon="@Icons.Filled.CloudUpload"
+                                           for="fileInput">
+                                    Upload an images
+                                </MudButton>
+                                @if (_sensorModel.Image != null)
+                                {
+                                    <MudText Typo="Typo.h6" >@_sensorModel.Image.Name</MudText>
+                                }
                             </MudItem>
                         </MudItem>
                     </MudItem>
-                    @* ********************************************************* *@
 
-                </MudGrid>
-
-            </MudCardContent>
-            <MudCardActions>
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Create</MudButton>
-            </MudCardActions>
-        </MudCard>
-    </EditForm>
-
-    <EditForm Model="@_sensorCommand" OnValidSubmit="AddCommand">
-        <DataAnnotationsValidator />
-        <MudCard>
-            <MudCardContent>
-                <MudGrid>
-                    @* ********************************************************* *@
+                 @* ********************************************************************************** *@
                     <MudItem md="6" xs="12">
                         <MudItem md="12" xs="12">
                             <MudText>Commands :</MudText>
@@ -81,10 +78,6 @@
 
                         @if (_sensorModel.Commands.Count > 0)
                         {
-                            @*@for (int i = 0; i < _sensorModel.Commands.length; i++)
-                            {
-
-                            }*@
                             @foreach (var element in _sensorModel.Commands)
                             {
                                 <MudItem xs="12" Class="custom-form">
@@ -98,7 +91,7 @@
                                         <MudTextField @bind-Value="@element.Trame" Label="Hex Trame" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
                                     </MudItem>
                                     <MudItem xs="12" md="3" sm="10" Style="margin-right: 10px;">
-                                        <MudTextField @bind-Value="@element.Port"  Label="Port" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
+                                        <MudTextField @bind-Value="@element.Port" Label="Port" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
                                     </MudItem>
                                 </MudItem>
                             }
@@ -107,7 +100,7 @@
                         <MudItem xs="12" Class="custom-form">
                             @* Add new Command :  *@
                             <MudItem xs="3" md="1" sm="3">
-                                <MudIconButton ButtonType="ButtonType.Submit" Icon="@Icons.Material.Filled.AddCircle" Color="Color.Tertiary" />
+                                <MudIconButton ButtonType="ButtonType.Button" OnClick="AddCommand" Icon="@Icons.Material.Filled.AddCircle" Color="Color.Tertiary" />
                             </MudItem>
                             <MudItem xs="12" md="7" sm="10" Style="margin-right: 10px;">
                                 <MudTextField @bind-Value="@_sensorCommand.Name" Label="Command Name" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
@@ -122,34 +115,49 @@
 
                     </MudItem>
                 </MudGrid>
+
             </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Create</MudButton>
+            </MudCardActions>
         </MudCard>
     </EditForm>
 
 </MudContainer>
-    @code {
+@code {
 
-        private SensorModel _sensorModel { get; set; }
-        private SensorCommand _sensorCommand { get; set; }
+    private SensorModel _sensorModel { get; set; }
+    private SensorCommand _sensorCommand { get; set; }
+    List<IBrowserFile> files = new List<IBrowserFile>();
 
-        protected override void OnInitialized()
-        {
-            _sensorModel = new SensorModel();
-            _sensorCommand = new SensorCommand();
-        }
+    protected override void OnInitialized()
+    {
+        _sensorModel = new SensorModel();
+        _sensorCommand = new SensorCommand();
+    }
 
-        private void OnValidation()
-        {
-        }
+    private void UploadFiles(InputFileChangeEventArgs e)
+    {
+        _sensorModel.Image = e.File;
+    }
 
-        private void AddCommand()
+
+    private async Task OnValidation()
+    {
+        var result = await Http.PostAsJsonAsync("Sensor", _sensorModel);
+    }
+
+    private void AddCommand()
+    {
+        if (_sensorCommand.Name != null && _sensorCommand.Trame != null && _sensorCommand.Port != 0)
         {
             _sensorModel.Commands.Add(_sensorCommand);
             _sensorCommand = new SensorCommand();
         }
-
-        private void DeleteCommand(int index)
-        {
-            _sensorModel.Commands.RemoveAt(index);
-        }
     }
+
+    private void DeleteCommand(int index)
+    {
+        _sensorModel.Commands.RemoveAt(index);
+    }
+}
