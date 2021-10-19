@@ -94,7 +94,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
         /// <summary>
         /// Retrieve a specific deployment and its modules from the IoT Hub.
-        /// Converts it as a ConfigListItem.
+        /// Converts it to a ConfigListItem.
         /// </summary>
         /// <param name="configurationID">ID of the deployment to retrieve.</param>
         /// <returns>The ConfigListItem corresponding to the given ID.</returns>
