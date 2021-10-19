@@ -5,12 +5,14 @@ namespace AzureIoTHub.Portal.Shared.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
 
     public class Gateway
     {
+        [Required]
         public string DeviceId { get; set; }
 
         public string SymmetricKey { get; set; }
@@ -21,6 +23,7 @@ namespace AzureIoTHub.Portal.Shared.Models
 
         public string EndPoint { get; set; }
 
+        [Required]
         public string Type { get; set; }
 
         public string Status { get; set; }
