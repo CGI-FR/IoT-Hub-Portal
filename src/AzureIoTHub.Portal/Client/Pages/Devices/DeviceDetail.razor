@@ -163,6 +163,8 @@
         try
         {
             Device = await Http.GetFromJsonAsync<DeviceListItem>($"Devices/{DeviceID}");
+
+            // LastActivityDate set to string to have a more human-readable format
             LastActivityDateString = Device.LastActivityDate.ToString();
         }
         catch (AccessTokenNotAvailableException exception)
@@ -171,14 +173,25 @@
         }
     }
 
+    /// <summary>
+    /// Sends a POST request to the DevicesController, to update the device in the Azure IoT Hub
+    /// </summary>
     public async void SaveDevice()
     {
-        Console.WriteLine(Device.DeviceID);
         await Http.PostAsJsonAsync<DeviceListItem>($"Devices/update", Device);
+
+        // Prompts a snack bar to inform the action was successful
+        // TODO : Deal more effectively with error/success messages
         Snackbar.Add($"Device {Device.DeviceID} has been successfully updated!", Severity.Success);
+
+        // Go back to the list of device
         NavManager.NavigateTo("devices");
     }
 
+    /// <summary>
+    /// Prompts a pop-up windows to confirm the device's deletion.
+    /// </summary>
+    /// <returns></returns>
     private async Task DeleteDevice()
     {
         var parameters = new DialogParameters();
@@ -190,6 +203,7 @@
             return;
         }
 
+        // Go back to the list of devices after the deletion
         NavManager.NavigateTo("devices");
     }
 }
