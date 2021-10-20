@@ -172,6 +172,11 @@
         await Task.Delay(0); // TODO?
     }
 
+    /// <summary>
+    /// Prompts a pop-up windows to show modules details (environment variables and identity twin settings)
+    /// </summary>
+    /// <param name="module">Selected module</param>
+    /// <returns></returns>
     public async Task ShowModuleDetail(GatewayModule module)
     {
         var parameters = new DialogParameters();
