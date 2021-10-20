@@ -85,6 +85,10 @@
         await LoadConfigurations();
     }
 
+    /// <summary>
+    /// Sends a GET request to the ConfigsController, to retrieve all deployments from Azure IoT Hub
+    /// </summary>
+    /// <returns></returns>
     private async Task LoadConfigurations()
     {
         try
@@ -99,6 +103,6 @@
 
     private async Task DeleteConfiguration(ConfigListItem config)
     {
-        await Task.Delay(10); //TODO
+        await Task.Delay(0); //TODO?
     }
 }

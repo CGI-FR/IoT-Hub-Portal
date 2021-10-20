@@ -162,6 +162,7 @@
     {
         try
         {
+            // Sends a GET request to the DevicesController, to retrieve the specific device from Azure IoT Hub
             Device = await Http.GetFromJsonAsync<DeviceListItem>($"Devices/{DeviceID}");
 
             // LastActivityDate set to string to have a more human-readable format

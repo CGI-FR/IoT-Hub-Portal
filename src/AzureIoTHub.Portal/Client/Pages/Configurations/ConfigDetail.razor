@@ -13,7 +13,7 @@
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
         <MudItem xs="12">
-            <EditForm Model="@Config" OnValidSubmit="SaveDevice">
+            <EditForm Model="@Config" OnValidSubmit="SaveConfig">
                 <MudCard>
                     <MudCardHeader>
                         <CardHeaderContent>
@@ -78,7 +78,7 @@
                 </MudCard>
                 <MudCardActions>
                     <MudFab ButtonType="ButtonType.Submit" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Label="Save" Disabled="@(!success)" Class="ml-auto" />
-                    <MudFab Color="Color.Dark" Icon="@Icons.Material.Filled.Delete" Label="Delete" OnClick="DeleteDevice" />
+                    <MudFab Color="Color.Dark" Icon="@Icons.Material.Filled.Delete" Label="Delete" OnClick="DeleteConfig" />
                 </MudCardActions>
             </EditForm>
         </MudItem>
@@ -131,6 +131,7 @@
     {
         try
         {
+            // Sends a GET request to the ConfigController, to retrieve a specific deployment from Azure IoT Hub
             Config = await Http.GetFromJsonAsync<ConfigListItem>($"Configs/{ConfigurationID}");
             ConditionOwner = RetrieveCondition("owner");
             ConditionEnv = RetrieveCondition("env");
@@ -142,8 +143,14 @@
         }
     }
 
+    /// <summary>
+    /// Parse the Conditions string to extract owner, environment and type values using regex.
+    /// </summary>
+    /// <param name="field">Specific condition to retrieve</param>
+    /// <returns>Corresponding condition value, or "undefined" if it doesn't exist.</returns>
     private string RetrieveCondition(string field)
     {
+        // Condition string looks like : tags.owner='value1' and tags.env='value2' and tags.type='value3'
         string regex = @"tags\." + field + @"\s?=\s?'(?<field>\S*)'";
         if (Regex.IsMatch(Config.Conditions, regex))
         {
@@ -151,18 +158,18 @@
         }
         else
         {
-            return "no_match";
+            return "undefined";
         }
     }
 
-    public async void SaveDevice()
+    public async void SaveConfig()
     {
-        await Task.Delay(0);
+        await Task.Delay(0); // TODO?
     }
 
-    private async Task DeleteDevice()
+    private async Task DeleteConfig()
     {
-        await Task.Delay(0);
+        await Task.Delay(0); // TODO?
     }
 
     public async Task ShowModuleDetail(GatewayModule module)
