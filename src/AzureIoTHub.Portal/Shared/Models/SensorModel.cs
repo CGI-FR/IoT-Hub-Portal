@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Shared.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
+    using System.Net.Http;
     using System.Text;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components.Forms;
