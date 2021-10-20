@@ -25,11 +25,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
     public class DevicesController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<DevicesController> logger;
 
         private readonly RegistryManager registryManager;

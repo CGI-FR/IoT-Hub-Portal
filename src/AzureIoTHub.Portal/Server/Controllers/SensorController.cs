@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
+    using Azure.Storage.Blobs;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Security;
@@ -32,23 +33,67 @@ namespace AzureIoTHub.Portal.Server.Controllers
     {
         private readonly ILogger<SensorController> logger;
         private readonly TableClient tableClient;
+        private readonly IConfiguration configuration;
+        private readonly BlobServiceClient blobService;
 
-        public SensorController(ILogger<SensorController> logger, TableClient tableClient)
+        public SensorController(
+            ILogger<SensorController> logger,
+            IConfiguration configuration,
+            BlobServiceClient blobServiceClient,
+            TableClient tableClient)
         {
             this.logger = logger;
             this.tableClient = tableClient;
+            this.configuration = configuration;
+            this.blobService = blobServiceClient;
         }
 
         [HttpPost]
-        public void Post(SensorModel sensor)
+        public async Task<IActionResult> Post(SensorModel sensor)
         {
-            TableEntity entity = new TableEntity();
-            entity.PartitionKey = sensor.Name;
-            entity.RowKey = sensor.AppEUI;
+            try
+            {
+                TableEntity entity = new TableEntity();
+                entity.PartitionKey = "0";
+                entity.RowKey = sensor.Name;
 
-            entity["Description"] = sensor.Description;
-            this.tableClient.AddEntity(entity);
-            // return this.Ok();
+                entity["Description"] = sensor.Description;
+                entity["AppEUI"] = sensor.AppEUI;
+
+                if (sensor.Image != null)
+                {
+                    entity["Image"] = sensor.Image.Name;
+                    BlobContainerClient blobContainer = this.blobService.GetBlobContainerClient(this.configuration["StorageAcount:BlobContainerName"]);
+                    BlobClient blobClient = blobContainer.GetBlobClient(sensor.Image.Name);
+
+                    this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
+
+                    await blobClient.UploadAsync(sensor.Image.OpenReadStream());
+                }
+
+                this.tableClient.AddEntity(entity);
+
+                // insertion des commant
+                if (sensor.Commands.Count > 0)
+                {
+                    foreach (var element in sensor.Commands)
+                    {
+                        TableEntity commandEntity = new TableEntity();
+                        commandEntity.PartitionKey = sensor.Name;
+                        commandEntity.RowKey = element.Name;
+                        commandEntity["Trame"] = element.Trame;
+                        commandEntity["Port"] = element.Port;
+
+                        this.tableClient.AddEntity(commandEntity);
+                    }
+                }
+
+                return this.StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return this.BadRequest(e.Message);
+            }
         }
     }
 }
