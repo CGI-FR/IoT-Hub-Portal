@@ -176,11 +176,10 @@
         await LoadDevices();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await LoadDevices();
-    }
-
+    /// <summary>
+    /// Sends a GET request to the DevicesController, to retrieve all devices from Azure IoT Hub
+    /// </summary>
+    /// <returns></returns>
     private async Task LoadDevices()
     {
         try
@@ -193,6 +192,10 @@
         }
     }
 
+    /// <summary>
+    /// Reset all the fields in the search panel
+    /// </summary>
+    /// <returns></returns>
     private void Reset()
     {
         searchString = "";
@@ -201,9 +204,13 @@
         searchLocation = "";
         searchAppEUI = "";
         searchAppKey = "";
-
     }
 
+    /// <summary>
+    /// Prompts a pop-up windows to confirm the device's deletion.
+    /// </summary>
+    /// <param name="device">Device to delete from the hub</param>
+    /// <returns></returns>
     private async Task DeleteDevice(DeviceListItem device)
     {
         var parameters = new DialogParameters();
@@ -215,9 +222,15 @@
             return;
         }
 
+        // Update the list of devices after the deletion
         await LoadDevices();
     }
 
+    /// <summary>
+    /// Filter the list of devices, based on fields set in the search panel
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
     private bool FilterFunc(DeviceListItem item)
     {
         bool flagName = string.IsNullOrWhiteSpace(searchString) || item.DeviceID.Contains(searchString, StringComparison.OrdinalIgnoreCase);
@@ -227,6 +240,7 @@
         bool flagAppEUI = string.IsNullOrWhiteSpace(searchAppEUI) || item.AppEUI.Contains(searchAppEUI, StringComparison.OrdinalIgnoreCase);
         bool flagAppKey = string.IsNullOrWhiteSpace(searchAppKey) || item.AppKey.Contains(searchAppKey, StringComparison.OrdinalIgnoreCase);
 
+        // Current row is shown only if all the flags are true
         if (flagName && flagStatus && flagState && flagLocation && flagAppEUI && flagAppKey)
             return true;
         return false;
