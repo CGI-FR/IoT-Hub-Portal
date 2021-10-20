@@ -39,6 +39,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
             this.registryManager = registryManager;
         }
 
+        /// <summary>
+        /// Checks if the specific metric (targeted/applied/success/failure) exists within the device,
+        /// Returns the corresponding value if so, else returns -1 as an error code.
+        /// </summary>
+        /// <param name="item">Configuration item to convert into a ConfigListItem.</param>
+        /// <param name="metricName">Metric to retrieve (targetedCount, appliedCount, reportedSuccessfulCount or reportedFailedCount). </param>
+        /// <returns>Corresponding metric value, or -1 if it doesn't exist.</returns>
         private static long RetrieveMetricValue(Configuration item, string metricName)
         {
             if (item.SystemMetrics.Results.Keys.Contains(metricName))
@@ -47,19 +54,27 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 return -1;
         }
 
+        /// <summary>
+        /// Gets a list of deployments as ConfigListItem from Azure IoT Hub.
+        /// </summary>
+        /// <returns>A list of ConfigListItem.</returns>
         [HttpGet]
         public async Task<IEnumerable<ConfigListItem>> Get()
         {
-            List<Configuration> configList = (List<Configuration>)await this.registryManager.GetConfigurationsAsync(10);
+            // Retrieve every Configurations, regardless of the parameter given... Why?
+            // TODO : Check & fix this
+            List<Configuration> configList = (List<Configuration>)await this.registryManager.GetConfigurationsAsync(0);
             var results = new List<ConfigListItem>();
 
+            // Azure Configurations may have different types: "Configuration", "Deployment" or "LayeredDeployment"
             foreach (Configuration config in configList)
             {
                 List<GatewayModule> moduleList = new ();
 
-                // S'il n'y a pas de module, il s'agit d'une configuration et non d'un déploiement -> L'exclure
+                // Only deployments have modules. If it doesn't, it's a configuration and we don't want to keep it.
                 if (config.Content.ModulesContent != null)
                 {
+                    // Retrieve the name of each module of this deployment
                     foreach (var module in config.Content.ModulesContent)
                     {
                         var newModule = new GatewayModule
@@ -69,7 +84,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                         moduleList.Add(newModule);
                     }
 
-                    ConfigListItem result = this.CreateConfigListItem(config, moduleList);
+                    ConfigListItem result = CreateConfigListItem(config, moduleList);
                     results.Add(result);
                 }
             }
@@ -77,6 +92,12 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return results;
         }
 
+        /// <summary>
+        /// Retrieve a specific deployment and its modules from the IoT Hub.
+        /// Converts it to a ConfigListItem.
+        /// </summary>
+        /// <param name="configurationID">ID of the deployment to retrieve.</param>
+        /// <returns>The ConfigListItem corresponding to the given ID.</returns>
         [HttpGet("{configurationID}")]
         public async Task<ConfigListItem> Get(string configurationID)
         {
@@ -84,14 +105,19 @@ namespace AzureIoTHub.Portal.Server.Controllers
             List<GatewayModule> moduleList = new ();
             if (config.Content.ModulesContent != null)
             {
+                // Details of every modules are stored within the EdgeAgent module data
                 if (config.Content.ModulesContent.ContainsKey("$edgeAgent"))
                 {
                     if (config.Content.ModulesContent["$edgeAgent"].ContainsKey("properties.desired"))
                     {
-                        Newtonsoft.Json.Linq.JObject modObject = (Newtonsoft.Json.Linq.JObject)config.Content.ModulesContent["$edgeAgent"]["properties.desired"];
+                        // Converts the object to a JObject to access its properties more easily
+                        JObject modObject = config.Content.ModulesContent["$edgeAgent"]["properties.desired"] as JObject;
+
+                        // Adds regular modules to the list of modules
                         if (modObject.ContainsKey("modules"))
                         {
-                            Newtonsoft.Json.Linq.JObject modules = (Newtonsoft.Json.Linq.JObject)modObject["modules"];
+                            // Converts it to a JObject to be able to iterate through it
+                            JObject modules = modObject["modules"] as JObject;
                             foreach (var m in modules)
                             {
                                 GatewayModule newModule = this.CreateGatewayModule(config, m);
@@ -99,10 +125,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
                             }
                         }
 
+                        // Adds system modules to the list of modules
                         if (modObject.ContainsKey("systemModules"))
                         {
-                            Newtonsoft.Json.Linq.JObject systemModules = (Newtonsoft.Json.Linq.JObject)modObject["systemModules"];
-
+                            // Converts it to a JObject to be able to iterate through it
+                            JObject systemModules = modObject["systemModules"] as JObject;
                             foreach (var sm in systemModules)
                             {
                                 GatewayModule newModule = this.CreateGatewayModule(config, sm);
@@ -113,11 +140,17 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 }
             }
 
-            ConfigListItem result = this.CreateConfigListItem(config, moduleList);
+            ConfigListItem result = CreateConfigListItem(config, moduleList);
             return result;
         }
 
-        ConfigListItem CreateConfigListItem(Configuration config, List<GatewayModule> moduleList)
+        /// <summary>
+        /// Create a ConfigListItem from an Azure Configuration.
+        /// </summary>
+        /// <param name="config">Configuration object from Azure IoT Hub.</param>
+        /// <param name="moduleList">List of modules related to this configuration.</param>
+        /// <returns>A configuration converted to a ConfigListItem.</returns>
+        private static ConfigListItem CreateConfigListItem(Configuration config, List<GatewayModule> moduleList)
         {
             return new ConfigListItem
             {
@@ -133,26 +166,40 @@ namespace AzureIoTHub.Portal.Server.Controllers
             };
         }
 
-        GatewayModule CreateGatewayModule(Configuration config, System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> module)
+        /// <summary>
+        /// Create a GatewayModule object from an Azure Configuration.
+        /// </summary>
+        /// <param name="config">Configuration object from Azure IoT Hub.</param>
+        /// <param name="module">Dictionnary containing the module's name and its properties.</param>
+        /// <returns>A module with all its details as a GatewayModule object.</returns>
+        GatewayModule CreateGatewayModule(Configuration config, KeyValuePair<string, JToken> module)
         {
             return new GatewayModule
             {
                 ModuleName = module.Key,
                 Version = (string)module.Value["settings"]["image"],
                 Status = (string)module.Value["status"],
-                EnvironmentVariables = this.GetEnvironmentVariables(module),
-                ModuleIdentityTwinSettings = this.GetModuleIdentityTwinSettings(config, module)
+                EnvironmentVariables = GetEnvironmentVariables(module),
+                ModuleIdentityTwinSettings = GetModuleIdentityTwinSettings(config, module)
             };
         }
 
-        Dictionary<string, string> GetModuleIdentityTwinSettings(Configuration config, System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> module)
+        /// <summary>
+        /// Gets the module's identity twin settings from an Azure Configuration.
+        /// </summary>
+        /// <param name="config">Configuration object from Azure IoT Hub.</param>
+        /// <param name="module">Dictionnary containing the module's name and its properties.</param>
+        /// <returns>A dictionnary containing the settings and their corresponding values.</returns>
+        private static Dictionary<string, string> GetModuleIdentityTwinSettings(Configuration config, KeyValuePair<string, JToken> module)
         {
             Dictionary<string, string> twinSettings = new ();
 
             if (config.Content.ModulesContent != null)
             {
+                // Only exists if the module contains an identity twin
                 if (config.Content.ModulesContent.ContainsKey(module.Key))
                 {
+                    // Gets the settings of the specific module based on its name (module.Key)
                     var myModuleTwin = config.Content.ModulesContent[module.Key];
                     foreach (var setting in myModuleTwin)
                     {
@@ -164,17 +211,27 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return twinSettings;
         }
 
-        Dictionary<string, string> GetEnvironmentVariables(System.Collections.Generic.KeyValuePair<string, Newtonsoft.Json.Linq.JToken> module)
+        /// <summary>
+        /// Gets the module's environment variables from an Azure Module.
+        /// </summary>
+        /// <param name="module">Dictionnary containing the module's name and its properties.</param>
+        /// <returns>A dictionnary containing the environment variables and their corresponding values.</returns>
+        private static Dictionary<string, string> GetEnvironmentVariables(KeyValuePair<string, JToken> module)
         {
             Dictionary<string, string> envVariables = new ();
 
-            Newtonsoft.Json.Linq.JObject test = (Newtonsoft.Json.Linq.JObject)module.Value;
-            if (test.ContainsKey("env"))
+            // Converts the object to a JObject to access its properties more easily
+            JObject moduleProperties = module.Value as JObject;
+
+            // Only exists if the module contains environment variables
+            if (moduleProperties.ContainsKey("env"))
             {
-                foreach (Newtonsoft.Json.Linq.JProperty val in module.Value["env"])
+                foreach (JProperty val in moduleProperties["env"])
                 {
                     var variableName = val.Name;
-                    Newtonsoft.Json.Linq.JObject tmp = (Newtonsoft.Json.Linq.JObject)val.Value;
+
+                    // Converts the object to a JObject to access its properties more easily
+                    JObject tmp = val.Value as JObject;
                     var variableValue = tmp["value"];
                     envVariables.Add(variableName, variableValue.ToString());
                 }

@@ -22,10 +22,16 @@
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
 
+    /// <summary>
+    /// Sends a POST request to the DevicesController, to delete the device from the Azure IoT Hub
+    /// </summary>
+    /// <returns></returns>
     private async Task DeleteDevice()
     {
         var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/delete", device);
 
+        // Prompts a snack bar to inform if the action was successful
+        // TODO : Deal more effectively with error/success messages
         if (!response.IsSuccessStatusCode)
         {
             Snackbar.Add($"Oh oh, something went wrong while deleting device {device.DeviceID}... ", Severity.Error);
