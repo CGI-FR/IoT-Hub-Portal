@@ -6,6 +6,8 @@ namespace AzureIoTHub.Portal.Server
     using System;
     using System.Net;
     using System.Net.Http.Headers;
+    using Azure.Data.Tables;
+    using Azure.Storage.Blobs;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Identity;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -81,6 +83,13 @@ namespace AzureIoTHub.Portal.Server
             {
                 return ProvisioningServiceClient.CreateFromConnectionString(t.GetService<IConfiguration>()["IoTDPS:ConnectionString"]);
             });
+
+            // storage account
+            var connectionString = this.Configuration.GetSection("StorageAcount:ConnectionString");
+            services.AddSingleton<TableClient>(new TableClient(connectionString.Value, "DeviceTemplates"));
+
+            // Blob container
+            services.AddSingleton<BlobServiceClient>(new BlobServiceClient(connectionString.Value));
 
             services.AddSingleton<IB2CExtensionHelper, B2CExtensionHelper>();
 
