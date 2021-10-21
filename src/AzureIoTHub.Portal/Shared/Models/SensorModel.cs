@@ -22,8 +22,6 @@ namespace AzureIoTHub.Portal.Shared.Models
         [Required]
         public string AppEUI { get; set; }
 
-        public IBrowserFile Image { get; set; }
-
         public List<SensorCommand> Commands { get; set; }
 
         public SensorModel()

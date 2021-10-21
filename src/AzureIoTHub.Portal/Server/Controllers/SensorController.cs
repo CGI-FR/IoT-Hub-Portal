@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Http;
     using System.Security.Cryptography;
     using System.Text;
     using System.Threading.Tasks;
@@ -49,10 +50,12 @@ namespace AzureIoTHub.Portal.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(SensorModel sensor)
+        public IActionResult Post(SensorModel sensor)
+        // public void Post([FromForm] MultipartFormDataContent data)
         {
             try
             {
+                // var test = data.ToDictionary()
                 TableEntity entity = new TableEntity();
                 entity.PartitionKey = "0";
                 entity.RowKey = sensor.Name;
@@ -60,19 +63,15 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 entity["Description"] = sensor.Description;
                 entity["AppEUI"] = sensor.AppEUI;
 
-                if (sensor.Image != null)
-                {
-                    entity["Image"] = sensor.Image.Name;
-                    BlobContainerClient blobContainer = this.blobService.GetBlobContainerClient(this.configuration["StorageAcount:BlobContainerName"]);
-                    BlobClient blobClient = blobContainer.GetBlobClient(sensor.Image.Name);
-
-                    this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
-
-                    await blobClient.UploadAsync(sensor.Image.OpenReadStream());
-                }
-
+                // if (sensor.Image != null)
+                // {
+                //    entity["Image"] = sensor.Image.Name;
+                //    BlobContainerClient blobContainer = this.blobService.GetBlobContainerClient(this.configuration["StorageAcount:BlobContainerName"]);
+                //    BlobClient blobClient = blobContainer.GetBlobClient(sensor.Image.Name);
+                //    this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
+                //    await blobClient.UploadAsync(sensor.Image.OpenReadStream());
+                // }
                 this.tableClient.AddEntity(entity);
-
                 // insertion des commant
                 if (sensor.Commands.Count > 0)
                 {
@@ -83,12 +82,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
                         commandEntity.RowKey = element.Name;
                         commandEntity["Trame"] = element.Trame;
                         commandEntity["Port"] = element.Port;
-
                         this.tableClient.AddEntity(commandEntity);
                     }
                 }
 
-                return this.StatusCode(200);
+                return this.Ok("tout va bien");
             }
             catch (Exception e)
             {

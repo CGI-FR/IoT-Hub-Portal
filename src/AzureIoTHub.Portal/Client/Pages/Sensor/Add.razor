@@ -64,10 +64,6 @@
                                            for="fileInput">
                                     Upload an images
                                 </MudButton>
-                                @if (_sensorModel.Image != null)
-                                {
-                                    <MudText Typo="Typo.h6">@_sensorModel.Image.Name</MudText>
-                                }
                             </MudItem>
                         </MudItem>
                     </MudItem>
@@ -128,8 +124,9 @@
 </MudContainer>
 @code {
 
-    private SensorModel _sensorModel { get; set; }
-    private SensorCommand _sensorCommand { get; set; }
+    private SensorModel _sensorModel;
+    private SensorCommand _sensorCommand;
+    private IBrowserFile _selectedImage;
     List<IBrowserFile> files = new List<IBrowserFile>();
 
     protected override void OnInitialized()
@@ -140,20 +137,22 @@
 
     private void UploadFiles(InputFileChangeEventArgs e)
     {
-        // using FileStream fs = new FileStream()
-        //var FileContent = new StreamContent(e.File.OpenReadStream());
-        //FileContent.Headers.ContentType = new MediaTypeHeaderValue(e.File.ContentType);
-        _sensorModel.Image = e.File;
+        _selectedImage = e.File;
     }
 
 
     private async Task OnValidation()
     {
         var content = new MultipartFormDataContent();
-        //content.Add()
-        //content.Add(
-        //    content: _sensorModel.Image
-        //    );
+        content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+        if (_selectedImage != null)
+        {
+            using (var ms = _selectedImage.OpenReadStream())
+                content.Add(new StreamContent(ms), "image", _selectedImage.Name);
+        }
+
+        content.Add(JsonContent.Create(_sensorModel), "modelDefintion");
+        //var result = await Http.PostAsync("Sensor", content);
         var result = await Http.PostAsJsonAsync("Sensor", _sensorModel);
 
         if (result.IsSuccessStatusCode)
