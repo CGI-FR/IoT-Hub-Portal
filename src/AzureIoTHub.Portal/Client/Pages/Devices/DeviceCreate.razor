@@ -134,13 +134,21 @@
     private bool success = true;
     private string[] errors = { };
 
+    private IEnumerable<SensorModel> SensorList { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        SensorList = await Http.GetFromJsonAsync<SensorModel[]>("Sensors");
+    }
+
+
     /// <summary>
     /// Sends a POST request to the DevicesController, to add the new device to the Azure IoT Hub
     /// </summary>
     public async void SaveDevice()
     {
         await Http.PostAsJsonAsync<DeviceListItem>($"Devices/create", Device);
-        
+
         // Prompts a snack bar to inform the action was successful
         // TODO : Deal more effectively with error/success messages
         Snackbar.Add($"Device {Device.DeviceID} has been successfully created!", Severity.Success);

@@ -30,15 +30,15 @@ namespace AzureIoTHub.Portal.Server.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = RoleNames.Admin)]
-    public class SensorController : ControllerBase
+    public class SensorsController : ControllerBase
     {
-        private readonly ILogger<SensorController> logger;
+        private readonly ILogger<SensorsController> logger;
         private readonly TableClient tableClient;
         private readonly IConfiguration configuration;
         private readonly BlobServiceClient blobService;
 
-        public SensorController(
-            ILogger<SensorController> logger,
+        public SensorsController(
+            ILogger<SensorsController> logger,
             IConfiguration configuration,
             BlobServiceClient blobServiceClient,
             TableClient tableClient)
@@ -92,6 +92,39 @@ namespace AzureIoTHub.Portal.Server.Controllers
             {
                 return this.BadRequest(e.Message);
             }
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<SensorModel>> Get()
+        {
+            await Task.Delay(0);
+
+            Pageable<TableEntity> entities = this.tableClient.Query<TableEntity>("PartitionKey eq 'test'");
+            IEnumerable<SensorModel> listTest = entities.Select(e => this.MapTableEntityToSensorModel(e));
+
+            foreach (var test in listTest)
+            {
+                Console.WriteLine($"{test.Name} => {test.AppEUI}, {test.Description}");
+            }
+
+            return listTest;
+        }
+
+        public SensorModel MapTableEntityToSensorModel(TableEntity entity)
+        {
+            SensorModel sensor = new SensorModel();
+            sensor.Name = entity.RowKey;
+            if (entity.ContainsKey("Description"))
+            {
+                sensor.Description = entity["Description"].ToString();
+            }
+
+            if (entity.ContainsKey("AppEUI"))
+            {
+                sensor.AppEUI = entity["AppEUI"].ToString();
+            }
+
+            return sensor;
         }
     }
 }
