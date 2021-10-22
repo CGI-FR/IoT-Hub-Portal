@@ -37,7 +37,7 @@
                                         <MudText>Type : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudSelect T="string" Value="@Device.DeviceType" Variant="Variant.Outlined" Dense="true">
+                                        <MudSelect T="string" @bind-Value="@Device.DeviceType" Variant="Variant.Outlined" Dense="true">
                                             <MudSelectItem Value="@("LoRa Device")" />
                                             <MudSelectItem Value="@("Other")" />
                                         </MudSelect>
@@ -48,7 +48,22 @@
                                         <MudText>Model Type : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudTextField @bind-Value="@Device.ModelType" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                        @*<MudTextField @bind-Value="@Device.ModelType" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>*@
+                                        <MudSelect T="string" @bind-Value="@Device.ModelType" Variant="Variant.Outlined" Dense="true">
+                                            @foreach (var val in SensorDict)
+                                            {
+                                                <MudSelectItem Value="@val.Key" />
+                                            }
+                                        </MudSelect>
+                                        <MudChip>@(Device.ModelType ?? "Not selected")</MudChip>
+                                        @if (Device.ModelType != null && SensorDict.ContainsKey(Device.ModelType))
+                                        {
+                                            <MudChip>@(SensorDict[Device.ModelType] ?? "Not selected")</MudChip>
+                                        }
+                                        else
+                                        {
+                                            <MudChip>Erreur</MudChip>
+                                        }
                                     </MudItem>
                                 </MudItem>
                             </MudItem>
@@ -134,13 +149,18 @@
     private bool success = true;
     private string[] errors = { };
 
-    private IEnumerable<SensorModel> SensorList { get; set; }
+    private IEnumerable<SensorModel> SensorList { get; set; } = new List<SensorModel>();
+    public Dictionary<string, string> SensorDict { get; set; } = new Dictionary<string, string>();
 
     protected override async Task OnInitializedAsync()
     {
         SensorList = await Http.GetFromJsonAsync<SensorModel[]>("Sensors");
-    }
 
+        foreach (var val in SensorList)
+        {
+            SensorDict.Add(val.Name, val.AppEUI);
+        }
+    }
 
     /// <summary>
     /// Sends a POST request to the DevicesController, to add the new device to the Azure IoT Hub
