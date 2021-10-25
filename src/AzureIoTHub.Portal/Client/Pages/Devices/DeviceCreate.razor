@@ -25,7 +25,7 @@
                                         <MudText>Device ID : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudTextField @bind-Value="@Device.DeviceID" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                        <MudTextField @bind-Value="@Device.DeviceID" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                                     </MudItem>
                                 </MudItem>
                             </MudItem>
@@ -37,7 +37,10 @@
                                         <MudText>Type : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudSelect T="string" @bind-Value="@Device.DeviceType" Variant="Variant.Outlined" Dense="true">
+                                        <MudSelect T="string" @bind-Value="@Device.DeviceType" ReadOnly="true" 
+                                                   Variant="Variant.Outlined" Dense="true"
+                                                   Class="custom-disabled"
+                                                   >
                                             <MudSelectItem Value="@("LoRa Device")" />
                                             <MudSelectItem Value="@("Other")" />
                                         </MudSelect>
@@ -48,22 +51,14 @@
                                         <MudText>Model Type : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        @*<MudTextField @bind-Value="@Device.ModelType" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>*@
-                                        <MudSelect T="string" @bind-Value="@Device.ModelType" Variant="Variant.Outlined" Dense="true">
-                                            @foreach (var val in SensorDict)
-                                            {
-                                                <MudSelectItem Value="@val.Key" />
-                                            }
-                                        </MudSelect>
-                                        <MudChip>@(Device.ModelType ?? "Not selected")</MudChip>
-                                        @if (Device.ModelType != null && SensorDict.ContainsKey(Device.ModelType))
-                                        {
-                                            <MudChip>@(SensorDict[Device.ModelType] ?? "Not selected")</MudChip>
-                                        }
-                                        else
-                                        {
-                                            <MudChip>Erreur</MudChip>
-                                        }
+                                        <MudAutocomplete T="string" @bind-Value="@Device.ModelType" 
+                                                         Variant="Variant.Outlined" Dense="true"
+                                                         SearchFunc="@Search"
+                                                         ResetValueOnEmptyText="true"
+                                                         Immediate="true"
+                                                         Clearable="true"
+                                                         Required="true"
+                                                         CoerceText="true" CoerceValue="false" />
                                     </MudItem>
                                 </MudItem>
                             </MudItem>
@@ -83,8 +78,15 @@
                                         <MudText>OTAA AppEUI : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudTextField @bind-Value="@Device.AppEUI" Class="" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-
+                                        @if (Device.ModelType != null && SensorDict.ContainsKey(Device.ModelType))
+                                        {
+                                            Device.AppEUI = SensorDict[Device.ModelType] ?? "Error - Selected model contains no AppEUI value";
+                                        }
+                                        else
+                                        {
+                                            Device.AppEUI = "Error - No model selected";
+                                        }
+                                        <MudTextField @bind-Value="@Device.AppEUI" Class="custom-disabled" Margin="Margin.Dense" Variant="Variant.Outlined" ReadOnly="true"></MudTextField>
                                     </MudItem>
                                 </MudItem>
                                 <MudItem xs="12" Class="custom-form">
@@ -154,6 +156,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Device.DeviceType = "LoRa Device";
         SensorList = await Http.GetFromJsonAsync<SensorModel[]>("Sensors");
 
         foreach (var val in SensorList)
@@ -176,6 +179,17 @@
         // Go back to the list of devices
         NavManager.NavigateTo("devices");
 
+    }
+
+    private async Task<IEnumerable<string>> Search(string value)
+    {
+        // In real life use an asynchronous function for fetching data from an api.
+        await Task.Delay(0);
+
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return SensorDict.Keys;
+        return SensorDict.Keys.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 }
 
