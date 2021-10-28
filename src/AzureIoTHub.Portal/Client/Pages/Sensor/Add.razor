@@ -127,7 +127,7 @@
     private SensorModel _sensorModel;
     private SensorCommand _sensorCommand;
     private IBrowserFile _selectedImage;
-    List<IBrowserFile> files = new List<IBrowserFile>();
+    // List<IBrowserFile> files = new List<IBrowserFile>();
 
     protected override void OnInitialized()
     {
@@ -147,19 +147,31 @@
         content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
         if (_selectedImage != null)
         {
-            using (var ms = _selectedImage.OpenReadStream())
-                content.Add(new StreamContent(ms), "image", _selectedImage.Name);
-        }
+            var fileContent = new StreamContent(_selectedImage.OpenReadStream());
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(_selectedImage.ContentType);
 
-        content.Add(JsonContent.Create(_sensorModel), "modelDefintion");
+            content.Add(fileContent, "image", _selectedImage.Name);
+            //using (var ms = _selectedImage.OpenReadStream())
+            //{
+            //    content.Add(new StreamContent(ms), "image", _selectedImage.Name);
+            //}
+
+            //var result = await Http.PostAsync("Sensor", (JsonContent.Create(_sensorModel), new StreamContent(_selectedImage.OpenReadStream())));
+        }
+        var sensorContent = JsonContent.Create(_sensorModel);
+        //sensorContent.Headers.ContentType = new MediaTypeHeaderValue("SearchModel");
+
+        content.Add(sensorContent, "modelDefintion");
+
         //var result = await Http.PostAsync("Sensor", content);
+
         var result = await Http.PostAsJsonAsync("Sensor", _sensorModel);
 
-        if (result.IsSuccessStatusCode)
-        {
-            Snackbar.Add($"sensor model successfully create", Severity.Success);
-            _sensorModel = new SensorModel();
-        }
+        //if (result.IsSuccessStatusCode)
+        //{
+        //    Snackbar.Add($"sensor model successfully create", Severity.Success);
+        //    _sensorModel = new SensorModel();
+        //}
     }
 
     private void AddCommand()

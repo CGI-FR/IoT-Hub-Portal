@@ -7,6 +7,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Azure;
+    using Azure.Data.Tables;
+    using Azure.Data.Tables.Models;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Security;
@@ -26,13 +29,21 @@ namespace AzureIoTHub.Portal.Server.Controllers
     public class DevicesController : ControllerBase
     {
         private readonly ILogger<DevicesController> logger;
+        private readonly TableClient tableClient;
+        private readonly ServiceClient serviceClient;
 
         private readonly RegistryManager registryManager;
 
-        public DevicesController(ILogger<DevicesController> logger, RegistryManager registryManager)
+        public DevicesController(
+            ILogger<DevicesController> logger,
+            RegistryManager registryManager,
+            ServiceClient serviceClient,
+            TableClient tableClient)
         {
             this.logger = logger;
             this.registryManager = registryManager;
+            this.tableClient = tableClient;
+            this.serviceClient = serviceClient;
         }
 
         /// <summary>
@@ -101,6 +112,34 @@ namespace AzureIoTHub.Portal.Server.Controllers
         }
 
         /// <summary>
+        /// Retrieve all the commands of a device.
+        /// </summary>
+        /// <param name="model_type"> the model type of the device.</param>
+        /// <returns>Corresponding list of commands or an empty list if it doesn't have any command.</returns>
+        private List<SensorCommand> RetrieveCommands(string model_type)
+        {
+            List<SensorCommand> commands = new List<SensorCommand>();
+
+            if (model_type == "undefined_modelType")
+            {
+                // Pageable<TableEntity> queryResultsFilter = this.tableClient.Query<TableEntity>(filter: $"PartitionKey  eq '{model_type}'");
+                Pageable<TableEntity> queryResultsFilter = this.tableClient.Query<TableEntity>(filter: $"PartitionKey  eq 'sensor_model01'");
+                foreach (TableEntity qEntity in queryResultsFilter)
+                {
+                    commands.Add(
+                        new SensorCommand()
+                        {
+                            Name = qEntity.RowKey,
+                            Trame = qEntity.GetString("Trame"),
+                            Port = (int)qEntity["Port"]
+                        });
+                }
+            }
+
+            return commands;
+        }
+
+        /// <summary>
         /// Retrieve a specific device and from the IoT Hub.
         /// Converts it to a DeviceListItem.
         /// </summary>
@@ -122,9 +161,43 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 LocationCode = RetrieveTagValue(item, "locationCode"),
                 AssetID = RetrieveTagValue(item, "assetID"),
                 DeviceType = RetrieveTagValue(item, "deviceType"),
-                ModelType = RetrieveTagValue(item, "modelType")
+                ModelType = RetrieveTagValue(item, "modelType"),
+                Commands = this.RetrieveCommands(RetrieveTagValue(item, "modelType"))
             };
             return result;
+        }
+
+        /// <summary>
+        /// Permit to execute cloud to device message.
+        /// </summary>
+        /// <param name="deviceId">id of the device.</param>
+        /// <param name="command">the command who contain the name and the trame.</param>
+        /// <returns>a CloudToDeviceMethodResult .</returns>
+        [HttpPost("{deviceId}/{methodName}")]
+        public async Task<IActionResult> ExecuteMethode(string deviceId, SensorCommand command)
+        {
+            try
+            {
+                CloudToDeviceMethod method = new CloudToDeviceMethod(command.Name);
+                string commandPayload = $"{{\"Trame\":\"{command.Trame}\", \"Port\":\"{command.Port}\"}}";
+                method.SetPayloadJson(commandPayload);
+
+                CloudToDeviceMethodResult result = await this.serviceClient.InvokeDeviceMethodAsync(deviceId, method);
+                this.logger.LogInformation($"iot hub device : {deviceId} execute methode {command.Name}.");
+
+                if (result is null)
+                {
+                    throw new Exception($"Command {command.Name} invocation returned null");
+                }
+
+                this.logger.LogInformation($"iot hub device {method}: {result.GetPayloadAsJson()} ");
+
+                return this.Ok(result);
+            }
+            catch (Exception e)
+            {
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>

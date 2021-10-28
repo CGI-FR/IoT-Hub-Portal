@@ -1,0 +1,25 @@
+﻿@page "/gateways/logs"
+@using AzureIoTHub.Portal.Shared.Models
+
+
+<MudDialog>
+    <DialogContent>
+        <MudCard Outlined="true" Style="width:min-content">
+            <MudCardContent Style="" Class="connectionString-modal-card">
+                <div class="form-group">
+                    <MudText>@info.Payload</MudText>
+                </div>
+            </MudCardContent>
+        </MudCard>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public C2Dresult info { get; set; }
+
+    void Cancel() => MudDialog.Cancel();
+}

@@ -4,6 +4,8 @@
 namespace AzureIoTHub.Portal.Shared.Models
 {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
 
     public class DeviceListItem
     {
@@ -26,5 +28,12 @@ namespace AzureIoTHub.Portal.Shared.Models
         public string DeviceType { get; set; }
 
         public string ModelType { get; set; }
+
+        public List<SensorCommand> Commands { get; set; }
+
+        public DeviceListItem()
+        {
+            this.Commands = new List<SensorCommand>();
+        }
     }
 }

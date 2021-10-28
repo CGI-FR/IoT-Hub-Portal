@@ -51,11 +51,10 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
         [HttpPost]
         public IActionResult Post(SensorModel sensor)
-        // public void Post([FromForm] MultipartFormDataContent data)
+        // public async Task<HttpResponseMessage> Post()
         {
             try
             {
-                // var test = data.ToDictionary()
                 TableEntity entity = new TableEntity();
                 entity.PartitionKey = "0";
                 entity.RowKey = sensor.Name;

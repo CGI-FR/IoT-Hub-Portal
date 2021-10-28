@@ -2,6 +2,8 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Shared.Models
+@using System.Text.Json;
+
 @attribute [Authorize]
 @inject HttpClient Http
 @inject IDialogService DialogService
@@ -19,15 +21,15 @@
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent>
-                            @if (Device.DeviceID == null)
-                            {
-                                <MudItem Class="custom-centered-container">
-                                    <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
-                                </MudItem>
-                            }
-                            else
-                            {
-                        <MudGrid>
+                        @if (Device.DeviceID == null)
+                        {
+                            <MudItem Class="custom-centered-container">
+                                <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+                            </MudItem>
+                        }
+                        else
+                        {
+                            <MudGrid>
                                 <MudItem xs="12">
                                     <MudItem xs="6" Class="custom-form">
                                         <MudItem md="3" sm="12">
@@ -135,8 +137,22 @@
                                         </MudItem>
                                     </MudItem>
                                 </MudItem>
-                        </MudGrid>
+                            </MudGrid>
+                            @if (Device.Commands.Count > 0)
+                            {
+
+                                <MudGrid>
+                                    <MudItem md="6" xs="12">
+                                        @foreach (var command in Device.Commands)
+                                        {
+                                            <MudItem xs="12" Class="custom-form">
+                                                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await ExecuteMethod(command))"> @command.Name</MudButton>
+                                            </MudItem>
+                                        }
+                                    </MudItem>
+                                </MudGrid>
                             }
+                        }
                     </MudCardContent>
                 </MudCard>
                 <MudCardActions>
@@ -206,6 +222,21 @@
 
         // Go back to the list of devices after the deletion
         NavManager.NavigateTo("devices");
+    }
+
+    private async Task ExecuteMethod(SensorCommand method)
+    {
+        var result = await Http.PostAsJsonAsync($"Devices/{Device.DeviceID}/{method.Name}", method);
+
+        if (result.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"{method} has been successfully execute!", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add(await result.Content.ReadAsStringAsync(), Severity.Error);
+            //Snackbar.Add(JsonSerializer.Serialize(await result.Content.ReadAsStringAsync()), Severity.Error);
+        }
     }
 }
 
