@@ -11,6 +11,7 @@
     <MudGrid>
         <MudItem xs="12">
             <EditForm Model="@Device" OnValidSubmit="SaveDevice">
+                <DataAnnotationsValidator />
                 <MudCard>
                     <MudCardHeader>
                         <CardHeaderContent>
@@ -25,7 +26,9 @@
                                         <MudText>Device ID : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudTextField @bind-Value="@Device.DeviceID" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                        <MudTextField @bind-Value="@Device.DeviceID"
+                                                      Margin="Margin.Dense" Variant="Variant.Outlined"
+                                                      For="@(()=> Device.DeviceID)"></MudTextField>
                                     </MudItem>
                                 </MudItem>
                             </MudItem>
@@ -37,10 +40,11 @@
                                         <MudText>Type : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudSelect T="string" @bind-Value="@Device.DeviceType" ReadOnly="true" 
-                                                   Variant="Variant.Outlined" Dense="true"
-                                                   Class="custom-disabled"
-                                                   >
+                                        <MudSelect T="string" @bind-Value="@Device.DeviceType"
+                                                   Dense="true" Variant="Variant.Outlined"
+                                                   For="@(()=> Device.DeviceType)"
+                                                   ReadOnly="true"
+                                                   Class="custom-disabled">
                                             <MudSelectItem Value="@("LoRa Device")" />
                                             <MudSelectItem Value="@("Other")" />
                                         </MudSelect>
@@ -51,13 +55,12 @@
                                         <MudText>Model Type : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudAutocomplete T="string" @bind-Value="@Device.ModelType" 
-                                                         Variant="Variant.Outlined" Dense="true"
+                                        <MudAutocomplete T="string" @bind-Value="@Device.ModelType"
+                                                         Dense="true" Variant="Variant.Outlined"
+                                                         For="@(()=> Device.ModelType)"
                                                          SearchFunc="@Search"
                                                          ResetValueOnEmptyText="true"
-                                                         Immediate="true"
-                                                         Clearable="true"
-                                                         Required="true"
+                                                         Immediate="true" Clearable="true"
                                                          CoerceText="true" CoerceValue="false" />
                                     </MudItem>
                                 </MudItem>
@@ -69,7 +72,9 @@
                                         <MudText>IoT Asset ID : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudTextField @bind-Value="@Device.AssetID" Class="" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                        <MudTextField @bind-Value="@Device.AssetID"
+                                                      Margin="Margin.Dense" Variant="Variant.Outlined"
+                                                      For="@(()=> Device.AssetID)"></MudTextField>
                                     </MudItem>
                                 </MudItem>
 
@@ -80,13 +85,17 @@
                                     <MudItem md="9" sm="12">
                                         @if (Device.ModelType != null && SensorDict.ContainsKey(Device.ModelType))
                                         {
-                                            Device.AppEUI = SensorDict[Device.ModelType] ?? "Error - Selected model contains no AppEUI value";
+                                            Device.AppEUI = SensorDict[Device.ModelType] ?? "Selected model contains no AppEUI value";
                                         }
                                         else
                                         {
-                                            Device.AppEUI = "Error - No model selected";
+                                            Device.AppEUI = "No model selected";
                                         }
-                                        <MudTextField @bind-Value="@Device.AppEUI" Class="custom-disabled" Margin="Margin.Dense" Variant="Variant.Outlined" ReadOnly="true"></MudTextField>
+                                        <MudTextField @bind-Value="@Device.AppEUI"
+                                                      Margin="Margin.Dense" Variant="Variant.Outlined"
+                                                      For="@(()=> Device.AppEUI)"
+                                                      ReadOnly="true"
+                                                      Class="custom-disabled"></MudTextField>
                                     </MudItem>
                                 </MudItem>
                                 <MudItem xs="12" Class="custom-form">
@@ -94,7 +103,9 @@
                                         <MudText>OTAA AppKey : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudTextField @bind-Value="@Device.AppKey" Class="" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                        <MudTextField @bind-Value="@Device.AppKey"
+                                                      Margin="Margin.Dense" Variant="Variant.Outlined"
+                                                      For="@(()=> Device.AppKey)"></MudTextField>
                                     </MudItem>
                                 </MudItem>
                             </MudItem>
@@ -104,7 +115,9 @@
                                         <MudText>Location Asset ID : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudTextField @bind-Value="@Device.LocationCode" Class="" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                        <MudTextField @bind-Value="@Device.LocationCode"
+                                                      Margin="Margin.Dense" Variant="Variant.Outlined"
+                                                      For="@(()=> Device.LocationCode)"></MudTextField>
                                     </MudItem>
                                 </MudItem>
 
@@ -133,8 +146,19 @@
                     </MudCardContent>
                 </MudCard>
                 <MudCardActions>
-                    <MudFab ButtonType="ButtonType.Submit" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Label="Save" Disabled="@(!success)" Class="ml-auto" />
+                    <MudFab ButtonType="ButtonType.Submit" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Label="Save" Disabled="false" Class="ml-auto" />
                 </MudCardActions>
+
+                @if (success)
+                {
+                    <MudText Color="Color.Success">Success</MudText>
+                }
+                else
+                {
+                    <MudText Color="@Color.Error">
+                        <ValidationSummary />
+                    </MudText>
+                }
             </EditForm>
         </MudItem>
 
@@ -148,7 +172,7 @@
 
     private DeviceListItem Device { get; set; } = new DeviceListItem();
 
-    private bool success = true;
+    private bool success;
     private string[] errors = { };
 
     private IEnumerable<SensorModel> SensorList { get; set; } = new List<SensorModel>();
@@ -163,21 +187,37 @@
         {
             SensorDict.Add(val.Name, val.AppEUI);
         }
+        success = false;
     }
 
     /// <summary>
     /// Sends a POST request to the DevicesController, to add the new device to the Azure IoT Hub
     /// </summary>
-    public async void SaveDevice()
+    public async void SaveDevice(EditContext context)
     {
-        await Http.PostAsJsonAsync<DeviceListItem>($"Devices/create", Device);
+        success = true;
+        StateHasChanged();
 
-        // Prompts a snack bar to inform the action was successful
+        await Task.Delay(0);
+
+        var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/create", Device);
+        var errorMsg = await response.Content.ReadAsStringAsync();
+        Console.WriteLine($">>>>> {response.StatusCode}");
+        Console.WriteLine($"===== {errorMsg}");
+
+        // Prompts a snack bar to inform if the action was successful
         // TODO : Deal more effectively with error/success messages
-        Snackbar.Add($"Device {Device.DeviceID} has been successfully created!", Severity.Success);
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Device {Device.DeviceID} has been successfully created!", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add($"Oh oh, something went wrong while creating device {Device.DeviceID}...", Severity.Error);
+        }
 
         // Go back to the list of devices
-        NavManager.NavigateTo("devices");
+        // NavManager.NavigateTo("devices");
 
     }
 
