@@ -7,6 +7,7 @@
 @using System.IO
 @using Blazored.Modal
 @using Blazored.Modal.Services
+@using Newtonsoft.Json
 
 @attribute [Authorize]
 @inject HttpClient Http
@@ -143,23 +144,49 @@
 
     private async Task OnValidation()
     {
-        var content = new MultipartFormDataContent();
-        content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
-        if (_selectedImage != null)
+        using (var content = new MultipartFormDataContent())
         {
-            using (var ms = _selectedImage.OpenReadStream())
-                content.Add(new StreamContent(ms), "image", _selectedImage.Name);
+            //var stringContent = new StringContent(JsonConvert.SerializeObject(_sensorModel));
+
+            content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+
+            var sensorContent = JsonContent.Create(_sensorModel);
+            sensorContent.Headers.Add("Content-Disposition", "form-data; name=\"sensor\"");
+            sensorContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            content.Add(sensorContent, "sensor");
+
+            if (_selectedImage != null)
+            {
+                using (var ms = _selectedImage.OpenReadStream())
+                {
+                    var streamContent = new StreamContent(ms);
+                    streamContent.Headers.ContentType = new MediaTypeHeaderValue(_selectedImage.ContentType);
+                    streamContent.Headers.Add("Content-Disposition", "form-data; name=\"file\"; filename=\"" + _selectedImage.Name + "\"");
+                    content.Add(streamContent, "file", _selectedImage.Name);
+                }
+            }
+
+
+            _ = await Http.PostAsync("Sensor", content);
         }
 
-        content.Add(JsonContent.Create(_sensorModel), "modelDefintion");
+        //var content = new MultipartFormDataContent();
+        //if (_selectedImage != null)
+        //{
+        //    using (var ms = _selectedImage.OpenReadStream())
+        //        content.Add(new StreamContent(ms), "image", _selectedImage.Name);
+        //}
+
+        //content.Add(JsonContent.Create(_sensorModel), "modelDefintion");
         //var result = await Http.PostAsync("Sensor", content);
-        var result = await Http.PostAsJsonAsync("Sensor", _sensorModel);
+        // var result = await Http.PostAsJsonAsync("Sensor", _sensorModel);
 
-        if (result.IsSuccessStatusCode)
-        {
-            Snackbar.Add($"sensor model successfully create", Severity.Success);
-            _sensorModel = new SensorModel();
-        }
+        //if (result.IsSuccessStatusCode)
+        //{
+        //    Snackbar.Add($"sensor model successfully create", Severity.Success);
+        //    _sensorModel = new SensorModel();
+        //}
     }
 
     private void AddCommand()
