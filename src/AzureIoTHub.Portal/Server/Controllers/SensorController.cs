@@ -90,11 +90,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     }
                 }
 
-                return this.Ok("tout va bien");
+                // return this.Ok("tout va bien");
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return this.BadRequest(e.Message);
+                // return this.BadRequest(e.Message);
             }
         }
     }

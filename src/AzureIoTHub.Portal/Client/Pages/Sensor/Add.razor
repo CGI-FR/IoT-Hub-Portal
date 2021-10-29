@@ -160,9 +160,9 @@
     {
         using (var content = new MultipartFormDataContent())
         {
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(_selectedImage.ContentType);
 
             content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
-
             var sensorContent = JsonContent.Create(_sensorModel);
             sensorContent.Headers.Add("Content-Disposition", "form-data; name=\"sensor\"");
             sensorContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -179,11 +179,12 @@
                     content.Add(streamContent, "file", _selectedImage.Name);
                 }
             }
-
-
+        content.Add(sensorContent, "modelDefintion");
+        //var result = await Http.PostAsync("Sensor", content);
             _ = await Http.PostAsync("Sensor", content);
         }
-
+        var result = await Http.PostAsJsonAsync("Sensor", _sensorModel);
+    }
     }
 
     private void AddCommand()
