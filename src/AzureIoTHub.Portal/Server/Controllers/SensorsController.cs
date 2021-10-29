@@ -94,22 +94,29 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets a list of sensor models from an Azure DataTable.
+        /// </summary>
+        /// <returns>A list of SensorModel.</returns>
         [HttpGet]
         public async Task<IEnumerable<SensorModel>> Get()
         {
             await Task.Delay(0);
 
-            Pageable<TableEntity> entities = this.tableClient.Query<TableEntity>("PartitionKey eq 'test'");
-            IEnumerable<SensorModel> listTest = entities.Select(e => this.MapTableEntityToSensorModel(e));
+            // PartitionKey 0 contains all sensor models
+            Pageable<TableEntity> entities = this.tableClient.Query<TableEntity>("PartitionKey eq '0'");
 
-            foreach (var test in listTest)
-            {
-                Console.WriteLine($"{test.Name} => {test.AppEUI}, {test.Description}");
-            }
-
-            return listTest;
+            // Converts the query result into a list of sensor models
+            IEnumerable<SensorModel> sensorsList = entities.Select(e => this.MapTableEntityToSensorModel(e));
+            return sensorsList;
         }
 
+        /// <summary>
+        /// Creates a SensorModel object from a query result.
+        /// Checks first if the entity fields fit to the sensor model attributes.
+        /// </summary>
+        /// <param name="entity">An AzureDataTable entity coming from a query.</param>
+        /// <returns>A sensor model.</returns>
         public SensorModel MapTableEntityToSensorModel(TableEntity entity)
         {
             SensorModel sensor = new SensorModel();

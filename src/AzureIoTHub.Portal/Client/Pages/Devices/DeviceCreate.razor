@@ -149,16 +149,6 @@
                     <MudFab ButtonType="ButtonType.Submit" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Label="Save" Disabled="false" Class="ml-auto" />
                 </MudCardActions>
 
-                @if (success)
-                {
-                    <MudText Color="Color.Success">Success</MudText>
-                }
-                else
-                {
-                    <MudText Color="@Color.Error">
-                        <ValidationSummary />
-                    </MudText>
-                }
             </EditForm>
         </MudItem>
 
@@ -172,22 +162,21 @@
 
     private DeviceListItem Device { get; set; } = new DeviceListItem();
 
-    private bool success;
-    private string[] errors = { };
-
     private IEnumerable<SensorModel> SensorList { get; set; } = new List<SensorModel>();
     public Dictionary<string, string> SensorDict { get; set; } = new Dictionary<string, string>();
 
     protected override async Task OnInitializedAsync()
     {
         Device.DeviceType = "LoRa Device";
+        
+        // Gets a list of sensor model previously registered to Azure to allow autocomplete field in the form
         SensorList = await Http.GetFromJsonAsync<SensorModel[]>("Sensors");
 
+        // Convert this list into a dictionnary to automatically fill the AppEUI field
         foreach (var val in SensorList)
         {
             SensorDict.Add(val.Name, val.AppEUI);
         }
-        success = false;
     }
 
     /// <summary>
@@ -195,11 +184,10 @@
     /// </summary>
     public async void SaveDevice(EditContext context)
     {
-        success = true;
         StateHasChanged();
-
         await Task.Delay(0);
 
+        // Sends the device to be added to the controller
         var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/create", Device);
         var errorMsg = await response.Content.ReadAsStringAsync();
         Console.WriteLine($">>>>> {response.StatusCode}");
@@ -217,10 +205,15 @@
         }
 
         // Go back to the list of devices
-        // NavManager.NavigateTo("devices");
+        NavManager.NavigateTo("devices");
 
     }
 
+    /// <summary>
+    /// Allows to autocomplete the Sensor Model field in the form.
+    /// </summary>
+    /// <param name="value">Text entered in the field</param>
+    /// <returns>Item of the sensor model list that matches the user's value</returns>
     private async Task<IEnumerable<string>> Search(string value)
     {
         // In real life use an asynchronous function for fetching data from an api.
