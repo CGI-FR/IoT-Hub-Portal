@@ -9,7 +9,7 @@ namespace AzureIoTHub.Portal.Shared.Models
     public class DeviceListItem
     {
         [Required]
-        [StringLength(8, ErrorMessage ="Name lenght can't be more than 8.")]
+        [RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         public string DeviceID { get; set; }
 
         public bool IsConnected { get; set; }
@@ -26,10 +26,8 @@ namespace AzureIoTHub.Portal.Shared.Models
 
         public string AssetID { get; set; }
 
-        [Required]
         public string DeviceType { get; set; }
 
-        [Required]
         public string ModelType { get; set; }
     }
 }
