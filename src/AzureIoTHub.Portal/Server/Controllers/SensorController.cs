@@ -50,47 +50,47 @@ namespace AzureIoTHub.Portal.Server.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(SensorModel sensor)
-        // public void Post([FromForm] MultipartFormDataContent data)
+        // public IActionResult Post(SensorModel sensor)
+        public async Task Post([FromForm]SensorModel sensor, [FromForm] IFormFile file = null)
         {
             try
             {
-                // var test = data.ToDictionary()
+                var test = sensor;
                 TableEntity entity = new TableEntity();
                 entity.PartitionKey = "0";
                 entity.RowKey = sensor.Name;
 
                 entity["Description"] = sensor.Description;
                 entity["AppEUI"] = sensor.AppEUI;
-
-                // if (sensor.Image != null)
-                // {
-                //    entity["Image"] = sensor.Image.Name;
-                //    BlobContainerClient blobContainer = this.blobService.GetBlobContainerClient(this.configuration["StorageAcount:BlobContainerName"]);
-                //    BlobClient blobClient = blobContainer.GetBlobClient(sensor.Image.Name);
-                //    this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
-                //    await blobClient.UploadAsync(sensor.Image.OpenReadStream());
-                // }
-                this.tableClient.AddEntity(entity);
-                // insertion des commant
-                if (sensor.Commands.Count > 0)
+                if (file != null)
                 {
-                    foreach (var element in sensor.Commands)
-                    {
-                        TableEntity commandEntity = new TableEntity();
-                        commandEntity.PartitionKey = sensor.Name;
-                        commandEntity.RowKey = element.Name;
-                        commandEntity["Trame"] = element.Trame;
-                        commandEntity["Port"] = element.Port;
-                        this.tableClient.AddEntity(commandEntity);
-                    }
+                    entity["Image"] = file.Name;
+                    BlobContainerClient blobContainer = this.blobService.GetBlobContainerClient(this.configuration["StorageAcount:BlobContainerName"]);
+                    BlobClient blobClient = blobContainer.GetBlobClient(file.Name);
+                    this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
+                    await blobClient.UploadAsync(file.OpenReadStream());
                 }
 
-                return this.Ok("tout va bien");
+                // this.tableClient.AddEntity(entity);
+                // insertion des commant
+                // if (sensor.Commands.Count > 0)
+                // {
+                //    foreach (var element in sensor.Commands)
+                //    {
+                //        TableEntity commandEntity = new TableEntity();
+                //        commandEntity.PartitionKey = sensor.Name;
+                //        commandEntity.RowKey = element.Name;
+                //        commandEntity["Trame"] = element.Trame;
+                //        commandEntity["Port"] = element.Port;
+                //        this.tableClient.AddEntity(commandEntity);
+                //    }
+                // }
+
+                // return this.Ok("tout va bien");
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return this.BadRequest(e.Message);
+                // return this.BadRequest(e.Message);
             }
         }
     }
