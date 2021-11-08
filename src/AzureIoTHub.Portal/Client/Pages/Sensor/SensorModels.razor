@@ -12,9 +12,93 @@
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
-<h3>SensorModels</h3>
-<a href="/add_sensor"> page add</a>
+<MudContainer MaxWidth="MaxWidth.False">
+    @if (result == null)
+    {
+        <MudItem Class="custom-centered-container">
+            <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+        </MudItem>
+    }
+    else
+    {
+        <MudGrid>
+            <MudItem xs="12">
+                <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
+                    <ColGroup>
+                        <col style="width: 30%;" />
+                        <col style="width: 30%;" />
+                        <col style="width: 30%;" />
+                        <col style="width: 5%;" />
+                        <col style="width: 5%;" />
+                    </ColGroup>
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Sensor Models</MudText>
+                        <MudSpacer />
+                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadSensorModels" Class="ma-2"></MudIconButton>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>Name</MudTh>
+                        <MudTh Style="text-align: center">Description</MudTh>
+                        <MudTh Style="text-align: center">AppEUI</MudTh>
+                        <MudTh Style="text-align: center">Details</MudTh>
+                        <MudTh Style="text-align: center">Delete</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Name" Style="word-break: break-all;">
+                            <a href="detail/@context.Name">@context.Name</a>
+                        </MudTd>
+                        <MudTd DataLabel="Description" Style="word-break: break-all; ">
+                            @context.Description
+                        </MudTd>
+                        <MudTd DataLabel="AppEUI" Style="text-align: center;">
+                            @context.AppEUI
+                        </MudTd>
+                        <MudTd DataLabel="Details" Style="text-align: center">
+                            <a href="detail/@context.Name"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                        </MudTd>
+                        <MudTd DataLabel="Delete" Style="text-align: center">
+                            <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteSensorModel(context))"></MudIconButton>
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+                    </PagerContent>
+                </MudTable>
+            </MudItem>
+        </MudGrid>
+    }
+    <MudItem xs="12">
+        <a href="add_sensor"><MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add a new sensor model" /></a>
+    </MudItem>
+</MudContainer>
 
 @code {
+    private SensorModel[] result;
+    private int[] pageSizeOptions = new int[] { 2, 5, 10 };
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSensorModels();
+    }
+
+    /// <summary>
+    ///  Sends a GET request to the SensorsController, to retrieve all sensors from the database
+    /// </summary>
+    /// <returns></returns>
+    private async Task LoadSensorModels()
+    {
+        try
+        {
+            result = await Http.GetFromJsonAsync<SensorModel[]>("Sensors");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private async Task DeleteSensorModel(SensorModel sensor)
+    {
+        await Task.Delay(0); //TODO?
+    }
 }
