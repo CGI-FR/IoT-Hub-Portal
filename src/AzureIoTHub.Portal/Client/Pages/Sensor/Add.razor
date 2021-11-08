@@ -65,6 +65,20 @@
                                            for="fileInput">
                                     Upload an images
                                 </MudButton>
+
+                                @if ( _selectedImage != null)
+                                {
+                                    <ul>
+                                        <li>
+                                            <ul>
+                                                <li>Name: @_selectedImage.Name</li>
+                                                <li>Last modified: @_selectedImage.LastModified.ToString()</li>
+                                                <li>Size (bytes): @_selectedImage.Size</li>
+                                                <li>Content type: @_selectedImage.ContentType</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                }
                             </MudItem>
                         </MudItem>
                     </MudItem>
@@ -128,7 +142,6 @@
     private SensorModel _sensorModel;
     private SensorCommand _sensorCommand;
     private IBrowserFile _selectedImage;
-    List<IBrowserFile> files = new List<IBrowserFile>();
 
     protected override void OnInitialized()
     {
@@ -138,6 +151,7 @@
 
     private void UploadFiles(InputFileChangeEventArgs e)
     {
+        _selectedImage = null;
         _selectedImage = e.File;
     }
 
@@ -146,7 +160,6 @@
     {
         using (var content = new MultipartFormDataContent())
         {
-            //var stringContent = new StringContent(JsonConvert.SerializeObject(_sensorModel));
 
             content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
 
@@ -171,22 +184,6 @@
             _ = await Http.PostAsync("Sensor", content);
         }
 
-        //var content = new MultipartFormDataContent();
-        //if (_selectedImage != null)
-        //{
-        //    using (var ms = _selectedImage.OpenReadStream())
-        //        content.Add(new StreamContent(ms), "image", _selectedImage.Name);
-        //}
-
-        //content.Add(JsonContent.Create(_sensorModel), "modelDefintion");
-        //var result = await Http.PostAsync("Sensor", content);
-        // var result = await Http.PostAsJsonAsync("Sensor", _sensorModel);
-
-        //if (result.IsSuccessStatusCode)
-        //{
-        //    Snackbar.Add($"sensor model successfully create", Severity.Success);
-        //    _sensorModel = new SensorModel();
-        //}
     }
 
     private void AddCommand()

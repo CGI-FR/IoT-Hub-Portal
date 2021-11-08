@@ -14,12 +14,12 @@ namespace AzureIoTHub.Portal.Shared.Models
 
     public class SensorModel
     {
-        // [Required]
+        [Required]
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        // [Required]
+        [Required]
         public string AppEUI { get; set; }
 
         public List<SensorCommand> Commands { get; set; }
