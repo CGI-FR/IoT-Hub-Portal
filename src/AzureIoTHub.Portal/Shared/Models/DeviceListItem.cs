@@ -4,9 +4,12 @@
 namespace AzureIoTHub.Portal.Shared.Models
 {
     using System;
+    using System.ComponentModel.DataAnnotations;
 
     public class DeviceListItem
     {
+        [Required]
+        [RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         public string DeviceID { get; set; }
 
         public bool IsConnected { get; set; }

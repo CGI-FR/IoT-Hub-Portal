@@ -11,6 +11,7 @@
     <MudGrid>
         <MudItem xs="12">
             <EditForm Model="@Device" OnValidSubmit="SaveDevice">
+                <DataAnnotationsValidator />
                 <MudCard>
                     <MudCardHeader>
                         <CardHeaderContent>
@@ -25,7 +26,9 @@
                                         <MudText>Device ID : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudTextField @bind-Value="@Device.DeviceID" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                        <MudTextField @bind-Value="@Device.DeviceID"
+                                                      Margin="Margin.Dense" Variant="Variant.Outlined"
+                                                      For="@(()=> Device.DeviceID)"></MudTextField>
                                     </MudItem>
                                 </MudItem>
                             </MudItem>
@@ -37,7 +40,11 @@
                                         <MudText>Type : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudSelect T="string" Value="@Device.DeviceType" Variant="Variant.Outlined" Dense="true">
+                                        <MudSelect T="string" @bind-Value="@Device.DeviceType"
+                                                   Dense="true" Variant="Variant.Outlined"
+                                                   For="@(()=> Device.DeviceType)"
+                                                   ReadOnly="true"
+                                                   Class="custom-disabled">
                                             <MudSelectItem Value="@("LoRa Device")" />
                                             <MudSelectItem Value="@("Other")" />
                                         </MudSelect>
@@ -48,7 +55,13 @@
                                         <MudText>Model Type : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudTextField @bind-Value="@Device.ModelType" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                        <MudAutocomplete T="string" @bind-Value="@Device.ModelType"
+                                                         Dense="true" Variant="Variant.Outlined"
+                                                         For="@(()=> Device.ModelType)"
+                                                         SearchFunc="@Search"
+                                                         ResetValueOnEmptyText="true"
+                                                         Immediate="true" Clearable="true"
+                                                         CoerceText="true" CoerceValue="false" />
                                     </MudItem>
                                 </MudItem>
                             </MudItem>
@@ -59,7 +72,9 @@
                                         <MudText>IoT Asset ID : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudTextField @bind-Value="@Device.AssetID" Class="" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                        <MudTextField @bind-Value="@Device.AssetID"
+                                                      Margin="Margin.Dense" Variant="Variant.Outlined"
+                                                      For="@(()=> Device.AssetID)"></MudTextField>
                                     </MudItem>
                                 </MudItem>
 
@@ -68,8 +83,19 @@
                                         <MudText>OTAA AppEUI : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudTextField @bind-Value="@Device.AppEUI" Class="" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-
+                                        @if (Device.ModelType != null && SensorDict.ContainsKey(Device.ModelType))
+                                        {
+                                            Device.AppEUI = SensorDict[Device.ModelType] ?? "Selected model contains no AppEUI value";
+                                        }
+                                        else
+                                        {
+                                            Device.AppEUI = "No model selected";
+                                        }
+                                        <MudTextField @bind-Value="@Device.AppEUI"
+                                                      Margin="Margin.Dense" Variant="Variant.Outlined"
+                                                      For="@(()=> Device.AppEUI)"
+                                                      ReadOnly="true"
+                                                      Class="custom-disabled"></MudTextField>
                                     </MudItem>
                                 </MudItem>
                                 <MudItem xs="12" Class="custom-form">
@@ -77,7 +103,9 @@
                                         <MudText>OTAA AppKey : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudTextField @bind-Value="@Device.AppKey" Class="" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                        <MudTextField @bind-Value="@Device.AppKey"
+                                                      Margin="Margin.Dense" Variant="Variant.Outlined"
+                                                      For="@(()=> Device.AppKey)"></MudTextField>
                                     </MudItem>
                                 </MudItem>
                             </MudItem>
@@ -87,7 +115,9 @@
                                         <MudText>Location Asset ID : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudTextField @bind-Value="@Device.LocationCode" Class="" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                        <MudTextField @bind-Value="@Device.LocationCode"
+                                                      Margin="Margin.Dense" Variant="Variant.Outlined"
+                                                      For="@(()=> Device.LocationCode)"></MudTextField>
                                     </MudItem>
                                 </MudItem>
 
@@ -116,8 +146,9 @@
                     </MudCardContent>
                 </MudCard>
                 <MudCardActions>
-                    <MudFab ButtonType="ButtonType.Submit" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Label="Save" Disabled="@(!success)" Class="ml-auto" />
+                    <MudFab ButtonType="ButtonType.Submit" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Label="Save" Disabled="false" Class="ml-auto" />
                 </MudCardActions>
+
             </EditForm>
         </MudItem>
 
@@ -131,23 +162,67 @@
 
     private DeviceListItem Device { get; set; } = new DeviceListItem();
 
-    private bool success = true;
-    private string[] errors = { };
+    private IEnumerable<SensorModel> SensorList { get; set; } = new List<SensorModel>();
+    public Dictionary<string, string> SensorDict { get; set; } = new Dictionary<string, string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Device.DeviceType = "LoRa Device";
+        
+        // Gets a list of sensor model previously registered to Azure to allow autocomplete field in the form
+        SensorList = await Http.GetFromJsonAsync<SensorModel[]>("Sensors");
+
+        // Convert this list into a dictionnary to automatically fill the AppEUI field
+        foreach (var val in SensorList)
+        {
+            SensorDict.Add(val.Name, val.AppEUI);
+        }
+    }
 
     /// <summary>
     /// Sends a POST request to the DevicesController, to add the new device to the Azure IoT Hub
     /// </summary>
-    public async void SaveDevice()
+    public async void SaveDevice(EditContext context)
     {
-        await Http.PostAsJsonAsync<DeviceListItem>($"Devices/create", Device);
-        
-        // Prompts a snack bar to inform the action was successful
+        StateHasChanged();
+        await Task.Delay(0);
+
+        // Sends the device to be added to the controller
+        var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/create", Device);
+        var errorMsg = await response.Content.ReadAsStringAsync();
+        Console.WriteLine($">>>>> {response.StatusCode}");
+        Console.WriteLine($"===== {errorMsg}");
+
+        // Prompts a snack bar to inform if the action was successful
         // TODO : Deal more effectively with error/success messages
-        Snackbar.Add($"Device {Device.DeviceID} has been successfully created!", Severity.Success);
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Device {Device.DeviceID} has been successfully created!", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add($"Oh oh, something went wrong while creating device {Device.DeviceID}...", Severity.Error);
+        }
 
         // Go back to the list of devices
         NavManager.NavigateTo("devices");
 
+    }
+
+    /// <summary>
+    /// Allows to autocomplete the Sensor Model field in the form.
+    /// </summary>
+    /// <param name="value">Text entered in the field</param>
+    /// <returns>Item of the sensor model list that matches the user's value</returns>
+    private async Task<IEnumerable<string>> Search(string value)
+    {
+        // In real life use an asynchronous function for fetching data from an api.
+        await Task.Delay(0);
+
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return SensorDict.Keys;
+        return SensorDict.Keys.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 }
 

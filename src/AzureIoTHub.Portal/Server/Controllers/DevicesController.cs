@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Http;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Shared.Models;
@@ -134,18 +135,26 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <param name="actionToPerform">Specific action to perform: create/update/delete.</param>
         /// <returns>A Task representing the asynchronous operation.</returns>
         [HttpPost("{actionToPerform}")]
-        public async Task Post(DeviceListItem device, string actionToPerform)
+        // public async Task<HttpResponseMessage> Post(DeviceListItem device, string actionToPerform)
+        public async Task<IActionResult> Post(DeviceListItem device, string actionToPerform)
         {
             if (actionToPerform == "delete")
             {
-                // TODO : Deal with success/failure status
-                await this.registryManager.RemoveDeviceAsync(device.DeviceID);
+                // TODO : Deal more effectively with success/failure status
+                try
+                {
+                    await this.registryManager.RemoveDeviceAsync(device.DeviceID);
+                }
+                catch (Exception e)
+                {
+                    return this.Problem($"Error while deleting device : {e.Message}", statusCode: 418);
+                }
             }
             else
             {
                 if (actionToPerform == "create")
                 {
-                    // Create a new Twin from the fields from the form.
+                    // Create a new Twin from the form's fields.
                     Twin newTwin = new () { DeviceId = device.DeviceID };
                     newTwin.Tags["locationCode"] = device.LocationCode;
                     newTwin.Tags["deviceType"] = device.DeviceType;
@@ -154,17 +163,20 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     newTwin.Properties.Desired["AppEUI"] = device.AppEUI;
                     newTwin.Properties.Desired["AppKey"] = device.AppKey;
 
-                    // TODO : Deal with success/failure state
+                    // TODO : Deal more effectively with success/failure status
                     try
                     {
-                        await this.registryManager.AddDeviceWithTwinAsync(new Device(device.DeviceID), newTwin);
-                    }
+                        var response = await this.registryManager.AddDeviceWithTwinAsync(new Device(device.DeviceID), newTwin);
 
-                    // Supposedly throws a exception if the device already exists within the hub
-                    // TODO : Check if it works properly
-                    catch (DeviceAlreadyExistsException e)
+                        // Manually throw an exception if something went wrong while creating the device
+                        if (!response.IsSuccessful)
+                        {
+                            throw new Exception(response.Errors.First().ErrorStatus);
+                        }
+                    }
+                    catch (Exception e)
                     {
-                        Console.WriteLine($"ERROR: {e}");
+                        return this.Problem($"Error while creating device : {e.Message}", statusCode: 418);
                     }
                 }
 
@@ -179,17 +191,34 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     currentTwin.Properties.Desired["AppEUI"] = device.AppEUI;
                     currentTwin.Properties.Desired["AppKey"] = device.AppKey;
 
-                    // Update the twin
-                    Twin twin = await this.registryManager.ReplaceTwinAsync(device.DeviceID, currentTwin, currentTwin.ETag);
+                    // TODO : Deal more effectively with success/failure status
+                    try
+                    {
+                        Twin twin = await this.registryManager.ReplaceTwinAsync(device.DeviceID, currentTwin, currentTwin.ETag);
+                    }
+                    catch (Exception e)
+                    {
+                        return this.Problem($"Error while replacing twin : {e.Message}", statusCode: 418);
+                    }
                 }
 
                 // Device status (enabled/disabled) has to be dealt with afterwards
                 Device currentDevice = await this.registryManager.GetDeviceAsync(device.DeviceID);
                 // Sets the current Device status according to the value entered in the form
                 currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+
                 // Update the device on the hub
-                await this.registryManager.UpdateDeviceAsync(currentDevice);
+                try
+                {
+                    await this.registryManager.UpdateDeviceAsync(currentDevice);
+                }
+                catch (Exception e)
+                {
+                    return this.Problem($"Error while updating device : {e.Message}", statusCode: 418);
+                }
             }
+
+            return this.Ok("Everything went well, yay !");
         }
     }
 }
