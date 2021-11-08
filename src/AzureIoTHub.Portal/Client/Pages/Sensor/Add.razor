@@ -160,7 +160,6 @@
     {
         using (var content = new MultipartFormDataContent())
         {
-            fileContent.Headers.ContentType = new MediaTypeHeaderValue(_selectedImage.ContentType);
 
             content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
             var sensorContent = JsonContent.Create(_sensorModel);
@@ -184,7 +183,6 @@
             _ = await Http.PostAsync("Sensor", content);
         }
         var result = await Http.PostAsJsonAsync("Sensor", _sensorModel);
-    }
     }
 
     private void AddCommand()
