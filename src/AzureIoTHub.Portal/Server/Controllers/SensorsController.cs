@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Net.Http;
     using System.Security.Cryptography;
@@ -25,6 +26,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
 
     [Authorize]
     [ApiController]
@@ -50,47 +52,49 @@ namespace AzureIoTHub.Portal.Server.Controllers
         }
 
         [HttpPost]
-        // public IActionResult Post(SensorModel sensor)
-        public async Task Post([FromForm]SensorModel sensor, [FromForm] IFormFile file = null)
+        public async Task<IActionResult> Post([FromForm]string sensor, [FromForm] IFormFile file = null)
         {
             try
             {
-                var test = sensor;
+                SensorModel sensorObject = JsonConvert.DeserializeObject<SensorModel>(sensor);
                 TableEntity entity = new TableEntity();
                 entity.PartitionKey = "0";
-                entity.RowKey = sensor.Name;
+                entity.RowKey = sensorObject.Name;
 
-                entity["Description"] = sensor.Description;
-                entity["AppEUI"] = sensor.AppEUI;
+                entity["Description"] = sensorObject.Description;
+                entity["AppEUI"] = sensorObject.AppEUI;
+
                 if (file != null)
                 {
-                    entity["Image"] = file.Name;
+                    entity["Image"] = file.FileName;
                     BlobContainerClient blobContainer = this.blobService.GetBlobContainerClient(this.configuration["StorageAcount:BlobContainerName"]);
-                    BlobClient blobClient = blobContainer.GetBlobClient(file.Name);
+                    BlobClient blobClient = blobContainer.GetBlobClient(file.FileName);
+
                     this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
+
                     await blobClient.UploadAsync(file.OpenReadStream());
                 }
 
-                // this.tableClient.AddEntity(entity);
+                this.tableClient.AddEntity(entity);
                 // insertion des commant
-                // if (sensor.Commands.Count > 0)
-                // {
-                //    foreach (var element in sensor.Commands)
-                //    {
-                //        TableEntity commandEntity = new TableEntity();
-                //        commandEntity.PartitionKey = sensor.Name;
-                //        commandEntity.RowKey = element.Name;
-                //        commandEntity["Trame"] = element.Trame;
-                //        commandEntity["Port"] = element.Port;
-                //        this.tableClient.AddEntity(commandEntity);
-                //    }
-                // }
+                if (sensorObject.Commands.Count > 0)
+                {
+                    foreach (var element in sensorObject.Commands)
+                    {
+                        TableEntity commandEntity = new TableEntity();
+                        commandEntity.PartitionKey = sensorObject.Name;
+                        commandEntity.RowKey = element.Name;
+                        commandEntity["Trame"] = element.Trame;
+                        commandEntity["Port"] = element.Port;
+                        this.tableClient.AddEntity(commandEntity);
+                    }
+                }
 
-                // return this.Ok("tout va bien");
+                return this.Ok("tout va bien");
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // return this.BadRequest(e.Message);
+                return this.BadRequest(e.Message);
             }
         }
 
