@@ -32,15 +32,15 @@ namespace AzureIoTHub.Portal.Server.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = RoleNames.Admin)]
-    public class SensorsController : ControllerBase
+    public class SensorController : ControllerBase
     {
-        private readonly ILogger<SensorsController> logger;
+        private readonly ILogger<SensorController> logger;
         private readonly TableClient tableClient;
         private readonly IConfiguration configuration;
         private readonly BlobServiceClient blobService;
 
-        public SensorsController(
-            ILogger<SensorsController> logger,
+        public SensorController(
+            ILogger<SensorController> logger,
             IConfiguration configuration,
             BlobServiceClient blobServiceClient,
             TableClient tableClient)
@@ -96,46 +96,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
             {
                 return this.BadRequest(e.Message);
             }
-        }
-
-        /// <summary>
-        /// Gets a list of sensor models from an Azure DataTable.
-        /// </summary>
-        /// <returns>A list of SensorModel.</returns>
-        [HttpGet]
-        public async Task<IEnumerable<SensorModel>> Get()
-        {
-            await Task.Delay(0);
-
-            // PartitionKey 0 contains all sensor models
-            Pageable<TableEntity> entities = this.tableClient.Query<TableEntity>("PartitionKey eq '0'");
-
-            // Converts the query result into a list of sensor models
-            IEnumerable<SensorModel> sensorsList = entities.Select(e => this.MapTableEntityToSensorModel(e));
-            return sensorsList;
-        }
-
-        /// <summary>
-        /// Creates a SensorModel object from a query result.
-        /// Checks first if the entity fields fit to the sensor model attributes.
-        /// </summary>
-        /// <param name="entity">An AzureDataTable entity coming from a query.</param>
-        /// <returns>A sensor model.</returns>
-        public SensorModel MapTableEntityToSensorModel(TableEntity entity)
-        {
-            SensorModel sensor = new SensorModel();
-            sensor.Name = entity.RowKey;
-            if (entity.ContainsKey("Description"))
-            {
-                sensor.Description = entity["Description"].ToString();
-            }
-
-            if (entity.ContainsKey("AppEUI"))
-            {
-                sensor.AppEUI = entity["AppEUI"].ToString();
-            }
-
-            return sensor;
         }
     }
 }
