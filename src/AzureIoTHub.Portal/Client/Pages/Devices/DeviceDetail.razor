@@ -2,11 +2,13 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Shared.Models
+@using Microsoft.Extensions.Configuration;
 @attribute [Authorize]
 @inject HttpClient Http
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
+@inject IConfiguration Configuration
 
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
@@ -19,15 +21,15 @@
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent>
-                            @if (Device.DeviceID == null)
-                            {
-                                <MudItem Class="custom-centered-container">
-                                    <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
-                                </MudItem>
-                            }
-                            else
-                            {
-                        <MudGrid>
+                        @if (Device.DeviceID == null)
+                        {
+                            <MudItem Class="custom-centered-container">
+                                <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+                            </MudItem>
+                        }
+                        else
+                        {
+                            <MudGrid>
                                 <MudItem xs="12">
                                     <MudItem xs="6" Class="custom-form">
                                         <MudItem md="3" sm="12">
@@ -56,6 +58,15 @@
                                         </MudItem>
                                         <MudItem md="9" sm="12">
                                             <MudTextField @bind-Value="@Device.ModelType" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
+                                        </MudItem>
+                                    </MudItem>
+                                    <MudItem xs="12" Class="custom-form">
+                                        <MudItem md="3" sm="12">
+                                            <MudText>Preview : </MudText>
+                                        </MudItem>
+                                        <MudItem md="9" sm="12">
+@*                                            <img class="custom-img-sm" src="https://cgigeiotplatformdemowesa.blob.core.windows.net/img-container-test/Add_gateway.PNG" />*@
+                                            <img class="custom-img-sm" src="@imgUrl/Add_gateway.PNG" />
                                         </MudItem>
                                     </MudItem>
                                 </MudItem>
@@ -135,8 +146,8 @@
                                         </MudItem>
                                     </MudItem>
                                 </MudItem>
-                        </MudGrid>
-                            }
+                            </MudGrid>
+                        }
                     </MudCardContent>
                 </MudCard>
                 <MudCardActions>
@@ -157,6 +168,7 @@
 
     private bool success = true;
     private string LastActivityDateString { get; set; }
+    private string imgUrl = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -167,6 +179,10 @@
 
             // LastActivityDate set to string to have a more human-readable format
             LastActivityDateString = Device.LastActivityDate.ToString();
+
+            // Retrieves the blob container URL where to fetch the image from
+            imgUrl = await Http.GetStringAsync("BlobContainers");
+            Console.WriteLine(imgUrl);
         }
         catch (AccessTokenNotAvailableException exception)
         {
