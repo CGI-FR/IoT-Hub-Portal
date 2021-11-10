@@ -66,9 +66,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
                 if (file != null)
                 {
-                    entity["Image"] = file.FileName;
+                    // entity["Image"] = file.FileName;
                     BlobContainerClient blobContainer = this.blobService.GetBlobContainerClient(this.configuration["StorageAcount:BlobContainerName"]);
-                    BlobClient blobClient = blobContainer.GetBlobClient(file.FileName);
+                    BlobClient blobClient = blobContainer.GetBlobClient(sensorObject.Name);
 
                     this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
 
