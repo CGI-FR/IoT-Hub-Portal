@@ -7,7 +7,12 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
+    using System.Net.Http.Json;
+    using System.Text;
     using System.Threading.Tasks;
+    using Azure;
+    using Azure.Data.Tables;
+    using Azure.Data.Tables.Models;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Security;
@@ -27,13 +32,27 @@ namespace AzureIoTHub.Portal.Server.Controllers
     public class DevicesController : ControllerBase
     {
         private readonly ILogger<DevicesController> logger;
+        private readonly TableClient tableClient;
+        private readonly ServiceClient serviceClient;
+        private readonly HttpClient http;
+        private readonly IConfiguration configuration;
 
         private readonly RegistryManager registryManager;
 
-        public DevicesController(ILogger<DevicesController> logger, RegistryManager registryManager)
+        public DevicesController(
+            IConfiguration configuration,
+            ILogger<DevicesController> logger,
+            RegistryManager registryManager,
+            ServiceClient serviceClient,
+            HttpClient http,
+            TableClient tableClient)
         {
             this.logger = logger;
             this.registryManager = registryManager;
+            this.tableClient = tableClient;
+            this.serviceClient = serviceClient;
+            this.http = http;
+            this.configuration = configuration;
         }
 
         /// <summary>
@@ -102,6 +121,34 @@ namespace AzureIoTHub.Portal.Server.Controllers
         }
 
         /// <summary>
+        /// Retrieve all the commands of a device.
+        /// </summary>
+        /// <param name="model_type"> the model type of the device.</param>
+        /// <returns>Corresponding list of commands or an empty list if it doesn't have any command.</returns>
+        private List<SensorCommand> RetrieveCommands(string model_type)
+        {
+            List<SensorCommand> commands = new List<SensorCommand>();
+
+            if (model_type != "undefined_modelType")
+            {
+                Pageable<TableEntity> queryResultsFilter = this.tableClient.Query<TableEntity>(filter: $"PartitionKey  eq '{model_type}'");
+
+                foreach (TableEntity qEntity in queryResultsFilter)
+                {
+                    commands.Add(
+                        new SensorCommand()
+                        {
+                            Name = qEntity.RowKey,
+                            Trame = qEntity.GetString("Trame"),
+                            Port = (int)qEntity["Port"]
+                        });
+                }
+            }
+
+            return commands;
+        }
+
+        /// <summary>
         /// Retrieve a specific device and from the IoT Hub.
         /// Converts it to a DeviceListItem.
         /// </summary>
@@ -123,9 +170,41 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 LocationCode = RetrieveTagValue(item, "locationCode"),
                 AssetID = RetrieveTagValue(item, "assetID"),
                 DeviceType = RetrieveTagValue(item, "deviceType"),
-                ModelType = RetrieveTagValue(item, "modelType")
+                ModelType = RetrieveTagValue(item, "modelType"),
+                Commands = this.RetrieveCommands(RetrieveTagValue(item, "modelType"))
             };
             return result;
+        }
+
+        /// <summary>
+        /// Permit to execute cloud to device message.
+        /// </summary>
+        /// <param name="deviceId">id of the device.</param>
+        /// <param name="command">the command who contain the name and the trame.</param>
+        /// <returns>a CloudToDeviceMethodResult .</returns>
+        [HttpPost("{deviceId}/{methodName}")]
+        public async Task<IActionResult> ExecuteMethode(string deviceId, SensorCommand command)
+        {
+            try
+            {
+                JsonContent commandContent = JsonContent.Create(new
+                {
+                    rawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(command.Trame)),
+                    fport = command.Port
+                });
+
+                commandContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
+                var result = await this.http.PostAsync($"{this.configuration["IoTAzureFunction:url"]}/{deviceId}{this.configuration["IoTAzureFunction:code"]}", commandContent);
+
+                this.logger.LogInformation($"{result.Content}");
+
+                return this.Ok(await result.Content.ReadFromJsonAsync<dynamic>());
+            }
+            catch (Exception e)
+            {
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>

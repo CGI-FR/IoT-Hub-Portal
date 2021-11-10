@@ -66,7 +66,7 @@
                                     Upload an images
                                 </MudButton>
 
-                                @if ( _selectedImage != null)
+                                @if (_selectedImage != null)
                                 {
                                     <ul>
                                         <li>
@@ -162,7 +162,6 @@
         {
 
             content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
-
             var sensorContent = JsonContent.Create(_sensorModel);
             sensorContent.Headers.Add("Content-Disposition", "form-data; name=\"sensor\"");
             sensorContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -180,10 +179,15 @@
                 }
             }
 
+            var result = await Http.PostAsync("Sensors", content);
 
-            _ = await Http.PostAsync("Sensor", content);
+            if (result.IsSuccessStatusCode)
+            {
+                _sensorModel = new SensorModel();
+                _selectedImage = null;
+                Snackbar.Add("Sensor model successfully create.", Severity.Success);
+            }
         }
-
     }
 
     private void AddCommand()

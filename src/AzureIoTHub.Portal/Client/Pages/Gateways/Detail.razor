@@ -209,7 +209,27 @@ else
 
     public async Task OnMethod(string moduleId, string methodName)
     {
-        var result = await Http.GetFromJsonAsync<string>($"Gateways/{gateway.DeviceId}/{moduleId}/{methodName}");
+        var result = await Http.GetFromJsonAsync<C2Dresult>($"Gateways/{gateway.DeviceId}/{moduleId}/{methodName}");
+
+        if (result.Status == 200)
+        {
+            Snackbar.Add("Command successfully execute.", Severity.Success);
+            if (methodName == "logs")
+            {
+                var parameter = new DialogParameters();
+                parameter.Add("info", result);
+
+                _ = await DialogService.Show<Logs>(" Logs gateway", parameter).Result;
+            }
+        }
+        else
+        {
+            Snackbar.Add($"Error<br>Status : {result.Status};<br>Payload : {result.Payload};", Severity.Error,
+                (option) =>
+                {
+                    option.VisibleStateDuration = 100000;
+                });
+        }
     }
 
     public async Task ShowConnectionString()

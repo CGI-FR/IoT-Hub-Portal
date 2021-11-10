@@ -9,11 +9,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Security.Cryptography;
     using System.Text;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
@@ -101,54 +99,21 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             var deviceTwin = await this.registryManager.GetTwinAsync(deviceId);
             var query = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']");
-            var query2 = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{deviceId}']");
 
             Gateway gateway = new Gateway();
 
             gateway.DeviceId = deviceTwin.DeviceId;
             gateway.Status = deviceTwin.Status.Value.ToString();
-            var attestationMechanism = await this.dps.GetEnrollmentGroupAttestationAsync(this.configuration["IoTDPS:DefaultEnrollmentGroupe"]);
             gateway.EndPoint = this.configuration["IoTDPS:ServiceEndpoint"];
             gateway.Scope = deviceTwin.DeviceScope;
             gateway.Connection_state = deviceTwin.ConnectionState.Value.ToString();
-
             // on récupère la symmetric Key
-            SymmetricKeyAttestation symmetricKey = attestationMechanism.GetAttestation() as SymmetricKeyAttestation;
-            using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(symmetricKey.PrimaryKey)))
-            {
-                gateway.SymmetricKey = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(gateway.DeviceId)));
-            }
-
-            if (deviceTwin.Tags.Contains("purpose"))
-            {
-                gateway.Type = deviceTwin.Tags["purpose"];
-            }
-            else
-            {
-                gateway.Type = "unknow";
-            }
-
-            if (deviceTwin.Tags.Contains("env"))
-            {
-                gateway.Environement = deviceTwin.Tags["env"];
-            }
-            else
-            {
-                gateway.Environement = "unknow";
-            }
-
-            while (query2.HasMoreResults)
-            {
-                var deviceWithClient = await query2.GetNextAsTwinAsync();
-                // récupération des informations sur les clients connecté à la gateway
-                foreach (var item in deviceWithClient)
-                {
-                    if (item.Properties.Reported.Contains("clients") && item.DeviceId == deviceId)
-                    {
-                        gateway.NbDevices = item.Properties.Reported["clients"].Count;
-                    }
-                }
-            }
+            gateway.SymmetricKey = await this.RetrieveSymmetricKey(gateway.DeviceId);
+            // on récupère les valeur contenu dans les tags
+            gateway.Type = this.RetrieveTagValue(deviceTwin, "purpose");
+            gateway.Environement = this.RetrieveTagValue(deviceTwin, "env");
+            // on récupère le nombre d'appareil connecté
+            gateway.NbDevices = await this.RetrieveNbConnectedDevice(gateway.DeviceId);
 
             while (query.HasMoreResults)
             {
@@ -241,15 +206,16 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
                 twin.Tags["env"] = gateway.Environement;
                 twin.Tags["purpose"] = gateway.Type;
+
                 await this.registryManager.UpdateTwinAsync(device.Id, twin, twin.ETag);
                 this.logger.LogInformation($"\tUpdated twin to {twin.ToJson()}");
 
                 return this.Ok(device);
             }
-            catch (DeviceAlreadyExistsException)
+            catch (DeviceAlreadyExistsException e)
             {
-                this.logger.LogInformation("Device already exist.");
-                return this.Ok("device already exist");
+                this.logger.LogInformation(e.Message);
+                return this.Ok("Device already exist.");
             }
             catch (Exception)
             {
@@ -258,7 +224,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         }
 
         /// <summary>
-        /// this function update the environment and the status of a edge device.
+        /// This function update the properties of a device.
         /// </summary>
         /// <param name="gateway">a gateways object.</param>
         /// <returns>the twin of the device.</returns>
@@ -285,30 +251,101 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return this.Ok(deviceTwin);
         }
 
+        /// <summary>
+        /// this function delete a device.
+        /// </summary>
+        /// <param name="deviceId">the device id to delete.</param>
+        /// <returns>message.</returns>
         [HttpDelete("{deviceId}")]
         public async Task<IActionResult> DeleteDeviceAsync(string deviceId)
         {
-            await this.registryManager.RemoveDeviceAsync(deviceId);
-            this.logger.LogInformation($"iot hub device was delete  {deviceId}");
-
-            return this.Ok();
+            try
+            {
+                await this.registryManager.RemoveDeviceAsync(deviceId);
+                this.logger.LogInformation($"iot hub device was delete  {deviceId}");
+                return this.Ok("iot hub device was delete  {deviceId}");
+            }
+            catch (Exception e)
+            {
+                return this.Problem("Somethink went wrong.", e.Message, 400);
+            }
         }
 
         [HttpGet("{deviceId}/{moduleId}/{methodName}")]
-        public async Task<IActionResult> RebootDeviceModule(string moduleId, string deviceId, string methodName)
+        public async Task<C2Dresult> ExecuteMethode(string moduleId, string deviceId, string methodName)
         {
             try
             {
                 CloudToDeviceMethod method = new CloudToDeviceMethod(methodName);
-                // method.ResponseTimeout = TimeSpan.FromSeconds(30);
-                CloudToDeviceMethodResult result = await this.serviceClient.InvokeDeviceMethodAsync($"{deviceId}", $"{moduleId}", method);
+                CloudToDeviceMethodResult result = await this.serviceClient.InvokeDeviceMethodAsync(deviceId, moduleId, method);
                 this.logger.LogInformation($"iot hub device : {deviceId} module : {moduleId} execute methode {methodName}.");
-                return this.Ok(result);
+                return new C2Dresult()
+                {
+                    Payload = result.GetPayloadAsJson(),
+                    Status = result.Status
+                };
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return this.Ok(ex.Message);
+                return new C2Dresult()
+                {
+                    Payload = e.Message
+                };
             }
+        }
+
+        /// <summary>
+        /// This function genefates the symmetricKey of a device
+        /// from its Id.
+        /// </summary>
+        /// <param name="deviceId">the device id.</param>
+        /// <returns>string.</returns>
+        private async Task<string> RetrieveSymmetricKey(string deviceId)
+        {
+            var attestationMechanism = await this.dps.GetEnrollmentGroupAttestationAsync(this.configuration["IoTDPS:DefaultEnrollmentGroupe"]);
+
+            // then we get the symmetricKey
+            SymmetricKeyAttestation symmetricKey = attestationMechanism.GetAttestation() as SymmetricKeyAttestation;
+            using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(symmetricKey.PrimaryKey));
+            return Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(deviceId)));
+        }
+
+        /// <summary>
+        /// Checks if the specific property exists within the device twin,
+        /// Returns the corresponding value if so, else returns a generic value "unknow".
+        /// </summary>
+        /// <param name="item">the device twin.</param>
+        /// <param name="tagName">the tag property.</param>
+        /// <returns>string.</returns>
+        private string RetrieveTagValue(Twin item, string tagName)
+        {
+            if (item.Tags.Contains(tagName))
+                return item.Tags[tagName];
+            else
+                return "unknow";
+        }
+
+        /// <summary>
+        /// this function get and return the number of device connected
+        /// to a gateway.
+        /// </summary>
+        /// <param name="deviceId">id of the device.</param>
+        /// <returns>int.</returns>
+        private async Task<int> RetrieveNbConnectedDevice(string deviceId)
+        {
+            var query = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{deviceId}']");
+            var deviceWithClient = await query.GetNextAsTwinAsync();
+            var count = 0;
+            // récupération des informations sur les clients connecté à la gateway
+            foreach (var item in deviceWithClient)
+            {
+                if (item.Properties.Reported.Contains("clients") && item.DeviceId == deviceId)
+                {
+                    count = item.Properties.Reported["clients"].Count;
+                }
+            }
+
+            return count;
         }
     }
 }

@@ -137,5 +137,28 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
             return sensor;
         }
+
+        /// <summary>
+        /// Creates a Sensor command Model object from a query result.
+        /// Checks first if the entity fields fit to the sensor model attributes.
+        /// </summary>
+        /// <param name="entity">An AzureDataTable entity coming from a query.</param>
+        /// <returns>A sensor command model.</returns>
+        public SensorCommand MapTableEntityToSensorCommand(TableEntity entity)
+        {
+            SensorCommand command = new SensorCommand();
+            command.Name = entity.RowKey;
+            if (entity.ContainsKey("Trame"))
+            {
+                command.Trame = entity["Trame"].ToString();
+            }
+
+            if (entity.ContainsKey("Port"))
+            {
+                command.Port = int.Parse(entity["Port"].ToString());
+            }
+
+            return command;
+        }
     }
 }
