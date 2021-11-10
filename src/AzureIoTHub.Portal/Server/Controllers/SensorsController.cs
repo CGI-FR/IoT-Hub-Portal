@@ -103,10 +103,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// </summary>
         /// <returns>A list of SensorModel.</returns>
         [HttpGet]
-        public async Task<IEnumerable<SensorModel>> Get()
+        public IEnumerable<SensorModel> Get()
         {
-            await Task.Delay(0);
-
             // PartitionKey 0 contains all sensor models
             Pageable<TableEntity> entities = this.tableClient.Query<TableEntity>("PartitionKey eq '0'");
 
