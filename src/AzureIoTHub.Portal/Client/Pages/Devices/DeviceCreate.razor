@@ -184,9 +184,6 @@
     /// </summary>
     public async void SaveDevice(EditContext context)
     {
-        StateHasChanged();
-        await Task.Delay(0);
-
         // Sends the device to be added to the controller
         var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/create", Device);
         var errorMsg = await response.Content.ReadAsStringAsync();
