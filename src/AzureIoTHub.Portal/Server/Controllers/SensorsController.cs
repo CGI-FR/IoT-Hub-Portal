@@ -115,6 +115,16 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return sensorsList;
         }
 
+        [HttpGet("{modelType}")]
+        public IEnumerable<SensorCommand> Get(string modelType)
+        {
+            Pageable<TableEntity> entities = this.tableClient.Query<TableEntity>($"PartitionKey eq '{modelType}'");
+
+            // Converts the query result into a list of sensor command
+            IEnumerable<SensorCommand> commandList = entities.Select(e => this.MapTableEntityToSensorCommand(e));
+            return commandList;
+        }
+
         /// <summary>
         /// Creates a SensorModel object from a query result.
         /// Checks first if the entity fields fit to the sensor model attributes.
@@ -136,6 +146,29 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
 
             return sensor;
+        }
+
+        /// <summary>
+        /// Creates a Sensor command Model object from a query result.
+        /// Checks first if the entity fields fit to the sensor model attributes.
+        /// </summary>
+        /// <param name="entity">An AzureDataTable entity coming from a query.</param>
+        /// <returns>A sensor command model.</returns>
+        public SensorCommand MapTableEntityToSensorCommand(TableEntity entity)
+        {
+            SensorCommand command = new SensorCommand();
+            command.Name = entity.RowKey;
+            if (entity.ContainsKey("Trame"))
+            {
+                command.Trame = entity["Trame"].ToString();
+            }
+
+            if (entity.ContainsKey("Port"))
+            {
+                command.Port = int.Parse(entity["Port"].ToString());
+            }
+
+            return command;
         }
     }
 }

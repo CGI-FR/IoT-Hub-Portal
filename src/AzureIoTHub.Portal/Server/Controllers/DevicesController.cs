@@ -7,6 +7,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
+    using System.Net.Http.Json;
+    using System.Text;
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
@@ -32,19 +34,25 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private readonly ILogger<DevicesController> logger;
         private readonly TableClient tableClient;
         private readonly ServiceClient serviceClient;
+        private readonly HttpClient http;
+        private readonly IConfiguration configuration;
 
         private readonly RegistryManager registryManager;
 
         public DevicesController(
+            IConfiguration configuration,
             ILogger<DevicesController> logger,
             RegistryManager registryManager,
             ServiceClient serviceClient,
+            HttpClient http,
             TableClient tableClient)
         {
             this.logger = logger;
             this.registryManager = registryManager;
             this.tableClient = tableClient;
             this.serviceClient = serviceClient;
+            this.http = http;
+            this.configuration = configuration;
         }
 
         /// <summary>
@@ -121,10 +129,10 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             List<SensorCommand> commands = new List<SensorCommand>();
 
-            if (model_type == "undefined_modelType")
+            if (model_type != "undefined_modelType")
             {
-                // Pageable<TableEntity> queryResultsFilter = this.tableClient.Query<TableEntity>(filter: $"PartitionKey  eq '{model_type}'");
-                Pageable<TableEntity> queryResultsFilter = this.tableClient.Query<TableEntity>(filter: $"PartitionKey  eq 'sensor_model01'");
+                Pageable<TableEntity> queryResultsFilter = this.tableClient.Query<TableEntity>(filter: $"PartitionKey  eq '{model_type}'");
+
                 foreach (TableEntity qEntity in queryResultsFilter)
                 {
                     commands.Add(
@@ -179,21 +187,17 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             try
             {
-                CloudToDeviceMethod method = new CloudToDeviceMethod(command.Name);
-                string commandPayload = $"{{\"Trame\":\"{command.Trame}\", \"Port\":\"{command.Port}\"}}";
-                method.SetPayloadJson(commandPayload);
-
-                CloudToDeviceMethodResult result = await this.serviceClient.InvokeDeviceMethodAsync(deviceId, method);
-                this.logger.LogInformation($"iot hub device : {deviceId} execute methode {command.Name}.");
-
-                if (result is null)
+                JsonContent commandContent = JsonContent.Create(new
                 {
-                    throw new Exception($"Command {command.Name} invocation returned null");
-                }
+                    rawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(command.Trame)),
+                    fport = command.Port
+                });
+                commandContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                var result = await this.http.PostAsync($"{this.configuration["IoTAzureFunction:url"]}/{deviceId}{this.configuration["IoTAzureFunction:code"]}", commandContent);
 
-                this.logger.LogInformation($"iot hub device {method}: {result.GetPayloadAsJson()} ");
+                this.logger.LogInformation($"{result.Content}");
 
-                return this.Ok(result);
+                return this.Ok(await result.Content.ReadFromJsonAsync<dynamic>());
             }
             catch (Exception e)
             {

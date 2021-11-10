@@ -213,7 +213,7 @@ else
 
         if (result.Status == 200)
         {
-            Snackbar.Add(" ", Severity.Success);
+            Snackbar.Add("Command successfully execute.", Severity.Success);
             if (methodName == "logs")
             {
                 var parameter = new DialogParameters();
@@ -224,7 +224,11 @@ else
         }
         else
         {
-            Snackbar.Add(result.Payload, Severity.Error);
+            Snackbar.Add($"Error<br>Status : {result.Status};<br>Payload : {result.Payload};", Severity.Error,
+                (option) =>
+                {
+                    option.VisibleStateDuration = 100000;
+                });
         }
     }
 

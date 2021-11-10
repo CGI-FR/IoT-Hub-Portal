@@ -162,6 +162,7 @@
             </EditForm>
         </MudItem>
     </MudGrid>
+
 </MudContainer>
 
 @code {
@@ -226,16 +227,17 @@
 
     private async Task ExecuteMethod(SensorCommand method)
     {
+
         var result = await Http.PostAsJsonAsync($"Devices/{Device.DeviceID}/{method.Name}", method);
 
         if (result.IsSuccessStatusCode)
         {
-            Snackbar.Add($"{method} has been successfully execute!", Severity.Success);
+            Snackbar.Add($"{method.Name} has been successfully execute!",
+                Severity.Success);
         }
         else
         {
-            Snackbar.Add(await result.Content.ReadAsStringAsync(), Severity.Error);
-            //Snackbar.Add(JsonSerializer.Serialize(await result.Content.ReadAsStringAsync()), Severity.Error);
+            Snackbar.Add(await result.Content.ReadAsStringAsync(), Severity.Error, (option)=> { option.VisibleStateDuration = 30000; });
         }
     }
 }
