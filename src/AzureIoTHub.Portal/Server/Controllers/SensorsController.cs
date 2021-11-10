@@ -115,16 +115,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return sensorsList;
         }
 
-        [HttpGet("{modelType}")]
-        public IEnumerable<SensorCommand> Get(string modelType)
-        {
-            Pageable<TableEntity> entities = this.tableClient.Query<TableEntity>($"PartitionKey eq '{modelType}'");
-
-            // Converts the query result into a list of sensor command
-            IEnumerable<SensorCommand> commandList = entities.Select(e => this.MapTableEntityToSensorCommand(e));
-            return commandList;
-        }
-
         /// <summary>
         /// Creates a SensorModel object from a query result.
         /// Checks first if the entity fields fit to the sensor model attributes.

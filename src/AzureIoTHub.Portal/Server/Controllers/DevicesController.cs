@@ -192,7 +192,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     rawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(command.Trame)),
                     fport = command.Port
                 });
+
                 commandContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
                 var result = await this.http.PostAsync($"{this.configuration["IoTAzureFunction:url"]}/{deviceId}{this.configuration["IoTAzureFunction:code"]}", commandContent);
 
                 this.logger.LogInformation($"{result.Content}");
