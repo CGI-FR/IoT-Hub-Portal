@@ -19,6 +19,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
 
     [Authorize]
     [ApiController]
@@ -271,14 +272,45 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
         }
 
-        [HttpGet("{deviceId}/{moduleId}/{methodName}")]
-        public async Task<C2Dresult> ExecuteMethode(string moduleId, string deviceId, string methodName)
+        [HttpPost("{deviceId}/{moduleId}/{methodName}")]
+        public async Task<C2Dresult> ExecuteMethode(GatewayModule module, string deviceId, string methodName)
         {
             try
             {
                 CloudToDeviceMethod method = new CloudToDeviceMethod(methodName);
-                CloudToDeviceMethodResult result = await this.serviceClient.InvokeDeviceMethodAsync(deviceId, moduleId, method);
-                this.logger.LogInformation($"iot hub device : {deviceId} module : {moduleId} execute methode {methodName}.");
+                string payload = string.Empty;
+
+                if (methodName == "RestartModule")
+                {
+                    payload = JsonConvert.SerializeObject(new
+                    {
+                        id = module.ModuleName,
+                        schemaVersion = module.Version
+                    });
+                }
+
+                if (methodName == "GetModuleLogs")
+                {
+                    payload = JsonConvert.SerializeObject(new
+                    {
+                        id = module.ModuleName,
+                        schemaVersion = module.Version,
+                        items = new[]
+                        {
+                            (filter: new
+                            {
+                                regex = string.Empty
+                            },
+                            id: $"\\b{module.ModuleName}\\b")
+                        }
+                    });
+                }
+
+                method.SetPayloadJson(payload);
+
+                CloudToDeviceMethodResult result = await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
+                this.logger.LogInformation($"iot hub device : {deviceId} module : {module.ModuleName} execute methode {methodName}.");
+
                 return new C2Dresult()
                 {
                     Payload = result.GetPayloadAsJson(),

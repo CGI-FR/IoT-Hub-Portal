@@ -166,8 +166,8 @@ else
                             <MudTd DataLabel="Version" Style="text-align: center">@context.Version</MudTd>
                             <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
                             <MudTd DataLabel="Device" Style="text-align: center">
-                                <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context.ModuleName,"logs") )">logs</MudButton>
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context.ModuleName,"reboot") )">reboot</MudButton>
+                                <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context,"GetModuleLogs") )">logs</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context,"RestartModule") )">reboot</MudButton>
                             </MudTd>
                         </RowTemplate>
                     </MudTable>
@@ -207,14 +207,16 @@ else
         var result = await Http.PutAsJsonAsync($"Gateways/{gateway.DeviceId}", gateway);
     }
 
-    public async Task OnMethod(string moduleId, string methodName)
+    public async Task OnMethod(GatewayModule module, string methodName)
     {
-        var result = await Http.GetFromJsonAsync<C2Dresult>($"Gateways/{gateway.DeviceId}/{moduleId}/{methodName}");
+        var result = await Http.PostAsJsonAsync($"Gateways/{gateway.DeviceId}/{module.ModuleName}/{methodName}",module);
 
-        if (result.Status == 200)
+        var test = result.Content.ReadFromJsonAsync<C2Dresult>().Result;
+
+        if (test.Status == 200)
         {
             Snackbar.Add("Command successfully execute.", Severity.Success);
-            if (methodName == "logs")
+            if (methodName == "GetModuleLogs")
             {
                 var parameter = new DialogParameters();
                 parameter.Add("info", result);
@@ -224,7 +226,7 @@ else
         }
         else
         {
-            Snackbar.Add($"Error<br>Status : {result.Status};<br>Payload : {result.Payload};", Severity.Error,
+            Snackbar.Add($"Error<br>Status : {test.Status};<br>Payload : {test.Payload};", Severity.Error,
                 (option) =>
                 {
                     option.VisibleStateDuration = 100000;
