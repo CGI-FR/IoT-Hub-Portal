@@ -205,6 +205,11 @@ else
     public async Task UpdateDevice()
     {
         var result = await Http.PutAsJsonAsync($"Gateways/{gateway.DeviceId}", gateway);
+
+        if (result.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Device {gateway.DeviceId} has been successfully updated!", Severity.Success);
+        }
     }
 
     public async Task OnMethod(GatewayModule module, string methodName)
