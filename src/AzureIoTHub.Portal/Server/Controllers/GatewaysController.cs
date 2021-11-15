@@ -293,16 +293,20 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 {
                     payload = JsonConvert.SerializeObject(new
                     {
-                        id = module.ModuleName,
                         schemaVersion = module.Version,
                         items = new[]
                         {
-                            (filter: new
+                            new
                             {
-                                regex = string.Empty
-                            },
-                            id: $"\\b{module.ModuleName}\\b")
-                        }
+                                id = module.ModuleName,
+                                filter = new
+                                {
+                                    tail = 10
+                                }
+                            }
+                        },
+                        encoding = "none",
+                        contentType = "json"
                     });
                 }
 
