@@ -219,7 +219,7 @@ else
             if (methodName == "GetModuleLogs")
             {
                 var parameter = new DialogParameters();
-                parameter.Add("info", result);
+                parameter.Add("info", test);
 
                 _ = await DialogService.Show<Logs>(" Logs gateway", parameter).Result;
             }
