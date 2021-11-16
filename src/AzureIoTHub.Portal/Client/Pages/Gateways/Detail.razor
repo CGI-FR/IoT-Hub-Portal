@@ -12,7 +12,9 @@
 
 @if (loading)
 {
-    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+    <MudItem Class="custom-centered-container">
+        <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+    </MudItem>
 }
 else
 {
@@ -71,7 +73,17 @@ else
                                             </MudRadioGroup>
                                         </MudItem>
                                     </MudItem>
-                                    <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" OnClick="UpdateDevice">Save Settings</MudButton>
+                                    <MudButton Disabled="@processing" Class="btn" OnClick="UpdateDevice" Variant="Variant.Filled" Color="Color.Dark">
+                                        @if (processing)
+                                        {
+                                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                                            <MudText Class="ms-2">Processing</MudText>
+                                        }
+                                        else
+                                        {
+                                            <MudText>Save Settings</MudText>
+                                        }
+                                    </MudButton>
                                 </MudItem>
 
                                 <MudItem md="6" xs="12">
@@ -80,7 +92,6 @@ else
                                             <MudText>Runtime response :</MudText>
                                         </MudItem>
                                         <MudItem xs="12" md="4" sm="10">
-                                            @*<MudTextField @bind-Value="@gateway.RuntimeResponse" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>*@
                                             @if (gateway.RuntimeResponse == "running")
                                             {
                                                 <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
@@ -183,6 +194,7 @@ else
     public string deviceId { get; set; }
     private bool loading = true;
     private bool btn_disable = false;
+    private bool processing = false;
 
     private Gateway gateway;
 
@@ -204,11 +216,13 @@ else
 
     public async Task UpdateDevice()
     {
+        processing = true;
         var result = await Http.PutAsJsonAsync($"Gateways/{gateway.DeviceId}", gateway);
 
         if (result.IsSuccessStatusCode)
         {
             Snackbar.Add($"Device {gateway.DeviceId} has been successfully updated!", Severity.Success);
+            processing = false;
         }
     }
 

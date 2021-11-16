@@ -108,11 +108,14 @@ namespace AzureIoTHub.Portal.Server.Controllers
             gateway.EndPoint = this.configuration["IoTDPS:ServiceEndpoint"];
             gateway.Scope = deviceTwin.DeviceScope;
             gateway.Connection_state = deviceTwin.ConnectionState.Value.ToString();
+
             // on récupère la symmetric Key
             gateway.SymmetricKey = await this.RetrieveSymmetricKey(gateway.DeviceId);
+
             // on récupère les valeur contenu dans les tags
             gateway.Type = this.RetrieveTagValue(deviceTwin, "purpose");
             gateway.Environement = this.RetrieveTagValue(deviceTwin, "env");
+
             // on récupère le nombre d'appareil connecté
             gateway.NbDevices = await this.RetrieveNbConnectedDevice(gateway.DeviceId);
 
@@ -122,60 +125,19 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 // récupération des informations sur le modules de la gateways
                 foreach (var item in deviceWithModules)
                 {
-                    if (item.Properties.Desired.Contains("modules") && item.DeviceId == deviceId)
-                    {
-                        gateway.NbModule = item.Properties.Desired["modules"].Count;
-                    }
+                    gateway.NbModule = this.RetrieveNbModuleCount(item, deviceId);
 
-                    if (item.Properties.Reported.Contains("systemModules") && item.DeviceId == deviceId)
-                    {
-                        foreach (var element in item.Properties.Reported["systemModules"])
-                        {
-                            if (element.Key == "edgeAgent")
-                            {
-                                gateway.RuntimeResponse = element.Value["runtimeStatus"];
-                            }
-                        }
-                    }
+                    gateway.RuntimeResponse = this.RetrieveRuntimeResponse(item, deviceId);
 
                     if (gateway.NbModule > 0)
-                    {
-                        if (item.Properties.Reported.Contains("modules"))
-                        {
-                            foreach (var element in item.Properties.Reported["modules"])
-                            {
-                                var module = new GatewayModule();
-                                module.ModuleName = element.Key;
-                                if (element.Value.Contains("status"))
-                                {
-                                    module.Status = element.Value["status"];
-                                }
-
-                                if (element.Value.Contains("version"))
-                                {
-                                    module.Version = element.Value["version"];
-                                }
-
-                                gateway.Modules.Add(module);
-                            }
-                        }
-                    }
+                        gateway.Modules = this.RetrieveModuleList(item);
 
                     // recup du dernier deployment
                     if (item.Configurations != null)
                     {
                         if (item.Configurations.Count > 0)
                         {
-                            foreach (var config in item.Configurations)
-                            {
-                                var confObj = await this.registryManager.GetConfigurationAsync(config.Key);
-                                if (gateway.LastDeployment.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
-                                {
-                                    gateway.LastDeployment.Name = config.Key;
-                                    gateway.LastDeployment.DateCreation = confObj.CreatedTimeUtc;
-                                    gateway.LastDeployment.Status = ConfigurationStatus.Applied.ToString();
-                                }
-                            }
+                            gateway.LastDeployment = await this.RetrieveLastConfiguration(item);
                         }
                     }
                 }
@@ -264,7 +226,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
             {
                 await this.registryManager.RemoveDeviceAsync(deviceId);
                 this.logger.LogInformation($"iot hub device was delete  {deviceId}");
-                return this.Ok("iot hub device was delete  {deviceId}");
+
+                return this.Ok($"iot hub device was delete  {deviceId}");
             }
             catch (Exception e)
             {
@@ -382,6 +345,73 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
 
             return count;
+        }
+
+        private int RetrieveNbModuleCount(Twin twin, string deviceId)
+        {
+            if (twin.Properties.Desired.Contains("modules") && twin.DeviceId == deviceId)
+                return twin.Properties.Desired["modules"].Count;
+            else
+                return 0;
+        }
+
+        private string RetrieveRuntimeResponse(Twin twin, string deviceId)
+        {
+            if (twin.Properties.Reported.Contains("systemModules") && twin.DeviceId == deviceId)
+            {
+                foreach (var element in twin.Properties.Reported["systemModules"])
+                {
+                    if (element.Key == "edgeAgent")
+                    {
+                        return element.Value["runtimeStatus"];
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private List<GatewayModule> RetrieveModuleList(Twin twin)
+        {
+            List<GatewayModule> list = new List<GatewayModule>();
+
+            if (twin.Properties.Reported.Contains("modules"))
+            {
+                foreach (var element in twin.Properties.Reported["modules"])
+                {
+                    var module = new GatewayModule
+                    {
+                        ModuleName = element.Key
+                    };
+
+                    if (element.Value.Contains("status"))
+                        module.Status = element.Value["status"];
+
+                    if (element.Value.Contains("version"))
+                        module.Version = element.Value["version"];
+
+                    list.Add(module);
+                }
+            }
+
+            return list;
+        }
+
+        private async Task<ConfigItem> RetrieveLastConfiguration(Twin twin)
+        {
+            ConfigItem item = new ConfigItem();
+            foreach (var config in twin.Configurations)
+            {
+                var confObj = await this.registryManager.GetConfigurationAsync(config.Key);
+                if (item.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
+                {
+                    item.Name = config.Key;
+                    item.DateCreation = confObj.CreatedTimeUtc;
+                    item.Status = ConfigurationStatus.Applied.ToString();
+                }
+            }
+
+            return item;
         }
     }
 }
