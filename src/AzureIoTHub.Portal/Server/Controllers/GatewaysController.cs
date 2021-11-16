@@ -345,6 +345,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return count;
         }
 
+        /// <summary>
+        /// This function get and return the number of module deployed,
+        /// in the reported properties of the twin.
+        /// </summary>
+        /// <param name="twin">the twin of the device we want.</param>
+        /// <param name="deviceId">the device id we get.</param>
+        /// <returns>int.</returns>
         private int RetrieveNbModuleCount(Twin twin, string deviceId)
         {
             if (twin.Properties.Desired.Contains("modules") && twin.DeviceId == deviceId)
@@ -353,6 +360,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 return 0;
         }
 
+        /// <summary>
+        /// This function get and return the runtime status of the module
+        /// edgeAgent as the runtime response of the device.
+        /// </summary>
+        /// <param name="twin">the twin of the device we want.</param>
+        /// <param name="deviceId">the device id we get.</param>
+        /// <returns>string.</returns>
         private string RetrieveRuntimeResponse(Twin twin, string deviceId)
         {
             if (twin.Properties.Reported.Contains("systemModules") && twin.DeviceId == deviceId)
@@ -369,6 +383,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return string.Empty;
         }
 
+        /// <summary>
+        /// This function get and return a list of the modules.
+        /// </summary>
+        /// <param name="twin">the twin of the device we want.</param>
+        /// <returns> List of GatewayModule.</returns>
         private static List<GatewayModule> RetrieveModuleList(Twin twin)
         {
             List<GatewayModule> list = new ();
@@ -395,6 +414,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return list;
         }
 
+        /// <summary>
+        /// This function found the last conguration deployed on the device.
+        /// </summary>
+        /// <param name="twin">the twin of the device we want.</param>
+        /// <returns>ConfigItem.</returns>
         private async Task<ConfigItem> RetrieveLastConfiguration(Twin twin)
         {
             ConfigItem item = new ConfigItem();
