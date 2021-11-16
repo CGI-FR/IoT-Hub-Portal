@@ -101,23 +101,21 @@ namespace AzureIoTHub.Portal.Server.Controllers
             var deviceTwin = await this.registryManager.GetTwinAsync(deviceId);
             var query = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']");
 
-            Gateway gateway = new Gateway();
-
-            gateway.DeviceId = deviceTwin.DeviceId;
-            gateway.Status = deviceTwin.Status.Value.ToString();
-            gateway.EndPoint = this.configuration["IoTDPS:ServiceEndpoint"];
-            gateway.Scope = deviceTwin.DeviceScope;
-            gateway.Connection_state = deviceTwin.ConnectionState.Value.ToString();
-
-            // on récupère la symmetric Key
-            gateway.SymmetricKey = await this.RetrieveSymmetricKey(gateway.DeviceId);
-
-            // on récupère les valeur contenu dans les tags
-            gateway.Type = this.RetrieveTagValue(deviceTwin, "purpose");
-            gateway.Environement = this.RetrieveTagValue(deviceTwin, "env");
-
-            // on récupère le nombre d'appareil connecté
-            gateway.NbDevices = await this.RetrieveNbConnectedDevice(gateway.DeviceId);
+            Gateway gateway = new ()
+            {
+                DeviceId = deviceTwin.DeviceId,
+                Status = deviceTwin.Status.Value.ToString(),
+                EndPoint = this.configuration["IoTDPS:ServiceEndpoint"],
+                Scope = deviceTwin.DeviceScope,
+                Connection_state = deviceTwin.ConnectionState.Value.ToString(),
+                // we retrieve the symmetric Key
+                SymmetricKey = await this.RetrieveSymmetricKey(deviceTwin.DeviceId),
+                // We retrieve the values of tags
+                Type = this.RetrieveTagValue(deviceTwin, "purpose"),
+                Environement = this.RetrieveTagValue(deviceTwin, "env"),
+                // We retrieve the number of connected device
+                NbDevices = await this.RetrieveNbConnectedDevice(deviceTwin.DeviceId)
+            };
 
             while (query.HasMoreResults)
             {
@@ -130,7 +128,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     gateway.RuntimeResponse = this.RetrieveRuntimeResponse(item, deviceId);
 
                     if (gateway.NbModule > 0)
-                        gateway.Modules = this.RetrieveModuleList(item);
+                        gateway.Modules = RetrieveModuleList(item);
 
                     // recup du dernier deployment
                     if (item.Configurations != null)
@@ -371,9 +369,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return string.Empty;
         }
 
-        private List<GatewayModule> RetrieveModuleList(Twin twin)
+        private static List<GatewayModule> RetrieveModuleList(Twin twin)
         {
-            List<GatewayModule> list = new List<GatewayModule>();
+            List<GatewayModule> list = new ();
 
             if (twin.Properties.Reported.Contains("modules"))
             {
