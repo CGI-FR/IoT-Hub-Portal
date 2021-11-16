@@ -111,8 +111,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 // we retrieve the symmetric Key
                 SymmetricKey = await this.RetrieveSymmetricKey(deviceTwin.DeviceId),
                 // We retrieve the values of tags
-                Type = this.RetrieveTagValue(deviceTwin, "purpose"),
-                Environement = this.RetrieveTagValue(deviceTwin, "env"),
+                Type = RetrieveTagValue(deviceTwin, "purpose"),
+                Environement = RetrieveTagValue(deviceTwin, "env"),
                 // We retrieve the number of connected device
                 NbDevices = await this.RetrieveNbConnectedDevice(deviceTwin.DeviceId)
             };
@@ -123,9 +123,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 // récupération des informations sur le modules de la gateways
                 foreach (var item in deviceWithModules)
                 {
-                    gateway.NbModule = this.RetrieveNbModuleCount(item, deviceId);
+                    gateway.NbModule = RetrieveNbModuleCount(item, deviceId);
 
-                    gateway.RuntimeResponse = this.RetrieveRuntimeResponse(item, deviceId);
+                    gateway.RuntimeResponse = RetrieveRuntimeResponse(item, deviceId);
 
                     if (gateway.NbModule > 0)
                         gateway.Modules = RetrieveModuleList(item);
@@ -314,7 +314,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <param name="item">the device twin.</param>
         /// <param name="tagName">the tag property.</param>
         /// <returns>string.</returns>
-        private string RetrieveTagValue(Twin item, string tagName)
+        private static string RetrieveTagValue(Twin item, string tagName)
         {
             if (item.Tags.Contains(tagName))
                 return item.Tags[tagName];
@@ -352,7 +352,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <param name="twin">the twin of the device we want.</param>
         /// <param name="deviceId">the device id we get.</param>
         /// <returns>int.</returns>
-        private int RetrieveNbModuleCount(Twin twin, string deviceId)
+        private static int RetrieveNbModuleCount(Twin twin, string deviceId)
         {
             if (twin.Properties.Desired.Contains("modules") && twin.DeviceId == deviceId)
                 return twin.Properties.Desired["modules"].Count;
@@ -367,7 +367,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <param name="twin">the twin of the device we want.</param>
         /// <param name="deviceId">the device id we get.</param>
         /// <returns>string.</returns>
-        private string RetrieveRuntimeResponse(Twin twin, string deviceId)
+        private static string RetrieveRuntimeResponse(Twin twin, string deviceId)
         {
             if (twin.Properties.Reported.Contains("systemModules") && twin.DeviceId == deviceId)
             {
