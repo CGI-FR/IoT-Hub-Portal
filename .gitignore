@@ -266,3 +266,4 @@ __pycache__/
 
 # App.css generated each time
 app.css
+/src/.env
