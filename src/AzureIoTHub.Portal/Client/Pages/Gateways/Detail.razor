@@ -261,7 +261,6 @@ else
         parameter.Add(nameof(Gateway.SymmetricKey), gateway.SymmetricKey);
 
         var result = await DialogService.Show<ConnectionString>("ConnectionString gateway ", parameter).Result;
-
     }
 
     public async Task DeleteDeviceAsync()
