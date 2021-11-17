@@ -57,8 +57,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
             try
             {
                 SensorModel sensorObject = JsonConvert.DeserializeObject<SensorModel>(sensor);
-                TableEntity entity = new TableEntity();
-                entity.PartitionKey = "0";
+                TableEntity entity = new ();
+                entity.PartitionKey = this.configuration["StorageAcount:BlobContainerPartitionKey"];
                 entity.RowKey = sensorObject.Name;
 
                 entity["Description"] = sensorObject.Description;
@@ -81,7 +81,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 {
                     foreach (var element in sensorObject.Commands)
                     {
-                        TableEntity commandEntity = new TableEntity();
+                        TableEntity commandEntity = new ();
                         commandEntity.PartitionKey = sensorObject.Name;
                         commandEntity.RowKey = element.Name;
                         commandEntity["Trame"] = element.Trame;
