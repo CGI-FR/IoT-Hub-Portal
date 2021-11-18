@@ -65,7 +65,8 @@
                                             <MudText>Preview : </MudText>
                                         </MudItem>
                                         <MudItem md="9" sm="12">
-                                            <img class="custom-img-sm" src="@imgUrl/@Device.ModelType" />
+                                            <img class="custom-img-sm" src="@imgUrl" />
+                                            @*<img class="custom-img-sm" src="@imgUrl/@Device.ModelType" />*@
                                         </MudItem>
                                     </MudItem>
                                 </MudItem>
@@ -195,12 +196,16 @@
             LastActivityDateString = Device.LastActivityDate.ToString();
 
             // Retrieves the blob container URL where to fetch the image from
-            imgUrl = await Http.GetStringAsync("BlobContainers");
-            Console.WriteLine(imgUrl);
+            imgUrl = await Http.GetStringAsync($"BlobContainers/{Device.ModelType}");
         }
         catch (AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
+        }
+        catch (EntryPointNotFoundException exception)
+        {
+            Console.WriteLine("JE SUIS LA :");
+            Console.WriteLine(exception);
         }
     }
 

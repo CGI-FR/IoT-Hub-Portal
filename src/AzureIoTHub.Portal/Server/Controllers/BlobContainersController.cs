@@ -55,14 +55,24 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// Retrieves the blob container URL where to fetch the image from.
         /// </summary>
         /// <returns>The URL of the blob containers containing sensor models' pictures.</returns>
-        [HttpGet]
-        public string Get()
+        [HttpGet("{sensorName}")]
+        public async Task<string> Get(string sensorName)
         {
-            // await Task.Delay(0);
             string imgUrl = "https://"
                 + this.configuration["StorageAcount:AccountName"]
-            + ".blob.core.windows.net/"
-                + this.configuration["StorageAcount:BlobContainerName"];
+                + ".blob.core.windows.net/"
+                + this.configuration["StorageAcount:BlobContainerName"]
+                + "/"
+                + sensorName;
+
+            // Checks whether the picture exists
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync(imgUrl);
+            if (!response.IsSuccessStatusCode)
+            {
+                imgUrl = "images/error.png";
+            }
+
             return imgUrl;
         }
     }
