@@ -177,6 +177,15 @@ namespace AzureIoTHub.Portal.Server.Services
         /// this function get the attestation mechanism of the DPS.
         /// </summary>
         /// <returns>AttestationMechanism.</returns>
+        public AttestationMechanism GetDpsAttestionMechanism()
+        {
+            return this.dps.GetEnrollmentGroupAttestationAsync(this.configuration["IoTDPS:DefaultEnrollmentGroupe"]).Result;
+        }
+
+        /// <summary>
+        /// this function get the attestation mechanism of the DPS.
+        /// </summary>
+        /// <returns>AttestationMechanism.</returns>
         public async Task<AttestationMechanism> GetDpsAttestionMechanism()
         {
             return await this.dps.GetEnrollmentGroupAttestationAsync(this.configuration["IoTDPS:DefaultEnrollmentGroupe"]);
