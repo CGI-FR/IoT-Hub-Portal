@@ -84,12 +84,8 @@ namespace AzureIoTHub.Portal.Server
                 return ProvisioningServiceClient.CreateFromConnectionString(t.GetService<IConfiguration>()["IoTDPS:ConnectionString"]);
             });
 
-            // storage account
-            var connectionString = this.Configuration.GetSection("StorageAcount:ConnectionString");
-            services.AddSingleton<TableClient>(new TableClient(connectionString.Value, "DeviceTemplates"));
-
-            // Blob container
-            services.AddSingleton<BlobServiceClient>(new BlobServiceClient(connectionString.Value));
+            services.AddTransient<BlobServiceClient>(sp => new BlobServiceClient(sp.GetService<IConfiguration>()["StorageAcount:ConnectionString"]));
+            services.AddTransient<TableClient>(sp => new TableClient(sp.GetService<IConfiguration>()["StorageAcount:ConnectionString"], "DeviceTemplates"));
 
             services.AddSingleton<IB2CExtensionHelper, B2CExtensionHelper>();
 
