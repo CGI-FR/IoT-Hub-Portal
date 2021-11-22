@@ -10,6 +10,8 @@ namespace AzureIoTHub.Portal.Server
     using Azure.Storage.Blobs;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Identity;
+    using AzureIoTHub.Portal.Server.Interfaces;
+    using AzureIoTHub.Portal.Server.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -86,12 +88,13 @@ namespace AzureIoTHub.Portal.Server
 
             // storage account
             var connectionString = this.Configuration.GetSection("StorageAcount:ConnectionString");
-            services.AddSingleton<TableClient>(new TableClient(connectionString.Value, "DeviceTemplates"));
+            services.AddSingleton(new TableClient(connectionString.Value, "DeviceTemplates"));
 
             // Blob container
-            services.AddSingleton<BlobServiceClient>(new BlobServiceClient(connectionString.Value));
+            services.AddSingleton(new BlobServiceClient(connectionString.Value));
 
             services.AddSingleton<IB2CExtensionHelper, B2CExtensionHelper>();
+            services.AddSingleton<IDevicesService, DevicesServices>();
 
             services.AddHttpClient("RestClient")
                     .AddPolicyHandler(HttpPolicyExtensions

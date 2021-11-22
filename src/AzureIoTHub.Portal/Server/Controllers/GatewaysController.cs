@@ -9,6 +9,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Security.Cryptography;
     using System.Text;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Server.Interfaces;
+    using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
@@ -33,12 +35,14 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private readonly ProvisioningServiceClient dps;
         private readonly ServiceClient serviceClient;
         private readonly IConfiguration configuration;
+        private readonly DevicesServices service;
 
         public GatewaysController(
             IConfiguration configuration,
             ILogger<GatewaysController> logger,
             RegistryManager registryManager,
             ProvisioningServiceClient dps,
+            DevicesServices service,
             ServiceClient serviceClient)
         {
             this.logger = logger;
@@ -46,6 +50,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             this.dps = dps;
             this.serviceClient = serviceClient;
             this.configuration = configuration;
+            this.service = service;
         }
 
         /// <summary>
