@@ -238,6 +238,8 @@
     private async Task ChangePicture()
     {
         // Retrieves the blob container URL where to fetch the image from
+        if (Device.ModelType == null)
+            Device.ModelType = "test";
         imgUrl = await Http.GetStringAsync($"BlobContainers/{Device.ModelType}");
     }
 
