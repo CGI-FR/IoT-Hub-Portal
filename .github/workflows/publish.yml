@@ -48,7 +48,7 @@ jobs:
           # Push is a shorthand for --output=type=registry
           push: true
           tags: 
-            ${{ env.registry_name }}/${{ env.image_name }}:${GITHUB_SHA}
+            ${{ env.registry_name }}/${{ env.image_name }}:${{ GITHUB_SHA }}
             ${{ env.registry_name }}/${{ env.image_name }}:${{ steps.docker-tag.outputs.tag }}
 
   # deploy:
