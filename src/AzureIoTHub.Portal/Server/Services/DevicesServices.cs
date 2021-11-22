@@ -123,7 +123,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 return await this.registryManager.GetDeviceAsync(deviceId);
             }
             catch (System.Exception e)
-            {
+        {
                 throw new System.Exception(e.Message);
             }
         }
@@ -141,7 +141,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 return await this.registryManager.GetTwinAsync(deviceId);
             }
             catch (DeviceNotFoundException e)
-            {
+        {
                 throw new System.Exception(e.Message);
             }
         }
@@ -159,16 +159,16 @@ namespace AzureIoTHub.Portal.Server.Services
                 IQuery devicesWithModules = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']");
 
                 while (devicesWithModules.HasMoreResults)
-                {
+        {
                     IEnumerable<Twin> devicesTwins = await devicesWithModules.GetNextAsTwinAsync();
 
                     return devicesTwins.ElementAt(0);
-                }
+        }
 
                 return null;
             }
             catch (System.Exception e)
-            {
+        {
                 throw new System.Exception(e.Message);
             }
         }
@@ -194,7 +194,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 return await this.registryManager.UpdateDeviceAsync(device);
             }
             catch (System.Exception e)
-            {
+        {
                 throw new System.Exception(e.Message);
             }
         }
@@ -212,7 +212,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 return await this.registryManager.UpdateTwinAsync(deviceId, twin, twin.ETag);
             }
             catch (System.Exception e)
-            {
+        {
                 throw new System.Exception(e.Message);
             }
         }
@@ -224,7 +224,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 return await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
             }
             catch (System.Exception e)
-            {
+        {
                 throw new System.Exception(e.Message);
             }
         }

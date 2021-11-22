@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Text;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
+    using AzureIoTHub.Portal.Server.Interfaces;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Security;
