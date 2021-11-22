@@ -4,24 +4,32 @@
 namespace AzureIoTHub.Portal.Server.Interfaces
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
 
     public interface IDevicesService
     {
-        IEnumerable<Twin> GetAllEdgeDeviceWithTags();
+        Task<IEnumerable<Twin>> GetAllEdgeDeviceWithTags();
 
-        IEnumerable<Twin> GetAllEdgeDevice();
+        Task<IEnumerable<Twin>> GetAllEdgeDevice();
 
-        Twin GetDeviceTwin(string deviceId);
+        Task<Device> GetDevice(string deviceId);
 
-        Twin GetDeviceWithModule(string deviceId);
+        Task<Twin> GetDeviceTwin(string deviceId);
 
-        BulkRegistryOperationResult CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin);
+        Task<Twin> GetDeviceTwinWithModule(string deviceId);
 
-        Device UpdateDevice(Device device);
+        Task<AttestationMechanism> GetDpsAttestionMechanism();
 
-        Twin UpdateDeviceTwin(string deviceId, Twin twin);
+        Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin);
+
+        Task<Device> UpdateDevice(Device device);
+
+        Task<Twin> UpdateDeviceTwin(string deviceId, Twin twin);
+
+        Task<CloudToDeviceMethodResult> ExecuteC2DMethod(string deviceId, CloudToDeviceMethod method);
 
         void Delete(string deviceId);
     }
