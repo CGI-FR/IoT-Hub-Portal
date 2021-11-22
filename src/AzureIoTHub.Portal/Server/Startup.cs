@@ -94,7 +94,7 @@ namespace AzureIoTHub.Portal.Server
 
             services.AddSingleton<IB2CExtensionHelper, B2CExtensionHelper>(sp => new B2CExtensionHelper(configuration));
 
-            services.AddSingleton<IDevicesService, DevicesServices>();
+            services.AddSingleton<DevicesServices>();
 
             services.AddHttpClient("RestClient")
                     .AddPolicyHandler(HttpPolicyExtensions
