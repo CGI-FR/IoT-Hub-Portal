@@ -30,7 +30,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
     [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize(Roles = RoleNames.Admin)]
     public class BlobContainersController : ControllerBase
     {
@@ -51,6 +51,12 @@ namespace AzureIoTHub.Portal.Server.Controllers
             this.blobService = blobServiceClient;
         }
 
+        // [HttpGet]
+        // public async Task<string> Get()
+        // {
+
+        // }
+
         /// <summary>
         /// Retrieves the blob container URL where to fetch the image from.
         /// </summary>
@@ -70,7 +76,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             HttpResponseMessage response = await client.GetAsync(imgUrl);
             if (!response.IsSuccessStatusCode)
             {
-                imgUrl = "images/error.png";
+                imgUrl = "images/error2.png";
             }
 
             return imgUrl;

@@ -238,9 +238,18 @@
     private async Task ChangePicture()
     {
         // Retrieves the blob container URL where to fetch the image from
-        if (Device.ModelType == null)
-            Device.ModelType = "test";
-        imgUrl = await Http.GetStringAsync($"BlobContainers/{Device.ModelType}");
+        try
+        {
+            imgUrl = await Http.GetStringAsync($"api/BlobContainers/{Device.ModelType}");
+        }
+        //If we can't find the controller
+        catch(HttpRequestException e)
+        {
+            Console.WriteLine(e);
+            // Temporary fix
+            // TODO
+            imgUrl = "images/error.png";
+        }
     }
 
 }
