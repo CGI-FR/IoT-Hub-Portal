@@ -71,21 +71,21 @@ namespace AzureIoTHub.Portal.Server
 
             services.AddTransient(t =>
             {
-                return RegistryManager.CreateFromConnectionString(t.GetService<IConfiguration>()["IoTHub:ConnectionString"]);
+                return RegistryManager.CreateFromConnectionString(t.GetService<IConfiguration>().GetConnectionString("IoTHub:ConnectionString"));
             });
 
             services.AddTransient(t =>
             {
-                return ServiceClient.CreateFromConnectionString(t.GetService<IConfiguration>()["IoTHub:ConnectionString"]);
+                return ServiceClient.CreateFromConnectionString(t.GetService<IConfiguration>().GetConnectionString("IoTHub:ConnectionString"));
             });
 
             services.AddTransient(t =>
             {
-                return ProvisioningServiceClient.CreateFromConnectionString(t.GetService<IConfiguration>()["IoTDPS:ConnectionString"]);
+                return ProvisioningServiceClient.CreateFromConnectionString(t.GetService<IConfiguration>().GetConnectionString("IoTDPS:ConnectionString"));
             });
 
-            services.AddTransient<BlobServiceClient>(sp => new BlobServiceClient(sp.GetService<IConfiguration>()["StorageAcount:ConnectionString"]));
-            services.AddTransient<TableClient>(sp => new TableClient(sp.GetService<IConfiguration>()["StorageAcount:ConnectionString"], "DeviceTemplates"));
+            services.AddTransient<BlobServiceClient>(sp => new BlobServiceClient(sp.GetService<IConfiguration>().GetConnectionString("StorageAcount:ConnectionString")));
+            services.AddTransient<TableClient>(sp => new TableClient(sp.GetService<IConfiguration>().GetConnectionString("StorageAcount:ConnectionString"), "DeviceTemplates"));
 
             services.AddSingleton<IB2CExtensionHelper, B2CExtensionHelper>();
 
@@ -101,7 +101,7 @@ namespace AzureIoTHub.Portal.Server
                 IConfidentialClientApplication confidentialClient = ConfidentialClientApplicationBuilder
                     .Create(msalSettings[MsalSettingsConstants.ApiClientId].ToString())
                     .WithTenantId(msalSettings[MsalSettingsConstants.TenantId].ToString())
-                    .WithClientSecret(msalSettings[MsalSettingsConstants.ApiClientSecret].ToString())
+                    .WithClientSecret(msalSettings.GetConnectionString(MsalSettingsConstants.ApiClientSecret).ToString())
                     .Build();
 
                 IAuthenticationProvider authProvider = new DelegateAuthenticationProvider(async (requestMessage) =>
