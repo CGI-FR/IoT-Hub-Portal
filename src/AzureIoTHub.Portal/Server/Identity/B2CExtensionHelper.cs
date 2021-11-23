@@ -3,22 +3,21 @@
 
 namespace AzureIoTHub.Portal.Server.Identity
 {
-    using System;
-    using Microsoft.Extensions.Configuration;
+    using static AzureIoTHub.Portal.Server.Startup;
 
     public class B2CExtensionHelper : IB2CExtensionHelper
     {
         private const string RoleName = "Role";
 
-        public string RoleExtensionName => $"extension_{this.mSALConfigSection[MsalSettingsConstants.B2CExtensionAppId].Replace("-", string.Empty)}_{RoleName}";
+        public string RoleExtensionName => $"extension_{this.configuration.MsalB2CExtensionAppId.Replace("-", string.Empty)}_{RoleName}";
 
         public string RoleClaimName => $"extension_{RoleName}";
 
-        private readonly IConfigurationSection mSALConfigSection;
+        private readonly ConfigHandler configuration;
 
-        public B2CExtensionHelper(IConfiguration configuration)
+        internal B2CExtensionHelper(ConfigHandler configuration)
         {
-            this.mSALConfigSection = configuration.GetSection(MsalSettingsConstants.RootKey);
+            this.configuration = configuration;
         }
     }
 }

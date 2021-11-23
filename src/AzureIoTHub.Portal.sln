@@ -1,12 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00. Solution Items", "00. Solution Items", "{20EC2171-363D-4DDE-827F-F56D4FE9ADF3}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.env = .env
+		Dockerfile = Dockerfile
+		..\.github\workflows\dotnet.yml = ..\.github\workflows\dotnet.yml
 		..\LICENSE = ..\LICENSE
+		..\.github\workflows\main.yml = ..\.github\workflows\main.yml
 		stylecop.ruleset = stylecop.ruleset
 	EndProjectSection
 EndProject
@@ -15,6 +19,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Client", "AzureIoTHub.Portal\Client\AzureIoTHub.Portal.Client.csproj", "{24B26D0B-F293-484E-8175-1CF69FBEE992}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Shared", "AzureIoTHub.Portal\Shared\AzureIoTHub.Portal.Shared.csproj", "{9F0A43D6-D7C2-4C92-AE22-BE48B7F83ACB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{3CA153F4-1172-4AF5-B483-94200717AB5C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{9EF190B3-41E2-48E1-BA4E-E129589DD250}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\dotnet.yml = ..\.github\workflows\dotnet.yml
+		..\.github\workflows\main.yml = ..\.github\workflows\main.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +49,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3CA153F4-1172-4AF5-B483-94200717AB5C} = {20EC2171-363D-4DDE-827F-F56D4FE9ADF3}
+		{9EF190B3-41E2-48E1-BA4E-E129589DD250} = {3CA153F4-1172-4AF5-B483-94200717AB5C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E03F3EEB-7B2B-4849-A581-4150BF29EC2B}
