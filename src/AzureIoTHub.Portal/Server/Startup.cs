@@ -27,24 +27,27 @@ namespace AzureIoTHub.Portal.Server
 
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IWebHostEnvironment environment, IConfiguration configuration)
         {
+            this.HostEnvironment = environment;
             this.Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
+        public IWebHostEnvironment HostEnvironment { get; }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var msalSettings = this.Configuration.GetSection(MsalSettingsConstants.RootKey);
+            var configuration = ConfigHandler.Create(this.HostEnvironment, this.Configuration);
 
             services.Configure<ClientApiIndentityOptions>(opts =>
             {
-                opts.Authority = new Uri(new Uri(msalSettings[MsalSettingsConstants.Instance]), $"{msalSettings[MsalSettingsConstants.Domain]}/{msalSettings[MsalSettingsConstants.SignUpSignInPolicyId]}").ToString();
-                opts.ClientId = msalSettings[MsalSettingsConstants.ClientId];
-                opts.ScopeUri = $"https://{msalSettings[MsalSettingsConstants.Domain]}/{msalSettings[MsalSettingsConstants.ApiClientId]}/{msalSettings[MsalSettingsConstants.ScopeName]}";
+                opts.Authority = new Uri(new Uri(configuration.MsalInstance), $"{configuration.MsalDomain}/{configuration.MsalSignUpSignInPolicyId}").ToString();
+                opts.ClientId = configuration.MsalClientId;
+                opts.ScopeUri = $"https://{configuration.MsalDomain}/{configuration.MsalApiClientId}/{configuration.MsalScopeName}";
             });
 
             services
@@ -56,38 +59,38 @@ namespace AzureIoTHub.Portal.Server
                  },
                  identityOpts =>
                  {
-                     identityOpts.Instance = msalSettings[MsalSettingsConstants.Instance].ToString();
-                     identityOpts.Domain = msalSettings[MsalSettingsConstants.Domain].ToString();
-                     identityOpts.SignUpSignInPolicyId = msalSettings[MsalSettingsConstants.SignUpSignInPolicyId].ToString();
-                     identityOpts.ClientId = msalSettings[MsalSettingsConstants.ApiClientId].ToString();
+                     identityOpts.Instance = configuration.MsalInstance;
+                     identityOpts.Domain = configuration.MsalDomain;
+                     identityOpts.SignUpSignInPolicyId = configuration.MsalSignUpSignInPolicyId;
+                     identityOpts.ClientId = configuration.MsalApiClientId;
                  });
 
             services.AddControllersWithViews(opts =>
             {
-                opts.Filters.Add<ApiRequiredScopeFilter>();
+                opts.Filters.Add(new ApiRequiredScopeFilter(configuration));
             });
 
             services.AddRazorPages();
 
             services.AddTransient(t =>
             {
-                return RegistryManager.CreateFromConnectionString(t.GetService<IConfiguration>().GetConnectionString("IoTHub:ConnectionString"));
+                return RegistryManager.CreateFromConnectionString(configuration.IoTHubConnectionString);
             });
 
             services.AddTransient(t =>
             {
-                return ServiceClient.CreateFromConnectionString(t.GetService<IConfiguration>().GetConnectionString("IoTHub:ConnectionString"));
+                return ServiceClient.CreateFromConnectionString(configuration.IoTHubConnectionString);
             });
 
             services.AddTransient(t =>
             {
-                return ProvisioningServiceClient.CreateFromConnectionString(t.GetService<IConfiguration>().GetConnectionString("IoTDPS:ConnectionString"));
+                return ProvisioningServiceClient.CreateFromConnectionString(configuration.DPSConnectionString);
             });
 
-            services.AddTransient<BlobServiceClient>(sp => new BlobServiceClient(sp.GetService<IConfiguration>().GetConnectionString("StorageAcount:ConnectionString")));
-            services.AddTransient<TableClient>(sp => new TableClient(sp.GetService<IConfiguration>().GetConnectionString("StorageAcount:ConnectionString"), "DeviceTemplates"));
+            services.AddTransient(sp => new BlobServiceClient(configuration.StorageAcountConnectionString));
+            services.AddTransient(sp => new TableClient(configuration.StorageAcountConnectionString, "DeviceTemplates"));
 
-            services.AddSingleton<IB2CExtensionHelper, B2CExtensionHelper>();
+            services.AddSingleton<IB2CExtensionHelper, B2CExtensionHelper>(sp => new B2CExtensionHelper(configuration));
 
             services.AddHttpClient("RestClient")
                     .AddPolicyHandler(HttpPolicyExtensions
@@ -99,9 +102,9 @@ namespace AzureIoTHub.Portal.Server
             {
                 // Initialize the client credential auth provider
                 IConfidentialClientApplication confidentialClient = ConfidentialClientApplicationBuilder
-                    .Create(msalSettings[MsalSettingsConstants.ApiClientId].ToString())
-                    .WithTenantId(msalSettings[MsalSettingsConstants.TenantId].ToString())
-                    .WithClientSecret(msalSettings.GetConnectionString(MsalSettingsConstants.ApiClientSecret).ToString())
+                    .Create(configuration.MsalApiClientId)
+                    .WithTenantId(configuration.MsalTenantId)
+                    .WithClientSecret(configuration.MsalApiClientSecret)
                     .Build();
 
                 IAuthenticationProvider authProvider = new DelegateAuthenticationProvider(async (requestMessage) =>
@@ -159,6 +162,124 @@ namespace AzureIoTHub.Portal.Server
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");
             });
+        }
+
+        internal abstract class ConfigHandler
+        {
+            protected const string IoTHubConnectionStringKey = "IoTHub:ConnectionString";
+            protected const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
+            protected const string StorageAcountConnectionStringKey = "StorageAcount:ConnectionString";
+            protected const string MsalScopeNameKey = "MsalSettings:ScopeName";
+            protected const string MsalInstanceKey = "MsalSettings:Instance";
+            protected const string MsalClientIdKey = "MsalSettings:ClientId";
+            protected const string MsalApiClientIdKey = "MsalSettings:ApiClientId";
+            protected const string MsalTenantIdKey = "MsalSettings:TenantId";
+            protected const string MsalApiClientSecretKey = "MsalSettings:ApiClientSecret";
+            protected const string MsalDomainKey = "MsalSettings:Domain";
+            protected const string MsalSignUpSignInPolicyIdKey = "MsalSettings:SignUpSignInPolicyId";
+            protected const string MsalB2CExtensionAppIdKey = "MsalSettings:B2CExtensionAppId";
+
+            internal static ConfigHandler Create(IWebHostEnvironment env, IConfiguration config)
+            {
+                if (env.IsProduction())
+                {
+                    return new ProductionConfigHandler(config);
+                }
+
+                return new DevelopmentConfigHandler(config);
+            }
+
+            internal abstract string IoTHubConnectionString { get; }
+
+            internal abstract string DPSConnectionString { get; }
+
+            internal abstract string StorageAcountConnectionString { get; }
+
+            internal abstract string MsalScopeName { get; }
+
+            internal abstract string MsalInstance { get; }
+
+            internal abstract string MsalClientId { get; }
+
+            internal abstract string MsalApiClientId { get; }
+
+            internal abstract string MsalTenantId { get; }
+
+            internal abstract string MsalApiClientSecret { get; }
+
+            internal abstract string MsalDomain { get; }
+
+            internal abstract string MsalSignUpSignInPolicyId { get; }
+
+            internal abstract string MsalB2CExtensionAppId { get; }
+        }
+
+        internal class ProductionConfigHandler : ConfigHandler
+        {
+            private readonly IConfiguration config;
+
+            internal ProductionConfigHandler(IConfiguration config)
+            {
+                this.config = config;
+            }
+
+            internal override string IoTHubConnectionString => this.config.GetConnectionString(IoTHubConnectionStringKey);
+
+            internal override string DPSConnectionString => this.config.GetConnectionString(DPSConnectionStringKey);
+
+            internal override string StorageAcountConnectionString => this.config.GetConnectionString(StorageAcountConnectionStringKey);
+
+            internal override string MsalScopeName => this.config[MsalScopeNameKey];
+
+            internal override string MsalInstance => this.config[MsalInstanceKey];
+
+            internal override string MsalClientId => this.config[MsalClientIdKey];
+
+            internal override string MsalApiClientId => this.config[MsalApiClientIdKey];
+
+            internal override string MsalTenantId => this.config[MsalTenantIdKey];
+
+            internal override string MsalApiClientSecret => this.config.GetConnectionString(MsalApiClientSecretKey);
+
+            internal override string MsalDomain => this.config[MsalDomainKey];
+
+            internal override string MsalSignUpSignInPolicyId => this.config[MsalSignUpSignInPolicyIdKey];
+
+            internal override string MsalB2CExtensionAppId => this.config[MsalB2CExtensionAppIdKey];
+        }
+
+        internal class DevelopmentConfigHandler : ConfigHandler
+        {
+            private readonly IConfiguration config;
+
+            internal DevelopmentConfigHandler(IConfiguration config)
+            {
+                this.config = config;
+            }
+
+            internal override string IoTHubConnectionString => this.config[IoTHubConnectionStringKey];
+
+            internal override string DPSConnectionString => this.config[DPSConnectionStringKey];
+
+            internal override string StorageAcountConnectionString => this.config[StorageAcountConnectionStringKey];
+
+            internal override string MsalScopeName => this.config[MsalScopeNameKey];
+
+            internal override string MsalInstance => this.config[MsalInstanceKey];
+
+            internal override string MsalClientId => this.config[MsalClientIdKey];
+
+            internal override string MsalApiClientId => this.config[MsalApiClientIdKey];
+
+            internal override string MsalTenantId => this.config[MsalTenantIdKey];
+
+            internal override string MsalApiClientSecret => this.config[MsalApiClientSecretKey];
+
+            internal override string MsalDomain => this.config[MsalDomainKey];
+
+            internal override string MsalSignUpSignInPolicyId => this.config[MsalSignUpSignInPolicyIdKey];
+
+            internal override string MsalB2CExtensionAppId => this.config[MsalB2CExtensionAppIdKey];
         }
     }
 }

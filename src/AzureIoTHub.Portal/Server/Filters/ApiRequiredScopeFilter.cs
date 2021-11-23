@@ -4,19 +4,18 @@
 namespace AzureIoTHub.Portal.Server.Filters
 {
     using System.Linq;
-    using AzureIoTHub.Portal.Server.Identity;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc.Filters;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Identity.Web.Resource;
+    using static AzureIoTHub.Portal.Server.Startup;
 
-    public class ApiRequiredScopeFilter : ActionFilterAttribute
+    internal class ApiRequiredScopeFilter : ActionFilterAttribute
     {
-        private IConfigurationSection configurationSection;
+        private ConfigHandler configuration;
 
-        public ApiRequiredScopeFilter(IConfiguration configuration)
+        internal ApiRequiredScopeFilter(ConfigHandler configuration)
         {
-            this.configurationSection = configuration.GetSection(MsalSettingsConstants.RootKey);
+            this.configuration = configuration;
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -28,7 +27,7 @@ namespace AzureIoTHub.Portal.Server.Filters
                 return;
             }
 
-            context.HttpContext.VerifyUserHasAnyAcceptedScope(this.configurationSection[MsalSettingsConstants.ScopeName]);
+            context.HttpContext.VerifyUserHasAnyAcceptedScope(this.configuration.MsalScopeName);
         }
     }
 }
