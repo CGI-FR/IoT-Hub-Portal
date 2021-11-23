@@ -295,5 +295,11 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string MsalB2CExtensionAppId => this.config[MsalB2CExtensionAppIdKey];
         }
+
+        private Task HandleApiFallback(HttpContext context)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            return Task.CompletedTask;
+        }
     }
 }
