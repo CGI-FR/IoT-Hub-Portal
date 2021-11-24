@@ -39,13 +39,14 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <param name="isEdge">boolean.</param>
         /// <param name="twin">the twin of my new device.</param>
         /// <returns>BulkRegistryOperation.</returns>
-        public async Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin)
+        public async Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled = DeviceStatus.Disabled)
         {
             try
             {
                 Device device = new (deviceId)
                 {
                     Capabilities = new DeviceCapabilities { IotEdge = isEdge },
+                    Status = isEnabled
                 };
 
                 return await this.registryManager.AddDeviceWithTwinAsync(device, twin);
