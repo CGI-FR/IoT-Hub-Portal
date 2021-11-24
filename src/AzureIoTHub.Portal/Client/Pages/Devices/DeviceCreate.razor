@@ -61,8 +61,16 @@
                                                          SearchFunc="@Search"
                                                          ResetValueOnEmptyText="true"
                                                          Immediate="true" Clearable="true"
-                                                         CoerceText="true" CoerceValue="false" />
+                                                         CoerceText="true" CoerceValue="false"/>
                                     </MudItem>
+                                </MudItem>
+                                <MudItem xs="12" Class="custom-form">
+                                    <MudItem md="3" sm="12">
+                                        <MudText>Preview : </MudText>
+                                    </MudItem>
+                                    <MudItem md="9" sm="12">
+                                            <img class="custom-img-sm" src="@imgUrl" />
+                                        </MudItem>
                                 </MudItem>
                             </MudItem>
 
@@ -95,6 +103,7 @@
                                                       Margin="Margin.Dense" Variant="Variant.Outlined"
                                                       For="@(()=> Device.AppEUI)"
                                                       ReadOnly="true"
+                                                      TextChanged="@ChangePicture"
                                                       Class="custom-disabled"></MudTextField>
                                     </MudItem>
                                 </MudItem>
@@ -164,11 +173,12 @@
 
     private IEnumerable<SensorModel> SensorList { get; set; } = new List<SensorModel>();
     public Dictionary<string, string> SensorDict { get; set; } = new Dictionary<string, string>();
+    private string imgUrl = "/images/error.png";
 
     protected override async Task OnInitializedAsync()
     {
         Device.DeviceType = "LoRa Device";
-        
+
         // Gets a list of sensor model previously registered to Azure to allow autocomplete field in the form
         SensorList = await Http.GetFromJsonAsync<SensorModel[]>("Sensors");
 
@@ -184,9 +194,6 @@
     /// </summary>
     public async void SaveDevice(EditContext context)
     {
-        StateHasChanged();
-        await Task.Delay(0);
-
         // Sends the device to be added to the controller
         var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/create", Device);
         var errorMsg = await response.Content.ReadAsStringAsync();
@@ -224,5 +231,26 @@
             return SensorDict.Keys;
         return SensorDict.Keys.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
+
+    /// <summary>
+    /// Allows to change the preview picture when the sensor model changes.
+    /// </summary> 
+    private async Task ChangePicture()
+    {
+        // Retrieves the blob container URL where to fetch the image from
+        try
+        {
+            imgUrl = await Http.GetStringAsync($"api/BlobContainers/{Device.ModelType}");
+        }
+        //If we can't find the controller
+        catch(HttpRequestException e)
+        {
+            Console.WriteLine(e);
+            // Temporary fix
+            // TODO
+            imgUrl = "images/error.png";
+        }
+    }
+
 }
 

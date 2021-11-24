@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server
     using System;
     using System.Net;
     using System.Net.Http.Headers;
+    using System.Threading.Tasks;
     using Azure.Data.Tables;
     using Azure.Storage.Blobs;
     using AzureIoTHub.Portal.Server.Filters;
@@ -13,6 +14,7 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Extensions.Configuration;
@@ -160,8 +162,20 @@ namespace AzureIoTHub.Portal.Server
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapFallbackToFile("index.html");
+                // endpoints.MapFallbackToFile("index.html");
+
+                // Prevent the user from getting HTML when the controller can't be found.
+                endpoints.Map("api/{**slug}", this.HandleApiFallback);
+
+                // If this is a request for a web page, just do the normal out-of-the-box behaviour.
+                endpoints.MapFallbackToFile("{**slug}", "index.html");
             });
+        }
+
+        private Task HandleApiFallback(HttpContext context)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            return Task.CompletedTask;
         }
 
         internal abstract class ConfigHandler
