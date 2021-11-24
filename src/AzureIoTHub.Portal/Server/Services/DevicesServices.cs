@@ -5,6 +5,8 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Http;
+    using System.Net.Http.Json;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Interfaces;
     using Microsoft.Azure.Devices;
@@ -18,18 +20,21 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly RegistryManager registryManager;
         private readonly ProvisioningServiceClient dps;
         private readonly ServiceClient serviceClient;
+        private readonly HttpClient http;
         private readonly IConfiguration configuration;
 
         public DevicesServices(
             IConfiguration configuration,
             RegistryManager registryManager,
             ServiceClient serviceClient,
+            HttpClient http,
             ProvisioningServiceClient dps)
         {
             this.dps = dps;
-            this.registryManager = registryManager;
+            this.http = http;
             this.configuration = configuration;
             this.serviceClient = serviceClient;
+            this.registryManager = registryManager;
         }
 
         /// <summary>
@@ -38,6 +43,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <param name="deviceId">the device id.</param>
         /// <param name="isEdge">boolean.</param>
         /// <param name="twin">the twin of my new device.</param>
+        /// <param name="isEnabled">the status of the device(disabled by default).</param>
         /// <returns>BulkRegistryOperation.</returns>
         public async Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled = DeviceStatus.Disabled)
         {
@@ -218,11 +224,35 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
+        /// <summary>
+        /// this function execute a methode on the device.
+        /// </summary>
+        /// <param name="deviceId">the device id.</param>
+        /// <param name="method">the cloud to device method.</param>
+        /// <returns>CloudToDeviceMethodResult.</returns>
         public async Task<CloudToDeviceMethodResult> ExecuteC2DMethod(string deviceId, CloudToDeviceMethod method)
         {
             try
             {
                 return await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
+            }
+            catch (System.Exception e)
+            {
+                throw new System.Exception(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// this function execute a methode on a lora device.
+        /// </summary>
+        /// <param name="deviceId">the device id.</param>
+        /// <param name="commandContent">the command.</param>
+        /// <returns>HttpResponseMessage.</returns>
+        public async Task<HttpResponseMessage> ExecuteLoraMethod(string deviceId, JsonContent commandContent)
+        {
+            try
+            {
+                return await this.http.PostAsync($"{this.configuration["IoTAzureFunction:url"]}/{deviceId}{this.configuration["IoTAzureFunction:code"]}", commandContent);
             }
             catch (System.Exception e)
             {
