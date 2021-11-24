@@ -102,7 +102,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <returns>Corresponding list of commands or an empty list if it doesn't have any command.</returns>
         private List<SensorCommand> RetrieveCommands(string model_type)
         {
-            List<SensorCommand> commands = new List<SensorCommand>();
+            List<SensorCommand> commands = new ();
 
             if (model_type != "undefined_modelType")
             {
@@ -164,7 +164,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 newTwin.Tags["assetID"] = device.AssetID;
                 newTwin.Properties.Desired["AppEUI"] = device.AppEUI;
                 newTwin.Properties.Desired["AppKey"] = device.AppKey;
-                var status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+                DeviceStatus status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
                 var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin, status);
 
@@ -242,7 +242,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <param name="command">the command who contain the name and the trame.</param>
         /// <returns>a CloudToDeviceMethodResult .</returns>
         [HttpPost("{deviceId}/{methodName}")]
-        public async Task<IActionResult> ExecuteMethode(string deviceId, SensorCommand command)
+        public async Task<IActionResult> ExecuteLoraMethod(string deviceId, SensorCommand command)
         {
             try
             {
@@ -254,7 +254,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
                 commandContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
-                var result = await this.http.PostAsync($"{this.configuration["IoTAzureFunction:url"]}/{deviceId}{this.configuration["IoTAzureFunction:code"]}", commandContent);
+                var result = await this.devicesService.ExecuteLoraMethod(deviceId, commandContent);
 
                 this.logger.LogInformation($"{result.Content}");
 
