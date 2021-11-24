@@ -60,7 +60,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// This function delete a device.
         /// </summary>
         /// <param name="deviceId">the device id.</param>
-        public async void Delete(string deviceId)
+        public async Task DeleteDevice(string deviceId)
         {
             await this.registryManager.RemoveDeviceAsync(deviceId);
         }

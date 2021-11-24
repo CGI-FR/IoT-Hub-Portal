@@ -31,6 +31,6 @@ namespace AzureIoTHub.Portal.Server.Interfaces
 
         Task<CloudToDeviceMethodResult> ExecuteC2DMethod(string deviceId, CloudToDeviceMethod method);
 
-        void Delete(string deviceId);
+        Task DeleteDevice(string deviceId);
     }
 }

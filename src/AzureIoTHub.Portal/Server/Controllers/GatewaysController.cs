@@ -150,7 +150,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <param name="gateway">the gateway object.</param>
         /// <returns>Bulk registry operation result.</returns>
         [HttpPost]
-        public async Task<IActionResult> Add(Gateway gateway)
+        public async Task<IActionResult> CreateGatewayAsync(Gateway gateway)
         {
             try
             {
@@ -213,18 +213,18 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <param name="deviceId">the device id to delete.</param>
         /// <returns>message.</returns>
         [HttpDelete("{deviceId}")]
-        public IActionResult DeleteDeviceAsync(string deviceId)
+        public async Task<IActionResult> DeleteDeviceAsync(string deviceId)
         {
             try
             {
-                this.devicesService.Delete(deviceId);
+                await this.devicesService.DeleteDevice(deviceId);
                 this.logger.LogInformation($"iot hub device was delete  {deviceId}");
 
                 return this.Ok($"iot hub device was delete  {deviceId}");
             }
             catch (Exception e)
             {
-                return this.Problem("Somethink went wrong.", e.Message, 400);
+                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
         }
 
