@@ -206,7 +206,7 @@ else
 
     public async Task LoadDevice()
     {
-        gateway = await Http.GetFromJsonAsync<Gateway>($"Gateways/{deviceId}");
+        gateway = await Http.GetFromJsonAsync<Gateway>($"api/Gateways/{deviceId}");
         if (gateway.Connection_state == "Disconnected")
         {
             btn_disable = true;
@@ -217,7 +217,7 @@ else
     public async Task UpdateDevice()
     {
         processing = true;
-        var result = await Http.PutAsJsonAsync($"Gateways/{gateway.DeviceId}", gateway);
+        var result = await Http.PutAsJsonAsync($"api/Gateways/{gateway.DeviceId}", gateway);
 
         if (result.IsSuccessStatusCode)
         {
@@ -228,7 +228,7 @@ else
 
     public async Task OnMethod(GatewayModule module, string methodName)
     {
-        var result = await Http.PostAsJsonAsync($"Gateways/{gateway.DeviceId}/{module.ModuleName}/{methodName}",module);
+        var result = await Http.PostAsJsonAsync($"api/Gateways/{gateway.DeviceId}/{module.ModuleName}/{methodName}",module);
 
         var test = result.Content.ReadFromJsonAsync<C2Dresult>().Result;
 
@@ -265,7 +265,7 @@ else
 
     public async Task DeleteDeviceAsync()
     {
-        var result = await Http.DeleteAsync($"Gateways/{gateway.DeviceId}");
+        var result = await Http.DeleteAsync($"api/Gateways/{gateway.DeviceId}");
 
         if (result.IsSuccessStatusCode)
         {

@@ -173,14 +173,14 @@
 
     private IEnumerable<SensorModel> SensorList { get; set; } = new List<SensorModel>();
     public Dictionary<string, string> SensorDict { get; set; } = new Dictionary<string, string>();
-    private string imgUrl = "/images/error.png";
+    private string imgUrl = "";
 
     protected override async Task OnInitializedAsync()
     {
         Device.DeviceType = "LoRa Device";
 
         // Gets a list of sensor model previously registered to Azure to allow autocomplete field in the form
-        SensorList = await Http.GetFromJsonAsync<SensorModel[]>("Sensors");
+        SensorList = await Http.GetFromJsonAsync<SensorModel[]>("api/Sensors");
 
         // Convert this list into a dictionnary to automatically fill the AppEUI field
         foreach (var val in SensorList)
@@ -196,7 +196,7 @@
     {
         // Sends the device to be added to the controller
         // var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/create", Device);
-        var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices", Device);
+        var response = await Http.PostAsJsonAsync<DeviceListItem>($"api/Devices", Device);
         var errorMsg = await response.Content.ReadAsStringAsync();
         Console.WriteLine($">>>>> {response.StatusCode}");
         Console.WriteLine($"===== {errorMsg}");
