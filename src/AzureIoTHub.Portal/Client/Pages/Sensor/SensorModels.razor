@@ -89,7 +89,7 @@
     {
         try
         {
-            result = await Http.GetFromJsonAsync<SensorModel[]>("Sensors");
+            result = await Http.GetFromJsonAsync<SensorModel[]>("api/Sensors");
         }
         catch (AccessTokenNotAvailableException exception)
         {

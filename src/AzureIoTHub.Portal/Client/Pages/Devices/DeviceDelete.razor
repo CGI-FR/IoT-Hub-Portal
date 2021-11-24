@@ -29,7 +29,7 @@
     private async Task DeleteDevice()
     {
         // var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/delete", device);
-        var response = await Http.DeleteAsync($"Devices/{device.DeviceID}");
+        var response = await Http.DeleteAsync($"api/Devices/{device.DeviceID}");
 
         // Prompts a snack bar to inform if the action was successful
         // TODO : Deal more effectively with error/success messages

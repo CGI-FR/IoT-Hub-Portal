@@ -76,7 +76,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             HttpResponseMessage response = await client.GetAsync(imgUrl);
             if (!response.IsSuccessStatusCode)
             {
-                imgUrl = "images/error2.png";
+                imgUrl = "images/error.png";
             }
 
             return imgUrl;

@@ -17,7 +17,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Graph;
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize(Roles = RoleNames.Admin)]
     public class UsersController : Controller
     {

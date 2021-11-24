@@ -58,7 +58,7 @@
 
     private async Task HandleValidSubmit()
     {
-        var response = await Http.PostAsJsonAsync("Users/Invite", model);
+        var response = await Http.PostAsJsonAsync("api/Users/Invite", model);
 
         if (response.IsSuccessStatusCode)
         {

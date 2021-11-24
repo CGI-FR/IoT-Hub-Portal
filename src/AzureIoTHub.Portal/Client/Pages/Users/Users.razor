@@ -86,7 +86,7 @@
     {
         try
         {
-            var response = await Http.PostAsJsonAsync("Users", new PaginationRequest
+            var response = await Http.PostAsJsonAsync("api/Users", new PaginationRequest
             {
                 PageIndex = 0,
                 PageSize = 10
@@ -122,7 +122,7 @@
             return;
         }
 
-        var response = await Http.DeleteAsync($"Users/{model.Id}");
+        var response = await Http.DeleteAsync($"api/Users/{model.Id}");
 
         if (!response.IsSuccessStatusCode)
         {

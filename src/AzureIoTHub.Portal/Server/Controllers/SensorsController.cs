@@ -30,7 +30,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
     [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize(Roles = RoleNames.Admin)]
     public class SensorsController : ControllerBase
     {

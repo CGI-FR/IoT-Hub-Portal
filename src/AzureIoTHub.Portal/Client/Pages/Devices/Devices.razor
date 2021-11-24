@@ -184,7 +184,7 @@
     {
         try
         {
-            result = await Http.GetFromJsonAsync<DeviceListItem[]>("Devices");
+            result = await Http.GetFromJsonAsync<DeviceListItem[]>("api/Devices");
         }
         catch (AccessTokenNotAvailableException exception)
         {
