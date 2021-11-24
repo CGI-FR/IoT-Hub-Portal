@@ -66,9 +66,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
                 if (file != null)
                 {
-                    entity["Image"] = file.FileName;
+                    // entity["Image"] = file.FileName;
                     BlobContainerClient blobContainer = this.blobService.GetBlobContainerClient(this.configuration["StorageAcount:BlobContainerName"]);
-                    BlobClient blobClient = blobContainer.GetBlobClient(file.FileName);
+                    BlobClient blobClient = blobContainer.GetBlobClient(sensorObject.Name);
 
                     this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
 
@@ -103,10 +103,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// </summary>
         /// <returns>A list of SensorModel.</returns>
         [HttpGet]
-        public async Task<IEnumerable<SensorModel>> Get()
+        public IEnumerable<SensorModel> Get()
         {
-            await Task.Delay(0);
-
             // PartitionKey 0 contains all sensor models
             Pageable<TableEntity> entities = this.tableClient.Query<TableEntity>("PartitionKey eq '0'");
 
