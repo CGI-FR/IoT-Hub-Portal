@@ -213,7 +213,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <param name="deviceId">the device id to delete.</param>
         /// <returns>message.</returns>
         [HttpDelete("{deviceId}")]
-        public IActionResult DeleteDeviceAsync(string deviceId)
+        public async Task<IActionResult> DeleteDeviceAsync(string deviceId)
         {
             try
             {
