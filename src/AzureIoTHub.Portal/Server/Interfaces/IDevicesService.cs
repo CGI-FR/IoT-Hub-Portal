@@ -23,7 +23,7 @@ namespace AzureIoTHub.Portal.Server.Interfaces
 
         Task<AttestationMechanism> GetDpsAttestionMechanism();
 
-        Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin);
+        Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled);
 
         Task<Device> UpdateDevice(Device device);
 
