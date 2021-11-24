@@ -57,9 +57,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
             try
             {
                 SensorModel sensorObject = JsonConvert.DeserializeObject<SensorModel>(sensor);
-                TableEntity entity = new TableEntity();
-                entity.PartitionKey = "0";
-                entity.RowKey = sensorObject.Name;
+                TableEntity entity = new ()
+                {
+                    PartitionKey = this.configuration["StorageAcount:BlobContainerPartitionKey"],
+                    RowKey = sensorObject.Name
+                };
 
                 entity["Description"] = sensorObject.Description;
                 entity["AppEUI"] = sensorObject.AppEUI;
@@ -81,9 +83,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 {
                     foreach (var element in sensorObject.Commands)
                     {
-                        TableEntity commandEntity = new TableEntity();
-                        commandEntity.PartitionKey = sensorObject.Name;
-                        commandEntity.RowKey = element.Name;
+                        TableEntity commandEntity = new ()
+                        {
+                            PartitionKey = sensorObject.Name,
+                            RowKey = element.Name
+                        };
                         commandEntity["Trame"] = element.Trame;
                         commandEntity["Port"] = element.Port;
                         this.tableClient.AddEntity(commandEntity);
@@ -106,7 +110,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         public IEnumerable<SensorModel> Get()
         {
             // PartitionKey 0 contains all sensor models
-            Pageable<TableEntity> entities = this.tableClient.Query<TableEntity>("PartitionKey eq '0'");
+            Pageable<TableEntity> entities = this.tableClient.Query<TableEntity>($"PartitionKey eq '{this.configuration["StorageAcount:BlobContainerPartitionKey"]}'");
 
             // Converts the query result into a list of sensor models
             IEnumerable<SensorModel> sensorsList = entities.Select(e => this.MapTableEntityToSensorModel(e));
@@ -121,19 +125,12 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <returns>A sensor model.</returns>
         public SensorModel MapTableEntityToSensorModel(TableEntity entity)
         {
-            SensorModel sensor = new SensorModel();
-            sensor.Name = entity.RowKey;
-            if (entity.ContainsKey("Description"))
+            return new SensorModel()
             {
-                sensor.Description = entity["Description"].ToString();
-            }
-
-            if (entity.ContainsKey("AppEUI"))
-            {
-                sensor.AppEUI = entity["AppEUI"].ToString();
-            }
-
-            return sensor;
+                Name = entity.RowKey,
+                Description = RetrieveValue(entity, "Description"),
+                AppEUI = RetrieveValue(entity, "AppEUI")
+            };
         }
 
         /// <summary>
@@ -144,19 +141,20 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <returns>A sensor command model.</returns>
         public SensorCommand MapTableEntityToSensorCommand(TableEntity entity)
         {
-            SensorCommand command = new SensorCommand();
-            command.Name = entity.RowKey;
-            if (entity.ContainsKey("Trame"))
+            return new SensorCommand()
             {
-                command.Trame = entity["Trame"].ToString();
-            }
+                Name = entity.RowKey,
+                Trame = RetrieveValue(entity, "Trame"),
+                Port = int.Parse(RetrieveValue(entity, "Port"))
+            };
+        }
 
-            if (entity.ContainsKey("Port"))
-            {
-                command.Port = int.Parse(entity["Port"].ToString());
-            }
-
-            return command;
+        private static string RetrieveValue(TableEntity entity, string name)
+        {
+            if (entity.ContainsKey(name))
+                return entity[name].ToString();
+            else
+                return null;
         }
     }
 }

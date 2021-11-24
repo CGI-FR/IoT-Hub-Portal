@@ -9,9 +9,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Security.Cryptography;
     using System.Text;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Server.Helpers;
+    using AzureIoTHub.Portal.Server.Interfaces;
+    using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
@@ -19,6 +23,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
 
     [Authorize]
     [ApiController]
@@ -29,22 +34,19 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private readonly ILogger<GatewaysController> logger;
 
         private readonly RegistryManager registryManager;
-        private readonly ProvisioningServiceClient dps;
-        private readonly ServiceClient serviceClient;
         private readonly IConfiguration configuration;
+        private readonly DevicesServices devicesService;
 
         public GatewaysController(
             IConfiguration configuration,
             ILogger<GatewaysController> logger,
             RegistryManager registryManager,
-            ProvisioningServiceClient dps,
-            ServiceClient serviceClient)
+            DevicesServices service)
         {
             this.logger = logger;
             this.registryManager = registryManager;
-            this.dps = dps;
-            this.serviceClient = serviceClient;
             this.configuration = configuration;
+            this.devicesService = service;
         }
 
         /// <summary>
@@ -52,174 +54,124 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// Après avoir éxecuté la query du registryManager on récupère le resultat
         /// sous la forme d'une liste de Twin.
         /// </summary>
-        /// <returns>Retourne un IEnumerable de GatewayListItem avec les propriètés que l'on souhaite.</returns>
+        /// <returns>List of GatewayListItem.</returns>
         [HttpGet]
-        public async Task<IEnumerable<GatewayListItem>> Get()
-        {
-            var query = this.registryManager.CreateQuery("SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' GROUP BY deviceId", 10);
-            var query2 = this.registryManager.CreateQuery("SELECT * FROM devices where devices.capabilities.iotEdge = true", 10);
-            List<GatewayListItem> gatewayList = new List<GatewayListItem>();
-
-            while (query.HasMoreResults)
-            {
-                var page = await query.GetNextAsTwinAsync();
-                var pageBis = await query2.GetNextAsTwinAsync();
-                int index = 0;
-
-                foreach (var twin in page)
-                {
-                    var result = new GatewayListItem
-                    {
-                        DeviceId = twin.DeviceId,
-                        Status = twin.Status.Value.ToString(),
-                        NbDevices = 0,
-                        Type = "unknow"
-                    };
-
-                    if (twin.Properties.Reported.Contains("clients"))
-                    {
-                        result.NbDevices = twin.Properties.Reported["clients"].Count;
-                    }
-
-                    if (pageBis.ElementAt(index).Tags.Contains("purpose"))
-                    {
-                        result.Type = pageBis.ElementAt(index).Tags["purpose"];
-                    }
-
-                    gatewayList.Add(result);
-                    index++;
-                }
-            }
-
-            return gatewayList;
-        }
-
-        [HttpGet("{deviceId}")]
-        public async Task<Gateway> Get(string deviceId)
-        {
-            var deviceTwin = await this.registryManager.GetTwinAsync(deviceId);
-            var query = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']");
-
-            Gateway gateway = new Gateway();
-
-            gateway.DeviceId = deviceTwin.DeviceId;
-            gateway.Status = deviceTwin.Status.Value.ToString();
-            gateway.EndPoint = this.configuration["IoTDPS:ServiceEndpoint"];
-            gateway.Scope = deviceTwin.DeviceScope;
-            gateway.Connection_state = deviceTwin.ConnectionState.Value.ToString();
-            // on récupère la symmetric Key
-            gateway.SymmetricKey = await this.RetrieveSymmetricKey(gateway.DeviceId);
-            // on récupère les valeur contenu dans les tags
-            gateway.Type = this.RetrieveTagValue(deviceTwin, "purpose");
-            gateway.Environement = this.RetrieveTagValue(deviceTwin, "env");
-            // on récupère le nombre d'appareil connecté
-            gateway.NbDevices = await this.RetrieveNbConnectedDevice(gateway.DeviceId);
-
-            while (query.HasMoreResults)
-            {
-                var deviceWithModules = await query.GetNextAsTwinAsync();
-                // récupération des informations sur le modules de la gateways
-                foreach (var item in deviceWithModules)
-                {
-                    if (item.Properties.Desired.Contains("modules") && item.DeviceId == deviceId)
-                    {
-                        gateway.NbModule = item.Properties.Desired["modules"].Count;
-                    }
-
-                    if (item.Properties.Reported.Contains("systemModules") && item.DeviceId == deviceId)
-                    {
-                        foreach (var element in item.Properties.Reported["systemModules"])
-                        {
-                            if (element.Key == "edgeAgent")
-                            {
-                                gateway.RuntimeResponse = element.Value["runtimeStatus"];
-                            }
-                        }
-                    }
-
-                    if (gateway.NbModule > 0)
-                    {
-                        if (item.Properties.Reported.Contains("modules"))
-                        {
-                            foreach (var element in item.Properties.Reported["modules"])
-                            {
-                                var module = new GatewayModule();
-                                module.ModuleName = element.Key;
-                                if (element.Value.Contains("status"))
-                                {
-                                    module.Status = element.Value["status"];
-                                }
-
-                                if (element.Value.Contains("version"))
-                                {
-                                    module.Version = element.Value["version"];
-                                }
-
-                                gateway.Modules.Add(module);
-                            }
-                        }
-                    }
-
-                    // recup du dernier deployment
-                    if (item.Configurations != null)
-                    {
-                        if (item.Configurations.Count > 0)
-                        {
-                            foreach (var config in item.Configurations)
-                            {
-                                var confObj = await this.registryManager.GetConfigurationAsync(config.Key);
-                                if (gateway.LastDeployment.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
-                                {
-                                    gateway.LastDeployment.Name = config.Key;
-                                    gateway.LastDeployment.DateCreation = confObj.CreatedTimeUtc;
-                                    gateway.LastDeployment.Status = ConfigurationStatus.Applied.ToString();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return gateway;
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Add(Gateway gateway)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<GatewayListItem>))]
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var device = new Device(gateway.DeviceId)
+                // ne contient pas les proprieter
+                IEnumerable<Twin> devicesWithoutProperties = await this.devicesService.GetAllEdgeDeviceWithTags();
+                // ne contien pas les appareil connecter
+                IEnumerable<Twin> edgeDevices = await this.devicesService.GetAllEdgeDevice();
+
+                List<GatewayListItem> newGatewayList = new ();
+                int index = 0;
+
+                foreach (Twin deviceTwin in edgeDevices)
                 {
-                    Capabilities = new DeviceCapabilities
+                    GatewayListItem gateway = new ()
                     {
-                        IotEdge = true,
+                        DeviceId = deviceTwin.DeviceId,
+                        Status = deviceTwin.Status.Value.ToString(),
+                        Type = Helpers.RetrieveTagValue(devicesWithoutProperties.ElementAt(index), "purpose"),
+                        NbDevices = 0
+                    };
+                    if (deviceTwin.Properties.Reported.Contains("clients"))
+                    {
+                        gateway.NbDevices = deviceTwin.Properties.Reported["clients"].Count;
                     }
+
+                    newGatewayList.Add(gateway);
+                    index++;
+                }
+
+                return this.Ok(newGatewayList);
+            }
+            catch (Exception e)
+            {
+                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// This function return all the information we want of
+        /// a device.
+        /// </summary>
+        /// <param name="deviceId">the device id.</param>
+        /// <returns>Gateway.</returns>
+        [HttpGet("{deviceId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Gateway))]
+        public async Task<IActionResult> Get(string deviceId)
+        {
+            try
+            {
+                Twin deviceTwin = await this.devicesService.GetDeviceTwin(deviceId);
+                Twin deviceWithModules = await this.devicesService.GetDeviceTwinWithModule(deviceId);
+
+                Gateway gateway = new ()
+                {
+                    DeviceId = deviceTwin.DeviceId,
+                    Status = deviceTwin.Status.Value.ToString(),
+                    EndPoint = this.configuration["IoTDPS:ServiceEndpoint"],
+                    Scope = deviceTwin.DeviceScope,
+                    Connection_state = deviceTwin.ConnectionState.Value.ToString(),
+                    // we retrieve the symmetric Key
+                    SymmetricKey = Helpers.RetrieveSymmetricKey(deviceTwin.DeviceId, this.devicesService.GetDpsAttestionMechanism().Result),
+                    // We retrieve the values of tags
+                    Type = Helpers.RetrieveTagValue(deviceTwin, "purpose"),
+                    Environement = Helpers.RetrieveTagValue(deviceTwin, "env"),
+                    // We retrieve the number of connected device
+                    NbDevices = await this.RetrieveNbConnectedDevice(deviceTwin.DeviceId),
+                    // récupération des informations sur le modules de la gateways
+                    NbModule = Helpers.RetrieveNbModuleCount(deviceWithModules, deviceId),
+                    RuntimeResponse = Helpers.RetrieveRuntimeResponse(deviceWithModules, deviceId),
+                    Modules = Helpers.RetrieveModuleList(deviceWithModules, Helpers.RetrieveNbModuleCount(deviceWithModules, deviceId)),
+                    // recup du dernier deployment
+                    LastDeployment = await this.RetrieveLastConfiguration(deviceWithModules)
                 };
-                // Création de l'appareil
-                await this.registryManager.AddDeviceAsync(device).ConfigureAwait(false);
 
-                this.logger.LogInformation($"Created edge device {device.Id}");
-                // Configuration du Twin
-                var twin = await this.registryManager.GetTwinAsync(device.Id).ConfigureAwait(false);
+                return this.Ok(gateway);
+            }
+            catch (DeviceNotFoundException e)
+            {
+                return this.StatusCode(StatusCodes.Status404NotFound, e.Message);
+            }
+            catch (Exception e)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
 
-                this.logger.LogInformation($"\tTwin is {twin.ToJson()}");
+        /// <summary>
+        /// this function create a device with the twin information.
+        /// </summary>
+        /// <param name="gateway">the gateway object.</param>
+        /// <returns>Bulk registry operation result.</returns>
+        [HttpPost]
+        public async Task<IActionResult> CreateGatewayAsync(Gateway gateway)
+        {
+            try
+            {
+                Twin deviceTwin = new (gateway.DeviceId);
 
-                twin.Tags["env"] = gateway.Environement;
-                twin.Tags["purpose"] = gateway.Type;
+                deviceTwin.Tags["env"] = gateway.Environement;
+                deviceTwin.Tags["purpose"] = gateway.Type;
 
-                await this.registryManager.UpdateTwinAsync(device.Id, twin, twin.ETag);
-                this.logger.LogInformation($"\tUpdated twin to {twin.ToJson()}");
+                var result = await this.devicesService.CreateDeviceWithTwin(gateway.DeviceId, true, deviceTwin);
+                this.logger.LogInformation($"Created edge device {gateway.DeviceId}");
 
-                return this.Ok(device);
+                return this.Ok(result);
             }
             catch (DeviceAlreadyExistsException e)
             {
                 this.logger.LogInformation(e.Message);
-                return this.Ok("Device already exist.");
+                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
 
@@ -231,24 +183,28 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpPut("{gateway}")]
         public async Task<IActionResult> UpdateDeviceAsync(Gateway gateway)
         {
-            var device = await this.registryManager.GetDeviceAsync(gateway.DeviceId);
-            if (gateway.Status == DeviceStatus.Enabled.ToString())
+            try
             {
-                device.Status = DeviceStatus.Enabled;
+                Device device = await this.devicesService.GetDevice(gateway.DeviceId);
+
+                if (gateway.Status == DeviceStatus.Enabled.ToString())
+                    device.Status = DeviceStatus.Enabled;
+                else
+                    device.Status = DeviceStatus.Disabled;
+
+                device = await this.devicesService.UpdateDevice(device);
+
+                Twin deviceTwin = await this.devicesService.GetDeviceTwin(gateway.DeviceId);
+                deviceTwin.Tags["env"] = gateway.Environement;
+                deviceTwin = await this.devicesService.UpdateDeviceTwin(gateway.DeviceId, deviceTwin);
+
+                this.logger.LogInformation($"iot hub device was updated  {device.Id}");
+                return this.Ok(deviceTwin);
             }
-            else
+            catch (Exception e)
             {
-                device.Status = DeviceStatus.Disabled;
+                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
-
-            device = await this.registryManager.UpdateDeviceAsync(device);
-
-            var deviceTwin = await this.registryManager.GetTwinAsync(gateway.DeviceId);
-            deviceTwin.Tags["env"] = gateway.Environement;
-            deviceTwin = await this.registryManager.UpdateTwinAsync(device.Id, deviceTwin, deviceTwin.ETag);
-
-            this.logger.LogInformation($"iot hub device was updated  {device.Id}");
-            return this.Ok(deviceTwin);
         }
 
         /// <summary>
@@ -261,24 +217,60 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             try
             {
-                await this.registryManager.RemoveDeviceAsync(deviceId);
+                await this.devicesService.DeleteDevice(deviceId);
                 this.logger.LogInformation($"iot hub device was delete  {deviceId}");
-                return this.Ok("iot hub device was delete  {deviceId}");
+
+                return this.Ok($"iot hub device was delete  {deviceId}");
             }
             catch (Exception e)
             {
-                return this.Problem("Somethink went wrong.", e.Message, 400);
+                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
         }
 
-        [HttpGet("{deviceId}/{moduleId}/{methodName}")]
-        public async Task<C2Dresult> ExecuteMethode(string moduleId, string deviceId, string methodName)
+        [HttpPost("{deviceId}/{moduleId}/{methodName}")]
+        public async Task<C2Dresult> ExecuteMethode(GatewayModule module, string deviceId, string methodName)
         {
             try
             {
-                CloudToDeviceMethod method = new CloudToDeviceMethod(methodName);
-                CloudToDeviceMethodResult result = await this.serviceClient.InvokeDeviceMethodAsync(deviceId, moduleId, method);
-                this.logger.LogInformation($"iot hub device : {deviceId} module : {moduleId} execute methode {methodName}.");
+                CloudToDeviceMethod method = new (methodName);
+                string payload = string.Empty;
+
+                if (methodName == "RestartModule")
+                {
+                    payload = JsonConvert.SerializeObject(new
+                    {
+                        id = module.ModuleName,
+                        schemaVersion = module.Version
+                    });
+                }
+
+                if (methodName == "GetModuleLogs")
+                {
+                    payload = JsonConvert.SerializeObject(new
+                    {
+                        schemaVersion = module.Version,
+                        items = new[]
+                        {
+                            new
+                            {
+                                id = module.ModuleName,
+                                filter = new
+                                {
+                                    tail = 10
+                                }
+                            }
+                        },
+                        encoding = "none",
+                        contentType = "json"
+                    });
+                }
+
+                method.SetPayloadJson(payload);
+
+                CloudToDeviceMethodResult result = await this.devicesService.ExecuteC2DMethod(deviceId, method);
+                this.logger.LogInformation($"iot hub device : {deviceId} module : {module.ModuleName} execute methode {methodName}.");
+
                 return new C2Dresult()
                 {
                     Payload = result.GetPayloadAsJson(),
@@ -295,37 +287,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
         }
 
         /// <summary>
-        /// This function genefates the symmetricKey of a device
-        /// from its Id.
-        /// </summary>
-        /// <param name="deviceId">the device id.</param>
-        /// <returns>string.</returns>
-        private async Task<string> RetrieveSymmetricKey(string deviceId)
-        {
-            var attestationMechanism = await this.dps.GetEnrollmentGroupAttestationAsync(this.configuration["IoTDPS:DefaultEnrollmentGroupe"]);
-
-            // then we get the symmetricKey
-            SymmetricKeyAttestation symmetricKey = attestationMechanism.GetAttestation() as SymmetricKeyAttestation;
-            using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(symmetricKey.PrimaryKey));
-            return Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(deviceId)));
-        }
-
-        /// <summary>
-        /// Checks if the specific property exists within the device twin,
-        /// Returns the corresponding value if so, else returns a generic value "unknow".
-        /// </summary>
-        /// <param name="item">the device twin.</param>
-        /// <param name="tagName">the tag property.</param>
-        /// <returns>string.</returns>
-        private string RetrieveTagValue(Twin item, string tagName)
-        {
-            if (item.Tags.Contains(tagName))
-                return item.Tags[tagName];
-            else
-                return "unknow";
-        }
-
-        /// <summary>
         /// this function get and return the number of device connected
         /// to a gateway.
         /// </summary>
@@ -333,19 +294,48 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <returns>int.</returns>
         private async Task<int> RetrieveNbConnectedDevice(string deviceId)
         {
-            var query = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{deviceId}']");
-            var deviceWithClient = await query.GetNextAsTwinAsync();
-            var count = 0;
+            IQuery query = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{deviceId}']", 1);
+            IEnumerable<Twin> deviceWithClient = await query.GetNextAsTwinAsync();
+            int count = 0;
             // récupération des informations sur les clients connecté à la gateway
-            foreach (var item in deviceWithClient)
+            foreach (Twin item in deviceWithClient)
             {
                 if (item.Properties.Reported.Contains("clients") && item.DeviceId == deviceId)
                 {
                     count = item.Properties.Reported["clients"].Count;
+                    break;
                 }
             }
 
             return count;
+        }
+
+        /// <summary>
+        /// This function found the last conguration deployed on the device.
+        /// </summary>
+        /// <param name="twin">the twin of the device we want.</param>
+        /// <returns>ConfigItem.</returns>
+        private async Task<ConfigItem> RetrieveLastConfiguration(Twin twin)
+        {
+            ConfigItem item = new ();
+            if (twin.Configurations != null)
+            {
+                if (twin.Configurations.Count > 0)
+                {
+                    foreach (var config in twin.Configurations)
+                    {
+                        Configuration confObj = await this.registryManager.GetConfigurationAsync(config.Key);
+                        if (item.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
+                        {
+                            item.Name = config.Key;
+                            item.DateCreation = confObj.CreatedTimeUtc;
+                            item.Status = ConfigurationStatus.Applied.ToString();
+                        }
+                    }
+                }
+            }
+
+            return item;
         }
     }
 }

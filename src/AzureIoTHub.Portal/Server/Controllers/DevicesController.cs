@@ -14,9 +14,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Azure.Data.Tables;
     using Azure.Data.Tables.Models;
     using AzureIoTHub.Portal.Server.Filters;
+    using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
@@ -36,6 +38,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private readonly ServiceClient serviceClient;
         private readonly HttpClient http;
         private readonly IConfiguration configuration;
+        private readonly DevicesServices devicesService;
 
         private readonly RegistryManager registryManager;
 
@@ -44,6 +47,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             ILogger<DevicesController> logger,
             RegistryManager registryManager,
             ServiceClient serviceClient,
+            DevicesServices devicesService,
             HttpClient http,
             TableClient tableClient)
         {
@@ -53,6 +57,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             this.serviceClient = serviceClient;
             this.http = http;
             this.configuration = configuration;
+            this.devicesService = devicesService;
         }
 
         /// <summary>
@@ -79,45 +84,15 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
                     IsEnabled = item.Status == DeviceStatus.Enabled,
                     LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
-                    AppEUI = RetrievePropertyValue(item, "AppEUI"),
-                    AppKey = RetrievePropertyValue(item, "AppKey"),
-                    LocationCode = RetrieveTagValue(item, "locationCode")
+                    AppEUI = Helpers.Helpers.RetrievePropertyValue(item, "AppEUI"),
+                    AppKey = Helpers.Helpers.RetrievePropertyValue(item, "AppKey"),
+                    LocationCode = Helpers.Helpers.RetrieveTagValue(item, "locationCode")
                 };
 
                 results.Add(result);
             }
 
             return results;
-        }
-
-        /// <summary>
-        /// Checks if the specific tag exists within the device twin,
-        /// Returns the corresponding value if so, else returns a generic value "undefined".
-        /// </summary>
-        /// <param name="item">Device twin.</param>
-        /// <param name="tagName">Tag to retrieve.</param>
-        /// <returns>Corresponding tag value, or "undefined" if it doesn't exist.</returns>
-        private static string RetrieveTagValue(Twin item, string tagName)
-        {
-            if (item.Tags.Contains(tagName))
-                return item.Tags[tagName];
-            else
-                return "undefined_" + tagName;
-        }
-
-        /// <summary>
-        /// Checks if the specific property exists within the device twin,
-        /// Returns the corresponding value if so, else returns a generic value "undefined".
-        /// </summary>
-        /// <param name="item">Device twin.</param>
-        /// <param name="propertyName">Property to retrieve.</param>
-        /// <returns>Corresponding property value, or "undefined" if it doesn't exist.</returns>
-        private static string RetrievePropertyValue(Twin item, string propertyName)
-        {
-            if (item.Properties.Desired.Contains(propertyName))
-                return item.Properties.Desired[propertyName];
-            else
-                return "undefined_" + propertyName;
         }
 
         /// <summary>
@@ -165,13 +140,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = item.Status == DeviceStatus.Enabled,
                 LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
-                AppEUI = RetrievePropertyValue(item, "AppEUI"),
-                AppKey = RetrievePropertyValue(item, "AppKey"),
-                LocationCode = RetrieveTagValue(item, "locationCode"),
-                AssetID = RetrieveTagValue(item, "assetID"),
-                DeviceType = RetrieveTagValue(item, "deviceType"),
-                ModelType = RetrieveTagValue(item, "modelType"),
-                Commands = this.RetrieveCommands(RetrieveTagValue(item, "modelType"))
+                AppEUI = Helpers.Helpers.RetrievePropertyValue(item, "AppEUI"),
+                AppKey = Helpers.Helpers.RetrievePropertyValue(item, "AppKey"),
+                LocationCode = Helpers.Helpers.RetrieveTagValue(item, "locationCode"),
+                AssetID = Helpers.Helpers.RetrieveTagValue(item, "assetID"),
+                DeviceType = Helpers.Helpers.RetrieveTagValue(item, "deviceType"),
+                ModelType = Helpers.Helpers.RetrieveTagValue(item, "modelType"),
+                Commands = this.RetrieveCommands(Helpers.Helpers.RetrieveTagValue(item, "modelType"))
             };
             return result;
         }
@@ -298,6 +273,89 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
 
             return this.Ok("Everything went well, yay !");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateDeviceAsync(DeviceListItem device)
+        {
+            try
+            {
+                // Create a new Twin from the form's fields.
+                Twin newTwin = new () { DeviceId = device.DeviceID };
+                newTwin.Tags["locationCode"] = device.LocationCode;
+                newTwin.Tags["deviceType"] = device.DeviceType;
+                newTwin.Tags["modelType"] = device.ModelType;
+                newTwin.Tags["assetID"] = device.AssetID;
+                newTwin.Properties.Desired["AppEUI"] = device.AppEUI;
+                newTwin.Properties.Desired["AppKey"] = device.AppKey;
+
+                var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin);
+
+                return this.Ok(result);
+            }
+            catch (DeviceAlreadyExistsException e)
+            {
+                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
+            catch (Exception e)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// this function update the twin and the device.
+        /// </summary>
+        /// <param name="device">the device object.</param>
+        /// <returns>the update twin.</returns>
+        [HttpPut]
+        public async Task<IActionResult> UpdateDeviceAsync(DeviceListItem device)
+        {
+            try
+            {
+                // Get the current twin from the hub, based on the device ID
+                Twin currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceID);
+
+                // Update the twin properties
+                currentTwin.Tags["locationCode"] = device.LocationCode;
+                currentTwin.Tags["assetID"] = device.AssetID;
+                currentTwin.Properties.Desired["AppEUI"] = device.AppEUI;
+                currentTwin.Properties.Desired["AppKey"] = device.AppKey;
+
+                Twin newTwin = await this.devicesService.UpdateDeviceTwin(device.DeviceID, currentTwin);
+
+                // Device status (enabled/disabled) has to be dealt with afterwards
+                Device currentDevice = await this.devicesService.GetDevice(device.DeviceID);
+                // Sets the current Device status according to the value entered in the form
+                currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+
+                _ = await this.devicesService.UpdateDevice(currentDevice);
+
+                return this.Ok(newTwin);
+            }
+            catch (Exception e)
+            {
+                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// this function delete a device.
+        /// </summary>
+        /// <param name="deviceID">the device id.</param>
+        /// <returns>ok status on success.</returns>
+        [HttpDelete("{deviceID}")]
+        public async Task<IActionResult> Delete(string deviceID)
+        {
+            try
+            {
+                await this.devicesService.DeleteDevice(deviceID);
+                return this.Ok("device delete !");
+            }
+            catch (Exception e)
+            {
+                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
         }
     }
 }

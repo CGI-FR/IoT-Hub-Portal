@@ -49,12 +49,12 @@
 
         if (result.IsSuccessStatusCode)
         {
-            Snackbar.Add($"Device {gateway.DeviceId} has been successfully created !", Severity.Success);
+            Snackbar.Add($"Device has been successfully created !", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));
         }
         else
         {
-            Snackbar.Add($"Something went wrong while creating device {gateway.DeviceId}... ", Severity.Error);
+            Snackbar.Add($"Something went wrong while creating device ... ", Severity.Error);
             return;
         }
     }

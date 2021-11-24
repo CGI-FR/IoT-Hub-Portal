@@ -209,7 +209,8 @@
     /// </summary>
     public async void SaveDevice()
     {
-        await Http.PostAsJsonAsync<DeviceListItem>($"Devices/update", Device);
+        // await Http.PostAsJsonAsync<DeviceListItem>($"Devices/update", Device);
+        var result = await Http.PutAsJsonAsync<DeviceListItem>($"Devices", Device);
 
         // Prompts a snack bar to inform the action was successful
         // TODO : Deal more effectively with error/success messages

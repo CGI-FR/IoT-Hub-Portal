@@ -27,6 +27,14 @@
         "ASPNETCORE_URLS": "https://localhost:8001;http://localhost:8000"
       },
       "distributionName": "ubuntu-20.04"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "DockerfileRunArguments": "-p 8001:443",
+      "publishAllPorts": true,
+      "useSSL": true
     }
   }
 }

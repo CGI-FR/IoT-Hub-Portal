@@ -12,7 +12,9 @@
 
 @if (loading)
 {
-    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+    <MudItem Class="custom-centered-container">
+        <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+    </MudItem>
 }
 else
 {
@@ -71,7 +73,17 @@ else
                                             </MudRadioGroup>
                                         </MudItem>
                                     </MudItem>
-                                    <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" OnClick="UpdateDevice">Save Settings</MudButton>
+                                    <MudButton Disabled="@processing" Class="btn" OnClick="UpdateDevice" Variant="Variant.Filled" Color="Color.Dark">
+                                        @if (processing)
+                                        {
+                                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                                            <MudText Class="ms-2">Processing</MudText>
+                                        }
+                                        else
+                                        {
+                                            <MudText>Save Settings</MudText>
+                                        }
+                                    </MudButton>
                                 </MudItem>
 
                                 <MudItem md="6" xs="12">
@@ -80,7 +92,6 @@ else
                                             <MudText>Runtime response :</MudText>
                                         </MudItem>
                                         <MudItem xs="12" md="4" sm="10">
-                                            @*<MudTextField @bind-Value="@gateway.RuntimeResponse" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>*@
                                             @if (gateway.RuntimeResponse == "running")
                                             {
                                                 <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
@@ -166,8 +177,8 @@ else
                             <MudTd DataLabel="Version" Style="text-align: center">@context.Version</MudTd>
                             <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
                             <MudTd DataLabel="Device" Style="text-align: center">
-                                <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context.ModuleName,"logs") )">logs</MudButton>
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context.ModuleName,"reboot") )">reboot</MudButton>
+                                <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context,"GetModuleLogs") )">logs</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context,"RestartModule") )">reboot</MudButton>
                             </MudTd>
                         </RowTemplate>
                     </MudTable>
@@ -183,6 +194,7 @@ else
     public string deviceId { get; set; }
     private bool loading = true;
     private bool btn_disable = false;
+    private bool processing = false;
 
     private Gateway gateway;
 
@@ -204,27 +216,36 @@ else
 
     public async Task UpdateDevice()
     {
+        processing = true;
         var result = await Http.PutAsJsonAsync($"Gateways/{gateway.DeviceId}", gateway);
+
+        if (result.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Device {gateway.DeviceId} has been successfully updated!", Severity.Success);
+            processing = false;
+        }
     }
 
-    public async Task OnMethod(string moduleId, string methodName)
+    public async Task OnMethod(GatewayModule module, string methodName)
     {
-        var result = await Http.GetFromJsonAsync<C2Dresult>($"Gateways/{gateway.DeviceId}/{moduleId}/{methodName}");
+        var result = await Http.PostAsJsonAsync($"Gateways/{gateway.DeviceId}/{module.ModuleName}/{methodName}",module);
 
-        if (result.Status == 200)
+        var test = result.Content.ReadFromJsonAsync<C2Dresult>().Result;
+
+        if (test.Status == 200)
         {
             Snackbar.Add("Command successfully execute.", Severity.Success);
-            if (methodName == "logs")
+            if (methodName == "GetModuleLogs")
             {
                 var parameter = new DialogParameters();
-                parameter.Add("info", result);
+                parameter.Add("info", test);
 
                 _ = await DialogService.Show<Logs>(" Logs gateway", parameter).Result;
             }
         }
         else
         {
-            Snackbar.Add($"Error<br>Status : {result.Status};<br>Payload : {result.Payload};", Severity.Error,
+            Snackbar.Add($"Error<br>Status : {test.Status};<br>Payload : {test.Payload};", Severity.Error,
                 (option) =>
                 {
                     option.VisibleStateDuration = 100000;
@@ -240,7 +261,6 @@ else
         parameter.Add(nameof(Gateway.SymmetricKey), gateway.SymmetricKey);
 
         var result = await DialogService.Show<ConnectionString>("ConnectionString gateway ", parameter).Result;
-
     }
 
     public async Task DeleteDeviceAsync()
