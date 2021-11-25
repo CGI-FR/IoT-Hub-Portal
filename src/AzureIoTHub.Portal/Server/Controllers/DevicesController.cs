@@ -68,11 +68,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpGet]
         public async Task<IEnumerable<DeviceListItem>> Get()
         {
-            // Query to retrieve every devices from Azure IoT Hub, apart from Edge devices (devices.capabilities.iotEdge = false)
-            var query = this.registryManager.CreateQuery("SELECT * FROM devices WHERE devices.capabilities.iotEdge = false");
-
             // Gets all the twins from this devices
-            IEnumerable<Twin> items = await query.GetNextAsTwinAsync();
+            IEnumerable<Twin> items = await this.devicesService.GetAllDevice();
             List<DeviceListItem> results = new ();
 
             // Convert each Twin to a DeviceListItem with specific fields
@@ -84,43 +81,15 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
                     IsEnabled = item.Status == DeviceStatus.Enabled,
                     LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
-                    AppEUI = Helpers.Helpers.RetrievePropertyValue(item, "AppEUI"),
-                    AppKey = Helpers.Helpers.RetrievePropertyValue(item, "AppKey"),
-                    LocationCode = Helpers.Helpers.RetrieveTagValue(item, "locationCode")
+                    AppEUI = Helpers.DeviceHelper.RetrievePropertyValue(item, "AppEUI"),
+                    AppKey = Helpers.DeviceHelper.RetrievePropertyValue(item, "AppKey"),
+                    LocationCode = Helpers.DeviceHelper.RetrieveTagValue(item, "locationCode")
                 };
 
                 results.Add(result);
             }
 
             return results;
-        }
-
-        /// <summary>
-        /// Retrieve all the commands of a device.
-        /// </summary>
-        /// <param name="model_type"> the model type of the device.</param>
-        /// <returns>Corresponding list of commands or an empty list if it doesn't have any command.</returns>
-        private List<SensorCommand> RetrieveCommands(string model_type)
-        {
-            List<SensorCommand> commands = new ();
-
-            if (model_type != "undefined_modelType")
-            {
-                Pageable<TableEntity> queryResultsFilter = this.tableClient.Query<TableEntity>(filter: $"PartitionKey  eq '{model_type}'");
-
-                foreach (TableEntity qEntity in queryResultsFilter)
-                {
-                    commands.Add(
-                        new SensorCommand()
-                        {
-                            Name = qEntity.RowKey,
-                            Trame = qEntity.GetString("Trame"),
-                            Port = (int)qEntity["Port"]
-                        });
-                }
-            }
-
-            return commands;
         }
 
         /// <summary>
@@ -140,13 +109,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = item.Status == DeviceStatus.Enabled,
                 LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
-                AppEUI = Helpers.Helpers.RetrievePropertyValue(item, "AppEUI"),
-                AppKey = Helpers.Helpers.RetrievePropertyValue(item, "AppKey"),
-                LocationCode = Helpers.Helpers.RetrieveTagValue(item, "locationCode"),
-                AssetID = Helpers.Helpers.RetrieveTagValue(item, "assetID"),
-                DeviceType = Helpers.Helpers.RetrieveTagValue(item, "deviceType"),
-                ModelType = Helpers.Helpers.RetrieveTagValue(item, "modelType"),
-                Commands = this.RetrieveCommands(Helpers.Helpers.RetrieveTagValue(item, "modelType"))
+                AppEUI = Helpers.DeviceHelper.RetrievePropertyValue(item, "AppEUI"),
+                AppKey = Helpers.DeviceHelper.RetrievePropertyValue(item, "AppKey"),
+                LocationCode = Helpers.DeviceHelper.RetrieveTagValue(item, "locationCode"),
+                AssetID = Helpers.DeviceHelper.RetrieveTagValue(item, "assetID"),
+                DeviceType = Helpers.DeviceHelper.RetrieveTagValue(item, "deviceType"),
+                ModelType = Helpers.DeviceHelper.RetrieveTagValue(item, "modelType"),
+                Commands = this.RetrieveCommands(Helpers.DeviceHelper.RetrieveTagValue(item, "modelType"))
             };
             return result;
         }
@@ -264,6 +233,34 @@ namespace AzureIoTHub.Portal.Server.Controllers
             {
                 return this.BadRequest(e.Message);
             }
+        }
+
+        /// <summary>
+        /// Retrieve all the commands of a device.
+        /// </summary>
+        /// <param name="model_type"> the model type of the device.</param>
+        /// <returns>Corresponding list of commands or an empty list if it doesn't have any command.</returns>
+        private List<SensorCommand> RetrieveCommands(string model_type)
+        {
+            List<SensorCommand> commands = new ();
+
+            if (model_type != "undefined_modelType")
+            {
+                Pageable<TableEntity> queryResultsFilter = this.tableClient.Query<TableEntity>(filter: $"PartitionKey  eq '{model_type}'");
+
+                foreach (TableEntity qEntity in queryResultsFilter)
+                {
+                    commands.Add(
+                        new SensorCommand()
+                        {
+                            Name = qEntity.RowKey,
+                            Trame = qEntity.GetString("Trame"),
+                            Port = (int)qEntity["Port"]
+                        });
+                }
+            }
+
+            return commands;
         }
     }
 }

@@ -73,9 +73,9 @@ namespace AzureIoTHub.Portal.Server.Services
         }
 
         /// <summary>
-        /// this.function return a list of all edge device.
+        /// this function return a list of all edge device wthiout tags.
         /// </summary>
-        /// <returns>Ienumerable twin.</returns>
+        /// <returns>IEnumerable twin.</returns>
         public async Task<IEnumerable<Twin>> GetAllEdgeDevice()
         {
             try
@@ -108,6 +108,29 @@ namespace AzureIoTHub.Portal.Server.Services
                 while (queryEdgeDevice.HasMoreResults)
                 {
                     return await queryEdgeDevice.GetNextAsTwinAsync();
+                }
+
+                return Enumerable.Empty<Twin>();
+            }
+            catch (System.Exception e)
+            {
+                throw new System.Exception(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// this function return a list of all device exept edge device.
+        /// </summary>
+        /// <returns>IEnumerable twin.</returns>
+        public async Task<IEnumerable<Twin>> GetAllDevice()
+        {
+            try
+            {
+                var query = this.registryManager.CreateQuery("SELECT * FROM devices WHERE devices.capabilities.iotEdge = false");
+
+                while (query.HasMoreResults)
+                {
+                    return await query.GetNextAsTwinAsync();
                 }
 
                 return Enumerable.Empty<Twin>();
