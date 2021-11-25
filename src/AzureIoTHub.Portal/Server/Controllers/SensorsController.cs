@@ -67,16 +67,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 entity["Description"] = sensorObject.Description;
                 entity["AppEUI"] = sensorObject.AppEUI;
 
-                // if (file != null)
-                // {
-                //    // entity["Image"] = file.FileName;
-                //    BlobContainerClient blobContainer = this.blobService.GetBlobContainerClient(this.configuration["StorageAcount:BlobContainerName"]);
-                //    BlobClient blobClient = blobContainer.GetBlobClient(sensorObject.Name);
-
-                // this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
-
-                // await blobClient.UploadAsync(file.OpenReadStream());
-                // }
                 this.UploadImage(sensorObject.Name, file);
 
                 this.tableClient.AddEntity(entity);
@@ -125,7 +115,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
             {
                 if (file != null)
                 {
-                    // entity["Image"] = file.FileName;
                     BlobContainerClient blobContainer = this.blobService.GetBlobContainerClient(this.configuration["StorageAcount:BlobContainerName"]);
                     BlobClient blobClient = blobContainer.GetBlobClient(sensorName);
 
