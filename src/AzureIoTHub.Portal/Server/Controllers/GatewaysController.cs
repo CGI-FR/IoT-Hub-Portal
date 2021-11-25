@@ -75,13 +75,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     {
                         DeviceId = deviceTwin.DeviceId,
                         Status = deviceTwin.Status.Value.ToString(),
-                        Type = Helpers.RetrieveTagValue(devicesWithoutProperties.ElementAt(index), "purpose"),
-                        NbDevices = 0
+                        Type = DeviceHelper.RetrieveTagValue(devicesWithoutProperties.ElementAt(index), "purpose"),
+                        NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin)
                     };
-                    if (deviceTwin.Properties.Reported.Contains("clients"))
-                    {
-                        gateway.NbDevices = deviceTwin.Properties.Reported["clients"].Count;
-                    }
 
                     newGatewayList.Add(gateway);
                     index++;
@@ -118,16 +114,16 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     Scope = deviceTwin.DeviceScope,
                     Connection_state = deviceTwin.ConnectionState.Value.ToString(),
                     // we retrieve the symmetric Key
-                    SymmetricKey = Helpers.RetrieveSymmetricKey(deviceTwin.DeviceId, this.devicesService.GetDpsAttestionMechanism().Result),
+                    SymmetricKey = DeviceHelper.RetrieveSymmetricKey(deviceTwin.DeviceId, this.devicesService.GetDpsAttestionMechanism().Result),
                     // We retrieve the values of tags
-                    Type = Helpers.RetrieveTagValue(deviceTwin, "purpose"),
-                    Environement = Helpers.RetrieveTagValue(deviceTwin, "env"),
+                    Type = DeviceHelper.RetrieveTagValue(deviceTwin, "purpose"),
+                    Environement = DeviceHelper.RetrieveTagValue(deviceTwin, "env"),
                     // We retrieve the number of connected device
                     NbDevices = await this.RetrieveNbConnectedDevice(deviceTwin.DeviceId),
                     // récupération des informations sur le modules de la gateways
-                    NbModule = Helpers.RetrieveNbModuleCount(deviceWithModules, deviceId),
-                    RuntimeResponse = Helpers.RetrieveRuntimeResponse(deviceWithModules, deviceId),
-                    Modules = Helpers.RetrieveModuleList(deviceWithModules, Helpers.RetrieveNbModuleCount(deviceWithModules, deviceId)),
+                    NbModule = DeviceHelper.RetrieveNbModuleCount(deviceWithModules, deviceId),
+                    RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceWithModules, deviceId),
+                    Modules = DeviceHelper.RetrieveModuleList(deviceWithModules, DeviceHelper.RetrieveNbModuleCount(deviceWithModules, deviceId)),
                     // recup du dernier deployment
                     LastDeployment = await this.RetrieveLastConfiguration(deviceWithModules)
                 };

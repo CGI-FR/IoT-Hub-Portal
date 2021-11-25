@@ -11,7 +11,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
 
-    public class Helpers
+    public class DeviceHelper
     {
         /// <summary>
         /// This function genefates the symmetricKey of a device
@@ -55,6 +55,22 @@ namespace AzureIoTHub.Portal.Server.Helpers
                 return item.Properties.Desired[propertyName];
             else
                 return "undefined_" + propertyName;
+        }
+
+        /// <summary>
+        /// this function retreive and return the number of connected
+        /// devices.
+        /// </summary>
+        /// <param name="twin">the twin of the device.</param>
+        /// <returns>the number of connected device.</returns>
+        public static int RetrieveConnectedDeviceCount(Twin twin)
+        {
+            if (twin.Properties.Reported.Contains("clients"))
+            {
+                return twin.Properties.Reported["clients"].Count;
+            }
+
+            return 0;
         }
 
         /// <summary>

@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Azure.Data.Tables;
     using Azure.Storage.Blobs;
     using AzureIoTHub.Portal.Server.Filters;
+    using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
@@ -52,7 +53,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm]string sensor, [FromForm] IFormFile file = null)
+        public IActionResult Post([FromForm]string sensor, [FromForm] IFormFile file = null)
         {
             try
             {
@@ -66,16 +67,17 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 entity["Description"] = sensorObject.Description;
                 entity["AppEUI"] = sensorObject.AppEUI;
 
-                if (file != null)
-                {
-                    // entity["Image"] = file.FileName;
-                    BlobContainerClient blobContainer = this.blobService.GetBlobContainerClient(this.configuration["StorageAcount:BlobContainerName"]);
-                    BlobClient blobClient = blobContainer.GetBlobClient(sensorObject.Name);
+                // if (file != null)
+                // {
+                //    // entity["Image"] = file.FileName;
+                //    BlobContainerClient blobContainer = this.blobService.GetBlobContainerClient(this.configuration["StorageAcount:BlobContainerName"]);
+                //    BlobClient blobClient = blobContainer.GetBlobClient(sensorObject.Name);
 
-                    this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
+                // this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
 
-                    await blobClient.UploadAsync(file.OpenReadStream());
-                }
+                // await blobClient.UploadAsync(file.OpenReadStream());
+                // }
+                this.UploadImage(sensorObject.Name, file);
 
                 this.tableClient.AddEntity(entity);
                 // insertion des commant
@@ -98,7 +100,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
             catch (Exception e)
             {
-                return this.BadRequest(e.Message);
+                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
         }
 
@@ -113,48 +115,29 @@ namespace AzureIoTHub.Portal.Server.Controllers
             Pageable<TableEntity> entities = this.tableClient.Query<TableEntity>($"PartitionKey eq '{this.configuration["StorageAcount:BlobContainerPartitionKey"]}'");
 
             // Converts the query result into a list of sensor models
-            IEnumerable<SensorModel> sensorsList = entities.Select(e => this.MapTableEntityToSensorModel(e));
+            IEnumerable<SensorModel> sensorsList = entities.Select(e => SensorsHelper.MapTableEntityToSensorModel(e));
             return sensorsList;
         }
 
-        /// <summary>
-        /// Creates a SensorModel object from a query result.
-        /// Checks first if the entity fields fit to the sensor model attributes.
-        /// </summary>
-        /// <param name="entity">An AzureDataTable entity coming from a query.</param>
-        /// <returns>A sensor model.</returns>
-        public SensorModel MapTableEntityToSensorModel(TableEntity entity)
+        private async void UploadImage(string sensorName, IFormFile file)
         {
-            return new SensorModel()
+            try
             {
-                Name = entity.RowKey,
-                Description = RetrieveValue(entity, "Description"),
-                AppEUI = RetrieveValue(entity, "AppEUI")
-            };
-        }
+                if (file != null)
+                {
+                    // entity["Image"] = file.FileName;
+                    BlobContainerClient blobContainer = this.blobService.GetBlobContainerClient(this.configuration["StorageAcount:BlobContainerName"]);
+                    BlobClient blobClient = blobContainer.GetBlobClient(sensorName);
 
-        /// <summary>
-        /// Creates a Sensor command Model object from a query result.
-        /// Checks first if the entity fields fit to the sensor model attributes.
-        /// </summary>
-        /// <param name="entity">An AzureDataTable entity coming from a query.</param>
-        /// <returns>A sensor command model.</returns>
-        public SensorCommand MapTableEntityToSensorCommand(TableEntity entity)
-        {
-            return new SensorCommand()
+                    this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
+
+                    _ = await blobClient.UploadAsync(file.OpenReadStream());
+                }
+            }
+            catch (Exception)
             {
-                Name = entity.RowKey,
-                Trame = RetrieveValue(entity, "Trame"),
-                Port = int.Parse(RetrieveValue(entity, "Port"))
-            };
-        }
-
-        private static string RetrieveValue(TableEntity entity, string name)
-        {
-            if (entity.ContainsKey(name))
-                return entity[name].ToString();
-            else
-                return null;
+                throw;
+            }
         }
     }
 }
