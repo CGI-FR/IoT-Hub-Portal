@@ -16,7 +16,7 @@ namespace AzureIoTHub.Portal.Server.Tests
         public void RetrieveTagValue_RealTwin_ReturnsExpectedValue()
         {
             // Arrange
-            var helpers = new Helpers.Helpers();
+            var helpers = new Helpers.DeviceHelper();
             var twin = new Twin();
             const string TAG_VALUE = "tag_value";
             const string TAG_KEY = "tag_key";
@@ -24,7 +24,7 @@ namespace AzureIoTHub.Portal.Server.Tests
             // moqTwin.Properties.Desired["AppEUI"] = device.AppEUI;
             
             // Act
-            var method = typeof(Helpers.Helpers).GetMethod("RetrieveTagValue", BindingFlags.Static | BindingFlags.Public);
+            var method = typeof(Helpers.DeviceHelper).GetMethod("RetrieveTagValue", BindingFlags.Static | BindingFlags.Public);
             var result = (string)method.Invoke(helpers, new object[] { twin, TAG_KEY });
 
             // Assert
@@ -35,13 +35,13 @@ namespace AzureIoTHub.Portal.Server.Tests
         public void RetrieveTagValue_EmptyTwin_ReturnsUndefined()
         {
             // Arrange
-            var helpers = new Helpers.Helpers();
+            var helpers = new Helpers.DeviceHelper();
             var twin = new Twin();
             const string TAG_VALUE = "tag_value";
             const string TAG_KEY = "tag_key";
 
             // Act
-            var method = typeof(Helpers.Helpers).GetMethod("RetrieveTagValue", BindingFlags.Static | BindingFlags.Public);
+            var method = typeof(Helpers.DeviceHelper).GetMethod("RetrieveTagValue", BindingFlags.Static | BindingFlags.Public);
             var result = (string)method.Invoke(helpers, new object[] { twin, TAG_KEY });
 
             // Assert
@@ -52,14 +52,14 @@ namespace AzureIoTHub.Portal.Server.Tests
         public void RetrieveProperyValue_RealTwin_ReturnsExpectedValue()
         {
             // Arrange
-            var helpers = new Helpers.Helpers();
+            var helpers = new Helpers.DeviceHelper();
             var twin = new Twin();
             const string PROPERTY_VALUE = "property_value";
             const string PROPERTY_KEY = "property_key";
             twin.Properties.Desired[PROPERTY_KEY] = PROPERTY_VALUE;
 
             // Act
-            var method = typeof(Helpers.Helpers).GetMethod("RetrievePropertyValue", BindingFlags.Static | BindingFlags.Public);
+            var method = typeof(Helpers.DeviceHelper).GetMethod("RetrievePropertyValue", BindingFlags.Static | BindingFlags.Public);
             var result = (string)method.Invoke(helpers, new object[] { twin, PROPERTY_KEY });
 
             // Assert
@@ -70,13 +70,13 @@ namespace AzureIoTHub.Portal.Server.Tests
         public void RetrievePropertyValue_EmptyTwin_ReturnsUndefined()
         {
             // Arrange
-            var helpers = new Helpers.Helpers();
+            var helpers = new Helpers.DeviceHelper();
             var twin = new Twin();
             const string PROPERTY_VALUE = "tag_value";
             const string PROPERTY_KEY = "tag_key";
 
             // Act
-            var method = typeof(Helpers.Helpers).GetMethod("RetrievePropertyValue", BindingFlags.Static | BindingFlags.Public);
+            var method = typeof(Helpers.DeviceHelper).GetMethod("RetrievePropertyValue", BindingFlags.Static | BindingFlags.Public);
             var result = (string)method.Invoke(helpers, new object[] { twin, PROPERTY_KEY });
 
             // Assert

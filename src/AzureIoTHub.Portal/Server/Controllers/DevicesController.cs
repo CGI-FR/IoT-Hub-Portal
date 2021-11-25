@@ -68,11 +68,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpGet]
         public async Task<IEnumerable<DeviceListItem>> Get()
         {
-            // Query to retrieve every devices from Azure IoT Hub, apart from Edge devices (devices.capabilities.iotEdge = false)
-            var query = this.registryManager.CreateQuery("SELECT * FROM devices WHERE devices.capabilities.iotEdge = false");
-
             // Gets all the twins from this devices
-            IEnumerable<Twin> items = await query.GetNextAsTwinAsync();
+            IEnumerable<Twin> items = await this.devicesService.GetAllDevice();
             List<DeviceListItem> results = new ();
 
             // Convert each Twin to a DeviceListItem with specific fields
@@ -84,43 +81,15 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
                     IsEnabled = item.Status == DeviceStatus.Enabled,
                     LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
-                    AppEUI = Helpers.Helpers.RetrievePropertyValue(item, "AppEUI"),
-                    AppKey = Helpers.Helpers.RetrievePropertyValue(item, "AppKey"),
-                    LocationCode = Helpers.Helpers.RetrieveTagValue(item, "locationCode")
+                    AppEUI = Helpers.DeviceHelper.RetrievePropertyValue(item, "AppEUI"),
+                    AppKey = Helpers.DeviceHelper.RetrievePropertyValue(item, "AppKey"),
+                    LocationCode = Helpers.DeviceHelper.RetrieveTagValue(item, "locationCode")
                 };
 
                 results.Add(result);
             }
 
             return results;
-        }
-
-        /// <summary>
-        /// Retrieve all the commands of a device.
-        /// </summary>
-        /// <param name="model_type"> the model type of the device.</param>
-        /// <returns>Corresponding list of commands or an empty list if it doesn't have any command.</returns>
-        private List<SensorCommand> RetrieveCommands(string model_type)
-        {
-            List<SensorCommand> commands = new List<SensorCommand>();
-
-            if (model_type != "undefined_modelType")
-            {
-                Pageable<TableEntity> queryResultsFilter = this.tableClient.Query<TableEntity>(filter: $"PartitionKey  eq '{model_type}'");
-
-                foreach (TableEntity qEntity in queryResultsFilter)
-                {
-                    commands.Add(
-                        new SensorCommand()
-                        {
-                            Name = qEntity.RowKey,
-                            Trame = qEntity.GetString("Trame"),
-                            Port = (int)qEntity["Port"]
-                        });
-                }
-            }
-
-            return commands;
         }
 
         /// <summary>
@@ -132,7 +101,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpGet("{deviceID}")]
         public async Task<DeviceListItem> Get(string deviceID)
         {
-            var item = await this.registryManager.GetTwinAsync(deviceID);
+            var item = await this.devicesService.GetDeviceTwin(deviceID);
 
             var result = new DeviceListItem
             {
@@ -140,139 +109,15 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = item.Status == DeviceStatus.Enabled,
                 LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
-                AppEUI = Helpers.Helpers.RetrievePropertyValue(item, "AppEUI"),
-                AppKey = Helpers.Helpers.RetrievePropertyValue(item, "AppKey"),
-                LocationCode = Helpers.Helpers.RetrieveTagValue(item, "locationCode"),
-                AssetID = Helpers.Helpers.RetrieveTagValue(item, "assetID"),
-                DeviceType = Helpers.Helpers.RetrieveTagValue(item, "deviceType"),
-                ModelType = Helpers.Helpers.RetrieveTagValue(item, "modelType"),
-                Commands = this.RetrieveCommands(Helpers.Helpers.RetrieveTagValue(item, "modelType"))
+                AppEUI = Helpers.DeviceHelper.RetrievePropertyValue(item, "AppEUI"),
+                AppKey = Helpers.DeviceHelper.RetrievePropertyValue(item, "AppKey"),
+                LocationCode = Helpers.DeviceHelper.RetrieveTagValue(item, "locationCode"),
+                AssetID = Helpers.DeviceHelper.RetrieveTagValue(item, "assetID"),
+                DeviceType = Helpers.DeviceHelper.RetrieveTagValue(item, "deviceType"),
+                ModelType = Helpers.DeviceHelper.RetrieveTagValue(item, "modelType"),
+                Commands = this.RetrieveCommands(Helpers.DeviceHelper.RetrieveTagValue(item, "modelType"))
             };
             return result;
-        }
-
-        /// <summary>
-        /// Permit to execute cloud to device message.
-        /// </summary>
-        /// <param name="deviceId">id of the device.</param>
-        /// <param name="command">the command who contain the name and the trame.</param>
-        /// <returns>a CloudToDeviceMethodResult .</returns>
-        [HttpPost("{deviceId}/{methodName}")]
-        public async Task<IActionResult> ExecuteMethode(string deviceId, SensorCommand command)
-        {
-            try
-            {
-                JsonContent commandContent = JsonContent.Create(new
-                {
-                    rawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(command.Trame)),
-                    fport = command.Port
-                });
-
-                commandContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-
-                var result = await this.http.PostAsync($"{this.configuration["IoTAzureFunction:url"]}/{deviceId}{this.configuration["IoTAzureFunction:code"]}", commandContent);
-
-                this.logger.LogInformation($"{result.Content}");
-
-                return this.Ok(await result.Content.ReadFromJsonAsync<dynamic>());
-            }
-            catch (Exception e)
-            {
-                return this.BadRequest(e.Message);
-            }
-        }
-
-        /// <summary>
-        /// Creates, updates or deletes a device, depending on the way the function was triggered.
-        /// </summary>
-        /// <param name="device">Device to create/update/delete.</param>
-        /// <param name="actionToPerform">Specific action to perform: create/update/delete.</param>
-        /// <returns>A Task representing the asynchronous operation.</returns>
-        [HttpPost("{actionToPerform}")]
-        // public async Task<HttpResponseMessage> Post(DeviceListItem device, string actionToPerform)
-        public async Task<IActionResult> Post(DeviceListItem device, string actionToPerform)
-        {
-            if (actionToPerform == "delete")
-            {
-                // TODO : Deal more effectively with success/failure status
-                try
-                {
-                    await this.registryManager.RemoveDeviceAsync(device.DeviceID);
-                }
-                catch (Exception e)
-                {
-                    return this.Problem($"Error while deleting device : {e.Message}", statusCode: 418);
-                }
-            }
-            else
-            {
-                if (actionToPerform == "create")
-                {
-                    // Create a new Twin from the form's fields.
-                    Twin newTwin = new () { DeviceId = device.DeviceID };
-                    newTwin.Tags["locationCode"] = device.LocationCode;
-                    newTwin.Tags["deviceType"] = device.DeviceType;
-                    newTwin.Tags["modelType"] = device.ModelType;
-                    newTwin.Tags["assetID"] = device.AssetID;
-                    newTwin.Properties.Desired["AppEUI"] = device.AppEUI;
-                    newTwin.Properties.Desired["AppKey"] = device.AppKey;
-
-                    // TODO : Deal more effectively with success/failure status
-                    try
-                    {
-                        var response = await this.registryManager.AddDeviceWithTwinAsync(new Device(device.DeviceID), newTwin);
-
-                        // Manually throw an exception if something went wrong while creating the device
-                        if (!response.IsSuccessful)
-                        {
-                            throw new Exception(response.Errors.First().ErrorStatus);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        return this.Problem($"Error while creating device : {e.Message}", statusCode: 418);
-                    }
-                }
-
-                if (actionToPerform == "update")
-                {
-                    // Get the current twin from the hub, based on the device ID
-                    Twin currentTwin = await this.registryManager.GetTwinAsync(device.DeviceID);
-
-                    // Update the twin properties
-                    currentTwin.Tags["locationCode"] = device.LocationCode;
-                    currentTwin.Tags["assetID"] = device.AssetID;
-                    currentTwin.Properties.Desired["AppEUI"] = device.AppEUI;
-                    currentTwin.Properties.Desired["AppKey"] = device.AppKey;
-
-                    // TODO : Deal more effectively with success/failure status
-                    try
-                    {
-                        Twin twin = await this.registryManager.ReplaceTwinAsync(device.DeviceID, currentTwin, currentTwin.ETag);
-                    }
-                    catch (Exception e)
-                    {
-                        return this.Problem($"Error while replacing twin : {e.Message}", statusCode: 418);
-                    }
-                }
-
-                // Device status (enabled/disabled) has to be dealt with afterwards
-                Device currentDevice = await this.registryManager.GetDeviceAsync(device.DeviceID);
-                // Sets the current Device status according to the value entered in the form
-                currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
-
-                // Update the device on the hub
-                try
-                {
-                    await this.registryManager.UpdateDeviceAsync(currentDevice);
-                }
-                catch (Exception e)
-                {
-                    return this.Problem($"Error while updating device : {e.Message}", statusCode: 418);
-                }
-            }
-
-            return this.Ok("Everything went well, yay !");
         }
 
         [HttpPost]
@@ -288,8 +133,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 newTwin.Tags["assetID"] = device.AssetID;
                 newTwin.Properties.Desired["AppEUI"] = device.AppEUI;
                 newTwin.Properties.Desired["AppKey"] = device.AppKey;
+                DeviceStatus status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
-                var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin);
+                var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin, status);
 
                 return this.Ok(result);
             }
@@ -356,6 +202,65 @@ namespace AzureIoTHub.Portal.Server.Controllers
             {
                 return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
+        }
+
+        /// <summary>
+        /// Permit to execute cloud to device message.
+        /// </summary>
+        /// <param name="deviceId">id of the device.</param>
+        /// <param name="command">the command who contain the name and the trame.</param>
+        /// <returns>a CloudToDeviceMethodResult .</returns>
+        [HttpPost("{deviceId}/{methodName}")]
+        public async Task<IActionResult> ExecuteLoraMethod(string deviceId, SensorCommand command)
+        {
+            try
+            {
+                JsonContent commandContent = JsonContent.Create(new
+                {
+                    rawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(command.Trame)),
+                    fport = command.Port
+                });
+
+                commandContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
+                var result = await this.devicesService.ExecuteLoraMethod(deviceId, commandContent);
+
+                this.logger.LogInformation($"{result.Content}");
+
+                return this.Ok(await result.Content.ReadFromJsonAsync<dynamic>());
+            }
+            catch (Exception e)
+            {
+                return this.BadRequest(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieve all the commands of a device.
+        /// </summary>
+        /// <param name="model_type"> the model type of the device.</param>
+        /// <returns>Corresponding list of commands or an empty list if it doesn't have any command.</returns>
+        private List<SensorCommand> RetrieveCommands(string model_type)
+        {
+            List<SensorCommand> commands = new ();
+
+            if (model_type != "undefined_modelType")
+            {
+                Pageable<TableEntity> queryResultsFilter = this.tableClient.Query<TableEntity>(filter: $"PartitionKey  eq '{model_type}'");
+
+                foreach (TableEntity qEntity in queryResultsFilter)
+                {
+                    commands.Add(
+                        new SensorCommand()
+                        {
+                            Name = qEntity.RowKey,
+                            Trame = qEntity.GetString("Trame"),
+                            Port = (int)qEntity["Port"]
+                        });
+                }
+            }
+
+            return commands;
         }
     }
 }
