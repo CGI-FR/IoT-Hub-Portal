@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.1.31911.260
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00. Solution Items", "00. Solution Items", "{20EC2171-363D-4DDE-827F-F56D4FE9ADF3}"
 	ProjectSection(SolutionItems) = preProject
@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		..\.github\workflows\main.yml = ..\.github\workflows\main.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureIoTHub.Portal.Server.Tests", "AzureIoTHub.Portal.Server.Tests\AzureIoTHub.Portal.Server.Tests.csproj", "{51FD5B90-B422-47BF-83F2-516520CFB124}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{9F0A43D6-D7C2-4C92-AE22-BE48B7F83ACB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F0A43D6-D7C2-4C92-AE22-BE48B7F83ACB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F0A43D6-D7C2-4C92-AE22-BE48B7F83ACB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51FD5B90-B422-47BF-83F2-516520CFB124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51FD5B90-B422-47BF-83F2-516520CFB124}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51FD5B90-B422-47BF-83F2-516520CFB124}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51FD5B90-B422-47BF-83F2-516520CFB124}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
