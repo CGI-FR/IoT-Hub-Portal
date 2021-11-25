@@ -38,41 +38,6 @@ namespace AzureIoTHub.Portal.Server.Services
         }
 
         /// <summary>
-        /// This function create a new device with his twin.
-        /// </summary>
-        /// <param name="deviceId">the device id.</param>
-        /// <param name="isEdge">boolean.</param>
-        /// <param name="twin">the twin of my new device.</param>
-        /// <param name="isEnabled">the status of the device(disabled by default).</param>
-        /// <returns>BulkRegistryOperation.</returns>
-        public async Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled = DeviceStatus.Disabled)
-        {
-            try
-            {
-                Device device = new (deviceId)
-                {
-                    Capabilities = new DeviceCapabilities { IotEdge = isEdge },
-                    Status = isEnabled
-                };
-
-                return await this.registryManager.AddDeviceWithTwinAsync(device, twin);
-            }
-            catch (DeviceAlreadyExistsException e)
-            {
-                throw new System.Exception(e.Message);
-            }
-        }
-
-        /// <summary>
-        /// This function delete a device.
-        /// </summary>
-        /// <param name="deviceId">the device id.</param>
-        public async Task DeleteDevice(string deviceId)
-        {
-            await this.registryManager.RemoveDeviceAsync(deviceId);
-        }
-
-        /// <summary>
         /// this function return a list of all edge device wthiout tags.
         /// </summary>
         /// <returns>IEnumerable twin.</returns>
@@ -210,6 +175,41 @@ namespace AzureIoTHub.Portal.Server.Services
         public async Task<AttestationMechanism> GetDpsAttestionMechanism()
         {
             return await this.dps.GetEnrollmentGroupAttestationAsync(this.configuration["IoTDPS:DefaultEnrollmentGroupe"]);
+        }
+
+        /// <summary>
+        /// This function create a new device with his twin.
+        /// </summary>
+        /// <param name="deviceId">the device id.</param>
+        /// <param name="isEdge">boolean.</param>
+        /// <param name="twin">the twin of my new device.</param>
+        /// <param name="isEnabled">the status of the device(disabled by default).</param>
+        /// <returns>BulkRegistryOperation.</returns>
+        public async Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled = DeviceStatus.Disabled)
+        {
+            try
+            {
+                Device device = new (deviceId)
+                {
+                    Capabilities = new DeviceCapabilities { IotEdge = isEdge },
+                    Status = isEnabled
+                };
+
+                return await this.registryManager.AddDeviceWithTwinAsync(device, twin);
+            }
+            catch (DeviceAlreadyExistsException e)
+            {
+                throw new System.Exception(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// This function delete a device.
+        /// </summary>
+        /// <param name="deviceId">the device id.</param>
+        public async Task DeleteDevice(string deviceId)
+        {
+            await this.registryManager.RemoveDeviceAsync(deviceId);
         }
 
         /// <summary>
