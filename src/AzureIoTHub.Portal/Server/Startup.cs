@@ -24,6 +24,7 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Primitives;
     using Microsoft.Graph;
     using Microsoft.Identity.Client;
     using Microsoft.Identity.Web;
@@ -176,7 +177,10 @@ namespace AzureIoTHub.Portal.Server
                 endpoints.Map("api/{**slug}", this.HandleApiFallback);
 
                 // If this is a request for a web page, just do the normal out-of-the-box behaviour.
-                endpoints.MapFallbackToFile("{**slug}", "index.html");
+                endpoints.MapFallbackToFile("{**slug}", "index.html", new StaticFileOptions
+                {
+                    OnPrepareResponse = ctx => ctx.Context.Response.Headers.Add("Cache-Control", new StringValues("no-cache"))
+                });
             });
         }
 
