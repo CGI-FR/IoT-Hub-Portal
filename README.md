@@ -16,6 +16,21 @@ This is currently in **beta** !
 * C2D Methods
 * LoRA WAN device connectivity
 
+## Prerequisites
+
+The following should be completed before proceeding with the IoT Hub Portal development or deployment in your environment.
+
+- You must have an Azure subscription. Get an [Azure Free account](https://azure.microsoft.com/en-us/offers/ms-azr-0044p/) to get started.
+
+# Known Issues and Limitations
+
+Refer to [Known Issues](knownissues) for known issues, gotchas and limitations.
+
+## Support
+
+This is an open source solution.
+For bugs and issues with the codebase please log an issue in this repo.
+
 ## Credits
 
 * [Azure IoT Edge LoRaWAN Starter Kit](https://github.com/Azure/iotedge-lorawan-starterkit)
