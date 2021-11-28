@@ -1,4 +1,4 @@
-﻿@page "/devicedetail/{DeviceID}"
+﻿@page "/devices/{DeviceID}"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Shared.Models
@@ -65,8 +65,7 @@
                                             <MudText>Preview : </MudText>
                                         </MudItem>
                                         <MudItem md="9" sm="12">
-                                            <img class="custom-img-sm" src="@imgUrl" />
-                                            @*<img class="custom-img-sm" src="@imgUrl/@Device.ModelType" />*@
+                                            <img class="custom-img-sm" src="@Device.ImageUrl" />
                                         </MudItem>
                                     </MudItem>
                                 </MudItem>
@@ -183,7 +182,6 @@
 
     private bool success = true;
     private string LastActivityDateString { get; set; }
-    private string imgUrl = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -194,9 +192,6 @@
 
             // LastActivityDate set to string to have a more human-readable format
             LastActivityDateString = Device.LastActivityDate.ToString();
-
-            // Retrieves the blob container URL where to fetch the image from
-            imgUrl = await Http.GetStringAsync($"api/BlobContainers/{Device.ModelType}");
         }
         catch (AccessTokenNotAvailableException exception)
         {

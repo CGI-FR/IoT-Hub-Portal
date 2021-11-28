@@ -180,7 +180,7 @@
         Device.DeviceType = "LoRa Device";
 
         // Gets a list of sensor model previously registered to Azure to allow autocomplete field in the form
-        SensorList = await Http.GetFromJsonAsync<SensorModel[]>("api/Sensors");
+        SensorList = await Http.GetFromJsonAsync<SensorModel[]>("api/DeviceModels");
 
         // Convert this list into a dictionnary to automatically fill the AppEUI field
         foreach (var val in SensorList)

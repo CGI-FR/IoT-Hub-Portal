@@ -14,6 +14,8 @@ namespace AzureIoTHub.Portal.Shared.Models
         [RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         public string DeviceID { get; set; }
 
+        public Uri ImageUrl { get; set; }
+
         public bool IsConnected { get; set; }
 
         public bool IsEnabled { get; set; }

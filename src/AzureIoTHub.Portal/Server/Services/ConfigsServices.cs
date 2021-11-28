@@ -21,26 +21,12 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task<IEnumerable<Configuration>> GetAllConfigs()
         {
-            try
-            {
-                return await this.registryManager.GetConfigurationsAsync(0);
-            }
-            catch (System.Exception)
-            {
-                throw;
-            }
+            return await this.registryManager.GetConfigurationsAsync(0);
         }
 
         public Task<Configuration> GetConfigItem(string id)
         {
-            try
-            {
-                return this.registryManager.GetConfigurationAsync(id);
-            }
-            catch (System.Exception)
-            {
-                throw;
-            }
+            return this.registryManager.GetConfigurationAsync(id);
         }
     }
 }

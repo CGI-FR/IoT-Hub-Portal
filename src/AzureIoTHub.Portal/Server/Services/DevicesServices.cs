@@ -10,7 +10,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Interfaces;
     using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
@@ -43,21 +42,14 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>IEnumerable twin.</returns>
         public async Task<IEnumerable<Twin>> GetAllEdgeDevice()
         {
-            try
-            {
-                IQuery queryEdgeDevice = this.registryManager.CreateQuery("SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' GROUP BY deviceId", 10);
+            IQuery queryEdgeDevice = this.registryManager.CreateQuery("SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' GROUP BY deviceId", 10);
 
-                while (queryEdgeDevice.HasMoreResults)
-                {
-                    return await queryEdgeDevice.GetNextAsTwinAsync();
-                }
-
-                return Enumerable.Empty<Twin>();
-            }
-            catch (System.Exception e)
+            while (queryEdgeDevice.HasMoreResults)
             {
-                throw new System.Exception(e.Message);
+                return await queryEdgeDevice.GetNextAsTwinAsync();
             }
+
+            return Enumerable.Empty<Twin>();
         }
 
         /// <summary>
@@ -66,21 +58,14 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>IEnumerable Twin.</returns>
         public async Task<IEnumerable<Twin>> GetAllEdgeDeviceWithTags()
         {
-            try
-            {
-                IQuery queryEdgeDevice = this.registryManager.CreateQuery("SELECT * FROM devices where devices.capabilities.iotEdge = true", 10);
+            IQuery queryEdgeDevice = this.registryManager.CreateQuery("SELECT * FROM devices where devices.capabilities.iotEdge = true", 10);
 
-                while (queryEdgeDevice.HasMoreResults)
-                {
-                    return await queryEdgeDevice.GetNextAsTwinAsync();
-                }
-
-                return Enumerable.Empty<Twin>();
-            }
-            catch (System.Exception e)
+            while (queryEdgeDevice.HasMoreResults)
             {
-                throw new System.Exception(e.Message);
+                return await queryEdgeDevice.GetNextAsTwinAsync();
             }
+
+            return Enumerable.Empty<Twin>();
         }
 
         /// <summary>
@@ -89,21 +74,14 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>IEnumerable twin.</returns>
         public async Task<IEnumerable<Twin>> GetAllDevice()
         {
-            try
-            {
-                var query = this.registryManager.CreateQuery("SELECT * FROM devices WHERE devices.capabilities.iotEdge = false");
+            var query = this.registryManager.CreateQuery("SELECT * FROM devices WHERE devices.capabilities.iotEdge = false");
 
-                while (query.HasMoreResults)
-                {
-                    return await query.GetNextAsTwinAsync();
-                }
-
-                return Enumerable.Empty<Twin>();
-            }
-            catch (System.Exception e)
+            while (query.HasMoreResults)
             {
-                throw new System.Exception(e.Message);
+                return await query.GetNextAsTwinAsync();
             }
+
+            return Enumerable.Empty<Twin>();
         }
 
         /// <summary>
@@ -113,14 +91,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>Device.</returns>
         public async Task<Device> GetDevice(string deviceId)
         {
-            try
-            {
-                return await this.registryManager.GetDeviceAsync(deviceId);
-            }
-            catch (System.Exception e)
-            {
-                throw new System.Exception(e.Message);
-            }
+            return await this.registryManager.GetDeviceAsync(deviceId);
         }
 
         /// <summary>
@@ -131,14 +102,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>Twin of a device.</returns>
         public async Task<Twin> GetDeviceTwin(string deviceId)
         {
-            try
-            {
-                return await this.registryManager.GetTwinAsync(deviceId);
-            }
-            catch (DeviceNotFoundException e)
-            {
-                throw new System.Exception(e.Message);
-            }
+            return await this.registryManager.GetTwinAsync(deviceId);
         }
 
         /// <summary>
@@ -149,23 +113,16 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>Twin of the device.</returns>
         public async Task<Twin> GetDeviceTwinWithModule(string deviceId)
         {
-            try
+            IQuery devicesWithModules = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']");
+
+            while (devicesWithModules.HasMoreResults)
             {
-                IQuery devicesWithModules = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']");
+                IEnumerable<Twin> devicesTwins = await devicesWithModules.GetNextAsTwinAsync();
 
-                while (devicesWithModules.HasMoreResults)
-                {
-                    IEnumerable<Twin> devicesTwins = await devicesWithModules.GetNextAsTwinAsync();
-
-                    return devicesTwins.ElementAt(0);
-                }
-
-                return null;
+                return devicesTwins.ElementAt(0);
             }
-            catch (System.Exception e)
-            {
-                throw new System.Exception(e.Message);
-            }
+
+            return null;
         }
 
         /// <summary>
@@ -187,20 +144,13 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>BulkRegistryOperation.</returns>
         public async Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled = DeviceStatus.Disabled)
         {
-            try
+            var device = new Device(deviceId)
             {
-                Device device = new (deviceId)
-                {
-                    Capabilities = new DeviceCapabilities { IotEdge = isEdge },
-                    Status = isEnabled
-                };
+                Capabilities = new DeviceCapabilities { IotEdge = isEdge },
+                Status = isEnabled
+            };
 
-                return await this.registryManager.AddDeviceWithTwinAsync(device, twin);
-            }
-            catch (DeviceAlreadyExistsException e)
-            {
-                throw new System.Exception(e.Message);
-            }
+            return await this.registryManager.AddDeviceWithTwinAsync(device, twin);
         }
 
         /// <summary>
@@ -219,14 +169,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>the updated device.</returns>
         public async Task<Device> UpdateDevice(Device device)
         {
-            try
-            {
-                return await this.registryManager.UpdateDeviceAsync(device);
-            }
-            catch (System.Exception e)
-            {
-                throw new System.Exception(e.Message);
-            }
+            return await this.registryManager.UpdateDeviceAsync(device);
         }
 
         /// <summary>
@@ -237,14 +180,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>the updated twin.</returns>
         public async Task<Twin> UpdateDeviceTwin(string deviceId, Twin twin)
         {
-            try
-            {
-                return await this.registryManager.UpdateTwinAsync(deviceId, twin, twin.ETag);
-            }
-            catch (System.Exception e)
-            {
-                throw new System.Exception(e.Message);
-            }
+            return await this.registryManager.UpdateTwinAsync(deviceId, twin, twin.ETag);
         }
 
         /// <summary>
@@ -255,14 +191,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>CloudToDeviceMethodResult.</returns>
         public async Task<CloudToDeviceMethodResult> ExecuteC2DMethod(string deviceId, CloudToDeviceMethod method)
         {
-            try
-            {
-                return await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
-            }
-            catch (System.Exception e)
-            {
-                throw new System.Exception(e.Message);
-            }
+            return await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
         }
 
         /// <summary>
@@ -273,14 +202,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>HttpResponseMessage.</returns>
         public async Task<HttpResponseMessage> ExecuteLoraMethod(string deviceId, JsonContent commandContent)
         {
-            try
-            {
-                return await this.http.PostAsync($"{this.configuration["IoTAzureFunction:url"]}/{deviceId}{this.configuration["IoTAzureFunction:code"]}", commandContent);
-            }
-            catch (System.Exception e)
-            {
-                throw new System.Exception(e.Message);
-            }
+            return await this.http.PostAsync($"{this.configuration["IoTAzureFunction:url"]}/{deviceId}{this.configuration["IoTAzureFunction:code"]}", commandContent);
         }
     }
 }

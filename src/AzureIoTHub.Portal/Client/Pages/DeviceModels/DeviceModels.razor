@@ -1,4 +1,4 @@
-﻿@page "/sensor_models"
+﻿@page "/device-models"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Shared.Models
@@ -13,15 +13,15 @@
 @inject IDialogService DialogService
 
 <MudContainer MaxWidth="MaxWidth.False">
-    @if (result == null)
-    {
-        <MudItem Class="custom-centered-container">
-            <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
-        </MudItem>
-    }
-    else
-    {
-        <MudGrid>
+    <MudGrid>
+        @if (result == null)
+        {
+            <MudItem Class="custom-centered-container">
+                <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+            </MudItem>
+        }
+        else
+        {
             <MudItem xs="12">
                 <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
                     <ColGroup>
@@ -45,7 +45,7 @@
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="Name" Style="word-break: break-all;">
-                            <a href="detail/@context.Name">@context.Name</a>
+                            <a href="/device-models/@context.Name">@context.Name</a>
                         </MudTd>
                         <MudTd DataLabel="Description" Style="word-break: break-all; ">
                             @context.Description
@@ -54,7 +54,7 @@
                             @context.AppEUI
                         </MudTd>
                         <MudTd DataLabel="Details" Style="text-align: center">
-                            <a href="detail/@context.Name"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                            <a href="/device-models/@context.Name"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
                         </MudTd>
                         <MudTd DataLabel="Delete" Style="text-align: center">
                             <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteSensorModel(context))"></MudIconButton>
@@ -65,11 +65,12 @@
                     </PagerContent>
                 </MudTable>
             </MudItem>
-        </MudGrid>
-    }
-    <MudItem xs="12">
-        <a href="add_sensor"><MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add a new sensor model" /></a>
-    </MudItem>
+        }
+
+        <MudItem xs="12">
+            <a href="/device-models/new"><MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add a new sensor model" /></a>
+        </MudItem>
+    </MudGrid>
 </MudContainer>
 
 @code {
@@ -89,7 +90,7 @@
     {
         try
         {
-            result = await Http.GetFromJsonAsync<SensorModel[]>("api/Sensors");
+            result = await Http.GetFromJsonAsync<SensorModel[]>("api/DeviceModels");
         }
         catch (AccessTokenNotAvailableException exception)
         {

@@ -5,15 +5,15 @@ namespace AzureIoTHub.Portal.Server.Controllers
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net.Http;
+    using System.Net.Http.Headers;
     using System.Net.Http.Json;
     using System.Text;
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
-    using Azure.Data.Tables.Models;
-    using AzureIoTHub.Portal.Server.Filters;
+    using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Security;
@@ -23,7 +23,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
     [Authorize]
@@ -34,30 +33,29 @@ namespace AzureIoTHub.Portal.Server.Controllers
     public class DevicesController : ControllerBase
     {
         private readonly ILogger<DevicesController> logger;
-        private readonly TableClient tableClient;
         private readonly ServiceClient serviceClient;
         private readonly HttpClient http;
-        private readonly IConfiguration configuration;
         private readonly DevicesServices devicesService;
-
         private readonly RegistryManager registryManager;
+        private readonly ITableClientFactory tableClientFactory;
+        private readonly ISensorImageManager sensorImageManager;
 
         public DevicesController(
-            IConfiguration configuration,
             ILogger<DevicesController> logger,
+            ITableClientFactory tableClientFactory,
+            ISensorImageManager sensorImageManager,
             RegistryManager registryManager,
             ServiceClient serviceClient,
             DevicesServices devicesService,
-            HttpClient http,
-            TableClient tableClient)
+            HttpClient http)
         {
             this.logger = logger;
             this.registryManager = registryManager;
-            this.tableClient = tableClient;
             this.serviceClient = serviceClient;
             this.http = http;
-            this.configuration = configuration;
             this.devicesService = devicesService;
+            this.tableClientFactory = tableClientFactory;
+            this.sensorImageManager = sensorImageManager;
         }
 
         /// <summary>
@@ -69,8 +67,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
         public async Task<IEnumerable<DeviceListItem>> Get()
         {
             // Gets all the twins from this devices
-            IEnumerable<Twin> items = await this.devicesService.GetAllDevice();
-            List<DeviceListItem> results = new ();
+            var items = await this.devicesService.GetAllDevice();
+            var results = new List<DeviceListItem>();
 
             // Convert each Twin to a DeviceListItem with specific fields
             foreach (Twin item in items)
@@ -78,6 +76,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 var result = new DeviceListItem
                 {
                     DeviceID = item.DeviceId,
+                    ImageUrl = await this.sensorImageManager.GetSensorImageUriAsync(item.ModelId, false),
                     IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
                     IsEnabled = item.Status == DeviceStatus.Enabled,
                     LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
@@ -106,6 +105,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
             var result = new DeviceListItem
             {
                 DeviceID = item.DeviceId,
+                ModelType = item.ModelId,
+                ImageUrl = await this.sensorImageManager.GetSensorImageUriAsync(item.ModelId),
                 IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = item.Status == DeviceStatus.Enabled,
                 LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
@@ -114,9 +115,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 LocationCode = Helpers.DeviceHelper.RetrieveTagValue(item, "locationCode"),
                 AssetID = Helpers.DeviceHelper.RetrieveTagValue(item, "assetID"),
                 DeviceType = Helpers.DeviceHelper.RetrieveTagValue(item, "deviceType"),
-                ModelType = Helpers.DeviceHelper.RetrieveTagValue(item, "modelType"),
-                Commands = this.RetrieveCommands(Helpers.DeviceHelper.RetrieveTagValue(item, "modelType"))
+                Commands = this.RetrieveCommands(item.ModelId)
             };
+
             return result;
         }
 
@@ -126,13 +127,18 @@ namespace AzureIoTHub.Portal.Server.Controllers
             try
             {
                 // Create a new Twin from the form's fields.
-                Twin newTwin = new () { DeviceId = device.DeviceID };
+                var newTwin = new Twin()
+                {
+                    DeviceId = device.DeviceID,
+                    ModelId = device.ModelType
+                };
+
                 newTwin.Tags["locationCode"] = device.LocationCode;
                 newTwin.Tags["deviceType"] = device.DeviceType;
-                newTwin.Tags["modelType"] = device.ModelType;
                 newTwin.Tags["assetID"] = device.AssetID;
                 newTwin.Properties.Desired["AppEUI"] = device.AppEUI;
                 newTwin.Properties.Desired["AppKey"] = device.AppKey;
+
                 DeviceStatus status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
                 var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin, status);
@@ -172,6 +178,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
                 // Device status (enabled/disabled) has to be dealt with afterwards
                 Device currentDevice = await this.devicesService.GetDevice(device.DeviceID);
+
                 // Sets the current Device status according to the value entered in the form
                 currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
@@ -221,7 +228,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     fport = command.Port
                 });
 
-                commandContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                commandContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
                 var result = await this.devicesService.ExecuteLoraMethod(deviceId, commandContent);
 
@@ -242,22 +249,26 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <returns>Corresponding list of commands or an empty list if it doesn't have any command.</returns>
         private List<SensorCommand> RetrieveCommands(string model_type)
         {
-            List<SensorCommand> commands = new ();
+            var commands = new List<SensorCommand>();
 
-            if (model_type != "undefined_modelType")
+            if (model_type == "undefined_modelType")
             {
-                Pageable<TableEntity> queryResultsFilter = this.tableClient.Query<TableEntity>(filter: $"PartitionKey  eq '{model_type}'");
+                return commands;
+            }
 
-                foreach (TableEntity qEntity in queryResultsFilter)
-                {
-                    commands.Add(
-                        new SensorCommand()
-                        {
-                            Name = qEntity.RowKey,
-                            Trame = qEntity.GetString("Trame"),
-                            Port = (int)qEntity["Port"]
-                        });
-                }
+            Pageable<TableEntity> queryResultsFilter = this.tableClientFactory
+                    .GetDeviceCommands()
+                    .Query<TableEntity>(filter: $"PartitionKey  eq '{model_type}'");
+
+            foreach (TableEntity qEntity in queryResultsFilter)
+            {
+                commands.Add(
+                    new SensorCommand()
+                    {
+                        Name = qEntity.RowKey,
+                        Trame = qEntity.GetString("Trame"),
+                        Port = (int)qEntity["Port"]
+                    });
             }
 
             return commands;

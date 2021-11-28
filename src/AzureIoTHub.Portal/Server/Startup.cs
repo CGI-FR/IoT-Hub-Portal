@@ -9,9 +9,11 @@ namespace AzureIoTHub.Portal.Server
     using System.Threading.Tasks;
     using Azure.Data.Tables;
     using Azure.Storage.Blobs;
+    using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Identity;
     using AzureIoTHub.Portal.Server.Interfaces;
+    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
@@ -91,8 +93,9 @@ namespace AzureIoTHub.Portal.Server
                 return ProvisioningServiceClient.CreateFromConnectionString(configuration.DPSConnectionString);
             });
 
-            services.AddTransient(sp => new BlobServiceClient(configuration.StorageAcountConnectionString));
-            services.AddTransient(sp => new TableClient(configuration.StorageAcountConnectionString, "DeviceTemplates"));
+            services.AddTransient(sp => new BlobServiceClient(configuration.StorageAccountConnectionString));
+            services.AddTransient<ITableClientFactory>(sp => new TableClientFactory(configuration.StorageAccountConnectionString));
+            services.AddTransient<ISensorImageManager, SensorImageManager>();
 
             services.AddSingleton<IB2CExtensionHelper, B2CExtensionHelper>(sp => new B2CExtensionHelper(configuration));
 
@@ -187,7 +190,7 @@ namespace AzureIoTHub.Portal.Server
         {
             protected const string IoTHubConnectionStringKey = "IoTHub:ConnectionString";
             protected const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
-            protected const string StorageAcountConnectionStringKey = "StorageAcount:ConnectionString";
+
             protected const string MsalScopeNameKey = "MsalSettings:ScopeName";
             protected const string MsalInstanceKey = "MsalSettings:Instance";
             protected const string MsalClientIdKey = "MsalSettings:ClientId";
@@ -197,6 +200,10 @@ namespace AzureIoTHub.Portal.Server
             protected const string MsalDomainKey = "MsalSettings:Domain";
             protected const string MsalSignUpSignInPolicyIdKey = "MsalSettings:SignUpSignInPolicyId";
             protected const string MsalB2CExtensionAppIdKey = "MsalSettings:B2CExtensionAppId";
+
+            protected const string StorageAccountConnectionStringKey = "StorageAccount:ConnectionString";
+            protected const string StorageAccountBlobContainerNameKey = "StorageAccount:BlobContainerName";
+            protected const string StorageAccountBlobContainerPartitionKeyKey = "StorageAccount:BlobContainerPartitionKey";
 
             internal static ConfigHandler Create(IWebHostEnvironment env, IConfiguration config)
             {
@@ -212,7 +219,7 @@ namespace AzureIoTHub.Portal.Server
 
             internal abstract string DPSConnectionString { get; }
 
-            internal abstract string StorageAcountConnectionString { get; }
+            internal abstract string StorageAccountConnectionString { get; }
 
             internal abstract string MsalScopeName { get; }
 
@@ -231,6 +238,10 @@ namespace AzureIoTHub.Portal.Server
             internal abstract string MsalSignUpSignInPolicyId { get; }
 
             internal abstract string MsalB2CExtensionAppId { get; }
+
+            internal abstract string StorageAccountBlobContainerName { get; }
+
+            internal abstract string StorageAccountBlobContainerPartitionKey { get; }
         }
 
         internal class ProductionConfigHandler : ConfigHandler
@@ -246,7 +257,7 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string DPSConnectionString => this.config.GetConnectionString(DPSConnectionStringKey);
 
-            internal override string StorageAcountConnectionString => this.config.GetConnectionString(StorageAcountConnectionStringKey);
+            internal override string StorageAccountConnectionString => this.config.GetConnectionString(StorageAccountConnectionStringKey);
 
             internal override string MsalScopeName => this.config[MsalScopeNameKey];
 
@@ -265,6 +276,10 @@ namespace AzureIoTHub.Portal.Server
             internal override string MsalSignUpSignInPolicyId => this.config[MsalSignUpSignInPolicyIdKey];
 
             internal override string MsalB2CExtensionAppId => this.config[MsalB2CExtensionAppIdKey];
+
+            internal override string StorageAccountBlobContainerName => this.config[StorageAccountBlobContainerNameKey];
+
+            internal override string StorageAccountBlobContainerPartitionKey => this.config[StorageAccountBlobContainerPartitionKeyKey];
         }
 
         internal class DevelopmentConfigHandler : ConfigHandler
@@ -280,7 +295,7 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string DPSConnectionString => this.config[DPSConnectionStringKey];
 
-            internal override string StorageAcountConnectionString => this.config[StorageAcountConnectionStringKey];
+            internal override string StorageAccountConnectionString => this.config[StorageAccountConnectionStringKey];
 
             internal override string MsalScopeName => this.config[MsalScopeNameKey];
 
@@ -299,6 +314,10 @@ namespace AzureIoTHub.Portal.Server
             internal override string MsalSignUpSignInPolicyId => this.config[MsalSignUpSignInPolicyIdKey];
 
             internal override string MsalB2CExtensionAppId => this.config[MsalB2CExtensionAppIdKey];
+
+            internal override string StorageAccountBlobContainerName => this.config[StorageAccountBlobContainerNameKey];
+
+            internal override string StorageAccountBlobContainerPartitionKey => this.config[StorageAccountBlobContainerPartitionKeyKey];
         }
     }
 }
