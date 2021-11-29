@@ -267,3 +267,4 @@ __pycache__/
 # App.css generated each time
 app.css
 src/.env
+/src/AzureIoTHub.Portal/Client/Properties/launchSettings.json
