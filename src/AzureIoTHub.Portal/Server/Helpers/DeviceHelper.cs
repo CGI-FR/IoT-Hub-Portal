@@ -5,7 +5,6 @@ namespace AzureIoTHub.Portal.Server.Helpers
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Security.Cryptography;
     using System.Text;
     using AzureIoTHub.Portal.Server.Extensions;
@@ -13,7 +12,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
 
-    public class DeviceHelper
+    public static class DeviceHelper
     {
         /// <summary>
         /// This function genefates the symmetricKey of a device
