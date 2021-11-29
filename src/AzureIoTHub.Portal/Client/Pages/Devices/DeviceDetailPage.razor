@@ -1,7 +1,7 @@
 ﻿@page "/devices/{DeviceID}"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using AzureIoTHub.Portal.Shared.Models
+@using AzureIoTHub.Portal.Shared.Models.Device
 @using System.Text.Json;
 
 @attribute [Authorize]
@@ -33,7 +33,7 @@
                                 <MudItem xs="12">
                                     <MudItem xs="6" Class="custom-form">
                                         <MudItem md="3" sm="12">
-                                            <MudText>Device ID : </MudText>
+                                            <img class="custom-img-sm" src="@Device.ImageUrl" />
                                         </MudItem>
                                         <MudItem md="9" sm="12">
                                             <MudText Typo="Typo.h6">@Device.DeviceID</MudText>
@@ -57,7 +57,7 @@
                                             <MudText>Model Type : </MudText>
                                         </MudItem>
                                         <MudItem md="9" sm="12">
-                                            <MudTextField @bind-Value="@Device.ModelType" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
+                                            <MudTextField @bind-Value="@Device.ModelId" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
                                         </MudItem>
                                     </MudItem>
                                     <MudItem xs="12" Class="custom-form">
@@ -65,7 +65,7 @@
                                             <MudText>Preview : </MudText>
                                         </MudItem>
                                         <MudItem md="9" sm="12">
-                                            <img class="custom-img-sm" src="@Device.ImageUrl" />
+                                            
                                         </MudItem>
                                     </MudItem>
                                 </MudItem>
@@ -178,7 +178,7 @@
     [Parameter]
     public string DeviceID { get; set; }
 
-    private DeviceListItem Device { get; set; } = new DeviceListItem();
+    private DeviceDetails Device { get; set; } = new DeviceDetails();
 
     private bool success = true;
     private string LastActivityDateString { get; set; }
@@ -188,7 +188,7 @@
         try
         {
             // Sends a GET request to the DevicesController, to retrieve the specific device from Azure IoT Hub
-            Device = await Http.GetFromJsonAsync<DeviceListItem>($"api/Devices/{DeviceID}");
+            Device = await Http.GetFromJsonAsync<DeviceDetails>($"api/Devices/{DeviceID}");
 
             // LastActivityDate set to string to have a more human-readable format
             LastActivityDateString = Device.LastActivityDate.ToString();
@@ -205,7 +205,7 @@
     public async void SaveDevice()
     {
         // await Http.PostAsJsonAsync<DeviceListItem>($"Devices/update", Device);
-        var result = await Http.PutAsJsonAsync<DeviceListItem>($"api/Devices", Device);
+        var result = await Http.PutAsJsonAsync<DeviceDetails>($"api/Devices", Device);
 
         // Prompts a snack bar to inform the action was successful
         // TODO : Deal more effectively with error/success messages
@@ -222,8 +222,8 @@
     private async Task DeleteDevice()
     {
         var parameters = new DialogParameters();
-        parameters.Add("device", Device);
-        var result = await DialogService.Show<DeviceDelete>("Confirm Deletion", parameters).Result;
+        parameters.Add("deviceID", Device.DeviceID);
+        var result = await DialogService.Show<DeleteDevicePage>("Confirm Deletion", parameters).Result;
 
         if (result.Cancelled)
         {
@@ -234,7 +234,7 @@
         NavManager.NavigateTo("devices");
     }
 
-    private async Task ExecuteMethod(SensorCommand method)
+    private async Task ExecuteMethod(Command method)
     {
 
         var result = await Http.PostAsJsonAsync($"api/Devices/{Device.DeviceID}/{method.Name}", method);

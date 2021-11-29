@@ -37,56 +37,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
             this.tableClientFactory = tableClientFactory;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post([FromForm] string sensor, [FromForm] IFormFile file = null)
-        {
-            try
-            {
-                SensorModel sensorObject = JsonConvert.DeserializeObject<SensorModel>(sensor);
-                TableEntity entity = new TableEntity()
-                {
-                    PartitionKey = DefaultPartitionKey,
-                    RowKey = sensorObject.Name
-                };
-
-                entity["Description"] = sensorObject.Description;
-                entity["AppEUI"] = sensorObject.AppEUI;
-
-                await this.tableClientFactory
-                    .GetDeviceTemplates()
-                    .AddEntityAsync(entity);
-
-                using var fileStream = file.OpenReadStream();
-                await this.sensorImageManager.ChangeSensorImageAsync(sensorObject.Name, fileStream);
-
-                // insertion des commant
-                if (sensorObject.Commands.Count > 0)
-                {
-                    foreach (var element in sensorObject.Commands)
-                    {
-                        TableEntity commandEntity = new TableEntity()
-                        {
-                            PartitionKey = sensorObject.Name,
-                            RowKey = element.Name
-                        };
-
-                        commandEntity["Trame"] = element.Trame;
-                        commandEntity["Port"] = element.Port;
-
-                        await this.tableClientFactory
-                            .GetDeviceCommands()
-                            .AddEntityAsync(commandEntity);
-                    }
-                }
-
-                return this.Ok("tout va bien");
-            }
-            catch (Exception e)
-            {
-                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
-            }
-        }
-
         /// <summary>
         /// Gets a list of sensor models from an Azure DataTable.
         /// </summary>
@@ -100,9 +50,94 @@ namespace AzureIoTHub.Portal.Server.Controllers
                             .Query<TableEntity>();
 
             // Converts the query result into a list of sensor models
-            var sensorsList = entities.Select(e => SensorsHelper.MapTableEntityToSensorModel(e));
+            var sensorsList = entities.Select(e => new SensorModel
+            {
+                ModelId = e.RowKey,
+                ImageUrl = this.sensorImageManager.ComputeImageUri(e.RowKey).ToString(),
+                Name = e[nameof(SensorModel.Name)]?.ToString(),
+                Description = e[nameof(SensorModel.Description)]?.ToString(),
+                AppEUI = e[nameof(SensorModel.AppEUI)]?.ToString()
+            });
 
             return sensorsList;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromForm] string sensor, [FromForm] IFormFile file = null)
+        {
+            try
+            {
+                SensorModel sensorObject = JsonConvert.DeserializeObject<SensorModel>(sensor);
+                TableEntity entity = new TableEntity()
+                {
+                    PartitionKey = DefaultPartitionKey,
+                    RowKey = Guid.NewGuid().ToString()
+                };
+                await this.SaveEntity(entity, sensorObject, file);
+
+                return this.Ok();
+            }
+            catch (Exception e)
+            {
+                return this.BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put([FromForm] string sensor, [FromForm] IFormFile file = null)
+        {
+            try
+            {
+                SensorModel sensorObject = JsonConvert.DeserializeObject<SensorModel>(sensor);
+
+                TableEntity entity = new TableEntity()
+                {
+                    PartitionKey = DefaultPartitionKey,
+                    RowKey = sensorObject.ModelId
+                };
+
+                await this.SaveEntity(entity, sensorObject, file);
+
+                return this.Ok();
+            }
+            catch (Exception e)
+            {
+                return this.BadRequest(e.Message);
+            }
+        }
+
+        private async Task SaveEntity(TableEntity entity, SensorModel sensorObject, [FromForm] IFormFile file = null)
+        {
+            entity[nameof(SensorModel.Name)] = sensorObject.Name;
+            entity[nameof(SensorModel.Description)] = sensorObject.Description;
+            entity[nameof(SensorModel.AppEUI)] = sensorObject.AppEUI;
+
+            await this.tableClientFactory
+                .GetDeviceTemplates()
+                .AddEntityAsync(entity);
+
+            using var fileStream = file.OpenReadStream();
+            await this.sensorImageManager.ChangeSensorImageAsync(entity.RowKey, fileStream);
+
+            // insertion des commant
+            if (sensorObject.Commands.Count > 0)
+            {
+                foreach (var element in sensorObject.Commands)
+                {
+                    TableEntity commandEntity = new TableEntity()
+                    {
+                        PartitionKey = sensorObject.Name,
+                        RowKey = element.Name
+                    };
+
+                    commandEntity[nameof(SensorCommand.Name)] = element.Frame;
+                    commandEntity[nameof(SensorCommand.Port)] = element.Port;
+
+                    await this.tableClientFactory
+                        .GetDeviceCommands()
+                        .AddEntityAsync(commandEntity);
+                }
+            }
         }
     }
 }

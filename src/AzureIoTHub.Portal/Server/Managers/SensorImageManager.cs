@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     public class SensorImageManager : ISensorImageManager
     {
         private const string ImageContainerName = "device-images";
+        private const string DefaultImageName = "default-template-icon.png";
 
         private readonly BlobServiceClient blobService;
         private readonly ILogger<SensorImageManager> logger;
@@ -32,7 +33,6 @@ namespace AzureIoTHub.Portal.Server.Managers
         public async Task<Uri> ChangeSensorImageAsync(string sensorModelName, Stream stream)
         {
             var blobContainer = this.blobService.GetBlobContainerClient(ImageContainerName);
-            await blobContainer.CreateIfNotExistsAsync();
 
             var blobClient = blobContainer.GetBlobClient(sensorModelName);
 
@@ -43,31 +43,28 @@ namespace AzureIoTHub.Portal.Server.Managers
             return blobClient.Uri;
         }
 
-        public async Task<Uri> GetSensorImageUriAsync(string sensorModelName, bool createIfNotExists = true)
+        public Uri ComputeImageUri(string sensorModelName)
         {
-            var imageName = string.IsNullOrWhiteSpace(sensorModelName) ? "default-template-icon.png" : sensorModelName;
+            var imageName = string.IsNullOrWhiteSpace(sensorModelName) ? DefaultImageName : sensorModelName;
 
             var container = this.blobService.GetBlobContainerClient(ImageContainerName);
             var blobClient = container.GetBlobClient(imageName);
 
-            if (!createIfNotExists)
-            {
-                return blobClient.Uri;
-            }
+            return blobClient.Uri;
+        }
 
-            await container.CreateIfNotExistsAsync();
+        public async Task InitializeDefaultImageBlob()
+        {
+            var container = this.blobService.GetBlobContainerClient(ImageContainerName);
 
-            if (await blobClient.ExistsAsync())
-            {
-                return blobClient.Uri;
-            }
+            var blobClient = container.GetBlobClient(DefaultImageName);
 
             var currentAssembly = Assembly.GetExecutingAssembly();
 
             using var defaultImageStream = currentAssembly
-                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.default-template-icon.png");
+                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{DefaultImageName}");
 
-            return await this.ChangeSensorImageAsync(imageName, defaultImageStream);
+            await blobClient.UploadAsync(defaultImageStream, overwrite: true);
         }
     }
 }

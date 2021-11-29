@@ -47,12 +47,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="package-lock.json" />
+    <Content Remove="package.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="npm run build-css" />
   </Target>
 
 </Project>

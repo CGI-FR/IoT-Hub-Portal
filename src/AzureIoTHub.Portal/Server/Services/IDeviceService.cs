@@ -1,15 +1,17 @@
 ﻿// Copyright (c) CGI France - Grand Est. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Interfaces
+namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
+    using System.Net.Http;
+    using System.Net.Http.Json;
     using System.Threading.Tasks;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
 
-    public interface IDevicesService
+    public interface IDeviceService
     {
         Task<IEnumerable<Twin>> GetAllEdgeDeviceWithTags();
 
@@ -31,6 +33,10 @@ namespace AzureIoTHub.Portal.Server.Interfaces
 
         Task<CloudToDeviceMethodResult> ExecuteC2DMethod(string deviceId, CloudToDeviceMethod method);
 
+        Task<HttpResponseMessage> ExecuteLoraMethod(string deviceId, JsonContent commandContent);
+
         Task DeleteDevice(string deviceId);
+
+        Task<IEnumerable<Twin>> GetAllDevice();
     }
 }

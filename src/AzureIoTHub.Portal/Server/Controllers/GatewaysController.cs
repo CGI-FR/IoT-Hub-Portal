@@ -35,13 +35,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
         private readonly RegistryManager registryManager;
         private readonly IConfiguration configuration;
-        private readonly DevicesServices devicesService;
+        private readonly IDeviceService devicesService;
 
         public GatewaysController(
             IConfiguration configuration,
             ILogger<GatewaysController> logger,
             RegistryManager registryManager,
-            DevicesServices service)
+            IDeviceService service)
         {
             this.logger = logger;
             this.registryManager = registryManager;
@@ -155,7 +155,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 deviceTwin.Tags["env"] = gateway.Environement;
                 deviceTwin.Tags["purpose"] = gateway.Type;
 
-                var result = await this.devicesService.CreateDeviceWithTwin(gateway.DeviceId, true, deviceTwin);
+                var result = await this.devicesService.CreateDeviceWithTwin(gateway.DeviceId, true, deviceTwin, DeviceStatus.Enabled);
                 this.logger.LogInformation($"Created edge device {gateway.DeviceId}");
 
                 return this.Ok(result);

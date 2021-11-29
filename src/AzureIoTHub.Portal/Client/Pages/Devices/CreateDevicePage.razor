@@ -1,6 +1,7 @@
-﻿@page "/devicecreate"
+﻿@page "/devices/new"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Shared.Models.Device
 @using AzureIoTHub.Portal.Shared.Models
 @attribute [Authorize]
 @inject HttpClient Http
@@ -20,6 +21,13 @@
                     </MudCardHeader>
                     <MudCardContent>
                         <MudGrid>
+                            <MudItem xs="12">
+                                <MudItem xs="6" Class="custom-form">
+                                    <MudItem md="3" sm="12">
+                                        <img class="custom-img-sm" src="@Device.ImageUrl" />
+                                    </MudItem>
+                                </MudItem>
+                            </MudItem>
                             <MudItem md="6" xs="12">
                                 <MudItem xs="12" Class="custom-form">
                                     <MudItem md="3" sm="12">
@@ -55,22 +63,15 @@
                                         <MudText>Model Type : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudAutocomplete T="string" @bind-Value="@Device.ModelType"
+                                        <MudAutocomplete T="SensorModel"
                                                          Dense="true" Variant="Variant.Outlined"
-                                                         For="@(()=> Device.ModelType)"
                                                          SearchFunc="@Search"
+                                                         ValueChanged="@ModelSelected"
+                                                         ToStringFunc="@(x => x.Name)"
                                                          ResetValueOnEmptyText="true"
                                                          Immediate="true" Clearable="true"
-                                                         CoerceText="true" CoerceValue="false"/>
+                                                         CoerceText="true" CoerceValue="false" />
                                     </MudItem>
-                                </MudItem>
-                                <MudItem xs="12" Class="custom-form">
-                                    <MudItem md="3" sm="12">
-                                        <MudText>Preview : </MudText>
-                                    </MudItem>
-                                    <MudItem md="9" sm="12">
-                                            <img class="custom-img-sm" src="@imgUrl" />
-                                        </MudItem>
                                 </MudItem>
                             </MudItem>
 
@@ -91,19 +92,10 @@
                                         <MudText>OTAA AppEUI : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        @if (Device.ModelType != null && SensorDict.ContainsKey(Device.ModelType))
-                                        {
-                                            Device.AppEUI = SensorDict[Device.ModelType] ?? "Selected model contains no AppEUI value";
-                                        }
-                                        else
-                                        {
-                                            Device.AppEUI = "No model selected";
-                                        }
                                         <MudTextField @bind-Value="@Device.AppEUI"
                                                       Margin="Margin.Dense" Variant="Variant.Outlined"
                                                       For="@(()=> Device.AppEUI)"
                                                       ReadOnly="true"
-                                                      TextChanged="@ChangePicture"
                                                       Class="custom-disabled"></MudTextField>
                                     </MudItem>
                                 </MudItem>
@@ -169,11 +161,9 @@
     [Parameter]
     public string DeviceID { get; set; }
 
-    private DeviceListItem Device { get; set; } = new DeviceListItem();
+    private DeviceDetails Device { get; set; } = new DeviceDetails();
 
     private IEnumerable<SensorModel> SensorList { get; set; } = new List<SensorModel>();
-    public Dictionary<string, string> SensorDict { get; set; } = new Dictionary<string, string>();
-    private string imgUrl = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -181,12 +171,6 @@
 
         // Gets a list of sensor model previously registered to Azure to allow autocomplete field in the form
         SensorList = await Http.GetFromJsonAsync<SensorModel[]>("api/DeviceModels");
-
-        // Convert this list into a dictionnary to automatically fill the AppEUI field
-        foreach (var val in SensorList)
-        {
-            SensorDict.Add(val.Name, val.AppEUI);
-        }
     }
 
     /// <summary>
@@ -196,7 +180,7 @@
     {
         // Sends the device to be added to the controller
         // var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/create", Device);
-        var response = await Http.PostAsJsonAsync<DeviceListItem>($"api/Devices", Device);
+        var response = await Http.PostAsJsonAsync<DeviceDetails>($"api/Devices", Device);
         var errorMsg = await response.Content.ReadAsStringAsync();
         Console.WriteLine($">>>>> {response.StatusCode}");
         Console.WriteLine($"===== {errorMsg}");
@@ -222,36 +206,24 @@
     /// </summary>
     /// <param name="value">Text entered in the field</param>
     /// <returns>Item of the sensor model list that matches the user's value</returns>
-    private async Task<IEnumerable<string>> Search(string value)
+    private async Task<IEnumerable<SensorModel>> Search(string value)
     {
         // In real life use an asynchronous function for fetching data from an api.
         await Task.Delay(0);
 
         // if text is null or empty, show complete list
         if (string.IsNullOrEmpty(value))
-            return SensorDict.Keys;
-        return SensorDict.Keys.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+            return SensorList;
+
+        return SensorList
+                    .Where(x => x.Name.StartsWith(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    /// <summary>
-    /// Allows to change the preview picture when the sensor model changes.
-    /// </summary> 
-    private async Task ChangePicture()
+    private void ModelSelected(SensorModel model)
     {
-        // Retrieves the blob container URL where to fetch the image from
-        try
-        {
-            imgUrl = await Http.GetStringAsync($"api/BlobContainers/{Device.ModelType}");
-        }
-        //If we can't find the controller
-        catch(HttpRequestException e)
-        {
-            Console.WriteLine(e);
-            // Temporary fix
-            // TODO
-            imgUrl = "images/error.png";
-        }
+        Device.ModelId = model.ModelId;
+        Device.ImageUrl = new Uri(model.ImageUrl);
+        Device.AppEUI = model.AppEUI ?? "Selected model contains no AppEUI value";
     }
-
 }
 

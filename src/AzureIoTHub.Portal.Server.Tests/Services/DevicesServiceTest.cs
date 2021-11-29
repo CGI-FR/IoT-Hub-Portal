@@ -1,4 +1,4 @@
-﻿using AzureIoTHub.Portal.Server.Interfaces;
+﻿using AzureIoTHub.Portal.Server.Services;
 using Moq;
 using NUnit.Framework;
 
@@ -11,7 +11,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Services
         public void GetAllEdgeDevice_returnValue()
         {
             // Arrange
-            var moqService = new Mock<IDevicesService>();
+            var moqService = new Mock<IDeviceService>();
         }
     }
 }

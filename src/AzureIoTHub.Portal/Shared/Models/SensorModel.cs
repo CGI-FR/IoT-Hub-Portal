@@ -3,17 +3,15 @@
 
 namespace AzureIoTHub.Portal.Shared.Models
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Components.Forms;
 
     public class SensorModel
     {
+        public string ModelId { get; set; }
+
+        public string ImageUrl { get; set; }
+
         [Required]
         public string Name { get; set; }
 

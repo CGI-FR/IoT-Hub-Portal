@@ -21,6 +21,8 @@ COPY ["AzureIoTHub.Portal/Shared/AzureIoTHub.Portal.Shared.csproj", "AzureIoTHub
 COPY ["AzureIoTHub.Portal/Client/AzureIoTHub.Portal.Client.csproj", "AzureIoTHub.Portal/Client/"]
 RUN dotnet restore "AzureIoTHub.Portal/Server/AzureIoTHub.Portal.Server.csproj"
 COPY . .
+WORKDIR "/src/AzureIoTHub.Portal/Client"
+RUN npm run build-css
 WORKDIR "/src/AzureIoTHub.Portal/Server"
 RUN dotnet build "AzureIoTHub.Portal.Server.csproj" -c Release -o /app/build
 
