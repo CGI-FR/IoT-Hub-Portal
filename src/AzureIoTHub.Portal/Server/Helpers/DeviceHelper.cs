@@ -5,8 +5,10 @@ namespace AzureIoTHub.Portal.Server.Helpers
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Security.Cryptography;
     using System.Text;
+    using AzureIoTHub.Portal.Server.Extensions;
     using AzureIoTHub.Portal.Shared.Models;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
@@ -23,7 +25,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
         {
             // then we get the symmetricKey
             SymmetricKeyAttestation symmetricKey = attestationMechanism.GetAttestation() as SymmetricKeyAttestation;
-            using HMACSHA256 hmac = new (Encoding.UTF8.GetBytes(symmetricKey.PrimaryKey));
+            using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(symmetricKey.PrimaryKey));
             return Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(deviceId)));
         }
 
@@ -36,10 +38,25 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns>string.</returns>
         public static string RetrieveTagValue(Twin item, string tagName)
         {
-            if (item.Tags.Contains(tagName))
-                return item.Tags[tagName];
-            else
-                return "undefined_" + tagName;
+            var camelCasedTagName = tagName.ToCamelCase();
+
+            if (item.Tags.Contains(camelCasedTagName))
+                return item.Tags[camelCasedTagName];
+
+            return null;
+        }
+
+        /// <summary>
+        /// Sets the twin tag value.
+        /// </summary>
+        /// <param name="item">The device Twin.</param>
+        /// <param name="tagName">The tag name.</param>
+        /// <param name="value">The tag value.</param>
+        public static void SetTagValue(Twin item, string tagName, string value)
+        {
+            var camelCasedTagName = tagName.ToCamelCase();
+
+            item.Tags[camelCasedTagName] = value;
         }
 
         /// <summary>
@@ -118,13 +135,13 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns> List of GatewayModule.</returns>
         public static List<GatewayModule> RetrieveModuleList(Twin twin, int moduleCount)
         {
-            List<GatewayModule> list = new ();
+            var list = new List<GatewayModule>();
 
             if (twin.Properties.Reported.Contains("modules") && moduleCount > 0)
             {
                 foreach (var element in twin.Properties.Reported["modules"])
                 {
-                    GatewayModule module = new ()
+                    var module = new GatewayModule()
                     {
                         ModuleName = element.Key
                     };

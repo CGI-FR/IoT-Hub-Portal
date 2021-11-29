@@ -1,7 +1,8 @@
 ﻿@page "/devices"
+@using AzureIoTHub.Portal.Shared.Models.Device
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using AzureIoTHub.Portal.Shared.Models
+
 @attribute [Authorize]
 @inject HttpClient Http
 @inject IDialogService DialogService
@@ -93,7 +94,8 @@
             <MudItem xs="12">
                 <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<DeviceListItem, bool>(FilterFunc)">
                     <ColGroup>
-                        <col style="width: 45%;" />
+                        <col style="width: 5%;" />
+                        <col style="width: 40%;" />
                         <col style="width: 10%;" />
                         <col style="width: 10%;" />
                         <col style="width: 15%;" />
@@ -106,6 +108,7 @@
                         <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadDevices" Class="ma-2"></MudIconButton>
                     </ToolBarContent>
                     <HeaderContent>
+                        <MudTh></MudTh>
                         <MudTh>Device</MudTh>
                         <MudTh Style="text-align: center">Status</MudTh>
                         <MudTh Style="text-align: center">Connection state</MudTh>
@@ -114,6 +117,9 @@
                         <MudTh Style="text-align: center">Delete</MudTh>
                     </HeaderContent>
                     <RowTemplate>
+                        <MudTd  Style="text-align: center">
+                            <img height="25" src="@context.ImageUrl" />
+                        </MudTd>
                         <MudTd DataLabel="Device" Style="word-break: break-all;">
                             <a href="devices/@context.DeviceID">@context.DeviceID</a>
                         </MudTd>
@@ -154,7 +160,7 @@
             </MudItem>
         }
         <MudItem xs="12">
-            <a href="devicecreate"><MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add a new device" /></a>
+            <a href="devices/new"><MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add a new device" /></a>
         </MudItem>
     </MudGrid>
 </MudContainer>
@@ -214,8 +220,8 @@
     private async Task DeleteDevice(DeviceListItem device)
     {
         var parameters = new DialogParameters();
-        parameters.Add("device", device);
-        var result = await DialogService.Show<DeviceDelete>("Confirm Deletion", parameters).Result;
+        parameters.Add("deviceID", device.DeviceID);
+        var result = await DialogService.Show<DeleteDevicePage>("Confirm Deletion", parameters).Result;
 
         if (result.Cancelled)
         {
@@ -243,6 +249,7 @@
         // Current row is shown only if all the flags are true
         if (flagName && flagStatus && flagState && flagLocation && flagAppEUI && flagAppKey)
             return true;
+
         return false;
     }
 }

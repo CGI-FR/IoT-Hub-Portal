@@ -8,13 +8,12 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Server.Interfaces;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
 
-    public class DevicesServices : IDevicesService
+    public class DeviceService : IDeviceService
     {
         private readonly RegistryManager registryManager;
         private readonly ProvisioningServiceClient dps;
@@ -22,7 +21,7 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly HttpClient http;
         private readonly IConfiguration configuration;
 
-        public DevicesServices(
+        public DeviceService(
             IConfiguration configuration,
             RegistryManager registryManager,
             ServiceClient serviceClient,

@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Server
     using AzureIoTHub.Portal.Server.Identity;
     using AzureIoTHub.Portal.Server.Interfaces;
     using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
@@ -100,7 +101,8 @@ namespace AzureIoTHub.Portal.Server
 
             services.AddSingleton<IB2CExtensionHelper, B2CExtensionHelper>(sp => new B2CExtensionHelper(configuration));
 
-            services.AddScoped<DevicesServices>();
+            services.AddScoped<IDeviceService, DeviceService>();
+            services.AddScoped<IDeviceTwinMapper, DeviceTwinMapper>();
             services.AddScoped<ConfigsServices>();
 
             services.AddHttpClient("RestClient")
@@ -144,7 +146,7 @@ namespace AzureIoTHub.Portal.Server
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -182,6 +184,8 @@ namespace AzureIoTHub.Portal.Server
                     OnPrepareResponse = ctx => ctx.Context.Response.Headers.Add("Cache-Control", new StringValues("no-cache"))
                 });
             });
+
+            await app.ApplicationServices.GetService<ISensorImageManager>().InitializeDefaultImageBlob();
         }
 
         private Task HandleApiFallback(HttpContext context)

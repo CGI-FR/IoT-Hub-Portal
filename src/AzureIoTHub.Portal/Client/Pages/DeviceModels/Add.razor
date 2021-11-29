@@ -101,7 +101,7 @@
                                         <MudTextField @bind-Value="@element.Name" Label="Command Name" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
                                     </MudItem>
                                     <MudItem xs="12" md="8" sm="10" Style="margin-right: 10px;">
-                                        <MudTextField @bind-Value="@element.Trame" Label="Hex Trame" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
+                                        <MudTextField @bind-Value="@element.Frame" Label="Hex Trame" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
                                     </MudItem>
                                     <MudItem xs="12" md="3" sm="10" Style="margin-right: 10px;">
                                         <MudTextField @bind-Value="@element.Port" Label="Port" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
@@ -119,7 +119,7 @@
                                 <MudTextField @bind-Value="@_sensorCommand.Name" Label="Command Name" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                             </MudItem>
                             <MudItem xs="12" md="8" sm="10" Style="margin-right: 10px;">
-                                <MudTextField @bind-Value="@_sensorCommand.Trame" Label="Hex Trame" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                <MudTextField @bind-Value="@_sensorCommand.Frame" Label="Hex Trame" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                             </MudItem>
                             <MudItem xs="12" md="3" sm="10">
                                 <MudTextField @bind-Value="@_sensorCommand.Port" Label="Port" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
@@ -170,7 +170,7 @@
 
             if (_selectedImage != null)
             {
-                using (var ms = _selectedImage.OpenReadStream())
+                using (var ms = _selectedImage.OpenReadStream(maxAllowedSize: 512000*4))
                 {
                     var streamContent = new StreamContent(ms);
                     streamContent.Headers.ContentType = new MediaTypeHeaderValue(_selectedImage.ContentType);
@@ -192,7 +192,7 @@
 
     private void AddCommand()
     {
-        if (_sensorCommand.Name != null && _sensorCommand.Trame != null && _sensorCommand.Port != 0)
+        if (_sensorCommand.Name != null && _sensorCommand.Frame != null && _sensorCommand.Port != 0)
         {
             _sensorModel.Commands.Add(_sensorCommand);
             _sensorCommand = new SensorCommand();

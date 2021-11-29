@@ -1,17 +1,12 @@
 ﻿// Copyright (c) CGI France - Grand Est. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Shared.Models
+namespace AzureIoTHub.Portal.Shared.Models.Device
 {
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
 
     public class DeviceListItem
     {
-        [Required]
-        [RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         public string DeviceID { get; set; }
 
         public Uri ImageUrl { get; set; }
@@ -27,18 +22,5 @@ namespace AzureIoTHub.Portal.Shared.Models
         public string AppKey { get; set; }
 
         public string LocationCode { get; set; }
-
-        public string AssetID { get; set; }
-
-        public string DeviceType { get; set; }
-
-        public string ModelType { get; set; }
-
-        public List<SensorCommand> Commands { get; set; }
-
-        public DeviceListItem()
-        {
-            this.Commands = new List<SensorCommand>();
-        }
     }
 }

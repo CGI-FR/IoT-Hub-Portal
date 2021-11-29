@@ -9,8 +9,10 @@ namespace AzureIoTHub.Portal.Server.Managers
 
     public interface ISensorImageManager
     {
-        Task<Uri> GetSensorImageUriAsync(string sensorModelName, bool createIfNotExists = true);
+        Uri ComputeImageUri(string sensorModelName);
 
         Task<Uri> ChangeSensorImageAsync(string sensorModelName, Stream stream);
+
+        Task InitializeDefaultImageBlob();
     }
 }

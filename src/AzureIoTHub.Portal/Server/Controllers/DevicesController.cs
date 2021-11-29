@@ -5,17 +5,17 @@ namespace AzureIoTHub.Portal.Server.Controllers
 {
     using System;
     using System.Collections.Generic;
-    using System.Net.Http;
+    using System.Linq;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
     using System.Text;
     using System.Threading.Tasks;
-    using Azure;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models;
+    using AzureIoTHub.Portal.Shared.Models.Device;
     using AzureIoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
@@ -25,37 +25,26 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
 
-    [Authorize]
+    [Authorize(Roles = RoleNames.Admin)]
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = RoleNames.Admin)]
-
     public class DevicesController : ControllerBase
     {
         private readonly ILogger<DevicesController> logger;
-        private readonly ServiceClient serviceClient;
-        private readonly HttpClient http;
-        private readonly DevicesServices devicesService;
-        private readonly RegistryManager registryManager;
+        private readonly IDeviceService devicesService;
         private readonly ITableClientFactory tableClientFactory;
-        private readonly ISensorImageManager sensorImageManager;
+        private readonly IDeviceTwinMapper deviceTwinMapper;
 
         public DevicesController(
             ILogger<DevicesController> logger,
             ITableClientFactory tableClientFactory,
-            ISensorImageManager sensorImageManager,
-            RegistryManager registryManager,
-            ServiceClient serviceClient,
-            DevicesServices devicesService,
-            HttpClient http)
+            IDeviceService devicesService,
+            IDeviceTwinMapper deviceTwinMapper)
         {
             this.logger = logger;
-            this.registryManager = registryManager;
-            this.serviceClient = serviceClient;
-            this.http = http;
             this.devicesService = devicesService;
             this.tableClientFactory = tableClientFactory;
-            this.sensorImageManager = sensorImageManager;
+            this.deviceTwinMapper = deviceTwinMapper;
         }
 
         /// <summary>
@@ -70,25 +59,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             var items = await this.devicesService.GetAllDevice();
             var results = new List<DeviceListItem>();
 
-            // Convert each Twin to a DeviceListItem with specific fields
-            foreach (Twin item in items)
-            {
-                var result = new DeviceListItem
-                {
-                    DeviceID = item.DeviceId,
-                    ImageUrl = await this.sensorImageManager.GetSensorImageUriAsync(item.ModelId, false),
-                    IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
-                    IsEnabled = item.Status == DeviceStatus.Enabled,
-                    LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
-                    AppEUI = Helpers.DeviceHelper.RetrievePropertyValue(item, "AppEUI"),
-                    AppKey = Helpers.DeviceHelper.RetrievePropertyValue(item, "AppKey"),
-                    LocationCode = Helpers.DeviceHelper.RetrieveTagValue(item, "locationCode")
-                };
-
-                results.Add(result);
-            }
-
-            return results;
+            return items.Select(this.deviceTwinMapper.CreateDeviceListItem);
         }
 
         /// <summary>
@@ -98,46 +69,25 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <param name="deviceID">ID of the device to retrieve.</param>
         /// <returns>The DeviceListItem corresponding to the given ID.</returns>
         [HttpGet("{deviceID}")]
-        public async Task<DeviceListItem> Get(string deviceID)
+        public async Task<DeviceDetails> Get(string deviceID)
         {
             var item = await this.devicesService.GetDeviceTwin(deviceID);
 
-            var result = new DeviceListItem
-            {
-                DeviceID = item.DeviceId,
-                ModelType = item.ModelId,
-                ImageUrl = await this.sensorImageManager.GetSensorImageUriAsync(item.ModelId),
-                IsConnected = item.ConnectionState == DeviceConnectionState.Connected,
-                IsEnabled = item.Status == DeviceStatus.Enabled,
-                LastActivityDate = item.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
-                AppEUI = Helpers.DeviceHelper.RetrievePropertyValue(item, "AppEUI"),
-                AppKey = Helpers.DeviceHelper.RetrievePropertyValue(item, "AppKey"),
-                LocationCode = Helpers.DeviceHelper.RetrieveTagValue(item, "locationCode"),
-                AssetID = Helpers.DeviceHelper.RetrieveTagValue(item, "assetID"),
-                DeviceType = Helpers.DeviceHelper.RetrieveTagValue(item, "deviceType"),
-                Commands = this.RetrieveCommands(item.ModelId)
-            };
-
-            return result;
+            return this.deviceTwinMapper.CreateDeviceDetails(item);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateDeviceAsync(DeviceListItem device)
+        public async Task<IActionResult> CreateDeviceAsync(DeviceDetails device)
         {
             try
             {
                 // Create a new Twin from the form's fields.
                 var newTwin = new Twin()
                 {
-                    DeviceId = device.DeviceID,
-                    ModelId = device.ModelType
+                    DeviceId = device.DeviceID
                 };
 
-                newTwin.Tags["locationCode"] = device.LocationCode;
-                newTwin.Tags["deviceType"] = device.DeviceType;
-                newTwin.Tags["assetID"] = device.AssetID;
-                newTwin.Properties.Desired["AppEUI"] = device.AppEUI;
-                newTwin.Properties.Desired["AppKey"] = device.AppKey;
+                this.deviceTwinMapper.UpdateTwin(newTwin, device);
 
                 DeviceStatus status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
@@ -147,11 +97,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
             catch (DeviceAlreadyExistsException e)
             {
-                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
-            }
-            catch (Exception e)
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+                this.logger.LogError($"{device.DeviceID} - Create device failed", e);
+                return this.BadRequest();
             }
         }
 
@@ -161,34 +108,30 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <param name="device">the device object.</param>
         /// <returns>the update twin.</returns>
         [HttpPut]
-        public async Task<IActionResult> UpdateDeviceAsync(DeviceListItem device)
+        public async Task<IActionResult> UpdateDeviceAsync(DeviceDetails device)
         {
             try
             {
-                // Get the current twin from the hub, based on the device ID
-                Twin currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceID);
-
-                // Update the twin properties
-                currentTwin.Tags["locationCode"] = device.LocationCode;
-                currentTwin.Tags["assetID"] = device.AssetID;
-                currentTwin.Properties.Desired["AppEUI"] = device.AppEUI;
-                currentTwin.Properties.Desired["AppKey"] = device.AppKey;
-
-                Twin newTwin = await this.devicesService.UpdateDeviceTwin(device.DeviceID, currentTwin);
-
                 // Device status (enabled/disabled) has to be dealt with afterwards
                 Device currentDevice = await this.devicesService.GetDevice(device.DeviceID);
-
-                // Sets the current Device status according to the value entered in the form
                 currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
                 _ = await this.devicesService.UpdateDevice(currentDevice);
 
-                return this.Ok(newTwin);
+                // Get the current twin from the hub, based on the device ID
+                Twin currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceID);
+
+                // Update the twin properties
+                this.deviceTwinMapper.UpdateTwin(currentTwin, device);
+
+                _ = await this.devicesService.UpdateDeviceTwin(device.DeviceID, currentTwin);
+
+                return this.Ok();
             }
             catch (Exception e)
             {
-                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
+                this.logger.LogError($"{device.DeviceID} - Update device failed", e);
+                return this.BadRequest();
             }
         }
 
@@ -203,11 +146,12 @@ namespace AzureIoTHub.Portal.Server.Controllers
             try
             {
                 await this.devicesService.DeleteDevice(deviceID);
-                return this.Ok("device delete !");
+                return this.Ok();
             }
             catch (Exception e)
             {
-                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
+                this.logger.LogError($"{deviceID} - Device deletion failed", e);
+                return this.BadRequest();
             }
         }
 
@@ -218,14 +162,19 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <param name="command">the command who contain the name and the trame.</param>
         /// <returns>a CloudToDeviceMethodResult .</returns>
         [HttpPost("{deviceId}/{methodName}")]
-        public async Task<IActionResult> ExecuteLoraMethod(string deviceId, SensorCommand command)
+        public async Task<IActionResult> ExecuteCommand(string deviceId, Command command)
         {
             try
             {
+                var commandEntity = this.tableClientFactory
+                       .GetDeviceCommands()
+                       .Query<TableEntity>(filter: $"RowKey  eq '{command.CommandId}'")
+                       .Single();
+
                 JsonContent commandContent = JsonContent.Create(new
                 {
-                    rawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(command.Trame)),
-                    fport = command.Port
+                    rawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(commandEntity[nameof(SensorCommand.Frame)].ToString())),
+                    fport = commandEntity["port"]
                 });
 
                 commandContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -238,40 +187,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
             catch (Exception e)
             {
-                return this.BadRequest(e.Message);
+                this.logger.LogError($"{deviceId} - Execute command on device failed", e);
+                return this.BadRequest();
             }
-        }
-
-        /// <summary>
-        /// Retrieve all the commands of a device.
-        /// </summary>
-        /// <param name="model_type"> the model type of the device.</param>
-        /// <returns>Corresponding list of commands or an empty list if it doesn't have any command.</returns>
-        private List<SensorCommand> RetrieveCommands(string model_type)
-        {
-            var commands = new List<SensorCommand>();
-
-            if (model_type == "undefined_modelType")
-            {
-                return commands;
-            }
-
-            Pageable<TableEntity> queryResultsFilter = this.tableClientFactory
-                    .GetDeviceCommands()
-                    .Query<TableEntity>(filter: $"PartitionKey  eq '{model_type}'");
-
-            foreach (TableEntity qEntity in queryResultsFilter)
-            {
-                commands.Add(
-                    new SensorCommand()
-                    {
-                        Name = qEntity.RowKey,
-                        Trame = qEntity.GetString("Trame"),
-                        Port = (int)qEntity["Port"]
-                    });
-            }
-
-            return commands;
         }
     }
 }
