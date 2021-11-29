@@ -18,6 +18,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Shared", "AzureIoTHub.Portal\Shared\AzureIoTHub.Portal.Shared.csproj", "{9F0A43D6-D7C2-4C92-AE22-BE48B7F83ACB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{3CA153F4-1172-4AF5-B483-94200717AB5C}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\pull_request_template.md = ..\.github\pull_request_template.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{9EF190B3-41E2-48E1-BA4E-E129589DD250}"
 	ProjectSection(SolutionItems) = preProject
