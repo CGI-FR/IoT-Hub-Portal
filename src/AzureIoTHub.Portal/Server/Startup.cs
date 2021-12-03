@@ -80,36 +80,32 @@ namespace AzureIoTHub.Portal.Server
 
             services.AddRazorPages();
 
-            services.AddTransient(t =>
+            services.AddScoped(t =>
             {
                 return RegistryManager.CreateFromConnectionString(configuration.IoTHubConnectionString);
             });
 
-            services.AddTransient(t =>
+            services.AddScoped(t =>
             {
                 return ServiceClient.CreateFromConnectionString(configuration.IoTHubConnectionString);
             });
 
-            services.AddTransient(t =>
+            services.AddScoped(t =>
             {
                 return ProvisioningServiceClient.CreateFromConnectionString(configuration.DPSConnectionString);
             });
 
+            services.AddSingleton<IB2CExtensionHelper, B2CExtensionHelper>(sp => new B2CExtensionHelper(configuration));
+
             services.AddTransient(sp => new BlobServiceClient(configuration.StorageAccountConnectionString));
             services.AddTransient<ITableClientFactory>(sp => new TableClientFactory(configuration.StorageAccountConnectionString));
             services.AddTransient<ISensorImageManager, SensorImageManager>();
+            services.AddTransient<ILoraDeviceMethodManager, LoraDeviceMethodManager>();
 
-            services.AddSingleton<IB2CExtensionHelper, B2CExtensionHelper>(sp => new B2CExtensionHelper(configuration));
-
-            services.AddScoped<IDeviceService, DeviceService>();
-            services.AddScoped<IDeviceTwinMapper, DeviceTwinMapper>();
-            services.AddScoped<ConfigsServices>();
-
-            services.AddHttpClient("RestClient")
-                    .AddPolicyHandler(HttpPolicyExtensions
-                                        .HandleTransientHttpError()
-                                        .OrResult(c => c.StatusCode == HttpStatusCode.NotFound)
-                                        .WaitAndRetryAsync(3, attempt => TimeSpan.FromMilliseconds(100)));
+            services.AddTransient<IDeviceService, DeviceService>();
+            services.AddTransient<IDeviceTwinMapper, DeviceTwinMapper>();
+            services.AddTransient<ISensorCommandMapper, SensorCommandMapper>();
+            services.AddTransient<ConfigsServices>();
 
             services.AddSingleton(t =>
             {
@@ -143,6 +139,21 @@ namespace AzureIoTHub.Portal.Server
             });
 
             services.AddMudServices();
+
+            var transientHttpErrorPolicy = HttpPolicyExtensions
+                                    .HandleTransientHttpError()
+                                    .OrResult(c => c.StatusCode == HttpStatusCode.NotFound)
+                                    .WaitAndRetryAsync(3, attempt => TimeSpan.FromMilliseconds(100));
+
+            services.AddHttpClient("RestClient")
+                .AddPolicyHandler(transientHttpErrorPolicy);
+
+            services.AddHttpClient<LoraDeviceMethodManager>(client =>
+            {
+                client.BaseAddress = new Uri(configuration.LoRaKeyManagementUrl);
+                client.DefaultRequestHeaders.Add("x-functions-key", configuration.LoRaKeyManagementCode);
+            })
+                .AddPolicyHandler(transientHttpErrorPolicy);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -213,6 +224,9 @@ namespace AzureIoTHub.Portal.Server
             protected const string StorageAccountBlobContainerNameKey = "StorageAccount:BlobContainerName";
             protected const string StorageAccountBlobContainerPartitionKeyKey = "StorageAccount:BlobContainerPartitionKey";
 
+            protected const string LoRaKeyManagementUrlKey = "LoRaKeyManagement:Url";
+            protected const string LoRaKeyManagementCodeKey = "LoRaKeyManagement:Code";
+
             internal static ConfigHandler Create(IWebHostEnvironment env, IConfiguration config)
             {
                 if (env.IsProduction())
@@ -250,6 +264,10 @@ namespace AzureIoTHub.Portal.Server
             internal abstract string StorageAccountBlobContainerName { get; }
 
             internal abstract string StorageAccountBlobContainerPartitionKey { get; }
+
+            internal abstract string LoRaKeyManagementUrl { get; }
+
+            internal abstract string LoRaKeyManagementCode { get; }
         }
 
         internal class ProductionConfigHandler : ConfigHandler
@@ -288,6 +306,10 @@ namespace AzureIoTHub.Portal.Server
             internal override string StorageAccountBlobContainerName => this.config[StorageAccountBlobContainerNameKey];
 
             internal override string StorageAccountBlobContainerPartitionKey => this.config[StorageAccountBlobContainerPartitionKeyKey];
+
+            internal override string LoRaKeyManagementUrl => this.config[LoRaKeyManagementUrlKey];
+
+            internal override string LoRaKeyManagementCode => this.config.GetConnectionString(LoRaKeyManagementCodeKey);
         }
 
         internal class DevelopmentConfigHandler : ConfigHandler
@@ -326,6 +348,10 @@ namespace AzureIoTHub.Portal.Server
             internal override string StorageAccountBlobContainerName => this.config[StorageAccountBlobContainerNameKey];
 
             internal override string StorageAccountBlobContainerPartitionKey => this.config[StorageAccountBlobContainerPartitionKeyKey];
+
+            internal override string LoRaKeyManagementUrl => this.config[LoRaKeyManagementUrlKey];
+
+            internal override string LoRaKeyManagementCode => this.config[LoRaKeyManagementCodeKey];
         }
     }
 }

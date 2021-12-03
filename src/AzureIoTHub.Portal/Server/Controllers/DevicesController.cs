@@ -6,15 +6,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net.Http.Headers;
     using System.Net.Http.Json;
-    using System.Text;
     using System.Threading.Tasks;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Models.Device;
     using AzureIoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
@@ -34,17 +32,23 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private readonly IDeviceService devicesService;
         private readonly ITableClientFactory tableClientFactory;
         private readonly IDeviceTwinMapper deviceTwinMapper;
+        private readonly ILoraDeviceMethodManager loraDeviceMethodManager;
+        private readonly ISensorCommandMapper sensorCommandMapper;
 
         public DevicesController(
             ILogger<DevicesController> logger,
             ITableClientFactory tableClientFactory,
             IDeviceService devicesService,
-            IDeviceTwinMapper deviceTwinMapper)
+            IDeviceTwinMapper deviceTwinMapper,
+            ILoraDeviceMethodManager loraDeviceMethodManager,
+            ISensorCommandMapper sensorCommandMapper)
         {
             this.logger = logger;
             this.devicesService = devicesService;
             this.tableClientFactory = tableClientFactory;
             this.deviceTwinMapper = deviceTwinMapper;
+            this.loraDeviceMethodManager = loraDeviceMethodManager;
+            this.sensorCommandMapper = sensorCommandMapper;
         }
 
         /// <summary>
@@ -159,35 +163,30 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// Permit to execute cloud to device message.
         /// </summary>
         /// <param name="deviceId">id of the device.</param>
-        /// <param name="command">the command who contain the name and the trame.</param>
+        /// <param name="commandId">the command who contain the name and the trame.</param>
         /// <returns>a CloudToDeviceMethodResult .</returns>
-        [HttpPost("{deviceId}/{methodName}")]
-        public async Task<IActionResult> ExecuteCommand(string deviceId, Command command)
+        [HttpPost("{deviceId}/{commandId}")]
+        public async Task<IActionResult> ExecuteCommand(string deviceId, string commandId)
         {
             try
             {
                 var commandEntity = this.tableClientFactory
                        .GetDeviceCommands()
-                       .Query<TableEntity>(filter: $"RowKey  eq '{command.CommandId}'")
+                       .Query<TableEntity>(filter: $"RowKey  eq '{commandId}'")
                        .Single();
 
-                JsonContent commandContent = JsonContent.Create(new
-                {
-                    rawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(commandEntity[nameof(SensorCommand.Frame)].ToString())),
-                    fport = commandEntity["port"]
-                });
+                var sensorCommand = this.sensorCommandMapper.GetSensorCommand(commandEntity);
 
-                commandContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var result = await this.loraDeviceMethodManager.ExecuteLoRaDeviceMessage(deviceId, sensorCommand);
 
-                var result = await this.devicesService.ExecuteLoraMethod(deviceId, commandContent);
-
-                this.logger.LogInformation($"{result.Content}");
+                this.logger.LogInformation($"{deviceId} - Execute command: {result}");
 
                 return this.Ok(await result.Content.ReadFromJsonAsync<dynamic>());
             }
             catch (Exception e)
             {
                 this.logger.LogError($"{deviceId} - Execute command on device failed", e);
+
                 return this.BadRequest();
             }
         }

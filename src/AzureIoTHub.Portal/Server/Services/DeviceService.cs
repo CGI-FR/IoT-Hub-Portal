@@ -192,16 +192,5 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             return await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
         }
-
-        /// <summary>
-        /// this function execute a methode on a lora device.
-        /// </summary>
-        /// <param name="deviceId">the device id.</param>
-        /// <param name="commandContent">the command.</param>
-        /// <returns>HttpResponseMessage.</returns>
-        public async Task<HttpResponseMessage> ExecuteLoraMethod(string deviceId, JsonContent commandContent)
-        {
-            return await this.http.PostAsync($"{this.configuration["IoTAzureFunction:url"]}/{deviceId}{this.configuration["IoTAzureFunction:code"]}", commandContent);
-        }
     }
 }

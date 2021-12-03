@@ -33,8 +33,6 @@ namespace AzureIoTHub.Portal.Server.Services
 
         Task<CloudToDeviceMethodResult> ExecuteC2DMethod(string deviceId, CloudToDeviceMethod method);
 
-        Task<HttpResponseMessage> ExecuteLoraMethod(string deviceId, JsonContent commandContent);
-
         Task DeleteDevice(string deviceId);
 
         Task<IEnumerable<Twin>> GetAllDevice();

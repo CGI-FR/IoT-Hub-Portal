@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
@@ -28,13 +29,16 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
         private readonly ITableClientFactory tableClientFactory;
         private readonly ISensorImageManager sensorImageManager;
+        private readonly ISensorCommandMapper sensorCommandMapper;
 
         public DeviceModelsController(
             ISensorImageManager sensorImageManager,
+            ISensorCommandMapper sensorCommandMapper,
             ITableClientFactory tableClientFactory)
         {
             this.sensorImageManager = sensorImageManager;
             this.tableClientFactory = tableClientFactory;
+            this.sensorCommandMapper = sensorCommandMapper;
         }
 
         /// <summary>
@@ -130,8 +134,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                         RowKey = element.Name
                     };
 
-                    commandEntity[nameof(SensorCommand.Name)] = element.Frame;
-                    commandEntity[nameof(SensorCommand.Port)] = element.Port;
+                    this.sensorCommandMapper.UpdateTableEntity(commandEntity, element);
 
                     await this.tableClientFactory
                         .GetDeviceCommands()
