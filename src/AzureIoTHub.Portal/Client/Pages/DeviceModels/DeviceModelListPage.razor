@@ -45,7 +45,7 @@
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="Name" Style="word-break: break-all;">
-                            <a href="/device-models/@context.Name">@context.Name</a>
+                            <a href="/device-models/@context.ModelId">@context.Name</a>
                         </MudTd>
                         <MudTd DataLabel="Description" Style="word-break: break-all; ">
                             @context.Description
@@ -54,7 +54,7 @@
                             @context.AppEUI
                         </MudTd>
                         <MudTd DataLabel="Details" Style="text-align: center">
-                            <a href="/device-models/@context.Name"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                            <a href="/device-models/@context.ModelId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
                         </MudTd>
                         <MudTd DataLabel="Delete" Style="text-align: center">
                             <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteSensorModel(context))"></MudIconButton>
