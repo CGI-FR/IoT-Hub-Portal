@@ -9,7 +9,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Threading.Tasks;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Shared.Models;
@@ -30,6 +29,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private readonly ITableClientFactory tableClientFactory;
         private readonly IDeviceModelMapper deviceModelMapper;
         private readonly ISensorCommandMapper sensorCommandMapper;
+        private readonly ISensorImageManager sensorImageManager;
 
         public DeviceModelsController(
             ISensorImageManager sensorImageManager,
@@ -40,6 +40,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             this.deviceModelMapper = deviceModelMapper;
             this.tableClientFactory = tableClientFactory;
             this.sensorCommandMapper = sensorCommandMapper;
+            this.sensorImageManager = sensorImageManager;
         }
 
         /// <summary>
@@ -145,7 +146,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             if (file != null)
             {
                 using var fileStream = file.OpenReadStream();
-                // await this.sensorImageManager.ChangeSensorImageAsync(entity.RowKey, fileStream);
+                await this.sensorImageManager.ChangeSensorImageAsync(entity.RowKey, fileStream);
             }
 
             // insertion des commant
