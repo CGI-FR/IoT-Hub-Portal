@@ -186,6 +186,9 @@
                 _sensorModel = new SensorModel();
                 _selectedImage = null;
                 Snackbar.Add("Sensor model successfully create.", Severity.Success);
+
+                // Go back to the list of devices after the deletion
+                NavigationManager.NavigateTo("device-models");
             }
         }
     }
