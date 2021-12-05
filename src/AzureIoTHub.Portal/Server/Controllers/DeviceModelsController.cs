@@ -28,15 +28,16 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private const string DefaultPartitionKey = "0";
 
         private readonly ITableClientFactory tableClientFactory;
-        private readonly ISensorImageManager sensorImageManager;
+        private readonly IDeviceModelMapper deviceModelMapper;
         private readonly ISensorCommandMapper sensorCommandMapper;
 
         public DeviceModelsController(
             ISensorImageManager sensorImageManager,
             ISensorCommandMapper sensorCommandMapper,
+            IDeviceModelMapper deviceModelMapper,
             ITableClientFactory tableClientFactory)
         {
-            this.sensorImageManager = sensorImageManager;
+            this.deviceModelMapper = deviceModelMapper;
             this.tableClientFactory = tableClientFactory;
             this.sensorCommandMapper = sensorCommandMapper;
         }
@@ -54,16 +55,28 @@ namespace AzureIoTHub.Portal.Server.Controllers
                             .Query<TableEntity>();
 
             // Converts the query result into a list of sensor models
-            var sensorsList = entities.Select(e => new SensorModel
-            {
-                ModelId = e.RowKey,
-                ImageUrl = this.sensorImageManager.ComputeImageUri(e.RowKey).ToString(),
-                Name = e[nameof(SensorModel.Name)]?.ToString(),
-                Description = e[nameof(SensorModel.Description)]?.ToString(),
-                AppEUI = e[nameof(SensorModel.AppEUI)]?.ToString()
-            });
+            var sensorsList = entities.Select(this.deviceModelMapper.CreateDeviceModel);
 
             return sensorsList;
+        }
+
+        /// <summary>
+        /// Gets a list of sensor models from an Azure DataTable.
+        /// </summary>
+        /// <returns>A list of SensorModel.</returns>
+        [HttpGet("{modelID}")]
+        public IActionResult Get(string modelID)
+        {
+            var query = this.tableClientFactory
+                            .GetDeviceTemplates()
+                            .Query<TableEntity>(t => t.RowKey == modelID);
+
+            if (!query.Any())
+            {
+                return this.NotFound();
+            }
+
+            return this.Ok(this.deviceModelMapper.CreateDeviceModel(query.Single()));
         }
 
         [HttpPost]
@@ -77,6 +90,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     PartitionKey = DefaultPartitionKey,
                     RowKey = Guid.NewGuid().ToString()
                 };
+
                 await this.SaveEntity(entity, sensorObject, file);
 
                 return this.Ok();
@@ -110,18 +124,29 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
         }
 
+        [HttpDelete("{deviceModelID}")]
+        public async Task<IActionResult> Delete(string deviceModelID)
+        {
+            var result = await this.tableClientFactory
+                .GetDeviceTemplates()
+                .DeleteEntityAsync(DefaultPartitionKey, deviceModelID);
+
+            return this.StatusCode(result.Status);
+        }
+
         private async Task SaveEntity(TableEntity entity, SensorModel sensorObject, [FromForm] IFormFile file = null)
         {
-            entity[nameof(SensorModel.Name)] = sensorObject.Name;
-            entity[nameof(SensorModel.Description)] = sensorObject.Description;
-            entity[nameof(SensorModel.AppEUI)] = sensorObject.AppEUI;
+            this.deviceModelMapper.UpdateTableEntity(entity, sensorObject);
 
             await this.tableClientFactory
                 .GetDeviceTemplates()
                 .AddEntityAsync(entity);
 
-            using var fileStream = file.OpenReadStream();
-            await this.sensorImageManager.ChangeSensorImageAsync(entity.RowKey, fileStream);
+            if (file != null)
+            {
+                using var fileStream = file.OpenReadStream();
+                // await this.sensorImageManager.ChangeSensorImageAsync(entity.RowKey, fileStream);
+            }
 
             // insertion des commant
             if (sensorObject.Commands.Count > 0)

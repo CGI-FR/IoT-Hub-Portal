@@ -105,6 +105,8 @@ namespace AzureIoTHub.Portal.Server
             services.AddTransient<IDeviceService, DeviceService>();
             services.AddTransient<IDeviceTwinMapper, DeviceTwinMapper>();
             services.AddTransient<ISensorCommandMapper, SensorCommandMapper>();
+            services.AddTransient<IDeviceModelMapper, DeviceModelMapper>();
+
             services.AddTransient<ConfigsServices>();
 
             services.AddSingleton(t =>
