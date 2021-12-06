@@ -8,7 +8,7 @@
       "publishAllPorts": true,
       "useSSL": true
     },
-    "AzureIoTHub Portal": {
+    "Azure IoT Hub Portal": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
