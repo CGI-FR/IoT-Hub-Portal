@@ -7,6 +7,9 @@
       "DockerfileRunArguments": "-p 8001:443",
       "publishAllPorts": true,
       "useSSL": true
+    },
+    "IoT Hub Portal": {
+      "commandName": "Project"
     }
   }
 }
