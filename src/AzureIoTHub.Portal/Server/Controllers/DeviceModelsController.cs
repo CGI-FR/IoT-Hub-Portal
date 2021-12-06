@@ -141,7 +141,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
             await this.tableClientFactory
                 .GetDeviceTemplates()
-                .AddEntityAsync(entity);
+                .UpsertEntityAsync(entity);
 
             if (file != null)
             {
