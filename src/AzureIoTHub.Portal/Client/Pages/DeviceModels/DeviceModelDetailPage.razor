@@ -174,7 +174,7 @@
                 }
             }
 
-            var result = await Http.PostAsync("api/DeviceModels", content);
+            var result = await Http.PutAsync("api/DeviceModels", content);
 
             if (result.IsSuccessStatusCode)
             {
