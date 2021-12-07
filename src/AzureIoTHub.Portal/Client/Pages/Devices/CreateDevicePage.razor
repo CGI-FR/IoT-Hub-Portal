@@ -168,6 +168,9 @@
     protected override async Task OnInitializedAsync()
     {
         Device.DeviceType = "LoRa Device";
+        
+        // Enable device by default
+        Device.IsEnabled = true;
 
         // Gets a list of sensor model previously registered to Azure to allow autocomplete field in the form
         SensorList = await Http.GetFromJsonAsync<SensorModel[]>("api/DeviceModels");
