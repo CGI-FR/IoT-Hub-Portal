@@ -7,7 +7,7 @@ namespace AzureIoTHub.Portal.Server.Factories
 
     public interface ITableClientFactory
     {
-        const string DeviceCommandTableName = "DeviceComamnds";
+        const string DeviceCommandTableName = "DeviceCommands";
         const string DeviceTemplateTableName = "DeviceTemplates";
 
         TableClient GetDeviceCommands();

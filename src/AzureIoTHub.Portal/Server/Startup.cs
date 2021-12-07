@@ -100,8 +100,7 @@ namespace AzureIoTHub.Portal.Server
             services.AddTransient(sp => new BlobServiceClient(configuration.StorageAccountConnectionString));
             services.AddTransient<ITableClientFactory>(sp => new TableClientFactory(configuration.StorageAccountConnectionString));
             services.AddTransient<ISensorImageManager, SensorImageManager>();
-            services.AddTransient<ILoraDeviceMethodManager, LoraDeviceMethodManager>();
-
+            // services.AddTransient<ILoraDeviceMethodManager, LoraDeviceMethodManager>();
             services.AddTransient<IDeviceService, DeviceService>();
             services.AddTransient<IDeviceTwinMapper, DeviceTwinMapper>();
             services.AddTransient<ISensorCommandMapper, SensorCommandMapper>();
@@ -150,7 +149,7 @@ namespace AzureIoTHub.Portal.Server
             services.AddHttpClient("RestClient")
                 .AddPolicyHandler(transientHttpErrorPolicy);
 
-            services.AddHttpClient<LoraDeviceMethodManager>(client =>
+            services.AddHttpClient<ILoraDeviceMethodManager, LoraDeviceMethodManager>(client =>
             {
                 client.BaseAddress = new Uri(configuration.LoRaKeyManagementUrl);
                 client.DefaultRequestHeaders.Add("x-functions-key", configuration.LoRaKeyManagementCode);
