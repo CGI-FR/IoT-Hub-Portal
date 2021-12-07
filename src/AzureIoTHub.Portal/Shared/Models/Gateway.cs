@@ -34,7 +34,7 @@ namespace AzureIoTHub.Portal.Shared.Models
 
         public int NbModule { get; set; }
 
-        public string Environement { get; set; }
+        public string Environment { get; set; }
 
         public ConfigItem LastDeployment { get; set; }
 
