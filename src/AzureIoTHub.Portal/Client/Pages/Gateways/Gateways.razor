@@ -139,7 +139,7 @@ else
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
     DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Small, FullWidth = true };
 
-    private SearchModel model = new SearchModel();
+    private SearchModel model = new SearchModel(null,"");
 
     protected override async Task OnInitializedAsync()
     {
@@ -160,6 +160,11 @@ else
 
     private bool FilterFunc(GatewayListItem element)
     {
+        if (element.Type == null)
+        {
+            element.Type = "unknow";
+        }
+
         if (
             (string.IsNullOrWhiteSpace(this.model.DeviceId) || element.DeviceId.Contains(model.DeviceId, StringComparison.OrdinalIgnoreCase))
             && (string.IsNullOrWhiteSpace(this.model.Type) || element.Type.Contains(model.Type, StringComparison.OrdinalIgnoreCase))
