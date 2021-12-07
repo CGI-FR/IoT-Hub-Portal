@@ -26,11 +26,13 @@ namespace AzureIoTHub.Portal.Server.Mappers
         public DeviceDetails CreateDeviceDetails(Twin twin)
         {
             var modelId = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId));
+            var modelName = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelName));
 
             return new DeviceDetails
             {
                 DeviceID = twin.DeviceId,
                 ModelId = modelId,
+                ModelName = modelName,
                 ImageUrl = this.sensorImageManager.ComputeImageUri(modelId),
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
@@ -40,7 +42,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 LocationCode = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.LocationCode)),
                 AssetID = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.AssetID)),
                 DeviceType = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.DeviceType)),
-                Commands = this.RetrieveCommands(modelId)
+                Commands = this.RetrieveCommands(modelName)
             };
         }
 
@@ -64,6 +66,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.LocationCode), item.LocationCode);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
+            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelName), item.ModelName);
 
             // Update the twin properties
             twin.Properties.Desired[nameof(item.AppEUI)] = item.AppEUI;
@@ -94,7 +97,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                     new Command()
                     {
                         CommandId = qEntity.RowKey,
-                        Name = qEntity[nameof(Command.Name)].ToString()
+                        Frame = qEntity[nameof(Command.Frame)].ToString()
                     });
             }
 

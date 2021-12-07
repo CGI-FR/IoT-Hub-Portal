@@ -7,6 +7,6 @@ namespace AzureIoTHub.Portal.Shared.Models.Device
     {
         public string CommandId { get; set; }
 
-        public string Name { get; set; }
+        public string Frame { get; set; }
     }
 }

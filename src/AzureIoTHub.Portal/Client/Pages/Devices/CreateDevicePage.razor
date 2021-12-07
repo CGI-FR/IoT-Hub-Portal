@@ -222,6 +222,7 @@
     private void ModelSelected(SensorModel model)
     {
         Device.ModelId = model.ModelId;
+        Device.ModelName = model.Name;
         Device.ImageUrl = new Uri(model.ImageUrl);
         Device.AppEUI = model.AppEUI ?? "Selected model contains no AppEUI value";
     }

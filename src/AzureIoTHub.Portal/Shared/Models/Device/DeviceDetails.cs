@@ -33,6 +33,8 @@ namespace AzureIoTHub.Portal.Shared.Models.Device
 
         public string ModelId { get; set; }
 
+        public string ModelName { get; set; }
+
         public List<Command> Commands { get; set; } = new List<Command>();
     }
 }

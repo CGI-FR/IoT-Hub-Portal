@@ -57,7 +57,7 @@
                                             <MudText>Model Type : </MudText>
                                         </MudItem>
                                         <MudItem md="9" sm="12">
-                                            <MudTextField @bind-Value="@Device.ModelId" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
+                                            <MudTextField @bind-Value="@Device.ModelName" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
                                         </MudItem>
                                     </MudItem>
                                     <MudItem xs="12" Class="custom-form">
@@ -154,7 +154,7 @@
                                         @foreach (var command in Device.Commands)
                                         {
                                             <MudItem xs="12" Class="custom-form">
-                                                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await ExecuteMethod(command))"> @command.Name</MudButton>
+                                                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await ExecuteMethod(command))"> @command.CommandId</MudButton>
                                             </MudItem>
                                         }
                                     </MudItem>
@@ -237,11 +237,11 @@
     private async Task ExecuteMethod(Command method)
     {
 
-        var result = await Http.PostAsJsonAsync($"api/Devices/{Device.DeviceID}/{method.Name}", method);
+        var result = await Http.PostAsJsonAsync($"api/Devices/{Device.DeviceID}/{method.CommandId}", method);
 
         if (result.IsSuccessStatusCode)
         {
-            Snackbar.Add($"{method.Name} has been successfully execute!",
+            Snackbar.Add($"{method.Frame} has been successfully execute!",
                 Severity.Success);
         }
         else
