@@ -31,7 +31,7 @@ namespace AzureIoTHub.Portal.Server.Tests
         }
 
         [Test]
-        public void RetrieveTagValue_EmptyTwin_ReturnsUndefined()
+        public void RetrieveTagValue_EmptyTwin_ReturnsNull()
         {
             // Arrange
             var twin = new Twin();
@@ -61,7 +61,7 @@ namespace AzureIoTHub.Portal.Server.Tests
         }
 
         [Test]
-        public void RetrievePropertyValue_EmptyTwin_ReturnsUndefined()
+        public void RetrievePropertyValue_EmptyTwin_ReturnsNull()
         {
             // Arrange
             var twin = new Twin();
@@ -72,7 +72,7 @@ namespace AzureIoTHub.Portal.Server.Tests
             var result = DeviceHelper.RetrievePropertyValue(twin, PROPERTY_KEY);
 
             // Assert
-            result.Contains($"undefined_{PROPERTY_KEY}");
+            Assert.IsNull(result);
         }
     }
 }

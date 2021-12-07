@@ -30,7 +30,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
 
         /// <summary>
         /// Checks if the specific property exists within the device twin,
-        /// Returns the corresponding value if so, else returns a generic value "unknow".
+        /// Returns the corresponding value if so, else returns null.
         /// </summary>
         /// <param name="item">the device twin.</param>
         /// <param name="tagName">the tag property.</param>
@@ -60,17 +60,17 @@ namespace AzureIoTHub.Portal.Server.Helpers
 
         /// <summary>
         /// Checks if the specific property exists within the device twin,
-        /// Returns the corresponding value if so, else returns a generic value "undefined".
+        /// Returns the corresponding value if so, else returns null.
         /// </summary>
         /// <param name="item">Device twin.</param>
         /// <param name="propertyName">Property to retrieve.</param>
-        /// <returns>Corresponding property value, or "undefined" if it doesn't exist.</returns>
+        /// <returns>Corresponding property value, or null if it doesn't exist.</returns>
         public static string RetrievePropertyValue(Twin item, string propertyName)
         {
             if (item.Properties.Desired.Contains(propertyName))
                 return item.Properties.Desired[propertyName];
             else
-                return "undefined_" + propertyName;
+                return null;
         }
 
         /// <summary>

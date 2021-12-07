@@ -147,7 +147,7 @@
     /// Parse the Conditions string to extract owner, environment and type values using regex.
     /// </summary>
     /// <param name="field">Specific condition to retrieve</param>
-    /// <returns>Corresponding condition value, or "undefined" if it doesn't exist.</returns>
+    /// <returns>Corresponding condition value, or an empty string if it doesn't exist.</returns>
     private string RetrieveCondition(string field)
     {
         // Condition string looks like : tags.owner='value1' and tags.env='value2' and tags.type='value3'
@@ -158,7 +158,7 @@
         }
         else
         {
-            return "undefined";
+            return string.Empty;
         }
     }
 

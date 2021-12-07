@@ -82,7 +82,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
         {
             var commands = new List<Command>();
 
-            if (deviceModel == "undefined_modelType")
+            if (deviceModel == null)
             {
                 return commands;
             }
