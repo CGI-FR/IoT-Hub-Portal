@@ -63,7 +63,7 @@
                                         <MudText>Model Type : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
-                                        <MudAutocomplete T="SensorModel"
+                                        <MudAutocomplete T="DeviceModel"
                                                          Dense="true" Variant="Variant.Outlined"
                                                          SearchFunc="@Search"
                                                          ValueChanged="@ModelSelected"
@@ -163,7 +163,7 @@
 
     private DeviceDetails Device { get; set; } = new DeviceDetails();
 
-    private IEnumerable<SensorModel> SensorList { get; set; } = new List<SensorModel>();
+    private IEnumerable<DeviceModel> DeviceModelList { get; set; } = new List<DeviceModel>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -172,8 +172,8 @@
         // Enable device by default
         Device.IsEnabled = true;
 
-        // Gets a list of sensor model previously registered to Azure to allow autocomplete field in the form
-        SensorList = await Http.GetFromJsonAsync<SensorModel[]>("api/DeviceModels");
+        // Gets a list of device model previously registered to Azure to allow autocomplete field in the form
+        DeviceModelList = await Http.GetFromJsonAsync<DeviceModel[]>("api/DeviceModels");
     }
 
     /// <summary>
@@ -205,24 +205,24 @@
     }
 
     /// <summary>
-    /// Allows to autocomplete the Sensor Model field in the form.
+    /// Allows to autocomplete the Device Model field in the form.
     /// </summary>
     /// <param name="value">Text entered in the field</param>
-    /// <returns>Item of the sensor model list that matches the user's value</returns>
-    private async Task<IEnumerable<SensorModel>> Search(string value)
+    /// <returns>Item of the device model list that matches the user's value</returns>
+    private async Task<IEnumerable<DeviceModel>> Search(string value)
     {
         // In real life use an asynchronous function for fetching data from an api.
         await Task.Delay(0);
 
         // if text is null or empty, show complete list
         if (string.IsNullOrEmpty(value))
-            return SensorList;
+            return DeviceModelList;
 
-        return SensorList
+        return DeviceModelList
                     .Where(x => x.Name.StartsWith(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    private void ModelSelected(SensorModel model)
+    private void ModelSelected(DeviceModel model)
     {
         Device.ModelId = model.ModelId;
         Device.ModelName = model.Name;

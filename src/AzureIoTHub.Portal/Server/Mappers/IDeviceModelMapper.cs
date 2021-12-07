@@ -8,8 +8,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
     public interface IDeviceModelMapper
     {
-        SensorModel CreateDeviceModel(TableEntity entity);
+        DeviceModel CreateDeviceModel(TableEntity entity);
 
-        void UpdateTableEntity(TableEntity entity, SensorModel model);
+        void UpdateTableEntity(TableEntity entity, DeviceModel model);
     }
 }

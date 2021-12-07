@@ -33,7 +33,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private readonly ITableClientFactory tableClientFactory;
         private readonly IDeviceTwinMapper deviceTwinMapper;
         private readonly ILoraDeviceMethodManager loraDeviceMethodManager;
-        private readonly ISensorCommandMapper sensorCommandMapper;
+        private readonly IDeviceModelCommandMapper deviceModelCommandMapper;
 
         public DevicesController(
             ILogger<DevicesController> logger,
@@ -41,14 +41,14 @@ namespace AzureIoTHub.Portal.Server.Controllers
             IDeviceService devicesService,
             IDeviceTwinMapper deviceTwinMapper,
             ILoraDeviceMethodManager loraDeviceMethodManager,
-            ISensorCommandMapper sensorCommandMapper)
+            IDeviceModelCommandMapper deviceModelCommandMapper)
         {
             this.logger = logger;
             this.devicesService = devicesService;
             this.tableClientFactory = tableClientFactory;
             this.deviceTwinMapper = deviceTwinMapper;
             this.loraDeviceMethodManager = loraDeviceMethodManager;
-            this.sensorCommandMapper = sensorCommandMapper;
+            this.deviceModelCommandMapper = deviceModelCommandMapper;
         }
 
         /// <summary>
@@ -175,9 +175,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
                        .Query<TableEntity>(filter: $"RowKey  eq '{commandId}'")
                        .Single();
 
-                var sensorCommand = this.sensorCommandMapper.GetSensorCommand(commandEntity);
+                var deviceModelCommand = this.deviceModelCommandMapper.GetDeviceModelCommand(commandEntity);
 
-                var result = await this.loraDeviceMethodManager.ExecuteLoRaDeviceMessage(deviceId, sensorCommand);
+                var result = await this.loraDeviceMethodManager.ExecuteLoRaDeviceMessage(deviceId, deviceModelCommand);
 
                 this.logger.LogInformation($"{deviceId} - Execute command: {result}");
 

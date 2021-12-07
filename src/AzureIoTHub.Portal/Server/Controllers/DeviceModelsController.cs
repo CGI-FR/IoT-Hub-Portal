@@ -28,43 +28,43 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
         private readonly ITableClientFactory tableClientFactory;
         private readonly IDeviceModelMapper deviceModelMapper;
-        private readonly ISensorCommandMapper sensorCommandMapper;
-        private readonly ISensorImageManager sensorImageManager;
+        private readonly IDeviceModelCommandMapper deviceModelCommandMapper;
+        private readonly IDeviceModelImageManager deviceModelImageManager;
 
         public DeviceModelsController(
-            ISensorImageManager sensorImageManager,
-            ISensorCommandMapper sensorCommandMapper,
+            IDeviceModelImageManager deviceModelImageManager,
+            IDeviceModelCommandMapper deviceModelCommandMapper,
             IDeviceModelMapper deviceModelMapper,
             ITableClientFactory tableClientFactory)
         {
             this.deviceModelMapper = deviceModelMapper;
             this.tableClientFactory = tableClientFactory;
-            this.sensorCommandMapper = sensorCommandMapper;
-            this.sensorImageManager = sensorImageManager;
+            this.deviceModelCommandMapper = deviceModelCommandMapper;
+            this.deviceModelImageManager = deviceModelImageManager;
         }
 
         /// <summary>
-        /// Gets a list of sensor models from an Azure DataTable.
+        /// Gets a list of device models from an Azure DataTable.
         /// </summary>
-        /// <returns>A list of SensorModel.</returns>
+        /// <returns>A list of DeviceModel.</returns>
         [HttpGet]
-        public IEnumerable<SensorModel> Get()
+        public IEnumerable<DeviceModel> Get()
         {
-            // PartitionKey 0 contains all sensor models
+            // PartitionKey 0 contains all device models
             var entities = this.tableClientFactory
                             .GetDeviceTemplates()
                             .Query<TableEntity>();
 
-            // Converts the query result into a list of sensor models
-            var sensorsList = entities.Select(this.deviceModelMapper.CreateDeviceModel);
+            // Converts the query result into a list of device models
+            var deviceModelList = entities.Select(this.deviceModelMapper.CreateDeviceModel);
 
-            return sensorsList;
+            return deviceModelList;
         }
 
         /// <summary>
-        /// Gets a list of sensor models from an Azure DataTable.
+        /// Gets a list of device models from an Azure DataTable.
         /// </summary>
-        /// <returns>A list of SensorModel.</returns>
+        /// <returns>A list of DeviceModel.</returns>
         [HttpGet("{modelID}")]
         public IActionResult Get(string modelID)
         {
@@ -81,18 +81,18 @@ namespace AzureIoTHub.Portal.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm] string sensor, [FromForm] IFormFile file = null)
+        public async Task<IActionResult> Post([FromForm] string deviceModel, [FromForm] IFormFile file = null)
         {
             try
             {
-                SensorModel sensorObject = JsonConvert.DeserializeObject<SensorModel>(sensor);
+                DeviceModel deviceModelObject = JsonConvert.DeserializeObject<DeviceModel>(deviceModel);
                 TableEntity entity = new TableEntity()
                 {
                     PartitionKey = DefaultPartitionKey,
                     RowKey = Guid.NewGuid().ToString()
                 };
 
-                await this.SaveEntity(entity, sensorObject, file);
+                await this.SaveEntity(entity, deviceModelObject, file);
 
                 return this.Ok();
             }
@@ -103,19 +103,19 @@ namespace AzureIoTHub.Portal.Server.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put([FromForm] string sensor, [FromForm] IFormFile file = null)
+        public async Task<IActionResult> Put([FromForm] string deviceModel, [FromForm] IFormFile file = null)
         {
             try
             {
-                SensorModel sensorObject = JsonConvert.DeserializeObject<SensorModel>(sensor);
+                DeviceModel deviceModelObject = JsonConvert.DeserializeObject<DeviceModel>(deviceModel);
 
                 TableEntity entity = new TableEntity()
                 {
                     PartitionKey = DefaultPartitionKey,
-                    RowKey = sensorObject.ModelId
+                    RowKey = deviceModelObject.ModelId
                 };
 
-                await this.SaveEntity(entity, sensorObject, file);
+                await this.SaveEntity(entity, deviceModelObject, file);
 
                 return this.Ok();
             }
@@ -135,9 +135,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return this.StatusCode(result.Status);
         }
 
-        private async Task SaveEntity(TableEntity entity, SensorModel sensorObject, [FromForm] IFormFile file = null)
+        private async Task SaveEntity(TableEntity entity, DeviceModel deviceModelObject, [FromForm] IFormFile file = null)
         {
-            this.deviceModelMapper.UpdateTableEntity(entity, sensorObject);
+            this.deviceModelMapper.UpdateTableEntity(entity, deviceModelObject);
 
             await this.tableClientFactory
                 .GetDeviceTemplates()
@@ -146,21 +146,21 @@ namespace AzureIoTHub.Portal.Server.Controllers
             if (file != null)
             {
                 using var fileStream = file.OpenReadStream();
-                await this.sensorImageManager.ChangeSensorImageAsync(entity.RowKey, fileStream);
+                await this.deviceModelImageManager.ChangeDeviceModelImageAsync(entity.RowKey, fileStream);
             }
 
             // insertion des commant
-            if (sensorObject.Commands.Count > 0)
+            if (deviceModelObject.Commands.Count > 0)
             {
-                foreach (var element in sensorObject.Commands)
+                foreach (var element in deviceModelObject.Commands)
                 {
                     TableEntity commandEntity = new TableEntity()
                     {
-                        PartitionKey = sensorObject.Name,
+                        PartitionKey = deviceModelObject.Name,
                         RowKey = element.Name
                     };
 
-                    this.sensorCommandMapper.UpdateTableEntity(commandEntity, element);
+                    this.deviceModelCommandMapper.UpdateTableEntity(commandEntity, element);
 
                     await this.tableClientFactory
                         .GetDeviceCommands()

@@ -14,12 +14,12 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
     internal class DeviceTwinMapper : IDeviceTwinMapper
     {
-        private readonly ISensorImageManager sensorImageManager;
+        private readonly IDeviceModelImageManager deviceModelImageManager;
         private readonly ITableClientFactory tableClientFactory;
 
-        public DeviceTwinMapper(ISensorImageManager sensorImageManager, ITableClientFactory tableClientFactory)
+        public DeviceTwinMapper(IDeviceModelImageManager deviceModelImageManager, ITableClientFactory tableClientFactory)
         {
-            this.sensorImageManager = sensorImageManager;
+            this.deviceModelImageManager = deviceModelImageManager;
             this.tableClientFactory = tableClientFactory;
         }
 
@@ -33,7 +33,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 DeviceID = twin.DeviceId,
                 ModelId = modelId,
                 ModelName = modelName,
-                ImageUrl = this.sensorImageManager.ComputeImageUri(modelId),
+                ImageUrl = this.deviceModelImageManager.ComputeImageUri(modelId),
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 LastActivityDate = twin.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
@@ -51,7 +51,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             return new DeviceListItem
             {
                 DeviceID = twin.DeviceId,
-                ImageUrl = this.sensorImageManager.ComputeImageUri(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))),
+                ImageUrl = this.deviceModelImageManager.ComputeImageUri(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))),
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 LastActivityDate = twin.LastActivityTime.GetValueOrDefault(DateTime.MinValue)

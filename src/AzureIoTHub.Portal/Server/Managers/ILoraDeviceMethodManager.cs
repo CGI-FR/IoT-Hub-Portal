@@ -9,6 +9,6 @@ namespace AzureIoTHub.Portal.Server.Managers
 
     public interface ILoraDeviceMethodManager
     {
-        Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, SensorCommand command);
+        Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommand command);
     }
 }

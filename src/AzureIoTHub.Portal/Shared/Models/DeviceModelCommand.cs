@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Shared.Models
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class SensorCommand
+    public class DeviceModelCommand
     {
         public string CommandId { get; set; }
 

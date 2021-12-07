@@ -11,15 +11,15 @@ namespace AzureIoTHub.Portal.Server.Managers
     using Azure.Storage.Blobs.Models;
     using Microsoft.Extensions.Logging;
 
-    public class SensorImageManager : ISensorImageManager
+    public class DeviceModelImageManager : IDeviceModelImageManager
     {
         private const string ImageContainerName = "device-images";
         private const string DefaultImageName = "default-template-icon.png";
 
         private readonly BlobServiceClient blobService;
-        private readonly ILogger<SensorImageManager> logger;
+        private readonly ILogger<DeviceModelImageManager> logger;
 
-        public SensorImageManager(ILogger<SensorImageManager> logger, BlobServiceClient blobService)
+        public DeviceModelImageManager(ILogger<DeviceModelImageManager> logger, BlobServiceClient blobService)
         {
             this.logger = logger;
             this.blobService = blobService;
@@ -30,11 +30,11 @@ namespace AzureIoTHub.Portal.Server.Managers
             blobClient.CreateIfNotExists();
         }
 
-        public async Task<Uri> ChangeSensorImageAsync(string sensorModelName, Stream stream)
+        public async Task<Uri> ChangeDeviceModelImageAsync(string deviceModelName, Stream stream)
         {
             var blobContainer = this.blobService.GetBlobContainerClient(ImageContainerName);
 
-            var blobClient = blobContainer.GetBlobClient(sensorModelName);
+            var blobClient = blobContainer.GetBlobClient(deviceModelName);
 
             this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
 
@@ -43,9 +43,9 @@ namespace AzureIoTHub.Portal.Server.Managers
             return blobClient.Uri;
         }
 
-        public Uri ComputeImageUri(string sensorModelName)
+        public Uri ComputeImageUri(string deviceModelName)
         {
-            var imageName = string.IsNullOrWhiteSpace(sensorModelName) ? DefaultImageName : sensorModelName;
+            var imageName = string.IsNullOrWhiteSpace(deviceModelName) ? DefaultImageName : deviceModelName;
 
             var container = this.blobService.GetBlobContainerClient(ImageContainerName);
             var blobClient = container.GetBlobClient(imageName);

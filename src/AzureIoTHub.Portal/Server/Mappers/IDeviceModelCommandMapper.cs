@@ -6,10 +6,10 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Shared.Models;
 
-    public interface ISensorCommandMapper
+    public interface IDeviceModelCommandMapper
     {
-        public SensorCommand GetSensorCommand(TableEntity entity);
+        public DeviceModelCommand GetDeviceModelCommand(TableEntity entity);
 
-        public void UpdateTableEntity(TableEntity commandEntity, SensorCommand element);
+        public void UpdateTableEntity(TableEntity commandEntity, DeviceModelCommand element);
     }
 }
