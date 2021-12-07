@@ -23,7 +23,7 @@ else
 {
     <MudContainer MaxWidth="MaxWidth.False">
         <MudGrid Class="search-panel">
-            <MudItem xs="12" md="6">
+            <MudItem xs="12">
                 <MudCard>
                     <MudCardHeader>
                         <CardHeaderContent>
@@ -77,6 +77,8 @@ else
                 </MudCard>
             </MudItem>
         </MudGrid>
+
+        @*lite des gateways*@
         <MudGrid>
             <MudItem xs="12">
                 <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<GatewayListItem, bool>(FilterFunc)">
@@ -137,7 +139,7 @@ else
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
     DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Small, FullWidth = true };
 
-    private SearchModel model = new SearchModel();
+    private SearchModel model = new SearchModel(null,"");
 
     protected override async Task OnInitializedAsync()
     {
@@ -158,6 +160,11 @@ else
 
     private bool FilterFunc(GatewayListItem element)
     {
+        if (element.Type == null)
+        {
+            element.Type = "unknow";
+        }
+
         if (
             (string.IsNullOrWhiteSpace(this.model.DeviceId) || element.DeviceId.Contains(model.DeviceId, StringComparison.OrdinalIgnoreCase))
             && (string.IsNullOrWhiteSpace(this.model.Type) || element.Type.Contains(model.Type, StringComparison.OrdinalIgnoreCase))

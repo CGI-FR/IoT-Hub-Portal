@@ -117,7 +117,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     // SymmetricKey = DeviceHelper.RetrieveSymmetricKey(deviceTwin.DeviceId, this.devicesService.GetDpsAttestionMechanism().Result),
                     // We retrieve the values of tags
                     Type = DeviceHelper.RetrieveTagValue(deviceTwin, "purpose"),
-                    Environement = DeviceHelper.RetrieveTagValue(deviceTwin, "env"),
+                    Environment = DeviceHelper.RetrieveTagValue(deviceTwin, "env"),
                     // We retrieve the number of connected device
                     NbDevices = await this.RetrieveNbConnectedDevice(deviceTwin.DeviceId),
                     // récupération des informations sur le modules de la gateways²
@@ -152,7 +152,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             {
                 Twin deviceTwin = new (gateway.DeviceId);
 
-                deviceTwin.Tags["env"] = gateway.Environement;
+                deviceTwin.Tags["env"] = gateway.Environment;
                 deviceTwin.Tags["purpose"] = gateway.Type;
 
                 var result = await this.devicesService.CreateDeviceWithTwin(gateway.DeviceId, true, deviceTwin, DeviceStatus.Enabled);
@@ -191,7 +191,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 device = await this.devicesService.UpdateDevice(device);
 
                 Twin deviceTwin = await this.devicesService.GetDeviceTwin(gateway.DeviceId);
-                deviceTwin.Tags["env"] = gateway.Environement;
+                deviceTwin.Tags["env"] = gateway.Environment;
                 deviceTwin = await this.devicesService.UpdateDeviceTwin(gateway.DeviceId, deviceTwin);
 
                 this.logger.LogInformation($"iot hub device was updated  {device.Id}");

@@ -18,7 +18,7 @@ namespace AzureIoTHub.Portal.Shared.Models
 
         public string Type { get; set; }
 
-        public SearchModel(string id = "", string status = "", string type = "")
+        public SearchModel(string id = null, string status = null, string type = null)
         {
             this.DeviceId = id;
             this.Status = status;
