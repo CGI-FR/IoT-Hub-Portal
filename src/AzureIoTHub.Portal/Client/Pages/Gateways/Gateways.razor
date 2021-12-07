@@ -23,7 +23,7 @@ else
 {
     <MudContainer MaxWidth="MaxWidth.False">
         <MudGrid Class="search-panel">
-            <MudItem xs="12" md="6">
+            <MudItem xs="12">
                 <MudCard>
                     <MudCardHeader>
                         <CardHeaderContent>
@@ -77,6 +77,8 @@ else
                 </MudCard>
             </MudItem>
         </MudGrid>
+
+        @*lite des gateways*@
         <MudGrid>
             <MudItem xs="12">
                 <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<GatewayListItem, bool>(FilterFunc)">
