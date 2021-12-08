@@ -29,9 +29,6 @@ else
                         <CardHeaderContent>
                             <MudText Typo="Typo.h6">Search panel</MudText>
                         </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="ResetFiltre">Reset</MudButton>
-                        </CardHeaderActions>
                     </MudCardHeader>
                     <MudCardContent>
                         <MudGrid Class="search-content">
@@ -74,6 +71,10 @@ else
                             </MudItem>
                         </MudGrid>
                     </MudCardContent>
+                    <MudCardActions>
+                        <MudSpacer></MudSpacer>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;" OnClick="ResetFiltre">Reset</MudButton>
+                    </MudCardActions>
                 </MudCard>
             </MudItem>
         </MudGrid>
