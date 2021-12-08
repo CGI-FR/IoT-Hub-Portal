@@ -19,7 +19,7 @@
                 <MudCardContent>
                     <MudGrid>
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                            <MudTextField @bind-Value="searchID" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                         </MudItem>
                         <MudItem xs="6">
                             <MudText>Status : </MudText>
@@ -79,6 +79,7 @@
                 </MudCardContent>
                 <MudCardActions>
                     <MudSpacer></MudSpacer>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;">Search</MudButton>
                     <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;" OnClick="Reset">Reset</MudButton>
                 </MudCardActions>
             </MudCard>
@@ -168,7 +169,7 @@
 
 @code {
     private DeviceListItem[] result;
-    private string searchString = "";
+    private string searchID = "";
     private string searchStatus = "";
     private string searchState = "";
     private string searchLocation = "";
@@ -205,7 +206,7 @@
     /// <returns></returns>
     private void Reset()
     {
-        searchString = "";
+        searchID = "";
         searchStatus = "";
         searchState = "";
         searchLocation = "";
@@ -234,23 +235,45 @@
     }
 
     /// <summary>
-    /// Filter the list of devices, based on fields set in the search panel
+    /// Filters the list of devices, based on fields set in the search panel
     /// </summary>
-    /// <param name="item"></param>
-    /// <returns></returns>
+    /// <param name="item">Device represented in the current row</param>
+    /// <returns>Boolean</returns>
     private bool FilterFunc(DeviceListItem item)
     {
-        bool flagName = string.IsNullOrWhiteSpace(searchString) || item.DeviceID.Contains(searchString, StringComparison.OrdinalIgnoreCase);
-        bool flagStatus = string.IsNullOrWhiteSpace(searchStatus) || item.IsEnabled.ToString().Contains(searchStatus, StringComparison.OrdinalIgnoreCase);
-        bool flagState = string.IsNullOrWhiteSpace(searchState) || item.IsConnected.ToString().Contains(searchState, StringComparison.OrdinalIgnoreCase);
-        bool flagLocation = string.IsNullOrWhiteSpace(searchLocation) || item.LocationCode.Contains(searchLocation, StringComparison.OrdinalIgnoreCase);
-        bool flagAppEUI = string.IsNullOrWhiteSpace(searchAppEUI) || item.AppEUI.Contains(searchAppEUI, StringComparison.OrdinalIgnoreCase);
-        bool flagAppKey = string.IsNullOrWhiteSpace(searchAppKey) || item.AppKey.Contains(searchAppKey, StringComparison.OrdinalIgnoreCase);
+        bool flagID = checkFlag(item.DeviceID, searchID);
+        bool flagStatus = checkFlag(item.IsEnabled.ToString(), searchStatus);
+        bool flagState = checkFlag(item.IsConnected.ToString(), searchState);
+        bool flagLocation = checkFlag(item.LocationCode, searchLocation);
+        bool flagAppEUI = checkFlag(item.AppEUI, searchAppEUI);
+        bool flagAppKey = checkFlag(item.AppKey, searchAppKey);
 
         // Current row is shown only if all the flags are true
-        if (flagName && flagStatus && flagState && flagLocation && flagAppEUI && flagAppKey)
+        if (flagID && flagStatus && flagState && flagLocation && flagAppEUI && flagAppKey)
             return true;
 
         return false;
+    }
+
+    /// <summary>
+    /// Checks if the specific device value matches the search criteria
+    /// </summary>
+    /// <param name="deviceValue">Device attribute being compared</param>
+    /// <param name="searchString">Field value in the search panel</param>
+    /// <returns>True if it matches of field is empty</returns>
+    private bool checkFlag(string deviceValue, string searchString)
+    {
+        bool flag;
+        try
+        {
+            flag = string.IsNullOrWhiteSpace(searchString) || deviceValue.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+        }
+        
+        //May happen if the device attribute is set to null
+        catch (NullReferenceException)
+        {
+            flag = false;
+        }
+        return flag;
     }
 }
