@@ -149,7 +149,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             {
                 if (DeviceHelper.RetrieveTagValue(twin, "modelName") == deviceModel.Name)
                 {
-                    return this.Unauthorized("this model is already in use by a device and cant'n be delete.");
+                    return this.Unauthorized("this model is already in use by a device and can't be deleted.");
                 }
             }
 
