@@ -16,12 +16,88 @@
                         <MudText Typo="Typo.h6">Search panel</MudText>
                     </CardHeaderContent>
                 </MudCardHeader>
+                @*                <MudCardContent>
+                    <MudGrid>
+                    <MudItem xs="12">
+                    <MudTextField @bind-Value="searchID" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="6">
+                    <MudText>Status : </MudText>
+                    <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline">
+                    <MudItem md="4" sm="12">
+                    <MudRadio Option="@("true")" Color="Color.Primary">Enabled</MudRadio>
+                    </MudItem>
+                    <MudItem md="4" sm="12">
+                    <MudRadio Option="@("false")" Color="Color.Primary">Disabled</MudRadio>
+                    </MudItem>
+                    <MudItem md="4" sm="12">
+                    <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
+                    </MudItem>
+                    </MudRadioGroup>
+                    <MudDivider Style="mx : 2em;" />
+                    <MudText>Connection state : </MudText>
+                    <MudRadioGroup @bind-SelectedOption="@searchState" Style="display:flex;align-items:baseline">
+                    <MudItem md="4" sm="12">
+                    <MudRadio Option="@("true")" Color="Color.Primary">Connected</MudRadio>
+                    </MudItem>
+                    <MudItem md="4" sm="12">
+                    <MudRadio Option="@("false")" Color="Color.Primary">Disconnected</MudRadio>
+                    </MudItem>
+                    <MudItem md="4" sm="12">
+                    <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
+                    </MudItem>
+                    </MudRadioGroup>
+                    </MudItem>
+
+                    <MudItem xs=6>
+                    <MudItem xs="12" Class="custom-form">
+                    <MudItem md="2" sm="12">
+                    <MudText>Location : </MudText>
+                    </MudItem>
+                    <MudItem md="10" sm="12">
+                    <MudTextField @bind-Value="searchLocation" Placeholder="Location" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                    </MudItem>
+                    <MudItem xs="12" Class="custom-form">
+                    <MudItem md="2" sm="12">
+                    <MudText>AppEUI : </MudText>
+                    </MudItem>
+                    <MudItem md="10" sm="12" Class="custom-form">
+                    <MudTextField @bind-Value="searchAppEUI" Placeholder="AppEUI" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                    </MudItem>
+                    <MudItem xs="12" Class="custom-form">
+                    <MudItem md="2" sm="12">
+                    <MudText>AppKey : </MudText>
+                    </MudItem>
+                    <MudItem md="10" sm="12">
+                    <MudTextField @bind-Value="searchAppKey" Placeholder="AppKey" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                    </MudItem>
+                    </MudItem>
+                    </MudGrid>
+                    </MudCardContent>*@
                 <MudCardContent>
                     <MudGrid>
-                        <MudItem xs="12">
-                            <MudTextField @bind-Value="searchID" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                        <MudItem md="6" sm="12">
+                            <MudItem xs="12" Class="custom-form" Style="margin-top:1em;margin-bottom:1em;">
+                                <MudItem md="2" sm="12">
+                                    <MudText>DeviceID : </MudText>
+                                </MudItem>
+                                <MudItem md="10" sm="12">
+                                    <MudTextField @bind-Value="searchID" Placeholder="DeviceID" Class="mb-2"></MudTextField>
+                                </MudItem>
+                            </MudItem>
+                            <MudItem xs="12" Class="custom-form" Style="margin-top:1em;margin-bottom:1em;">
+                                <MudItem md="2" sm="12">
+                                    <MudText>Location : </MudText>
+                                </MudItem>
+                                <MudItem md="10" sm="12">
+                                    <MudTextField @bind-Value="searchLocation" Placeholder="Location" Margin="Margin.Dense"></MudTextField>
+                                </MudItem>
+                            </MudItem>
                         </MudItem>
-                        <MudItem xs="6">
+                        <MudItem md="6" sm="12">
                             <MudText>Status : </MudText>
                             <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline">
                                 <MudItem md="4" sm="12">
@@ -34,7 +110,7 @@
                                     <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
                                 </MudItem>
                             </MudRadioGroup>
-                            <MudDivider />
+                            <MudDivider Style="margin-top:1em;margin-bottom:1em;" />
                             <MudText>Connection state : </MudText>
                             <MudRadioGroup @bind-SelectedOption="@searchState" Style="display:flex;align-items:baseline">
                                 <MudItem md="4" sm="12">
@@ -48,34 +124,8 @@
                                 </MudItem>
                             </MudRadioGroup>
                         </MudItem>
-
-                        <MudItem xs=6>
-                            <MudItem xs="12" Class="custom-form">
-                                <MudItem md="2" sm="12">
-                                    <MudText>Location : </MudText>
-                                </MudItem>
-                                <MudItem md="10" sm="12">
-                                    <MudTextField @bind-Value="searchLocation" Placeholder="Location" Margin="Margin.Dense"></MudTextField>
-                                </MudItem>
-                            </MudItem>
-                            <MudItem xs="12" Class="custom-form">
-                                <MudItem md="2" sm="12">
-                                    <MudText>AppEUI : </MudText>
-                                </MudItem>
-                                <MudItem md="10" sm="12" Class="custom-form">
-                                    <MudTextField @bind-Value="searchAppEUI" Placeholder="AppEUI" Margin="Margin.Dense"></MudTextField>
-                                </MudItem>
-                            </MudItem>
-                            <MudItem xs="12" Class="custom-form">
-                                <MudItem md="2" sm="12">
-                                    <MudText>AppKey : </MudText>
-                                </MudItem>
-                                <MudItem md="10" sm="12">
-                                    <MudTextField @bind-Value="searchAppKey" Placeholder="AppKey" Margin="Margin.Dense"></MudTextField>
-                                </MudItem>
-                            </MudItem>
-                        </MudItem>
                     </MudGrid>
+
                 </MudCardContent>
                 <MudCardActions>
                     <MudSpacer></MudSpacer>
@@ -119,7 +169,7 @@
                         <MudTh Style="text-align: center">Delete</MudTh>
                     </HeaderContent>
                     <RowTemplate>
-                        <MudTd  Style="text-align: center">
+                        <MudTd Style="text-align: center">
                             <img height="25" src="@context.ImageUrl" />
                         </MudTd>
                         <MudTd DataLabel="Device" Style="word-break: break-all;">
@@ -135,9 +185,9 @@
                             {
                             <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
                             }
-                        </MudTd>
-                        
-                        <MudTd DataLabel="Connection" Style="text-align: center">
+                    </MudTd>
+
+                    <MudTd DataLabel="Connection" Style="text-align: center">
                         @if (context.IsConnected)
                             {
                             <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
@@ -146,20 +196,20 @@
                             {
                             <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
                             }
-                        </MudTd>
-                        <MudTd DataLabel="LAT" Style="text-align: center">@context.LastActivityDate</MudTd>
-                        <MudTd DataLabel="Details" Style="text-align: center">
-                            <a href="devices/@context.DeviceID"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
-                        </MudTd>
-                        <MudTd DataLabel="Delete" Style="text-align: center">
-                            <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDevice(context))"></MudIconButton>
-                        </MudTd>
-                    </RowTemplate>
-                    <PagerContent>
-                        <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
-                    </PagerContent>
-                </MudTable>
-            </MudItem>
+                    </MudTd>
+                    <MudTd DataLabel="LAT" Style="text-align: center">@context.LastActivityDate</MudTd>
+                    <MudTd DataLabel="Details" Style="text-align: center">
+                        <a href="devices/@context.DeviceID"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                    </MudTd>
+                    <MudTd DataLabel="Delete" Style="text-align: center">
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDevice(context))"></MudIconButton>
+                    </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+                </PagerContent>
+            </MudTable>
+        </MudItem>
         }
         <MudItem xs="12">
             <a href="devices/new"><MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add a new device" /></a>
@@ -268,7 +318,7 @@
         {
             flag = string.IsNullOrWhiteSpace(searchString) || deviceValue.Contains(searchString, StringComparison.OrdinalIgnoreCase);
         }
-        
+
         //May happen if the device attribute is set to null
         catch (NullReferenceException)
         {
