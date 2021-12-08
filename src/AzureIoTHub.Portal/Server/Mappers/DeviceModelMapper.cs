@@ -9,30 +9,30 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
     public class DeviceModelMapper : IDeviceModelMapper
     {
-        private readonly ISensorImageManager sensorImageManager;
+        private readonly IDeviceModelImageManager deviceModelImageManager;
 
-        public DeviceModelMapper(ISensorImageManager sensorImageManager)
+        public DeviceModelMapper(IDeviceModelImageManager deviceModelImageManager)
         {
-            this.sensorImageManager = sensorImageManager;
+            this.deviceModelImageManager = deviceModelImageManager;
         }
 
-        public SensorModel CreateDeviceModel(TableEntity entity)
+        public DeviceModel CreateDeviceModel(TableEntity entity)
         {
-            return new SensorModel
+            return new DeviceModel
             {
                 ModelId = entity.RowKey,
-                ImageUrl = this.sensorImageManager.ComputeImageUri(entity.RowKey).ToString(),
-                Name = entity[nameof(SensorModel.Name)]?.ToString(),
-                Description = entity[nameof(SensorModel.Description)]?.ToString(),
-                AppEUI = entity[nameof(SensorModel.AppEUI)]?.ToString()
+                ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey).ToString(),
+                Name = entity[nameof(DeviceModel.Name)]?.ToString(),
+                Description = entity[nameof(DeviceModel.Description)]?.ToString(),
+                AppEUI = entity[nameof(DeviceModel.AppEUI)]?.ToString()
             };
         }
 
-        public void UpdateTableEntity(TableEntity entity, SensorModel model)
+        public void UpdateTableEntity(TableEntity entity, DeviceModel model)
         {
-            entity[nameof(SensorModel.Name)] = model.Name;
-            entity[nameof(SensorModel.Description)] = model.Description;
-            entity[nameof(SensorModel.AppEUI)] = model.AppEUI;
+            entity[nameof(DeviceModel.Name)] = model.Name;
+            entity[nameof(DeviceModel.Description)] = model.Description;
+            entity[nameof(DeviceModel.AppEUI)] = model.AppEUI;
         }
     }
 }

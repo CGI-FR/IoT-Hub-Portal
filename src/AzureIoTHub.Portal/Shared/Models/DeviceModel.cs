@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Shared.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-    public class SensorModel
+    public class DeviceModel
     {
         public string ModelId { get; set; }
 
@@ -20,11 +20,11 @@ namespace AzureIoTHub.Portal.Shared.Models
         [Required]
         public string AppEUI { get; set; }
 
-        public List<SensorCommand> Commands { get; set; }
+        public List<DeviceModelCommand> Commands { get; set; }
 
-        public SensorModel()
+        public DeviceModel()
         {
-            this.Commands = new List<SensorCommand>();
+            this.Commands = new List<DeviceModelCommand>();
         }
     }
 }

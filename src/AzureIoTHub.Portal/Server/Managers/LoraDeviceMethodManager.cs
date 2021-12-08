@@ -20,7 +20,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             this.httpClient = httpClient;
         }
 
-        public async Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, SensorCommand command)
+        public async Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommand command)
         {
             JsonContent commandContent = JsonContent.Create(new
             {

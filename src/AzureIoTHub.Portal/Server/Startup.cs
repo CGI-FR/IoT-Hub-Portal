@@ -99,11 +99,11 @@ namespace AzureIoTHub.Portal.Server
 
             services.AddTransient(sp => new BlobServiceClient(configuration.StorageAccountConnectionString));
             services.AddTransient<ITableClientFactory>(sp => new TableClientFactory(configuration.StorageAccountConnectionString));
-            services.AddTransient<ISensorImageManager, SensorImageManager>();
+            services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
             // services.AddTransient<ILoraDeviceMethodManager, LoraDeviceMethodManager>();
             services.AddTransient<IDeviceService, DeviceService>();
             services.AddTransient<IDeviceTwinMapper, DeviceTwinMapper>();
-            services.AddTransient<ISensorCommandMapper, SensorCommandMapper>();
+            services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
             services.AddTransient<IDeviceModelMapper, DeviceModelMapper>();
 
             services.AddTransient<ConfigsServices>();
@@ -197,7 +197,7 @@ namespace AzureIoTHub.Portal.Server
                 });
             });
 
-            await app.ApplicationServices.GetService<ISensorImageManager>().InitializeDefaultImageBlob();
+            await app.ApplicationServices.GetService<IDeviceModelImageManager>().InitializeDefaultImageBlob();
         }
 
         private Task HandleApiFallback(HttpContext context)

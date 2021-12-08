@@ -16,7 +16,7 @@
 @inject IDialogService DialogService
 
 <MudContainer MaxWidth="MaxWidth.False">
-    <EditForm Model="@_sensorModel" OnValidSubmit="OnValidation">
+    <EditForm Model="@_deviceModel" OnValidSubmit="OnValidation">
         <DataAnnotationsValidator />
         <MudCard>
             <MudCardContent>
@@ -29,7 +29,7 @@
                                 <MudText>Name :</MudText>
                             </MudItem>
                             <MudItem xs="12" md="6" sm="10">
-                                <MudTextField @bind-Value="@_sensorModel.Name" For="@(() => _sensorModel.Name)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                <MudTextField @bind-Value="@_deviceModel.Name" For="@(() => _deviceModel.Name)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                             </MudItem>
                         </MudItem>
                         <MudItem xs="12" Class="custom-form">
@@ -37,7 +37,7 @@
                                 <MudText>Description :</MudText>
                             </MudItem>
                             <MudItem xs="12" md="6" sm="6">
-                                <MudTextField @bind-Value="@_sensorModel.Description" For="@(() => _sensorModel.Description)" Margin="Margin.Dense" Variant="Variant.Outlined" Lines="5" />
+                                <MudTextField @bind-Value="@_deviceModel.Description" For="@(() => _deviceModel.Description)" Margin="Margin.Dense" Variant="Variant.Outlined" Lines="5" />
                             </MudItem>
                         </MudItem>
                     </MudItem>
@@ -48,7 +48,7 @@
                                 <MudText>AppEUI :</MudText>
                             </MudItem>
                             <MudItem xs="12" md="4" sm="10">
-                                <MudTextField @bind-Value="@_sensorModel.AppEUI" For="@(() => _sensorModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                <MudTextField @bind-Value="@_deviceModel.AppEUI" For="@(() => _deviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                             </MudItem>
                         </MudItem>
                         <MudItem xs="12" Class="custom-form">
@@ -56,7 +56,7 @@
                                 <MudText>Image :</MudText>
                             </MudItem>
                             <MudItem xs="12" md="4" sm="10">
-                                @*<MudTextField @bind-Value="@_sensorModel.AppEUI" For="@(() => _sensorModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>*@
+                                @*<MudTextField @bind-Value="@_deviceModel.AppEUI" For="@(() => _deviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>*@
                                 <InputFile id="fileInput" OnChange="UploadFiles" hidden accept=".jpg, .jpeg, .png" />
                                 <MudButton HtmlTag="label"
                                            Variant="Variant.Filled"
@@ -89,13 +89,13 @@
                             <MudText>Commands :</MudText>
                         </MudItem>
 
-                        @if (_sensorModel.Commands.Count > 0)
+                        @if (_deviceModel.Commands.Count > 0)
                         {
-                            @foreach (var element in _sensorModel.Commands)
+                            @foreach (var element in _deviceModel.Commands)
                             {
                                 <MudItem xs="12" Class="custom-form">
                                     <MudItem xs="3" md="1" sm="3">
-                                        <MudIconButton Icon="@Icons.Material.Filled.HighlightOff" Color="Color.Error" OnClick="@(() => DeleteCommand(_sensorModel.Commands.IndexOf(element)))" />
+                                        <MudIconButton Icon="@Icons.Material.Filled.HighlightOff" Color="Color.Error" OnClick="@(() => DeleteCommand(_deviceModel.Commands.IndexOf(element)))" />
                                     </MudItem>
                                     <MudItem xs="12" md="7" sm="10" Style="margin-right: 10px;">
                                         <MudTextField @bind-Value="@element.Name" Label="Command Name" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
@@ -116,13 +116,13 @@
                                 <MudIconButton ButtonType="ButtonType.Button" OnClick="AddCommand" Icon="@Icons.Material.Filled.AddCircle" Color="Color.Tertiary" />
                             </MudItem>
                             <MudItem xs="12" md="7" sm="10" Style="margin-right: 10px;">
-                                <MudTextField @bind-Value="@_sensorCommand.Name" Label="Command Name" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                <MudTextField @bind-Value="@_deviceModelCommand.Name" Label="Command Name" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                             </MudItem>
                             <MudItem xs="12" md="8" sm="10" Style="margin-right: 10px;">
-                                <MudTextField @bind-Value="@_sensorCommand.Frame" Label="Hex Trame" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                <MudTextField @bind-Value="@_deviceModelCommand.Frame" Label="Hex Trame" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                             </MudItem>
                             <MudItem xs="12" md="3" sm="10">
-                                <MudTextField @bind-Value="@_sensorCommand.Port" Label="Port" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                <MudTextField @bind-Value="@_deviceModelCommand.Port" Label="Port" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                             </MudItem>
                         </MudItem>
 
@@ -139,14 +139,14 @@
 </MudContainer>
 @code {
 
-    private SensorModel _sensorModel;
-    private SensorCommand _sensorCommand;
+    private DeviceModel _deviceModel;
+    private DeviceModelCommand _deviceModelCommand;
     private IBrowserFile _selectedImage;
 
     protected override void OnInitialized()
     {
-        _sensorModel = new SensorModel();
-        _sensorCommand = new SensorCommand();
+        _deviceModel = new DeviceModel();
+        _deviceModelCommand = new DeviceModelCommand();
     }
 
     private void UploadFiles(InputFileChangeEventArgs e)
@@ -162,11 +162,11 @@
         {
 
             content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
-            var sensorContent = JsonContent.Create(_sensorModel);
-            sensorContent.Headers.Add("Content-Disposition", "form-data; name=\"sensor\"");
-            sensorContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var deviceModelContent = JsonContent.Create(_deviceModel);
+            deviceModelContent.Headers.Add("Content-Disposition", "form-data; name=\"deviceModel\"");
+            deviceModelContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            content.Add(sensorContent, "sensor");
+            content.Add(deviceModelContent, "deviceModel");
 
             if (_selectedImage != null)
             {
@@ -183,9 +183,9 @@
 
             if (result.IsSuccessStatusCode)
             {
-                _sensorModel = new SensorModel();
+                _deviceModel = new DeviceModel();
                 _selectedImage = null;
-                Snackbar.Add("Sensor model successfully create.", Severity.Success);
+                Snackbar.Add("Device model successfully created.", Severity.Success);
 
                 // Go back to the list of devices after the deletion
                 NavigationManager.NavigateTo("device-models");
@@ -195,15 +195,15 @@
 
     private void AddCommand()
     {
-        if (_sensorCommand.Name != null && _sensorCommand.Frame != null && _sensorCommand.Port != 0)
+        if (_deviceModelCommand.Name != null && _deviceModelCommand.Frame != null && _deviceModelCommand.Port != 0)
         {
-            _sensorModel.Commands.Add(_sensorCommand);
-            _sensorCommand = new SensorCommand();
+            _deviceModel.Commands.Add(_deviceModelCommand);
+            _deviceModelCommand = new DeviceModelCommand();
         }
     }
 
     private void DeleteCommand(int index)
     {
-        _sensorModel.Commands.RemoveAt(index);
+        _deviceModel.Commands.RemoveAt(index);
     }
 }
