@@ -16,67 +16,6 @@
                         <MudText Typo="Typo.h6">Search panel</MudText>
                     </CardHeaderContent>
                 </MudCardHeader>
-                @*                <MudCardContent>
-                    <MudGrid>
-                    <MudItem xs="12">
-                    <MudTextField @bind-Value="searchID" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                    </MudItem>
-                    <MudItem xs="6">
-                    <MudText>Status : </MudText>
-                    <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline">
-                    <MudItem md="4" sm="12">
-                    <MudRadio Option="@("true")" Color="Color.Primary">Enabled</MudRadio>
-                    </MudItem>
-                    <MudItem md="4" sm="12">
-                    <MudRadio Option="@("false")" Color="Color.Primary">Disabled</MudRadio>
-                    </MudItem>
-                    <MudItem md="4" sm="12">
-                    <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
-                    </MudItem>
-                    </MudRadioGroup>
-                    <MudDivider Style="mx : 2em;" />
-                    <MudText>Connection state : </MudText>
-                    <MudRadioGroup @bind-SelectedOption="@searchState" Style="display:flex;align-items:baseline">
-                    <MudItem md="4" sm="12">
-                    <MudRadio Option="@("true")" Color="Color.Primary">Connected</MudRadio>
-                    </MudItem>
-                    <MudItem md="4" sm="12">
-                    <MudRadio Option="@("false")" Color="Color.Primary">Disconnected</MudRadio>
-                    </MudItem>
-                    <MudItem md="4" sm="12">
-                    <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
-                    </MudItem>
-                    </MudRadioGroup>
-                    </MudItem>
-
-                    <MudItem xs=6>
-                    <MudItem xs="12" Class="custom-form">
-                    <MudItem md="2" sm="12">
-                    <MudText>Location : </MudText>
-                    </MudItem>
-                    <MudItem md="10" sm="12">
-                    <MudTextField @bind-Value="searchLocation" Placeholder="Location" Margin="Margin.Dense"></MudTextField>
-                    </MudItem>
-                    </MudItem>
-                    <MudItem xs="12" Class="custom-form">
-                    <MudItem md="2" sm="12">
-                    <MudText>AppEUI : </MudText>
-                    </MudItem>
-                    <MudItem md="10" sm="12" Class="custom-form">
-                    <MudTextField @bind-Value="searchAppEUI" Placeholder="AppEUI" Margin="Margin.Dense"></MudTextField>
-                    </MudItem>
-                    </MudItem>
-                    <MudItem xs="12" Class="custom-form">
-                    <MudItem md="2" sm="12">
-                    <MudText>AppKey : </MudText>
-                    </MudItem>
-                    <MudItem md="10" sm="12">
-                    <MudTextField @bind-Value="searchAppKey" Placeholder="AppKey" Margin="Margin.Dense"></MudTextField>
-                    </MudItem>
-                    </MudItem>
-                    </MudItem>
-                    </MudGrid>
-                    </MudCardContent>*@
                 <MudCardContent>
                     <MudGrid>
                         <MudItem md="6" sm="12">
