@@ -19,11 +19,14 @@
     <EditForm Model="@_deviceModel" OnValidSubmit="OnValidation">
         <DataAnnotationsValidator />
         <MudCard>
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h4">New device model</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
             <MudCardContent>
-
                 <MudGrid>
                     <MudItem md="6" xs="12">
-
                         <MudItem xs="12" Class="custom-form">
                             <MudItem xs="12" md="2" sm="7">
                                 <MudText>Name :</MudText>
