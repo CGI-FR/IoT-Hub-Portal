@@ -9,8 +9,10 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Threading.Tasks;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Security;
     using Microsoft.AspNetCore.Authorization;
@@ -30,17 +32,20 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private readonly IDeviceModelMapper deviceModelMapper;
         private readonly IDeviceModelCommandMapper deviceModelCommandMapper;
         private readonly IDeviceModelImageManager deviceModelImageManager;
+        private readonly IDeviceService devicesService;
 
         public DeviceModelsController(
             IDeviceModelImageManager deviceModelImageManager,
             IDeviceModelCommandMapper deviceModelCommandMapper,
             IDeviceModelMapper deviceModelMapper,
+            IDeviceService devicesService,
             ITableClientFactory tableClientFactory)
         {
             this.deviceModelMapper = deviceModelMapper;
             this.tableClientFactory = tableClientFactory;
             this.deviceModelCommandMapper = deviceModelCommandMapper;
             this.deviceModelImageManager = deviceModelImageManager;
+            this.devicesService = devicesService;
         }
 
         /// <summary>
@@ -128,6 +133,26 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpDelete("{deviceModelID}")]
         public async Task<IActionResult> Delete(string deviceModelID)
         {
+            var deviceList = await this.devicesService.GetAllDevice();
+            var query = this.tableClientFactory
+                            .GetDeviceTemplates()
+                            .Query<TableEntity>(t => t.RowKey == deviceModelID);
+
+            if (!query.Any())
+            {
+                return this.NotFound();
+            }
+
+            var deviceModel = this.deviceModelMapper.CreateDeviceModel(query.Single());
+
+            foreach (var twin in deviceList)
+            {
+                if (DeviceHelper.RetrieveTagValue(twin, "modelName") == deviceModel.Name)
+                {
+                    return this.Unauthorized("this model is already in use by a device and can't be deleted.");
+                }
+            }
+
             var result = await this.tableClientFactory
                 .GetDeviceTemplates()
                 .DeleteEntityAsync(DefaultPartitionKey, deviceModelID);
