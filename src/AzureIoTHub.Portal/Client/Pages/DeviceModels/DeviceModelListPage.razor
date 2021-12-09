@@ -100,6 +100,17 @@
 
     private async Task DeleteDeviceModel(DeviceModel deviceModel)
     {
-        await Task.Delay(0); //TODO?
+        var parameters = new DialogParameters();
+        parameters.Add("deviceModelID", deviceModel.ModelId);
+        parameters.Add("deviceModelName", deviceModel.Name);
+        var result = await DialogService.Show<DeleteDeviceModelPage>("Confirm Deletion", parameters).Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+        // Update the list of devices after the deletion
+        await LoadDeviceModels();
     }
 }
