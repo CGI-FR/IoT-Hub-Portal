@@ -12,67 +12,63 @@
 @inject IModalService modal
 @inject IJSRuntime JS
 
+<MudContainer MaxWidth="MaxWidth.False">
+    <MudGrid>
+        @if (result == null)
+        {
+            <MudItem Class="custom-centered-container">
+                <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+            </MudItem>
+        }
+        else
+        {
+            <MudItem xs="12">
+                <MudTable Items="@result.Items" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
+                    <ColGroup>
+                        <col style="width: 20%;" />
+                        <col style="width: 50%;" />
+                        <col style="width: 20%;" />
+                        <col style="width: 5%;" />
+                        <col style="width: 5%;" />
+                    </ColGroup>
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Users</MudText>
+                        <MudSpacer />
+                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadUsers" Class="ma-2"></MudIconButton>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>Name</MudTh>
+                        <MudTh Style="text-align: center">User name</MudTh>
+                        <MudTh Style="text-align: center">Role</MudTh>
+                        <MudTh Style="text-align: center">Details</MudTh>
+                        <MudTh Style="text-align: center">Delete</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Name" Style="word-break: break-all;">
+                            <a href="/users">@context.DisplayName</a>
+                        </MudTd>
+                        <MudTd DataLabel="User name" Style="word-break: break-all; ">
+                            @context.UserName
+                        </MudTd>
+                        <MudTd DataLabel="Role" Style="text-align: center;">
+                            @context.Role
+                        </MudTd>
+                        <MudTd DataLabel="Details" Style="text-align: center">
+                            <a href="/users"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                        </MudTd>
+                        <MudTd DataLabel="Delete" Style="text-align: center">
+                            <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteUser(context))"></MudIconButton>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudItem>
+        }
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header card-header-primary">
-                    <h2 class="card-title ">Invite</h2>
-                    <p class="card-category">This shows the authorized users.</p>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        @if (result == null)
-                        {
-                            <p><em>Loading...</em></p>
-                        }
-                        else
-                        {
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead class="text-primary">
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>User Name</th>
-                                            <th>Role Name</th>
-                                            <th>
-
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in result.Items)
-                                        {
-                                            <tr>
-                                                <td>@item.DisplayName</td>
-                                                <td>@item.UserName</td>
-                                                <td>@item.Role</td>
-                                                <td>
-                                                    <button type="button" rel="tooltip" title="" class="btn btn-primary btn-link btn-sm" data-original-title="Edit User">
-                                                        <i class="material-icons">edit</i>
-                                                    </button>
-                                                    <button type="button" rel="tooltip" title="" @onclick="@(async () => await DeleteUser(item))" class="btn btn-danger btn-link btn-sm" data-original-title="Remove">
-                                                        <i class="material-icons">close</i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        }
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 pull-right">
-                            <button @onclick="@ShowInviteDialog" class="btn btn-primary pull-right">Invite user</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+        <MudItem xs="12">
+            <a href=""><MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Invite user" OnClick="ShowInviteDialog"/></a>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
 
 @code {
     private PaginationResult<UserListItem> result;
