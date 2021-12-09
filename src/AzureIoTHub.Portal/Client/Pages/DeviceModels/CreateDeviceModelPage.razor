@@ -71,16 +71,7 @@
 
                                 @if (_selectedImage != null)
                                 {
-                                    <ul>
-                                        <li>
-                                            <ul>
-                                                <li>Name: @_selectedImage.Name</li>
-                                                <li>Last modified: @_selectedImage.LastModified.ToString()</li>
-                                                <li>Size (bytes): @_selectedImage.Size</li>
-                                                <li>Content type: @_selectedImage.ContentType</li>
-                                            </ul>
-                                        </li>
-                                    </ul>
+                                    <img src="@imageDataUrl" alt="@_selectedImage.Name" class="img-fluid">
                                 }
                             </MudItem>
                         </MudItem>
@@ -145,6 +136,7 @@
     private DeviceModel _deviceModel;
     private DeviceModelCommand _deviceModelCommand;
     private IBrowserFile _selectedImage;
+    public string imageDataUrl;
 
     protected override void OnInitialized()
     {
@@ -152,10 +144,16 @@
         _deviceModelCommand = new DeviceModelCommand();
     }
 
-    private void UploadFiles(InputFileChangeEventArgs e)
+    private async Task UploadFiles(InputFileChangeEventArgs e)
     {
-        _selectedImage = null;
-        _selectedImage = e.File;
+        this._selectedImage = null;
+        this._selectedImage = e.File;
+
+        var format = this._selectedImage.ContentType;
+        var resizedImageFile = await this._selectedImage.RequestImageFileAsync(format, 200, 200);
+        var buffer = new byte[resizedImageFile.Size];
+        await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+        imageDataUrl = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
     }
 
 
