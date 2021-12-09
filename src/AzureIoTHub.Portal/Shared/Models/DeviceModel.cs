@@ -20,6 +20,8 @@ namespace AzureIoTHub.Portal.Shared.Models
         [Required]
         public string AppEUI { get; set; }
 
+        public string SensorDecoderURL { get; set; }
+
         public List<DeviceModelCommand> Commands { get; set; }
 
         public DeviceModel()
