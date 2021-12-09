@@ -5,12 +5,34 @@
 
 <MudDialog>
     <DialogContent>
-        <MudCard Outlined="true" Style="width:700px">
+        <MudCard Outlined="true" >
             <MudCardContent>
-                <MudText>Status : @info.Status</MudText>
-                <MudItem xs="12" sm="12" md="20">
-                    <MudTextField Disabled="true" Value="@Indent(info.Payload)" Variant="Variant.Text" Lines="25"></MudTextField>
-                </MudItem>
+
+                <MudItem xs="12">
+                <MudTable Items="@payloads" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
+                    <ColGroup>
+                        <col style="width: 20%;" />
+                        <col style="width: 10%;" />
+                        <col style="width: 30%;" />
+                    </ColGroup>
+
+                    <HeaderContent>
+                        <MudTh Style="text-align: center">Time stamp</MudTh>
+                        <MudTh Style="text-align: center">Log level</MudTh>
+                        <MudTh Style="text-align: center">Text</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Device" Style="word-break: break-all;">
+                            @context.TimeStamp
+                        </MudTd>
+                        <MudTd DataLabel="Type" Style="text-align: center">@context.LogLevel</MudTd>
+                        <MudTd DataLabel="NbDevices" Style="text-align: center;word-break: break-all;">@context.Text</MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+                    </PagerContent>
+                </MudTable>
+            </MudItem>
             </MudCardContent>
         </MudCard>
     </DialogContent>
@@ -22,14 +44,36 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public C2Dresult info { get; set; }
+    private List<PayloadModel> payloads;
+    private int[] pageSizeOptions = new int[] { 3, 5 , 10};
 
     void Cancel() => MudDialog.Cancel();
 
-    private dynamic Indent(string payload)
+    protected override  void OnInitialized()
     {
-        dynamic payloadGlo = JsonConvert.DeserializeObject(payload);
+        this.payloads = new();
+
+        dynamic payloadGlo = JsonConvert.DeserializeObject(info.Payload);
         string payloadModule = payloadGlo[0].payload;
         dynamic payloadFinal = JsonConvert.DeserializeObject(payloadModule);
-        return payloadFinal;
+
+        foreach (var item in payloadFinal)
+        {
+            this.payloads.Add(new PayloadModel
+                {
+                    Text = item.text,
+                    LogLevel = item.loglevel,
+                    Id = item.id,
+                    TimeStamp = item.timestamp
+                });
+        }
+    }
+
+    private class PayloadModel
+    {
+        public string Id{ get; set; }
+        public string Text{ get; set; }
+        public int LogLevel{ get; set; }
+        public DateTime TimeStamp{ get; set; }
     }
 }
