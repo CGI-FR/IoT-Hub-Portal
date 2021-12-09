@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Interfaces;
+    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Security;
@@ -36,17 +37,20 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private readonly RegistryManager registryManager;
         private readonly IConfiguration configuration;
         private readonly IDeviceService devicesService;
+        private readonly IConnectionStringManager connectionStringManager;
 
         public GatewaysController(
             IConfiguration configuration,
             ILogger<GatewaysController> logger,
             RegistryManager registryManager,
+            IConnectionStringManager connectionStringManager,
             IDeviceService service)
         {
             this.logger = logger;
             this.registryManager = registryManager;
             this.configuration = configuration;
             this.devicesService = service;
+            this.connectionStringManager = connectionStringManager;
         }
 
         /// <summary>
@@ -137,6 +141,19 @@ namespace AzureIoTHub.Portal.Server.Controllers
             catch (Exception e)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpGet("{deviceId}/ConnectionString")]
+        public async Task<IActionResult> GetSymmetricKey(string deviceId)
+        {
+            try
+            {
+                return this.Ok(await this.connectionStringManager.GetSymmetricKey(deviceId));
+            }
+            catch (Exception e)
+            {
+                return this.BadRequest(e.Message);
             }
         }
 

@@ -255,12 +255,16 @@ else
 
     public async Task ShowConnectionString()
     {
+        gateway.SymmetricKey = await this.Http.GetStringAsync($"api/Gateways/{gateway.DeviceId}/ConnectionString");
+
         var parameter = new DialogParameters();
+
         parameter.Add(nameof(Gateway.DeviceId), gateway.DeviceId);
         parameter.Add(nameof(Gateway.EndPoint), gateway.EndPoint);
         parameter.Add(nameof(Gateway.SymmetricKey), gateway.SymmetricKey);
 
-        var result = await DialogService.Show<ConnectionString>("ConnectionString gateway ", parameter).Result;
+
+        DialogService.Show<ConnectionString>("ConnectionString gateway ", parameter);
     }
 
     public async Task DeleteDeviceAsync()
