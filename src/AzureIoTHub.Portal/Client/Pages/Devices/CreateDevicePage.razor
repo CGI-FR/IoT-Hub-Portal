@@ -168,7 +168,7 @@
     protected override async Task OnInitializedAsync()
     {
         Device.DeviceType = "LoRa Device";
-        
+
         // Enable device by default
         Device.IsEnabled = true;
 
@@ -228,6 +228,7 @@
         Device.ModelName = model.Name;
         Device.ImageUrl = new Uri(model.ImageUrl);
         Device.AppEUI = model.AppEUI ?? "Selected model contains no AppEUI value";
+        Device.SensorDecoder = model.SensorDecoderURL;
     }
 }
 

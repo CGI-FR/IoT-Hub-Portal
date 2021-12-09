@@ -35,6 +35,8 @@ namespace AzureIoTHub.Portal.Shared.Models.Device
 
         public string ModelName { get; set; }
 
+        public string SensorDecoder { get; set; }
+
         public List<Command> Commands { get; set; } = new List<Command>();
     }
 }

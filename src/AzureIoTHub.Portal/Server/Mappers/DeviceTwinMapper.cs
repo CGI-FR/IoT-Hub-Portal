@@ -41,6 +41,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 AppKey = Helpers.DeviceHelper.RetrievePropertyValue(twin, nameof(DeviceDetails.AppKey)),
                 LocationCode = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.LocationCode)),
                 AssetID = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.AssetID)),
+                SensorDecoder = Helpers.DeviceHelper.RetrievePropertyValue(twin, nameof(DeviceDetails.SensorDecoder)),
                 DeviceType = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.DeviceType)),
                 Commands = this.RetrieveCommands(modelName)
             };
@@ -72,6 +73,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             // Update the twin properties
             twin.Properties.Desired[nameof(item.AppEUI)] = item.AppEUI;
             twin.Properties.Desired[nameof(item.AppKey)] = item.AppKey;
+            twin.Properties.Desired[nameof(item.SensorDecoder)] = item.SensorDecoder;
         }
 
         /// <summary>
