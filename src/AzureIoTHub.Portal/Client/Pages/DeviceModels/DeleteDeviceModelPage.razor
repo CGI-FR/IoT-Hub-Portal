@@ -31,12 +31,14 @@
     {
         // var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/delete", device);
         var response = await Http.DeleteAsync($"api/DeviceModels/{deviceModelID}");
+        var errorMsg = await response.Content.ReadAsStringAsync();
 
         // Prompts a snack bar to inform if the action was successful
         // TODO : Deal more effectively with error/success messages
         if (!response.IsSuccessStatusCode)
         {
-            Snackbar.Add($"Oh oh, something went wrong while deleting device model {deviceModelName}... ", Severity.Error);
+            
+            Snackbar.Add($"Oh oh, something went wrong while deleting device model {deviceModelName}... <br/>{errorMsg} ", Severity.Error);
             return;
         }
 
