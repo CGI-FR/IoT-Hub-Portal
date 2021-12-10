@@ -26,13 +26,12 @@ namespace AzureIoTHub.Portal.Server.Mappers
         public DeviceDetails CreateDeviceDetails(Twin twin)
         {
             var modelId = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId));
-            var modelName = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelName));
-
+            // var modelName = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelName));
             return new DeviceDetails
             {
                 DeviceID = twin.DeviceId,
                 ModelId = modelId,
-                ModelName = modelName,
+                // ModelName = modelName,
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(modelId),
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
@@ -43,7 +42,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 AssetID = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.AssetID)),
                 SensorDecoder = Helpers.DeviceHelper.RetrievePropertyValue(twin, nameof(DeviceDetails.SensorDecoder)),
                 DeviceType = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.DeviceType)),
-                Commands = this.RetrieveCommands(modelName)
+                Commands = this.RetrieveCommands(modelId)
             };
         }
 
@@ -68,7 +67,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.LocationCode), item.LocationCode);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
-            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelName), item.ModelName);
+            // Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelName), item.ModelName);
 
             // Update the twin properties
             twin.Properties.Desired[nameof(item.AppEUI)] = item.AppEUI;

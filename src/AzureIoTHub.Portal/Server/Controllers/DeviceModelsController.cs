@@ -181,7 +181,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 {
                     TableEntity commandEntity = new TableEntity()
                     {
-                        PartitionKey = deviceModelObject.Name,
+                        PartitionKey = entity.RowKey,
                         RowKey = element.Name
                     };
 
