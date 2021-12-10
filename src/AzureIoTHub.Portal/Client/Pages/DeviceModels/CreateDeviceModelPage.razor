@@ -56,6 +56,14 @@
                         </MudItem>
                         <MudItem xs="12" Class="custom-form">
                             <MudItem xs="12" md="2" sm="7">
+                                <MudText>Sensor Decoder URL :</MudText>
+                            </MudItem>
+                            <MudItem xs="12" md="4" sm="10">
+                                <MudTextField @bind-Value="@_deviceModel.SensorDecoderURL" For="@(() => _deviceModel.SensorDecoderURL)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                            </MudItem>
+                        </MudItem>
+                        <MudItem xs="12" Class="custom-form">
+                            <MudItem xs="12" md="2" sm="7">
                                 <MudText>Image :</MudText>
                             </MudItem>
                             <MudItem xs="12" md="4" sm="10">
@@ -171,7 +179,7 @@
 
             if (_selectedImage != null)
             {
-                using (var ms = _selectedImage.OpenReadStream(maxAllowedSize: 512000*4))
+                using (var ms = _selectedImage.OpenReadStream(maxAllowedSize: 512000 * 4))
                 {
                     var streamContent = new StreamContent(ms);
                     streamContent.Headers.ContentType = new MediaTypeHeaderValue(_selectedImage.ContentType);

@@ -24,7 +24,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey).ToString(),
                 Name = entity[nameof(DeviceModel.Name)]?.ToString(),
                 Description = entity[nameof(DeviceModel.Description)]?.ToString(),
-                AppEUI = entity[nameof(DeviceModel.AppEUI)]?.ToString()
+                AppEUI = entity[nameof(DeviceModel.AppEUI)]?.ToString(),
+                SensorDecoderURL = entity[nameof(DeviceModel.SensorDecoderURL)]?.ToString()
             };
         }
 
@@ -33,6 +34,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             entity[nameof(DeviceModel.Name)] = model.Name;
             entity[nameof(DeviceModel.Description)] = model.Description;
             entity[nameof(DeviceModel.AppEUI)] = model.AppEUI;
+            entity[nameof(DeviceModel.SensorDecoderURL)] = model.SensorDecoderURL;
         }
     }
 }
