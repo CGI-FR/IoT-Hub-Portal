@@ -1,4 +1,5 @@
 ﻿@page "/devices/{DeviceID}"
+@using AzureIoTHub.Portal.Shared.Models
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Shared.Models.Device
@@ -181,6 +182,10 @@
         {
             // Sends a GET request to the DevicesController, to retrieve the specific device from Azure IoT Hub
             Device = await Http.GetFromJsonAsync<DeviceDetails>($"api/Devices/{DeviceID}");
+
+            // Gets the DeviceModel Name from the DeviceModel ID
+            DeviceModel model = await Http.GetFromJsonAsync<DeviceModel>($"api/DeviceModels/{Device.ModelId}");
+            Device.ModelName = model.Name;
 
             // LastActivityDate set to string to have a more human-readable format
             LastActivityDateString = Device.LastActivityDate.ToString();
