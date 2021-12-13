@@ -147,7 +147,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
             foreach (var twin in deviceList)
             {
-                if (DeviceHelper.RetrieveTagValue(twin, "modelName") == deviceModel.Name)
+                if (DeviceHelper.RetrieveTagValue(twin, "modelId") == deviceModel.ModelId)
                 {
                     return this.Unauthorized("This model is already in use by a device and cannot be deleted.");
                 }

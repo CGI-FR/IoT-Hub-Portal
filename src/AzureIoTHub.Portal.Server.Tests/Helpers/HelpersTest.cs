@@ -65,7 +65,6 @@ namespace AzureIoTHub.Portal.Server.Tests
         {
             // Arrange
             var twin = new Twin();
-            const string PROPERTY_VALUE = "tag_value";
             const string PROPERTY_KEY = "tag_key";
 
             // Act
