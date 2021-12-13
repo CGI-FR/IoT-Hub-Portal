@@ -67,9 +67,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
         }
 
         /// <summary>
-        /// Gets a list of device models from an Azure DataTable.
+        /// Get a specific device model from an Azure DataTable.
         /// </summary>
-        /// <returns>A list of DeviceModel.</returns>
+        /// <returns>A DeviceModel.</returns>
         [HttpGet("{modelID}")]
         public IActionResult Get(string modelID)
         {
@@ -83,6 +83,12 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
 
             return this.Ok(this.deviceModelMapper.CreateDeviceModel(query.Single()));
+        }
+
+        [HttpGet("{modelID}/image")]
+        public Uri GetImage(string modelID)
+        {
+            return this.deviceModelImageManager.ComputeImageUri(modelID);
         }
 
         [HttpPost]
