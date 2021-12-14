@@ -73,8 +73,8 @@ else
                                             </MudRadioGroup>
                                         </MudItem>
                                     </MudItem>
-                                    <MudButton Disabled="@processing" Class="btn" OnClick="UpdateDevice" Variant="Variant.Filled" Color="Color.Dark">
-                                        @if (processing)
+                                    <MudButton Disabled="@processingUpdate" Class="btn" OnClick="UpdateDevice" Variant="Variant.Filled" Color="Color.Dark">
+                                        @if (processingUpdate)
                                         {
                                             <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
                                             <MudText Class="ms-2">Processing</MudText>
@@ -149,7 +149,18 @@ else
 
                                 <MudItem md="4" xs="12">
                                     <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" OnClick="ShowConnectionString">Show Connection String</MudButton>
-                                    <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" OnClick="DeleteDeviceAsync">Delete Gateway</MudButton>
+
+                                    <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" OnClick="ShowDeleteModal">
+                                        @if(processingDelete)
+                                        {
+                                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                                            <MudText Class="ms-2">Processing</MudText>
+                                        }
+                                        else
+                                        {
+                                            <MudText>Delete Gateway</MudText>
+                                        }
+                                    </MudButton>
                                 </MudItem>
                             </MudGrid>
                         </MudCardContent>
@@ -194,7 +205,8 @@ else
     public string deviceId { get; set; }
     private bool loading = true;
     private bool btn_disable = false;
-    private bool processing = false;
+    private bool processingUpdate = false;
+    private bool processingDelete = false;
 
     private Gateway gateway;
 
@@ -207,6 +219,7 @@ else
     public async Task LoadDevice()
     {
         gateway = await Http.GetFromJsonAsync<Gateway>($"api/Gateways/{deviceId}");
+
         if (gateway.Connection_state == "Disconnected")
         {
             btn_disable = true;
@@ -216,36 +229,37 @@ else
 
     public async Task UpdateDevice()
     {
-        processing = true;
+        processingUpdate = true;
         var result = await Http.PutAsJsonAsync($"api/Gateways/{gateway.DeviceId}", gateway);
 
         if (result.IsSuccessStatusCode)
         {
             Snackbar.Add($"Device {gateway.DeviceId} has been successfully updated!", Severity.Success);
-            processing = false;
         }
+
+        processingUpdate = false;
     }
 
     public async Task OnMethod(GatewayModule module, string methodName)
     {
         var result = await Http.PostAsJsonAsync($"api/Gateways/{gateway.DeviceId}/{module.ModuleName}/{methodName}",module);
 
-        var test = result.Content.ReadFromJsonAsync<C2Dresult>().Result;
+        var c2dResult = result.Content.ReadFromJsonAsync<C2Dresult>().Result;
 
-        if (test.Status == 200)
+        if (c2dResult.Status == 200)
         {
             Snackbar.Add("Command successfully execute.", Severity.Success);
             if (methodName == "GetModuleLogs")
             {
                 var parameter = new DialogParameters();
-                parameter.Add("info", test);
+                parameter.Add("info", c2dResult);
 
                 _ = await DialogService.Show<Logs>(" Logs gateway", parameter).Result;
             }
         }
         else
         {
-            Snackbar.Add($"Error<br>Status : {test.Status};<br>Payload : {test.Payload};", Severity.Error,
+            Snackbar.Add($"Error<br>Status : {c2dResult.Status};<br>Payload : {c2dResult.Payload};", Severity.Error,
                 (option) =>
                 {
                     option.VisibleStateDuration = 100000;
@@ -267,15 +281,21 @@ else
         DialogService.Show<ConnectionString>("ConnectionString gateway ", parameter);
     }
 
-    public async Task DeleteDeviceAsync()
+    public async Task ShowDeleteModal()
     {
-        var result = await Http.DeleteAsync($"api/Gateways/{gateway.DeviceId}");
+        processingDelete = true;
+        var parameter = new DialogParameters();
 
-        if (result.IsSuccessStatusCode)
+        parameter.Add(nameof(Gateway.DeviceId), gateway.DeviceId);
+
+        var result = await DialogService.Show<GatewayDeleteConfirmation>("GatewayDeleteConfirmation gateway ", parameter).Result;
+        processingDelete = false;
+
+        if (result.Cancelled)
         {
-            Snackbar.Add($"Device {gateway.DeviceId} has been successfully delete!", Severity.Success);
-            NavigationManager.NavigateTo("/gateways");
-
+            return;
         }
+
+        NavigationManager.NavigateTo("/gateways");
     }
 }
