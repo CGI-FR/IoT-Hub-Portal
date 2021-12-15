@@ -76,10 +76,13 @@
                                            for="fileInput">
                                     Upload an image
                                 </MudButton>
-
                                 @if (_selectedImage != null)
                                 {
-                                    <img src="@imageDataUrl" alt="@_selectedImage.Name" class="img-fluid">
+                                    <img src="@imageDataUrl" alt="@_selectedImage.Name">
+                                }
+                                else
+                                {
+                                    <img src="@imageDataUrl" alt="@imageDataUrl" class="img-device-model">
                                 }
                             </MudItem>
                         </MudItem>
@@ -135,6 +138,14 @@
     </EditForm>
 
 </MudContainer>
+
+                        @foreach(var cmd in DeviceModel.Commands)
+                        {
+                            <h3>@cmd.Name</h3>
+                            <p>@cmd.Frame</p>
+                            <p>@cmd.Port</p>
+                        }
+
 @code {
     [Parameter]
     public string ModelID { get; set; }
