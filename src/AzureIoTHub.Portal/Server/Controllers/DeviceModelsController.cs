@@ -133,7 +133,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpDelete("{deviceModelID}")]
         public async Task<IActionResult> Delete(string deviceModelID)
         {
+            // we get all devices
             var deviceList = await this.devicesService.GetAllDevice();
+            // we get the device model with a query
             var query = this.tableClientFactory
                             .GetDeviceTemplates()
                             .Query<TableEntity>(t => t.RowKey == deviceModelID);
@@ -145,11 +147,27 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
             var deviceModel = this.deviceModelMapper.CreateDeviceModel(query.Single());
 
+            var queryCommand = this.tableClientFactory
+                                   .GetDeviceCommands()
+                                   .Query<TableEntity>(t => t.PartitionKey == deviceModel.ModelId);
+
             foreach (var twin in deviceList)
             {
                 if (DeviceHelper.RetrieveTagValue(twin, "modelId") == deviceModel.ModelId)
                 {
                     return this.Unauthorized("This model is already in use by a device and cannot be deleted.");
+                }
+            }
+
+            var commands = queryCommand.Select(item => this.deviceModelCommandMapper.GetDeviceModelCommand(item)).ToList();
+
+            // if we have command
+            if (commands.Count > 0)
+            {
+                foreach (var item in commands)
+                {
+                    _ = await this.tableClientFactory
+                        .GetDeviceCommands().DeleteEntityAsync(deviceModelID, item.CommandId);
                 }
             }
 
