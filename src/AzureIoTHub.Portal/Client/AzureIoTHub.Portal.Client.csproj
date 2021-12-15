@@ -47,6 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="compilerconfig.json" />
     <Content Remove="package-lock.json" />
     <Content Remove="package.json" />
   </ItemGroup>
