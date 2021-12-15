@@ -15,11 +15,13 @@ namespace AzureIoTHub.Portal.Server.Mappers
     internal class DeviceTwinMapper : IDeviceTwinMapper
     {
         private readonly IDeviceModelImageManager deviceModelImageManager;
+        private readonly IDeviceModelCommandsManager deviceModelCommandsManager;
         private readonly ITableClientFactory tableClientFactory;
 
-        public DeviceTwinMapper(IDeviceModelImageManager deviceModelImageManager, ITableClientFactory tableClientFactory)
+        public DeviceTwinMapper(IDeviceModelImageManager deviceModelImageManager, IDeviceModelCommandsManager deviceModelCommandsManager, ITableClientFactory tableClientFactory)
         {
             this.deviceModelImageManager = deviceModelImageManager;
+            this.deviceModelCommandsManager = deviceModelCommandsManager;
             this.tableClientFactory = tableClientFactory;
         }
 
@@ -42,7 +44,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 AssetID = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.AssetID)),
                 SensorDecoder = Helpers.DeviceHelper.RetrievePropertyValue(twin, nameof(DeviceDetails.SensorDecoder)),
                 DeviceType = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.DeviceType)),
-                Commands = this.RetrieveCommands(modelId)
+                Commands = this.deviceModelCommandsManager.RetrieveCommands(modelId)
             };
         }
 
@@ -73,37 +75,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
             twin.Properties.Desired[nameof(item.AppEUI)] = item.AppEUI;
             twin.Properties.Desired[nameof(item.AppKey)] = item.AppKey;
             twin.Properties.Desired[nameof(item.SensorDecoder)] = item.SensorDecoder;
-        }
-
-        /// <summary>
-        /// Retrieve all the commands of a device.
-        /// </summary>
-        /// <param name="deviceModel"> the model type of the device.</param>
-        /// <returns>Corresponding list of commands or an empty list if it doesn't have any command.</returns>
-        private List<Command> RetrieveCommands(string deviceModel)
-        {
-            var commands = new List<Command>();
-
-            if (deviceModel == null)
-            {
-                return commands;
-            }
-
-            var queryResultsFilter = this.tableClientFactory
-                    .GetDeviceCommands()
-                    .Query<TableEntity>(filter: $"PartitionKey  eq '{deviceModel}'");
-
-            foreach (TableEntity qEntity in queryResultsFilter)
-            {
-                commands.Add(
-                    new Command()
-                    {
-                        CommandId = qEntity.RowKey,
-                        Frame = qEntity[nameof(Command.Frame)].ToString()
-                    });
-            }
-
-            return commands;
         }
     }
 }
