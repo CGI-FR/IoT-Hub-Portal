@@ -38,7 +38,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
 
-            _ = await blobClient.UploadAsync(stream);
+            _ = await blobClient.UploadAsync(stream, overwrite: true);
 
             return blobClient.Uri;
         }
