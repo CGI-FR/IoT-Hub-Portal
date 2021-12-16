@@ -10,10 +10,12 @@ namespace AzureIoTHub.Portal.Server.Mappers
     public class DeviceModelMapper : IDeviceModelMapper
     {
         private readonly IDeviceModelImageManager deviceModelImageManager;
+        private readonly IDeviceModelCommandsManager deviceModelCommandsManager;
 
-        public DeviceModelMapper(IDeviceModelImageManager deviceModelImageManager)
+        public DeviceModelMapper(IDeviceModelImageManager deviceModelImageManager, IDeviceModelCommandsManager deviceModelCommandsManager)
         {
             this.deviceModelImageManager = deviceModelImageManager;
+            this.deviceModelCommandsManager = deviceModelCommandsManager;
         }
 
         public DeviceModel CreateDeviceModel(TableEntity entity)
@@ -25,7 +27,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 Name = entity[nameof(DeviceModel.Name)]?.ToString(),
                 Description = entity[nameof(DeviceModel.Description)]?.ToString(),
                 AppEUI = entity[nameof(DeviceModel.AppEUI)]?.ToString(),
-                SensorDecoderURL = entity[nameof(DeviceModel.SensorDecoderURL)]?.ToString()
+                SensorDecoderURL = entity[nameof(DeviceModel.SensorDecoderURL)]?.ToString(),
+                Commands = this.deviceModelCommandsManager.RetrieveDeviceModelCommands(entity.RowKey)
             };
         }
 

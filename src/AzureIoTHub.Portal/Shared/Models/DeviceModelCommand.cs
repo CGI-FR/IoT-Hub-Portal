@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Shared.Models
 
     public class DeviceModelCommand
     {
+        [Required]
         public string CommandId { get; set; }
 
         [Required]
