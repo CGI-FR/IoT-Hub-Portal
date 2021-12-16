@@ -4,10 +4,13 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using System.Collections.Generic;
+    using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Models.Device;
 
     public interface IDeviceModelCommandsManager
     {
         List<Command> RetrieveCommands(string deviceModel);
+
+        List<DeviceModelCommand> RetrieveDeviceModelCommands(string deviceModel);
     }
 }

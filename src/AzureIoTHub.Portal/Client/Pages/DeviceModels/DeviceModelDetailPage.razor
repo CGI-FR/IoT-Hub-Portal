@@ -139,13 +139,6 @@
 
 </MudContainer>
 
-                        @foreach(var cmd in DeviceModel.Commands)
-                        {
-                            <h3>@cmd.Name</h3>
-                            <p>@cmd.Frame</p>
-                            <p>@cmd.Port</p>
-                        }
-
 @code {
     [Parameter]
     public string ModelID { get; set; }
