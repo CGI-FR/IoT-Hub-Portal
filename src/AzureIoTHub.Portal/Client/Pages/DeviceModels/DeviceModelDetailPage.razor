@@ -197,6 +197,10 @@
                 }
             }
 
+            // Unnecessary to send the list of commands
+            // TODO : Do this more effectively
+            DeviceModel.Commands.Clear();
+
             var result = await Http.PutAsync("api/DeviceModels", content);
 
             if (result.IsSuccessStatusCode)
