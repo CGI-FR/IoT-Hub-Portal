@@ -104,7 +104,7 @@
                             {
                                 <MudItem xs="12" Class="custom-form">
                                     <MudItem xs="3" md="1" sm="3">
-                                        <MudIconButton Icon="@Icons.Material.Filled.HighlightOff" Color="Color.Error" OnClick="@(() => DeleteCommand(DeviceModel.Commands.IndexOf(element)))" />
+                                        <MudIconButton Icon="@Icons.Material.Filled.HighlightOff" Color="Color.Error" OnClick="@(() => DeleteCommand(DeviceModel.Commands.IndexOf(element),element.Name))" />
                                     </MudItem>
                                     <MudItem xs="12" md="7" sm="10" Style="margin-right: 10px;">
                                         <MudTextField @bind-Value="@element.Name" Label="Command Name" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
@@ -236,13 +236,17 @@
     {
         if (DeviceModelCommand.Name != null && DeviceModelCommand.Frame != null && DeviceModelCommand.Port != 0)
         {
+            // var result = Http.PostAsJsonAsync<DeviceModelCommand>("api/Commands", DeviceModelCommand);
+            DeviceModelCommand.CommandId = DeviceModelCommand.Name;
+            var response = Http.PostAsJsonAsync<DeviceModelCommand>($"api/Commands/{DeviceModel.ModelId}", DeviceModelCommand);
             DeviceModel.Commands.Add(DeviceModelCommand);
             DeviceModelCommand = new DeviceModelCommand();
         }
     }
 
-    private void DeleteCommand(int index)
+    private void DeleteCommand(int index, string commandId)
     {
+        var response = Http.DeleteAsync($"api/Commands/{DeviceModel.ModelId}/{commandId}");
         DeviceModel.Commands.RemoveAt(index);
     }
 }
