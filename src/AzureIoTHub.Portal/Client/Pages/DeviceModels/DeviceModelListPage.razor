@@ -25,9 +25,10 @@
             <MudItem xs="12">
                 <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
                     <ColGroup>
+                        <col style="width: 5%;" />
                         <col style="width: 30%;" />
                         <col style="width: 30%;" />
-                        <col style="width: 30%;" />
+                        <col style="width: 25%;" />
                         <col style="width: 5%;" />
                         <col style="width: 5%;" />
                     </ColGroup>
@@ -37,6 +38,7 @@
                         <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadDeviceModels" Class="ma-2"></MudIconButton>
                     </ToolBarContent>
                     <HeaderContent>
+                        <MudTh></MudTh>
                         <MudTh>Name</MudTh>
                         <MudTh Style="text-align: center">Description</MudTh>
                         <MudTh Style="text-align: center">AppEUI</MudTh>
@@ -44,6 +46,9 @@
                         <MudTh Style="text-align: center">Delete</MudTh>
                     </HeaderContent>
                     <RowTemplate>
+                        <MudTd Style="text-align: center">
+                            <img height="25" src="@context.ImageUrl" />
+                        </MudTd>
                         <MudTd DataLabel="Name" Style="word-break: break-all;">
                             <a href="/device-models/@context.ModelId">@context.Name</a>
                         </MudTd>

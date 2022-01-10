@@ -30,22 +30,22 @@ namespace AzureIoTHub.Portal.Server.Managers
             blobClient.CreateIfNotExists();
         }
 
-        public async Task<Uri> ChangeDeviceModelImageAsync(string deviceModelName, Stream stream)
+        public async Task<Uri> ChangeDeviceModelImageAsync(string deviceModelId, Stream stream)
         {
             var blobContainer = this.blobService.GetBlobContainerClient(ImageContainerName);
 
-            var blobClient = blobContainer.GetBlobClient(deviceModelName);
+            var blobClient = blobContainer.GetBlobClient(deviceModelId);
 
             this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
 
-            _ = await blobClient.UploadAsync(stream);
+            _ = await blobClient.UploadAsync(stream, overwrite: true);
 
             return blobClient.Uri;
         }
 
-        public Uri ComputeImageUri(string deviceModelName)
+        public Uri ComputeImageUri(string deviceModelId)
         {
-            var imageName = string.IsNullOrWhiteSpace(deviceModelName) ? DefaultImageName : deviceModelName;
+            var imageName = string.IsNullOrWhiteSpace(deviceModelId) ? DefaultImageName : deviceModelId;
 
             var container = this.blobService.GetBlobContainerClient(ImageContainerName);
             var blobClient = container.GetBlobClient(imageName);

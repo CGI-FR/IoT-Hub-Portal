@@ -25,116 +25,118 @@
                 </CardHeaderContent>
             </MudCardHeader>
             <MudCardContent>
-                <MudGrid>
-                    <MudItem md="6" xs="12">
-
-                        <MudItem xs="12" Class="custom-form">
-                            <MudItem xs="12" md="2" sm="7">
-                                <MudText>Name :</MudText>
-                            </MudItem>
-                            <MudItem xs="12" md="6" sm="10">
-                                <MudTextField @bind-Value="@DeviceModel.Name" For="@(() => DeviceModel.Name)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                            </MudItem>
-                        </MudItem>
-                        <MudItem xs="12" Class="custom-form">
-                            <MudItem xs="12" md="2" sm="7">
-                                <MudText>Description :</MudText>
-                            </MudItem>
-                            <MudItem xs="12" md="6" sm="6">
-                                <MudTextField @bind-Value="@DeviceModel.Description" For="@(() => DeviceModel.Description)" Margin="Margin.Dense" Variant="Variant.Outlined" Lines="5" />
-                            </MudItem>
-                        </MudItem>
+                @if (DeviceModel.ModelId == null)
+                {
+                    <MudItem Class="custom-centered-container">
+                        <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
                     </MudItem>
+                }
+                else
+                {
+                    <MudGrid>
+                        <MudItem md="6" xs="12">
 
-                    <MudItem md="6" xs="12">
-                        <MudItem xs="12" Class="custom-form">
-                            <MudItem xs="12" md="2" sm="7">
-                                <MudText>AppEUI :</MudText>
+                            <MudItem xs="12" Class="custom-form">
+                                <MudItem xs="12" md="2" sm="7">
+                                    <MudText>Name :</MudText>
+                                </MudItem>
+                                <MudItem xs="12" md="6" sm="10">
+                                    <MudTextField @bind-Value="@DeviceModel.Name" For="@(() => DeviceModel.Name)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                </MudItem>
                             </MudItem>
-                            <MudItem xs="12" md="4" sm="10">
-                                <MudTextField @bind-Value="@DeviceModel.AppEUI" For="@(() => DeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                            <MudItem xs="12" Class="custom-form">
+                                <MudItem xs="12" md="2" sm="7">
+                                    <MudText>Description :</MudText>
+                                </MudItem>
+                                <MudItem xs="12" md="6" sm="6">
+                                    <MudTextField @bind-Value="@DeviceModel.Description" For="@(() => DeviceModel.Description)" Margin="Margin.Dense" Variant="Variant.Outlined" Lines="5" />
+                                </MudItem>
                             </MudItem>
                         </MudItem>
-                        <MudItem xs="12" Class="custom-form">
-                            <MudItem xs="12" md="2" sm="7">
-                                <MudText>Sensor Decoder URL :</MudText>
+
+                        <MudItem md="6" xs="12">
+                            <MudItem xs="12" Class="custom-form">
+                                <MudItem xs="12" md="2" sm="7">
+                                    <MudText>AppEUI :</MudText>
+                                </MudItem>
+                                <MudItem xs="12" md="4" sm="10">
+                                    <MudTextField @bind-Value="@DeviceModel.AppEUI" For="@(() => DeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                </MudItem>
                             </MudItem>
-                            <MudItem xs="12" md="4" sm="10">
-                                <MudTextField @bind-Value="@DeviceModel.SensorDecoderURL" For="@(() => DeviceModel.SensorDecoderURL)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                            <MudItem xs="12" Class="custom-form">
+                                <MudItem xs="12" md="2" sm="7">
+                                    <MudText>Sensor Decoder URL :</MudText>
+                                </MudItem>
+                                <MudItem xs="12" md="4" sm="10">
+                                    <MudTextField @bind-Value="@DeviceModel.SensorDecoderURL" For="@(() => DeviceModel.SensorDecoderURL)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                </MudItem>
                             </MudItem>
-                        </MudItem>
-                        <MudItem xs="12" Class="custom-form">
-                            <MudItem xs="12" md="2" sm="7">
-                                <MudText>Image :</MudText>
-                            </MudItem>
-                            <MudItem xs="12" md="4" sm="10">
-                                <InputFile id="fileInput" OnChange="UploadFiles" hidden accept=".jpg, .jpeg, .png" />
-                                <MudButton HtmlTag="label"
+                            <MudItem xs="12" Class="custom-form">
+                                <MudItem xs="12" md="2" sm="7">
+                                    <MudText>Image :</MudText>
+                                </MudItem>
+                                <MudItem xs="12" md="4" sm="10">
+                                    <InputFile id="fileInput" OnChange="UploadFiles" hidden accept=".jpg, .jpeg, .png" />
+                                    <MudButton HtmlTag="label"
                                            Variant="Variant.Filled"
                                            Color="Color.Primary"
                                            StartIcon="@Icons.Filled.CloudUpload"
                                            for="fileInput">
-                                    Upload an images
-                                </MudButton>
-
-                                @if (_selectedImage != null)
-                                {
-                                    <ul>
-                                        <li>
-                                            <ul>
-                                                <li>Name: @_selectedImage.Name</li>
-                                                <li>Last modified: @_selectedImage.LastModified.ToString()</li>
-                                                <li>Size (bytes): @_selectedImage.Size</li>
-                                                <li>Content type: @_selectedImage.ContentType</li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                }
+                                        Upload an image
+                                    </MudButton>
+                                    @if (_selectedImage != null)
+                                    {
+                                        <img src="@imageDataUrl" alt="@_selectedImage.Name">
+                                    }
+                                    else
+                                    {
+                                        <img src="@imageDataUrl" alt="@imageDataUrl" class="img-device-model">
+                                    }
+                                </MudItem>
                             </MudItem>
                         </MudItem>
-                    </MudItem>
 
-                    <MudItem md="6" xs="12">
-                        <MudItem md="12" xs="12">
-                            <MudText>Commands :</MudText>
-                        </MudItem>
-                        @foreach (var element in DeviceModel.Commands)
-                        {
+                        <MudItem md="6" xs="12">
+                            <MudItem md="12" xs="12">
+                                <MudText>Commands :</MudText>
+                            </MudItem>
+                            @foreach (var element in DeviceModel.Commands)
+                            {
+                                <MudItem xs="12" Class="custom-form">
+                                    <MudItem xs="3" md="1" sm="3">
+                                        <MudIconButton Icon="@Icons.Material.Filled.HighlightOff" Color="Color.Error" OnClick="@(() => DeleteCommand(DeviceModel.Commands.IndexOf(element),element.Name))" />
+                                    </MudItem>
+                                    <MudItem xs="12" md="7" sm="10" Style="margin-right: 10px;">
+                                        <MudTextField @bind-Value="@element.Name" Label="Command Name" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
+                                    </MudItem>
+                                    <MudItem xs="12" md="8" sm="10" Style="margin-right: 10px;">
+                                        <MudTextField @bind-Value="@element.Frame" Label="Hex Trame" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
+                                    </MudItem>
+                                    <MudItem xs="12" md="3" sm="10" Style="margin-right: 10px;">
+                                        <MudTextField @bind-Value="@element.Port" Label="Port" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
+                                    </MudItem>
+                                </MudItem>
+                            }
+
                             <MudItem xs="12" Class="custom-form">
+                                @* Add new Command :  *@
                                 <MudItem xs="3" md="1" sm="3">
-                                    <MudIconButton Icon="@Icons.Material.Filled.HighlightOff" Color="Color.Error" OnClick="@(() => DeleteCommand(DeviceModel.Commands.IndexOf(element)))" />
+                                    <MudIconButton ButtonType="ButtonType.Button" OnClick="AddCommand" Icon="@Icons.Material.Filled.AddCircle" Color="Color.Tertiary" />
                                 </MudItem>
                                 <MudItem xs="12" md="7" sm="10" Style="margin-right: 10px;">
-                                    <MudTextField @bind-Value="@element.Name" Label="Command Name" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
+                                    <MudTextField @bind-Value="@DeviceModelCommand.Name" Label="Command Name" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                                 </MudItem>
                                 <MudItem xs="12" md="8" sm="10" Style="margin-right: 10px;">
-                                    <MudTextField @bind-Value="@element.Frame" Label="Hex Trame" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
+                                    <MudTextField @bind-Value="@DeviceModelCommand.Frame" Label="Hex Trame" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                                 </MudItem>
-                                <MudItem xs="12" md="3" sm="10" Style="margin-right: 10px;">
-                                    <MudTextField @bind-Value="@element.Port" Label="Port" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
+                                <MudItem xs="12" md="3" sm="10">
+                                    <MudTextField @bind-Value="@DeviceModelCommand.Port" Label="Port" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                                 </MudItem>
                             </MudItem>
-                        }
 
-                        <MudItem xs="12" Class="custom-form">
-                            @* Add new Command :  *@
-                            <MudItem xs="3" md="1" sm="3">
-                                <MudIconButton ButtonType="ButtonType.Button" OnClick="AddCommand" Icon="@Icons.Material.Filled.AddCircle" Color="Color.Tertiary" />
-                            </MudItem>
-                            <MudItem xs="12" md="7" sm="10" Style="margin-right: 10px;">
-                                <MudTextField @bind-Value="@DeviceModelCommand.Name" Label="Command Name" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                            </MudItem>
-                            <MudItem xs="12" md="8" sm="10" Style="margin-right: 10px;">
-                                <MudTextField @bind-Value="@DeviceModelCommand.Frame" Label="Hex Trame" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                            </MudItem>
-                            <MudItem xs="12" md="3" sm="10">
-                                <MudTextField @bind-Value="@DeviceModelCommand.Port" Label="Port" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                            </MudItem>
                         </MudItem>
-
-                    </MudItem>
-                </MudGrid>
-
+                    </MudGrid>
+                }
             </MudCardContent>
             <MudCardActions>
                 <MudFab ButtonType="ButtonType.Submit" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Label="Save" Class="ml-auto" />
@@ -144,6 +146,7 @@
     </EditForm>
 
 </MudContainer>
+
 @code {
     [Parameter]
     public string ModelID { get; set; }
@@ -151,16 +154,24 @@
     private DeviceModel DeviceModel { get; set; } = new DeviceModel();
     private DeviceModelCommand DeviceModelCommand { get; set; } = new DeviceModelCommand();
     private IBrowserFile _selectedImage;
+    private string imageDataUrl;
 
     protected override async Task OnInitializedAsync()
     {
         DeviceModel = await Http.GetFromJsonAsync<DeviceModel>($"api/DeviceModels/{ModelID}");
+        imageDataUrl = (await Http.GetFromJsonAsync<Uri>($"api/DeviceModels/{ModelID}/image")).ToString();
     }
 
-    private void UploadFiles(InputFileChangeEventArgs e)
+    private async Task UploadFiles(InputFileChangeEventArgs e)
     {
-        _selectedImage = null;
-        _selectedImage = e.File;
+        this._selectedImage = null;
+        this._selectedImage = e.File;
+
+        var format = this._selectedImage.ContentType;
+        var resizedImageFile = await this._selectedImage.RequestImageFileAsync(format, 200, 200);
+        var buffer = new byte[resizedImageFile.Size];
+        await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+        imageDataUrl = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
     }
 
     private async Task OnValidation()
@@ -186,18 +197,25 @@
                 }
             }
 
+            // Unnecessary to send the list of commands
+            // TODO : Do this more effectively
+            DeviceModel.Commands.Clear();
+
             var result = await Http.PutAsync("api/DeviceModels", content);
 
             if (result.IsSuccessStatusCode)
             {
                 DeviceModel = new DeviceModel();
                 _selectedImage = null;
-                Snackbar.Add("Device model successfully created.", Severity.Success);
+                Snackbar.Add("Device model successfully updated.", Severity.Success);
+
+                // Go back to the list of devices after the deletion
+                NavigationManager.NavigateTo("device-models");
             }
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Prompts a pop-up windows to confirm the device's deletion.
     /// </summary>
     /// <returns></returns>
@@ -222,13 +240,17 @@
     {
         if (DeviceModelCommand.Name != null && DeviceModelCommand.Frame != null && DeviceModelCommand.Port != 0)
         {
+            // var result = Http.PostAsJsonAsync<DeviceModelCommand>("api/Commands", DeviceModelCommand);
+            DeviceModelCommand.CommandId = DeviceModelCommand.Name;
+            var response = Http.PostAsJsonAsync<DeviceModelCommand>($"api/Commands/{DeviceModel.ModelId}", DeviceModelCommand);
             DeviceModel.Commands.Add(DeviceModelCommand);
             DeviceModelCommand = new DeviceModelCommand();
         }
     }
 
-    private void DeleteCommand(int index)
+    private void DeleteCommand(int index, string commandId)
     {
+        var response = Http.DeleteAsync($"api/Commands/{DeviceModel.ModelId}/{commandId}");
         DeviceModel.Commands.RemoveAt(index);
     }
 }
