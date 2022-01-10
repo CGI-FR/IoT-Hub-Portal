@@ -177,6 +177,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 }
             }
 
+            // Image deletion
+            await this.deviceModelImageManager.DeleteDeviceModelImageAsync(deviceModelID);
+
             var result = await this.tableClientFactory
                 .GetDeviceTemplates()
                 .DeleteEntityAsync(DefaultPartitionKey, deviceModelID);

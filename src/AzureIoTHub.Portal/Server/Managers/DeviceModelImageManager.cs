@@ -43,6 +43,17 @@ namespace AzureIoTHub.Portal.Server.Managers
             return blobClient.Uri;
         }
 
+        public async Task DeleteDeviceModelImageAsync(string deviceModelId)
+        {
+            var blobContainer = this.blobService.GetBlobContainerClient(ImageContainerName);
+
+            var blobClient = blobContainer.GetBlobClient(deviceModelId);
+
+            this.logger.LogInformation($"Deleting from Blob storage :\n\t {blobClient.Uri}\n");
+
+            await blobClient.DeleteAsync();
+        }
+
         public Uri ComputeImageUri(string deviceModelId)
         {
             var imageName = string.IsNullOrWhiteSpace(deviceModelId) ? DefaultImageName : deviceModelId;
