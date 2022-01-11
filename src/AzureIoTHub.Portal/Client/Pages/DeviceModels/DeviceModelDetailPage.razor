@@ -197,7 +197,10 @@
                 }
             }
 
-            // Unnecessary to send the list of commands
+            // Add the last command entered, in case it wasn't already in the list
+            this.AddCommand();
+            
+            // Unnecessary to send the list of commands to the controller
             // TODO : Do this more effectively
             DeviceModel.Commands.Clear();
 
@@ -240,7 +243,6 @@
     {
         if (DeviceModelCommand.Name != null && DeviceModelCommand.Frame != null && DeviceModelCommand.Port != 0)
         {
-            // var result = Http.PostAsJsonAsync<DeviceModelCommand>("api/Commands", DeviceModelCommand);
             DeviceModelCommand.CommandId = DeviceModelCommand.Name;
             var response = Http.PostAsJsonAsync<DeviceModelCommand>($"api/Commands/{DeviceModel.ModelId}", DeviceModelCommand);
             DeviceModel.Commands.Add(DeviceModelCommand);
