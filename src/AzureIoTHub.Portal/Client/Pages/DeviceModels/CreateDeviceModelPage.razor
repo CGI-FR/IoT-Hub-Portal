@@ -188,6 +188,8 @@
                 }
             }
 
+            this.AddCommand(); // Add the last command entered, in case it wasn't already in the list
+            
             var result = await Http.PostAsync("api/DeviceModels", content);
 
             if (result.IsSuccessStatusCode)
