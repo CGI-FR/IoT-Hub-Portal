@@ -3,6 +3,10 @@
 .custom-form {
     display: flex !important;
     align-items: baseline !important;
+
+    .command_button {
+        padding: 3px;
+    }
 }
 
 .custom-disabled {
@@ -29,15 +33,6 @@
 
 /*//////////////////// Search Panel ////////////////*/
 .search-panel {
-    /*width: max-content;*/
-    /*padding: 5px;*/
-    /*margin-left: 25%;*/
-    /*justify-content: center;*/
-    /*margin-bottom: 15px;*/
-
-/*    .mud-grid-spacing-xs-3 {
-        display: contents;
-    }*/
 
 }
 ////////////////////////////////////////////////////////
