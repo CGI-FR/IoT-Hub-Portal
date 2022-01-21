@@ -1,7 +1,0 @@
-{
-  "version": "1.0",
-  "defaultProvider": "cdnjs",
-  "libraries": [
-    { "library": "mdbootstrap@4.1.1", "destination": "wwwroot/node_modules/"}
-  ]
-}
