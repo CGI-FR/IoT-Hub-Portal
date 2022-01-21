@@ -11,8 +11,8 @@ on:
   workflow_dispatch:
 
 env:
-  registry_name: ai4imfg0.azurecr.io
-  image_name: iothubplatformdemo
+  registry_name: ghcr.io
+  image_name: iothub-portal
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -35,8 +35,8 @@ jobs:
         uses: docker/login-action@v1.10.0
         with:
           registry: ${{ env.registry_name }}
-          username:  ${{ secrets.DOCKER_LOGIN }}
-          password:  ${{ secrets.DOCKER_PASSWORD }}
+          username:  ${{ github.actor }}
+          password:  ${{ secrets.GITHUB_TOKEN }}
 
       - name: Docker meta
         id: meta
@@ -44,7 +44,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ${{ env.registry_name }}/${{ env.image_name }}
+            ${{ env.registry_name }}/${{ github.repository_owner }}/${{ env.image_name }}
           # generate Docker tags based on the following events/attributes
           tags: |
             type=schedule
