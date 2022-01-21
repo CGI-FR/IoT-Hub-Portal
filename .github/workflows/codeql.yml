@@ -39,6 +39,10 @@ jobs:
         languages: csharp
         queries: +security-and-quality,security-extended
 
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: src/
+
     - name: Build
       run: dotnet build --configuration Release
       working-directory: src/
