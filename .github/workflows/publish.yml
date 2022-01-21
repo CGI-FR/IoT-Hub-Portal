@@ -11,9 +11,8 @@ on:
   workflow_dispatch:
 
 env:
-  registry_name: cgigeiotplatformdemocr.azurecr.io
+  registry_name: ai4imfg0.azurecr.io
   image_name: iothubplatformdemo
-  app_name: 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
