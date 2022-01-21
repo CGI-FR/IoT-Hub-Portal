@@ -1,6 +1,8 @@
 name: "Code Scanning"
 
-on:
+on:  
+  pull_request:
+    branches: [ main ]
   push:
     branches: [main]
   # pull_request:
