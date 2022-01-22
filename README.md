@@ -26,7 +26,7 @@ The following should be completed before proceeding with the IoT Hub Portal deve
 
 Our documentation is present at github page: [https://michelin.github.io/i4i-iot-hub-portal/](https://michelin.github.io/i4i-iot-hub-portal/).
 
-# Known Issues and Limitations
+## Known Issues and Limitations
 
 Refer to [Known Issues](knownissues) for known issues, gotchas and limitations.
 
