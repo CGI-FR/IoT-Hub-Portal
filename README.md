@@ -1,9 +1,9 @@
 [![Build & Test](https://github.com/michelin/i4i-iot-hub-portal/actions/workflows/build.yml/badge.svg)](https://github.com/michelin/i4i-iot-hub-portal/actions/workflows/build.yml)
 [![Continuous Deployment](https://github.com/michelin/i4i-iot-hub-portal/actions/workflows/publish.yml/badge.svg)](https://github.com/michelin/i4i-iot-hub-portal/actions/workflows/publish.yml)
 
-# IoT Hub Portal For Manufacturing
+# IoT Hub Portal
 
-This project aims to provide a solution for handling IoT Devices for Manufacturing purposes.
+This project aims to provide a solution for handling IoT Devices easyly.
 It leverages on Azure IoT Hub for connectivity and device management.
 
 This is currently in **beta** !
@@ -22,7 +22,11 @@ The following should be completed before proceeding with the IoT Hub Portal deve
 
 - You must have an Azure subscription. Get an [Azure Free account](https://azure.microsoft.com/en-us/offers/ms-azr-0044p/) to get started.
 
-# Known Issues and Limitations
+## Documentation
+
+Our documentation is present at github page: [https://michelin.github.io/i4i-iot-hub-portal/](https://michelin.github.io/i4i-iot-hub-portal/).
+
+## Known Issues and Limitations
 
 Refer to [Known Issues](knownissues) for known issues, gotchas and limitations.
 
