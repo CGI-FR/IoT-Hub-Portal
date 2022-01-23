@@ -27,7 +27,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = RoleNames.Admin)]
 
     public class ConfigsController : ControllerBase
     {

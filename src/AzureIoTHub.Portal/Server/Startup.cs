@@ -63,7 +63,6 @@ namespace AzureIoTHub.Portal.Server
                 .AddMicrosoftIdentityWebApi(
                  jwtOopts =>
                  {
-                     jwtOopts.TokenValidationParameters.RoleClaimType = "extension_Role";
                  },
                  identityOpts =>
                  {
