@@ -56,7 +56,7 @@ The template will deploy in your Azure subscription the Following resources:
             * ``User.Invite.All``
             * ``User.ManageIdentities.All``
             * ``User.Read.All``
-            * ``User.eadWrite.All``
+            * ``User.ReadWrite.All``
         * Select **Add permission**.
         * Under **Manage**, select **Expose an API**.
         * Next to **Application ID URI**, select the **Set** link.
