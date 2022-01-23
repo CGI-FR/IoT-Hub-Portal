@@ -1,0 +1,174 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "uniqueSolutionPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Prefix used for resource names. Should be unique as this will also be used for domain names."
+            }
+        },
+        "b2cDirectoryName": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "The Azure AD B2C Tenant name"
+            }
+        },
+        "tenantId": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "The Azure AD B2C Tenant Id"
+            }
+        },
+        "apiClientId": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "The API client ID for the B2C tenant"
+            }
+        },
+        "apiClientSecret": {
+            "defaultValue": "",
+            "type": "securestring",
+            "metadata": {
+                "description": "The API client Secret for the B2C tenant"
+            }
+        },
+        "clientId": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "The client ID for the B2C tenant"
+            }
+        },
+        "edgeGatewayName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Edge gateway"
+            }
+        },
+        "deployDevice": {
+            "type": "bool",
+            "metadata": {
+                "description": "Provision a final LoRa device in the IoT hub in addition to the gateway"
+            }
+        },
+        "resetPin": {
+            "type": "int",
+            "metadata": {
+                "description": "Provide the reset pin value of your gateway. Please refer to the doc if you are unfamiliar with the value"
+            }
+        },
+        "region": {
+            "type": "string",
+            "allowedValues": [
+                "EU",
+                "US"
+            ],
+            "defaultValue": "EU",
+            "metadata": {
+                "description": "In what region is your gateway deployed?"
+            }
+        },
+        "spiSpeed": {
+            "type": "int",
+            "allowedValues": [
+                8,
+                2
+            ],
+            "defaultValue": 8,
+            "metadata": {
+                "description": "[In Mbps] Custom SPI speed for your gateway, currently only supported for ARM gateways"
+            }
+        },
+        "spiDev": {
+            "type": "int",
+            "allowedValues": [
+                1,
+                2
+            ],
+            "defaultValue": 2,
+            "metadata": {
+                "description": "SPI Dev version for x86 based gateway"
+            }
+        }
+    },
+    "variables": {
+        "startKitDeploymentName": "lorawan-starter-kit",
+        "portalDeploymentName": "iothub-portal"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "[variables('startKitDeploymentName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/Azure/iotedge-lorawan-starterkit/master/Template/azuredeploy.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "uniqueSolutionPrefix": {
+                        "value": "[parameters('uniqueSolutionPrefix')]"
+                    },
+                    "edgeGatewayName": {
+                        "value": "[parameters('edgeGatewayName')]"
+                    },
+                    "deployDevice": {
+                        "value": "[parameters('deployDevice')]"
+                    },
+                    "resetPin": {
+                        "value": "[parameters('resetPin')]"
+                    },
+                    "region": {
+                        "value": "[parameters('region')]"
+                    },
+                    "spiSpeed": {
+                        "value": "[parameters('spiSpeed')]"
+                    },
+                    "spiDev": {
+                        "value": "[parameters('spiDev')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "[variables('portalDeploymentName')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', variables('startKitDeploymentName'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/michelin/i4i-iot-hub-portal/main/templates/portalDeploy.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "uniqueSolutionPrefix": {
+                        "value": "[parameters('uniqueSolutionPrefix')]"
+                    },
+                    "b2cDirectoryName": {
+                        "value": "[parameters('b2cDirectoryName')]"
+                    },
+                    "tenantId": {
+                        "value": "[parameters('tenantId')]"
+                    },
+                    "apiClientId": {
+                        "value": "[parameters('apiClientId')]"
+                    },
+                    "apiClientSecret": {
+                        "value": "[parameters('apiClientSecret')]"
+                    },
+                    "clientId": {
+                        "value": "[parameters('clientId')]"
+                    }
+                }
+            }
+        }
+    ]
+}
