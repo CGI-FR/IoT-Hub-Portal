@@ -43,14 +43,6 @@ The template will deploy in your Azure subscription the Following resources:
         * Under **Configured permissions**, select **Add a permission**.
         * Select the **Microsoft APIs** tab.
         * Under **Commonly used Microsoft APIs**, select **Microsoft Graph**.
-        * Select **Delegated permissions**.
-        * Under **Delegated permissions**, select: 
-            * ``openid``
-            * ``offline_access``
-        * Select **Add permission**.
-        * Under **Configured permissions**, select **Add a permission**.
-        * Select the **Microsoft APIs** tab.
-        * Under **Commonly used Microsoft APIs**, select **Microsoft Graph**.
         * Select **Application permissions**.
         * Under **Application permissions**, expand **User**, then select: 
             * ``User.Invite.All``
@@ -58,6 +50,7 @@ The template will deploy in your Azure subscription the Following resources:
             * ``User.Read.All``
             * ``User.ReadWrite.All``
         * Select **Add permission**.
+        * If you're prompted to select an account, select your currently signed-in administrator account, or sign in      * with an account in your Azure AD B2C tenant that's been assigned at least the Cloud application administrator       * role.
         * Under **Manage**, select **Expose an API**.
         * Next to **Application ID URI**, select the **Set** link.
         * Under **Scopes defined by this API**, select **Add a scope**.
