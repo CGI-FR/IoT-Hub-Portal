@@ -8,28 +8,13 @@ It leverages on Azure IoT Hub for connectivity and device management.
 
 This is currently in **beta** !
 
-## Features
+## Quickstart
 
-* Portal Authentication
-* IoT Device & device Model management
-* IoT Edge device management
-* C2D Methods
-* LoRA WAN device connectivity
-
-## Prerequisites
-
-
-
-## Documentation
-
-Our documentation is present at github page: [https://michelin.github.io/i4i-iot-hub-portal/](https://michelin.github.io/i4i-iot-hub-portal/).
-
-
+See : [Quick Start Page](./docs/quickstart.md)
 
 ## Support
 
-This is an open source solution.
-For bugs and issues with the codebase please log an issue in this repo.
+See : [Issues Page](./docs/issues.md)
 
 ## Credits
 

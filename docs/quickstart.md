@@ -28,6 +28,7 @@ The template will deploy in your Azure subscription the Following resources:
 
 1. Choose a solution prefix for your deployment
 1. Create an Azure AD B2C Tenant (see: [https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-tenant#create-an-azure-ad-b2c-tenant](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-tenant#create-an-azure-ad-b2c-tenant))
+    * Record the **tenant ID** and the **tenant name**.
 1. Configure the requiered AD Applications.
     1. Create the **IoT Hub Portal API** Application:
         * Select **App registrations**, and then select **New registration**.
@@ -64,6 +65,7 @@ The template will deploy in your Azure subscription the Following resources:
         * Enter a Name for the application. For example, **IoT Hub Portal Client**.
         * Under **Redirect URI**, select **Web**, and then enter an expected endpoint for your portal (ex: _https://**solutionPrefix**portal.azurewebsites.net/authentication/login-callback_)
         * Select **Register**.
+        * Record the **Application (client) ID** for use in your web client.
         * Select **App registrations**, and then select the web application that should have access to the API.
         * Under **Manage**, select **API permissions**.
         * Under **Configured permissions**, select **Add a permission**.
@@ -82,4 +84,19 @@ The template will deploy in your Azure subscription the Following resources:
         <img src="http://azuredeploy.net/deploybutton.png"/>
     </a>
 
+1. You will get to a page asking you to fill the following fields :
+    * **Resource Group**: A logical "folder" where all the template resource would be put into, just choose a meaningful name. 
+    * **Location**: In which DataCenter the resources should be deployed. Make sure to choose a location where IoT Hub is available
+    * **Unique Solution Prefix**: A string that would be used as prefix for all the resources name to ensure their uniqueness.
+    * **B2c Directory Name**: The name of the B2C directory that will be used to authenticate the portal.
+    * **Tenant Id**: the ID of the B2C tenant that will be used to authenticate the portal.
+    * **Api Client Id**: the ID of the API client that will be used to authenticate the portal.
+    * **Api Client Secret**: the secret of the API client that will be used to authenticate the portal.
+    * **Client Id**: the ID of the web client that will be used to authenticate the portal.
+    * **Edge gateway name**: the name of your LoRa Gateway node in the IoT Hub.
+    * **Deploy Device**: Do you want demo end devices to be already provisioned (one using OTAA and one using ABP)? If yes set this to true, the code located in the Arduino folder would be ready to use immediately.
+    * **Reset pin**:  The reset pin of your gateway (the value should be 7 for the Seed Studio LoRaWan, 25 for the IC880A)
+    * **Region**:  In what region are you operating your device (currently only EU868 and US915 is supported)
+
+    > see: [https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure](https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure) for more information about the LoRaWan IoT Hub and Azure deployment.
 
