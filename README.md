@@ -18,17 +18,13 @@ This is currently in **beta** !
 
 ## Prerequisites
 
-The following should be completed before proceeding with the IoT Hub Portal development or deployment in your environment.
 
-- You must have an Azure subscription. Get an [Azure Free account](https://azure.microsoft.com/en-us/offers/ms-azr-0044p/) to get started.
 
 ## Documentation
 
 Our documentation is present at github page: [https://michelin.github.io/i4i-iot-hub-portal/](https://michelin.github.io/i4i-iot-hub-portal/).
 
-## Known Issues and Limitations
 
-Refer to [Known Issues](knownissues) for known issues, gotchas and limitations.
 
 ## Support
 
