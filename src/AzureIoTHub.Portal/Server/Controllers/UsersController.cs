@@ -18,7 +18,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = RoleNames.Admin)]
     public class UsersController : Controller
     {
         private readonly GraphServiceClient graphClient;

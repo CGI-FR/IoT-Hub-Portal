@@ -23,7 +23,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
 
-    [Authorize(Roles = RoleNames.Admin)]
     [ApiController]
     [Route("api/[controller]")]
     public class DevicesController : ControllerBase

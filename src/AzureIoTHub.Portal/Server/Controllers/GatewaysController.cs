@@ -29,7 +29,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = RoleNames.Admin)]
     public class GatewaysController : ControllerBase
     {
         private readonly ILogger<GatewaysController> logger;
