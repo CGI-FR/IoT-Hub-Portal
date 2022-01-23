@@ -46,7 +46,7 @@ The template will deploy in your Azure subscription the Following resources:
         * Select **Delegated permissions**.
         * Under **Delegated permissions**, select: 
             * ``openid``
-            * ``offline_access`
+            * ``offline_access``
         * Select **Add permission**.
         * Under **Configured permissions**, select **Add a permission**.
         * Select the **Microsoft APIs** tab.
@@ -66,7 +66,7 @@ The template will deploy in your Azure subscription the Following resources:
             * **Admin consent display name**: ``Access to the Portal API``
             * **Admin consent description**: ``Allows the application to get access to the Portal API``
 
-    1. Create the **IoT Hub Portal** Application:
+    1. Create the **IoT Hub Portal Client** Application:
         * Select **App registrations**, and then select **New registration**.
         * Enter a Name for the application. For example, **IoT Hub Portal Client**.
         * Under **Redirect URI**, select **Web**, and then enter an expected endpoint for your portal (ex: _https://**solutionPrefix**portal.azurewebsites.net/authentication/login-callback_)
@@ -88,3 +88,5 @@ The template will deploy in your Azure subscription the Following resources:
     <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmichelin%2Fi4i-iot-hub-portal%2Fmain%2Ftemplates%2Fazuredeploy.json" target="_blank">
         <img src="http://azuredeploy.net/deploybutton.png"/>
     </a>
+
+
