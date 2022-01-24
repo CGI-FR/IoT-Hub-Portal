@@ -224,11 +224,23 @@
 
     private void ModelSelected(DeviceModel model)
     {
-        Device.ModelId = model.ModelId;
-        Device.ModelName = model.Name;
-        Device.ImageUrl = new Uri(model.ImageUrl);
-        Device.AppEUI = model.AppEUI ?? "Selected model contains no AppEUI value";
-        Device.SensorDecoder = model.SensorDecoderURL;
+        // Reset all the other fields if the Model Type field is cleared
+        if(model == null)
+        {
+            Device.ModelId = "";
+            Device.ModelName = "";
+            Device.ImageUrl = null;
+            Device.AppEUI = "";
+            Device.SensorDecoder = "";
+        }
+        else
+        {
+            Device.ModelId = model.ModelId;
+            Device.ModelName = model.Name;
+            Device.ImageUrl = new Uri(model.ImageUrl);
+            Device.AppEUI = model.AppEUI ?? "Selected model contains no AppEUI value";
+            Device.SensorDecoder = model.SensorDecoderURL;            
+        }
     }
 }
 
