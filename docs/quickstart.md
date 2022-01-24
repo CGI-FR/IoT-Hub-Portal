@@ -36,9 +36,7 @@ The template will deploy in your Azure subscription the Following resources:
 
 1. Press on the button here below to start your Azure Deployment.
 
-    <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmichelin%2Fi4i-iot-hub-portal%2Fmain%2Ftemplates%2Fazuredeploy.json" target="_blank">
-        <img src="http://azuredeploy.net/deploybutton.png"/>
-    </a>
+    [![Deploy](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmichelin%2Fi4i-iot-hub-portal%2Fmain%2Ftemplates%2Fazuredeploy.json)
 
 1. You will get to a page asking you to fill the following fields :
     * **Resource Group**: A logical "folder" where all the template resource would be put into, just choose a meaningful name. 
