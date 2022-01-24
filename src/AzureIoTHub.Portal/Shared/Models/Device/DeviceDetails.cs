@@ -33,6 +33,7 @@ namespace AzureIoTHub.Portal.Shared.Models.Device
 
         public string ModelId { get; set; }
 
+        [Required]
         public string ModelName { get; set; }
 
         public string SensorDecoder { get; set; }
