@@ -64,3 +64,8 @@ By the end, you should have recorded the following information:
         * If you're prompted to select an account, select your currently signed-in administrator account, or sign in      * with an account in your Azure AD B2C tenant that's been assigned at least the Cloud application administrator       * role.
         * Select **Yes**.
         * Select **Refresh**, and then verify that "Granted for ..." appears under **Status** for both scopes.
+
+1. Configure the required User flow:
+    1. Select **User flows**, and then select **New user flow**.
+    1. Under *Select a user flow type**, select **Sign in**, then select **Create**.
+    1. Enter a name for the flow **SignIn**, then select **Create**.
