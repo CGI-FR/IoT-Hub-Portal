@@ -24,7 +24,7 @@ The following should be completed before proceeding with the IoT Hub Portal deve
 
 ## Documentation
 
-Our documentation is present at github page: [https://cgi-fr.github.io/iot-hub-portal/](https://cgi-fr.github.io/iot-hub-portal/).
+Our documentation is present at github page: [https://cgi-fr.github.io/IoT-Hub-Portal/](https://cgi-fr.github.io/IoT-Hub-Portal/).
 
 ## Known Issues and Limitations
 
