@@ -1,5 +1,5 @@
-[![Build & Test](https://github.com/michelin/i4i-iot-hub-portal/actions/workflows/build.yml/badge.svg)](https://github.com/michelin/i4i-iot-hub-portal/actions/workflows/build.yml)
-[![Continuous Deployment](https://github.com/michelin/i4i-iot-hub-portal/actions/workflows/publish.yml/badge.svg)](https://github.com/michelin/i4i-iot-hub-portal/actions/workflows/publish.yml)
+[![Build & Test](https://github.com/CGI-FR/iot-hub-portal/actions/workflows/build.yml/badge.svg)](https://github.com/CGI-FR/iot-hub-portal/actions/workflows/build.yml)
+[![Continuous Deployment](https://github.com/CGI-FR/iot-hub-portal/actions/workflows/publish.yml/badge.svg)](https://github.com/CGI-FR/iot-hub-portal/actions/workflows/publish.yml)
 
 # IoT Hub Portal
 
@@ -24,7 +24,7 @@ The following should be completed before proceeding with the IoT Hub Portal deve
 
 ## Documentation
 
-Our documentation is present at github page: [https://michelin.github.io/i4i-iot-hub-portal/](https://michelin.github.io/i4i-iot-hub-portal/).
+Our documentation is present at github page: [https://cgi-fr.github.io/iot-hub-portal/](https://cgi-fr.github.io/iot-hub-portal/).
 
 ## Known Issues and Limitations
 
