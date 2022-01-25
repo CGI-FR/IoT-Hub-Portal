@@ -17,7 +17,7 @@
   </PropertyGroup>
   <Import Project="../../stylecop.props" />
   <ItemGroup>
-    <PackageReference Include="MudBlazor" Version="5.1.0" />
+    <PackageReference Include="MudBlazor" Version="6.0.5" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="StyleCop.Analyzers" Version="1.1.118">

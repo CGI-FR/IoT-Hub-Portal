@@ -13,11 +13,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
     [Route("[controller]")]
     [ApiController]
     [AllowAnonymous]
-    public class MSALSettingsController : ControllerBase
+    public class OIDCSettingsController : ControllerBase
     {
         private readonly ClientApiIndentityOptions configuration;
 
-        public MSALSettingsController(IOptions<ClientApiIndentityOptions> configuration)
+        public OIDCSettingsController(IOptions<ClientApiIndentityOptions> configuration)
         {
             this.configuration = configuration.Value;
         }

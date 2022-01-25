@@ -3,14 +3,14 @@
 
 namespace AzureIoTHub.Portal.Shared.Settings
 {
-    public class MSALSettings
+    public class OIDCSettings
     {
         public string Authority { get; set; }
 
+        public string MetadataUrl { get; set; }
+
         public string ClientId { get; set; }
 
-        public string ScopeUri { get; set; }
-
-        public bool ValidateAuthority { get; set; }
+        public string Scope { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace AzureIoTHub.Portal.Server.Filters
                 return;
             }
 
-            context.HttpContext.VerifyUserHasAnyAcceptedScope(this.configuration.MsalScopeName);
+            context.HttpContext.VerifyUserHasAnyAcceptedScope(this.configuration.OIDCScope);
         }
     }
 }

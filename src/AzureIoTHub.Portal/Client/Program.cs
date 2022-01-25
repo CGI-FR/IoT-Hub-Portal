@@ -43,21 +43,23 @@ namespace AzureIoTHub.Portal.Client
         private static async Task ConfigureMsalAuthentication(WebAssemblyHostBuilder builder)
         {
             var httpClient = new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
-            var settings = await httpClient.GetFromJsonAsync<MSALSettings>("MSALSettings");
+            var settings = await httpClient.GetFromJsonAsync<OIDCSettings>("OIDCSettings");
 
-            Console.WriteLine(settings.Authority);
-
-            builder.Services.AddMsalAuthentication(options =>
+            builder.Services.AddOidcAuthentication(options =>
             {
-                options.ProviderOptions.Authentication.Authority = settings.Authority;
-                options.ProviderOptions.Authentication.ClientId = settings.ClientId;
-                options.ProviderOptions.Authentication.ValidateAuthority = settings.ValidateAuthority;
+                options.ProviderOptions.Authority = settings.Authority;
+                options.ProviderOptions.MetadataUrl = settings.MetadataUrl;
+                options.ProviderOptions.ClientId = settings.ClientId;
 
-                options.ProviderOptions.DefaultAccessTokenScopes.Add("openid");
-                options.ProviderOptions.DefaultAccessTokenScopes.Add(settings.ScopeUri);
-                options.ProviderOptions.LoginMode = "redirect";
+                options.ProviderOptions.DefaultScopes.Clear();
+                options.ProviderOptions.DefaultScopes.Add("openid");
+                options.ProviderOptions.DefaultScopes.Add("profile");
+                options.ProviderOptions.DefaultScopes.Add(settings.Scope);
 
-                options.UserOptions.RoleClaim = "extension_Role";
+                options.ProviderOptions.ResponseType = "code";
+
+                options.ProviderOptions.RedirectUri = "authentication/login-callback";
+                options.ProviderOptions.PostLogoutRedirectUri = "authentication/logout-callback";
             });
         }
     }

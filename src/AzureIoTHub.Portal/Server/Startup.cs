@@ -5,14 +5,11 @@ namespace AzureIoTHub.Portal.Server
 {
     using System;
     using System.Net;
-    using System.Net.Http.Headers;
     using System.Threading.Tasks;
-    using Azure.Data.Tables;
     using Azure.Storage.Blobs;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Identity;
-    using AzureIoTHub.Portal.Server.Interfaces;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
@@ -26,9 +23,6 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Primitives;
-    using Microsoft.Graph;
-    using Microsoft.Identity.Client;
-    using Microsoft.Identity.Web;
     using MudBlazor.Services;
     using Polly;
     using Polly.Extensions.Http;
@@ -53,25 +47,20 @@ namespace AzureIoTHub.Portal.Server
 
             services.Configure<ClientApiIndentityOptions>(opts =>
             {
-                opts.Authority = new Uri(new Uri(configuration.MsalInstance), $"{configuration.MsalDomain}/{configuration.MsalSignUpSignInPolicyId}").ToString();
-                opts.ClientId = configuration.MsalClientId;
-                opts.ScopeUri = $"https://{configuration.MsalDomain}/{configuration.MsalApiClientId}/{configuration.MsalScopeName}";
+                opts.MetadataUrl = new Uri(configuration.OIDCMetadataUrl).ToString();
+                opts.ClientId = configuration.OIDCClientId;
+                opts.Scope = configuration.OIDCScope;
+                opts.Authority = configuration.OIDCAuthority;
             });
 
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(
-                 jwtOopts =>
-                 {
-                     jwtOopts.TokenValidationParameters.RoleClaimType = "extension_Role";
-                 },
-                 identityOpts =>
-                 {
-                     identityOpts.Instance = configuration.MsalInstance;
-                     identityOpts.Domain = configuration.MsalDomain;
-                     identityOpts.SignUpSignInPolicyId = configuration.MsalSignUpSignInPolicyId;
-                     identityOpts.ClientId = configuration.MsalApiClientId;
-                 });
+                .AddOpenIdConnect(opts =>
+                {
+                    opts.Authority = configuration.OIDCAuthority;
+                    opts.MetadataAddress = configuration.OIDCMetadataUrl;
+                    opts.ClientId = configuration.OIDCApiClientId;
+                });
 
             services.AddControllersWithViews(opts =>
             {
@@ -95,8 +84,6 @@ namespace AzureIoTHub.Portal.Server
                 return ProvisioningServiceClient.CreateFromConnectionString(configuration.DPSConnectionString);
             });
 
-            services.AddSingleton<IB2CExtensionHelper, B2CExtensionHelper>(sp => new B2CExtensionHelper(configuration));
-
             services.AddTransient(sp => new BlobServiceClient(configuration.StorageAccountConnectionString));
             services.AddTransient<ITableClientFactory>(sp => new TableClientFactory(configuration.StorageAccountConnectionString));
             services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
@@ -108,37 +95,6 @@ namespace AzureIoTHub.Portal.Server
             services.AddTransient<IDeviceModelCommandsManager, DeviceModelCommandsManager>();
 
             services.AddTransient<ConfigsServices>();
-
-            services.AddSingleton(t =>
-            {
-                // Initialize the client credential auth provider
-                IConfidentialClientApplication confidentialClient = ConfidentialClientApplicationBuilder
-                    .Create(configuration.MsalApiClientId)
-                    .WithTenantId(configuration.MsalTenantId)
-                    .WithClientSecret(configuration.MsalApiClientSecret)
-                    .Build();
-
-                IAuthenticationProvider authProvider = new DelegateAuthenticationProvider(async (requestMessage) =>
-                {
-                    try
-                    {
-                        // Retrieve an access token for Microsoft Graph (gets a fresh token if needed).
-                        var authResult = await confidentialClient.AcquireTokenForClient(new[]
-                        {
-                            "https://graph.microsoft.com/.default"
-                        }).ExecuteAsync();
-
-                        // Add the access token in the Authorization header of the API
-                        requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.ToString());
-                        throw;
-                    }
-                });
-                return new GraphServiceClient(authProvider);
-            });
 
             services.AddMudServices();
 
@@ -213,15 +169,11 @@ namespace AzureIoTHub.Portal.Server
             protected const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
             protected const string DPSDefaultEnrollmentGroupeKey = "IoTDPS:DefaultEnrollmentGroupe";
 
-            protected const string MsalScopeNameKey = "MsalSettings:ScopeName";
-            protected const string MsalInstanceKey = "MsalSettings:Instance";
-            protected const string MsalClientIdKey = "MsalSettings:ClientId";
-            protected const string MsalApiClientIdKey = "MsalSettings:ApiClientId";
-            protected const string MsalTenantIdKey = "MsalSettings:TenantId";
-            protected const string MsalApiClientSecretKey = "MsalSettings:ApiClientSecret";
-            protected const string MsalDomainKey = "MsalSettings:Domain";
-            protected const string MsalSignUpSignInPolicyIdKey = "MsalSettings:SignUpSignInPolicyId";
-            protected const string MsalB2CExtensionAppIdKey = "MsalSettings:B2CExtensionAppId";
+            protected const string OIDCScopeKey = "OIDC:Scope";
+            protected const string OIDCAuthorityKey = "OIDC:Authority";
+            protected const string OIDCMetadataUrlKey = "OIDC:MetadataUrl";
+            protected const string OIDCClientIdKey = "OIDC:ClientId";
+            protected const string OIDCApiClientIdKey = "OIDC:ApiClientId";
 
             protected const string StorageAccountConnectionStringKey = "StorageAccount:ConnectionString";
             protected const string StorageAccountBlobContainerNameKey = "StorageAccount:BlobContainerName";
@@ -248,23 +200,15 @@ namespace AzureIoTHub.Portal.Server
 
             internal abstract string StorageAccountConnectionString { get; }
 
-            internal abstract string MsalScopeName { get; }
+            internal abstract string OIDCScope { get; }
 
-            internal abstract string MsalInstance { get; }
+            internal abstract string OIDCApiClientId { get; }
 
-            internal abstract string MsalClientId { get; }
+            internal abstract string OIDCClientId { get; }
 
-            internal abstract string MsalApiClientId { get; }
+            internal abstract string OIDCMetadataUrl { get; }
 
-            internal abstract string MsalTenantId { get; }
-
-            internal abstract string MsalApiClientSecret { get; }
-
-            internal abstract string MsalDomain { get; }
-
-            internal abstract string MsalSignUpSignInPolicyId { get; }
-
-            internal abstract string MsalB2CExtensionAppId { get; }
+            internal abstract string OIDCAuthority { get; }
 
             internal abstract string StorageAccountBlobContainerName { get; }
 
@@ -292,23 +236,15 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string StorageAccountConnectionString => this.config.GetConnectionString(StorageAccountConnectionStringKey);
 
-            internal override string MsalScopeName => this.config[MsalScopeNameKey];
+            internal override string OIDCScope => this.config[OIDCScopeKey];
 
-            internal override string MsalInstance => this.config[MsalInstanceKey];
+            internal override string OIDCAuthority => this.config[OIDCAuthorityKey];
 
-            internal override string MsalClientId => this.config[MsalClientIdKey];
+            internal override string OIDCMetadataUrl => this.config[OIDCMetadataUrlKey];
 
-            internal override string MsalApiClientId => this.config[MsalApiClientIdKey];
+            internal override string OIDCClientId => this.config[OIDCClientIdKey];
 
-            internal override string MsalTenantId => this.config[MsalTenantIdKey];
-
-            internal override string MsalApiClientSecret => this.config.GetConnectionString(MsalApiClientSecretKey);
-
-            internal override string MsalDomain => this.config[MsalDomainKey];
-
-            internal override string MsalSignUpSignInPolicyId => this.config[MsalSignUpSignInPolicyIdKey];
-
-            internal override string MsalB2CExtensionAppId => this.config[MsalB2CExtensionAppIdKey];
+            internal override string OIDCApiClientId => this.config[OIDCApiClientIdKey];
 
             internal override string StorageAccountBlobContainerName => this.config[StorageAccountBlobContainerNameKey];
 
@@ -336,23 +272,15 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string StorageAccountConnectionString => this.config[StorageAccountConnectionStringKey];
 
-            internal override string MsalScopeName => this.config[MsalScopeNameKey];
+            internal override string OIDCScope => this.config[OIDCScopeKey];
 
-            internal override string MsalInstance => this.config[MsalInstanceKey];
+            internal override string OIDCAuthority => this.config[OIDCAuthorityKey];
 
-            internal override string MsalClientId => this.config[MsalClientIdKey];
+            internal override string OIDCMetadataUrl => this.config[OIDCMetadataUrlKey];
 
-            internal override string MsalApiClientId => this.config[MsalApiClientIdKey];
+            internal override string OIDCClientId => this.config[OIDCClientIdKey];
 
-            internal override string MsalTenantId => this.config[MsalTenantIdKey];
-
-            internal override string MsalApiClientSecret => this.config[MsalApiClientSecretKey];
-
-            internal override string MsalDomain => this.config[MsalDomainKey];
-
-            internal override string MsalSignUpSignInPolicyId => this.config[MsalSignUpSignInPolicyIdKey];
-
-            internal override string MsalB2CExtensionAppId => this.config[MsalB2CExtensionAppIdKey];
+            internal override string OIDCApiClientId => this.config[OIDCApiClientIdKey];
 
             internal override string StorageAccountBlobContainerName => this.config[StorageAccountBlobContainerNameKey];
 
