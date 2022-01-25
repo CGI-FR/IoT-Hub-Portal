@@ -37,7 +37,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(modelId),
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
-                LastActivityDate = twin.LastActivityTime.GetValueOrDefault(DateTime.MinValue),
+                StatusUpdatedTime = twin.StatusUpdatedTime.GetValueOrDefault(DateTime.MinValue),
                 AppEUI = Helpers.DeviceHelper.RetrievePropertyValue(twin, nameof(DeviceDetails.AppEUI)),
                 AppKey = Helpers.DeviceHelper.RetrievePropertyValue(twin, nameof(DeviceDetails.AppKey)),
                 LocationCode = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.LocationCode)),
@@ -57,7 +57,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 LocationCode = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.LocationCode)),
-                LastActivityDate = twin.LastActivityTime.GetValueOrDefault(DateTime.MinValue)
+                StatusUpdatedTime = twin.StatusUpdatedTime.GetValueOrDefault(DateTime.MinValue)
             };
         }
 
