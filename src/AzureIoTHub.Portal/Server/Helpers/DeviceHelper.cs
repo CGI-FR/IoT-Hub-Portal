@@ -162,5 +162,10 @@ namespace AzureIoTHub.Portal.Server.Helpers
                 return list;
             }
         }
+
+        public static bool IsValidDevEUI(ulong value)
+        {
+            return value is not 0 and not 0xffff_ffff_ffff_ffff;
+        }
     }
 }
