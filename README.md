@@ -70,7 +70,7 @@ The template will deploy in your Azure subscription the Following resources:
 
 ## Documentation
 
-Our documentation is present at github page: [https://cgi-fr.github.io/iot-hub-portal/](https://cgi-fr.github.io/iot-hub-portal/).
+Our documentation is present at github page: [https://cgi-fr.github.io/IoT-Hub-Portal/](https://cgi-fr.github.io/IoT-Hub-Portal/).
 
 ## Known Issues and Limitations
 
