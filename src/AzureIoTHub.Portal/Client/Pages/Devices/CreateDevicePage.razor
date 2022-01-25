@@ -199,14 +199,14 @@
         if (response.IsSuccessStatusCode)
         {
             Snackbar.Add($"Device {Device.DeviceID} has been successfully created!", Severity.Success);
+            // Go back to the list of devices
+            NavManager.NavigateTo("devices");
         }
         else
         {
-            Snackbar.Add($"Oh oh, something went wrong while creating device {Device.DeviceID}...", Severity.Error);
+            Snackbar.Add($"Oh oh, something went wrong while creating device {Device.DeviceID}... <br> {errorMsg}", Severity.Error);
         }
 
-        // Go back to the list of devices
-        NavManager.NavigateTo("devices");
 
     }
 
