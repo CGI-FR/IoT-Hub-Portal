@@ -145,7 +145,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/michelin/i4i-iot-hub-portal/main/templates/portalDeploy.json",
+                    "uri": "https://raw.githubusercontent.com/CGI-FR/iot-hub-portal/main/templates/portalDeploy.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {

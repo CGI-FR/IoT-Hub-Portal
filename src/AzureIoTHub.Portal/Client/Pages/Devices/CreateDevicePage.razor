@@ -11,7 +11,7 @@
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
         <MudItem xs="12">
-            <EditForm Model="@Device" OnValidSubmit="SaveDevice">
+            <EditForm Model="@Device" OnValidSubmit="SaveDevice" OnInvalidSubmit="HandleInvalidSubmit">
                 <DataAnnotationsValidator />
                 <MudCard>
                     <MudCardHeader>
@@ -70,7 +70,11 @@
                                                          ToStringFunc="@(x => x.Name)"
                                                          ResetValueOnEmptyText="true"
                                                          Immediate="true" Clearable="true"
-                                                         CoerceText="true" CoerceValue="false" />
+                                                         CoerceText="true" CoerceValue="false"/>
+                                        @if (Device.ModelName == null && displayValidationErrorMessages)
+                                        {
+                                            <p class="mud-input-helper-text mud-input-error">The Model Type field is required.</p>
+                                        }
                                     </MudItem>
                                 </MudItem>
                             </MudItem>
@@ -165,6 +169,8 @@
 
     private IEnumerable<DeviceModel> DeviceModelList { get; set; } = new List<DeviceModel>();
 
+    private bool displayValidationErrorMessages = false;
+
     protected override async Task OnInitializedAsync()
     {
         Device.DeviceType = "LoRa Device";
@@ -224,11 +230,30 @@
 
     private void ModelSelected(DeviceModel model)
     {
-        Device.ModelId = model.ModelId;
-        Device.ModelName = model.Name;
-        Device.ImageUrl = new Uri(model.ImageUrl);
-        Device.AppEUI = model.AppEUI ?? "Selected model contains no AppEUI value";
-        Device.SensorDecoder = model.SensorDecoderURL;
+        // Reset all the other fields if the Model Type field is cleared
+        if(model == null)
+        {
+            Device.ModelId = null;
+            Device.ModelName = null;
+            Device.ImageUrl = null;
+            Device.AppEUI = null;
+            Device.SensorDecoder = null;
+        }
+        else
+        {
+            Device.ModelId = model.ModelId;
+            Device.ModelName = model.Name;
+            Device.ImageUrl = new Uri(model.ImageUrl);
+            Device.AppEUI = model.AppEUI ?? "Selected model contains no AppEUI value";
+            Device.SensorDecoder = model.SensorDecoderURL;            
+        }
     }
+
+    private void HandleInvalidSubmit(EditContext context)
+    {
+        // Invalid submit manually handled
+        // Waiting for MudBlazor MudAutocomplete issue #2674 to be fixed
+        displayValidationErrorMessages = true;
+    } 
 }
 
