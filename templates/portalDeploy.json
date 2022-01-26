@@ -8,18 +8,25 @@
                 "description": "Prefix used for resource names. Should be unique as this will also be used for domain names."
             }
         },
-        "b2cDirectoryName": {
+        "openIdAuthority": {
             "defaultValue": "",
             "type": "string",
             "metadata": {
-                "description": "The Azure AD B2C Tenant name"
+                "description": "The Open ID Authority"
             }
         },
-        "tenantId": {
+        "openIdMetadataURL": {
             "defaultValue": "",
             "type": "string",
             "metadata": {
-                "description": "The Azure AD B2C Tenant Id"
+                "description": "The Open ID metadata Url from the Identity provider"
+            }
+        },
+        "clientId": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "The client ID for the B2C tenant"
             }
         },
         "apiClientId": {
@@ -35,13 +42,6 @@
             "metadata": {
                 "description": "The API client Secret for the B2C tenant"
             }
-        },
-        "clientId": {
-            "defaultValue": "",
-            "type": "string",
-            "metadata": {
-                "description": "The client ID for the B2C tenant"
-            }
         }
     },
     "variables": {
@@ -54,10 +54,7 @@
         "iotHubOwnerPolicyName": "iothubowner",
         "provisioningserviceownerPolicyName": "provisioningserviceowner",
         "deviceImageContainerName": "device-images",
-        "iamDomainName": "[concat(parameters('b2cDirectoryName'), '.onmicrosoft.com')]",
-        "iamInstanceURl": "[concat('https://', parameters('b2cDirectoryName'), '.b2clogin.com')]",
         "iamScopeName": "API.Access",
-        "iamSignUpSignInPolicyId": "B2C_1_SignIn",
         "storageAccountId": "[concat(resourceGroup().id, '/providers/', 'Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
         "enrollmentGroupName": "DemoGatewayEnrollmentGroup",
         "appInsightName": "[concat(parameters('uniqueSolutionPrefix'), 'insight')]"
@@ -184,33 +181,25 @@
                             "value": "[listkeys(concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/host/default/'),'2021-02-01').masterKey]"
                         },
                         {
-                            "name": "MsalSettings__ApiClientId",
+                            "name": "OIDC__ApiClientId",
                             "value": "[parameters('apiClientId')]"
                         },
                         {
-                            "name": "MsalSettings__ClientId",
+                            "name": "OIDC__ClientId",
                             "value": "[parameters('clientId')]"
                         },
                         {
-                            "name": "MsalSettings__Domain",
-                            "value": "[variables('iamDomainName')]"
+                            "name": "OIDC__Authority",
+                            "value": "[parameters('openIdAuthority')]"
                         },
                         {
-                            "name": "MsalSettings__Instance",
-                            "value": "[variables('iamInstanceURl')]"
+                            "name": "OIDC__MetadataUrl",
+                            "value": "[parameters('openIdMetadataURL')]"
                         },
                         {
-                            "name": "MsalSettings__ScopeName",
+                            "name": "OIDC__Scope",
                             "value": "[variables('iamScopeName')]"
                         },
-                        {
-                            "name": "MsalSettings__SignUpSignInPolicyId",
-                            "value": "[variables('iamSignUpSignInPolicyId')]"
-                        },
-                        {
-                            "name": "MsalSettings__TenantId",
-                            "value": "[parameters('tenantId')]"
-                        }, 
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                             "value": "[reference(resourceId(resourceGroup().name,'Microsoft.Insights/components', variables('appInsightName')), '2015-05-01', 'Full').properties.InstrumentationKey]"
