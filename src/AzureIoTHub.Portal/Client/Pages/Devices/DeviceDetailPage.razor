@@ -184,8 +184,11 @@
             Device = await Http.GetFromJsonAsync<DeviceDetails>($"api/Devices/{DeviceID}");
 
             // Gets the DeviceModel Name from the DeviceModel ID
-            DeviceModel model = await Http.GetFromJsonAsync<DeviceModel>($"api/DeviceModels/{Device.ModelId}");
-            Device.ModelName = model.Name;
+            if (!string.IsNullOrEmpty(Device.ModelId))
+            {
+                DeviceModel model = await Http.GetFromJsonAsync<DeviceModel>($"api/DeviceModels/{Device.ModelId}");
+                Device.ModelName = model?.Name;
+            }
 
             // StatusUpdatedTime set to string to have a more human-readable format
             StatusUpdatedTimeString = Device.StatusUpdatedTime.ToString();
