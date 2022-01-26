@@ -169,7 +169,7 @@ namespace AzureIoTHub.Portal.Server
         {
             protected const string IoTHubConnectionStringKey = "IoTHub:ConnectionString";
             protected const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
-            protected const string DPSDefaultEnrollmentGroupeKey = "IoTDPS:DefaultEnrollmentGroupe";
+            protected const string DPSDefaultEnrollmentGroupKey = "IoTDPS:DefaultEnrollmentGroup";
 
             protected const string OIDCScopeKey = "OIDC:Scope";
             protected const string OIDCAuthorityKey = "OIDC:Authority";
@@ -198,7 +198,7 @@ namespace AzureIoTHub.Portal.Server
 
             internal abstract string DPSConnectionString { get; }
 
-            internal abstract string DPSDefaultEnrollmentGroupe { get; }
+            internal abstract string DPSDefaultEnrollmentGroup { get; }
 
             internal abstract string StorageAccountConnectionString { get; }
 
@@ -234,7 +234,7 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string DPSConnectionString => this.config.GetConnectionString(DPSConnectionStringKey);
 
-            internal override string DPSDefaultEnrollmentGroupe => this.config[DPSDefaultEnrollmentGroupeKey];
+            internal override string DPSDefaultEnrollmentGroup => this.config[DPSDefaultEnrollmentGroupKey];
 
             internal override string StorageAccountConnectionString => this.config.GetConnectionString(StorageAccountConnectionStringKey);
 
@@ -270,7 +270,7 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string DPSConnectionString => this.config[DPSConnectionStringKey];
 
-            internal override string DPSDefaultEnrollmentGroupe => this.config[DPSDefaultEnrollmentGroupeKey];
+            internal override string DPSDefaultEnrollmentGroup => this.config[DPSDefaultEnrollmentGroupKey];
 
             internal override string StorageAccountConnectionString => this.config[StorageAccountConnectionStringKey];
 

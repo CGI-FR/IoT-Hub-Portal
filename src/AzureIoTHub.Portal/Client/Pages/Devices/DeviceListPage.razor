@@ -103,7 +103,7 @@
                         <MudTh>Device</MudTh>
                         <MudTh Style="text-align: center">Status</MudTh>
                         <MudTh Style="text-align: center">Connection state</MudTh>
-                        <MudTh Style="text-align: center">Last activity time</MudTh>
+                        <MudTh Style="text-align: center">Last status update</MudTh>
                         <MudTh Style="text-align: center">See details</MudTh>
                         <MudTh Style="text-align: center">Delete</MudTh>
                     </HeaderContent>
@@ -136,7 +136,7 @@
                             <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
                             }
                     </MudTd>
-                    <MudTd DataLabel="LAT" Style="text-align: center">@context.LastActivityDate</MudTd>
+                    <MudTd DataLabel="LSU" Style="text-align: center">@context.StatusUpdatedTime</MudTd>
                     <MudTd DataLabel="Details" Style="text-align: center">
                         <a href="devices/@context.DeviceID"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
                     </MudTd>

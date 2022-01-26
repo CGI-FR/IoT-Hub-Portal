@@ -131,10 +131,10 @@
                                     </MudItem>
                                     <MudItem xs="12" Class="custom-form">
                                         <MudItem md="3" sm="12">
-                                            <MudText>Last activity time : </MudText>
+                                            <MudText>Last status update : </MudText>
                                         </MudItem>
                                         <MudItem md="9" sm="12">
-                                            <MudTextField @bind-Value="@LastActivityDateString" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
+                                            <MudTextField @bind-Value="@StatusUpdatedTimeString" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
                                         </MudItem>
                                     </MudItem>
                                 </MudItem>
@@ -174,7 +174,7 @@
     private DeviceDetails Device { get; set; } = new DeviceDetails();
 
     private bool success = true;
-    private string LastActivityDateString { get; set; }
+    private string StatusUpdatedTimeString { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -187,8 +187,8 @@
             DeviceModel model = await Http.GetFromJsonAsync<DeviceModel>($"api/DeviceModels/{Device.ModelId}");
             Device.ModelName = model.Name;
 
-            // LastActivityDate set to string to have a more human-readable format
-            LastActivityDateString = Device.LastActivityDate.ToString();
+            // StatusUpdatedTime set to string to have a more human-readable format
+            StatusUpdatedTimeString = Device.StatusUpdatedTime.ToString();
         }
         catch (AccessTokenNotAvailableException exception)
         {

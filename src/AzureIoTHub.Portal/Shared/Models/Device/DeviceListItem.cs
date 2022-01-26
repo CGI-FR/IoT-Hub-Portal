@@ -15,7 +15,7 @@ namespace AzureIoTHub.Portal.Shared.Models.Device
 
         public bool IsEnabled { get; set; }
 
-        public DateTime LastActivityDate { get; set; }
+        public DateTime StatusUpdatedTime { get; set; }
 
         public string AppEUI { get; set; }
 

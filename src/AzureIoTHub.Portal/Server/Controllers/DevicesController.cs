@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Threading.Tasks;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
@@ -82,6 +83,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             try
             {
+                if (!Eui.TryParse(device.DeviceID, out ulong deviceIdConvert))
+                {
+                    throw new InvalidOperationException("the device id is in the wrong format.");
+                }
+
                 // Create a new Twin from the form's fields.
                 var newTwin = new Twin()
                 {
@@ -99,7 +105,12 @@ namespace AzureIoTHub.Portal.Server.Controllers
             catch (DeviceAlreadyExistsException e)
             {
                 this.logger.LogError($"{device.DeviceID} - Create device failed", e);
-                return this.BadRequest();
+                return this.BadRequest(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                this.logger?.LogError("{a0} - Create device failed \n {a1}", device.DeviceID, e.Message);
+                return this.BadRequest(e.Message);
             }
         }
 
