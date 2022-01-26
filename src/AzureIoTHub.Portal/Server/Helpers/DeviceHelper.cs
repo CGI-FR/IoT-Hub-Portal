@@ -66,10 +66,18 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <param name="item">Device twin.</param>
         /// <param name="propertyName">Property to retrieve.</param>
         /// <returns>Corresponding property value, or null if it doesn't exist.</returns>
-        public static string RetrievePropertyValue(Twin item, string propertyName)
+        public static string RetrieveDesiredPropertyValue(Twin item, string propertyName)
         {
             if (item.Properties.Desired.Contains(propertyName))
                 return item.Properties.Desired[propertyName];
+            else
+                return null;
+        }
+
+        public static string RetrieveReportedPropertyValue(Twin twin, string propertyName)
+        {
+            if (twin.Properties.Reported.Contains(propertyName))
+                return twin.Properties.Reported[propertyName];
             else
                 return null;
         }
