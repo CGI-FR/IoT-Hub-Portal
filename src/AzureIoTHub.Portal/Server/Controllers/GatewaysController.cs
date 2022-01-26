@@ -6,30 +6,22 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Security.Cryptography;
-    using System.Text;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
-    using AzureIoTHub.Portal.Server.Interfaces;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models;
-    using AzureIoTHub.Portal.Shared.Security;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
-    using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
 
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = RoleNames.Admin)]
     public class GatewaysController : ControllerBase
     {
         private readonly ILogger<GatewaysController> logger;

@@ -7,10 +7,6 @@
 <AuthorizeView>
     <Authorized>
         <MudNavLink Href="/devices">Devices</MudNavLink>
-        @if (context.User.IsInRole(RoleNames.Admin))
-        {
-            <MudNavLink Href="/users">Users</MudNavLink>
-        }
         <MudNavGroup Title="Gateways" Expanded="true">
             <MudNavLink Href="/gateways">Overview</MudNavLink>
             <MudNavLink Href="/configurations">Configuration</MudNavLink>

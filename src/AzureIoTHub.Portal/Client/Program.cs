@@ -24,7 +24,7 @@ namespace AzureIoTHub.Portal.Client
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddHttpClient("api", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
-                                                    .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+                                                    /*.AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>()*/;
 
             builder.Services.AddFileReaderService(o => o.UseWasmSharedBuffer = true);
 
@@ -32,32 +32,28 @@ namespace AzureIoTHub.Portal.Client
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
             builder.Services.AddBlazoredModal();
 
-            // builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddMudServices();
 
-            await ConfigureMsalAuthentication(builder);
+            await ConfigureOidc(builder);
 
             await builder.Build().RunAsync();
         }
 
-        private static async Task ConfigureMsalAuthentication(WebAssemblyHostBuilder builder)
+        private static async Task ConfigureOidc(WebAssemblyHostBuilder builder)
         {
             var httpClient = new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
-            var settings = await httpClient.GetFromJsonAsync<MSALSettings>("MSALSettings");
+            var settings = await httpClient.GetFromJsonAsync<OIDCSettings>("OIDCSettings");
 
-            Console.WriteLine(settings.Authority);
-
-            builder.Services.AddMsalAuthentication(options =>
+            builder.Services.AddOidcAuthentication(options =>
             {
-                options.ProviderOptions.Authentication.Authority = settings.Authority;
-                options.ProviderOptions.Authentication.ClientId = settings.ClientId;
-                options.ProviderOptions.Authentication.ValidateAuthority = settings.ValidateAuthority;
+                options.ProviderOptions.Authority = settings.Authority;
+                options.ProviderOptions.MetadataUrl = settings.MetadataUrl;
+                options.ProviderOptions.ClientId = settings.ClientId;
 
-                options.ProviderOptions.DefaultAccessTokenScopes.Add("openid");
-                options.ProviderOptions.DefaultAccessTokenScopes.Add(settings.ScopeUri);
-                options.ProviderOptions.LoginMode = "redirect";
+                options.ProviderOptions.DefaultScopes.Clear();
+                options.ProviderOptions.DefaultScopes.Add($"profile openid {settings.Scope}");
 
-                options.UserOptions.RoleClaim = "extension_Role";
+                options.ProviderOptions.ResponseType = "id_token";
             });
         }
     }

@@ -3,18 +3,15 @@
 
 namespace AzureIoTHub.Portal.Server.Identity
 {
-    using System;
-    using Microsoft.Extensions.Configuration;
-
     public sealed class ClientApiIndentityOptions
     {
         public string Authority { get; set; }
 
+        public string MetadataUrl { get; set; }
+
         public string ClientId { get; set; }
 
-        public string ScopeUri { get; set; }
-
-        public bool ValidateAuthority { get; set; } = false;
+        public string Scope { get; set; }
 
         public ClientApiIndentityOptions()
         {
