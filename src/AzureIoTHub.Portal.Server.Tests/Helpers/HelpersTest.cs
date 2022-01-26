@@ -54,7 +54,7 @@ namespace AzureIoTHub.Portal.Server.Tests
             twin.Properties.Desired[PROPERTY_KEY] = PROPERTY_VALUE;
 
             // Act
-            var result = DeviceHelper.RetrievePropertyValue(twin, PROPERTY_KEY);
+            var result = DeviceHelper.RetrieveDesiredPropertyValue(twin, PROPERTY_KEY);
 
             // Assert
             result.Contains($"{PROPERTY_VALUE}");
@@ -68,7 +68,7 @@ namespace AzureIoTHub.Portal.Server.Tests
             const string PROPERTY_KEY = "tag_key";
 
             // Act
-            var result = DeviceHelper.RetrievePropertyValue(twin, PROPERTY_KEY);
+            var result = DeviceHelper.RetrieveDesiredPropertyValue(twin, PROPERTY_KEY);
 
             // Assert
             Assert.IsNull(result);

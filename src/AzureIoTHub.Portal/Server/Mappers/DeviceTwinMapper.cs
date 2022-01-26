@@ -33,16 +33,16 @@ namespace AzureIoTHub.Portal.Server.Mappers
             {
                 DeviceID = twin.DeviceId,
                 ModelId = modelId,
-                // ModelName = modelName,
+                AlreadyLoggedInOnce = Helpers.DeviceHelper.RetrieveReportedPropertyValue(twin, "DevAddr") != null,
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(modelId),
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime.GetValueOrDefault(DateTime.MinValue),
-                AppEUI = Helpers.DeviceHelper.RetrievePropertyValue(twin, nameof(DeviceDetails.AppEUI)),
-                AppKey = Helpers.DeviceHelper.RetrievePropertyValue(twin, nameof(DeviceDetails.AppKey)),
+                AppEUI = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(DeviceDetails.AppEUI)),
+                AppKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(DeviceDetails.AppKey)),
                 LocationCode = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.LocationCode)),
                 AssetID = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.AssetID)),
-                SensorDecoder = Helpers.DeviceHelper.RetrievePropertyValue(twin, nameof(DeviceDetails.SensorDecoder)),
+                SensorDecoder = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(DeviceDetails.SensorDecoder)),
                 DeviceType = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.DeviceType)),
                 Commands = this.deviceModelCommandsManager.RetrieveCommands(modelId)
             };

@@ -83,7 +83,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             try
             {
-                if (!Eui.TryParse(device.DeviceID, out ulong deviceIdConvert))
+                if (!Eui.TryParse(device.DeviceID, out ulong deviceIdConvert) && device.DeviceType == "LoRa Device")
                 {
                     throw new InvalidOperationException("the device id is in the wrong format.");
                 }
@@ -187,15 +187,25 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
                 var result = await this.loraDeviceMethodManager.ExecuteLoRaDeviceMessage(deviceId, deviceModelCommand);
 
+                if (result.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                {
+                    this.logger.LogError($"{deviceId} - Execute command on device failed \n {result}");
+                    throw new FormatException("Incorrect port or invalid DevEui Format.");
+                }
+
                 this.logger.LogInformation($"{deviceId} - Execute command: {result}");
 
                 return this.Ok(await result.Content.ReadFromJsonAsync<dynamic>());
             }
+            catch (FormatException e)
+            {
+                this.logger.LogError($"{deviceId} - Execute command on device failed \n {e.Message}");
+
+                return this.BadRequest("Something went wrong when executing the command.");
+            }
             catch (Exception e)
             {
-                this.logger.LogError($"{deviceId} - Execute command on device failed", e);
-
-                return this.BadRequest();
+                return this.BadRequest(e.Message);
             }
         }
     }
