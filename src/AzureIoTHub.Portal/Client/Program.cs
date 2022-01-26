@@ -24,7 +24,7 @@ namespace AzureIoTHub.Portal.Client
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddHttpClient("api", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
-                                                    .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+                                                    /*.AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>()*/;
 
             builder.Services.AddFileReaderService(o => o.UseWasmSharedBuffer = true);
 
@@ -32,15 +32,14 @@ namespace AzureIoTHub.Portal.Client
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
             builder.Services.AddBlazoredModal();
 
-            // builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddMudServices();
 
-            await ConfigureMsalAuthentication(builder);
+            await ConfigureOidc(builder);
 
             await builder.Build().RunAsync();
         }
 
-        private static async Task ConfigureMsalAuthentication(WebAssemblyHostBuilder builder)
+        private static async Task ConfigureOidc(WebAssemblyHostBuilder builder)
         {
             var httpClient = new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
             var settings = await httpClient.GetFromJsonAsync<OIDCSettings>("OIDCSettings");
@@ -52,14 +51,9 @@ namespace AzureIoTHub.Portal.Client
                 options.ProviderOptions.ClientId = settings.ClientId;
 
                 options.ProviderOptions.DefaultScopes.Clear();
-                options.ProviderOptions.DefaultScopes.Add("openid");
-                options.ProviderOptions.DefaultScopes.Add("profile");
-                options.ProviderOptions.DefaultScopes.Add(settings.Scope);
+                options.ProviderOptions.DefaultScopes.Add($"profile openid {settings.Scope}");
 
-                options.ProviderOptions.ResponseType = "code";
-
-                options.ProviderOptions.RedirectUri = "authentication/login-callback";
-                options.ProviderOptions.PostLogoutRedirectUri = "authentication/logout-callback";
+                options.ProviderOptions.ResponseType = "id_token";
             });
         }
     }

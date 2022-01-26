@@ -14,8 +14,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.Device;
-    using AzureIoTHub.Portal.Shared.Security;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
@@ -23,7 +21,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
 
-    [Authorize(Roles = RoleNames.Admin)]
     [ApiController]
     [Route("api/[controller]")]
     public class DevicesController : ControllerBase

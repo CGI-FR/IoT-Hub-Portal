@@ -14,16 +14,12 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models;
-    using AzureIoTHub.Portal.Shared.Security;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
 
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = RoleNames.Admin)]
     public class DeviceModelsController : ControllerBase
     {
         private const string DefaultPartitionKey = "0";

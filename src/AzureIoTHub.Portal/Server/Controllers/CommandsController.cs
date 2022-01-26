@@ -4,26 +4,15 @@
 namespace AzureIoTHub.Portal.Server.Controllers
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Server.Helpers;
-    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models;
-    using AzureIoTHub.Portal.Shared.Security;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json;
 
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = RoleNames.Admin)]
     public class CommandsController : ControllerBase
     {
         private readonly ITableClientFactory tableClientFactory;

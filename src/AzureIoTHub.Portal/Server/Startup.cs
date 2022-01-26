@@ -53,6 +53,7 @@ namespace AzureIoTHub.Portal.Server
                 opts.Authority = configuration.OIDCAuthority;
             });
 
+            /*
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddOpenIdConnect(opts =>
@@ -66,6 +67,7 @@ namespace AzureIoTHub.Portal.Server
             {
                 opts.Filters.Add(new ApiRequiredScopeFilter(configuration));
             });
+            */
 
             services.AddRazorPages();
 
