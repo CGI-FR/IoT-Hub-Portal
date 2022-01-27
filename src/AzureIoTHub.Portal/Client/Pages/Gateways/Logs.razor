@@ -3,9 +3,9 @@
 @using Newtonsoft.Json;
 
 
-<MudDialog>
+<MudDialog Style="max-width:fit-content;">
     <DialogContent>
-        <MudCard Outlined="true" >
+        <MudCard Outlined="true" Style="width:800px;max-height: 600px; overflow-y: scroll">
             <MudCardContent>
 
                 <MudItem xs="12">
@@ -13,7 +13,7 @@
                     <ColGroup>
                         <col style="width: 20%;" />
                         <col style="width: 10%;" />
-                        <col style="width: 30%;" />
+                        <col style="width: 40%;" />
                     </ColGroup>
 
                     <HeaderContent>
@@ -26,7 +26,10 @@
                             @context.TimeStamp
                         </MudTd>
                         <MudTd DataLabel="Type" Style="text-align: center">@context.LogLevel</MudTd>
-                        <MudTd DataLabel="NbDevices" Style="text-align: center;word-break: break-all;">@context.Text</MudTd>
+                        <MudTd DataLabel="NbDevices" Style="text-align: center;">
+                            <MudTextField T="string" Text="@context.Text" Lines="3" Disabled="true"></MudTextField>
+                        </MudTd>
+                        @*<MudTd DataLabel="NbDevices" Style="text-align: center;word-break: break-all;">@context.Text</MudTd>*@
                     </RowTemplate>
                     <PagerContent>
                         <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
