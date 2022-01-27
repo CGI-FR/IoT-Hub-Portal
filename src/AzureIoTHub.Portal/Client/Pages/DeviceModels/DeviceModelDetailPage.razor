@@ -138,11 +138,12 @@
                     </MudGrid>
                 }
             </MudCardContent>
-            <MudCardActions>
-                <MudFab ButtonType="ButtonType.Submit" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Label="Save" Class="ml-auto" />
-                <MudFab Color="Color.Dark" Icon="@Icons.Material.Filled.Delete" Label="Delete" OnClick="DeleteDeviceModel" />
-            </MudCardActions>
         </MudCard>
+        <MudCardActions>
+            <MudFab ButtonType="ButtonType.Submit" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Label="Save" Class="btn-aln-right" />
+            <MudFab Color="Color.Dark" Icon="@Icons.Material.Filled.Delete" Label="Delete" OnClick="DeleteDeviceModel" />
+        </MudCardActions>
+
     </EditForm>
 
 </MudContainer>
@@ -199,7 +200,7 @@
 
             // Add the last command entered, in case it wasn't already in the list
             this.AddCommand();
-            
+
             // Unnecessary to send the list of commands to the controller
             // TODO : Do this more effectively
             DeviceModel.Commands.Clear();
