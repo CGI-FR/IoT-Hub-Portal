@@ -41,20 +41,22 @@ namespace AzureIoTHub.Portal.Client
 
         private static async Task ConfigureOidc(WebAssemblyHostBuilder builder)
         {
-            var httpClient = new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
-            var settings = await httpClient.GetFromJsonAsync<OIDCSettings>("OIDCSettings");
-
-            builder.Services.AddOidcAuthentication(options =>
+            using (var httpClient = new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
             {
-                options.ProviderOptions.Authority = settings.Authority;
-                options.ProviderOptions.MetadataUrl = settings.MetadataUrl;
-                options.ProviderOptions.ClientId = settings.ClientId;
+                var settings = await httpClient.GetFromJsonAsync<OIDCSettings>("OIDCSettings");
 
-                options.ProviderOptions.DefaultScopes.Clear();
-                options.ProviderOptions.DefaultScopes.Add($"profile openid {settings.Scope}");
+                builder.Services.AddOidcAuthentication(options =>
+                {
+                    options.ProviderOptions.Authority = settings.Authority;
+                    options.ProviderOptions.MetadataUrl = settings.MetadataUrl;
+                    options.ProviderOptions.ClientId = settings.ClientId;
 
-                options.ProviderOptions.ResponseType = "id_token";
-            });
+                    options.ProviderOptions.DefaultScopes.Clear();
+                    options.ProviderOptions.DefaultScopes.Add($"profile openid {settings.Scope}");
+
+                    options.ProviderOptions.ResponseType = "id_token";
+                });
+            }
         }
     }
 }
