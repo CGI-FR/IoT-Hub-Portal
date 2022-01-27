@@ -8,18 +8,25 @@
                 "description": "Prefix used for resource names. Should be unique as this will also be used for domain names."
             }
         },
-        "b2cDirectoryName": {
+        "openIdAuthority": {
             "defaultValue": "",
             "type": "string",
             "metadata": {
-                "description": "The Azure AD B2C Tenant name"
+                "description": "The Open ID Authority"
             }
         },
-        "tenantId": {
+        "openIdMetadataURL": {
             "defaultValue": "",
             "type": "string",
             "metadata": {
-                "description": "The Azure AD B2C Tenant Id"
+                "description": "The Open ID metadata Url from the Identity provider"
+            }
+        },
+        "clientId": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "The client ID for the B2C tenant"
             }
         },
         "apiClientId": {
@@ -34,13 +41,6 @@
             "type": "securestring",
             "metadata": {
                 "description": "The API client Secret for the B2C tenant"
-            }
-        },
-        "clientId": {
-            "defaultValue": "",
-            "type": "string",
-            "metadata": {
-                "description": "The client ID for the B2C tenant"
             }
         },
         "edgeGatewayName": {
@@ -152,11 +152,11 @@
                     "uniqueSolutionPrefix": {
                         "value": "[parameters('uniqueSolutionPrefix')]"
                     },
-                    "b2cDirectoryName": {
-                        "value": "[parameters('b2cDirectoryName')]"
+                    "openIdAuthority": {
+                        "value": "[parameters('openIdAuthority')]"
                     },
-                    "tenantId": {
-                        "value": "[parameters('tenantId')]"
+                    "openIdMetadataURL": {
+                        "value": "[parameters('openIdMetadataURL')]"
                     },
                     "apiClientId": {
                         "value": "[parameters('apiClientId')]"
