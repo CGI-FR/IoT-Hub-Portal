@@ -59,7 +59,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             // Gets all the twins from this devices
             var items = await this.devicesService.GetAllDevice();
-            var results = new List<DeviceListItem>();
 
             return items.Select(this.deviceTwinMapper.CreateDeviceListItem);
         }
