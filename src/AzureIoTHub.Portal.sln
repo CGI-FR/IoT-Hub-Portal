@@ -19,6 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Shared",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{3CA153F4-1172-4AF5-B483-94200717AB5C}"
 	ProjectSection(SolutionItems) = preProject
+		..\.github\CODEOWNERS = ..\.github\CODEOWNERS
 		..\.github\pull_request_template.md = ..\.github\pull_request_template.md
 	EndProjectSection
 EndProject
