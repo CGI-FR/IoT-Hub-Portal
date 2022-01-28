@@ -58,7 +58,7 @@
                                     </MudItem>
                                     <MudItem xs="12" Class="custom-form">
                                         <MudItem md="3" sm="12">
-                                            <MudText>Model Type : </MudText>
+                                            <MudText><b class="wildcard-required">*</b> Model Type : </MudText>
                                         </MudItem>
                                         <MudItem md="9" sm="12">
                                             <MudTextField @bind-Value="@Device.ModelName" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
@@ -80,7 +80,7 @@
                                     </MudItem>
                                     <MudItem xs="12" Class="custom-form">
                                         <MudItem md="3" sm="12">
-                                            <MudText>OTAA AppEUI : </MudText>
+                                            <MudText><b class="wildcard-required">*</b> OTAA AppEUI : </MudText>
                                         </MudItem>
                                         <MudItem md="9" sm="12">
                                             <MudTextField @bind-Value="@Device.AppEUI" Class="custom-disabled" Margin="Margin.Dense" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>

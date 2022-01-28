@@ -46,6 +46,11 @@
     letter-spacing: .03333em;
 }
 
+.custom-validation-error-txt {
+    color: var(--mud-palette-error) !important;
+    text-align: start;
+}
+
 /*//////////////////// Search Panel ////////////////*/
 .search-panel {
 

@@ -12,7 +12,7 @@
                 <DataAnnotationsValidator />
                 <MudCard>
                     <MudCardContent>
-                        <MudTextField Style="width:300px" Class="add-dialog-input" Label="Name :" @bind-Value="gateway.DeviceId" For="@(() => gateway.DeviceId)" />
+                        <MudTextField Style="width:300px" Class="add-dialog-input" Label="* Name :" @bind-Value="gateway.DeviceId" For="@(() => gateway.DeviceId)" />
                         <MudSelect Style="width:300px" Class="add-dialog-input"  @bind-Value="gateway.Type" Placeholder="Please Select the type" OffsetY="true" AdornmentColor="Color.Primary">
                             <MudSelectItem Style="width:300px" Value="@("lora")">Lora</MudSelectItem>
                             <MudSelectItem Value="@("unknow")">Unknow</MudSelectItem>

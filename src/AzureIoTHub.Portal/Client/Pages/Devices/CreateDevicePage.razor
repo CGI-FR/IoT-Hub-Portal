@@ -31,7 +31,7 @@
                             <MudItem md="6" xs="12">
                                 <MudItem xs="12" Class="custom-form">
                                     <MudItem md="3" sm="12">
-                                        <MudText>Device ID : </MudText>
+                                        <MudText><b class="wildcard-required">*</b> Device ID :</MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
                                         <MudTextField @bind-Value="@Device.DeviceID"
@@ -60,7 +60,7 @@
                                 </MudItem>
                                 <MudItem xs="12" Class="custom-form">
                                     <MudItem md="3" sm="12">
-                                        <MudText>Model Type : </MudText>
+                                        <MudText><b class="wildcard-required">*</b> Model Type : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
                                         <MudAutocomplete T="DeviceModel"
@@ -93,7 +93,7 @@
 
                                 <MudItem xs="12" Class="custom-form">
                                     <MudItem md="3" sm="12">
-                                        <MudText>OTAA AppEUI : </MudText>
+                                        <MudText><b class="wildcard-required">*</b> OTAA AppEUI : </MudText>
                                     </MudItem>
                                     <MudItem md="9" sm="12">
                                         <MudTextField @bind-Value="@Device.AppEUI"
