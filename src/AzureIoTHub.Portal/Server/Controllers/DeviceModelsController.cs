@@ -30,7 +30,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private readonly IDeviceModelCommandMapper deviceModelCommandMapper;
         private readonly IDeviceModelImageManager deviceModelImageManager;
         private readonly IDeviceService devicesService;
-        private ISerializationBinder deviceModelSerializer;
+        private readonly ISerializationBinder deviceModelSerializer;
 
         public DeviceModelsController(
             IDeviceModelImageManager deviceModelImageManager,
