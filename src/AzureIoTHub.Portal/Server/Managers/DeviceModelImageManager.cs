@@ -51,7 +51,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             this.logger.LogInformation($"Deleting from Blob storage :\n\t {blobClient.Uri}\n");
 
-            await blobClient.DeleteAsync();
+            await blobClient.DeleteIfExistsAsync();
         }
 
         public Uri ComputeImageUri(string deviceModelId)
