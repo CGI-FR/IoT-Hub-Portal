@@ -17,6 +17,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
 
     [ApiController]
     [Route("api/[controller]")]
@@ -29,6 +30,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private readonly IDeviceModelCommandMapper deviceModelCommandMapper;
         private readonly IDeviceModelImageManager deviceModelImageManager;
         private readonly IDeviceService devicesService;
+        private ISerializationBinder deviceModelSerializer;
 
         public DeviceModelsController(
             IDeviceModelImageManager deviceModelImageManager,
@@ -42,6 +44,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             this.deviceModelCommandMapper = deviceModelCommandMapper;
             this.deviceModelImageManager = deviceModelImageManager;
             this.devicesService = devicesService;
+            this.deviceModelSerializer = new DeviceModelBinder();
         }
 
         /// <summary>
@@ -92,7 +95,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             try
             {
-                DeviceModel deviceModelObject = JsonConvert.DeserializeObject<DeviceModel>(deviceModel);
+                JsonSerializerSettings settings = new JsonSerializerSettings();
+                settings.TypeNameHandling = TypeNameHandling.Auto;
+
+                settings.SerializationBinder = this.deviceModelSerializer ?? throw new Exception("Expected non-null");
+
+                DeviceModel deviceModelObject = JsonConvert.DeserializeObject<DeviceModel>(deviceModel, settings);
+                // DeviceModel deviceModelObject = JsonConvert.DeserializeObject<DeviceModel>(deviceModel);
                 TableEntity entity = new TableEntity()
                 {
                     PartitionKey = DefaultPartitionKey,
@@ -114,7 +123,12 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             try
             {
-                DeviceModel deviceModelObject = JsonConvert.DeserializeObject<DeviceModel>(deviceModel);
+                JsonSerializerSettings settings = new JsonSerializerSettings();
+                settings.TypeNameHandling = TypeNameHandling.Auto;
+
+                settings.SerializationBinder = this.deviceModelSerializer ?? throw new Exception("Expected non-null");
+
+                DeviceModel deviceModelObject = JsonConvert.DeserializeObject<DeviceModel>(deviceModel, settings);
 
                 TableEntity entity = new TableEntity()
                 {
