@@ -73,7 +73,7 @@
                                                          CoerceText="true" CoerceValue="false"/>
                                         @if (Device.ModelName == null && displayValidationErrorMessages)
                                         {
-                                            <p class="mud-input-helper-text mud-input-error">The Model Type field is required.</p>
+                                            <p class="custom-validation-error-txt">The Model Type field is required.</p>
                                         }
                                     </MudItem>
                                 </MudItem>
@@ -98,9 +98,11 @@
                                     <MudItem md="9" sm="12">
                                         <MudTextField @bind-Value="@Device.AppEUI"
                                                       Margin="Margin.Dense" Variant="Variant.Outlined"
-                                                      For="@(()=> Device.AppEUI)"
                                                       ReadOnly="true"
                                                       Class="custom-disabled"></MudTextField>
+                                        @if(Device.AppEUI == null && displayValidationErrorMessages){
+                                            <p class="custom-validation-error-txt">The OTAA AppKey field is required.</p>
+                                        }
                                     </MudItem>
                                 </MudItem>
                                 <MudItem xs="12" Class="custom-form">
@@ -188,26 +190,23 @@
     public async void SaveDevice(EditContext context)
     {
         // Sends the device to be added to the controller
-        // var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/create", Device);
         var response = await Http.PostAsJsonAsync<DeviceDetails>($"api/Devices", Device);
-        var errorMsg = await response.Content.ReadAsStringAsync();
-        Console.WriteLine($">>>>> {response.StatusCode}");
-        Console.WriteLine($"===== {errorMsg}");
 
-        // Prompts a snack bar to inform if the action was successful
-        // TODO : Deal more effectively with error/success messages
         if (response.IsSuccessStatusCode)
         {
+            // Prompts a snack bar to inform the action was successful
             Snackbar.Add($"Device {Device.DeviceID} has been successfully created!", Severity.Success);
+            
             // Go back to the list of devices
             NavManager.NavigateTo("devices");
         }
+
+        // TODO : Deal more effectively with different error messages
         else
         {
+            string errorMsg = await response.Content.ReadAsStringAsync();
             Snackbar.Add($"Oh oh, something went wrong while creating device {Device.DeviceID}... <br> {errorMsg}", Severity.Error);
         }
-
-
     }
 
     /// <summary>
