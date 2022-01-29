@@ -3,8 +3,6 @@
 This project aims to provide a solution for handling IoT Devices easyly.
 It leverages on Azure IoT Hub for connectivity and device management.
 
-This is currently in **beta** !
-
 ## Prerequisites
 
 The following should be completed before proceeding with the IoT Hub Portal development or deployment in your environment.
@@ -13,7 +11,7 @@ The following should be completed before proceeding with the IoT Hub Portal deve
 * You must have an Identity provider supporting OpenId protocol. 
     > If you don't have existing Identity Provider, you can follow our dedicated page to setup an Azure AD B2C Tenant with its applications.
     > See [Azure AD B2C applications configuration](./docs/b2c-applications.md) page.
-* Understandr how IoTEdge LoraWAN StarterKit work. Have a look at [https://azure.github.io/iotedge-lorawan-starterkit](https://azure.github.io/iotedge-lorawan-starterkit) to get started.
+* Understand how IoTEdge LoraWAN StarterKit work. Have a look at [https://azure.github.io/iotedge-lorawan-starterkit](https://azure.github.io/iotedge-lorawan-starterkit) to get started.
 
 ## Typical architecture deployment
 
@@ -61,16 +59,3 @@ The template will deploy in your Azure subscription the Following resources:
     * **Region**:  In what region are you operating your device (currently only EU868 and US915 is supported)
 
     > see: [https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure](https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure) for more information about the LoRaWan IoT Hub and Azure deployment.
-
-## Support
-
-This is an open source solution.
-For bugs and issues with the codebase please log an issue in this repo.
-
-## Known Issues and Limitations
-
-Refer to [Known Issues](https://github.com/CGI-FR/IoT-Hub-Portal/issues) for known issues, gotchas and limitations.
-
-## Credits
-
-* [Azure IoT Edge LoRaWAN Starter Kit](https://github.com/Azure/iotedge-lorawan-starterkit)

@@ -1,0 +1,30 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+#banner {
+    #menu{
+        ul > li {
+
+        }
+    }
+}
+
+.wrapper {
+    width: 960px;
+
+    nav{
+        left: 0;
+        margin-left: -300px
+    }
+
+    section{
+        width: 900px;
+    }
+
+    footer {
+        left: 0;
+        margin-left: -300px
+    }
+}
