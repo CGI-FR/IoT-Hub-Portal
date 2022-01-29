@@ -6,11 +6,10 @@ In this page you will configure the B2C tenant and two applications (API and Web
 
 By the end, you should have recorded the following information:
 
-    * Tenant name: `<your-tenant-id>`
-    * Tenant ID: `<your-tenant-id>`
-    * API Client ID: `<your-client-id>`
-    * API Client Secret: `<your-client-secret>`
+    * OpenID authority: `<your-openid-authority>`
+    * OpenID metadata URL: `<your-openid-provider-metadata-url>`
     * Client ID: `<your-client-id>`
+    * API Client ID: `<your-client-id>`
 
 ## Step by Step instructions
 
