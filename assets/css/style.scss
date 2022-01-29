@@ -1,0 +1,38 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+#banner {
+    #menu{
+        margin-left: 25%;
+
+        ul > li {
+            a {
+                color: black;
+                font-size: 20px;
+                display: inline-block;
+                margin-top: 15px;
+                margin-right: 20px;
+            }
+        }
+    }
+}
+
+.wrapper {
+    width: 960px;
+
+    nav{
+        right: 0;
+        margin-right: 0;
+    }
+
+    section{
+        width: 900px;
+    }
+
+    footer {
+        left: 0;
+        margin-left: -300px
+    }
+}
