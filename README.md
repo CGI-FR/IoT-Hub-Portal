@@ -7,7 +7,7 @@
 This project aims to provide a solution for handling IoT Devices easyly.
 It leverages on Azure IoT Hub for connectivity and device management.
 
-This is currently in **beta** !
+![https://cgi-fr.github.io/IoT-Hub-Portal/images/architecture.png](https://cgi-fr.github.io/IoT-Hub-Portal/images/architecture.png)
 
 ## Features
 
