@@ -21,7 +21,7 @@ The following should be completed before proceeding with the IoT Hub Portal deve
 
 ## Step-By-Step instructions
 
-### Deployed Azure Resources
+#### Deployed Azure Resources
 
 The template will deploy in your Azure subscription the Following resources:
 
@@ -32,7 +32,7 @@ The template will deploy in your Azure subscription the Following resources:
 * Log Analytics (when opted in to use Azure Monitor)
 * Azure WebApp and Service Plan
 
-### Instructions
+#### Instructions
 
 1. Choose a solution prefix for your deployment.
 
