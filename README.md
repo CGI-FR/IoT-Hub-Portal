@@ -10,7 +10,7 @@ This is currently in **beta** !
 The following should be completed before proceeding with the IoT Hub Portal development or deployment in your environment.
 
 * You must have an Azure subscription. Get an [Azure Free account](https://azure.microsoft.com/en-us/offers/ms-azr-0044p/) to get started.
-* You must have configured an Identity provider with applications. 
+* You must have an Identity provider supporting OpenId protocol. 
     > If you don't have existing Identity Provider, you can follow our dedicated page to setup an Azure AD B2C Tenant with its applications.
     > See [Azure AD B2C applications configuration](./docs/b2c-applications.md) page.
 * Understandr how IoTEdge LoraWAN StarterKit work. Have a look at [https://azure.github.io/iotedge-lorawan-starterkit](https://azure.github.io/iotedge-lorawan-starterkit) to get started.
