@@ -24,3 +24,33 @@ This schema represent the various components and how they interact to have a bet
 1. The IoT Hub portal uses the LoRa Key Management Facade to send the Cloud to Device messages for LoRa devices.
 1. The LoRa Key Management Facade uses the Redis to store its cached data.
 1. The LoRa Key Management Facade uses the Azure IoT Hub REST API to retrieve the LoRa device keys and send the C2D messages.
+
+> Note: for more information about the LoRa Key Management Facade, see the [Azure IoT Edge LoRaWAN Starter Kit](https://azure.github.io/iotedge-lorawan-starterkit) page.
+
+
+## IoT Hub Portal Configuration
+
+By deploying the IoT Hub Portal, the user can configure the IoT Hub and the LoRaWAN network.
+
+Since the IoT Hub Portal is deployed as a Docker container. The application settings are configurable in the environment variables.
+
+### Application settings
+
+Here are different settings that the user can configure:
+
+* **OIDC__Authority**: The OpenID Connect issuer.
+* **OIDC__MetadataUrl**: The OpenID Connect metadata URL (aka: well-known/openid-configuration).
+* **OIDC__ClientId**: The OpenID Connect client ID for the Web UI.
+* **OIDC__ApiClientId**: The OpenID Connect client ID for the API.
+* **OIDC__Scope**: The OpenID Connect scope that represents the portal API.
+* **IoTDPS__ServiceEndpoint**: The IoT Device Provisioning Service endpoint.
+* **IoTDPS__DefaultEnrollmentGroup**: The default IoT Device Provisioning Service enrollment group.
+
+### Connection strings
+
+Here are different connection strings that the user can configure:
+
+* **IoTHub__ConnectionString**: The connection string to the IoT Hub.
+* **IoTDPS__ConnectionString**: The connection string to the Azure IoT Device Provisioning Service.
+* **StorageAccount__ConnectionString**: The connection string to the Azure Storage account.
+
