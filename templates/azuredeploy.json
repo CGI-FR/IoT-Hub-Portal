@@ -36,13 +36,6 @@
                 "description": "The API client ID for the B2C tenant"
             }
         },
-        "apiClientSecret": {
-            "defaultValue": "",
-            "type": "securestring",
-            "metadata": {
-                "description": "The API client Secret for the B2C tenant"
-            }
-        },
         "edgeGatewayName": {
             "type": "string",
             "metadata": {
@@ -160,9 +153,6 @@
                     },
                     "apiClientId": {
                         "value": "[parameters('apiClientId')]"
-                    },
-                    "apiClientSecret": {
-                        "value": "[parameters('apiClientSecret')]"
                     },
                     "clientId": {
                         "value": "[parameters('clientId')]"
