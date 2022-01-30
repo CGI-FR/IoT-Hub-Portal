@@ -27,7 +27,6 @@ This schema represent the various components and how they interact to have a bet
 
 > Note: for more information about the LoRa Key Management Facade, see the [Azure IoT Edge LoRaWAN Starter Kit](https://azure.github.io/iotedge-lorawan-starterkit) page.
 
-
 ## IoT Hub Portal Configuration
 
 By deploying the IoT Hub Portal, the user can configure the IoT Hub and the LoRaWAN network.
@@ -53,4 +52,39 @@ Here are different connection strings that the user can configure:
 * **IoTHub__ConnectionString**: The connection string to the IoT Hub.
 * **IoTDPS__ConnectionString**: The connection string to the Azure IoT Device Provisioning Service.
 * **StorageAccount__ConnectionString**: The connection string to the Azure Storage account.
+
+> Note: For a production relase, use might benefits from using the Azure Key Vault to store the connection strings.
+
+## Device tags
+
+The IoT Hub portal uses some tags to configure the devices. The tags are storeed in the Azure IoT Hub by its Device Twin.
+
+* **deviceType**: The device type, can be "LoRa Device" or "null".
+> By setting the device type to "LoRa Device", the device will be configured to send LoRaWAN and receive C2D commands.
+* **modelId**: The device model ID that is used to retrieve the device model configuration.
+
+## Storage Account
+
+The Storage Account is used to store the device models configuration. You could benefits from using the same Storage Account that is used by the LoRa Key Management Facade.
+This solution will use tables and blob storage to store its data. there is no need to create the tables and containers, the application will do it for you.
+
+### Tables
+
+The application uses the following tables:
+
+* **DeviceTemplates**: The table that contains the device models configuration.
+* **DeviceCommands**: The table that contains the device commands linked to the device models.
+
+### Blob Storage
+
+The application uses the following blob storage:
+
+* **device-images**: The blob storage that contains the device images.
+
+
+
+
+
+
+
 
