@@ -1,3 +1,5 @@
+# User Guide
+
 ## Directory Structure
 
 The code is organized into the following directory structure:
