@@ -2,13 +2,13 @@
 
 The code is organized into the following directory structure:
 
-    * **src**: Source code
-        * **AzureIoTHub.Portal.Server.Tests**: Unit test project for the Portal
-        * **AzureIoTHub.Portal**: The Portal project
-            * **Client**: .NET 6 Blazor Web Assembly project that alow to visualize the IoT Hub data
-            * **Server**: .NET 6 Web API project that provides the API for the Portal
-            * **Shared**: Shared code between the Client and Server projects
-    * **templates**: contains the templates for the "deploy to Azure" button
+* **src**: Source code
+    * **AzureIoTHub.Portal.Server.Tests**: Unit test project for thePortal
+    * **AzureIoTHub.Portal**: The Portal project
+        * **Client**: .NET 6 Blazor Web Assembly project that alow tovisualize the IoT Hub data
+        * **Server**: .NET 6 Web API project that provides the API forthe Portal
+        * **Shared**: Shared code between the Client and Server projects
+* **templates**: contains the templates for the "deploy to Azure" button
 
 ## Overall Architecture
 
