@@ -7,16 +7,14 @@ namespace AzureIoTHub.Portal.Shared.Models
 
     public class DeviceModelCommand
     {
-        [Required]
-        public string CommandId { get; set; }
-
-        [Required]
+        [Required(ErrorMessage = "The command name is required.")]
         public string Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The frame is required.")]
         public string Frame { get; set; }
 
-        [Required]
-        public int Port { get; set; }
+        [Required(ErrorMessage = "The port number is required.")]
+        [Range(1, 223, ErrorMessage = "The port number should be between 1 and 223.")]
+        public int Port { get; set; } = 1;
     }
 }

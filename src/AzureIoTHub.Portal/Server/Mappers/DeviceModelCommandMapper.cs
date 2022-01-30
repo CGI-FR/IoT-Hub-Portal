@@ -12,7 +12,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
         {
             return new DeviceModelCommand
             {
-                CommandId = entity.RowKey,
                 Frame = entity[nameof(DeviceModelCommand.Frame)].ToString(),
                 Port = int.Parse(entity[nameof(DeviceModelCommand.Port)].ToString())
             };

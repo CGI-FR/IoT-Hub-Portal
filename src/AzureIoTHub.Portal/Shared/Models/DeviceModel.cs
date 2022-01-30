@@ -12,12 +12,12 @@ namespace AzureIoTHub.Portal.Shared.Models
 
         public string ImageUrl { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The device model name is required.")]
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The OTAA App EUI is required.")]
         public string AppEUI { get; set; }
 
         public string SensorDecoderURL { get; set; }

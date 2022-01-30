@@ -81,55 +81,50 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return this.Ok(this.deviceModelMapper.CreateDeviceModel(query.Single()));
         }
 
-        [HttpGet("{modelID}/image")]
-        public Uri GetImage(string modelID)
+        [HttpGet("{modelID}/avatar")]
+        public string GetAvatar(string modelID)
         {
             return this.deviceModelImageManager.ComputeImageUri(modelID);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post([FromForm] string deviceModel, [FromForm] IFormFile file = null)
+        [HttpPost("{modelID}/avatar")]
+        public async Task<string> ChangeAvatar(string modelID, IFormFile file)
         {
-            try
-            {
-                DeviceModel deviceModelObject = JsonConvert.DeserializeObject<DeviceModel>(deviceModel);
-                TableEntity entity = new TableEntity()
-                {
-                    PartitionKey = DefaultPartitionKey,
-                    RowKey = Guid.NewGuid().ToString()
-                };
+            return await this.deviceModelImageManager.ChangeDeviceModelImageAsync(modelID, file.OpenReadStream());
+        }
 
-                await this.SaveEntity(entity, deviceModelObject, file);
+        [HttpDelete("{modelID}/avatar")]
+        public async Task DeleteAvatar(string modelID)
+        {
+            await this.deviceModelImageManager.DeleteDeviceModelImageAsync(modelID);
+        }
 
-                return this.Ok();
-            }
-            catch (Exception e)
+        [HttpPost]
+        public async Task<IActionResult> Post(DeviceModel deviceModel)
+        {
+            TableEntity entity = new TableEntity()
             {
-                return this.BadRequest(e.Message);
-            }
+                PartitionKey = DefaultPartitionKey,
+                RowKey = deviceModel.ModelId ?? Guid.NewGuid().ToString()
+            };
+
+            await this.SaveEntity(entity, deviceModel);
+
+            return this.Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put([FromForm] string deviceModel, [FromForm] IFormFile file = null)
+        public async Task<IActionResult> Put(DeviceModel deviceModel)
         {
-            try
+            TableEntity entity = new TableEntity()
             {
-                DeviceModel deviceModelObject = JsonConvert.DeserializeObject<DeviceModel>(deviceModel);
+                PartitionKey = DefaultPartitionKey,
+                RowKey = deviceModel.ModelId
+            };
 
-                TableEntity entity = new TableEntity()
-                {
-                    PartitionKey = DefaultPartitionKey,
-                    RowKey = deviceModelObject.ModelId
-                };
+            await this.SaveEntity(entity, deviceModel);
 
-                await this.SaveEntity(entity, deviceModelObject, file);
-
-                return this.Ok();
-            }
-            catch (Exception e)
-            {
-                return this.BadRequest(e.Message);
-            }
+            return this.Ok();
         }
 
         [HttpDelete("{deviceModelID}")]
@@ -169,7 +164,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 foreach (var item in commands)
                 {
                     _ = await this.tableClientFactory
-                        .GetDeviceCommands().DeleteEntityAsync(deviceModelID, item.CommandId);
+                        .GetDeviceCommands().DeleteEntityAsync(deviceModelID, item.Name);
                 }
             }
 
@@ -183,7 +178,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             return this.StatusCode(result.Status);
         }
 
-        private async Task SaveEntity(TableEntity entity, DeviceModel deviceModelObject, [FromForm] IFormFile file = null)
+        private async Task SaveEntity(TableEntity entity, DeviceModel deviceModelObject)
         {
             this.deviceModelMapper.UpdateTableEntity(entity, deviceModelObject);
 
@@ -191,29 +186,36 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 .GetDeviceTemplates()
                 .UpsertEntityAsync(entity);
 
-            if (file != null)
+            var commandsTable = this.tableClientFactory.GetDeviceCommands();
+            var commandsPage = commandsTable.QueryAsync<TableEntity>(c => c.PartitionKey == entity.RowKey)
+                                            .AsPages();
+
+            var commandRowKeys = new List<string>();
+
+            await foreach (var page in commandsPage)
             {
-                using var fileStream = file.OpenReadStream();
-                await this.deviceModelImageManager.ChangeDeviceModelImageAsync(entity.RowKey, fileStream);
+                foreach (var item in page.Values)
+                {
+                    if (!deviceModelObject.Commands.Any(c => c.Name == item.RowKey))
+                    {
+                        await commandsTable.DeleteEntityAsync(item.PartitionKey, item.RowKey);
+                    }
+                }
             }
 
-            // insertion des commant
-            if (deviceModelObject.Commands.Count > 0)
+            foreach (var item in deviceModelObject.Commands)
             {
-                foreach (var element in deviceModelObject.Commands)
+                TableEntity commandEntity = new TableEntity()
                 {
-                    TableEntity commandEntity = new TableEntity()
-                    {
-                        PartitionKey = entity.RowKey,
-                        RowKey = element.Name
-                    };
+                    PartitionKey = entity.RowKey,
+                    RowKey = item.Name
+                };
 
-                    this.deviceModelCommandMapper.UpdateTableEntity(commandEntity, element);
+                this.deviceModelCommandMapper.UpdateTableEntity(commandEntity, item);
 
-                    await this.tableClientFactory
-                        .GetDeviceCommands()
-                        .AddEntityAsync(commandEntity);
-                }
+                await this.tableClientFactory
+                    .GetDeviceCommands()
+                    .UpsertEntityAsync(commandEntity);
             }
         }
     }
