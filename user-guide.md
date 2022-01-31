@@ -83,10 +83,23 @@ The application uses the following blob storage:
 
 * **device-images**: The blob storage that contains the device images.
 
+# Developer Guide
 
+## Working with the documentation
 
+This documentation site is build using Github Pages.
 
+```docs/main``` is a detached branch that is locked and only accept PRs. On PR merge, Github Pages will automatically update the documentation website.
 
+### How to update the documentation
 
+1. Checkout the branc that contains the documentation: 
 
+```sh
+git checkout -b docs/<your_branch_name> origin/docs/main
+```
 
+1. Update the documentation
+1. Commit your changes
+1. Push your changes to the branch
+1. Create a PR
