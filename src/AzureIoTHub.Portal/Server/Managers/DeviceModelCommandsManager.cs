@@ -65,21 +65,12 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             foreach (TableEntity qEntity in queryResultsFilter)
             {
-                try
+                commands.Add(new DeviceModelCommand()
                 {
-                    commands.Add(
-                    new DeviceModelCommand()
-                    {
-                        CommandId = qEntity.RowKey,
-                        Name = qEntity.RowKey,
-                        Frame = qEntity[nameof(DeviceModelCommand.Frame)].ToString(),
-                        Port = int.Parse(qEntity[nameof(DeviceModelCommand.Port)].ToString())
-                    });
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
+                    Name = qEntity.RowKey,
+                    Frame = qEntity[nameof(DeviceModelCommand.Frame)].ToString(),
+                    Port = int.Parse(qEntity[nameof(DeviceModelCommand.Port)].ToString())
+                });
             }
 
             return commands;

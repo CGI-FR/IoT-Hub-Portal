@@ -1,17 +1,21 @@
 ﻿@using AzureIoTHub.Portal.Shared.Security;
 @using Microsoft.AspNetCore.Components.Authorization
 
-<MudDrawerHeader>
-    <MudText Typo="Typo.h6"><a href="#">Home</a></MudText>
-</MudDrawerHeader>
 <AuthorizeView>
     <Authorized>
-        <MudNavLink Href="/devices">Devices</MudNavLink>
-        <MudNavGroup Title="Gateways" Expanded="true">
+        <MudNavMenu>
+            <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Devices</MudText>
+
+            <MudNavLink Href="/devices">List</MudNavLink>
+
+            <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Gateways</MudText>
+
             <MudNavLink Href="/gateways">Overview</MudNavLink>
             <MudNavLink Href="/configurations">Configuration</MudNavLink>
-        </MudNavGroup>
-        <MudNavLink Href="/device-models">Device Models</MudNavLink>
+            
+            <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Device Models</MudText>
+            <MudNavLink Href="/device-models">List</MudNavLink>
 
+        </MudNavMenu>
     </Authorized>
 </AuthorizeView>
