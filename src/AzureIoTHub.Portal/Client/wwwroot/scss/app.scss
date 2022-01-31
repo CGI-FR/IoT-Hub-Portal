@@ -36,6 +36,16 @@
     margin-right : 10px;
 }
 
+.custom-validation-error-txt {
+    color: var(--mud-palette-error) !important;
+    margin: 0;
+    font-size: .75rem;
+    text-align: start;
+    font-weight: 400;
+    line-height: 1.66;
+    letter-spacing: .03333em;
+}
+
 /*//////////////////// Search Panel ////////////////*/
 .search-panel {
 

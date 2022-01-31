@@ -4,6 +4,8 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Shared.Models.Device
 @using System.Text.Json;
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
 
 @attribute [Authorize]
 @inject HttpClient Http
@@ -14,7 +16,8 @@
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
         <MudItem xs="12">
-            <EditForm Model="@Device" OnValidSubmit="SaveDevice">
+            <EditForm Model="@Device" OnValidSubmit="SaveDevice" OnInvalidSubmit="HandleInvalidSubmit">
+                <DataAnnotationsValidator />
                 <MudCard>
                     <MudCardHeader>
                         <CardHeaderContent>
@@ -59,6 +62,10 @@
                                         </MudItem>
                                         <MudItem md="9" sm="12">
                                             <MudTextField @bind-Value="@Device.ModelName" Margin="Margin.Dense" Class="custom-disabled" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
+                                            @if (Device.ModelName == null && displayValidationErrorMessages)
+                                            {
+                                                <p class="custom-validation-error-txt">The Model Type field is required.</p>
+                                            }
                                         </MudItem>
                                     </MudItem>
                                 </MudItem>
@@ -77,6 +84,9 @@
                                         </MudItem>
                                         <MudItem md="9" sm="12">
                                             <MudTextField @bind-Value="@Device.AppEUI" Class="custom-disabled" Margin="Margin.Dense" ReadOnly="true" Variant="Variant.Outlined"></MudTextField>
+                                            @if(Device.AppEUI == null && displayValidationErrorMessages){
+                                                <p class="custom-validation-error-txt">The OTAA AppKey field is required.</p>
+                                            }
                                         </MudItem>
                                     </MudItem>
                                     <MudItem xs="12" Class="custom-form">
@@ -157,7 +167,7 @@
                     </MudCardContent>
                 </MudCard>
                 <MudCardActions>
-                    <MudFab ButtonType="ButtonType.Submit" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Label="Save" Disabled="@(!success)" Class="btn-aln-right" />
+                    <MudFab ButtonType="ButtonType.Submit" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Label="Save" Class="btn-aln-right" />
                     <MudFab Color="Color.Dark" Icon="@Icons.Material.Filled.Delete" Label="Delete" OnClick="DeleteDevice" />
                 </MudCardActions>
             </EditForm>
@@ -173,7 +183,7 @@
 
     private DeviceDetails Device { get; set; } = new DeviceDetails();
 
-    private bool success = true;
+    private bool displayValidationErrorMessages = false;
     private string StatusUpdatedTimeString { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -204,15 +214,28 @@
     /// </summary>
     public async void SaveDevice()
     {
-        // await Http.PostAsJsonAsync<DeviceListItem>($"Devices/update", Device);
         var result = await Http.PutAsJsonAsync<DeviceDetails>($"api/Devices", Device);
 
-        // Prompts a snack bar to inform the action was successful
-        // TODO : Deal more effectively with error/success messages
-        Snackbar.Add($"Device {Device.DeviceID} has been successfully updated!", Severity.Success);
+        if (result.IsSuccessStatusCode)
+        {
+            // Prompts a snack bar to inform the action was successful
+            Snackbar.Add($"Device {Device.DeviceID} has been successfully updated!", Severity.Success);
 
-        // Go back to the list of device
-        NavManager.NavigateTo("devices");
+            // Go back to the list of device
+            NavManager.NavigateTo("devices");
+        }
+
+        // TODO : Deal more effectively with different error messages
+        else
+        {
+            string errorMsg = await result.Content.ReadAsStringAsync();
+            Snackbar.Add($"Oh oh, something went wrong while updating device {Device.DeviceID}... <br> {errorMsg}", Severity.Error);
+        }
+    }
+
+    public void HandleInvalidSubmit(EditContext context)
+    {
+        displayValidationErrorMessages = true;
     }
 
     /// <summary>
@@ -241,7 +264,7 @@
 
         if (result.IsSuccessStatusCode)
         {
-            Snackbar.Add($"{method.CommandId} has been successfully execute!",
+            Snackbar.Add($"{method.CommandId} has been successfully executed!",
                 Severity.Success);
         }
         else

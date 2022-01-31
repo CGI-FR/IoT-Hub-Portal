@@ -21,6 +21,7 @@ namespace AzureIoTHub.Portal.Shared.Models.Device
 
         public DateTime StatusUpdatedTime { get; set; }
 
+        [Required]
         public string AppEUI { get; set; }
 
         public string AppKey { get; set; }
