@@ -35,13 +35,6 @@
             "metadata": {
                 "description": "The API client ID for the B2C tenant"
             }
-        },
-        "apiClientSecret": {
-            "defaultValue": "",
-            "type": "securestring",
-            "metadata": {
-                "description": "The API client Secret for the B2C tenant"
-            }
         }
     },
     "variables": {
@@ -156,16 +149,11 @@
                             "name": "StorageAccount__ConnectionString",
                             "type": "Custom",
                             "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountId'),'2015-05-01-preview').key1)]"
-                        },
-                        {
-                            "name": "MsalSettings__ApiClientSecret",
-                            "type": "Custom",
-                            "connectionString": "[parameters('apiClientSecret')]"
                         }
                     ],
                     "appSettings": [
                         {
-                            "name": "IoTDPS__DefaultEnrollmentGroupe",
+                            "name": "IoTDPS__DefaultEnrollmentGroup",
                             "value": "[variables('enrollmentGroupName')]"
                         },
                         {
