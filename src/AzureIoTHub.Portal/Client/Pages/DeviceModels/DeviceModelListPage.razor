@@ -7,76 +7,77 @@
 @using Blazored.Modal.Services
 
 @attribute [Authorize]
-@inject HttpClient Http
-@inject NavigationManager NavigationManager
-@inject ISnackbar Snackbar
-@inject IDialogService DialogService
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+@inject ISnackbar snackBar
+@inject IDialogService dialogService
 
-<MudContainer MaxWidth="MaxWidth.False">
-    <MudGrid>
-        @if (result == null)
-        {
-            <MudItem Class="custom-centered-container">
-                <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
-            </MudItem>
-        }
-        else
-        {
-            <MudItem xs="12">
-                <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
-                    <ColGroup>
-                        <col style="width: 5%;" />
-                        <col style="width: 30%;" />
-                        <col style="width: 30%;" />
-                        <col style="width: 25%;" />
-                        <col style="width: 5%;" />
-                        <col style="width: 5%;" />
-                    </ColGroup>
-                    <ToolBarContent>
-                        <MudText Typo="Typo.h6">Device Models</MudText>
-                        <MudSpacer />
-                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadDeviceModels" Class="ma-2"></MudIconButton>
-                    </ToolBarContent>
-                    <HeaderContent>
-                        <MudTh></MudTh>
-                        <MudTh>Name</MudTh>
-                        <MudTh Style="text-align: center">Description</MudTh>
-                        <MudTh Style="text-align: center">AppEUI</MudTh>
-                        <MudTh Style="text-align: center">Details</MudTh>
-                        <MudTh Style="text-align: center">Delete</MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd Style="text-align: center">
-                            <img height="25" src="@context.ImageUrl" />
-                        </MudTd>
-                        <MudTd DataLabel="Name" Style="word-break: break-all;">
-                            <a href="/device-models/@context.ModelId">@context.Name</a>
-                        </MudTd>
-                        <MudTd DataLabel="Description" Style="word-break: break-all; ">
-                            @context.Description
-                        </MudTd>
-                        <MudTd DataLabel="AppEUI" Style="text-align: center;">
-                            @context.AppEUI
-                        </MudTd>
-                        <MudTd DataLabel="Details" Style="text-align: center">
-                            <a href="/device-models/@context.ModelId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
-                        </MudTd>
-                        <MudTd DataLabel="Delete" Style="text-align: center">
-                            <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDeviceModel(context))"></MudIconButton>
-                        </MudTd>
-                    </RowTemplate>
-                    <PagerContent>
-                        <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
-                    </PagerContent>
-                </MudTable>
-            </MudItem>
-        }
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Models</MudText>
+
+<MudGrid>
+    @if (result == null)
+    {
+        <MudItem Class="custom-centered-container">
+            <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+        </MudItem>
+    }
+    else
+    {
+        <MudItem xs="12">
+            <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
+                <ColGroup>
+                    <col style="width: 5%;" />
+                    <col style="width: 30%;" />
+                    <col style="width: 30%;" />
+                    <col style="width: 25%;" />
+                    <col style="width: 5%;" />
+                    <col style="width: 5%;" />
+                </ColGroup>
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Device Models</MudText>
+                    <MudSpacer />
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadDeviceModels" Class="ma-2"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDeviceModel" Class="ma-2"></MudIconButton>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh></MudTh>
+                    <MudTh>Name</MudTh>
+                    <MudTh Style="text-align: center">Description</MudTh>
+                    <MudTh Style="text-align: center">AppEUI</MudTh>
+                    <MudTh Style="text-align: center">Details</MudTh>
+                    <MudTh Style="text-align: center">Delete</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd Style="text-align: center">
+                        <img height="25" src="@context.ImageUrl" />
+                    </MudTd>
+                    <MudTd DataLabel="Name" Style="word-break: break-all;">
+                        <a href="/device-models/@context.ModelId">@context.Name</a>
+                    </MudTd>
+                    <MudTd DataLabel="Description" Style="word-break: break-all; ">
+                        @context.Description
+                    </MudTd>
+                    <MudTd DataLabel="AppEUI" Style="text-align: center;">
+                        @context.AppEUI
+                    </MudTd>
+                    <MudTd DataLabel="Details" Style="text-align: center">
+                        <a href="/device-models/@context.ModelId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                    </MudTd>
+                    <MudTd DataLabel="Delete" Style="text-align: center">
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDeviceModel(context))"></MudIconButton>
+                    </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+                </PagerContent>
+            </MudTable>
+        </MudItem>
 
         <MudItem xs="12">
             <a href="/device-models/new"><MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add a new device model" /></a>
         </MudItem>
-    </MudGrid>
-</MudContainer>
+    }
+</MudGrid>
 
 @code {
     private DeviceModel[] result;
@@ -87,6 +88,11 @@
         await LoadDeviceModels();
     }
 
+    private void AddDeviceModel()
+    {
+        navigationManager.NavigateTo("/device-models/new");
+    }
+
     /// <summary>
     ///  Sends a GET request to the DeviceModelsController, to retrieve all device models from the database
     /// </summary>
@@ -95,7 +101,7 @@
     {
         try
         {
-            result = await Http.GetFromJsonAsync<DeviceModel[]>("api/DeviceModels");
+            result = await httpClient.GetFromJsonAsync<DeviceModel[]>("api/DeviceModels");
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -108,7 +114,7 @@
         var parameters = new DialogParameters();
         parameters.Add("deviceModelID", deviceModel.ModelId);
         parameters.Add("deviceModelName", deviceModel.Name);
-        var result = await DialogService.Show<DeleteDeviceModelPage>("Confirm Deletion", parameters).Result;
+        var result = await dialogService.Show<DeleteDeviceModelPage>("Confirm Deletion", parameters).Result;
 
         if (result.Cancelled)
         {

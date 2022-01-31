@@ -10,211 +10,168 @@
 @using Newtonsoft.Json
 
 @attribute [Authorize]
-@inject HttpClient Http
+@inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
-<MudContainer MaxWidth="MaxWidth.False">
-    <EditForm Model="@_deviceModel" OnValidSubmit="OnValidation">
-        <DataAnnotationsValidator />
-        <MudCard>
-            <MudCardHeader>
-                <CardHeaderContent>
-                    <MudText Typo="Typo.h4">New device model</MudText>
-                </CardHeaderContent>
-            </MudCardHeader>
-            <MudCardContent>
-                <MudGrid>
-                    <MudItem md="6" xs="12">
-                        <MudItem xs="12" Class="custom-form">
-                            <MudItem xs="12" md="2" sm="7">
-                                <MudText>Name :</MudText>
-                            </MudItem>
-                            <MudItem xs="12" md="6" sm="10">
-                                <MudTextField @bind-Value="@_deviceModel.Name" For="@(() => _deviceModel.Name)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                            </MudItem>
-                        </MudItem>
-                        <MudItem xs="12" Class="custom-form">
-                            <MudItem xs="12" md="2" sm="7">
-                                <MudText>Description :</MudText>
-                            </MudItem>
-                            <MudItem xs="12" md="6" sm="6">
-                                <MudTextField @bind-Value="@_deviceModel.Description" For="@(() => _deviceModel.Description)" Margin="Margin.Dense" Variant="Variant.Outlined" Lines="5" />
-                            </MudItem>
-                        </MudItem>
-                    </MudItem>
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Model</MudText>
 
-                    <MudItem md="6" xs="12">
-                        <MudItem xs="12" Class="custom-form">
-                            <MudItem xs="12" md="2" sm="7">
-                                <MudText>AppEUI :</MudText>
-                            </MudItem>
-                            <MudItem xs="12" md="4" sm="10">
-                                <MudTextField @bind-Value="@_deviceModel.AppEUI" For="@(() => _deviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                            </MudItem>
-                        </MudItem>
-                        <MudItem xs="12" Class="custom-form">
-                            <MudItem xs="12" md="2" sm="7">
-                                <MudText>Sensor Decoder URL :</MudText>
-                            </MudItem>
-                            <MudItem xs="12" md="4" sm="10">
-                                <MudTextField @bind-Value="@_deviceModel.SensorDecoderURL" For="@(() => _deviceModel.SensorDecoderURL)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                            </MudItem>
-                        </MudItem>
-                        <MudItem xs="12" Class="custom-form">
-                            <MudItem xs="12" md="2" sm="7">
-                                <MudText>Image :</MudText>
-                            </MudItem>
-                            <MudItem xs="12" md="4" sm="10">
-                                @*<MudTextField @bind-Value="@_deviceModel.AppEUI" For="@(() => _deviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>*@
-                                <InputFile id="fileInput" OnChange="UploadFiles" hidden accept=".jpg, .jpeg, .png" />
-                                <MudButton HtmlTag="label"
-                                           Variant="Variant.Filled"
-                                           Color="Color.Primary"
-                                           StartIcon="@Icons.Filled.CloudUpload"
-                                           for="fileInput">
-                                    Upload an image
-                                </MudButton>
-
-                                @if (_selectedImage != null)
-                                {
-                                    <img src="@imageDataUrl" alt="@_selectedImage.Name" class="img-fluid">
-                                }
-                            </MudItem>
-                        </MudItem>
-                    </MudItem>
-
-                    @* ********************************************************************************** *@
-                    <MudItem md="6" xs="12">
-                        <MudItem md="12" xs="12">
-                            <MudText>Commands :</MudText>
-                        </MudItem>
-
-                        @if (_deviceModel.Commands.Count > 0)
+<MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
+    <MudTabPanel Text="General">
+        <MudGrid>
+            <MudItem xs="12" sm="4" md="2">
+                <MudCard>
+                    <MudCardContent>
+                        <div class="d-flex justify-center mb-4">
+                            <MudAvatar Image="@imageDataUrl" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                        </div>
+                    </MudCardContent>
+                    <MudCardActions Class="d-flex justify-center">
+                        @if (imageDataUrl != null)
                         {
-                            @foreach (var element in _deviceModel.Commands)
-                            {
-                                <MudItem xs="12" Class="custom-form">
-                                    <MudItem xs="3" md="1" sm="3">
-                                        <MudIconButton Icon="@Icons.Material.Filled.HighlightOff" Color="Color.Error" OnClick="@(() => DeleteCommand(_deviceModel.Commands.IndexOf(element)))" />
-                                    </MudItem>
-                                    <MudItem xs="12" md="7" sm="10" Style="margin-right: 10px;">
-                                        <MudTextField @bind-Value="@element.Name" Label="Command Name" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
-                                    </MudItem>
-                                    <MudItem xs="12" md="8" sm="10" Style="margin-right: 10px;">
-                                        <MudTextField @bind-Value="@element.Frame" Label="Hex Trame" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
-                                    </MudItem>
-                                    <MudItem xs="12" md="3" sm="10" Style="margin-right: 10px;">
-                                        <MudTextField @bind-Value="@element.Port" Label="Port" Margin="Margin.Dense" Disabled="true" Variant="Variant.Outlined"></MudTextField>
-                                    </MudItem>
-                                </MudItem>
-                            }
+                            <MudButton OnClick="DeleteAvatar" Color="Color.Error">Delete Picture</MudButton>
                         }
-
-                        <MudItem xs="12" Class="custom-form">
-                            @* Add new Command :  *@
-                            <MudItem xs="3" md="1" sm="3">
-                                <MudIconButton ButtonType="ButtonType.Button" OnClick="AddCommand" Icon="@Icons.Material.Filled.AddCircle" Color="Color.Tertiary" />
+                        else
+                        {
+                            <InputFile id="fileInput" hidden accept=".jpg, .jpeg, .png" OnChange="UploadFiles" />
+                            <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Filled.CloudUpload">Change Picture</MudButton>
+                        }
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+            <MudItem xs="12" sm="8" md="10">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText>Device model details</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@DeviceModel.Name" For="@(() => DeviceModel.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" />
                             </MudItem>
-                            <MudItem xs="12" md="7" sm="10" Style="margin-right: 10px;">
-                                <MudTextField @bind-Value="@_deviceModelCommand.Name" Label="Command Name" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                            </MudItem>
-                            <MudItem xs="12" md="8" sm="10" Style="margin-right: 10px;">
-                                <MudTextField @bind-Value="@_deviceModelCommand.Frame" Label="Hex Trame" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                            </MudItem>
-                            <MudItem xs="12" md="3" sm="10">
-                                <MudTextField @bind-Value="@_deviceModelCommand.Port" Label="Port" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                            </MudItem>
-                        </MudItem>
 
-                    </MudItem>
-                </MudGrid>
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@DeviceModel.AppEUI" Label="OTAA App EUI" For="@(() => DeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                            </MudItem>
 
-            </MudCardContent>
-            <MudCardActions>
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Create</MudButton>
-            </MudCardActions>
-        </MudCard>
-    </EditForm>
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@DeviceModel.Description" For="@(() => DeviceModel.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
+                            </MudItem>
 
-</MudContainer>
+                            <MudItem xs="12">
+                                <MudTextField @bind-Value="@DeviceModel.SensorDecoderURL" Label="Sensor Decoder URL" For="@(() => DeviceModel.SensorDecoderURL)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                <MudTable Items="@DeviceModel.Commands" Dense=true Hover=true Bordered=true Striped=true>
+                                    <ToolBarContent>
+                                        <MudText Typo="Typo.h6">Commands</MudText>
+                                        <MudSpacer />
+                                    </ToolBarContent>
+                                    <ColGroup>
+                                        <col style="width: 30%;" />
+                                        <col style="width: 60%;" />
+                                        <col style="width: 10%;" />
+                                        <col style="width: 5%;" />
+                                    </ColGroup>
+                                    <HeaderContent>
+                                        <MudTh>Name</MudTh>
+                                        <MudTh Style="text-align: center">Frame</MudTh>
+                                        <MudTh Style="text-align: center">Port</MudTh>
+                                        <MudTh Style="text-align: center">Delete</MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate>
+                                        <MudTd DataLabel="Name" Style="word-break: break-all;">
+                                            <MudTextField @bind-Value="@context.Name" Label="Name" For="@(() => context.Name)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                        </MudTd>
+                                        <MudTd DataLabel="Frame" Style="word-break: break-all; ">
+                                            <MudTextField @bind-Value="@context.Frame" Label="Frame" For="@(() => context.Frame)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                        </MudTd>
+                                        <MudTd DataLabel="Port" Style="text-align: center;">
+                                            <MudNumericField @bind-Value="@context.Port" Label="Port" For="@(() => context.Port)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudNumericField>
+                                        </MudTd>
+                                        <MudTd DataLabel="Delete" Style="text-align: center">
+                                            <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteCommand(context))"></MudIconButton>
+                                        </MudTd>
+                                    </RowTemplate>
+                                    <FooterContent>
+                                        <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddCommand">Add Command</MudButton>
+                                    </FooterContent>
+                                </MudTable>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                    <MudCardActions Class="pb-4 pl-4">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-4" @onclick="Save">Save Changes</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </MudTabPanel>
+</MudTabs>
+
 @code {
 
-    private DeviceModel _deviceModel;
-    private DeviceModelCommand _deviceModelCommand;
-    private IBrowserFile _selectedImage;
-    public string imageDataUrl;
+    private DeviceModel DeviceModel { get; set; } = new DeviceModel
+        {
+            ModelId = Guid.NewGuid().ToString()
+    };
 
-    protected override void OnInitialized()
+    private DeviceModelCommand DeviceModelCommand { get; set; } = new DeviceModelCommand();
+    private string imageDataUrl;
+
+    async Task DeleteAvatar()
     {
-        _deviceModel = new DeviceModel();
-        _deviceModelCommand = new DeviceModelCommand();
+        await httpClient.DeleteAsync($"api/DeviceModels/{DeviceModel.ModelId}/avatar");
+        imageDataUrl = null;
     }
 
     private async Task UploadFiles(InputFileChangeEventArgs e)
     {
-        this._selectedImage = null;
-        this._selectedImage = e.File;
+        using var content = new MultipartFormDataContent();
 
-        var format = this._selectedImage.ContentType;
-        var resizedImageFile = await this._selectedImage.RequestImageFileAsync(format, 200, 200);
-        var buffer = new byte[resizedImageFile.Size];
-        await resizedImageFile.OpenReadStream().ReadAsync(buffer);
-        imageDataUrl = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+        var resizedImageFile = await e.File.RequestImageFileAsync(e.File.ContentType, 200, 200);
+
+        var fileContent = new StreamContent(resizedImageFile.OpenReadStream());
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(e.File.ContentType);
+
+        content.Add(content: fileContent,
+                      name: "\"file\"",
+                      fileName: e.File.Name);
+
+        var response = await httpClient.PostAsync($"api/DeviceModels/{DeviceModel.ModelId}/avatar", content);
+
+        imageDataUrl = await response.Content.ReadAsStringAsync();
     }
 
-
-    private async Task OnValidation()
+    private async Task Save()
     {
-        using (var content = new MultipartFormDataContent())
+        var result = await httpClient.PostAsJsonAsync("api/DeviceModels", DeviceModel);
+
+        if (result.IsSuccessStatusCode)
         {
+            DeviceModel = new DeviceModel();
+            Snackbar.Add("Device model successfully created.", Severity.Success);
 
-            content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
-            var deviceModelContent = JsonContent.Create(_deviceModel);
-            deviceModelContent.Headers.Add("Content-Disposition", "form-data; name=\"deviceModel\"");
-            deviceModelContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            content.Add(deviceModelContent, "deviceModel");
-
-            if (_selectedImage != null)
-            {
-                using (var ms = _selectedImage.OpenReadStream(maxAllowedSize: 512000 * 4))
-                {
-                    var streamContent = new StreamContent(ms);
-                    streamContent.Headers.ContentType = new MediaTypeHeaderValue(_selectedImage.ContentType);
-                    streamContent.Headers.Add("Content-Disposition", "form-data; name=\"file\"; filename=\"" + _selectedImage.Name + "\"");
-                    content.Add(streamContent, "file", _selectedImage.Name);
-                }
-            }
-
-            this.AddCommand(); // Add the last command entered, in case it wasn't already in the list
-            
-            var result = await Http.PostAsync("api/DeviceModels", content);
-
-            if (result.IsSuccessStatusCode)
-            {
-                _deviceModel = new DeviceModel();
-                _selectedImage = null;
-                Snackbar.Add("Device model successfully created.", Severity.Success);
-
-                // Go back to the list of devices after the deletion
-                NavigationManager.NavigateTo("device-models");
-            }
+            // Go back to the list of devices after the deletion
+            NavigationManager.NavigateTo("device-models");
+        }
+        else if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            Snackbar.Add("One or more validation errors occurred", Severity.Error);
         }
     }
 
     private void AddCommand()
     {
-        if (_deviceModelCommand.Name != null && _deviceModelCommand.Frame != null && _deviceModelCommand.Port != 0)
-        {
-            _deviceModel.Commands.Add(_deviceModelCommand);
-            _deviceModelCommand = new DeviceModelCommand();
-        }
+        DeviceModel.Commands.Add(new DeviceModelCommand());
     }
 
-    private void DeleteCommand(int index)
+    private void DeleteCommand(DeviceModelCommand item)
     {
-        _deviceModel.Commands.RemoveAt(index);
+        DeviceModel.Commands.Remove(item);
     }
 }

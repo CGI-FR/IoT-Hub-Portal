@@ -30,7 +30,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             blobClient.CreateIfNotExists();
         }
 
-        public async Task<Uri> ChangeDeviceModelImageAsync(string deviceModelId, Stream stream)
+        public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, Stream stream)
         {
             var blobContainer = this.blobService.GetBlobContainerClient(ImageContainerName);
 
@@ -40,7 +40,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             _ = await blobClient.UploadAsync(stream, overwrite: true);
 
-            return blobClient.Uri;
+            return blobClient.Uri.ToString();
         }
 
         public async Task DeleteDeviceModelImageAsync(string deviceModelId)
@@ -54,14 +54,14 @@ namespace AzureIoTHub.Portal.Server.Managers
             await blobClient.DeleteIfExistsAsync();
         }
 
-        public Uri ComputeImageUri(string deviceModelId)
+        public string ComputeImageUri(string deviceModelId)
         {
             var imageName = string.IsNullOrWhiteSpace(deviceModelId) ? DefaultImageName : deviceModelId;
 
             var container = this.blobService.GetBlobContainerClient(ImageContainerName);
             var blobClient = container.GetBlobClient(imageName);
 
-            return blobClient.Uri;
+            return blobClient.Uri.ToString();
         }
 
         public async Task InitializeDefaultImageBlob()

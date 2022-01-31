@@ -9,11 +9,11 @@ namespace AzureIoTHub.Portal.Server.Managers
 
     public interface IDeviceModelImageManager
     {
-        Task<Uri> ChangeDeviceModelImageAsync(string deviceModelId, Stream stream);
+        Task<string> ChangeDeviceModelImageAsync(string deviceModelId, Stream stream);
 
         Task DeleteDeviceModelImageAsync(string deviceModelId);
 
-        Uri ComputeImageUri(string deviceModelId);
+        string ComputeImageUri(string deviceModelId);
 
         Task InitializeDefaultImageBlob();
     }
