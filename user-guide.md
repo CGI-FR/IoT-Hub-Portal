@@ -93,13 +93,36 @@ This documentation site is build using Github Pages.
 
 ### How to update the documentation
 
-1. Checkout the branc that contains the documentation: 
+1. Checkout the branch that contains the documentation: 
 
-```sh
-git checkout -b docs/<your_branch_name> origin/docs/main
-```
+    ```sh
+    git checkout origin/docs/main
+    git checkout -b docs/<your_branch_name> 
+    ```
 
 1. Update the documentation
 1. Commit your changes
 1. Push your changes to the branch
 1. Create a PR
+
+### Customizing
+
+The documentation uses the Github pages theme [Leap Day](https://github.com/pages-themes/leap-day).  
+You can customize the theme by editing the `_config.yml` file. You can also customize the theme by editing the `_layouts/default.html` file.
+
+### Stylesheet
+
+If you'd like to add your own custom styles:
+
+1. Update the `assets/css/style.scss` file from the documentation repository.
+1. Add any custom CSS (or Sass, including imports) you'd like immediately after the `@import` line
+
+*Note: If you'd like to change the theme's Sass variables, you must set new values before the `@import` line in your stylesheet.*
+
+### Layouts
+
+If you'd like to change the theme's HTML layout:
+
+1. Update the `/_layouts/default.html`file from the documentation repository.
+1. Customize the layout as you'd like
+
