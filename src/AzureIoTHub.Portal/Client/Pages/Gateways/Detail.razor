@@ -269,16 +269,30 @@ else
 
     public async Task ShowConnectionString()
     {
-        gateway.SymmetricKey = await this.Http.GetStringAsync($"api/Gateways/{gateway.DeviceId}/ConnectionString");
+        try
+        {
+            gateway.SymmetricKey = await this.Http.GetStringAsync($"api/Gateways/{gateway.DeviceId}/ConnectionString");
 
-        var parameter = new DialogParameters();
+            var parameter = new DialogParameters();
 
-        parameter.Add(nameof(Gateway.DeviceId), gateway.DeviceId);
-        parameter.Add(nameof(Gateway.EndPoint), gateway.EndPoint);
-        parameter.Add(nameof(Gateway.SymmetricKey), gateway.SymmetricKey);
+            parameter.Add(nameof(Gateway.DeviceId), gateway.DeviceId);
+            parameter.Add(nameof(Gateway.EndPoint), gateway.EndPoint);
+            parameter.Add(nameof(Gateway.SymmetricKey), gateway.SymmetricKey);
 
 
-        DialogService.Show<ConnectionString>("ConnectionString gateway ", parameter);
+            DialogService.Show<ConnectionString>("ConnectionString gateway ", parameter);
+        }
+        catch ( HttpRequestException e)
+        {
+            if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                Snackbar.Add("Cannot obtain the connection string <br> because the enrollment group does not exist.", Severity.Error);
+            }
+            else
+            {
+                Snackbar.Add($"Something went wrong.", Severity.Error);
+            }
+        }
     }
 
     public async Task ShowDeleteModal()
