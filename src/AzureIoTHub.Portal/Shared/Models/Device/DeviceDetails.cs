@@ -28,7 +28,7 @@ namespace AzureIoTHub.Portal.Shared.Models.Device
 
         public string LocationCode { get; set; }
 
-        public string AssetID { get; set; }
+        public string AssetId { get; set; }
 
         public string DeviceType { get; set; }
 
