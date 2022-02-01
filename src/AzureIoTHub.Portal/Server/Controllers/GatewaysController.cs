@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
+    using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
@@ -142,6 +143,10 @@ namespace AzureIoTHub.Portal.Server.Controllers
             try
             {
                 return this.Ok(await this.connectionStringManager.GetSymmetricKey(deviceId));
+            }
+            catch (ProvisioningServiceClientException e)
+            {
+                return this.NotFound(e.Message);
             }
             catch (Exception e)
             {

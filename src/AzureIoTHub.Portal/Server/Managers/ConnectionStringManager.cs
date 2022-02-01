@@ -27,7 +27,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             }
             catch (ProvisioningServiceClientException)
             {
-                throw new System.Exception("The enrollment group does not exist.");
+                throw new ProvisioningServiceClientException("The enrollment group does not exist.");
             }
             catch (System.Exception e)
             {
