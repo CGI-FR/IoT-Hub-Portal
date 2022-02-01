@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Services;
+    using Microsoft.Azure.Devices.Provisioning.Service;
 
     public class ConnectionStringManager : IConnectionStringManager
     {
@@ -23,6 +24,10 @@ namespace AzureIoTHub.Portal.Server.Managers
                 var attestationMechanism = await this.deviceService.GetDpsAttestionMechanism();
 
                 return DeviceHelper.RetrieveSymmetricKey(deviceId, attestationMechanism);
+            }
+            catch (ProvisioningServiceClientException)
+            {
+                throw new System.Exception("The enrollment group does not exist.");
             }
             catch (System.Exception e)
             {
