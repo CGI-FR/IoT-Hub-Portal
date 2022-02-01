@@ -1,4 +1,4 @@
-# User Guide
+# Developer Guide
 
 ## Directory Structure
 
@@ -35,7 +35,7 @@ By deploying the IoT Hub Portal, the user can configure the IoT Hub and the LoRa
 
 Since the IoT Hub Portal is deployed as a Docker container. The application settings are configurable in the environment variables.
 
-### Application settings
+#### Application settings
 
 Here are different settings that the user can configure:
 
@@ -47,7 +47,7 @@ Here are different settings that the user can configure:
 * **IoTDPS__ServiceEndpoint**: The IoT Device Provisioning Service endpoint.
 * **IoTDPS__DefaultEnrollmentGroup**: The default IoT Device Provisioning Service enrollment group.
 
-### Connection strings
+#### Connection strings
 
 Here are different connection strings that the user can configure:
 
@@ -70,28 +70,26 @@ The IoT Hub portal uses some tags to configure the devices. The tags are storeed
 The Storage Account is used to store the device models configuration. You could benefits from using the same Storage Account that is used by the LoRa Key Management Facade.
 This solution will use tables and blob storage to store its data. there is no need to create the tables and containers, the application will do it for you.
 
-### Tables
+#### Tables
 
 The application uses the following tables:
 
 * **DeviceTemplates**: The table that contains the device models configuration.
 * **DeviceCommands**: The table that contains the device commands linked to the device models.
 
-### Blob Storage
+#### Blob Storage
 
 The application uses the following blob storage:
 
 * **device-images**: The blob storage that contains the device images.
 
-# Developer Guide
-
-## Working with the documentation
+# Working with the documentation
 
 This documentation site is build using Github Pages.
 
 ```docs/main``` is a detached branch that is locked and only accept PRs. On PR merge, Github Pages will automatically update the documentation website.
 
-### How to update the documentation
+## How to update the documentation
 
 1. Checkout the branch that contains the documentation: 
 
@@ -110,7 +108,7 @@ This documentation site is build using Github Pages.
 The documentation uses the Github pages theme [Leap Day](https://github.com/pages-themes/leap-day).  
 You can customize the theme by editing the `_config.yml` file. You can also customize the theme by editing the `_layouts/default.html` file.
 
-### Stylesheet
+#### Stylesheet
 
 If you'd like to add your own custom styles:
 
@@ -119,7 +117,7 @@ If you'd like to add your own custom styles:
 
 *Note: If you'd like to change the theme's Sass variables, you must set new values before the `@import` line in your stylesheet.*
 
-### Layouts
+#### Layouts
 
 If you'd like to change the theme's HTML layout:
 
