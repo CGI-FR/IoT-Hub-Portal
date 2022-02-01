@@ -44,50 +44,62 @@
                             <MudAvatar Image="@Device.ImageUrl" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
                         </div>
                         <MudText Align="Align.Center" Typo="Typo.h6">@Device.ModelName</MudText>
-
+                        @if (string.IsNullOrEmpty(Device.ModelId))
+                        {
+                            <MudText Align="Align.Center" Typo="Typo.body1" Color="Color.Error">No model selected</MudText>
+                            <MudText Align="Align.Center" Typo="Typo.body2" Color="Color.Error">The device cannot be updated</MudText>
+                        }
                     </MudCardContent>
                 </MudCard>
             </MudItem>
             <MudItem xs="12" sm="8" md="9">
                 <MudCard>
-                    <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudText>Device Details</MudText>
-                        </CardHeaderContent>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <MudGrid>
-                            <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@Device.AssetId" Label="IoT Asset ID" Variant="Variant.Outlined" />
-                            </MudItem>
-                            <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@Device.LocationCode" Label="Location Asset ID" Variant="Variant.Outlined" />
-                            </MudItem>
-                            <MudItem xs="12">
-                                <MudText>
-                                    <b>Status</b>
-                                </MudText>
-                                <MudText Typo="Typo.body2">
-                                    Means that the device could connect to the platform.
-                                </MudText>
-                                <MudSwitch @bind-Checked="@Device.IsEnabled" Color="Color.Secondary" />
-                            </MudItem>
+                    <EditForm Model="@Device" OnValidSubmit="SaveDevice">
+                        <DataAnnotationsValidator />
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText>Device Details</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudGrid>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="@Device.AssetId" Label="IoT Asset ID" Variant="Variant.Outlined" />
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="@Device.LocationCode" Label="Location Asset ID" Variant="Variant.Outlined" />
+                                </MudItem>
+                                <MudItem xs="12">
+                                    <MudText>
+                                        <b>Status</b>
+                                    </MudText>
+                                    <MudSwitch @bind-Checked="@Device.IsEnabled" Color="Color.Secondary" />
+                                    @if (Device.IsEnabled)
+                                    {
+                                        <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
+                                    }
+                                    else
+                                    {
+                                        <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
+                                    }
+                                </MudItem>
 
-                            <MudSpacer />
+                                <MudSpacer />
 
-                            <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@Device.AppEUI" Label="OTAA AppEUI" Variant="Variant.Outlined" ReadOnly="true" />
-                            </MudItem>
-                            <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@Device.AppKey" Label="OTAA AppKey" Variant="Variant.Outlined" />
-                            </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="@Device.AppEUI" Label="OTAA AppEUI" Variant="Variant.Outlined" ReadOnly="true" Required="true" HelperText="OTAA AppEUI is automatically set from the selected model" />
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="@Device.AppKey" Label="OTAA AppKey" Variant="Variant.Outlined" />
+                                </MudItem>
 
-                        </MudGrid>
-                    </MudCardContent>
-                    <MudCardActions Class="pb-4 pl-4">
-                        <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="DeleteDevice">Delete Device</MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-4" @onclick="SaveDevice">Save Changes</MudButton>
-                    </MudCardActions>
+                            </MudGrid>
+                        </MudCardContent>
+                        <MudCardActions Class="pb-4 pl-4">
+                            <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="DeleteDevice">Delete Device</MudButton>
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-4">Save Changes</MudButton>
+                        </MudCardActions>
+                    </EditForm>
                 </MudCard>
             </MudItem>
             <MudItem xs="12">

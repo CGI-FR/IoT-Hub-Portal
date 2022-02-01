@@ -27,64 +27,88 @@
     </MudItem>
     <MudItem xs="12" sm="8" md="9">
         <MudCard>
-            <MudCardHeader>
-                <CardHeaderContent>
-                    <MudText>Device Details</MudText>
-                </CardHeaderContent>
-            </MudCardHeader>
-            <MudCardContent>
-                <MudGrid>
-                    <MudItem xs="12">
-                        <MudTextField @bind-Value="@Device.DeviceID" Label="Device ID" Variant="Variant.Outlined" />
-                    </MudItem>
-                    <MudItem xs="12" md="6">
-                        <MudSelect T="string" @bind-Value="@Device.DeviceType"
-                                   Dense="true" Variant="Variant.Outlined"
-                                   For="@(()=> Device.DeviceType)">
-                            <MudSelectItem Value="@("LoRa Device")" />
-                            <MudSelectItem Value="@("Other")" />
-                        </MudSelect>
-                    </MudItem>
-                    <MudItem xs="12" md="6">
-                        <MudAutocomplete T="DeviceModel"
-                                         Dense="true" Variant="Variant.Outlined"
-                                         SearchFunc="@Search"
-                                         ValueChanged="@ModelSelected"
-                                         ToStringFunc="@(x => x.Name)"
-                                         ResetValueOnEmptyText="true"
-                                         Immediate="true" Clearable="true"
-                                         CoerceText="true" CoerceValue="false" />
-                    </MudItem>
-                    <MudItem xs="12" md="6">
-                        <MudTextField @bind-Value="@Device.AssetId" Label="IoT Asset ID" Variant="Variant.Outlined" />
-                    </MudItem>
-                    <MudItem xs="12" md="6">
-                        <MudTextField @bind-Value="@Device.LocationCode" Label="Location Asset ID" Variant="Variant.Outlined" />
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudText>
-                            <b>Status</b>
-                        </MudText>
-                        <MudText Typo="Typo.body2">
-                            Means that the device could connect to the platform.
-                        </MudText>
-                        <MudSwitch @bind-Checked="@Device.IsEnabled" Color="Color.Secondary" />
-                    </MudItem>
+            <EditForm Model="@Device" OnValidSubmit="SaveDevice" OnInvalidSubmit="HandleInvalidSubmit">
+                <DataAnnotationsValidator />
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText>Device Details</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="@Device.DeviceID"
+                                          Label="Device ID"
+                                          Variant="Variant.Outlined"
+                                          For="@(()=> Device.DeviceID)"
+                                          Required="true"
+                                          HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)"
+                                          />
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudSelect T="string" @bind-Value="@Device.DeviceType"
+                                       Dense="true" Variant="Variant.Outlined"
+                                       For="@(()=> Device.DeviceType)">
+                                <MudSelectItem Value="@("LoRa Device")" />
+                                <MudSelectItem Value="@("Other")" />
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudAutocomplete T="DeviceModel"
+                                             Label="Model Name*"
+                                             Dense="true" Variant="Variant.Outlined"
+                                             SearchFunc="@Search"
+                                             ValueChanged="@ModelSelected"
+                                             ToStringFunc="@(x => x.Name)"
+                                             ResetValueOnEmptyText="true"
+                                             Immediate="true" Clearable="true"
+                                             CoerceText="true" CoerceValue="false" />
+                            @if (Device.ModelName == null && displayValidationErrorMessages)
+                            {
+                                <p class="validation-error-message">The Model Name field is required.</p>
+                            }
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudTextField @bind-Value="@Device.AssetId" Label="IoT Asset ID" Variant="Variant.Outlined" />
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudTextField @bind-Value="@Device.LocationCode" Label="Location Asset ID" Variant="Variant.Outlined" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudText>
+                                <b>Status</b>
+                            </MudText>
+                            <MudSwitch @bind-Checked="@Device.IsEnabled" Color="Color.Secondary" />
+                            @if (Device.IsEnabled)
+                            {
+                                <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
+                            }
+                        </MudItem>
 
-                    <MudSpacer />
+                        <MudSpacer />
 
-                    <MudItem xs="12" md="6">
-                        <MudTextField @bind-Value="@Device.AppEUI" Label="OTAA AppEUI" Variant="Variant.Outlined" ReadOnly="true" />
-                    </MudItem>
-                    <MudItem xs="12" md="6">
-                        <MudTextField @bind-Value="@Device.AppKey" Label="OTAA AppKey" Variant="Variant.Outlined" />
-                    </MudItem>
-
-                </MudGrid>
-            </MudCardContent>
-            <MudCardActions Class="pb-4 pl-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" @onclick="SaveDevice">Save Changes</MudButton>
-            </MudCardActions>
+                        <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="@Device.AppEUI"
+                                      Label="OTAA AppEUI"
+                                      Variant="Variant.Outlined"
+                                      For="@(()=> Device.AppEUI)"
+                                      ReadOnly="true"
+                                      Required="true"
+                                      HelperText="OTAA AppEUI is automatically set from the selected model" />
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudTextField @bind-Value="@Device.AppKey" Label="OTAA AppKey" Variant="Variant.Outlined" />
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+                <MudCardActions Class="pb-4 pl-4">
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save Changes</MudButton>
+                </MudCardActions>
+            </EditForm>
         </MudCard>
     </MudItem>
 </MudGrid>
@@ -97,6 +121,8 @@
     private DeviceDetails Device { get; set; } = new DeviceDetails();
 
     private IEnumerable<DeviceModel> DeviceModelList { get; set; } = new List<DeviceModel>();
+
+    private bool displayValidationErrorMessages = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -133,6 +159,13 @@
             Snackbar.Add($"Oh oh, something went wrong while creating device {Device.DeviceID}... <br> {errorMsg}", Severity.Error);
         }
     }
+
+    private void HandleInvalidSubmit(EditContext context)
+    {
+        // Invalid submit manually handled
+        // Waiting for MudBlazor MudAutocomplete issue #2674 to be fixed
+        displayValidationErrorMessages = true;
+    } 
 
     /// <summary>
     /// Allows to autocomplete the Device Model field in the form.
