@@ -42,72 +42,75 @@
             </MudItem>
             <MudItem xs="12" sm="8" md="10">
                 <MudCard>
-                    <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudText>Device model details</MudText>
-                        </CardHeaderContent>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <MudGrid>
-                            <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@DeviceModel.Name" For="@(() => DeviceModel.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" />
-                            </MudItem>
+                    <EditForm Model="@DeviceModel" OnValidSubmit="Save">
+                        <ObjectGraphDataAnnotationsValidator />
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText>Device model details</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudGrid>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="@DeviceModel.Name" For="@(() => DeviceModel.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"/>
+                                </MudItem>
 
-                            <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@DeviceModel.AppEUI" Label="OTAA App EUI" For="@(() => DeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                            </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="@DeviceModel.AppEUI" Label="OTAA App EUI" For="@(() => DeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                </MudItem>
 
-                            <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@DeviceModel.Description" For="@(() => DeviceModel.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
-                            </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="@DeviceModel.Description" For="@(() => DeviceModel.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
+                                </MudItem>
 
-                            <MudItem xs="12">
-                                <MudTextField @bind-Value="@DeviceModel.SensorDecoderURL" Label="Sensor Decoder URL" For="@(() => DeviceModel.SensorDecoderURL)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                            </MudItem>
+                                <MudItem xs="12">
+                                    <MudTextField @bind-Value="@DeviceModel.SensorDecoderURL" Label="Sensor Decoder URL" For="@(() => DeviceModel.SensorDecoderURL)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                </MudItem>
 
-                            <MudItem xs="12">
-                                <MudTable Items="@DeviceModel.Commands" Dense=true Hover=true Bordered=true Striped=true>
-                                    <ToolBarContent>
-                                        <MudText Typo="Typo.h6">Commands</MudText>
-                                        <MudSpacer />
-                                    </ToolBarContent>
-                                    <ColGroup>
-                                        <col style="width: 30%;" />
-                                        <col style="width: 60%;" />
-                                        <col style="width: 10%;" />
-                                        <col style="width: 5%;" />
-                                    </ColGroup>
-                                    <HeaderContent>
-                                        <MudTh>Name</MudTh>
-                                        <MudTh Style="text-align: center">Frame</MudTh>
-                                        <MudTh Style="text-align: center">Port</MudTh>
-                                        <MudTh Style="text-align: center">Delete</MudTh>
-                                    </HeaderContent>
-                                    <RowTemplate>
-                                        <MudTd DataLabel="Name" Style="word-break: break-all;">
-                                            <MudTextField @bind-Value="@context.Name" Label="Name" For="@(() => context.Name)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                                        </MudTd>
-                                        <MudTd DataLabel="Frame" Style="word-break: break-all; ">
-                                            <MudTextField @bind-Value="@context.Frame" Label="Frame" For="@(() => context.Frame)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                                        </MudTd>
-                                        <MudTd DataLabel="Port" Style="text-align: center;">
-                                            <MudNumericField @bind-Value="@context.Port" Label="Port" For="@(() => context.Port)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudNumericField>
-                                        </MudTd>
-                                        <MudTd DataLabel="Delete" Style="text-align: center">
-                                            <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteCommand(context))"></MudIconButton>
-                                        </MudTd>
-                                    </RowTemplate>
-                                    <FooterContent>
-                                        <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddCommand">Add Command</MudButton>
-                                    </FooterContent>
-                                </MudTable>
-                            </MudItem>
-                        </MudGrid>
-                    </MudCardContent>
-                    <MudCardActions Class="pb-4 pl-4">
-                        <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="DeleteDeviceModel">Delete Device</MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-4" @onclick="Save">Save Changes</MudButton>
-                    </MudCardActions>
+                                <MudItem xs="12">
+                                    <MudTable Items="@DeviceModel.Commands" Dense=true Hover=true Bordered=true Striped=true>
+                                        <ToolBarContent>
+                                            <MudText Typo="Typo.h6">Commands</MudText>
+                                            <MudSpacer />
+                                        </ToolBarContent>
+                                        <ColGroup>
+                                            <col style="width: 30%;" />
+                                            <col style="width: 60%;" />
+                                            <col style="width: 10%;" />
+                                            <col style="width: 5%;" />
+                                        </ColGroup>
+                                        <HeaderContent>
+                                            <MudTh>Name</MudTh>
+                                            <MudTh Style="text-align: center">Frame</MudTh>
+                                            <MudTh Style="text-align: center">Port</MudTh>
+                                            <MudTh Style="text-align: center">Delete</MudTh>
+                                        </HeaderContent>
+                                        <RowTemplate Context="CommandContext">
+                                            <MudTd DataLabel="Name" Style="word-break: break-all;">
+                                                <MudTextField @bind-Value="@CommandContext.Name" Label="Name" For="@(() => CommandContext.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                            </MudTd>
+                                            <MudTd DataLabel="Frame" Style="word-break: break-all; ">
+                                                <MudTextField @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                            </MudTd>
+                                            <MudTd DataLabel="Port" Style="text-align: center;">
+                                                <MudNumericField @bind-Value="@CommandContext.Port" Label="Port" For="@(() => CommandContext.Port)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudNumericField>
+                                            </MudTd>
+                                            <MudTd DataLabel="Delete" Style="text-align: center">
+                                                <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteCommand(CommandContext))"></MudIconButton>
+                                            </MudTd>
+                                        </RowTemplate>
+                                        <FooterContent>
+                                            <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddCommand">Add Command</MudButton>
+                                        </FooterContent>
+                                    </MudTable>
+                                </MudItem>
+                            </MudGrid>
+                        </MudCardContent>
+                        <MudCardActions Class="pb-4 pl-4">
+                            <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="DeleteDeviceModel">Delete Device</MudButton>
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-4">Save Changes</MudButton>
+                        </MudCardActions>
+                    </EditForm>
                 </MudCard>
             </MudItem>
         </MudGrid>
@@ -164,7 +167,7 @@
             // Go back to the list of devices after the deletion
             NavigationManager.NavigateTo("device-models");
         }
-        else if(result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        else if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
         }
@@ -193,7 +196,12 @@
 
     private void AddCommand()
     {
-        DeviceModel.Commands.Add(new DeviceModelCommand());
+        var last = DeviceModel.Commands.LastOrDefault();
+
+        if (DeviceModel.Commands.Count == 0 || (last.Name is not null && last.Frame is not null))
+        {
+            DeviceModel.Commands.Add(new DeviceModelCommand());
+        }
     }
 
     private void DeleteCommand(DeviceModelCommand item)
