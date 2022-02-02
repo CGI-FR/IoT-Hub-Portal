@@ -43,8 +43,8 @@
             </MudItem>
             <MudItem xs="12" sm="8" md="10">
                 <MudCard>
-                    <EditForm Model="@DeviceModel" OnValidSubmit="Save" OnInvalidSubmit="HandleInvalidSubmit">
-                        <DataAnnotationsValidator />
+                    <EditForm Model="@DeviceModel" OnValidSubmit="Save">
+                        <ObjectGraphDataAnnotationsValidator />
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <MudText>Device model details</MudText>
@@ -88,18 +88,10 @@
                                         </HeaderContent>
                                         <RowTemplate Context="CommandContext">
                                             <MudTd DataLabel="Name" Style="word-break: break-all;">
-                                                <MudTextField @bind-Value="@CommandContext.Name" Label="Name*" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                                                @if (displayValidationErrorMessages && CommandContext.Name == null)
-                                                {
-                                                    <MudText Class="validation-error-message">The command name is required.</MudText>
-                                                }
+                                                <MudTextField @bind-Value="@CommandContext.Name" Label="Name" For="@(() => CommandContext.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                                             </MudTd>
                                             <MudTd DataLabel="Frame" Style="word-break: break-all; ">
-                                                <MudTextField @bind-Value="@CommandContext.Frame" Label="Frame*" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                                                @if (displayValidationErrorMessages && CommandContext.Frame == null)
-                                                {
-                                                    <MudText Class="validation-error-message">The command frame is required.</MudText>
-                                                }
+                                                <MudTextField @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                                             </MudTd>
                                             <MudTd DataLabel="Port" Style="text-align: center;">
                                                 <MudNumericField @bind-Value="@CommandContext.Port" Label="Port" For="@(() => CommandContext.Port)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudNumericField>
@@ -136,7 +128,6 @@
 
     private DeviceModelCommand DeviceModelCommand { get; set; } = new DeviceModelCommand();
     private string imageDataUrl;
-    private bool displayValidationErrorMessages = false;
 
     private void DeleteAvatar()
     {
@@ -165,13 +156,6 @@
 
     private async Task Save()
     {
-        // Delete the last command entered, if the user accidentally added one without filling the fields
-        DeviceModelCommand last = DeviceModel.Commands.LastOrDefault();
-        if (last.Name is null && last.Frame is null)
-        {
-            DeviceModel.Commands.Remove(last);
-        }
-
         var result = await httpClient.PostAsJsonAsync("api/DeviceModels", DeviceModel);
 
         if (content is not null)
@@ -192,13 +176,6 @@
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
             string errorMsg = await result.Content.ReadAsStringAsync();
         }
-    }
-
-    private void HandleInvalidSubmit(EditContext context)
-    {
-        // Invalid submit manually handled
-        // Used to deal with nested validation issues
-        displayValidationErrorMessages = true;
     }
 
     private void AddCommand()
