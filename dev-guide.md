@@ -46,6 +46,7 @@ Here are different settings that the user can configure:
 * **OIDC__Scope**: The OpenID Connect scope that represents the portal API.
 * **IoTDPS__ServiceEndpoint**: The IoT Device Provisioning Service endpoint.
 * **IoTDPS__DefaultEnrollmentGroup**: The default IoT Device Provisioning Service enrollment group.
+* **LoRaKeyManagement__Url**: The LoRa Key Management Facade URL.
 
 #### Connection strings
 
@@ -54,6 +55,7 @@ Here are different connection strings that the user can configure:
 * **IoTHub__ConnectionString**: The connection string to the IoT Hub.
 * **IoTDPS__ConnectionString**: The connection string to the Azure IoT Device Provisioning Service.
 * **StorageAccount__ConnectionString**: The connection string to the Azure Storage account.
+* **LoRaKeyManagement__Code**: The LoRa Key Management Facade code.
 
 > Note: For a production relase, use might benefits from using the Azure Key Vault to store the connection strings.
 
