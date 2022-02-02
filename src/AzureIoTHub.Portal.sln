@@ -32,6 +32,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Server.Tests", "AzureIoTHub.Portal.Server.Tests\AzureIoTHub.Portal.Server.Tests.csproj", "{51FD5B90-B422-47BF-83F2-516520CFB124}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{3F7A2982-4F0B-45F9-9FCA-923D5A7A1511}"
+	ProjectSection(SolutionItems) = preProject
+		..\templates\azuredeploy.json = ..\templates\azuredeploy.json
+		..\templates\portalDeploy.json = ..\templates\portalDeploy.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +67,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3CA153F4-1172-4AF5-B483-94200717AB5C} = {20EC2171-363D-4DDE-827F-F56D4FE9ADF3}
 		{9EF190B3-41E2-48E1-BA4E-E129589DD250} = {3CA153F4-1172-4AF5-B483-94200717AB5C}
+		{3F7A2982-4F0B-45F9-9FCA-923D5A7A1511} = {20EC2171-363D-4DDE-827F-F56D4FE9ADF3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E03F3EEB-7B2B-4849-A581-4150BF29EC2B}
