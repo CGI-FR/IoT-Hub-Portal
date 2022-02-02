@@ -1,202 +1,203 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "uniqueSolutionPrefix": {
-            "type": "string",
-            "metadata": {
-                "description": "Prefix used for resource names. Should be unique as this will also be used for domain names."
-            }
-        },
-        "openIdAuthority": {
-            "defaultValue": "",
-            "type": "string",
-            "metadata": {
-                "description": "The Open ID Authority"
-            }
-        },
-        "openIdMetadataURL": {
-            "defaultValue": "",
-            "type": "string",
-            "metadata": {
-                "description": "The Open ID metadata Url from the Identity provider"
-            }
-        },
-        "clientId": {
-            "defaultValue": "",
-            "type": "string",
-            "metadata": {
-                "description": "The client ID for the B2C tenant"
-            }
-        },
-        "apiClientId": {
-            "defaultValue": "",
-            "type": "string",
-            "metadata": {
-                "description": "The API client ID for the B2C tenant"
-            }
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "uniqueSolutionPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Prefix used for resource names. Should be unique as this will also be used for domain names."
+      }
     },
-    "variables": {
-        "iotHubName": "[concat(parameters('uniqueSolutionPrefix'), 'hub')]",
-        "dpsName": "[concat(parameters('uniqueSolutionPrefix'), 'dps')]",
-        "siteName": "[concat(parameters('uniqueSolutionPrefix'), 'portal')]",
-        "servicePlanName": "[concat(parameters('uniqueSolutionPrefix'), 'asp')]",
-        "functionAppName": "[concat(parameters('uniqueSolutionPrefix'), 'function')]",
-        "storageAccountName": "[concat(parameters('uniqueSolutionPrefix'), 'storage')]",
-        "iotHubOwnerPolicyName": "iothubowner",
-        "provisioningserviceownerPolicyName": "provisioningserviceowner",
-        "deviceImageContainerName": "device-images",
-        "iamScopeName": "API.Access",
-        "storageAccountId": "[concat(resourceGroup().id, '/providers/', 'Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-        "enrollmentGroupName": "DemoGatewayEnrollmentGroup",
-        "appInsightName": "[concat(parameters('uniqueSolutionPrefix'), 'insight')]"
+    "openIdAuthority": {
+      "defaultValue": "",
+      "type": "string",
+      "metadata": {
+        "description": "The Open ID Authority"
+      }
     },
-    "resources": [
-        {
-            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-            "apiVersion": "2021-06-01",
-            "name": "[format('{0}/default/{1}', variables('storageAccountName'), variables('deviceImageContainerName'))]"
-        },
-        {
-            "type": "Microsoft.Devices/provisioningServices",
-            "apiVersion": "2021-10-15",
-            "name": "[variables('dpsName')]",
-            "location": "[resourceGroup().location]",
-            "sku": {
-                "name": "S1",
-                "tier": "Standard",
-                "capacity": 1
+    "openIdMetadataURL": {
+      "defaultValue": "",
+      "type": "string",
+      "metadata": {
+        "description": "The Open ID metadata Url from the Identity provider"
+      }
+    },
+    "clientId": {
+      "defaultValue": "",
+      "type": "string",
+      "metadata": {
+        "description": "The client ID for the B2C tenant"
+      }
+    },
+    "apiClientId": {
+      "defaultValue": "",
+      "type": "string",
+      "metadata": {
+        "description": "The API client ID for the B2C tenant"
+      }
+    }
+  },
+  "variables": {
+    "iotHubName": "[concat(parameters('uniqueSolutionPrefix'), 'hub')]",
+    "dpsName": "[concat(parameters('uniqueSolutionPrefix'), 'dps')]",
+    "siteName": "[concat(parameters('uniqueSolutionPrefix'), 'portal')]",
+    "servicePlanName": "[concat(parameters('uniqueSolutionPrefix'), 'asp')]",
+    "functionAppName": "[concat(parameters('uniqueSolutionPrefix'), 'function')]",
+    "storageAccountName": "[concat(parameters('uniqueSolutionPrefix'), 'storage')]",
+    "iotHubOwnerPolicyName": "iothubowner",
+    "provisioningserviceownerPolicyName": "provisioningserviceowner",
+    "deviceImageContainerName": "device-images",
+    "iamScopeName": "API.Access",
+    "storageAccountId": "[concat(resourceGroup().id, '/providers/', 'Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+    "enrollmentGroupName": "DemoGatewayEnrollmentGroup",
+    "appInsightName": "[concat(parameters('uniqueSolutionPrefix'), 'insight')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2021-06-01",
+      "name": "[format('{0}/default/{1}', variables('storageAccountName'), variables('deviceImageContainerName'))]"
+    },
+    {
+      "type": "Microsoft.Devices/provisioningServices",
+      "apiVersion": "2021-10-15",
+      "name": "[variables('dpsName')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "S1",
+        "tier": "Standard",
+        "capacity": 1
+      },
+      "properties": {
+        "state": "Active",
+        "iotHubs": [
+          {
+            "connectionString": "[concat('HostName=', variables('iotHubName'), '.azure-devices.net;SharedAccessKeyName=', variables('iotHubOwnerPolicyName'), ';SharedAccessKey=', listKeys(resourceId('Microsoft.Devices/IotHubs/IotHubKeys', variables('iotHubName'), variables('iotHubOwnerPolicyName')), '2017-01-19').primaryKey)]",
+            "location": "[resourceGroup().location]"
+          }
+        ],
+        "allocationPolicy": "Hashed"
+      }
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2021-02-01",
+      "name": "[variables('servicePlanName')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "B1",
+        "tier": "Basic",
+        "size": "B1",
+        "family": "B",
+        "capacity": 1
+      },
+      "kind": "linux",
+      "properties": {
+        "perSiteScaling": false,
+        "elasticScaleEnabled": false,
+        "maximumElasticWorkerCount": 1,
+        "isSpot": false,
+        "reserved": true,
+        "isXenon": false,
+        "hyperV": false,
+        "targetWorkerCount": 0,
+        "targetWorkerSizeId": 0,
+        "zoneRedundant": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2021-02-01",
+      "name": "[variables('siteName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Devices/provisioningServices', variables('dpsName'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('servicePlanName'))]"
+      ],
+      "kind": "app,linux,container",
+      "properties": {
+        "enabled": true,
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('siteName'), '.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(variables('siteName'), '.scm.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('servicePlanName'))]",
+        "reserved": true,
+        "siteConfig": {
+          "numberOfWorkers": 1,
+          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:latest",
+          "connectionStrings": [
+            {
+              "name": "IoTHub__ConnectionString",
+              "type": "Custom",
+              "connectionString": "[concat('HostName=', variables('iotHubName'), '.azure-devices.net;SharedAccessKeyName=', variables('iotHubOwnerPolicyName'), ';SharedAccessKey=', listKeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', variables('iotHubName'), variables('iotHubOwnerPolicyName')), '2017-01-19').primaryKey)]"
             },
-            "properties": {
-                "state": "Active",
-                "iotHubs": [
-                    {
-                        "connectionString": "[concat('HostName=', variables('iotHubName'), '.azure-devices.net;SharedAccessKeyName=', variables('iotHubOwnerPolicyName'), ';SharedAccessKey=', listKeys(resourceId('Microsoft.Devices/IotHubs/IotHubKeys', variables('iotHubName'), variables('iotHubOwnerPolicyName')), '2017-01-19').primaryKey)]",
-                        "location": "[resourceGroup().location]"
-                    }
-                ],
-                "allocationPolicy": "Hashed"
-            }
-        },
-        {
-            "type": "Microsoft.Web/serverfarms",
-            "apiVersion": "2021-02-01",
-            "name": "[variables('servicePlanName')]",
-            "location": "[resourceGroup().location]",
-            "sku": {
-                "name": "B1",
-                "tier": "Basic",
-                "size": "B1",
-                "family": "B",
-                "capacity": 1
+            {
+              "name": "IoTDPS__ConnectionString",
+              "type": "Custom",
+              "connectionString": "[concat('HostName=', variables('dpsName'), '.azure-devices-provisioning.net;SharedAccessKeyName=', variables('provisioningserviceownerPolicyName'), ';SharedAccessKey=', listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', variables('dpsName'), variables('provisioningserviceownerPolicyName')), '2021-10-15').primaryKey)]"
             },
-            "kind": "linux",
-            "properties": {
-                "perSiteScaling": false,
-                "elasticScaleEnabled": false,
-                "maximumElasticWorkerCount": 1,
-                "isSpot": false,
-                "reserved": true,
-                "isXenon": false,
-                "hyperV": false,
-                "targetWorkerCount": 0,
-                "targetWorkerSizeId": 0,
-                "zoneRedundant": false
+            {
+              "name": "StorageAccount__ConnectionString",
+              "type": "Custom",
+              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountId'),'2015-05-01-preview').key1)]"
+            },
+            {
+              "name": "LoRaKeyManagement__Code",
+              "type": "Custom",
+              "connectionString": "[listkeys(concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/host/default/'),'2021-02-01').masterKey]"
             }
+          ],
+          "appSettings": [
+            {
+              "name": "IoTDPS__DefaultEnrollmentGroup",
+              "value": "[variables('enrollmentGroupName')]"
+            },
+            {
+              "name": "IoTDPS__ServiceEndpoint",
+              "value": "[concat(variables('dpsName'), '.azure-devices-provisioning.net')]"
+            },
+            {
+              "name": "LoRaKeyManagement__Url",
+              "value": "[concat('https://', variables('functionAppName'), '.azurewebsites.net')]"
+            },
+            {
+              "name": "OIDC__ApiClientId",
+              "value": "[parameters('apiClientId')]"
+            },
+            {
+              "name": "OIDC__ClientId",
+              "value": "[parameters('clientId')]"
+            },
+            {
+              "name": "OIDC__Authority",
+              "value": "[parameters('openIdAuthority')]"
+            },
+            {
+              "name": "OIDC__MetadataUrl",
+              "value": "[parameters('openIdMetadataURL')]"
+            },
+            {
+              "name": "OIDC__Scope",
+              "value": "[variables('iamScopeName')]"
+            },
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId(resourceGroup().name,'Microsoft.Insights/components', variables('appInsightName')), '2015-05-01', 'Full').properties.InstrumentationKey]"
+            }
+          ]
         },
-        {
-            "type": "Microsoft.Web/sites",
-            "apiVersion": "2021-02-01",
-            "name": "[variables('siteName')]",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Devices/provisioningServices', variables('dpsName'))]",
-                "[resourceId('Microsoft.Web/serverfarms', variables('servicePlanName'))]"
-            ],
-            "kind": "app,linux,container",
-            "properties": {
-                "enabled": true,
-                "hostNameSslStates": [
-                    {
-                        "name": "[concat(variables('siteName'), '.azurewebsites.net')]",
-                        "sslState": "Disabled",
-                        "hostType": "Standard"
-                    },
-                    {
-                        "name": "[concat(variables('siteName'), '.scm.azurewebsites.net')]",
-                        "sslState": "Disabled",
-                        "hostType": "Repository"
-                    }
-                ],
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('servicePlanName'))]",
-                "reserved": true,
-                "siteConfig": {
-                    "numberOfWorkers": 1,
-                    "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:latest",
-                    "connectionStrings": [
-                        {
-                            "name": "IoTHub__ConnectionString",
-                            "type": "Custom",
-                            "connectionString": "[concat('HostName=', variables('iotHubName'), '.azure-devices.net;SharedAccessKeyName=', variables('iotHubOwnerPolicyName'), ';SharedAccessKey=', listKeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', variables('iotHubName'), variables('iotHubOwnerPolicyName')), '2017-01-19').primaryKey)]"
-                        },
-                        {
-                            "name": "IoTDPS__ConnectionString",
-                            "type": "Custom",
-                            "connectionString": "[concat('HostName=', variables('dpsName'), '.azure-devices-provisioning.net;SharedAccessKeyName=', variables('provisioningserviceownerPolicyName'), ';SharedAccessKey=', listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', variables('dpsName'), variables('provisioningserviceownerPolicyName')), '2021-10-15').primaryKey)]"
-                        },
-                        {
-                            "name": "StorageAccount__ConnectionString",
-                            "type": "Custom",
-                            "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountId'),'2015-05-01-preview').key1)]"
-                        }
-                    ],
-                    "appSettings": [
-                        {
-                            "name": "IoTDPS__DefaultEnrollmentGroup",
-                            "value": "[variables('enrollmentGroupName')]"
-                        },
-                        {
-                            "name": "IoTDPS__ServiceEndpoint",
-                            "value": "[concat(variables('dpsName'), '.azure-devices-provisioning.net')]"
-                        },
-                        {
-                            "name": "LoRaKeyManagement__Url",
-                            "value": "[concat('https://', variables('functionAppName'), '.azurewebsites.net')]"
-                        },
-                        {
-                            "name": "LoRaKeyManagement__Code",
-                            "value": "[listkeys(concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/host/default/'),'2021-02-01').masterKey]"
-                        },
-                        {
-                            "name": "OIDC__ApiClientId",
-                            "value": "[parameters('apiClientId')]"
-                        },
-                        {
-                            "name": "OIDC__ClientId",
-                            "value": "[parameters('clientId')]"
-                        },
-                        {
-                            "name": "OIDC__Authority",
-                            "value": "[parameters('openIdAuthority')]"
-                        },
-                        {
-                            "name": "OIDC__MetadataUrl",
-                            "value": "[parameters('openIdMetadataURL')]"
-                        },
-                        {
-                            "name": "OIDC__Scope",
-                            "value": "[variables('iamScopeName')]"
-                        },
-                        {
-                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                            "value": "[reference(resourceId(resourceGroup().name,'Microsoft.Insights/components', variables('appInsightName')), '2015-05-01', 'Full').properties.InstrumentationKey]"
-                        }
-                    ]
-                },
-                "httpsOnly": true,
-                "storageAccountRequired": false
-            }
-        }
-    ]
+        "httpsOnly": true,
+        "storageAccountRequired": false
+      }
+    }
+  ]
 }
