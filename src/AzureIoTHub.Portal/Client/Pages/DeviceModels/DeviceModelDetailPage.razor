@@ -52,11 +52,11 @@
                         <MudCardContent>
                             <MudGrid>
                                 <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@DeviceModel.Name" For="@(() => DeviceModel.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                                    <MudTextField @bind-Value="@DeviceModel.Name" For="@(() => DeviceModel.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"/>
                                 </MudItem>
 
                                 <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@DeviceModel.AppEUI" Label="OTAA App EUI" For="@(() => DeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                    <MudTextField @bind-Value="@DeviceModel.AppEUI" Label="OTAA App EUI" For="@(() => DeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                                 </MudItem>
 
                                 <MudItem xs="12" md="6">
@@ -87,10 +87,10 @@
                                         </HeaderContent>
                                         <RowTemplate Context="CommandContext">
                                             <MudTd DataLabel="Name" Style="word-break: break-all;">
-                                                <MudTextField @bind-Value="@CommandContext.Name" Label="Name" For="@(() => CommandContext.Name)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                                <MudTextField @bind-Value="@CommandContext.Name" Label="Name" For="@(() => CommandContext.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                                             </MudTd>
                                             <MudTd DataLabel="Frame" Style="word-break: break-all; ">
-                                                <MudTextField @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                                                <MudTextField @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                                             </MudTd>
                                             <MudTd DataLabel="Port" Style="text-align: center;">
                                                 <MudNumericField @bind-Value="@CommandContext.Port" Label="Port" For="@(() => CommandContext.Port)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudNumericField>
