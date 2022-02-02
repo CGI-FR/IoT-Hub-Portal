@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 {
     using System;
     using System.IO;
+    using System.Net.Http;
     using System.Reflection;
     using System.Threading.Tasks;
     using Azure.Storage.Blobs;
@@ -60,6 +61,17 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             var container = this.blobService.GetBlobContainerClient(ImageContainerName);
             var blobClient = container.GetBlobClient(imageName);
+
+            // Checking if the image exists in the blob container
+            using (var request = new HttpRequestMessage(HttpMethod.Head, blobClient.Uri.ToString()))
+            {
+                HttpClient client = new HttpClient();
+                HttpResponseMessage response = client.Send(request);
+                if (!response.IsSuccessStatusCode)
+                {
+                    blobClient = container.GetBlobClient(DefaultImageName);
+                }
+            }
 
             return blobClient.Uri.ToString();
         }
