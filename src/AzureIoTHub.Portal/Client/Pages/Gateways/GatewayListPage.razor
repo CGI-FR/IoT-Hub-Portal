@@ -47,77 +47,74 @@
                     </MudItem>
                     <MudItem xs="12" Class="pb-4 pl-4">
                         <MudButton Variant="Variant.Outlined" Color="Color.Success" Class="ml-auto">Search</MudButton>
-                        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Class="ml-4" OnClick="ResetFiltre">Reset</MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="ml-4" OnClick="ResetFiltre">Reset</MudButton>
                     </MudItem>
                 </MudGrid>
             </MudExpansionPanel>
         </MudExpansionPanels>
     </MudItem>
-</MudGrid>
-
-@if (result == null)
-{
-    <MudItem Class="custom-centered-container">
-        <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
-    </MudItem>
-}
-else
-{
-    <MudContainer MaxWidth="MaxWidth.False">
-
-        @*lite des gateways*@
-        <MudGrid>
-            <MudItem xs="12">
-                <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<GatewayListItem, bool>(FilterFunc)">
-                    <ColGroup>
-                        <col style="width: 50%;" />
-                        <col style="width: 10%;" />
-                        <col style="width: 20%;" />
-                        <col style="width: 10%;" />
-                        <col style="width: 10%;" />
-                    </ColGroup>
-                    <ToolBarContent>
-                        <MudText Typo="Typo.h6" Style="text-align:center;">Gateways available</MudText>
-                        <MudSpacer />
-                    </ToolBarContent>
-                    <HeaderContent>
-                        <MudTh>ID</MudTh>
-                        <MudTh Style="text-align: center">Status</MudTh>
-                        <MudTh Style="text-align: center">Type</MudTh>
-                        <MudTh Style="text-align: center">Nb Device</MudTh>
-                        <MudTh Style="text-align: center">See details</MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="Device" Style="word-break: break-all;">
-                            <a href="/gateways/details/@context.DeviceId">@context.DeviceId</a>
-                        </MudTd>
-
-                        <MudTd DataLabel="Status" Style="text-align: center">
-                            @if (context.Status == "Enabled")
-                            {
-                            <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
-                            }
-                            else
-                            {
-                            <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
-                            }
-                    </MudTd>
-                    <MudTd DataLabel="Type" Style="text-align: center">@context.Type</MudTd>
-                    <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>
-                    <MudTd DataLabel="Details" Style="text-align: center">
-                        <a href="/gateways/details/@context.DeviceId"><MudIcon Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
-                    </MudTd>
-                </RowTemplate>
-                <PagerContent>
-                    <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
-                </PagerContent>
-            </MudTable>
+    @if (result == null)
+    {
+        <MudItem Class="custom-centered-container">
+            <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
         </MudItem>
-        <MudButton Variant="Variant.Filled" OnClick="ShowAddDialog" StartIcon="@Icons.Material.Filled.Add" Color="Color.Secondary">Add</MudButton>
-    </MudGrid>
-</MudContainer>
-}
+    }
+    else
+    {
+        <MudItem xs="12">
+            <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<GatewayListItem, bool>(FilterFunc)">
+                <ColGroup>
+                    <col style="width: 50%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 20%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 10%;" />
+                </ColGroup>
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Gateways</MudText>
+                    <MudSpacer />
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadGatewaysList" Class="ma-2"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="ShowAddDialog" Class="ma-2"></MudIconButton>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>ID</MudTh>
+                    <MudTh Style="text-align: center">Status</MudTh>
+                    <MudTh Style="text-align: center">Type</MudTh>
+                    <MudTh Style="text-align: center">Nb devices</MudTh>
+                    <MudTh Style="text-align: center">See details</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Device" Style="word-break: break-all;">
+                        <a href="/gateways/details/@context.DeviceId">@context.DeviceId</a>
+                    </MudTd>
+                    <MudTd DataLabel="Status" Style="text-align: center">
+                        @if (context.Status == "Enabled")
+                        {
+                        <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                        }
+                        else
+                        {
+                        <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                        }
+                </MudTd>
 
+                <MudTd DataLabel="Type" Style="text-align: center">@context.Type</MudTd>
+                <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>
+                <MudTd DataLabel="Details" Style="text-align: center">
+                    <a href="/gateways/details/@context.DeviceId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+            </PagerContent>
+        </MudTable>
+    </MudItem>
+    }
+
+    <MudItem xs="12">
+        <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add a new gateway" OnClick="ShowAddDialog" />
+    </MudItem>
+</MudGrid>
 
 @code {
     private List<GatewayListItem> result;
