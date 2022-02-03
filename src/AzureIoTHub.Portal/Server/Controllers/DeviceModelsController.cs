@@ -190,8 +190,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
             var commandsPage = commandsTable.QueryAsync<TableEntity>(c => c.PartitionKey == entity.RowKey)
                                             .AsPages();
 
-            var commandRowKeys = new List<string>();
-
             await foreach (var page in commandsPage)
             {
                 foreach (var item in page.Values)
