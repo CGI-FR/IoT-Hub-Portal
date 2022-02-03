@@ -64,9 +64,10 @@
         <MudItem xs="12">
             <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<GatewayListItem, bool>(FilterFunc)">
                 <ColGroup>
-                    <col style="width: 50%;" />
+                    <col style="width: 40%;" />
                     <col style="width: 10%;" />
                     <col style="width: 20%;" />
+                    <col style="width: 10%;" />
                     <col style="width: 10%;" />
                     <col style="width: 10%;" />
                 </ColGroup>
@@ -82,6 +83,7 @@
                     <MudTh Style="text-align: center">Type</MudTh>
                     <MudTh Style="text-align: center">Nb devices</MudTh>
                     <MudTh Style="text-align: center">See details</MudTh>
+                    <MudTh Style="text-align: center">Delete</MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Device" Style="word-break: break-all;">
@@ -102,6 +104,9 @@
                 <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
                     <a href="/gateways/details/@context.DeviceId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                </MudTd>
+                <MudTd DataLabel="Delete" Style="text-align: center">
+                    <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => ShowDeleteDialog(context))"></MudIconButton>
                 </MudTd>
             </RowTemplate>
             <PagerContent>
@@ -178,6 +183,21 @@
         {
             return;
         }
+        await LoadGatewaysList();
+    }
+
+    public async Task ShowDeleteDialog(GatewayListItem gateway)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add(nameof(Gateway.DeviceId), gateway.DeviceId);
+        var result = await DialogService.Show<GatewayDeleteConfirmation>("Confirm Deletion", parameters).Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+        // Update the list of gateways after the deletion
         await LoadGatewaysList();
     }
 }
