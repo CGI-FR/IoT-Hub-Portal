@@ -1,0 +1,203 @@
+﻿@page "/gateways"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Shared.Models
+@using System.Net.Http.Json
+@using Blazored.Modal
+@using Blazored.Modal.Services
+
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Gateway List</MudText>
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudExpansionPanels>
+            <MudExpansionPanel Text="Search panel">
+                <MudGrid>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="searchModel.DeviceId" Placeholder="Name"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudSelect T="string" Label="Type" @bind-Value="searchModel.Type">
+                            <MudSelectItem Value="@("")" />
+                            @foreach (var item in typeList)
+                            {
+                                <MudSelectItem Value="@item" />
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem sm="12" md="6">
+                        <MudText>Status</MudText>
+                        <MudRadioGroup @bind-SelectedOption="@searchModel.Status" Style="display:flex;align-items:baseline">
+                            <MudItem md="4" sm="12">
+                                <MudRadio Option="@("Enabled")" Color="Color.Primary">Enabled</MudRadio>
+                            </MudItem>
+                            <MudItem md="4" sm="12">
+                                <MudRadio Option="@("Disabled")" Color="Color.Primary">Disabled</MudRadio>
+                            </MudItem>
+                            <MudItem md="4" sm="12">
+                                <MudRadio Option="@("")" Color="Color.Secondary">All</MudRadio>
+                            </MudItem>
+                        </MudRadioGroup>
+                    </MudItem>
+                    <MudItem xs="12" Class="pb-4 pl-4">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Success" Class="ml-auto">Search</MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="ml-4" OnClick="ResetFiltre">Reset</MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+    </MudItem>
+    @if (result == null)
+    {
+        <MudItem Class="custom-centered-container">
+            <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+        </MudItem>
+    }
+    else
+    {
+        <MudItem xs="12">
+            <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<GatewayListItem, bool>(FilterFunc)">
+                <ColGroup>
+                    <col style="width: 40%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 20%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 10%;" />
+                </ColGroup>
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Gateways</MudText>
+                    <MudSpacer />
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadGatewaysList" Class="ma-2"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="ShowAddDialog" Class="ma-2"></MudIconButton>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>ID</MudTh>
+                    <MudTh Style="text-align: center">Status</MudTh>
+                    <MudTh Style="text-align: center">Type</MudTh>
+                    <MudTh Style="text-align: center">Nb devices</MudTh>
+                    <MudTh Style="text-align: center">See details</MudTh>
+                    <MudTh Style="text-align: center">Delete</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Device" Style="word-break: break-all;">
+                        <a href="/gateways/details/@context.DeviceId">@context.DeviceId</a>
+                    </MudTd>
+                    <MudTd DataLabel="Status" Style="text-align: center">
+                        @if (context.Status == "Enabled")
+                        {
+                        <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                        }
+                        else
+                        {
+                        <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                        }
+                </MudTd>
+
+                <MudTd DataLabel="Type" Style="text-align: center">@context.Type</MudTd>
+                <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>
+                <MudTd DataLabel="Details" Style="text-align: center">
+                    <a href="/gateways/details/@context.DeviceId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                </MudTd>
+                <MudTd DataLabel="Delete" Style="text-align: center">
+                    <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => ShowDeleteDialog(context))"></MudIconButton>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+            </PagerContent>
+        </MudTable>
+    </MudItem>
+    }
+
+    <MudItem xs="12">
+        <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add a new gateway" OnClick="ShowAddDialog" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    private List<GatewayListItem> result;
+    private List<string> typeList = new List<string>() { "LoRa", "Other" };
+    private SearchModel searchModel = new SearchModel(null, "");
+
+    DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+    private int[] pageSizeOptions = new int[] { 2, 5, 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadGatewaysList();
+    }
+
+    private async Task LoadGatewaysList()
+    {
+        try
+        {
+            result = await Http.GetFromJsonAsync<List<GatewayListItem>>("api/Gateways");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private bool FilterFunc(GatewayListItem element)
+    {
+        if (element.Type == null)
+        {
+            element.Type = "Other";
+        }
+
+        if (
+            (string.IsNullOrWhiteSpace(this.searchModel.DeviceId) || element.DeviceId.Contains(searchModel.DeviceId, StringComparison.OrdinalIgnoreCase))
+            && (string.IsNullOrWhiteSpace(this.searchModel.Type) || element.Type.Contains(searchModel.Type, StringComparison.OrdinalIgnoreCase))
+            && (string.IsNullOrWhiteSpace(this.searchModel.Status) || element.Status.Contains(searchModel.Status, StringComparison.OrdinalIgnoreCase))
+            )
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void ResetFiltre()
+    {
+        this.searchModel = new SearchModel();
+    }
+
+    private void RedirectToDetail(string id)
+    {
+        NavigationManager.NavigateTo($"/gateways/details/{id}");
+    }
+
+    private async Task ShowAddDialog()
+    {
+        var result = await DialogService.Show<CreateGatewayDialog>("Add a new gateway", maxWidth).Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
+        await LoadGatewaysList();
+    }
+
+    public async Task ShowDeleteDialog(GatewayListItem gateway)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add(nameof(Gateway.DeviceId), gateway.DeviceId);
+        var result = await DialogService.Show<GatewayDeleteConfirmation>("Confirm Deletion", parameters).Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+        // Update the list of gateways after the deletion
+        await LoadGatewaysList();
+    }
+}
