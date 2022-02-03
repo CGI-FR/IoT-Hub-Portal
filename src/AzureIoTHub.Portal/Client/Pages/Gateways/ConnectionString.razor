@@ -5,19 +5,19 @@
 <div class="ConnectionString-dialog">
     <MudDialog>
         <DialogContent>
-            <MudCard Outlined="true" Style="width:min-content">
-                <MudCardContent Style="" Class="connectionString-modal-card">
+            <MudCard Outlined="true">
+                <MudCardContent Class="connectionString-modal-card">
                     <div class="form-group">
-                        <label>Device Id : </label>
-                        <MudText>@DeviceId</MudText>
+                        <MudText Style="text-decoration:underline">Device Id :</MudText>
+                        <p>@DeviceId</p>
                     </div>
                     <div class="form-group">
-                        <label>Symmetric Key : </label>
-                        <MudText>@SymmetricKey</MudText>
+                        <MudText Style="text-decoration:underline">Symmetric Key :</MudText>
+                        <p>@SymmetricKey</p>
                     </div>
                     <div class="form-group">
-                        <label>Service Endpoint : </label>
-                        <MudText>@Endpoint</MudText>
+                        <MudText Style="text-decoration:underline">Service Endpoint : </MudText>
+                        <p>@Endpoint</p>
                     </div>
                 </MudCardContent>
             </MudCard>
