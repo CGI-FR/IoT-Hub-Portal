@@ -1,0 +1,77 @@
+﻿@page "/gateways/add"
+@using Microsoft.AspNetCore.Authorization
+@using AzureIoTHub.Portal.Shared.Models;
+
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+
+<MudDialog Class="d-flex align-center justify-center" style="width:fit-content;">
+    <DialogContent>
+        <EditForm Model="@gateway" OnValidSubmit="OnValidation">
+            <DataAnnotationsValidator />
+            <MudCard style="width:60vh;">
+                <MudCardContent>
+                    <MudItem xs="12">
+                        <MudTextField @bind-Value="@gateway.DeviceId"
+                                      Label="Name"
+                                      Variant="Variant.Text"
+                                      For="@(() => gateway.DeviceId)"
+                                      Required="true" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudSelect T="string" @bind-Value="gateway.Type"
+                                   Dense="true" Variant="Variant.Text"
+                                   For="@(()=> gateway.Type)"
+                                   Placeholder="Please select the type"
+                                   Required="true"
+                                   AdornmentColor="Color.Primary">
+                            <MudSelectItem Value="@("LoRa")">LoRa Device</MudSelectItem>
+                            <MudSelectItem Value="@("Other")">Other</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudSelect T="string" @bind-Value="gateway.Environment"
+                                   Dense="true" Variant="Variant.Text"
+                                   For="@(()=> gateway.Environment)"
+                                   Placeholder="Please select the environment"
+                                   AdornmentColor="Color.Primary">
+                            <MudSelectItem Value="@("dev")">Development</MudSelectItem>
+                            <MudSelectItem Value="@("prod")">Production</MudSelectItem>
+                            <MudSelectItem Value="@("indus")">Industry</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+                </MudCardContent>
+                <MudCardActions Class="pb-4 pl-4">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Dark" Class="ml-auto" @onclick="Cancel">Cancel</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-4">Create</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </EditForm>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private Gateway gateway = new Gateway();
+
+    void Cancel() => MudDialog.Cancel();
+
+    private async Task OnValidation()
+    {
+        var result = await Http.PostAsJsonAsync("api/Gateways", gateway);
+
+        if (result.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Device has been successfully created !", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        else
+        {
+            Snackbar.Add($"Something went wrong while creating device ... ", Severity.Error);
+            return;
+        }
+    }
+}

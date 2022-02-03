@@ -25,7 +25,7 @@
                     <MudItem xs="12" md="6">
                         <MudSelect T="string" Label="Type" @bind-Value="searchModel.Type">
                             <MudSelectItem Value="@("")" />
-                            @foreach (var item in listeType)
+                            @foreach (var item in typeList)
                             {
                                 <MudSelectItem Value="@item" />
                             }
@@ -118,17 +118,22 @@
 
 @code {
     private List<GatewayListItem> result;
-    private List<string> listeType = new List<string>() { "lora", "unknow" };
-    private int[] pageSizeOptions = new int[] { 2, 5, 10 };
-    DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Small, FullWidth = true };
-
+    private List<string> typeList = new List<string>() { "LoRa", "Other" };
     private SearchModel searchModel = new SearchModel(null, "");
+
+    DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+    private int[] pageSizeOptions = new int[] { 2, 5, 10 };
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadGatewaysList();
+    }
+
+    private async Task LoadGatewaysList()
+    {
         try
         {
-            await LoadGatewaysList();
+            result = await Http.GetFromJsonAsync<List<GatewayListItem>>("api/Gateways");
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -136,16 +141,11 @@
         }
     }
 
-    private async Task LoadGatewaysList()
-    {
-        result = await Http.GetFromJsonAsync<List<GatewayListItem>>("api/Gateways");
-    }
-
     private bool FilterFunc(GatewayListItem element)
     {
         if (element.Type == null)
         {
-            element.Type = "unknow";
+            element.Type = "Other";
         }
 
         if (
@@ -172,7 +172,7 @@
 
     private async Task ShowAddDialog()
     {
-        var result = await DialogService.Show<Add>("Add new Gateway", maxWidth).Result;
+        var result = await DialogService.Show<CreateGatewayDialog>("Add a new gateway", maxWidth).Result;
 
         if (result.Cancelled)
         {
