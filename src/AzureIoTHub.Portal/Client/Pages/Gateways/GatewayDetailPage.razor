@@ -10,6 +10,113 @@
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Gateway Details</MudText>
+
+<MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
+    <MudTabPanel Text="General">
+        <MudGrid>
+            <MudItem xs="12" sm="4" md="3">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Align="Align.Center" Typo="Typo.h5">@gateway.DeviceId</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <div class="d-flex justify-center mb-4">
+                            <MudButton Variant="Variant.Filled" Color="Color.Dark" OnClick="ShowConnectionString">Show Connection String</MudButton>
+                        </div>
+                        @*<MudText Align="Align.Center" Typo="Typo.h6">@gateway.Type</MudText>*@
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+            <MudItem xs="12" sm="8" md="9">
+                <MudCard>
+                    <EditForm Model="@gateway" OnValidSubmit="UpdateDevice">
+                        <DataAnnotationsValidator />
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText>Gateway Details</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudGrid>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="@gateway.Type" Label="Type" Variant="Variant.Outlined" />
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    @*<MudTextField @bind-Value="@gateway.DeviceId" Label="Location Asset ID" Variant="Variant.Outlined" />*@
+                                    <MudSelect T="string" Label="Environment" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
+                                        <MudSelectItem Value="@("Development")" />
+                                        <MudSelectItem Value="@("Production")" />
+                                        <MudSelectItem Value="@("Industry")" />
+                                    </MudSelect>
+                                </MudItem>
+                                <MudItem xs="12">
+                                    <MudText>
+                                        <b>Status</b>
+                                    </MudText>
+                                    <MudSwitch @bind-Checked="gateway.Status" Color="Color.Secondary" Converter="@(new CustomStringToBoolConverter())">
+                                        @if (gateway.Status == "Enabled")
+                                        {
+                                            <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
+                                        }
+                                        else
+                                        {
+                                            <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
+                                        }
+                                    </MudSwitch>
+
+                                </MudItem>
+
+                                <MudSpacer />
+
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="@gateway.NbDevices" Label="Nbr of connected devices" Variant="Variant.Outlined" ReadOnly="true" />
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="@gateway.NbModule" Label="Nbr of modules" Variant="Variant.Outlined" ReadOnly="true" />
+                                </MudItem>
+
+                                <MudItem xs="12">
+                                    <MudCard>
+                                        <MudCardHeader>
+                                            <CardHeaderContent>
+                                                <MudText>Last deployment</MudText>
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent>
+                                            <MudGrid>
+                                                <MudItem xs="12" md="4">
+                                                    <MudTextField @bind-Value="@gateway.LastDeployment.Name" Label="Name" Variant="Variant.Filled" Margin="Margin.Dense" />
+                                                </MudItem>
+                                                <MudItem xs="12" md="4">
+                                                    <MudTextField @bind-Value="@gateway.LastDeployment.DateCreation" Label="Date" Variant="Variant.Filled" Margin="Margin.Dense" />
+                                                </MudItem>
+                                                <MudItem xs="12" md="4">
+                                                    <MudTextField @bind-Value="@gateway.LastDeployment.Status" Label="Status" Variant="Variant.Filled" Margin="Margin.Dense" />
+                                                </MudItem>
+                                            </MudGrid>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudItem>
+
+                            </MudGrid>
+                        </MudCardContent>
+                        <MudCardActions Class="pb-4 pl-4">
+                            <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="ShowDeleteModal">Delete Gateway</MudButton>
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-4">Save Changes</MudButton>
+                        </MudCardActions>
+                    </EditForm>
+                </MudCard>
+            </MudItem>
+
+        </MudGrid>
+    </MudTabPanel>
+</MudTabs>
+
+@*Ancienne page*@
 @if (loading)
 {
     <MudItem Class="custom-centered-container">
@@ -76,7 +183,7 @@ else
                                     <MudButton Disabled="@processingUpdate" Class="btn" OnClick="UpdateDevice" Variant="Variant.Filled" Color="Color.Dark">
                                         @if (processingUpdate)
                                         {
-                                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
                                             <MudText Class="ms-2">Processing</MudText>
                                         }
                                         else
@@ -151,9 +258,9 @@ else
                                     <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" OnClick="ShowConnectionString">Show Connection String</MudButton>
 
                                     <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" OnClick="ShowDeleteModal">
-                                        @if(processingDelete)
+                                        @if (processingDelete)
                                         {
-                                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
                                             <MudText Class="ms-2">Processing</MudText>
                                         }
                                         else
@@ -242,7 +349,7 @@ else
 
     public async Task OnMethod(GatewayModule module, string methodName)
     {
-        var result = await Http.PostAsJsonAsync($"api/Gateways/{gateway.DeviceId}/{module.ModuleName}/{methodName}",module);
+        var result = await Http.PostAsJsonAsync($"api/Gateways/{gateway.DeviceId}/{module.ModuleName}/{methodName}", module);
 
         var c2dResult = result.Content.ReadFromJsonAsync<C2Dresult>().Result;
 
@@ -282,7 +389,7 @@ else
 
             DialogService.Show<ConnectionString>("ConnectionString gateway ", parameter);
         }
-        catch ( HttpRequestException e)
+        catch (HttpRequestException e)
         {
             if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -311,5 +418,51 @@ else
         }
 
         NavigationManager.NavigateTo("/gateways");
+    }
+
+    public class CustomStringToBoolConverter : BoolConverter<string>
+    {
+
+        public CustomStringToBoolConverter()
+        {
+            SetFunc = OnSet;
+            GetFunc = OnGet;
+        }
+
+        private string TrueString = "Enabled";
+        private string FalseString = "Disabled";
+
+        private string OnGet(bool? value)
+        {
+            try
+            {
+                return (value == true) ? TrueString : FalseString;
+            }
+            catch (Exception e)
+            {
+                UpdateGetError("Conversion error: " + e.Message);
+                return null;
+            }
+        }
+
+        private bool? OnSet(string arg)
+        {
+            if (arg == null)
+                return null;
+            try
+            {
+                if (arg == TrueString)
+                    return true;
+                if (arg == FalseString)
+                    return false;
+                else
+                    return null;
+            }
+            catch (FormatException e)
+            {
+                UpdateSetError("Conversion error: " + e.Message);
+                return null;
+            }
+        }
     }
 }
