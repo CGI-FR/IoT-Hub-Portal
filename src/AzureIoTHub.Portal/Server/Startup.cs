@@ -95,6 +95,7 @@ namespace AzureIoTHub.Portal.Server
             services.AddTransient<IDeviceModelMapper, DeviceModelMapper>();
             services.AddTransient<IConnectionStringManager, ConnectionStringManager>();
             services.AddTransient<IDeviceModelCommandsManager, DeviceModelCommandsManager>();
+            services.AddTransient<IDeviceProvisioningServiceManager, DeviceProvisioningServiceManager>();
 
             services.AddTransient<ConfigsServices>();
 

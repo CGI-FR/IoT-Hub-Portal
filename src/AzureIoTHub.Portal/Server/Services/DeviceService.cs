@@ -5,32 +5,19 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net.Http;
-    using System.Net.Http.Json;
     using System.Threading.Tasks;
     using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Configuration;
 
     public class DeviceService : IDeviceService
     {
         private readonly RegistryManager registryManager;
-        private readonly ProvisioningServiceClient dps;
         private readonly ServiceClient serviceClient;
-        private readonly HttpClient http;
-        private readonly IConfiguration configuration;
 
         public DeviceService(
-            IConfiguration configuration,
             RegistryManager registryManager,
-            ServiceClient serviceClient,
-            HttpClient http,
-            ProvisioningServiceClient dps)
+            ServiceClient serviceClient)
         {
-            this.dps = dps;
-            this.http = http;
-            this.configuration = configuration;
             this.serviceClient = serviceClient;
             this.registryManager = registryManager;
         }
@@ -122,15 +109,6 @@ namespace AzureIoTHub.Portal.Server.Services
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// this function get the attestation mechanism of the DPS.
-        /// </summary>
-        /// <returns>AttestationMechanism.</returns>
-        public async Task<AttestationMechanism> GetDpsAttestionMechanism()
-        {
-            return await this.dps.GetEnrollmentGroupAttestationAsync(this.configuration["IoTDPS:DefaultEnrollmentGroup"]);
         }
 
         /// <summary>

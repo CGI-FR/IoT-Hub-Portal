@@ -144,10 +144,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
             {
                 return this.Ok(await this.connectionStringManager.GetSymmetricKey(deviceId));
             }
-            catch (ProvisioningServiceClientException e)
-            {
-                return this.NotFound(e.Message);
-            }
             catch (Exception e)
             {
                 return this.BadRequest(e.Message);

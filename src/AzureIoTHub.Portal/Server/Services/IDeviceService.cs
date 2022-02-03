@@ -4,11 +4,8 @@
 namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Net.Http.Json;
     using System.Threading.Tasks;
     using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
 
     public interface IDeviceService
@@ -22,8 +19,6 @@ namespace AzureIoTHub.Portal.Server.Services
         Task<Twin> GetDeviceTwin(string deviceId);
 
         Task<Twin> GetDeviceTwinWithModule(string deviceId);
-
-        Task<AttestationMechanism> GetDpsAttestionMechanism();
 
         Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled);
 
