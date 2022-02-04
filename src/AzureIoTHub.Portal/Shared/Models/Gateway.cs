@@ -17,7 +17,7 @@ namespace AzureIoTHub.Portal.Shared.Models
 
         public string SymmetricKey { get; set; }
 
-        public string Connection_state { get; set; }
+        public string ConnectionState { get; set; }
 
         public string Scope { get; set; }
 
@@ -32,7 +32,7 @@ namespace AzureIoTHub.Portal.Shared.Models
 
         public int NbDevices { get; set; }
 
-        public int NbModule { get; set; }
+        public int NbModules { get; set; }
 
         public string Environment { get; set; }
 

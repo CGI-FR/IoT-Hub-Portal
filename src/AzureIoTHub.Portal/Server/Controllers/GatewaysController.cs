@@ -109,7 +109,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     Status = deviceTwin.Status.Value.ToString(),
                     EndPoint = this.configuration["IoTDPS:ServiceEndpoint"],
                     Scope = deviceTwin.DeviceScope,
-                    Connection_state = deviceTwin.ConnectionState.Value.ToString(),
+                    ConnectionState = deviceTwin.ConnectionState.Value.ToString(),
                     // we retrieve the symmetric Key
                     // SymmetricKey = DeviceHelper.RetrieveSymmetricKey(deviceTwin.DeviceId, this.devicesService.GetDpsAttestionMechanism().Result),
                     // We retrieve the values of tags
@@ -118,7 +118,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     // We retrieve the number of connected device
                     NbDevices = await this.RetrieveNbConnectedDevice(deviceTwin.DeviceId),
                     // récupération des informations sur le modules de la gateways²
-                    NbModule = DeviceHelper.RetrieveNbModuleCount(deviceWithModules, deviceId),
+                    NbModules = DeviceHelper.RetrieveNbModuleCount(deviceWithModules, deviceId),
                     RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceWithModules, deviceId),
                     Modules = DeviceHelper.RetrieveModuleList(deviceWithModules, DeviceHelper.RetrieveNbModuleCount(deviceWithModules, deviceId)),
                     // recup du dernier deployment
