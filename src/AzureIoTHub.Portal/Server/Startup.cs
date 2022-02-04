@@ -69,6 +69,8 @@ namespace AzureIoTHub.Portal.Server
             });
             */
 
+            services.AddSingleton(configuration);
+
             services.AddRazorPages();
 
             services.AddScoped(t =>
@@ -95,6 +97,7 @@ namespace AzureIoTHub.Portal.Server
             services.AddTransient<IDeviceModelMapper, DeviceModelMapper>();
             services.AddTransient<IConnectionStringManager, ConnectionStringManager>();
             services.AddTransient<IDeviceModelCommandsManager, DeviceModelCommandsManager>();
+            services.AddTransient<IDeviceProvisioningServiceManager, DeviceProvisioningServiceManager>();
 
             services.AddTransient<ConfigsServices>();
 
@@ -165,11 +168,12 @@ namespace AzureIoTHub.Portal.Server
             return Task.CompletedTask;
         }
 
-        internal abstract class ConfigHandler
+        public abstract class ConfigHandler
         {
             protected const string IoTHubConnectionStringKey = "IoTHub:ConnectionString";
             protected const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
             protected const string DPSDefaultEnrollmentGroupKey = "IoTDPS:DefaultEnrollmentGroup";
+            protected const string DPSLoRaEnrollmentGroupKey = "IoTDPS:LoRaEnrollmentGroup";
 
             protected const string OIDCScopeKey = "OIDC:Scope";
             protected const string OIDCAuthorityKey = "OIDC:Authority";
@@ -199,6 +203,8 @@ namespace AzureIoTHub.Portal.Server
             internal abstract string DPSConnectionString { get; }
 
             internal abstract string DPSDefaultEnrollmentGroup { get; }
+
+            internal abstract string DPSLoRaEnrollmentGroup { get; }
 
             internal abstract string StorageAccountConnectionString { get; }
 
@@ -236,6 +242,8 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string DPSDefaultEnrollmentGroup => this.config[DPSDefaultEnrollmentGroupKey];
 
+            internal override string DPSLoRaEnrollmentGroup => this.config[DPSLoRaEnrollmentGroupKey];
+
             internal override string StorageAccountConnectionString => this.config.GetConnectionString(StorageAccountConnectionStringKey);
 
             internal override string OIDCScope => this.config[OIDCScopeKey];
@@ -271,6 +279,8 @@ namespace AzureIoTHub.Portal.Server
             internal override string DPSConnectionString => this.config[DPSConnectionStringKey];
 
             internal override string DPSDefaultEnrollmentGroup => this.config[DPSDefaultEnrollmentGroupKey];
+
+            internal override string DPSLoRaEnrollmentGroup => this.config[DPSLoRaEnrollmentGroupKey];
 
             internal override string StorageAccountConnectionString => this.config[StorageAccountConnectionStringKey];
 

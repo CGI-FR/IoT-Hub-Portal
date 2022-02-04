@@ -271,7 +271,14 @@ else
     {
         try
         {
-            gateway.SymmetricKey = await this.Http.GetStringAsync($"api/Gateways/{gateway.DeviceId}/ConnectionString");
+            if (gateway.Type is null)
+            {
+                gateway.SymmetricKey = await this.Http.GetStringAsync($"api/Gateways/{gateway.DeviceId}/unknown/ConnectionString");
+            }
+            else
+            {
+                gateway.SymmetricKey = await this.Http.GetStringAsync($"api/Gateways/{gateway.DeviceId}/{gateway.Type}/ConnectionString");
+            }
 
             var parameter = new DialogParameters();
 

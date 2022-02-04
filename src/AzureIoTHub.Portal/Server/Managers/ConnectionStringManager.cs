@@ -5,29 +5,36 @@ namespace AzureIoTHub.Portal.Server.Managers
 {
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
-    using AzureIoTHub.Portal.Server.Services;
     using Microsoft.Azure.Devices.Provisioning.Service;
 
     public class ConnectionStringManager : IConnectionStringManager
     {
-        private readonly IDeviceService deviceService;
+        private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
 
-        public ConnectionStringManager(IDeviceService deviceService)
+        public ConnectionStringManager(IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
         {
-            this.deviceService = deviceService;
+            this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
         }
 
-        public async Task<string> GetSymmetricKey(string deviceId)
+        public async Task<string> GetSymmetricKey(string deviceId, string deviceType)
         {
             try
             {
-                var attestationMechanism = await this.deviceService.GetDpsAttestionMechanism();
+                var attestationMechanism = await this.deviceProvisioningServiceManager.GetAttestationMechanism(deviceType);
 
                 return DeviceHelper.RetrieveSymmetricKey(deviceId, attestationMechanism);
             }
-            catch (ProvisioningServiceClientException)
+            catch (ProvisioningServiceClientHttpException e)
             {
-                throw new ProvisioningServiceClientException("The enrollment group does not exist.");
+                if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    _ = await this.deviceProvisioningServiceManager.CreateEnrollmentGroupAsync(deviceType);
+                    var attestationMechanism = await this.deviceProvisioningServiceManager.GetAttestationMechanism(deviceType);
+
+                    return DeviceHelper.RetrieveSymmetricKey(deviceId, attestationMechanism);
+                }
+
+                throw new System.Exception(e.Message);
             }
             catch (System.Exception e)
             {
