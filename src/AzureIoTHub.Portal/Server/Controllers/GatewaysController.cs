@@ -58,9 +58,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             try
             {
-                // ne contient pas les proprieter
+                // don't contain properties
                 IEnumerable<Twin> devicesWithoutProperties = await this.devicesService.GetAllEdgeDeviceWithTags();
-                // ne contien pas les appareil connecter
+                // don't contain connected device
                 IEnumerable<Twin> edgeDevices = await this.devicesService.GetAllEdgeDevice();
 
                 List<GatewayListItem> newGatewayList = new ();
