@@ -23,7 +23,7 @@ namespace AzureIoTHub.Portal.Server.Managers
         public async Task<EnrollmentGroup> CreateEnrollmentGroupAsync()
         {
             string enrollmentGroupId = this.configuration["IoTDPS:DefaultEnrollmentGroup"];
-            TwinCollection tags = new TwinCollection("{ }");
+            TwinCollection tags = new TwinCollection("{ \"owner\":\"" + "kevin" + "\" }");
             TwinCollection desiredProperties = new TwinCollection("{ }");
 
             string enrollmentGroupPrimaryKey = Guid.NewGuid().ToString().Replace("-", string.Empty).Replace("+", string.Empty);
