@@ -66,7 +66,7 @@
                                             <b>Status</b>
                                         </MudText>
                                         <MudSwitch @bind-Checked="Gateway.Status" Color="Color.Secondary" Converter="@(new CustomStringToBoolConverter())">
-                                            @if (Gateway.Status == "enabled")
+                                            @if (Gateway.Status == "Enabled")
                                             {
                                             <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
                                             }
@@ -315,8 +315,8 @@
             GetFunc = OnGet;
         }
 
-        private string TrueString = "enabled";
-        private string FalseString = "disabled";
+        private string TrueString = "Enabled";
+        private string FalseString = "Disabled";
 
         private string OnGet(bool? value)
         {
