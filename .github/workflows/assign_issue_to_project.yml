@@ -12,7 +12,7 @@ jobs:
     name: Assign topic to Project
     steps:
     - name: Assign issues with new-topic label to GitHub Project
-      uses: srggrs/assign-one-project-github-action@1.2.0
+      uses: srggrs/assign-one-project-github-action@1.2.1
       with:
         project: 'https://github.com/orgs/CGI-FR/projects/1/views/1'
         column_name: 'No Status'
