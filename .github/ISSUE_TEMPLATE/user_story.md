@@ -1,7 +1,7 @@
 ---
 name: User story
 about: User story with acceptance criteria
-title: "[Story]"
+title: "Story: "
 labels: 'story'
 assignees: ''
 ---
