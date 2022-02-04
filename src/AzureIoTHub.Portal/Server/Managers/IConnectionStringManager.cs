@@ -7,6 +7,6 @@ namespace AzureIoTHub.Portal.Server.Managers
 
     public interface IConnectionStringManager
     {
-        Task<string> GetSymmetricKey(string deviceId);
+        Task<string> GetSymmetricKey(string deviceId, string deviceType);
     }
 }

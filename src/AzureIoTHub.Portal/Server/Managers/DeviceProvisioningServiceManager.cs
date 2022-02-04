@@ -4,30 +4,45 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using System;
+    using System.Security.Cryptography;
     using System.Threading.Tasks;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
+    using static AzureIoTHub.Portal.Server.Startup;
 
     public class DeviceProvisioningServiceManager : IDeviceProvisioningServiceManager
     {
-        private readonly IConfiguration configuration;
         private readonly ProvisioningServiceClient dps;
+        private readonly ConfigHandler config;
 
-        public DeviceProvisioningServiceManager(IConfiguration configuration, ProvisioningServiceClient dps)
+        public DeviceProvisioningServiceManager(ProvisioningServiceClient dps, ConfigHandler config)
         {
-            this.configuration = configuration;
             this.dps = dps;
+            this.config = config;
         }
 
-        public async Task<EnrollmentGroup> CreateEnrollmentGroupAsync()
+        public async Task<EnrollmentGroup> CreateEnrollmentGroupAsync(string deviceType)
         {
-            string enrollmentGroupId = this.configuration["IoTDPS:DefaultEnrollmentGroup"];
-            TwinCollection tags = new TwinCollection("{ \"owner\":\"" + "kevin" + "\" }");
-            TwinCollection desiredProperties = new TwinCollection("{ }");
+            string enrollmentGroupId;
+            TwinCollection tags;
+            TwinCollection desiredProperties;
 
-            string enrollmentGroupPrimaryKey = Guid.NewGuid().ToString().Replace("-", string.Empty).Replace("+", string.Empty);
-            string enrollmentGroupSecondaryKey = Guid.NewGuid().ToString().Replace("-", string.Empty).Replace("+", string.Empty);
+            if (deviceType == "LoRa")
+            {
+                enrollmentGroupId = this.config.DPSLoRaEnrollmentGroup;
+                tags = new TwinCollection("{ \"purpose\":\"" + "LoRaNetworkServer" + "\" }");
+                desiredProperties = new TwinCollection("{ }");
+            }
+            else
+            {
+                enrollmentGroupId = this.config.DPSDefaultEnrollmentGroup;
+                tags = new TwinCollection("{ \"purpose\":\"" + "unknown" + "\" }");
+                desiredProperties = new TwinCollection("{ }");
+            }
+
+            string enrollmentGroupPrimaryKey = GenerateKey();
+            string enrollmentGroupSecondaryKey = GenerateKey();
 
             SymmetricKeyAttestation attestation = new SymmetricKeyAttestation(enrollmentGroupPrimaryKey, enrollmentGroupSecondaryKey);
 
@@ -36,7 +51,7 @@ namespace AzureIoTHub.Portal.Server.Managers
                 ProvisioningStatus = ProvisioningStatus.Enabled,
                 Capabilities = new DeviceCapabilities
                 {
-                    IotEdge = false
+                    IotEdge = true
                 },
                 InitialTwinState = new TwinState(tags, desiredProperties)
             };
@@ -50,9 +65,24 @@ namespace AzureIoTHub.Portal.Server.Managers
         /// this function get the attestation mechanism of the DPS.
         /// </summary>
         /// <returns>AttestationMechanism.</returns>
-        public async Task<AttestationMechanism> GetAttestationMechanism()
+        public async Task<AttestationMechanism> GetAttestationMechanism(string deviceType)
         {
-            return await this.dps.GetEnrollmentGroupAttestationAsync(this.configuration["IoTDPS:DefaultEnrollmentGroup"]);
+            if (deviceType == "LoRa")
+            {
+                return await this.dps.GetEnrollmentGroupAttestationAsync(this.config.DPSLoRaEnrollmentGroup);
+            }
+            else
+            {
+                return await this.dps.GetEnrollmentGroupAttestationAsync(this.config.DPSDefaultEnrollmentGroup);
+            }
+        }
+
+        private static string GenerateKey()
+        {
+            var length = 48;
+            var rnd = RandomNumberGenerator.GetBytes(length);
+
+            return Convert.ToBase64String(rnd);
         }
     }
 }

@@ -16,11 +16,11 @@ namespace AzureIoTHub.Portal.Server.Managers
             this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
         }
 
-        public async Task<string> GetSymmetricKey(string deviceId)
+        public async Task<string> GetSymmetricKey(string deviceId, string deviceType)
         {
             try
             {
-                var attestationMechanism = await this.deviceProvisioningServiceManager.GetAttestationMechanism();
+                var attestationMechanism = await this.deviceProvisioningServiceManager.GetAttestationMechanism(deviceType);
 
                 return DeviceHelper.RetrieveSymmetricKey(deviceId, attestationMechanism);
             }
@@ -28,8 +28,8 @@ namespace AzureIoTHub.Portal.Server.Managers
             {
                 if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    _ = await this.deviceProvisioningServiceManager.CreateEnrollmentGroupAsync();
-                    var attestationMechanism = await this.deviceProvisioningServiceManager.GetAttestationMechanism();
+                    _ = await this.deviceProvisioningServiceManager.CreateEnrollmentGroupAsync(deviceType);
+                    var attestationMechanism = await this.deviceProvisioningServiceManager.GetAttestationMechanism(deviceType);
 
                     return DeviceHelper.RetrieveSymmetricKey(deviceId, attestationMechanism);
                 }

@@ -8,8 +8,8 @@ namespace AzureIoTHub.Portal.Server.Managers
 
     public interface IDeviceProvisioningServiceManager
     {
-        Task<AttestationMechanism> GetAttestationMechanism();
+        Task<AttestationMechanism> GetAttestationMechanism(string deviceType);
 
-        Task<EnrollmentGroup> CreateEnrollmentGroupAsync();
+        Task<EnrollmentGroup> CreateEnrollmentGroupAsync(string deviceType);
     }
 }

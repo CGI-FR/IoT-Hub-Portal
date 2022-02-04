@@ -137,12 +137,12 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
         }
 
-        [HttpGet("{deviceId}/ConnectionString")]
-        public async Task<IActionResult> GetSymmetricKey(string deviceId)
+        [HttpGet("{deviceId}/{deviceType}/ConnectionString")]
+        public async Task<IActionResult> GetSymmetricKey(string deviceId, string deviceType = "unknown")
         {
             try
             {
-                return this.Ok(await this.connectionStringManager.GetSymmetricKey(deviceId));
+                return this.Ok(await this.connectionStringManager.GetSymmetricKey(deviceId, deviceType));
             }
             catch (Exception e)
             {
