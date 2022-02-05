@@ -1,0 +1,112 @@
+﻿@page "/concentrators"
+@using AzureIoTHub.Portal.Shared.Models.Device
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@attribute [Authorize]
+@inject HttpClient Http
+@inject IDialogService DialogService
+@inject NavigationManager navigationManager
+
+<MudGrid>
+    @if (result == null)
+    {
+        <MudItem Class="custom-centered-container">
+            <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+        </MudItem>
+    }
+    else
+    {
+        <MudItem xs="12">
+            <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
+                <ColGroup>
+                    <col style="width: 5%;" />
+                    <col style="width: 40%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 15%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 10%;" />
+                </ColGroup>
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Devices</MudText>
+                    <MudSpacer />
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadDevices" Class="ma-2"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Medium"  Class="ma-2"></MudIconButton>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh></MudTh>
+                    <MudTh>Device</MudTh>
+                    <MudTh Style="text-align: center">Status</MudTh>
+                    <MudTh Style="text-align: center">Connection state</MudTh>
+                    <MudTh Style="text-align: center">Last status update</MudTh>
+                    <MudTh Style="text-align: center">See details</MudTh>
+                    <MudTh Style="text-align: center">Delete</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd Style="text-align: center">
+                        <img height="25" src="@context.ImageUrl" />
+                    </MudTd>
+                    <MudTd DataLabel="Device" Style="word-break: break-all;">
+                        <a href="devices/@context.DeviceID">@context.DeviceID</a>
+                    </MudTd>
+
+                    <MudTd DataLabel="Status" Style="text-align: center">
+                        @if (context.IsEnabled)
+                        {
+                        <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                        }
+                        else
+                        {
+                        <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                        }
+                </MudTd>
+
+                <MudTd DataLabel="Connection" Style="text-align: center">
+                    @if (context.IsConnected)
+                        {
+                        <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
+                        }
+                        else
+                        {
+                        <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
+                        }
+                </MudTd>
+                <MudTd DataLabel="LSU" Style="text-align: center">@context.StatusUpdatedTime</MudTd>
+                <MudTd DataLabel="Details" Style="text-align: center">
+                    <a href="devices/@context.DeviceID"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                </MudTd>
+                <MudTd DataLabel="Delete" Style="text-align: center">
+                    <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+            </PagerContent>
+        </MudTable>
+    </MudItem>
+    }
+</MudGrid>
+
+@code {
+    private DeviceListItem[] result;
+
+    private int[] pageSizeOptions = new int[] { 2, 5, 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDevices();
+    }
+
+    private async Task LoadDevices()
+    {
+        try
+        {
+            result = await Http.GetFromJsonAsync<DeviceListItem[]>("api/Concentrators");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+}
