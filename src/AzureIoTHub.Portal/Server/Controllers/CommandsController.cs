@@ -33,23 +33,16 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpPost("{modelId}")]
         public async Task<IActionResult> Post(string modelId, DeviceModelCommand command)
         {
-            try
+            TableEntity entity = new TableEntity()
             {
-                TableEntity entity = new TableEntity()
-                {
-                    PartitionKey = modelId,
-                    RowKey = command.Name
-                };
-                this.deviceModelCommandMapper.UpdateTableEntity(entity, command);
-                await this.tableClientFactory
-                    .GetDeviceCommands()
-                    .AddEntityAsync(entity);
-                return this.Ok("Command successfully added");
-            }
-            catch (Exception e)
-            {
-                return this.BadRequest(e.Message);
-            }
+                PartitionKey = modelId,
+                RowKey = command.Name
+            };
+            this.deviceModelCommandMapper.UpdateTableEntity(entity, command);
+            await this.tableClientFactory
+                .GetDeviceCommands()
+                .AddEntityAsync(entity);
+            return this.Ok("Command successfully added");
         }
 
         /// <summary>

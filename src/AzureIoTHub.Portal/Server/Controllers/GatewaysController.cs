@@ -56,36 +56,29 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<GatewayListItem>))]
         public async Task<IActionResult> Get()
         {
-            try
+            // don't contain properties
+            IEnumerable<Twin> devicesWithoutProperties = await this.devicesService.GetAllEdgeDeviceWithTags();
+            // don't contain connected device
+            IEnumerable<Twin> edgeDevices = await this.devicesService.GetAllEdgeDevice();
+
+            List<GatewayListItem> newGatewayList = new ();
+            int index = 0;
+
+            foreach (Twin deviceTwin in edgeDevices)
             {
-                // don't contain properties
-                IEnumerable<Twin> devicesWithoutProperties = await this.devicesService.GetAllEdgeDeviceWithTags();
-                // don't contain connected device
-                IEnumerable<Twin> edgeDevices = await this.devicesService.GetAllEdgeDevice();
-
-                List<GatewayListItem> newGatewayList = new ();
-                int index = 0;
-
-                foreach (Twin deviceTwin in edgeDevices)
+                GatewayListItem gateway = new ()
                 {
-                    GatewayListItem gateway = new ()
-                    {
-                        DeviceId = deviceTwin.DeviceId,
-                        Status = deviceTwin.Status?.ToString(),
-                        Type = DeviceHelper.RetrieveTagValue(devicesWithoutProperties.ElementAt(index), "purpose"),
-                        NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin)
-                    };
+                    DeviceId = deviceTwin.DeviceId,
+                    Status = deviceTwin.Status?.ToString(),
+                    Type = DeviceHelper.RetrieveTagValue(devicesWithoutProperties.ElementAt(index), "purpose"),
+                    NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin)
+                };
 
-                    newGatewayList.Add(gateway);
-                    index++;
-                }
+                newGatewayList.Add(gateway);
+                index++;
+            }
 
-                return this.Ok(newGatewayList);
-            }
-            catch (Exception e)
-            {
-                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
-            }
+            return this.Ok(newGatewayList);
         }
 
         /// <summary>
@@ -131,23 +124,12 @@ namespace AzureIoTHub.Portal.Server.Controllers
             {
                 return this.StatusCode(StatusCodes.Status404NotFound, e.Message);
             }
-            catch (Exception e)
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-            }
         }
 
         [HttpGet("{deviceId}/{deviceType}/ConnectionString")]
         public async Task<IActionResult> GetSymmetricKey(string deviceId, string deviceType = "unknown")
         {
-            try
-            {
-                return this.Ok(await this.connectionStringManager.GetSymmetricKey(deviceId, deviceType));
-            }
-            catch (Exception e)
-            {
-                return this.BadRequest(e.Message);
-            }
+            return this.Ok(await this.connectionStringManager.GetSymmetricKey(deviceId, deviceType));
         }
 
         /// <summary>
@@ -175,10 +157,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 this.logger.LogInformation(e.Message);
                 return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
-            catch (Exception e)
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-            }
         }
 
         /// <summary>
@@ -189,28 +167,21 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpPut("{gateway}")]
         public async Task<IActionResult> UpdateDeviceAsync(Gateway gateway)
         {
-            try
-            {
-                Device device = await this.devicesService.GetDevice(gateway.DeviceId);
+            Device device = await this.devicesService.GetDevice(gateway.DeviceId);
 
-                if (gateway.Status == DeviceStatus.Enabled.ToString())
-                    device.Status = DeviceStatus.Enabled;
-                else
-                    device.Status = DeviceStatus.Disabled;
+            if (gateway.Status == DeviceStatus.Enabled.ToString())
+                device.Status = DeviceStatus.Enabled;
+            else
+                device.Status = DeviceStatus.Disabled;
 
-                device = await this.devicesService.UpdateDevice(device);
+            device = await this.devicesService.UpdateDevice(device);
 
-                Twin deviceTwin = await this.devicesService.GetDeviceTwin(gateway.DeviceId);
-                deviceTwin.Tags["env"] = gateway.Environment;
-                deviceTwin = await this.devicesService.UpdateDeviceTwin(gateway.DeviceId, deviceTwin);
+            Twin deviceTwin = await this.devicesService.GetDeviceTwin(gateway.DeviceId);
+            deviceTwin.Tags["env"] = gateway.Environment;
+            deviceTwin = await this.devicesService.UpdateDeviceTwin(gateway.DeviceId, deviceTwin);
 
-                this.logger.LogInformation($"iot hub device was updated  {device.Id}");
-                return this.Ok(deviceTwin);
-            }
-            catch (Exception e)
-            {
-                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
-            }
+            this.logger.LogInformation($"iot hub device was updated  {device.Id}");
+            return this.Ok(deviceTwin);
         }
 
         /// <summary>
@@ -221,43 +192,34 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpDelete("{deviceId}")]
         public async Task<IActionResult> DeleteDeviceAsync(string deviceId)
         {
-            try
-            {
-                await this.devicesService.DeleteDevice(deviceId);
-                this.logger.LogInformation($"iot hub device was delete  {deviceId}");
+            await this.devicesService.DeleteDevice(deviceId);
+            this.logger.LogInformation($"iot hub device was delete  {deviceId}");
 
-                return this.Ok($"iot hub device was delete  {deviceId}");
-            }
-            catch (Exception e)
-            {
-                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
-            }
+            return this.Ok($"iot hub device was delete  {deviceId}");
         }
 
         [HttpPost("{deviceId}/{moduleId}/{methodName}")]
         public async Task<C2Dresult> ExecuteMethode(GatewayModule module, string deviceId, string methodName)
         {
-            try
+            CloudToDeviceMethod method = new (methodName);
+            string payload = string.Empty;
+
+            if (methodName == "RestartModule")
             {
-                CloudToDeviceMethod method = new (methodName);
-                string payload = string.Empty;
-
-                if (methodName == "RestartModule")
+                payload = JsonConvert.SerializeObject(new
                 {
-                    payload = JsonConvert.SerializeObject(new
-                    {
-                        id = module.ModuleName,
-                        schemaVersion = module.Version
-                    });
-                }
+                    id = module.ModuleName,
+                    schemaVersion = module.Version
+                });
+            }
 
-                if (methodName == "GetModuleLogs")
+            if (methodName == "GetModuleLogs")
+            {
+                payload = JsonConvert.SerializeObject(new
                 {
-                    payload = JsonConvert.SerializeObject(new
+                    schemaVersion = module.Version,
+                    items = new[]
                     {
-                        schemaVersion = module.Version,
-                        items = new[]
-                        {
                             new
                             {
                                 id = module.ModuleName,
@@ -266,30 +228,22 @@ namespace AzureIoTHub.Portal.Server.Controllers
                                     tail = 10
                                 }
                             }
-                        },
-                        encoding = "none",
-                        contentType = "json"
-                    });
-                }
-
-                method.SetPayloadJson(payload);
-
-                CloudToDeviceMethodResult result = await this.devicesService.ExecuteC2DMethod(deviceId, method);
-                this.logger.LogInformation($"iot hub device : {deviceId} module : {module.ModuleName} execute methode {methodName}.");
-
-                return new C2Dresult()
-                {
-                    Payload = result.GetPayloadAsJson(),
-                    Status = result.Status
-                };
+                    },
+                    encoding = "none",
+                    contentType = "json"
+                });
             }
-            catch (Exception e)
+
+            method.SetPayloadJson(payload);
+
+            CloudToDeviceMethodResult result = await this.devicesService.ExecuteC2DMethod(deviceId, method);
+            this.logger.LogInformation($"iot hub device : {deviceId} module : {module.ModuleName} execute methode {methodName}.");
+
+            return new C2Dresult()
             {
-                return new C2Dresult()
-                {
-                    Payload = e.Message
-                };
-            }
+                Payload = result.GetPayloadAsJson(),
+                Status = result.Status
+            };
         }
 
         /// <summary>
@@ -324,6 +278,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private async Task<ConfigItem> RetrieveLastConfiguration(Twin twin)
         {
             ConfigItem item = new ();
+
             if (twin.Configurations != null)
             {
                 if (twin.Configurations.Count > 0)

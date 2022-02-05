@@ -121,29 +121,21 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateDeviceAsync(DeviceDetails device)
         {
-            try
-            {
-                // Device status (enabled/disabled) has to be dealt with afterwards
-                Device currentDevice = await this.devicesService.GetDevice(device.DeviceID);
-                currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+            // Device status (enabled/disabled) has to be dealt with afterwards
+            Device currentDevice = await this.devicesService.GetDevice(device.DeviceID);
+            currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
-                _ = await this.devicesService.UpdateDevice(currentDevice);
+            _ = await this.devicesService.UpdateDevice(currentDevice);
 
-                // Get the current twin from the hub, based on the device ID
-                Twin currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceID);
+            // Get the current twin from the hub, based on the device ID
+            Twin currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceID);
 
-                // Update the twin properties
-                this.deviceTwinMapper.UpdateTwin(currentTwin, device);
+            // Update the twin properties
+            this.deviceTwinMapper.UpdateTwin(currentTwin, device);
 
-                _ = await this.devicesService.UpdateDeviceTwin(device.DeviceID, currentTwin);
+            _ = await this.devicesService.UpdateDeviceTwin(device.DeviceID, currentTwin);
 
-                return this.Ok();
-            }
-            catch (Exception e)
-            {
-                this.logger.LogError($"{device.DeviceID} - Update device failed", e);
-                return this.BadRequest();
-            }
+            return this.Ok();
         }
 
         /// <summary>
@@ -154,16 +146,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpDelete("{deviceID}")]
         public async Task<IActionResult> Delete(string deviceID)
         {
-            try
-            {
-                await this.devicesService.DeleteDevice(deviceID);
-                return this.Ok();
-            }
-            catch (Exception e)
-            {
-                this.logger.LogError($"{deviceID} - Device deletion failed", e);
-                return this.BadRequest();
-            }
+            await this.devicesService.DeleteDevice(deviceID);
+            return this.Ok();
         }
 
         /// <summary>
@@ -201,10 +185,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 this.logger.LogError($"{deviceId} - Execute command on device failed \n {e.Message}");
 
                 return this.BadRequest("Something went wrong when executing the command.");
-            }
-            catch (Exception e)
-            {
-                return this.BadRequest(e.Message);
             }
         }
     }
