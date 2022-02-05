@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Helpers
 {
+    using System;
     using System.Collections.Generic;
     using AzureIoTHub.Portal.Shared.Models;
     using Microsoft.Azure.Devices;
@@ -73,7 +74,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns>A dictionnary containing the settings and their corresponding values.</returns>
         private static Dictionary<string, string> GetModuleIdentityTwinSettings(Configuration config, KeyValuePair<string, JToken> module)
         {
-            Dictionary<string, string> twinSettings = new ();
+            var twinSettings = new Dictionary<string, string>();
 
             if (config.Content.ModulesContent != null)
             {
@@ -99,23 +100,25 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns>A dictionnary containing the environment variables and their corresponding values.</returns>
         private static Dictionary<string, string> GetEnvironmentVariables(KeyValuePair<string, JToken> module)
         {
-            Dictionary<string, string> envVariables = new ();
+            var envVariables = new Dictionary<string, string>();
 
             // Converts the object to a JObject to access its properties more easily
             JObject moduleProperties = module.Value as JObject;
 
-            // Only exists if the module contains environment variables
-            if (moduleProperties.ContainsKey("env"))
+            if (moduleProperties == null)
             {
-                foreach (JProperty val in moduleProperties["env"])
-                {
-                    var variableName = val.Name;
+                throw new InvalidOperationException("Unable to parse module environment variables!");
+            }
 
-                    // Converts the object to a JObject to access its properties more easily
-                    JObject tmp = val.Value as JObject;
-                    var variableValue = tmp["value"];
-                    envVariables.Add(variableName, variableValue.ToString());
-                }
+            // Only exists if the module contains environment variables
+            if (!moduleProperties.ContainsKey("env"))
+            {
+                return envVariables;
+            }
+
+            foreach (JProperty val in moduleProperties["env"])
+            {
+                envVariables.Add(val.Name, val["value"]?.ToString());
             }
 
             return envVariables;
