@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
@@ -18,10 +17,18 @@ namespace AzureIoTHub.Portal.Server.Controllers
     [Route("api/[controller]")]
     public class ConfigsController : ControllerBase
     {
+        private readonly ILogger<ConfigsController> logger;
+
+        private readonly RegistryManager registryManager;
         private readonly ConfigsServices configService;
 
-        public ConfigsController(ConfigsServices configService)
+        public ConfigsController(
+            ILogger<ConfigsController> logger,
+            ConfigsServices configService,
+            RegistryManager registryManager)
         {
+            this.logger = logger;
+            this.registryManager = registryManager;
             this.configService = configService;
         }
 
@@ -35,13 +42,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
             // Retrieve every Configurations, regardless of the parameter given... Why?
             // TODO : Check & fix this
             // List<Configuration> configList = await this.registryManager.GetConfigurationsAsync(0) as List<Configuration>;
-            var configList = await this.configService.GetAllConfigs();
+            List<Configuration> configList = await this.configService.GetAllConfigs() as List<Configuration>;
             var results = new List<ConfigListItem>();
 
             // Azure Configurations may have different types: "Configuration", "Deployment" or "LayeredDeployment"
             foreach (Configuration config in configList)
             {
-                var moduleList = new List<GatewayModule>();
+                List<GatewayModule> moduleList = new ();
 
                 // Only deployments have modules. If it doesn't, it's a configuration and we don't want to keep it.
                 if (config.Content.ModulesContent != null)
@@ -74,7 +81,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         public async Task<ConfigListItem> Get(string configurationID)
         {
             var config = await this.configService.GetConfigItem(configurationID);
-            var moduleList = new List<GatewayModule>();
+            List<GatewayModule> moduleList = new ();
             if (config.Content.ModulesContent != null)
             {
                 // Details of every modules are stored within the EdgeAgent module data
@@ -85,22 +92,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
                         // Converts the object to a JObject to access its properties more easily
                         JObject modObject = config.Content.ModulesContent["$edgeAgent"]["properties.desired"] as JObject;
 
-                        if (modObject == null)
-                        {
-                            throw new InvalidOperationException("Could not parse properties.desired.");
-                        }
-
                         // Adds regular modules to the list of modules
                         if (modObject.ContainsKey("modules"))
                         {
                             // Converts it to a JObject to be able to iterate through it
                             JObject modules = modObject["modules"] as JObject;
-
-                            if (modules == null)
-                            {
-                                throw new InvalidOperationException("Could not parse modules.");
-                            }
-
                             foreach (var m in modules)
                             {
                                 GatewayModule newModule = ConfigHelper.CreateGatewayModule(config, m);
@@ -113,12 +109,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
                         {
                             // Converts it to a JObject to be able to iterate through it
                             JObject systemModules = modObject["systemModules"] as JObject;
-
-                            if (systemModules == null)
-                            {
-                                throw new InvalidOperationException("Could not parse systemModules.");
-                            }
-
                             foreach (var sm in systemModules)
                             {
                                 GatewayModule newModule = ConfigHelper.CreateGatewayModule(config, sm);
