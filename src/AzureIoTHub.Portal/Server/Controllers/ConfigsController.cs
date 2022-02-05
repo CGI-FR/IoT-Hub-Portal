@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Services;
@@ -46,15 +47,10 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 // Only deployments have modules. If it doesn't, it's a configuration and we don't want to keep it.
                 if (config.Content.ModulesContent != null)
                 {
-                    // Retrieve the name of each module of this deployment
-                    foreach (var module in config.Content.ModulesContent)
+                    moduleList.AddRange(config.Content.ModulesContent.Select(x => new GatewayModule
                     {
-                        var newModule = new GatewayModule
-                        {
-                            ModuleName = module.Key
-                        };
-                        moduleList.Add(newModule);
-                    }
+                        ModuleName = x.Key
+                    }));
 
                     ConfigListItem result = ConfigHelper.CreateConfigListItem(config, moduleList);
                     results.Add(result);
