@@ -97,9 +97,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     Status = deviceTwin.Status?.ToString(),
                     EndPoint = this.configuration["IoTDPS:ServiceEndpoint"],
                     Scope = deviceTwin.DeviceScope,
-                    Connection_state = deviceTwin.ConnectionState?.ToString(),
-                    // we retrieve the symmetric Key
-                    // SymmetricKey = DeviceHelper.RetrieveSymmetricKey(deviceTwin.DeviceId, this.devicesService.GetDpsAttestionMechanism().Result),
+                    Connection_state = deviceTwin.ConnectionState.Value<string>(),
                     // We retrieve the values of tags
                     Type = DeviceHelper.RetrieveTagValue(deviceTwin, "purpose"),
                     Environment = DeviceHelper.RetrieveTagValue(deviceTwin, "env"),
