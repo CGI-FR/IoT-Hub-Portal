@@ -91,17 +91,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
                         }
 
                         // Adds regular modules to the list of modules
-                        if (modObject.ContainsKey("modules"))
+                        if (modObject.TryGetValue("modules", out JToken modules))
                         {
-                            // Converts it to a JObject to be able to iterate through it
-                            JObject modules = modObject["modules"] as JObject;
-
-                            if (modules == null)
-                            {
-                                throw new InvalidOperationException("Could not parse modules.");
-                            }
-
-                            foreach (var m in modules)
+                            foreach (var m in modules.Values<JProperty>())
                             {
                                 GatewayModule newModule = ConfigHelper.CreateGatewayModule(config, m);
                                 moduleList.Add(newModule);
@@ -109,17 +101,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
                         }
 
                         // Adds system modules to the list of modules
-                        if (modObject.ContainsKey("systemModules"))
+                        if (modObject.TryGetValue("systemModules", out JToken systemModulesToken))
                         {
-                            // Converts it to a JObject to be able to iterate through it
-                            JObject systemModules = modObject["systemModules"] as JObject;
-
-                            if (systemModules == null)
-                            {
-                                throw new InvalidOperationException("Could not parse systemModules.");
-                            }
-
-                            foreach (var sm in systemModules)
+                            foreach (var sm in systemModulesToken.Values<JProperty>())
                             {
                                 GatewayModule newModule = ConfigHelper.CreateGatewayModule(config, sm);
                                 moduleList.Add(newModule);
