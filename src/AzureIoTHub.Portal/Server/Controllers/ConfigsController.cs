@@ -78,36 +78,34 @@ namespace AzureIoTHub.Portal.Server.Controllers
             if (config.Content.ModulesContent != null)
             {
                 // Details of every modules are stored within the EdgeAgent module data
-                if (config.Content.ModulesContent.TryGetValue("$edgeAgent", out IDictionary<string, object> edgeAgentModule))
+                if (config.Content.ModulesContent.TryGetValue("$edgeAgent", out IDictionary<string, object> edgeAgentModule)
+                    && edgeAgentModule.TryGetValue("properties.desired", out object edgeAgentDesiredProperties))
                 {
-                    if (edgeAgentModule.TryGetValue("properties.desired", out object edgeAgentDesiredProperties))
+                    // Converts the object to a JObject to access its properties more easily
+                    JObject modObject = edgeAgentDesiredProperties as JObject;
+
+                    if (modObject == null)
                     {
-                        // Converts the object to a JObject to access its properties more easily
-                        JObject modObject = edgeAgentDesiredProperties as JObject;
+                        throw new InvalidOperationException("Could not parse properties.desired.");
+                    }
 
-                        if (modObject == null)
+                    // Adds regular modules to the list of modules
+                    if (modObject.TryGetValue("modules", out JToken modules))
+                    {
+                        foreach (var m in modules.Values<JProperty>())
                         {
-                            throw new InvalidOperationException("Could not parse properties.desired.");
+                            GatewayModule newModule = ConfigHelper.CreateGatewayModule(config, m);
+                            moduleList.Add(newModule);
                         }
+                    }
 
-                        // Adds regular modules to the list of modules
-                        if (modObject.TryGetValue("modules", out JToken modules))
+                    // Adds system modules to the list of modules
+                    if (modObject.TryGetValue("systemModules", out JToken systemModulesToken))
+                    {
+                        foreach (var sm in systemModulesToken.Values<JProperty>())
                         {
-                            foreach (var m in modules.Values<JProperty>())
-                            {
-                                GatewayModule newModule = ConfigHelper.CreateGatewayModule(config, m);
-                                moduleList.Add(newModule);
-                            }
-                        }
-
-                        // Adds system modules to the list of modules
-                        if (modObject.TryGetValue("systemModules", out JToken systemModulesToken))
-                        {
-                            foreach (var sm in systemModulesToken.Values<JProperty>())
-                            {
-                                GatewayModule newModule = ConfigHelper.CreateGatewayModule(config, sm);
-                                moduleList.Add(newModule);
-                            }
+                            GatewayModule newModule = ConfigHelper.CreateGatewayModule(config, sm);
+                            moduleList.Add(newModule);
                         }
                     }
                 }
