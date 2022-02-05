@@ -169,10 +169,10 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             Device device = await this.devicesService.GetDevice(gateway.DeviceId);
 
-            if (gateway.Status == DeviceStatus.Enabled.ToString())
-                device.Status = DeviceStatus.Enabled;
-            else
-                device.Status = DeviceStatus.Disabled;
+            if (Enum.TryParse(gateway.Status, out DeviceStatus status))
+            {
+                device.Status = status;
+            }
 
             device = await this.devicesService.UpdateDevice(device);
 
