@@ -78,12 +78,12 @@ namespace AzureIoTHub.Portal.Server.Controllers
             if (config.Content.ModulesContent != null)
             {
                 // Details of every modules are stored within the EdgeAgent module data
-                if (config.Content.ModulesContent.ContainsKey("$edgeAgent"))
+                if (config.Content.ModulesContent.TryGetValue("$edgeAgent", out IDictionary<string, object> edgeAgentModule))
                 {
-                    if (config.Content.ModulesContent["$edgeAgent"].ContainsKey("properties.desired"))
+                    if (edgeAgentModule.TryGetValue("properties.desired", out object edgeAgentDesiredProperties))
                     {
                         // Converts the object to a JObject to access its properties more easily
-                        JObject modObject = config.Content.ModulesContent["$edgeAgent"]["properties.desired"] as JObject;
+                        JObject modObject = edgeAgentDesiredProperties as JObject;
 
                         if (modObject == null)
                         {
