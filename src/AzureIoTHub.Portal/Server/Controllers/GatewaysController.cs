@@ -58,33 +58,34 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             try
             {
-                // don't contain properties
-                IEnumerable<Twin> devicesWithoutProperties = await this.devicesService.GetAllEdgeDeviceWithTags();
-                // don't contain connected device
+                // don't contain tags
                 IEnumerable<Twin> edgeDevices = await this.devicesService.GetAllEdgeDevice();
 
                 List<GatewayListItem> newGatewayList = new ();
-                int index = 0;
 
                 foreach (Twin deviceTwin in edgeDevices)
                 {
-                    GatewayListItem gateway = new ()
-                    {
-                        DeviceId = deviceTwin.DeviceId,
-                        Status = deviceTwin.Status.Value.ToString(),
-                        Type = DeviceHelper.RetrieveTagValue(devicesWithoutProperties.ElementAt(index), "purpose"),
-                        NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin)
-                    };
+                    var twin = this.devicesService.GetDeviceTwin(deviceTwin.DeviceId).Result;
 
-                    newGatewayList.Add(gateway);
-                    index++;
+                    if (twin != null)
+                    {
+                        GatewayListItem gateway = new ()
+                        {
+                            DeviceId = deviceTwin.DeviceId,
+                            Status = deviceTwin.Status.Value.ToString(),
+                            Type = DeviceHelper.RetrieveTagValue(twin, "purpose"),
+                            NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin)
+                        };
+
+                        newGatewayList.Add(gateway);
+                    }
                 }
 
                 return this.Ok(newGatewayList);
             }
             catch (Exception e)
             {
-                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
+                return this.BadRequest(e.Message);
             }
         }
 
@@ -110,8 +111,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     EndPoint = this.configuration["IoTDPS:ServiceEndpoint"],
                     Scope = deviceTwin.DeviceScope,
                     Connection_state = deviceTwin.ConnectionState.Value.ToString(),
-                    // we retrieve the symmetric Key
-                    // SymmetricKey = DeviceHelper.RetrieveSymmetricKey(deviceTwin.DeviceId, this.devicesService.GetDpsAttestionMechanism().Result),
                     // We retrieve the values of tags
                     Type = DeviceHelper.RetrieveTagValue(deviceTwin, "purpose"),
                     Environment = DeviceHelper.RetrieveTagValue(deviceTwin, "env"),
