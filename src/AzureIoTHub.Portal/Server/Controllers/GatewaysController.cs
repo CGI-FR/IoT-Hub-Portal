@@ -71,7 +71,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     GatewayListItem gateway = new ()
                     {
                         DeviceId = deviceTwin.DeviceId,
-                        Status = deviceTwin.Status.Value.ToString(),
+                        Status = deviceTwin.Status?.ToString(),
                         Type = DeviceHelper.RetrieveTagValue(devicesWithoutProperties.ElementAt(index), "purpose"),
                         NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin)
                     };
@@ -106,10 +106,10 @@ namespace AzureIoTHub.Portal.Server.Controllers
                 Gateway gateway = new ()
                 {
                     DeviceId = deviceTwin.DeviceId,
-                    Status = deviceTwin.Status.Value.ToString(),
+                    Status = deviceTwin.Status?.ToString(),
                     EndPoint = this.configuration["IoTDPS:ServiceEndpoint"],
                     Scope = deviceTwin.DeviceScope,
-                    Connection_state = deviceTwin.ConnectionState.Value.ToString(),
+                    Connection_state = deviceTwin.ConnectionState?.ToString(),
                     // we retrieve the symmetric Key
                     // SymmetricKey = DeviceHelper.RetrieveSymmetricKey(deviceTwin.DeviceId, this.devicesService.GetDpsAttestionMechanism().Result),
                     // We retrieve the values of tags
