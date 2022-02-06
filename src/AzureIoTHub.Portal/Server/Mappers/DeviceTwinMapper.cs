@@ -4,8 +4,6 @@
 namespace AzureIoTHub.Portal.Server.Mappers
 {
     using System;
-    using System.Collections.Generic;
-    using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Shared.Models.Device;
