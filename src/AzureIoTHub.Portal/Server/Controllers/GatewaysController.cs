@@ -20,6 +20,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     [ApiController]
     [Route("api/[controller]")]
@@ -255,19 +256,15 @@ namespace AzureIoTHub.Portal.Server.Controllers
         private async Task<int> RetrieveNbConnectedDevice(string deviceId)
         {
             IQuery query = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{deviceId}']", 1);
-            IEnumerable<Twin> deviceWithClient = await query.GetNextAsTwinAsync();
-            int count = 0;
-            // récupération des informations sur les clients connecté à la gateway
-            foreach (Twin item in deviceWithClient)
+            Twin deviceWithClient = (await query.GetNextAsTwinAsync()).SingleOrDefault();
+            var reportedProperties = JObject.Parse(deviceWithClient.Properties.Reported.ToJson());
+
+            if (reportedProperties.TryGetValue("clients", out JToken clients))
             {
-                if (item.Properties.Reported.Contains("clients") && item.DeviceId == deviceId)
-                {
-                    count = item.Properties.Reported["clients"].Count;
-                    break;
-                }
+                return clients.Count();
             }
 
-            return count;
+            return 0;
         }
 
         /// <summary>
@@ -279,19 +276,16 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             ConfigItem item = new ();
 
-            if (twin.Configurations != null)
+            if (twin.Configurations != null && twin.Configurations.Count > 0)
             {
-                if (twin.Configurations.Count > 0)
+                foreach (var config in twin.Configurations)
                 {
-                    foreach (var config in twin.Configurations)
+                    Configuration confObj = await this.registryManager.GetConfigurationAsync(config.Key);
+                    if (item.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
                     {
-                        Configuration confObj = await this.registryManager.GetConfigurationAsync(config.Key);
-                        if (item.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
-                        {
-                            item.Name = config.Key;
-                            item.DateCreation = confObj.CreatedTimeUtc;
-                            item.Status = ConfigurationStatus.Applied.ToString();
-                        }
+                        item.Name = config.Key;
+                        item.DateCreation = confObj.CreatedTimeUtc;
+                        item.Status = ConfigurationStatus.Applied.ToString();
                     }
                 }
             }
