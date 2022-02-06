@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
     using AzureIoTHub.Portal.Shared.Models;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
+    using Newtonsoft.Json.Linq;
 
     public static class DeviceHelper
     {
@@ -128,15 +129,13 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns>string.</returns>
         public static string RetrieveRuntimeResponse(Twin twin, string deviceId)
         {
-            if (twin.Properties.Reported.Contains("systemModules") && twin.DeviceId == deviceId)
+            var reportedProperties = JObject.Parse(twin.Properties.Reported.ToJson());
+
+            if (reportedProperties.TryGetValue("systemModules", out JToken systemModules)
+                && systemModules.Value<JObject>().TryGetValue("edgeAgent", out JToken edgeAgentModule)
+                && edgeAgentModule.Value<JObject>().TryGetValue("runtimeStatus", out JToken runtimeStatus))
             {
-                foreach (var element in twin.Properties.Reported["systemModules"])
-                {
-                    if (element.Key == "edgeAgent")
-                    {
-                        return element.Value["runtimeStatus"];
-                    }
-                }
+                return runtimeStatus.Value<string>();
             }
 
             return string.Empty;
