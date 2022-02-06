@@ -78,15 +78,12 @@ namespace AzureIoTHub.Portal.Server.Helpers
         {
             var twinSettings = new Dictionary<string, string>();
 
-            if (config.Content.ModulesContent != null)
+            if (config.Content.ModulesContent != null
+                && config.Content.ModulesContent.TryGetValue(module.Path, out IDictionary<string, object> modulesContent))
             {
-                // Only exists if the module contains an identity twin
-                if (config.Content.ModulesContent.TryGetValue(module.Path, out IDictionary<string, object> modulesContent))
+                foreach (var setting in modulesContent)
                 {
-                    foreach (var setting in modulesContent)
-                    {
-                        twinSettings.Add(setting.Key, setting.Value.ToString());
-                    }
+                    twinSettings.Add(setting.Key, setting.Value.ToString());
                 }
             }
 

@@ -11,7 +11,7 @@ namespace AzureIoTHub.Portal.Server.Filters
 
     internal class ApiRequiredScopeFilter : ActionFilterAttribute
     {
-        private ConfigHandler configuration;
+        private readonly ConfigHandler configuration;
 
         internal ApiRequiredScopeFilter(ConfigHandler configuration)
         {
