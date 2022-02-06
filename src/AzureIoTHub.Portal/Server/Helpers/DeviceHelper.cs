@@ -70,23 +70,19 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// Checks if the specific property exists within the device twin,
         /// Returns the corresponding value if so, else returns null.
         /// </summary>
-        /// <param name="item">Device twin.</param>
+        /// <param name="twin">Device twin.</param>
         /// <param name="propertyName">Property to retrieve.</param>
         /// <returns>Corresponding property value, or null if it doesn't exist.</returns>
-        public static string RetrieveDesiredPropertyValue(Twin item, string propertyName)
+        public static string RetrieveDesiredPropertyValue(Twin twin, string propertyName)
         {
-            if (item.Properties.Desired.Contains(propertyName))
-                return item.Properties.Desired[propertyName];
-            else
-                return null;
+            return twin.Properties.Desired.Contains(propertyName) ?
+                twin.Properties.Desired[propertyName] : null;
         }
 
         public static string RetrieveReportedPropertyValue(Twin twin, string propertyName)
         {
-            if (twin.Properties.Reported.Contains(propertyName))
-                return twin.Properties.Reported[propertyName];
-            else
-                return null;
+            return twin.Properties.Reported.Contains(propertyName) ?
+                twin.Properties.Reported[propertyName] : null;
         }
 
         /// <summary>
@@ -97,12 +93,8 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns>the number of connected device.</returns>
         public static int RetrieveConnectedDeviceCount(Twin twin)
         {
-            if (twin.Properties.Reported.Contains("clients"))
-            {
-                return twin.Properties.Reported["clients"].Count;
-            }
-
-            return 0;
+            return twin.Properties.Reported.Contains("clients") ?
+                twin.Properties.Reported["clients"].Count : 0;
         }
 
         /// <summary>
@@ -114,10 +106,8 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns>int.</returns>
         public static int RetrieveNbModuleCount(Twin twin, string deviceId)
         {
-            if (twin.Properties.Desired.Contains("modules") && twin.DeviceId == deviceId)
-                return twin.Properties.Desired["modules"].Count;
-            else
-                return 0;
+            return twin.Properties.Desired.Contains("modules") && twin.DeviceId == deviceId
+                ? twin.Properties.Desired["modules"].Count : 0;
         }
 
         /// <summary>
