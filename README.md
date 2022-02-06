@@ -1,6 +1,7 @@
 [![Build & Test](https://github.com/CGI-FR/iot-hub-portal/actions/workflows/build.yml/badge.svg)](https://github.com/CGI-FR/iot-hub-portal/actions/workflows/build.yml)
 [![Continuous Deployment](https://github.com/CGI-FR/iot-hub-portal/actions/workflows/publish.yml/badge.svg)](https://github.com/CGI-FR/iot-hub-portal/actions/workflows/publish.yml)
 [![Deploy Staging](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/deploy_staging.yml/badge.svg)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/deploy_staging.yml)
+[![codecov](https://codecov.io/gh/CGI-FR/IoT-Hub-Portal/branch/main/graph/badge.svg?token=S1A59KMRV6)](https://codecov.io/gh/CGI-FR/IoT-Hub-Portal)
 
 # IoT Hub Portal
 
