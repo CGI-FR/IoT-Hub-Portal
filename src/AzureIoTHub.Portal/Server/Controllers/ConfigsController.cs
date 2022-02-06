@@ -3,7 +3,9 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Services;
@@ -17,18 +19,10 @@ namespace AzureIoTHub.Portal.Server.Controllers
     [Route("api/[controller]")]
     public class ConfigsController : ControllerBase
     {
-        private readonly ILogger<ConfigsController> logger;
-
-        private readonly RegistryManager registryManager;
         private readonly ConfigsServices configService;
 
-        public ConfigsController(
-            ILogger<ConfigsController> logger,
-            ConfigsServices configService,
-            RegistryManager registryManager)
+        public ConfigsController(ConfigsServices configService)
         {
-            this.logger = logger;
-            this.registryManager = registryManager;
             this.configService = configService;
         }
 
@@ -42,26 +36,21 @@ namespace AzureIoTHub.Portal.Server.Controllers
             // Retrieve every Configurations, regardless of the parameter given... Why?
             // TODO : Check & fix this
             // List<Configuration> configList = await this.registryManager.GetConfigurationsAsync(0) as List<Configuration>;
-            List<Configuration> configList = await this.configService.GetAllConfigs() as List<Configuration>;
+            var configList = await this.configService.GetAllConfigs();
             var results = new List<ConfigListItem>();
 
             // Azure Configurations may have different types: "Configuration", "Deployment" or "LayeredDeployment"
             foreach (Configuration config in configList)
             {
-                List<GatewayModule> moduleList = new ();
+                var moduleList = new List<GatewayModule>();
 
                 // Only deployments have modules. If it doesn't, it's a configuration and we don't want to keep it.
                 if (config.Content.ModulesContent != null)
                 {
-                    // Retrieve the name of each module of this deployment
-                    foreach (var module in config.Content.ModulesContent)
+                    moduleList.AddRange(config.Content.ModulesContent.Select(x => new GatewayModule
                     {
-                        var newModule = new GatewayModule
-                        {
-                            ModuleName = module.Key
-                        };
-                        moduleList.Add(newModule);
-                    }
+                        ModuleName = x.Key
+                    }));
 
                     ConfigListItem result = ConfigHelper.CreateConfigListItem(config, moduleList);
                     results.Add(result);
@@ -81,40 +70,38 @@ namespace AzureIoTHub.Portal.Server.Controllers
         public async Task<ConfigListItem> Get(string configurationID)
         {
             var config = await this.configService.GetConfigItem(configurationID);
-            List<GatewayModule> moduleList = new ();
-            if (config.Content.ModulesContent != null)
+            var moduleList = new List<GatewayModule>();
+
+            // Details of every modules are stored within the EdgeAgent module data
+            if (config.Content.ModulesContent != null
+                && config.Content.ModulesContent.TryGetValue("$edgeAgent", out IDictionary<string, object> edgeAgentModule)
+                && edgeAgentModule.TryGetValue("properties.desired", out object edgeAgentDesiredProperties))
             {
-                // Details of every modules are stored within the EdgeAgent module data
-                if (config.Content.ModulesContent.ContainsKey("$edgeAgent"))
+                // Converts the object to a JObject to access its properties more easily
+                JObject modObject = edgeAgentDesiredProperties as JObject;
+
+                if (modObject == null)
                 {
-                    if (config.Content.ModulesContent["$edgeAgent"].ContainsKey("properties.desired"))
+                    throw new InvalidOperationException("Could not parse properties.desired.");
+                }
+
+                // Adds regular modules to the list of modules
+                if (modObject.TryGetValue("modules", out JToken modules))
+                {
+                    foreach (var m in modules.Values<JProperty>())
                     {
-                        // Converts the object to a JObject to access its properties more easily
-                        JObject modObject = config.Content.ModulesContent["$edgeAgent"]["properties.desired"] as JObject;
+                        GatewayModule newModule = ConfigHelper.CreateGatewayModule(config, m);
+                        moduleList.Add(newModule);
+                    }
+                }
 
-                        // Adds regular modules to the list of modules
-                        if (modObject.ContainsKey("modules"))
-                        {
-                            // Converts it to a JObject to be able to iterate through it
-                            JObject modules = modObject["modules"] as JObject;
-                            foreach (var m in modules)
-                            {
-                                GatewayModule newModule = ConfigHelper.CreateGatewayModule(config, m);
-                                moduleList.Add(newModule);
-                            }
-                        }
-
-                        // Adds system modules to the list of modules
-                        if (modObject.ContainsKey("systemModules"))
-                        {
-                            // Converts it to a JObject to be able to iterate through it
-                            JObject systemModules = modObject["systemModules"] as JObject;
-                            foreach (var sm in systemModules)
-                            {
-                                GatewayModule newModule = ConfigHelper.CreateGatewayModule(config, sm);
-                                moduleList.Add(newModule);
-                            }
-                        }
+                // Adds system modules to the list of modules
+                if (modObject.TryGetValue("systemModules", out JToken systemModulesToken))
+                {
+                    foreach (var sm in systemModulesToken.Values<JProperty>())
+                    {
+                        GatewayModule newModule = ConfigHelper.CreateGatewayModule(config, sm);
+                        moduleList.Add(newModule);
                     }
                 }
             }

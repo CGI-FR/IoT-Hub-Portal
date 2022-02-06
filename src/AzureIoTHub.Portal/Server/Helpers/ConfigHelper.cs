@@ -20,10 +20,12 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns>Corresponding metric value, or -1 if it doesn't exist.</returns>
         public static long RetrieveMetricValue(Configuration item, string metricName)
         {
-            if (item.SystemMetrics.Results.Keys.Contains(metricName))
-                return item.SystemMetrics.Results[metricName];
-            else
-                return -1;
+            if (item.SystemMetrics.Results.TryGetValue(metricName, out long result))
+            {
+                return result;
+            }
+
+            return -1;
         }
 
         /// <summary>
@@ -54,13 +56,13 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <param name="config">Configuration object from Azure IoT Hub.</param>
         /// <param name="module">Dictionnary containing the module's name and its properties.</param>
         /// <returns>A module with all its details as a GatewayModule object.</returns>
-        public static GatewayModule CreateGatewayModule(Configuration config, KeyValuePair<string, JToken> module)
+        public static GatewayModule CreateGatewayModule(Configuration config, JProperty module)
         {
             return new GatewayModule
             {
-                ModuleName = module.Key,
-                Version = (string)module.Value["settings"]["image"],
-                Status = (string)module.Value["status"],
+                ModuleName = module.Name,
+                Version = module.Value["settings"]["image"]?.Value<string>(),
+                Status = module.Value["status"]?.Value<string>(),
                 EnvironmentVariables = GetEnvironmentVariables(module),
                 ModuleIdentityTwinSettings = GetModuleIdentityTwinSettings(config, module)
             };
@@ -72,21 +74,16 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <param name="config">Configuration object from Azure IoT Hub.</param>
         /// <param name="module">Dictionnary containing the module's name and its properties.</param>
         /// <returns>A dictionnary containing the settings and their corresponding values.</returns>
-        private static Dictionary<string, string> GetModuleIdentityTwinSettings(Configuration config, KeyValuePair<string, JToken> module)
+        private static Dictionary<string, string> GetModuleIdentityTwinSettings(Configuration config, JToken module)
         {
             var twinSettings = new Dictionary<string, string>();
 
-            if (config.Content.ModulesContent != null)
+            if (config.Content.ModulesContent != null
+                && config.Content.ModulesContent.TryGetValue(module.Path, out IDictionary<string, object> modulesContent))
             {
-                // Only exists if the module contains an identity twin
-                if (config.Content.ModulesContent.ContainsKey(module.Key))
+                foreach (var setting in modulesContent)
                 {
-                    // Gets the settings of the specific module based on its name (module.Key)
-                    var myModuleTwin = config.Content.ModulesContent[module.Key];
-                    foreach (var setting in myModuleTwin)
-                    {
-                        twinSettings.Add(setting.Key, setting.Value.ToString());
-                    }
+                    twinSettings.Add(setting.Key, setting.Value.ToString());
                 }
             }
 
@@ -98,27 +95,24 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// </summary>
         /// <param name="module">Dictionnary containing the module's name and its properties.</param>
         /// <returns>A dictionnary containing the environment variables and their corresponding values.</returns>
-        private static Dictionary<string, string> GetEnvironmentVariables(KeyValuePair<string, JToken> module)
+        private static Dictionary<string, string> GetEnvironmentVariables(JProperty module)
         {
             var envVariables = new Dictionary<string, string>();
 
-            // Converts the object to a JObject to access its properties more easily
-            JObject moduleProperties = module.Value as JObject;
+            var moduleProperties = module.Value as JObject;
 
             if (moduleProperties == null)
             {
-                throw new InvalidOperationException("Unable to parse module environment variables!");
+                throw new InvalidOperationException($"Unable to parse {module.Name} module properties.");
             }
 
             // Only exists if the module contains environment variables
-            if (!moduleProperties.ContainsKey("env"))
+            if (moduleProperties.TryGetValue("env", out JToken environmentVariables))
             {
-                return envVariables;
-            }
-
-            foreach (JProperty val in moduleProperties["env"])
-            {
-                envVariables.Add(val.Name, val["value"]?.ToString());
+                foreach (JProperty val in environmentVariables)
+                {
+                    envVariables.Add(val.Name, val.Value["value"].Value<string>());
+                }
             }
 
             return envVariables;

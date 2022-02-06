@@ -148,24 +148,17 @@ namespace AzureIoTHub.Portal.Server.Controllers
                                    .GetDeviceCommands()
                                    .Query<TableEntity>(t => t.PartitionKey == deviceModel.ModelId);
 
-            foreach (var twin in deviceList)
+            if (deviceList.Any(x => DeviceHelper.RetrieveTagValue(x, "modelId") == deviceModel.ModelId))
             {
-                if (DeviceHelper.RetrieveTagValue(twin, "modelId") == deviceModel.ModelId)
-                {
-                    return this.Unauthorized("This model is already in use by a device and cannot be deleted.");
-                }
+                return this.Unauthorized("This model is already in use by a device and cannot be deleted.");
             }
 
             var commands = queryCommand.Select(item => this.deviceModelCommandMapper.GetDeviceModelCommand(item)).ToList();
 
-            // if we have command
-            if (commands.Count > 0)
+            foreach (var item in commands)
             {
-                foreach (var item in commands)
-                {
-                    _ = await this.tableClientFactory
-                        .GetDeviceCommands().DeleteEntityAsync(deviceModelID, item.Name);
-                }
+                _ = await this.tableClientFactory
+                    .GetDeviceCommands().DeleteEntityAsync(deviceModelID, item.Name);
             }
 
             // Image deletion
@@ -192,12 +185,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
             await foreach (var page in commandsPage)
             {
-                foreach (var item in page.Values)
+                foreach (var item in page.Values.Where(x => !deviceModelObject.Commands.Any(c => c.Name == x.RowKey)))
                 {
-                    if (!deviceModelObject.Commands.Any(c => c.Name == item.RowKey))
-                    {
-                        await commandsTable.DeleteEntityAsync(item.PartitionKey, item.RowKey);
-                    }
+                    await commandsTable.DeleteEntityAsync(item.PartitionKey, item.RowKey);
                 }
             }
 

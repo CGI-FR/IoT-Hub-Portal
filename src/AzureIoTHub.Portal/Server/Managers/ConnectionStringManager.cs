@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Managers
 {
+    using System;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
     using Microsoft.Azure.Devices.Provisioning.Service;
@@ -34,11 +35,7 @@ namespace AzureIoTHub.Portal.Server.Managers
                     return DeviceHelper.RetrieveSymmetricKey(deviceId, attestationMechanism);
                 }
 
-                throw new System.Exception(e.Message);
-            }
-            catch (System.Exception e)
-            {
-                throw new System.Exception(e.Message);
+                throw new InvalidOperationException("Failed to get symmetricKey.", e);
             }
         }
     }

@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
     using AzureIoTHub.Portal.Shared.Models;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
+    using Newtonsoft.Json.Linq;
 
     public static class DeviceHelper
     {
@@ -23,7 +24,13 @@ namespace AzureIoTHub.Portal.Server.Helpers
         public static string RetrieveSymmetricKey(string deviceId, AttestationMechanism attestationMechanism)
         {
             // then we get the symmetricKey
-            SymmetricKeyAttestation symmetricKey = attestationMechanism.GetAttestation() as SymmetricKeyAttestation;
+            var symmetricKey = attestationMechanism.GetAttestation() as SymmetricKeyAttestation;
+
+            if (symmetricKey == null)
+            {
+                throw new InvalidOperationException($"Cannot get symmetric key for {attestationMechanism.Type} attestation mechanism type.");
+            }
+
             using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(symmetricKey.PrimaryKey));
 
             return Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(deviceId)));
@@ -63,23 +70,19 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// Checks if the specific property exists within the device twin,
         /// Returns the corresponding value if so, else returns null.
         /// </summary>
-        /// <param name="item">Device twin.</param>
+        /// <param name="twin">Device twin.</param>
         /// <param name="propertyName">Property to retrieve.</param>
         /// <returns>Corresponding property value, or null if it doesn't exist.</returns>
-        public static string RetrieveDesiredPropertyValue(Twin item, string propertyName)
+        public static string RetrieveDesiredPropertyValue(Twin twin, string propertyName)
         {
-            if (item.Properties.Desired.Contains(propertyName))
-                return item.Properties.Desired[propertyName];
-            else
-                return null;
+            return twin.Properties.Desired.Contains(propertyName) ?
+                twin.Properties.Desired[propertyName] : null;
         }
 
         public static string RetrieveReportedPropertyValue(Twin twin, string propertyName)
         {
-            if (twin.Properties.Reported.Contains(propertyName))
-                return twin.Properties.Reported[propertyName];
-            else
-                return null;
+            return twin.Properties.Reported.Contains(propertyName) ?
+                twin.Properties.Reported[propertyName] : null;
         }
 
         /// <summary>
@@ -90,12 +93,8 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns>the number of connected device.</returns>
         public static int RetrieveConnectedDeviceCount(Twin twin)
         {
-            if (twin.Properties.Reported.Contains("clients"))
-            {
-                return twin.Properties.Reported["clients"].Count;
-            }
-
-            return 0;
+            return twin.Properties.Reported.Contains("clients") ?
+                twin.Properties.Reported["clients"].Count : 0;
         }
 
         /// <summary>
@@ -107,10 +106,8 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns>int.</returns>
         public static int RetrieveNbModuleCount(Twin twin, string deviceId)
         {
-            if (twin.Properties.Desired.Contains("modules") && twin.DeviceId == deviceId)
-                return twin.Properties.Desired["modules"].Count;
-            else
-                return 0;
+            return twin.Properties.Desired.Contains("modules") && twin.DeviceId == deviceId
+                ? twin.Properties.Desired["modules"].Count : 0;
         }
 
         /// <summary>
@@ -122,15 +119,13 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns>string.</returns>
         public static string RetrieveRuntimeResponse(Twin twin, string deviceId)
         {
-            if (twin.Properties.Reported.Contains("systemModules") && twin.DeviceId == deviceId)
+            var reportedProperties = JObject.Parse(twin.Properties.Reported.ToJson());
+
+            if (reportedProperties.TryGetValue("systemModules", out JToken systemModules)
+                && systemModules.Value<JObject>().TryGetValue("edgeAgent", out JToken edgeAgentModule)
+                && edgeAgentModule.Value<JObject>().TryGetValue("runtimeStatus", out JToken runtimeStatus))
             {
-                foreach (var element in twin.Properties.Reported["systemModules"])
-                {
-                    if (element.Key == "edgeAgent")
-                    {
-                        return element.Value["runtimeStatus"];
-                    }
-                }
+                return runtimeStatus.Value<string>();
             }
 
             return string.Empty;
