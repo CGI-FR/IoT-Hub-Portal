@@ -3,9 +3,9 @@
 
 namespace AzureIoTHub.Portal.Server.Extensions
 {
-    internal static class StringExtension
+    public static class StringExtension
     {
-        internal static string ToCamelCase(this string str)
+        public static string ToCamelCase(this string str)
         {
             if (!string.IsNullOrEmpty(str) && str.Length > 1)
             {
