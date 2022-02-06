@@ -20,7 +20,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
         public void UpdateTableEntity(TableEntity commandEntity, DeviceModelCommand element)
         {
-            // commandEntity[nameof(DeviceModelCommand.Name)] = element.Name;
             commandEntity[nameof(DeviceModelCommand.Frame)] = element.Frame;
             commandEntity[nameof(DeviceModelCommand.Port)] = element.Port;
         }
