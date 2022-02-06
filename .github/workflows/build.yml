@@ -31,3 +31,6 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
       working-directory: src/
+
+    - name: Upload to Codecov test reports
+      uses: codecov/codecov-action@v2
