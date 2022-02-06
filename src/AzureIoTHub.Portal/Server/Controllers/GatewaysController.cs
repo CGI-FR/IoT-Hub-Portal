@@ -65,19 +65,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
             List<GatewayListItem> newGatewayList = new ();
             int index = 0;
 
-            foreach (Twin deviceTwin in edgeDevices)
+            newGatewayList.AddRange(edgeDevices.Select(deviceTwin => new GatewayListItem
             {
-                GatewayListItem gateway = new ()
-                {
-                    DeviceId = deviceTwin.DeviceId,
-                    Status = deviceTwin.Status?.ToString(),
-                    Type = DeviceHelper.RetrieveTagValue(devicesWithoutProperties.ElementAt(index), "purpose"),
-                    NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin)
-                };
-
-                newGatewayList.Add(gateway);
-                index++;
-            }
+                DeviceId = deviceTwin.DeviceId,
+                Status = deviceTwin.Status?.ToString(),
+                Type = DeviceHelper.RetrieveTagValue(devicesWithoutProperties.ElementAt(index++), "purpose"),
+                NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin)
+            }));
 
             return this.Ok(newGatewayList);
         }
