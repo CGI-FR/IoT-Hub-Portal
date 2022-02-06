@@ -85,13 +85,18 @@ namespace AzureIoTHub.Portal.Server.Controllers
             {
                 return this.BadRequest(this.ModelState);
             }
+                if (!Eui.TryParse(device.DeviceID, out ulong deviceIdConvert) && device.DeviceType == "LoRa Network Server")
+                {
+                    throw new InvalidOperationException("the device id is in the wrong format.");
+                }
 
             try
             {
                 // Create a new Twin from the form's fields.
                 var newTwin = new Twin()
                 {
-                    DeviceId = device.DeviceID
+                    DeviceId = device.DeviceID,
+                    Properties = twinProperties
                 };
 
                 this.deviceTwinMapper.UpdateTwin(newTwin, device);
