@@ -28,7 +28,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             TwinCollection tags;
             TwinCollection desiredProperties;
 
-            if (deviceType == "LoRa Device")
+            if (deviceType == "LoRa Network Server")
             {
                 enrollmentGroupId = this.config.DPSLoRaEnrollmentGroup;
                 tags = new TwinCollection("{ \"purpose\":\"" + "LoRaNetworkServer" + "\" }");
@@ -37,7 +37,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             else
             {
                 enrollmentGroupId = this.config.DPSDefaultEnrollmentGroup;
-                tags = new TwinCollection("{ \"purpose\":\"" + "unknown" + "\" }");
+                tags = new TwinCollection("{ \"purpose\":\"" + "Unknown" + "\" }");
                 desiredProperties = new TwinCollection("{ }");
             }
 
@@ -67,7 +67,7 @@ namespace AzureIoTHub.Portal.Server.Managers
         /// <returns>AttestationMechanism.</returns>
         public async Task<AttestationMechanism> GetAttestationMechanism(string deviceType)
         {
-            return deviceType == "LoRa Device" ?
+            return deviceType == "LoRa Network Server" ?
                     await this.dps.GetEnrollmentGroupAttestationAsync(this.config.DPSLoRaEnrollmentGroup) :
                     await this.dps.GetEnrollmentGroupAttestationAsync(this.config.DPSDefaultEnrollmentGroup);
         }
