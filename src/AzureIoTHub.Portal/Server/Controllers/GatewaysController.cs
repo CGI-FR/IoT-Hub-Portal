@@ -111,7 +111,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     Status = deviceTwin.Status?.ToString(),
                     EndPoint = this.configuration["IoTDPS:ServiceEndpoint"],
                     Scope = deviceTwin.DeviceScope,
-                    Connection_state = deviceTwin.ConnectionState.Value.ToString(),
+                    Connection_state = deviceTwin.ConnectionState?.ToString(),
                     // We retrieve the values of tags
                     Type = DeviceHelper.RetrieveTagValue(deviceTwin, "purpose"),
                     Environment = DeviceHelper.RetrieveTagValue(deviceTwin, "env"),
