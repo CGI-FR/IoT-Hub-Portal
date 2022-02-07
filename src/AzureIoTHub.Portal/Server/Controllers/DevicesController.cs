@@ -109,7 +109,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
             catch (DeviceAlreadyExistsException e)
             {
-                this.logger.LogError($"{device.DeviceID} - Create device failed", e);
+                this.logger?.LogError($"{device.DeviceID} - Create device failed", e);
                 return this.BadRequest(e.Message);
             }
             catch (InvalidOperationException e)
