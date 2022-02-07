@@ -320,15 +320,7 @@
 
         private string OnGet(bool? value)
         {
-            try
-            {
-                return (value == true) ? TrueString : FalseString;
-            }
-            catch (Exception e)
-            {
-                UpdateGetError("Conversion error: " + e.Message);
-                return null;
-            }
+            return (value == true) ? TrueString : FalseString;
         }
 
         private bool? OnSet(string arg)
