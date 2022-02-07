@@ -117,6 +117,8 @@ namespace AzureIoTHub.Portal.Server
                 client.DefaultRequestHeaders.Add("x-functions-key", configuration.LoRaKeyManagementCode);
             })
                 .AddPolicyHandler(transientHttpErrorPolicy);
+
+            services.AddApplicationInsightsTelemetry();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
