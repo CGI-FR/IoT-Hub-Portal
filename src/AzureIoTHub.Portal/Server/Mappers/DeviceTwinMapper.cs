@@ -12,7 +12,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
 
-    internal class DeviceTwinMapper : IDeviceTwinMapper
+    public class DeviceTwinMapper : IDeviceTwinMapper
     {
         private readonly IDeviceModelImageManager deviceModelImageManager;
         private readonly IDeviceModelCommandsManager deviceModelCommandsManager;
@@ -66,10 +66,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
             // Update the twin properties
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.LocationCode), item.LocationCode);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.AssetId), item.AssetId);
-            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.LocationCode), item.LocationCode);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
-            // Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelName), item.ModelName);
 
             // Update the twin properties
             twin.Properties.Desired[nameof(item.AppEUI)] = item.AppEUI;
