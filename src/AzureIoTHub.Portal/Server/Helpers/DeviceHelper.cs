@@ -21,17 +21,9 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// </summary>
         /// <param name="deviceId">the device id.</param>
         /// <returns>string.</returns>
-        public static string RetrieveSymmetricKey(string deviceId, AttestationMechanism attestationMechanism)
+        public static string RetrieveSymmetricKey(string deviceId, SymmetricKeyAttestation attestation)
         {
-            // then we get the symmetricKey
-            var symmetricKey = attestationMechanism.GetAttestation() as SymmetricKeyAttestation;
-
-            if (symmetricKey == null)
-            {
-                throw new InvalidOperationException($"Cannot get symmetric key for {attestationMechanism.Type} attestation mechanism type.");
-            }
-
-            using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(symmetricKey.PrimaryKey));
+            using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(attestation.PrimaryKey));
 
             return Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(deviceId)));
         }
