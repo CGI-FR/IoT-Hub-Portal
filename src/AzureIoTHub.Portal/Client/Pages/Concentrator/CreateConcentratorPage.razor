@@ -1,8 +1,7 @@
 ﻿@page "/concentrator/new"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using AzureIoTHub.Portal.Shared.Models.Device
-@using AzureIoTHub.Portal.Shared.Models
+@using AzureIoTHub.Portal.Shared.Models.Concentrator
 @attribute [Authorize]
 @inject HttpClient Http
 @inject ISnackbar Snackbar
@@ -11,97 +10,43 @@
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Basic Station</MudText>
 
 <MudGrid>
-    <MudItem xs="12" sm="4" md="3">
-        <MudCard>
-            <MudCardHeader>
-                <CardHeaderContent>
-                    <MudText Align="Align.Center" Typo="Typo.h5">@Device.DeviceID</MudText>
-                </CardHeaderContent>
-            </MudCardHeader>
-            <MudCardContent>
-                <div class="d-flex justify-center mb-4">
-                    <MudAvatar Image="@Device.ImageUrl" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
-                </div>
-            </MudCardContent>
-        </MudCard>
-    </MudItem>
     <MudItem xs="12" sm="8" md="9">
         <MudCard>
-            <EditForm Model="@Device" OnValidSubmit="SaveDevice" OnInvalidSubmit="HandleInvalidSubmit">
+            <EditForm Model="@concentrator" OnValidSubmit="SaveDevice" >
                 <DataAnnotationsValidator />
                 <MudCardHeader>
                     <CardHeaderContent>
-                        <MudText>Device Details</MudText>
+                        <MudText>Create concentrator</MudText>
                     </CardHeaderContent>
                 </MudCardHeader>
                 <MudCardContent>
                     <MudGrid>
-                        <MudItem xs="12">
-                            <MudTextField @bind-Value="@Device.DeviceID"
-                                          Label="Device ID"
+                        <MudItem xs="12" md="6">
+                            <MudTextField @bind-Value="@concentrator.DeviceId"
+                                          Label="Device Id"
                                           Variant="Variant.Outlined"
-                                          For="@(()=> Device.DeviceID)"
+                                          For="@(()=> concentrator.DeviceId)"
                                           Required="true"
                                           HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)"
                                           />
                         </MudItem>
+
                         <MudItem xs="12" md="6">
-                            <MudSelect T="string" @bind-Value="@Device.DeviceType"
-                                       Dense="true" Variant="Variant.Outlined"
-                                       For="@(()=> Device.DeviceType)">
-                                <MudSelectItem Value="@("LoRa Device")" />
-                                <MudSelectItem Value="@("Other")" />
+                            <MudTextField @bind-Value="@concentrator.DeviceFriendlyName" Label="Friendly tag name" Variant="Variant.Outlined" Required="true"/>
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudSelect T="string" For="@(()=> concentrator.LoraRegion)" Label="Region" Variant="Variant.Text" @bind-Value="@concentrator.LoraRegion" Required="true">
+                                <MudSelectItem Value="@("EU863")"/>
+                                <MudSelectItem Value="@("US902")"/>
+                                <MudSelectItem Value="@("CN470RP1")"/>
+                                <MudSelectItem Value="@("CN470RP2")"/>
                             </MudSelect>
-                        </MudItem>
-                        <MudItem xs="12" md="6">
-                            <MudAutocomplete T="DeviceModel"
-                                             Label="Model Name*"
-                                             Dense="true" Variant="Variant.Outlined"
-                                             SearchFunc="@Search"
-                                             ValueChanged="@ModelSelected"
-                                             ToStringFunc="@(x => x.Name)"
-                                             ResetValueOnEmptyText="true"
-                                             Immediate="true" Clearable="true"
-                                             CoerceText="true" CoerceValue="false" />
-                            @if (Device.ModelName == null && displayValidationErrorMessages)
-                            {
-                                <p class="validation-error-message">The Model Name field is required.</p>
-                            }
-                        </MudItem>
-                        <MudItem xs="12" md="6">
-                            <MudTextField @bind-Value="@Device.AssetId" Label="IoT Asset ID" Variant="Variant.Outlined" />
-                        </MudItem>
-                        <MudItem xs="12" md="6">
-                            <MudTextField @bind-Value="@Device.LocationCode" Label="Location Asset ID" Variant="Variant.Outlined" />
-                        </MudItem>
-                        <MudItem xs="12">
-                            <MudText>
-                                <b>Status</b>
-                            </MudText>
-                            <MudSwitch @bind-Checked="@Device.IsEnabled" Color="Color.Secondary" />
-                            @if (Device.IsEnabled)
-                            {
-                                <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
-                            }
-                            else
-                            {
-                                <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
-                            }
                         </MudItem>
 
                         <MudSpacer />
 
                         <MudItem xs="12" md="6">
-                        <MudTextField @bind-Value="@Device.AppEUI"
-                                      Label="OTAA AppEUI"
-                                      Variant="Variant.Outlined"
-                                      For="@(()=> Device.AppEUI)"
-                                      ReadOnly="true"
-                                      Required="true"
-                                      HelperText="OTAA AppEUI is automatically set from the selected model" />
-                        </MudItem>
-                        <MudItem xs="12" md="6">
-                            <MudTextField @bind-Value="@Device.AppKey" Label="OTAA AppKey" Variant="Variant.Outlined" />
+                            <MudTextField For="@(()=> concentrator.ClientCertificateThumbprint)" @bind-Value="@concentrator.ClientCertificateThumbprint" Label="Client certificate thumbprint" Variant="Variant.Outlined" />
                         </MudItem>
                     </MudGrid>
                 </MudCardContent>
@@ -117,22 +62,7 @@
     [Parameter]
     public string DeviceID { get; set; }
 
-    private DeviceDetails Device { get; set; } = new DeviceDetails();
-
-    private IEnumerable<DeviceModel> DeviceModelList { get; set; } = new List<DeviceModel>();
-
-    private bool displayValidationErrorMessages = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        Device.DeviceType = "LoRa Device";
-
-        // Enable device by default
-        Device.IsEnabled = true;
-
-        // Gets a list of device model previously registered to Azure to allow autocomplete field in the form
-        DeviceModelList = await Http.GetFromJsonAsync<DeviceModel[]>("api/Concentrators");
-    }
+    private Concentrator concentrator = new Concentrator();
 
     /// <summary>
     /// Sends a POST request to the DevicesController, to add the new device to the Azure IoT Hub
@@ -140,12 +70,12 @@
     public async void SaveDevice()
     {
         // Sends the device to be added to the controller
-        var response = await Http.PostAsJsonAsync<DeviceDetails>($"api/Concentrators", Device);
+        var response = await Http.PostAsJsonAsync<Concentrator>($"api/Concentrators", concentrator);
 
         if (response.IsSuccessStatusCode)
         {
             // Prompts a snack bar to inform the action was successful
-            Snackbar.Add($"Device {Device.DeviceID} has been successfully created!", Severity.Success);
+            Snackbar.Add($"Device {concentrator.DeviceId} has been successfully created!", Severity.Success);
             
             // Go back to the list of devices
             NavManager.NavigateTo("concentrators");
@@ -155,54 +85,7 @@
         else
         {
             string errorMsg = await response.Content.ReadAsStringAsync();
-            Snackbar.Add($"Oh oh, something went wrong while creating device {Device.DeviceID}... <br> {errorMsg}", Severity.Error);
+            Snackbar.Add($"Oh oh, something went wrong while creating device {concentrator.DeviceId}... <br> {errorMsg}", Severity.Error);
         }
     }
-
-    private void HandleInvalidSubmit(EditContext context)
-    {
-        // Invalid submit manually handled
-        // Waiting for MudBlazor MudAutocomplete issue #2674 to be fixed
-        displayValidationErrorMessages = true;
-    } 
-
-    /// <summary>
-    /// Allows to autocomplete the Device Model field in the form.
-    /// </summary>
-    /// <param name="value">Text entered in the field</param>
-    /// <returns>Item of the device model list that matches the user's value</returns>
-    private async Task<IEnumerable<DeviceModel>> Search(string value)
-    {
-        // In real life use an asynchronous function for fetching data from an api.
-        await Task.Delay(0);
-
-        // if text is null or empty, show complete list
-        if (string.IsNullOrEmpty(value))
-            return DeviceModelList;
-
-        return DeviceModelList
-                    .Where(x => x.Name.StartsWith(value, StringComparison.InvariantCultureIgnoreCase));
-    }
-
-    private void ModelSelected(DeviceModel model)
-    {
-        // Reset all the other fields if the Model Type field is cleared
-        if (model == null)
-        {
-            Device.ModelId = null;
-            Device.ModelName = null;
-            Device.ImageUrl = null;
-            Device.AppEUI = null;
-            Device.SensorDecoder = null;
-        }
-        else
-        {
-            Device.ModelId = model.ModelId;
-            Device.ModelName = model.Name;
-            Device.ImageUrl = model.ImageUrl;
-            Device.AppEUI = model.AppEUI ?? "Selected model contains no AppEUI value";
-            Device.SensorDecoder = model.SensorDecoderURL;
-        }
-    }
-
 }
