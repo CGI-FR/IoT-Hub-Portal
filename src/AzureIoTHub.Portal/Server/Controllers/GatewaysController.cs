@@ -73,7 +73,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                         GatewayListItem gateway = new ()
                         {
                             DeviceId = deviceTwin.DeviceId,
-                            Status = deviceTwin.Status?.ToString(),
+                            Status = twin.Status?.ToString(),
                             Type = DeviceHelper.RetrieveTagValue(twin, "purpose"),
                             NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin)
                         };

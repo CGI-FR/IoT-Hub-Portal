@@ -11,7 +11,7 @@
 @inject IDialogService DialogService
 
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Gateway Details</MudText>
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Edge Device Details</MudText>
 
 <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
     <MudTabPanel Text="General">
@@ -46,7 +46,7 @@
                             <DataAnnotationsValidator />
                             <MudCardHeader>
                                 <CardHeaderContent>
-                                    <MudText>Gateway Details</MudText>
+                                    <MudText>Edge Device Details</MudText>
                                 </CardHeaderContent>
                             </MudCardHeader>
                             <MudCardContent>
@@ -138,7 +138,7 @@
                                 }
                                 else
                                 {
-                                    <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="ShowDeleteModal">Delete Gateway</MudButton>
+                                    <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="ShowDeleteModal">Delete Edge Device</MudButton>
                                 }
 
                                 @if (processingUpdate)
@@ -234,13 +234,13 @@
 
         if (c2dResult.Status == 200)
         {
-            Snackbar.Add("Command successfully execute.", Severity.Success);
+            Snackbar.Add("Command successfully executed.", Severity.Success);
             if (methodName == "GetModuleLogs")
             {
                 var parameter = new DialogParameters();
                 parameter.Add("info", c2dResult);
 
-                _ = await DialogService.Show<Logs>(" Logs gateway", parameter).Result;
+                _ = await DialogService.Show<Logs>("Edge device log", parameter).Result;
             }
         }
         else
@@ -257,13 +257,13 @@
     {
         try
         {
-            if (gateway.Type is null)
+            if (Gateway.Type is null)
             {
-                gateway.SymmetricKey = await this.Http.GetStringAsync($"api/Gateways/{gateway.DeviceId}/unknown/ConnectionString");
+                Gateway.SymmetricKey = await this.Http.GetStringAsync($"api/Gateways/{Gateway.DeviceId}/unknown/ConnectionString");
             }
             else
             {
-                gateway.SymmetricKey = await this.Http.GetStringAsync($"api/Gateways/{gateway.DeviceId}/{gateway.Type}/ConnectionString");
+                Gateway.SymmetricKey = await this.Http.GetStringAsync($"api/Gateways/{Gateway.DeviceId}/{Gateway.Type}/ConnectionString");
             }
 
             var parameter = new DialogParameters();
@@ -273,7 +273,7 @@
             parameter.Add(nameof(Portal.Shared.Models.Gateway.SymmetricKey), Gateway.SymmetricKey);
 
 
-            DialogService.Show<ConnectionString>("ConnectionString gateway ", parameter);
+            DialogService.Show<ConnectionString>("Edge Device Connection String", parameter);
         }
         catch (HttpRequestException e)
         {
@@ -295,7 +295,7 @@
 
         parameter.Add(nameof(Portal.Shared.Models.Gateway.DeviceId), Gateway.DeviceId);
 
-        var result = await DialogService.Show<GatewayDeleteConfirmation>("Gateway deletion confirmation", parameter).Result;
+        var result = await DialogService.Show<GatewayDeleteConfirmation>("Edge device deletion confirmation", parameter).Result;
         processingDelete = false;
 
         if (result.Cancelled)
