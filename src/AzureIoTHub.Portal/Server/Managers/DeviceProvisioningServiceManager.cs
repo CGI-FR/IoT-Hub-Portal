@@ -31,7 +31,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             if (deviceType == "LoRa Network Server")
             {
                 enrollmentGroupId = this.config.DPSLoRaEnrollmentGroup;
-                tags = new TwinCollection("{ \"purpose\":\"" + "LoRaNetworkServer" + "\" }");
+                tags = new TwinCollection("{ \"purpose\":\"" + "LoRa Network Server" + "\" }");
                 desiredProperties = new TwinCollection("{ }");
             }
             else
