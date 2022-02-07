@@ -1,0 +1,354 @@
+﻿@page "/gateways/details/{deviceId}"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Shared.Models
+@using System.Net.Http.Json
+
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Edge Device Details</MudText>
+
+<MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
+    <MudTabPanel Text="General">
+        <MudGrid>
+            @if (loading)
+            {
+                <MudItem Class="custom-centered-container">
+                    <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+                </MudItem>
+            }
+            else
+            {
+                <MudItem xs="12" sm="4" md="3">
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Align="Align.Center" Typo="Typo.h5">@Gateway.DeviceId</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <div class="d-flex justify-center mb-4">
+                                <MudButton Variant="Variant.Filled" Color="Color.Dark" OnClick="ShowConnectionString">Show Connection String</MudButton>
+                            </div>
+                            @*<MudText Align="Align.Center" Typo="Typo.h6">@gateway.Type</MudText>*@
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" sm="8" md="9">
+                    <MudCard>
+                        <EditForm Model="@Gateway" OnValidSubmit="UpdateDevice">
+                            <DataAnnotationsValidator />
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText>Edge Device Details</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudGrid>
+                                    <MudItem xs="12" md="6">
+                                        <MudTextField @bind-Value="@Gateway.Type" Label="Type" Variant="Variant.Outlined" ReadOnly="true" />
+                                    </MudItem>
+                                    <MudItem xs="12" md="6">
+                                        <MudSelect T="string" @bind-Value="@Gateway.Environment" Label="Environment" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
+                                            <MudSelectItem Value="@("Development")" />
+                                            <MudSelectItem Value="@("Production")" />
+                                            <MudSelectItem Value="@("Industry")" />
+                                        </MudSelect>
+                                    </MudItem>
+                                    <MudItem xs="12" md="6">
+                                        <MudText>
+                                            <b>Status</b>
+                                        </MudText>
+                                        <MudSwitch @bind-Checked="Gateway.Status" Color="Color.Secondary" Converter="@(new CustomStringToBoolConverter())">
+                                            @if (Gateway.Status == "Enabled")
+                                            {
+                                            <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
+                                            }
+                                            else
+                                            {
+                                            <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
+                                            }
+                                    </MudSwitch>
+                                </MudItem>
+
+                                <MudItem xs="12" md="6">
+                                    <MudText>
+                                        <b>Runtime response</b>
+                                    </MudText>
+                                    @if (Gateway.RuntimeResponse == "running")
+                                        {
+                                            <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                                        }
+                                        else
+                                        {
+                                            <MudItem>
+                                                <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                                            </MudItem>
+                                        }
+                                    </MudItem>
+
+                                    <MudSpacer />
+
+                                    <MudItem xs="12" md="6">
+                                        <MudTextField @bind-Value="@Gateway.NbDevices" Label="Nbr of connected devices" Variant="Variant.Outlined" ReadOnly="true" />
+                                    </MudItem>
+                                    <MudItem xs="12" md="6">
+                                        <MudTextField @bind-Value="@Gateway.NbModules" Label="Nbr of modules" Variant="Variant.Outlined" ReadOnly="true" />
+                                    </MudItem>
+
+                                    <MudItem xs="12">
+                                        <MudCard>
+                                            <MudCardHeader>
+                                                <CardHeaderContent>
+                                                    <MudText>Last deployment</MudText>
+                                                </CardHeaderContent>
+                                            </MudCardHeader>
+                                            <MudCardContent>
+                                                <MudGrid>
+                                                    <MudItem xs="12" md="4">
+                                                        <MudTextField @bind-Value="@Gateway.LastDeployment.Name" Label="Name" Variant="Variant.Filled" Margin="Margin.Dense" Disabled="true" />
+                                                    </MudItem>
+                                                    <MudItem xs="12" md="4">
+                                                        <MudTextField @bind-Value="@Gateway.LastDeployment.DateCreation" Label="Date" Variant="Variant.Filled" Margin="Margin.Dense" Disabled="true" />
+                                                    </MudItem>
+                                                    <MudItem xs="12" md="4">
+                                                        <MudTextField @bind-Value="@Gateway.LastDeployment.Status" Label="Status" Variant="Variant.Filled" Margin="Margin.Dense" Disabled="true" />
+                                                    </MudItem>
+                                                </MudGrid>
+                                            </MudCardContent>
+                                        </MudCard>
+                                    </MudItem>
+
+                                </MudGrid>
+                            </MudCardContent>
+                            <MudCardActions Class="pb-4 pl-4">
+
+                                @if (processingDelete)
+                                {
+                                    <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="ShowDeleteModal" Disabled="true">
+                                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                        Processing
+                                    </MudButton>
+                                }
+                                else
+                                {
+                                    <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="ShowDeleteModal">Delete Edge Device</MudButton>
+                                }
+
+                                @if (processingUpdate)
+                                {
+                                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-4" Disabled="true">
+                                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                        Processing
+                                    </MudButton>
+                                }
+                                else
+                                {
+                                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-4">Save Changes</MudButton>
+                                }
+                            </MudCardActions>
+                        </EditForm>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTable Items="@Gateway.Modules" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
+                        <ColGroup>
+                            <col style="width: 40%;" />
+                            <col style="width: 10%;" />
+                            <col style="width: 10%;" />
+                            <col style="width: 20%;" />
+                        </ColGroup>
+                        <HeaderContent>
+                            <MudTh Style="text-align: center">Module Name</MudTh>
+                            <MudTh Style="text-align: center">Version</MudTh>
+                            <MudTh Style="text-align: center">Status</MudTh>
+                            <MudTh Style="text-align: center"></MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Module Name" Style="word-break: break-all;">@context.ModuleName</MudTd>
+                            <MudTd DataLabel="Version" Style="text-align: center">@context.Version</MudTd>
+                            <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
+                            <MudTd DataLabel="Device" Style="text-align: center">
+                                <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context,"GetModuleLogs") )">logs</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context,"RestartModule") )">reboot</MudButton>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </MudItem>
+            }
+        </MudGrid>
+    </MudTabPanel>
+</MudTabs>
+
+@code {
+    [Parameter]
+    public string deviceId { get; set; }
+    private bool loading = true;
+    private bool btn_disable = false;
+    private bool processingUpdate = false;
+    private bool processingDelete = false;
+
+    private Gateway Gateway;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Gateway = new Gateway();
+        await LoadDevice();
+    }
+
+    public async Task LoadDevice()
+    {
+        Gateway = await Http.GetFromJsonAsync<Gateway>($"api/Gateways/{deviceId}");
+
+        if (Gateway.ConnectionState == "Disconnected")
+        {
+            btn_disable = true;
+        }
+        loading = false;
+    }
+
+    public async Task UpdateDevice()
+    {
+        processingUpdate = true;
+        var result = await Http.PutAsJsonAsync($"api/Gateways/{Gateway.DeviceId}", Gateway);
+
+        if (result.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Device {Gateway.DeviceId} has been successfully updated!", Severity.Success);
+        }
+
+        processingUpdate = false;
+    }
+
+    public async Task OnMethod(GatewayModule module, string methodName)
+    {
+        var result = await Http.PostAsJsonAsync($"api/Gateways/{Gateway.DeviceId}/{module.ModuleName}/{methodName}", module);
+
+        var c2dResult = result.Content.ReadFromJsonAsync<C2Dresult>().Result;
+
+        if (c2dResult.Status == 200)
+        {
+            Snackbar.Add("Command successfully executed.", Severity.Success);
+            if (methodName == "GetModuleLogs")
+            {
+                var parameter = new DialogParameters();
+                parameter.Add("info", c2dResult);
+
+                _ = await DialogService.Show<Logs>("Edge device log", parameter).Result;
+            }
+        }
+        else
+        {
+            Snackbar.Add($"Error<br>Status : {c2dResult.Status};<br>Payload : {c2dResult.Payload};", Severity.Error,
+                (option) =>
+                {
+                    option.VisibleStateDuration = 10000;
+                });
+        }
+    }
+
+    public async Task ShowConnectionString()
+    {
+        try
+        {
+            if (Gateway.Type is null)
+            {
+                Gateway.SymmetricKey = await this.Http.GetStringAsync($"api/Gateways/{Gateway.DeviceId}/unknown/ConnectionString");
+            }
+            else
+            {
+                Gateway.SymmetricKey = await this.Http.GetStringAsync($"api/Gateways/{Gateway.DeviceId}/{Gateway.Type}/ConnectionString");
+            }
+
+            var parameter = new DialogParameters();
+
+            parameter.Add(nameof(Portal.Shared.Models.Gateway.DeviceId), Gateway.DeviceId);
+            parameter.Add(nameof(Portal.Shared.Models.Gateway.EndPoint), Gateway.EndPoint);
+            parameter.Add(nameof(Portal.Shared.Models.Gateway.SymmetricKey), Gateway.SymmetricKey);
+
+
+            DialogService.Show<ConnectionString>("Edge Device Connection String", parameter);
+        }
+        catch (HttpRequestException e)
+        {
+            if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                Snackbar.Add("Cannot obtain the connection string <br> because the enrollment group does not exist.", Severity.Error);
+            }
+            else
+            {
+                Snackbar.Add($"Something went wrong.", Severity.Error);
+            }
+        }
+    }
+
+    public async Task ShowDeleteModal()
+    {
+        processingDelete = true;
+        var parameter = new DialogParameters();
+
+        parameter.Add(nameof(Portal.Shared.Models.Gateway.DeviceId), Gateway.DeviceId);
+
+        var result = await DialogService.Show<GatewayDeleteConfirmation>("Edge device deletion confirmation", parameter).Result;
+        processingDelete = false;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+        NavigationManager.NavigateTo("/gateways");
+    }
+
+    public class CustomStringToBoolConverter : BoolConverter<string>
+    {
+
+        public CustomStringToBoolConverter()
+        {
+            SetFunc = OnSet;
+            GetFunc = OnGet;
+        }
+
+        private string TrueString = "Enabled";
+        private string FalseString = "Disabled";
+
+        private string OnGet(bool? value)
+        {
+            try
+            {
+                return (value == true) ? TrueString : FalseString;
+            }
+            catch (Exception e)
+            {
+                UpdateGetError("Conversion error: " + e.Message);
+                return null;
+            }
+        }
+
+        private bool? OnSet(string arg)
+        {
+            if (arg == null)
+                return null;
+            try
+            {
+                if (arg == TrueString)
+                    return true;
+                if (arg == FalseString)
+                    return false;
+                else
+                    return null;
+            }
+            catch (FormatException e)
+            {
+                UpdateSetError("Conversion error: " + e.Message);
+                return null;
+            }
+        }
+    }
+}

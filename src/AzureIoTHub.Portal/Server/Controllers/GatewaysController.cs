@@ -73,7 +73,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                         GatewayListItem gateway = new ()
                         {
                             DeviceId = deviceTwin.DeviceId,
-                            Status = deviceTwin.Status?.ToString(),
+                            Status = twin.Status?.ToString(),
                             Type = DeviceHelper.RetrieveTagValue(twin, "purpose"),
                             NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin)
                         };
@@ -111,14 +111,14 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     Status = deviceTwin.Status?.ToString(),
                     EndPoint = this.configuration["IoTDPS:ServiceEndpoint"],
                     Scope = deviceTwin.DeviceScope,
-                    Connection_state = deviceTwin.ConnectionState?.ToString(),
+                    ConnectionState = deviceTwin.ConnectionState?.ToString(),
                     // We retrieve the values of tags
                     Type = DeviceHelper.RetrieveTagValue(deviceTwin, "purpose"),
                     Environment = DeviceHelper.RetrieveTagValue(deviceTwin, "env"),
                     // We retrieve the number of connected device
                     NbDevices = await this.RetrieveNbConnectedDevice(deviceTwin.DeviceId),
                     // récupération des informations sur le modules de la gateways²
-                    NbModule = DeviceHelper.RetrieveNbModuleCount(deviceWithModules, deviceId),
+                    NbModules = DeviceHelper.RetrieveNbModuleCount(deviceWithModules, deviceId),
                     RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceWithModules, deviceId),
                     Modules = DeviceHelper.RetrieveModuleList(deviceWithModules, DeviceHelper.RetrieveNbModuleCount(deviceWithModules, deviceId)),
                     // recup du dernier deployment
