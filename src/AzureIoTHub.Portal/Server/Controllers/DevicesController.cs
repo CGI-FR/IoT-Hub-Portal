@@ -83,7 +83,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             try
             {
-                if (!Eui.TryParse(device.DeviceID, out ulong deviceIdConvert) && device.DeviceType == "LoRa Network Server")
+                if (!Eui.TryParse(device.DeviceID, out ulong deviceIdConvert) && device.DeviceType == "LoRa Device")
                 {
                     throw new InvalidOperationException("the device id is in the wrong format.");
                 }
@@ -118,7 +118,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
             catch (DeviceAlreadyExistsException e)
             {
-                this.logger.LogError($"{device.DeviceID} - Create device failed", e);
+                this.logger?.LogError($"{device.DeviceID} - Create device failed", e);
                 return this.BadRequest(e.Message);
             }
             catch (InvalidOperationException e)
