@@ -65,11 +65,13 @@ namespace AzureIoTHub.Portal.Server.Managers
         /// this function get the attestation mechanism of the DPS.
         /// </summary>
         /// <returns>AttestationMechanism.</returns>
-        public async Task<AttestationMechanism> GetAttestationMechanism(string deviceType)
+        public async Task<Attestation> GetAttestation(string deviceType)
         {
-            return deviceType == "LoRa Network Server" ?
+            var attestationMechanism = deviceType == "LoRa Network Server" ?
                     await this.dps.GetEnrollmentGroupAttestationAsync(this.config.DPSLoRaEnrollmentGroup) :
                     await this.dps.GetEnrollmentGroupAttestationAsync(this.config.DPSDefaultEnrollmentGroup);
+
+            return attestationMechanism.GetAttestation();
         }
 
         private static string GenerateKey()

@@ -19,24 +19,36 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         public async Task<string> GetSymmetricKey(string deviceId, string deviceType)
         {
+            Attestation attestation = null;
+
             try
             {
-                var attestationMechanism = await this.deviceProvisioningServiceManager.GetAttestationMechanism(deviceType);
-
-                return DeviceHelper.RetrieveSymmetricKey(deviceId, attestationMechanism);
+                attestation = await this.deviceProvisioningServiceManager.GetAttestation(deviceType);
             }
             catch (ProvisioningServiceClientHttpException e)
             {
                 if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     _ = await this.deviceProvisioningServiceManager.CreateEnrollmentGroupAsync(deviceType);
-                    var attestationMechanism = await this.deviceProvisioningServiceManager.GetAttestationMechanism(deviceType);
-
-                    return DeviceHelper.RetrieveSymmetricKey(deviceId, attestationMechanism);
+                    attestation = await this.deviceProvisioningServiceManager.GetAttestation(deviceType);
                 }
 
                 throw new InvalidOperationException("Failed to get symmetricKey.", e);
             }
+
+            return DeviceHelper.RetrieveSymmetricKey(deviceId, this.CheckAttestation(attestation));
+        }
+
+        private SymmetricKeyAttestation CheckAttestation(Attestation attestation)
+        {
+            var symmetricKeyAttestation = attestation as SymmetricKeyAttestation;
+
+            if (symmetricKeyAttestation == null)
+            {
+                throw new InvalidOperationException($"Cannot get symmetric key for {attestation.GetType()}.");
+            }
+
+            return symmetricKeyAttestation;
         }
     }
 }
