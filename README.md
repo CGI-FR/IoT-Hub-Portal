@@ -68,6 +68,18 @@ The template will deploy in your Azure subscription the Following resources:
 
     > see: [https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure](https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure) for more information about the LoRaWan IoT Hub and Azure deployment.
 
+## Screenshots
+
+You can find below some screenshot that can help you to understand the possibilities of this solution.
+
+### Device models
+
+![image](https://user-images.githubusercontent.com/9513635/153055634-d5cb51a7-22d5-4062-a8f5-1f0e163e395a.png)
+
+### Device list
+
+![image](https://user-images.githubusercontent.com/9513635/153055836-11bd5c30-2efc-4d43-95e9-5e07e0e2e6cc.png)
+
 ## Documentation
 
 Our documentation is present at github page: [https://cgi-fr.github.io/IoT-Hub-Portal/](https://cgi-fr.github.io/IoT-Hub-Portal/).
