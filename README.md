@@ -72,17 +72,17 @@ The template will deploy in your Azure subscription the Following resources:
 
 You can find below some screenshot that can help you to understand the possibilities of this solution.
 
-### Device details
-
-
-
-### Device models
-
-![Uploading image.png…]()
-
 ### Device list
 
 ![image](https://user-images.githubusercontent.com/9513635/153055836-11bd5c30-2efc-4d43-95e9-5e07e0e2e6cc.png)
+
+### Device details
+
+![image](https://user-images.githubusercontent.com/9513635/153073182-aec2e029-272a-4a8a-b713-424308d51c81.png)
+
+### Device models
+
+![image](https://user-images.githubusercontent.com/9513635/153073065-0fa9b282-c722-464b-93f8-c412812c5ada.png)
 
 ## Documentation
 
