@@ -6,19 +6,22 @@
     <MudDialog>
         <DialogContent>
             <MudCard Outlined="true">
-                <MudCardContent Class="connectionString-modal-card">
-                    <div class="form-group">
-                        <MudText Style="text-decoration:underline">Device Id :</MudText>
-                        <p>@DeviceId</p>
-                    </div>
-                    <div class="form-group">
-                        <MudText Style="text-decoration:underline">Symmetric Key :</MudText>
-                        <p>@SymmetricKey</p>
-                    </div>
-                    <div class="form-group">
-                        <MudText Style="text-decoration:underline">Service Endpoint : </MudText>
-                        <p>@Endpoint</p>
-                    </div>
+
+                <MudCardContent>
+                    <MudGrid>
+                        <MudItem Class="mt-0" xs="12">
+                            <MudText Style="text-decoration:underline"><b>Device Id :</b></MudText>
+                            <MudTextField @bind-Value="@DeviceId" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" />
+                        </MudItem>
+                        <MudItem Class="mt-0" xs="12">
+                            <MudText Style="text-decoration:underline"><b>Symmetric Key :</b></MudText>
+                            <MudTextField @bind-Value="@SymmetricKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudText Style="text-decoration:underline"><b>Service Endpoint :</b></MudText>
+                            <MudTextField @bind-Value="@Endpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" />
+                        </MudItem>
+                    </MudGrid>
                 </MudCardContent>
             </MudCard>
         </DialogContent>
