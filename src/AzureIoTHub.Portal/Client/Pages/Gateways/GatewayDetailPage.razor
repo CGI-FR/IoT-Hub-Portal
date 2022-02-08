@@ -33,9 +33,8 @@
                         </MudCardHeader>
                         <MudCardContent>
                             <div class="d-flex justify-center mb-4">
-                                <MudButton Variant="Variant.Filled" Color="Color.Dark" OnClick="ShowConnectionString">Show Connection String</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Dark" OnClick="ShowConnectionString">Connect</MudButton>
                             </div>
-                            @*<MudText Align="Align.Center" Typo="Typo.h6">@gateway.Type</MudText>*@
                         </MudCardContent>
                     </MudCard>
                 </MudItem>
@@ -44,15 +43,11 @@
                     <MudCard>
                         <EditForm Model="@Gateway" OnValidSubmit="UpdateDevice">
                             <DataAnnotationsValidator />
-                            <MudCardHeader>
-                                <CardHeaderContent>
-                                    <MudText>Edge Device Details</MudText>
-                                </CardHeaderContent>
-                            </MudCardHeader>
                             <MudCardContent>
+                                    <MudText Typo="Typo.h6" Class="mb-6">Edge Device Details</MudText>
                                 <MudGrid>
                                     <MudItem xs="12" md="6">
-                                        <MudTextField @bind-Value="@Gateway.Type" Label="Type" Variant="Variant.Outlined" ReadOnly="true" />
+                                        <MudTextField @bind-Value="@Gateway.Type" Label="Type" Variant="Variant.Outlined" ReadOnly="true" Required="true"/>
                                     </MudItem>
                                     <MudItem xs="12" md="6">
                                         <MudSelect T="string" @bind-Value="@Gateway.Environment" Label="Environment" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
@@ -99,30 +94,22 @@
                                         <MudTextField @bind-Value="@Gateway.NbDevices" Label="Nbr of connected devices" Variant="Variant.Outlined" ReadOnly="true" />
                                     </MudItem>
                                     <MudItem xs="12" md="6">
-                                        <MudTextField @bind-Value="@Gateway.NbModules" Label="Nbr of modules" Variant="Variant.Outlined" ReadOnly="true" />
+                                        <MudTextField @bind-Value="@Gateway.NbModules" Label="Nbr of desired modules" Variant="Variant.Outlined" ReadOnly="true" />
                                     </MudItem>
 
                                     <MudItem xs="12">
-                                        <MudCard>
-                                            <MudCardHeader>
-                                                <CardHeaderContent>
-                                                    <MudText>Last deployment</MudText>
-                                                </CardHeaderContent>
-                                            </MudCardHeader>
-                                            <MudCardContent>
+                                        <MudText Typo="Typo.h6" Class="mb-6">Last deployment</MudText>
                                                 <MudGrid>
                                                     <MudItem xs="12" md="4">
-                                                        <MudTextField @bind-Value="@Gateway.LastDeployment.Name" Label="Name" Variant="Variant.Filled" Margin="Margin.Dense" Disabled="true" />
+                                                        <MudTextField @bind-Value="@Gateway.LastDeployment.Name" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
                                                     </MudItem>
                                                     <MudItem xs="12" md="4">
-                                                        <MudTextField @bind-Value="@Gateway.LastDeployment.DateCreation" Label="Date" Variant="Variant.Filled" Margin="Margin.Dense" Disabled="true" />
+                                                        <MudTextField @bind-Value="@Gateway.LastDeployment.DateCreation" Label="Date" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
                                                     </MudItem>
                                                     <MudItem xs="12" md="4">
-                                                        <MudTextField @bind-Value="@Gateway.LastDeployment.Status" Label="Status" Variant="Variant.Filled" Margin="Margin.Dense" Disabled="true" />
+                                                        <MudTextField @bind-Value="@Gateway.LastDeployment.Status" Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
                                                     </MudItem>
                                                 </MudGrid>
-                                            </MudCardContent>
-                                        </MudCard>
                                     </MudItem>
 
                                 </MudGrid>
@@ -273,7 +260,7 @@
             parameter.Add(nameof(Portal.Shared.Models.Gateway.SymmetricKey), Gateway.SymmetricKey);
 
 
-            DialogService.Show<ConnectionString>("Edge Device Connection String", parameter);
+            DialogService.Show<ConnectionString>("Connect Edge Device", parameter);
         }
         catch (HttpRequestException e)
         {
