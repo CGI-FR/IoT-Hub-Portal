@@ -16,17 +16,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
     public class ConcentratorTwinMapper : IConcentratorTwinMapper
     {
-        // private readonly ConfigHandler configHandler;
-        private readonly IConfiguration configuration;
-        private readonly HttpClient httpClient;
-
-        public ConcentratorTwinMapper(IConfiguration configuration)
-        {
-            // this.configHandler = configHandler;
-            this.configuration = configuration;
-            this.httpClient = new HttpClient();
-        }
-
         public Concentrator CreateDeviceDetails(Twin twin)
         {
             return new Concentrator
@@ -42,17 +31,17 @@ namespace AzureIoTHub.Portal.Server.Mappers
             };
         }
 
-        public async Task UpdateTwin(Twin twin, Concentrator item)
+        public void UpdateTwin(Twin twin, Concentrator item)
         {
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceFriendlyName), item.DeviceFriendlyName);
             DeviceHelper.SetTagValue(twin, nameof(item.LoraRegion), item.LoraRegion);
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
 
             twin.Properties.Desired[nameof(item.ClientCertificateThumbprint)] = item.ClientCertificateThumbprint;
+            twin.Properties.Desired[nameof(item.RouterConfig)] = item.RouterConfig;
 
             // var result = await this.httpClient.GetFromJsonAsync<RouterConfig>($"{this.configHandler.LoRaRegionRouterConfigUrl}/{item.LoraRegion}.json");
-            var result = await this.httpClient.GetFromJsonAsync<RouterConfig>($"{this.configuration["LoRaRegionRouterConfig:Url"]}/{item.LoraRegion}.json");
-            twin.Properties.Desired["routerConfig"] = result;
+            // var result = await this.httpClient.GetFromJsonAsync<RouterConfig>($"{this.configuration["LoRaRegionRouterConfig:Url"]}/{item.LoraRegion}.json");
         }
     }
 }

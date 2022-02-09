@@ -35,7 +35,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
 
         private ConcentratorTwinMapper CreateConcentratorTwinMapper()
         {
-            return new ConcentratorTwinMapper(mockConfiguration.Object);
+            return new ConcentratorTwinMapper();
         }
 
         [Test]
@@ -80,9 +80,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
         {
             // Arrange
             var concentratorTwinMapper = this.CreateConcentratorTwinMapper();
-            this.mockHttpClient.Setup(x => x.GetFromJsonAsync<RouterConfig>(It.IsAny<string>()))
-                .ReturnsAsync(new RouterConfig())
-                .Verifiable();
+            //this.mockHttpClient.Setup(x => x.GetFromJsonAsync<RouterConfig>(It.IsAny<string>()))
+            //    .ReturnsAsync(new RouterConfig())
+            //    .Verifiable();
 
             Twin twin = new Twin();
 
@@ -104,7 +104,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             twin.Properties.Desired[nameof(Concentrator.ClientCertificateThumbprint)] = item.ClientCertificateThumbprint;
 
             // Act
-            await concentratorTwinMapper.UpdateTwin(twin, item);
+            concentratorTwinMapper.UpdateTwin(twin, item);
 
             // Assert
             Assert.AreEqual(item.DeviceFriendlyName, twin.Tags[nameof(Concentrator.DeviceFriendlyName).ToCamelCase()].ToString());

@@ -119,6 +119,11 @@ namespace AzureIoTHub.Portal.Server
             })
                 .AddPolicyHandler(transientHttpErrorPolicy);
 
+            services.AddHttpClient<IRouterConfigManager, RouterConfigManager>(client =>
+            {
+                client.BaseAddress = new Uri(configuration.LoRaRegionRouterConfigUrl);
+            }).AddPolicyHandler(transientHttpErrorPolicy);
+
             services.AddApplicationInsightsTelemetry();
         }
 

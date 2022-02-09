@@ -31,5 +31,7 @@ namespace AzureIoTHub.Portal.Shared.Models.Concentrator
         public bool IsEnabled { get; set; }
 
         public bool AlreadyLoggedInOnce { get; set; }
+
+        public RouterConfig RouterConfig { get; set; }
     }
 }

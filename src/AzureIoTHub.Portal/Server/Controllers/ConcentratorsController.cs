@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Linq;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
+    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.Concentrator;
@@ -24,16 +25,19 @@ namespace AzureIoTHub.Portal.Server.Controllers
     {
         private readonly IDeviceService devicesService;
         private readonly IConcentratorTwinMapper concentratorTwinMapper;
+        private readonly IRouterConfigManager routerConfigManager;
         private readonly ILogger<ConcentratorsController> logger;
 
         public ConcentratorsController(
             ILogger<ConcentratorsController> logger,
             IDeviceService devicesService,
+            IRouterConfigManager routerConfigManager,
             IConcentratorTwinMapper concentratorTwinMapper)
         {
             this.devicesService = devicesService;
             this.concentratorTwinMapper = concentratorTwinMapper;
             this.logger = logger;
+            this.routerConfigManager = routerConfigManager;
         }
 
         [HttpGet]
@@ -70,7 +74,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     DeviceId = device.DeviceId,
                 };
 
-                await this.concentratorTwinMapper.UpdateTwin(newTwin, device);
+                device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
+
+                this.concentratorTwinMapper.UpdateTwin(newTwin, device);
 
                 DeviceStatus status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
@@ -101,9 +107,10 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
             // Get the current twin from the hub, based on the device ID
             Twin currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceId);
+            device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
 
             // Update the twin properties
-            await this.concentratorTwinMapper.UpdateTwin(currentTwin, device);
+            this.concentratorTwinMapper.UpdateTwin(currentTwin, device);
 
             _ = await this.devicesService.UpdateDeviceTwin(device.DeviceId, currentTwin);
 
