@@ -20,11 +20,11 @@ namespace AzureIoTHub.Portal.Server.Mappers
         private readonly IConfiguration configuration;
         private readonly HttpClient httpClient;
 
-        public ConcentratorTwinMapper(IConfiguration configuration)
+        public ConcentratorTwinMapper(IConfiguration configuration, HttpClient httpClient)
         {
             // this.configHandler = configHandler;
             this.configuration = configuration;
-            this.httpClient = new HttpClient();
+            this.httpClient = httpClient;
         }
 
         public Concentrator CreateDeviceDetails(Twin twin)
