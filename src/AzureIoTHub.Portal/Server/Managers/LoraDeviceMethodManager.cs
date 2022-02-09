@@ -9,7 +9,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Net.Http.Json;
     using System.Text;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
 
     public class LoraDeviceMethodManager : ILoraDeviceMethodManager
     {

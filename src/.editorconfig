@@ -2,3 +2,6 @@
 
 # Default severity for all analyzer diagnostics
 dotnet_analyzer_diagnostic.severity = suggestion
+
+# CS0649: Field 'CreateDeviceModelPage.form' is never assigned to, and will always have its default value null
+dotnet_diagnostic.CS0649.severity = suggestion

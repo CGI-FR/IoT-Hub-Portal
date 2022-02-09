@@ -1,0 +1,89 @@
+﻿@using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel
+
+<MudItem xs="12">
+    <MudCard>
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText>LoRaWAN</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="@LoRaDeviceModel.AppEUI" Label="OTAA AppEUI" For="@(() => LoRaDeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="@LoRaDeviceModel.SensorDecoderURL" Label="Sensor Decoder URL" For="@(() => LoRaDeviceModel.SensorDecoderURL)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTable Items="@Commands" Dense=true Hover=true Bordered=true Striped=true>
+                        <ToolBarContent>
+                            <MudText Typo="Typo.h6">Commands</MudText>
+                            <MudSpacer />
+                        </ToolBarContent>
+                        <ColGroup>
+                            <col style="width: 30%;" />
+                            <col style="width: 60%;" />
+                            <col style="width: 10%;" />
+                            <col style="width: 5%;" />
+                        </ColGroup>
+                        <HeaderContent>
+                            <MudTh>Name</MudTh>
+                            <MudTh Style="text-align: center">Frame</MudTh>
+                            <MudTh Style="text-align: center">Port</MudTh>
+                            <MudTh Style="text-align: center">Delete</MudTh>
+                        </HeaderContent>
+                        <RowTemplate Context="CommandContext">
+                            <MudTd DataLabel="Name" Style="word-break: break-all;">
+                                <MudTextField @bind-Value="@CommandContext.Name" Label="Name" For="@(() => CommandContext.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                            </MudTd>
+                            <MudTd DataLabel="Frame" Style="word-break: break-all; ">
+                                <MudTextField @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                            </MudTd>
+                            <MudTd DataLabel="Port" Style="text-align: center;">
+                                <MudNumericField @bind-Value="@CommandContext.Port" Label="Port" For="@(() => CommandContext.Port)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudNumericField>
+                            </MudTd>
+                            <MudTd DataLabel="Delete" Style="text-align: center">
+                                <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteCommand(CommandContext))"></MudIconButton>
+                            </MudTd>
+                        </RowTemplate>
+                        <FooterContent>
+                            <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddCommand">Add Command</MudButton>
+                        </FooterContent>
+                    </MudTable>
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+        <MudCardActions Class="pb-4 pl-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="OnSaveClick">Save Changes</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudItem>
+
+@code {
+    [Parameter]
+    public LoRaDeviceModel LoRaDeviceModel { get; set; }
+
+    [Parameter]
+    public IList<DeviceModelCommand> Commands { get; set; }
+    
+    [Parameter]
+    public EventCallback OnSaveClick { get; set; }
+
+    private DeviceModelCommand DeviceModelCommand { get; set; } = new DeviceModelCommand();
+
+    private void AddCommand()
+    {
+        var last = Commands.LastOrDefault();
+
+        if (Commands.Count == 0 || (last.Name is not null && last.Frame is not null))
+        {
+            Commands.Add(new DeviceModelCommand());
+        }
+    }
+
+    private void DeleteCommand(DeviceModelCommand item)
+    {
+        Commands.Remove(item);
+    }
+}

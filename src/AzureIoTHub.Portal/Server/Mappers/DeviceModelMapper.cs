@@ -5,17 +5,28 @@ namespace AzureIoTHub.Portal.Server.Mappers
 {
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
 
-    public class DeviceModelMapper : IDeviceModelMapper
+    public class DeviceModelMapper : IDeviceModelMapper<DeviceModel, DeviceModel>
     {
         private readonly IDeviceModelImageManager deviceModelImageManager;
-        private readonly IDeviceModelCommandsManager deviceModelCommandsManager;
 
-        public DeviceModelMapper(IDeviceModelImageManager deviceModelImageManager, IDeviceModelCommandsManager deviceModelCommandsManager)
+        public DeviceModelMapper(IDeviceModelImageManager deviceModelImageManager)
         {
             this.deviceModelImageManager = deviceModelImageManager;
-            this.deviceModelCommandsManager = deviceModelCommandsManager;
+        }
+
+        public DeviceModel CreateDeviceModelListItem(TableEntity entity)
+        {
+            return new DeviceModel
+            {
+                ModelId = entity.RowKey,
+                IsBuiltin = bool.Parse(entity[nameof(DeviceModel.IsBuiltin)]?.ToString() ?? "false"),
+                SupportLoRaFeatures = bool.Parse(entity[nameof(DeviceModel.SupportLoRaFeatures)]?.ToString() ?? "false"),
+                ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey).ToString(),
+                Name = entity[nameof(DeviceModel.Name)]?.ToString(),
+                Description = entity[nameof(DeviceModel.Description)]?.ToString(),
+            };
         }
 
         public DeviceModel CreateDeviceModel(TableEntity entity)
@@ -26,10 +37,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 IsBuiltin = bool.Parse(entity[nameof(DeviceModel.IsBuiltin)]?.ToString() ?? "false"),
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey).ToString(),
                 Name = entity[nameof(DeviceModel.Name)]?.ToString(),
-                Description = entity[nameof(DeviceModel.Description)]?.ToString(),
-                AppEUI = entity[nameof(DeviceModel.AppEUI)]?.ToString(),
-                SensorDecoderURL = entity[nameof(DeviceModel.SensorDecoderURL)]?.ToString(),
-                Commands = this.deviceModelCommandsManager.RetrieveDeviceModelCommands(entity.RowKey)
+                Description = entity[nameof(DeviceModel.Description)]?.ToString()
             };
         }
 
@@ -37,9 +45,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
         {
             entity[nameof(DeviceModel.Name)] = model.Name;
             entity[nameof(DeviceModel.Description)] = model.Description;
-            entity[nameof(DeviceModel.AppEUI)] = model.AppEUI;
-            entity[nameof(DeviceModel.SensorDecoderURL)] = model.SensorDecoderURL;
             entity[nameof(DeviceModel.IsBuiltin)] = model.IsBuiltin;
+            entity[nameof(DeviceModel.SupportLoRaFeatures)] = false;
         }
     }
 }

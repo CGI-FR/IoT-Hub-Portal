@@ -4,7 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Mappers
 {
     using AzureIoTHub.Portal.Server.Helpers;
-    using AzureIoTHub.Portal.Shared.Models.V10.Concentrator;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
 

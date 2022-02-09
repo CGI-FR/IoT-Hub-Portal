@@ -1,0 +1,42 @@
+﻿@using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice
+@using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel
+
+<MudItem xs="12">
+    <MudCard>
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText>LoRaWAN</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="@LoRaDevice.AppEUI"
+                                  Label="OTAA AppEUI"
+                                  Variant="Variant.Outlined"
+                                  For="@(()=> LoRaDevice.AppEUI)"
+                                  ReadOnly="true"
+                                  Required="true"
+                                  HelperText="OTAA AppEUI is automatically set from the selected model" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="@LoRaDevice.AppKey" Label="OTAA AppKey" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="@LoRaDevice.SensorDecoder" Label="Sensor Decoder URL" For="@(() => LoRaDevice.SensorDecoder)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+        <MudCardActions Class="pb-4 pl-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="OnSaveClick">Save Changes</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudItem>
+
+@code {
+    [Parameter]
+    public LoRaDeviceDetails LoRaDevice { get; set; }
+
+    [Parameter]
+    public EventCallback OnSaveClick { get; set; }
+}

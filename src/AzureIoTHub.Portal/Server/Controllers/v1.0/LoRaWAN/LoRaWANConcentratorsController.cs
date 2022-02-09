@@ -1,7 +1,7 @@
 ﻿// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Controllers.V10
+namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 {
     using System;
     using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.V10.Concentrator;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;

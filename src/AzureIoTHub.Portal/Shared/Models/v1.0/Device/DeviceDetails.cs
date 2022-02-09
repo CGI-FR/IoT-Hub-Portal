@@ -4,17 +4,18 @@
 namespace AzureIoTHub.Portal.Shared.Models.V10.Device
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     public class DeviceDetails
     {
-        [Required]
-        [RegularExpression("^[A-F0-9]{16}$", ErrorMessage = "DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)")]
+        [Required(ErrorMessage = "The device should have a unique identifier.")]
         public string DeviceID { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The device should have a name.")]
         public string DeviceName { get; set; }
+
+        [Required(ErrorMessage = "The device should use a model.")]
+        public string ModelId { get; set; }
 
         public string ImageUrl { get; set; }
 
@@ -24,26 +25,8 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.Device
 
         public DateTime StatusUpdatedTime { get; set; }
 
-        [Required]
-        public string AppEUI { get; set; }
-
-        public string AppKey { get; set; }
-
         public string LocationCode { get; set; }
 
         public string AssetId { get; set; }
-
-        public string DeviceType { get; set; }
-
-        public string ModelId { get; set; }
-
-        [Required]
-        public string ModelName { get; set; }
-
-        public string SensorDecoder { get; set; }
-
-        public bool AlreadyLoggedInOnce { get; set; }
-
-        public List<Command> Commands { get; set; } = new List<Command>();
     }
 }

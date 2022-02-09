@@ -1,6 +1,7 @@
 ﻿using Azure.Data.Tables;
 using AzureIoTHub.Portal.Server.Mappers;
 using AzureIoTHub.Portal.Shared.Models.V10;
+using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
 using Moq;
 using NUnit.Framework;
 

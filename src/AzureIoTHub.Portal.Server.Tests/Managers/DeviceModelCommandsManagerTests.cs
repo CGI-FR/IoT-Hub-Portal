@@ -5,6 +5,8 @@ using AzureIoTHub.Portal.Server.Managers;
 using AzureIoTHub.Portal.Server.Mappers;
 using AzureIoTHub.Portal.Shared.Models.V10;
 using AzureIoTHub.Portal.Shared.Models.V10.Device;
+using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
+using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;

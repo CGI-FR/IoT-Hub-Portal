@@ -1,6 +1,7 @@
 ﻿using AzureIoTHub.Portal.Server.Extensions;
+using AzureIoTHub.Portal.Server.Helpers;
 using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Shared.Models.V10.Concentrator;
+using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator;
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -102,9 +103,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             //     .ReturnsAsync((HttpRequestMessage req, CancellationToken token) => deviceResponseMock)
             //     .Verifiable();
             
-            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
-            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
-            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.LoraRegion), item.LoraRegion);
+            DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
+            DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
+            DeviceHelper.SetTagValue(twin, nameof(item.LoraRegion), item.LoraRegion);
 
             twin.Properties.Desired[nameof(Concentrator.ClientCertificateThumbprint)] = item.ClientCertificateThumbprint;
 

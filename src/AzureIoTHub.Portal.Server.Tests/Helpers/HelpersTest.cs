@@ -2,7 +2,7 @@
 using Microsoft.Azure.Devices.Shared;
 using NUnit.Framework;
 
-namespace AzureIoTHub.Portal.Server.Tests
+namespace AzureIoTHub.Portal.Server.Tests.Helpers
 {
     class HelpersTest
     {
