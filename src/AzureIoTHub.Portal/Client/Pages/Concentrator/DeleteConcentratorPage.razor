@@ -1,0 +1,44 @@
+﻿@using AzureIoTHub.Portal.Shared.Models.Concentrator
+@inject HttpClient Http
+@inject IJSRuntime JS
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <p>Delete @deviceId ?</p>
+        <br />
+        <p><i>Warning : this cannot  be undone.</i></p>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="DeleteDevice">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string deviceId { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+    /// <summary>
+    /// Sends a POST request to the ConcentratorsController, to delete the device from the Azure IoT Hub
+    /// </summary>
+    /// <returns></returns>
+    private async Task DeleteDevice()
+    {
+        var response = await Http.DeleteAsync($"api/Concentrators/{deviceId}");
+
+        // Prompts a snack bar to inform if the action was successful
+        // TODO : Deal more effectively with error/success messages
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Oh oh, something went wrong while deleting device {deviceId}... ", Severity.Error);
+            return;
+        }
+
+        Snackbar.Add($"Device {deviceId} has been successfully deleted!", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

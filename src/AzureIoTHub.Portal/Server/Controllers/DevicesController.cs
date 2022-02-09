@@ -92,11 +92,21 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
             try
             {
+                if (device.DeviceType == "LoRa Concentrator")
+                {
+                    twinProperties.Desired["NetId"] = 1;
+                    twinProperties.Desired["JoinEui"] = new List<string> { "0000000000000000", "FFFFFFFFFFFFFFFF" };
+                    twinProperties.Desired["hwspec"] = "sx1301/1";
+                    twinProperties.Desired["freq_range"] = new List<string> { "470000000", "510000000" };
+                    twinProperties.Desired["nocca"] = true;
+                    twinProperties.Desired["nodc"] = true;
+                    twinProperties.Desired["nodwell"] = true;
+                }
+
                 // Create a new Twin from the form's fields.
                 var newTwin = new Twin()
                 {
-                    DeviceId = device.DeviceID,
-                    Properties = twinProperties
+                    DeviceId = device.DeviceID
                 };
 
                 this.deviceTwinMapper.UpdateTwin(newTwin, device);

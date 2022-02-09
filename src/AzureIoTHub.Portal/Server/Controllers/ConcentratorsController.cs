@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.Device;
+    using AzureIoTHub.Portal.Shared.Models.Concentrator;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
@@ -23,74 +23,103 @@ namespace AzureIoTHub.Portal.Server.Controllers
     public class ConcentratorsController : ControllerBase
     {
         private readonly IDeviceService devicesService;
-        private readonly IDeviceTwinMapper deviceTwinMapper;
+        private readonly IConcentratorTwinMapper concentratorTwinMapper;
         private readonly ILogger<ConcentratorsController> logger;
 
         public ConcentratorsController(
             ILogger<ConcentratorsController> logger,
             IDeviceService devicesService,
-            IDeviceTwinMapper deviceTwinMapper)
+            IConcentratorTwinMapper concentratorTwinMapper)
         {
             this.devicesService = devicesService;
-            this.deviceTwinMapper = deviceTwinMapper;
+            this.concentratorTwinMapper = concentratorTwinMapper;
             this.logger = logger;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<DeviceListItem>> GetAllDeviceConcentrator()
+        public async Task<IEnumerable<Concentrator>> GetAllDeviceConcentrator()
         {
             // Gets all the twins from this devices
             var items = await this.devicesService.GetAllDevice();
             var itemFilter = items.Where(x => x.Tags["deviceType"] == "LoRa Concentrator");
 
-            return itemFilter.Select(this.deviceTwinMapper.CreateDeviceListItem);
+            return itemFilter.Select(this.concentratorTwinMapper.CreateDeviceDetails);
+        }
+
+        [HttpGet("{deviceId}")]
+        public async Task<Concentrator> GetDeviceConcentrator(string deviceId)
+        {
+            var item = await this.devicesService.GetDeviceTwin(deviceId);
+
+            return this.concentratorTwinMapper.CreateDeviceDetails(item);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateDeviceAsync(DeviceDetails device)
+        public async Task<IActionResult> CreateDeviceAsync(Concentrator device)
         {
             try
             {
-                if (!Eui.TryParse(device.DeviceID, out ulong deviceIdConvert))
+                if (!Eui.TryParse(device.DeviceId, out ulong deviceIdConvert))
                 {
                     throw new InvalidOperationException("the device id is in the wrong format.");
                 }
 
-                var twinProperties = new TwinProperties();
-
-                twinProperties.Desired["NetId"] = 1;
-                twinProperties.Desired["JoinEui"] = new List<string> { "0000000000000000", "FFFFFFFFFFFFFFFF" };
-                twinProperties.Desired["hwspec"] = "sx1301/1";
-                twinProperties.Desired["freq_range"] = new List<string> { "470000000", "510000000" };
-                twinProperties.Desired["nocca"] = true;
-                twinProperties.Desired["nodc"] = true;
-                twinProperties.Desired["nodwell"] = true;
-
                 // Create a new Twin from the form's fields.
                 var newTwin = new Twin()
                 {
-                    DeviceId = device.DeviceID,
-                    Properties = twinProperties
+                    DeviceId = device.DeviceId,
                 };
 
-                this.deviceTwinMapper.UpdateTwin(newTwin, device);
+                this.concentratorTwinMapper.UpdateTwin(newTwin, device);
 
                 DeviceStatus status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
-                var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin, status);
+                var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceId, false, newTwin, status);
 
                 return this.Ok(result);
             }
             catch (DeviceAlreadyExistsException e)
             {
-                this.logger.LogError($"{device.DeviceID} - Create device failed", e);
+                this.logger.LogError($"{device.DeviceId} - Create device failed", e);
                 return this.BadRequest(e.Message);
             }
             catch (InvalidOperationException e)
             {
-                this.logger?.LogError("{a0} - Create device failed \n {a1}", device.DeviceID, e.Message);
+                this.logger?.LogError("{a0} - Create device failed \n {a1}", device.DeviceId, e.Message);
                 return this.BadRequest(e.Message);
             }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateDeviceAsync(Concentrator device)
+        {
+            // Device status (enabled/disabled) has to be dealt with afterwards
+            Device currentDevice = await this.devicesService.GetDevice(device.DeviceId);
+            currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+
+            _ = await this.devicesService.UpdateDevice(currentDevice);
+
+            // Get the current twin from the hub, based on the device ID
+            Twin currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceId);
+
+            // Update the twin properties
+            this.concentratorTwinMapper.UpdateTwin(currentTwin, device);
+
+            _ = await this.devicesService.UpdateDeviceTwin(device.DeviceId, currentTwin);
+
+            return this.Ok();
+        }
+
+        /// <summary>
+        /// this function delete a device.
+        /// </summary>
+        /// <param name="deviceId">the device id.</param>
+        /// <returns>ok status on success.</returns>
+        [HttpDelete("{deviceId}")]
+        public async Task<IActionResult> Delete(string deviceId)
+        {
+            await this.devicesService.DeleteDevice(deviceId);
+            return this.Ok("the device was successfully deleted.");
         }
     }
 }
