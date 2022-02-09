@@ -1,5 +1,168 @@
-﻿<h3>ConcentratorDetailPage</h3>
+﻿@page "/concentrators/{DeviceID}"
+@using AzureIoTHub.Portal.Shared.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Shared.Models.Device
+@using AzureIoTHub.Portal.Shared.Models.Concentrator
+@using System.Text.Json;
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+
+@attribute [Authorize]
+@inject HttpClient Http
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Details</MudText>
+
+<MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
+    <MudTabPanel Text="General">
+        <MudGrid>
+            <MudItem xs="12" sm="4" md="3">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Align="Align.Center" Typo="Typo.h5">@concentrator.DeviceId</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderAvatar>
+                            @if (concentrator.IsConnected)
+                            {
+                                    <MudTooltip >
+                                        <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
+                                    </MudTooltip>
+                            }
+                            else
+                            {
+                                    <MudTooltip >
+                                        <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
+                                    </MudTooltip>
+                            }
+                        </CardHeaderAvatar>
+                    </MudCardHeader>
+                    <MudCardContent>
+
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+            <MudItem xs="12" sm="8" md="9">
+                <MudCard>
+                    <EditForm Model="@concentrator" OnValidSubmit="SaveDevice">
+                        <DataAnnotationsValidator />
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText>Device Details</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudGrid>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="@concentrator.DeviceFriendlyName" Label="Device Friendly Name" Variant="Variant.Outlined" />
+                                </MudItem>
+
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="@concentrator.ClientCertificateThumbprint" Label="Client Certificate Thumbprint" Variant="Variant.Outlined" Required="true" />
+                                </MudItem>
+
+                                <MudItem xs="12">
+                                    <MudText>
+                                        <b>Status</b>
+                                    </MudText>
+                                    <MudSwitch @bind-Checked="@concentrator.IsEnabled" Color="Color.Secondary" />
+                                    @if (concentrator.IsEnabled)
+                                    {
+                                            <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
+                                    }
+                                    else
+                                    {
+                                            <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
+                                    }
+                                </MudItem>
+
+                                <MudSpacer />
+                                <MudItem xs="12" md="6">
+                                    <MudText>
+                                        <b>Region : @concentrator.LoraRegion</b>
+                                    </MudText>
+                                    <MudSelect T="string" Label="Region" Variant="Variant.Text" @bind-Value="@concentrator.LoraRegion" Required="true">
+                                        <MudSelectItem Value="@("EU863")"/>
+                                        <MudSelectItem Value="@("US902")"/>
+                                        <MudSelectItem Value="@("CN470RP1")"/>
+                                        <MudSelectItem Value="@("CN470RP2")"/>
+                                    </MudSelect>
+                                </MudItem>
+                            </MudGrid>
+                        </MudCardContent>
+                        <MudCardActions Class="pb-4 pl-4">
+                            <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="DeleteDevice">Delete Device</MudButton>
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-4">Save Changes</MudButton>
+                        </MudCardActions>
+                    </EditForm>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </MudTabPanel>
+</MudTabs>
 
 @code {
+    [Parameter]
+    public string DeviceID { get; set; }
 
+    private Concentrator concentrator { get; set; } = new Concentrator();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Sends a GET request to the DevicesController, to retrieve the specific device from Azure IoT Hub
+            concentrator = await Http.GetFromJsonAsync<Concentrator>($"api/concentrators/{DeviceID}");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    /// <summary>
+    /// Sends a POST request to the DevicesController, to update the device in the Azure IoT Hub
+    /// </summary>
+    public async void SaveDevice()
+    {
+        var result = await Http.PutAsJsonAsync<Concentrator>($"api/concentrators", concentrator);
+
+        if (result.IsSuccessStatusCode)
+        {
+            // Prompts a snack bar to inform the action was successful
+            Snackbar.Add($"Device {concentrator.DeviceId} has been successfully updated!", Severity.Success);
+
+            // Go back to the list of device
+            NavManager.NavigateTo("concentrators");
+        }
+
+        // TODO : Deal more effectively with different error messages
+        else
+        {
+            string errorMsg = await result.Content.ReadAsStringAsync();
+            Snackbar.Add($"Oh oh, something went wrong while updating device {concentrator.DeviceId}... <br> {errorMsg}", Severity.Error);
+        }
+    }
+
+    /// <summary>
+    /// Prompts a pop-up windows to confirm the device's deletion.
+    /// </summary>
+    /// <returns></returns>
+    private async Task DeleteDevice()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("deviceId", concentrator.DeviceId);
+        var result = await DialogService.Show<DeleteConcentratorPage>("Confirm Deletion", parameters).Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+        // Go back to the list of devices after the deletion
+        NavManager.NavigateTo("concentrators");
+    }
 }

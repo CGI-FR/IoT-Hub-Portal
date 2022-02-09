@@ -1,7 +1,8 @@
-﻿@page "/concentrator/new"
+﻿@page "/concentrators/new"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Shared.Models.Concentrator
+
 @attribute [Authorize]
 @inject HttpClient Http
 @inject ISnackbar Snackbar
@@ -34,6 +35,22 @@
                         <MudItem xs="12" md="6">
                             <MudTextField @bind-Value="@concentrator.DeviceFriendlyName" Label="Friendly tag name" Variant="Variant.Outlined" Required="true"/>
                         </MudItem>
+
+                        <MudItem xs="12">
+                            <MudText>
+                                <b>Status</b>
+                            </MudText>
+                            <MudSwitch @bind-Checked="@concentrator.IsEnabled" Color="Color.Secondary" />
+                            @if (concentrator.IsEnabled)
+                            {
+                                    <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
+                            }
+                            else
+                            {
+                                    <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
+                            }
+                        </MudItem>
+
                         <MudItem xs="12" md="6">
                             <MudSelect T="string" For="@(()=> concentrator.LoraRegion)" Label="Region" Variant="Variant.Text" @bind-Value="@concentrator.LoraRegion" Required="true">
                                 <MudSelectItem Value="@("EU863")"/>
@@ -59,16 +76,14 @@
 </MudGrid>
 
 @code {
-    [Parameter]
-    public string DeviceID { get; set; }
-
     private Concentrator concentrator = new Concentrator();
 
     /// <summary>
-    /// Sends a POST request to the DevicesController, to add the new device to the Azure IoT Hub
+    /// Sends a POST request to the ConcentratorsController, to add the new device lora concentrator to the Azure IoT Hub
     /// </summary>
     public async void SaveDevice()
     {
+        concentrator.DeviceType = "LoRa Concentrator";
         // Sends the device to be added to the controller
         var response = await Http.PostAsJsonAsync<Concentrator>($"api/Concentrators", concentrator);
 
@@ -76,12 +91,9 @@
         {
             // Prompts a snack bar to inform the action was successful
             Snackbar.Add($"Device {concentrator.DeviceId} has been successfully created!", Severity.Success);
-            
-            // Go back to the list of devices
+
             NavManager.NavigateTo("concentrators");
         }
-
-        // TODO : Deal more effectively with different error messages
         else
         {
             string errorMsg = await response.Content.ReadAsStringAsync();

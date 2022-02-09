@@ -25,5 +25,11 @@ namespace AzureIoTHub.Portal.Shared.Models.Concentrator
         public string DeviceType { get; set; }
 
         public string ClientCertificateThumbprint { get; set; }
+
+        public bool IsConnected { get; set; }
+
+        public bool IsEnabled { get; set; }
+
+        public bool AlreadyLoggedInOnce { get; set; }
     }
 }
