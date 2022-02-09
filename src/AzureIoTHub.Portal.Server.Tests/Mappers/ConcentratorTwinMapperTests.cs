@@ -4,6 +4,7 @@ using AzureIoTHub.Portal.Shared.Models.Concentrator;
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Extensions.Configuration;
 using Moq;
+using Moq.Protected;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using static AzureIoTHub.Portal.Server.Startup;
 
@@ -21,8 +24,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
     {
         private MockRepository mockRepository;
 
-        private Mock<HttpClient> mockHttpClient;
+        private HttpClient mockHttpClient;
         private Mock<IConfiguration> mockConfiguration;
+        private Mock<HttpMessageHandler> httpMessageHandlerMock;
 
         [SetUp]
         public void SetUp()
@@ -30,7 +34,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockConfiguration = this.mockRepository.Create<IConfiguration>();
-            this.mockHttpClient = this.mockRepository.Create<HttpClient>();
+            this.httpMessageHandlerMock = this.mockRepository.Create<HttpMessageHandler>();
+            this.mockHttpClient = new HttpClient(this.httpMessageHandlerMock.Object);
         }
 
         private ConcentratorTwinMapper CreateConcentratorTwinMapper()
@@ -97,6 +102,29 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
                 AlreadyLoggedInOnce = false,
             };
 
+            using var deviceResponseMock = new HttpResponseMessage();
+
+            deviceResponseMock.Content = new StringContent("{}", Encoding.UTF8, "application/json");
+
+            this.httpMessageHandlerMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync((HttpRequestMessage req, CancellationToken token) =>
+                {
+                    if (req.RequestUri.LocalPath.Equals($"/{item.LoraRegion}.json", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return deviceResponseMock;
+                    }
+
+                    return null;
+                })
+                .Verifiable();
+
+
+            Twin twin = new Twin();
+            this.mockConfiguration.SetupGet(x => x[It.Is<string>(c => c == "LoRaRegionRouterConfig:Url")])
+                .Returns("http://fake.local");
+            
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceFriendlyName), item.DeviceFriendlyName);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.LoraRegion), item.LoraRegion);
