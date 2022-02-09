@@ -57,37 +57,30 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<GatewayListItem>))]
         public async Task<IActionResult> Get()
         {
-            try
+            // don't contain tags
+            IEnumerable<Twin> edgeDevices = await this.devicesService.GetAllEdgeDevice();
+
+            List<GatewayListItem> newGatewayList = new ();
+
+            foreach (Twin deviceTwin in edgeDevices)
             {
-                // don't contain tags
-                IEnumerable<Twin> edgeDevices = await this.devicesService.GetAllEdgeDevice();
+                var twin = this.devicesService.GetDeviceTwin(deviceTwin.DeviceId).Result;
 
-                List<GatewayListItem> newGatewayList = new ();
-
-                foreach (Twin deviceTwin in edgeDevices)
+                if (twin != null)
                 {
-                    var twin = this.devicesService.GetDeviceTwin(deviceTwin.DeviceId).Result;
-
-                    if (twin != null)
+                    GatewayListItem gateway = new ()
                     {
-                        GatewayListItem gateway = new ()
-                        {
-                            DeviceId = deviceTwin.DeviceId,
-                            Status = twin.Status?.ToString(),
-                            Type = DeviceHelper.RetrieveTagValue(twin, "purpose"),
-                            NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin)
-                        };
+                        DeviceId = deviceTwin.DeviceId,
+                        Status = twin.Status?.ToString(),
+                        Type = DeviceHelper.RetrieveTagValue(twin, "purpose"),
+                        NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin)
+                    };
 
-                        newGatewayList.Add(gateway);
-                    }
+                    newGatewayList.Add(gateway);
                 }
+            }
 
-                return this.Ok(newGatewayList);
-            }
-            catch (Exception e)
-            {
-                return this.BadRequest(e.Message);
-            }
+            return this.Ok(newGatewayList);
         }
 
         /// <summary>

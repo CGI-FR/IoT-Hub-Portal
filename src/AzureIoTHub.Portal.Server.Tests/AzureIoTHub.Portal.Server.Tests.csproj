@@ -22,8 +22,4 @@
     <ProjectReference Include="..\AzureIoTHub.Portal\Server\AzureIoTHub.Portal.Server.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
