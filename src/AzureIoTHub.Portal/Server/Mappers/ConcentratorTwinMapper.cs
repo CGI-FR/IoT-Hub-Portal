@@ -10,17 +10,20 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using AzureIoTHub.Portal.Shared.Models.Concentrator;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json.Linq;
     using static AzureIoTHub.Portal.Server.Startup;
 
     public class ConcentratorTwinMapper : IConcentratorTwinMapper
     {
-        private readonly ConfigHandler configHandler;
+        // private readonly ConfigHandler configHandler;
+        private readonly IConfiguration configuration;
         private readonly HttpClient httpClient;
 
-        public ConcentratorTwinMapper(ConfigHandler configHandler)
+        public ConcentratorTwinMapper(IConfiguration configuration)
         {
-            this.configHandler = configHandler;
+            // this.configHandler = configHandler;
+            this.configuration = configuration;
             this.httpClient = new HttpClient();
         }
 
@@ -47,8 +50,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
             twin.Properties.Desired[nameof(item.ClientCertificateThumbprint)] = item.ClientCertificateThumbprint;
 
-            var result = await this.httpClient.GetFromJsonAsync<RouterConfig>($"{this.configHandler.LoRaRegionRouterConfigUrl}/{item.LoraRegion}.json");
-
+            // var result = await this.httpClient.GetFromJsonAsync<RouterConfig>($"{this.configHandler.LoRaRegionRouterConfigUrl}/{item.LoraRegion}.json");
+            var result = await this.httpClient.GetFromJsonAsync<RouterConfig>($"{this.configuration["LoRaRegionRouterConfig:Url"]}/{item.LoraRegion}.json");
             twin.Properties.Desired["routerConfig"] = result;
         }
     }
