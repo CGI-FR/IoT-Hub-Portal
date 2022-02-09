@@ -80,13 +80,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateDeviceAsync(DeviceDetails device)
         {
+            if (!this.ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
+
             try
             {
-                if (!Eui.TryParse(device.DeviceID, out ulong deviceIdConvert) && device.DeviceType == "LoRa Device")
-                {
-                    throw new InvalidOperationException("the device id is in the wrong format.");
-                }
-
                 // Create a new Twin from the form's fields.
                 var newTwin = new Twin()
                 {
