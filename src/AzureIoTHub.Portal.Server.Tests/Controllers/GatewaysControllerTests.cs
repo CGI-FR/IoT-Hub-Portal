@@ -118,8 +118,39 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers
         [Test]
         public async Task CreateGatewayAsync_StateUnderTest_ExpectedBehavior()
         {
-            await Task.CompletedTask;
-            Assert.Inconclusive();
+            // Arrange
+            var gatewaysController = this.CreateGatewaysController();
+            var gateway = new Gateway()
+            {
+                DeviceId = "aaa",
+                Type = "lora"
+            };
+            var mockResult = new BulkRegistryOperationResult
+            {
+                IsSuccessful = true
+            };
+
+            this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(
+                It.Is<string>(x => x == gateway.DeviceId),
+                It.Is<bool>(x => x),
+                It.Is<Twin>(x => x.DeviceId == gateway.DeviceId),
+                It.Is<DeviceStatus>(x => x == DeviceStatus.Enabled)))
+                .ReturnsAsync(mockResult);
+
+            this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            // Act
+            var result = await gatewaysController.CreateGatewayAsync(gateway);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<OkObjectResult>(result);
+            var okObjectResult = result as ObjectResult;
+            Assert.IsNotNull(okObjectResult);
+            Assert.AreEqual(200, okObjectResult.StatusCode);
+            Assert.IsNotNull(okObjectResult.Value);
+            Assert.IsAssignableFrom<BulkRegistryOperationResult>(okObjectResult.Value);
+            Assert.AreEqual(mockResult, okObjectResult.Value);
         }
 
         [Test]
