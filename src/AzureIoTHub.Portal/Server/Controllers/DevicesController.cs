@@ -121,6 +121,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateDeviceAsync(DeviceDetails device)
         {
+            if (!this.ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
+
             // Device status (enabled/disabled) has to be dealt with afterwards
             Device currentDevice = await this.devicesService.GetDevice(device.DeviceID);
             currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
