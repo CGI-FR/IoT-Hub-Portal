@@ -156,8 +156,57 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers
         [Test]
         public async Task UpdateDeviceAsync_StateUnderTest_ExpectedBehavior()
         {
-            await Task.CompletedTask;
-            Assert.Inconclusive();
+            // Arrange
+            var gatewaysController = this.CreateGatewaysController();
+            var gateway = new Gateway()
+            {
+                DeviceId = "aaa",
+                Type = "lora",
+                Environment = "prod",
+                Status = DeviceStatus.Enabled.ToString()
+            };
+
+            var mockResult = new BulkRegistryOperationResult
+            {
+                IsSuccessful = true
+            };
+
+            var mockTwin = new Twin(gateway.DeviceId);
+            mockTwin.Tags["env"] = "dev";
+
+            this.mockDeviceService.Setup(c => c.GetDevice(It.Is<string>(x => x == gateway.DeviceId)))
+                .ReturnsAsync(new Device(gateway.DeviceId)
+                {
+                    Status = DeviceStatus.Disabled
+                });
+
+            this.mockDeviceService.Setup(c => c.UpdateDevice(It.Is<Device>(x => x.Id == gateway.DeviceId && x.Status == DeviceStatus.Enabled)))
+                .ReturnsAsync(new Device(gateway.DeviceId)
+                 {
+                     Status = DeviceStatus.Enabled
+                 });
+
+            this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == gateway.DeviceId)))
+                .ReturnsAsync(mockTwin);
+
+            this.mockDeviceService.Setup(c => c.UpdateDeviceTwin(It.Is<string>(x => x == gateway.DeviceId), It.Is<Twin>(x => x == mockTwin)))
+                .ReturnsAsync(mockTwin);
+
+            this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            // Act
+            var result = await gatewaysController.UpdateDeviceAsync(gateway);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<OkObjectResult>(result);
+            var okObjectResult = result as ObjectResult;
+            Assert.IsNotNull(okObjectResult);
+            Assert.AreEqual(200, okObjectResult.StatusCode);
+            Assert.IsNotNull(okObjectResult.Value);
+            Assert.IsAssignableFrom<Twin>(okObjectResult.Value);
+            Assert.AreEqual(mockTwin, okObjectResult.Value);
+            Assert.AreEqual("prod", mockTwin.Tags["env"].ToString());
         }
 
         [Test]
