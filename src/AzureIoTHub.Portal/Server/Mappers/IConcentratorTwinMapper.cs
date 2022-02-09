@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Mappers
 {
+    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Shared.Models.Concentrator;
     using Microsoft.Azure.Devices.Shared;
 
@@ -10,6 +11,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
     {
         Concentrator CreateDeviceDetails(Twin twin);
 
-        void UpdateTwin(Twin twin, Concentrator item);
+        Task UpdateTwin(Twin twin, Concentrator item);
     }
 }

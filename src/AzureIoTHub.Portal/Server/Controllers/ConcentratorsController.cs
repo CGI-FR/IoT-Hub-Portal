@@ -70,7 +70,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     DeviceId = device.DeviceId,
                 };
 
-                this.concentratorTwinMapper.UpdateTwin(newTwin, device);
+                await this.concentratorTwinMapper.UpdateTwin(newTwin, device);
 
                 DeviceStatus status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
@@ -103,7 +103,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             Twin currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceId);
 
             // Update the twin properties
-            this.concentratorTwinMapper.UpdateTwin(currentTwin, device);
+            await this.concentratorTwinMapper.UpdateTwin(currentTwin, device);
 
             _ = await this.devicesService.UpdateDeviceTwin(device.DeviceId, currentTwin);
 

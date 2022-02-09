@@ -5,10 +5,12 @@ namespace AzureIoTHub.Portal.Server.Mappers
 {
     using System.Net.Http;
     using System.Net.Http.Json;
+    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Shared.Models.Concentrator;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
+    using Newtonsoft.Json.Linq;
     using static AzureIoTHub.Portal.Server.Startup;
 
     public class ConcentratorTwinMapper : IConcentratorTwinMapper
@@ -37,7 +39,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             };
         }
 
-        public async void UpdateTwin(Twin twin, Concentrator item)
+        public async Task UpdateTwin(Twin twin, Concentrator item)
         {
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceFriendlyName), item.DeviceFriendlyName);
             DeviceHelper.SetTagValue(twin, nameof(item.LoraRegion), item.LoraRegion);
@@ -45,10 +47,9 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
             twin.Properties.Desired[nameof(item.ClientCertificateThumbprint)] = item.ClientCertificateThumbprint;
 
-            // this.httpClient.BaseAddress = new System.Uri(this.configHandler.LoRaRegionRouterConfigUrl);
-            var result = await this.httpClient.GetAsync($"{this.configHandler.LoRaRegionRouterConfigUrl}/{item.LoraRegion}.json");
-            var test = await result.Content.ReadAsStringAsync();
-            twin.Properties.Desired["routerConfig"] = test;
+            var result = await this.httpClient.GetFromJsonAsync<RouterConfig>($"{this.configHandler.LoRaRegionRouterConfigUrl}/{item.LoraRegion}.json");
+
+            twin.Properties.Desired["routerConfig"] = result;
         }
     }
 }
