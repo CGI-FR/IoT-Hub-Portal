@@ -43,7 +43,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Managers
             // Arrange
             var routerConfig = CreateManager();
             var loraRegion = Guid.NewGuid().ToString();
-            var reqUri = "http://fake.local/"+loraRegion+".json";
 
             using var deviceResponseMock = new HttpResponseMessage();
 
@@ -51,8 +50,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Managers
 
             this.httpMessageHandlerMock
                 .Protected()
-                // .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.RequestUri.LocalPath.Equals($"{loraRegion}.json", StringComparison.OrdinalIgnoreCase)), ItExpr.IsAny<CancellationToken>())
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.RequestUri.LocalPath.Equals($"/{loraRegion}.json", StringComparison.OrdinalIgnoreCase)), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync((HttpRequestMessage req, CancellationToken token) => deviceResponseMock)
                 .Verifiable();
 
