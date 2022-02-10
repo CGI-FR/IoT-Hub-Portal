@@ -82,9 +82,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             try
             {
-                if (!Eui.TryParse(device.DeviceId, out ulong deviceIdConvert))
+                if (!this.ModelState.IsValid)
                 {
-                    throw new InvalidOperationException("the device id is in the wrong format.");
+                    return this.BadRequest(this.ModelState);
                 }
 
                 // Create a new Twin from the form's fields.
@@ -120,6 +120,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             try
             {
+                if (!this.ModelState.IsValid)
+                {
+                    return this.BadRequest(this.ModelState);
+                }
+
                 // Device status (enabled/disabled) has to be dealt with afterwards
                 Device currentDevice = await this.devicesService.GetDevice(device.DeviceId);
                 currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;

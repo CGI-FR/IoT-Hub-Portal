@@ -94,8 +94,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
                 AlreadyLoggedInOnce = false,
                 RouterConfig = new RouterConfig()
             };
-
-            Twin twin = new Twin();
             
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceFriendlyName), item.DeviceFriendlyName);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);

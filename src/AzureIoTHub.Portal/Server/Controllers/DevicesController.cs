@@ -81,26 +81,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateDeviceAsync(DeviceDetails device)
         {
-            if (!this.ModelState.IsValid)
-            {
-                return this.BadRequest(this.ModelState);
-            }
-                if (!Eui.TryParse(device.DeviceID, out ulong deviceIdConvert) && device.DeviceType == "LoRa Network Server")
-                {
-                    throw new InvalidOperationException("the device id is in the wrong format.");
-                }
-
             try
             {
-                if (device.DeviceType == "LoRa Concentrator")
+                if (!this.ModelState.IsValid)
                 {
-                    twinProperties.Desired["NetId"] = 1;
-                    twinProperties.Desired["JoinEui"] = new List<string> { "0000000000000000", "FFFFFFFFFFFFFFFF" };
-                    twinProperties.Desired["hwspec"] = "sx1301/1";
-                    twinProperties.Desired["freq_range"] = new List<string> { "470000000", "510000000" };
-                    twinProperties.Desired["nocca"] = true;
-                    twinProperties.Desired["nodc"] = true;
-                    twinProperties.Desired["nodwell"] = true;
+                    return this.BadRequest(this.ModelState);
                 }
 
                 // Create a new Twin from the form's fields.
