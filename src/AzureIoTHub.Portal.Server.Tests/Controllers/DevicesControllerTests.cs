@@ -58,11 +58,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers
             // Arrange
             var devicesController = this.CreateDevicesController();
             int count = 100;
+            TwinCollection twinCollection = new TwinCollection();
+            twinCollection["deviceType"] = "test";
 
             this.mockDeviceService.Setup(c => c.GetAllDevice())
                 .ReturnsAsync(Enumerable.Range(0, 100).Select(x => new Twin
                 {
-                    DeviceId = x.ToString()
+                    DeviceId = x.ToString(),
+                    Tags = twinCollection
                 }));
 
             this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceListItem(It.IsAny<Twin>()))

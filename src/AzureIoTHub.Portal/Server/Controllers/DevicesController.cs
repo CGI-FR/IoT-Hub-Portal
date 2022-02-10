@@ -59,9 +59,17 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             // Gets all the twins from this devices
             var items = await this.devicesService.GetAllDevice();
-            var itemFilter = items.Where(x => x.Tags["deviceType"] != "LoRa Concentrator");
+            List<Twin> listTwin = new List<Twin>();
+            // var itemFilter = items.Where(x => x.Tags["deviceType"] != "LoRa Concentrator");
+            foreach (var item in items)
+            {
+                if (item.Tags.Contains("deviceType") && item.Tags["deviceType"] != "LoRa Concentrator")
+                {
+                    listTwin.Add(item);
+                }
+            }
 
-            return itemFilter.Select(this.deviceTwinMapper.CreateDeviceListItem);
+            return listTwin.Select(this.deviceTwinMapper.CreateDeviceListItem);
         }
 
         /// <summary>
