@@ -85,9 +85,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
         {
             // Arrange
             var concentratorTwinMapper = this.CreateConcentratorTwinMapper();
-            //this.mockHttpClient.Setup(x => x.GetFromJsonAsync<RouterConfig>(It.IsAny<string>()))
-            //    .ReturnsAsync(new RouterConfig())
-            //    .Verifiable();
 
             Twin twin = new Twin();
 
@@ -121,8 +118,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
                 })
                 .Verifiable();
 
-
-            Twin twin = new Twin();
             this.mockConfiguration.SetupGet(x => x[It.Is<string>(c => c == "LoRaRegionRouterConfig:Url")])
                 .Returns("http://fake.local");
             
