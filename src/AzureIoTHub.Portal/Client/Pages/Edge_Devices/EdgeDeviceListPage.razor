@@ -1,4 +1,4 @@
-﻿@page "/gateways"
+﻿@page "/edge-devices"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Shared.Models
@@ -12,7 +12,7 @@
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Gateway List</MudText>
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Edge Device List</MudText>
 
 <MudGrid>
     <MudItem xs="12">
@@ -87,7 +87,7 @@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Device" Style="word-break: break-all;">
-                        <a href="/gateways/details/@context.DeviceId">@context.DeviceId</a>
+                        <a href="/edge-device/detail/@context.DeviceId">@context.DeviceId</a>
                     </MudTd>
                     <MudTd DataLabel="Status" Style="text-align: center">
                         @if (context.Status == "Enabled")
@@ -103,7 +103,7 @@
                 <MudTd DataLabel="Type" Style="text-align: center">@context.Type</MudTd>
                 <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
-                    <a href="/gateways/details/@context.DeviceId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                    <a href="/edge-device/detail/@context.DeviceId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
                     <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => ShowDeleteDialog(context))"></MudIconButton>
@@ -172,12 +172,12 @@
 
     private void RedirectToDetail(string id)
     {
-        NavigationManager.NavigateTo($"/gateways/details/{id}");
+        NavigationManager.NavigateTo($"/edge-device/detail/{id}");
     }
 
     private async Task ShowAddDialog()
     {
-        var result = await DialogService.Show<CreateGatewayDialog>("Add a new gateway", maxWidth).Result;
+        var result = await DialogService.Show<CreateEdgeDeviceDialog>("Add a new edge device", maxWidth).Result;
 
         if (result.Cancelled)
         {
@@ -190,7 +190,7 @@
     {
         var parameters = new DialogParameters();
         parameters.Add(nameof(Gateway.DeviceId), gateway.DeviceId);
-        var result = await DialogService.Show<GatewayDeleteConfirmation>("Confirm Deletion", parameters).Result;
+        var result = await DialogService.Show<EdgeDeviceDeleteConfirmationDialog>("Confirm Deletion", parameters).Result;
 
         if (result.Cancelled)
         {

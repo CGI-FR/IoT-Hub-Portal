@@ -93,6 +93,7 @@ namespace AzureIoTHub.Portal.Server
             services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
             services.AddTransient<IDeviceService, DeviceService>();
             services.AddTransient<IDeviceTwinMapper, DeviceTwinMapper>();
+            services.AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>();
             services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
             services.AddTransient<IDeviceModelMapper, DeviceModelMapper>();
             services.AddTransient<IConnectionStringManager, ConnectionStringManager>();
@@ -117,6 +118,11 @@ namespace AzureIoTHub.Portal.Server
                 client.DefaultRequestHeaders.Add("x-functions-key", configuration.LoRaKeyManagementCode);
             })
                 .AddPolicyHandler(transientHttpErrorPolicy);
+
+            services.AddHttpClient<IRouterConfigManager, RouterConfigManager>(client =>
+            {
+                client.BaseAddress = new Uri(configuration.LoRaRegionRouterConfigUrl);
+            }).AddPolicyHandler(transientHttpErrorPolicy);
 
             services.AddApplicationInsightsTelemetry();
         }
@@ -189,6 +195,7 @@ namespace AzureIoTHub.Portal.Server
 
             protected const string LoRaKeyManagementUrlKey = "LoRaKeyManagement:Url";
             protected const string LoRaKeyManagementCodeKey = "LoRaKeyManagement:Code";
+            protected const string LoRaRegionRouterConfigUrlKey = "LoRaRegionRouterConfig:Url";
 
             internal static ConfigHandler Create(IWebHostEnvironment env, IConfiguration config)
             {
@@ -227,6 +234,8 @@ namespace AzureIoTHub.Portal.Server
             internal abstract string LoRaKeyManagementUrl { get; }
 
             internal abstract string LoRaKeyManagementCode { get; }
+
+            internal abstract string LoRaRegionRouterConfigUrl { get; }
         }
 
         internal class ProductionConfigHandler : ConfigHandler
@@ -265,6 +274,8 @@ namespace AzureIoTHub.Portal.Server
             internal override string LoRaKeyManagementUrl => this.config[LoRaKeyManagementUrlKey];
 
             internal override string LoRaKeyManagementCode => this.config.GetConnectionString(LoRaKeyManagementCodeKey);
+
+            internal override string LoRaRegionRouterConfigUrl => this.config[LoRaRegionRouterConfigUrlKey];
         }
 
         internal class DevelopmentConfigHandler : ConfigHandler
@@ -303,6 +314,8 @@ namespace AzureIoTHub.Portal.Server
             internal override string LoRaKeyManagementUrl => this.config[LoRaKeyManagementUrlKey];
 
             internal override string LoRaKeyManagementCode => this.config[LoRaKeyManagementCodeKey];
+
+            internal override string LoRaRegionRouterConfigUrl => this.config[LoRaRegionRouterConfigUrlKey];
         }
     }
 }

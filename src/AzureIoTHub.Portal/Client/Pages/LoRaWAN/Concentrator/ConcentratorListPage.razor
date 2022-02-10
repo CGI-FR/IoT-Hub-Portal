@@ -1,0 +1,132 @@
+﻿@page "/lorawan/concentrators"
+@using AzureIoTHub.Portal.Shared.Models.Device
+@using AzureIoTHub.Portal.Shared.Models.Concentrator
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@attribute [Authorize]
+@inject HttpClient Http
+@inject IDialogService DialogService
+@inject NavigationManager navigationManager
+
+<MudGrid>
+    @if (concentrators == null)
+    {
+        <MudItem Class="custom-centered-container">
+            <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+        </MudItem>
+    }
+    else
+    {
+        <MudItem xs="12">
+            <MudTable Items="@concentrators" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
+                <ColGroup>
+                    <col style="width: 15%;" />
+                    <col style="width: 40%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 10%;" />
+                </ColGroup>
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">LoRaWAN Concentrators</MudText>
+                    <MudSpacer />
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadDevices" Class="ma-2"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" Class="ma-2"></MudIconButton>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh Style="text-align: center">Name</MudTh>
+                    <MudTh>Device Id</MudTh>
+                    <MudTh Style="text-align: center">Status</MudTh>
+                    <MudTh Style="text-align: center">Connection state</MudTh>
+                    <MudTh Style="text-align: center">See details</MudTh>
+                    <MudTh Style="text-align: center">Delete</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Device" Style="word-break: break-all;">
+                        <a href="lorawan/concentrators/@context.DeviceId">@context.DeviceFriendlyName</a>
+                    </MudTd>
+                    <MudTd DataLabel="Device" Style="word-break: break-all;">
+                        <a href="lorawan/concentrators/@context.DeviceId">@context.DeviceId</a>
+                    </MudTd>
+                    <MudTd DataLabel="Status" Style="text-align: center">
+                        @if (context.IsEnabled)
+                        {
+                        <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                        }
+                        else
+                        {
+                        <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                        }
+                </MudTd>
+
+                <MudTd DataLabel="Connection" Style="text-align: center">
+                    @if (context.IsConnected)
+                        {
+                        <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
+                        }
+                        else
+                        {
+                        <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
+                        }
+                </MudTd>
+                <MudTd DataLabel="Details" Style="text-align: center">
+                    <a href="lorawan/concentrators/@context.DeviceId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                </MudTd>
+                <MudTd DataLabel="Delete" Style="text-align: center">
+                    <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDevice(context))"></MudIconButton>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+            </PagerContent>
+        </MudTable>
+    </MudItem>
+        <MudItem xs="12">
+            <a href="lorawan/concentrators/new"><MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add a new concentrator" /></a>
+        </MudItem>
+    }
+</MudGrid>
+
+@code {
+    private Concentrator[] concentrators;
+
+    private int[] pageSizeOptions = new int[] { 2, 5, 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDevices();
+    }
+
+    private async Task LoadDevices()
+    {
+        try
+        {
+            concentrators = await Http.GetFromJsonAsync<Concentrator[]>("api/Concentrators");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private void AddDevice()
+    {
+        navigationManager.NavigateTo("lorawan/concentrators/new");
+    }
+
+    private async Task DeleteDevice(Concentrator device)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("deviceId", device.DeviceId);
+        var result = await DialogService.Show<DeleteConcentratorPage>("Confirm Deletion", parameters).Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+        // Update the list of devices after the deletion
+        await LoadDevices();
+    }
+}

@@ -1,0 +1,103 @@
+﻿@page "/lorawan/concentrators/new"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Shared.Models.Concentrator
+
+@attribute [Authorize]
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">LoRaWAN Concentrator</MudText>
+
+<MudGrid>
+    <MudItem xs="12" sm="8" md="9">
+        <MudCard>
+            <EditForm Model="@concentrator" OnValidSubmit="SaveDevice" >
+                <DataAnnotationsValidator />
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText>Create concentrator</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudGrid>
+                        <MudItem xs="12" md="6">
+                            <MudTextField @bind-Value="@concentrator.DeviceId"
+                                          Label="Device Id"
+                                          Variant="Variant.Outlined"
+                                          For="@(()=> concentrator.DeviceId)"
+                                          Required="true"
+                                          HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)"
+                                          />
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudTextField @bind-Value="@concentrator.DeviceFriendlyName" Label="Friendly tag name" Variant="Variant.Outlined" Required="true"/>
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudText>
+                                <b>Status</b>
+                            </MudText>
+                            <MudSwitch @bind-Checked="@concentrator.IsEnabled" Color="Color.Secondary" />
+                            @if (concentrator.IsEnabled)
+                            {
+                                    <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
+                            }
+                            else
+                            {
+                                    <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
+                            }
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudSelect T="string" For="@(()=> concentrator.LoraRegion)" Label="Region" Variant="Variant.Text" @bind-Value="@concentrator.LoraRegion" Required="true">
+                                <MudSelectItem Value="@("EU863")"/>
+                                <MudSelectItem Value="@("US902")"/>
+                                <MudSelectItem Value="@("CN470RP1")"/>
+                                <MudSelectItem Value="@("CN470RP2")"/>
+                            </MudSelect>
+                        </MudItem>
+
+                        <MudSpacer />
+
+                        <MudItem xs="12" md="6">
+                            <MudTextField For="@(()=> concentrator.ClientCertificateThumbprint)" @bind-Value="@concentrator.ClientCertificateThumbprint" Label="Client certificate thumbprint" Variant="Variant.Outlined" />
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+                <MudCardActions Class="pb-4 pl-4">
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save Changes</MudButton>
+                </MudCardActions>
+            </EditForm>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private Concentrator concentrator = new Concentrator();
+
+    /// <summary>
+    /// Sends a POST request to the ConcentratorsController, to add the new device lora concentrator to the Azure IoT Hub
+    /// </summary>
+    public async void SaveDevice()
+    {
+        concentrator.DeviceType = "LoRa Concentrator";
+        // Sends the device to be added to the controller
+        var response = await Http.PostAsJsonAsync<Concentrator>($"api/Concentrators", concentrator);
+
+        if (response.IsSuccessStatusCode)
+        {
+            // Prompts a snack bar to inform the action was successful
+            Snackbar.Add($"Device {concentrator.DeviceId} has been successfully created!", Severity.Success);
+
+            NavManager.NavigateTo("lorawan/concentrators");
+        }
+        else
+        {
+            string errorMsg = await response.Content.ReadAsStringAsync();
+            Snackbar.Add($"Oh oh, something went wrong while creating device {concentrator.DeviceId}... <br> {errorMsg}", Severity.Error);
+        }
+    }
+}

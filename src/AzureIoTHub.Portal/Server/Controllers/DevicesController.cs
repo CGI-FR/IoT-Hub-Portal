@@ -59,8 +59,15 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             // Gets all the twins from this devices
             var items = await this.devicesService.GetAllDevice();
+            List<Twin> listTwin = new List<Twin>();
+            var itemFilter = items.Where(item => item.Tags.Contains("deviceType") && item.Tags["deviceType"] != "LoRa Concentrator");
 
-            return items.Select(this.deviceTwinMapper.CreateDeviceListItem);
+            foreach (var item in itemFilter)
+            {
+                listTwin.Add(item);
+            }
+
+            return listTwin.Select(this.deviceTwinMapper.CreateDeviceListItem);
         }
 
         /// <summary>
@@ -80,13 +87,13 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateDeviceAsync(DeviceDetails device)
         {
-            if (!this.ModelState.IsValid)
-            {
-                return this.BadRequest(this.ModelState);
-            }
-
             try
             {
+                if (!this.ModelState.IsValid)
+                {
+                    return this.BadRequest(this.ModelState);
+                }
+
                 // Create a new Twin from the form's fields.
                 var newTwin = new Twin()
                 {
@@ -103,7 +110,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
             }
             catch (DeviceAlreadyExistsException e)
             {
-                this.logger.LogError($"{device.DeviceID} - Create device failed", e);
+                this.logger?.LogError($"{device.DeviceID} - Create device failed", e);
                 return this.BadRequest(e.Message);
             }
             catch (InvalidOperationException e)
