@@ -1,4 +1,4 @@
-﻿@page "/concentrators/new"
+﻿@page "/lorawan/concentrators/new"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Shared.Models.Concentrator
@@ -8,7 +8,7 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Basic Station</MudText>
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">LoRaWAN Concentrator</MudText>
 
 <MudGrid>
     <MudItem xs="12" sm="8" md="9">
@@ -92,7 +92,7 @@
             // Prompts a snack bar to inform the action was successful
             Snackbar.Add($"Device {concentrator.DeviceId} has been successfully created!", Severity.Success);
 
-            NavManager.NavigateTo("concentrators");
+            NavManager.NavigateTo("lorawan/concentrators");
         }
         else
         {
