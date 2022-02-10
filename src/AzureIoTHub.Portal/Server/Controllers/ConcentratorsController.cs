@@ -41,21 +41,40 @@ namespace AzureIoTHub.Portal.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Concentrator>> GetAllDeviceConcentrator()
+        public async Task<IActionResult> GetAllDeviceConcentrator()
         {
-            // Gets all the twins from this devices
-            var items = await this.devicesService.GetAllDevice();
-            var itemFilter = items.Where(x => x.Tags["deviceType"] == "LoRa Concentrator");
+            try
+            {
+                // Gets all the twins from this devices
+                var items = await this.devicesService.GetAllDevice();
+                var itemFilter = items.Where(x => x.Tags["deviceType"] == "LoRa Concentrator");
+                List<Concentrator> result = new List<Concentrator>();
 
-            return itemFilter.Select(this.concentratorTwinMapper.CreateDeviceDetails);
+                foreach (var item in itemFilter)
+                {
+                    result.Add(this.concentratorTwinMapper.CreateDeviceDetails(item));
+                }
+
+                return this.Ok(result);
+            }
+            catch (Exception e)
+            {
+                return this.BadRequest(e.Message);
+            }
         }
 
         [HttpGet("{deviceId}")]
-        public async Task<Concentrator> GetDeviceConcentrator(string deviceId)
+        public async Task<IActionResult> GetDeviceConcentrator(string deviceId)
         {
-            var item = await this.devicesService.GetDeviceTwin(deviceId);
-
-            return this.concentratorTwinMapper.CreateDeviceDetails(item);
+            try
+            {
+                var item = await this.devicesService.GetDeviceTwin(deviceId);
+                return this.Ok(this.concentratorTwinMapper.CreateDeviceDetails(item));
+            }
+            catch (Exception e)
+            {
+                return this.BadRequest(e.Message);
+            }
         }
 
         [HttpPost]
@@ -99,22 +118,29 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateDeviceAsync(Concentrator device)
         {
-            // Device status (enabled/disabled) has to be dealt with afterwards
-            Device currentDevice = await this.devicesService.GetDevice(device.DeviceId);
-            currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+            try
+            {
+                // Device status (enabled/disabled) has to be dealt with afterwards
+                Device currentDevice = await this.devicesService.GetDevice(device.DeviceId);
+                currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
-            _ = await this.devicesService.UpdateDevice(currentDevice);
+                _ = await this.devicesService.UpdateDevice(currentDevice);
 
-            // Get the current twin from the hub, based on the device ID
-            Twin currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceId);
-            device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
+                // Get the current twin from the hub, based on the device ID
+                Twin currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceId);
+                device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
 
-            // Update the twin properties
-            this.concentratorTwinMapper.UpdateTwin(currentTwin, device);
+                // Update the twin properties
+                this.concentratorTwinMapper.UpdateTwin(currentTwin, device);
 
-            _ = await this.devicesService.UpdateDeviceTwin(device.DeviceId, currentTwin);
+                _ = await this.devicesService.UpdateDeviceTwin(device.DeviceId, currentTwin);
 
-            return this.Ok();
+                return this.Ok("Device updated.");
+            }
+            catch (Exception e)
+            {
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>
