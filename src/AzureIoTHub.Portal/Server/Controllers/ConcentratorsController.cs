@@ -151,8 +151,15 @@ namespace AzureIoTHub.Portal.Server.Controllers
         [HttpDelete("{deviceId}")]
         public async Task<IActionResult> Delete(string deviceId)
         {
-            await this.devicesService.DeleteDevice(deviceId);
-            return this.Ok("the device was successfully deleted.");
+            try
+            {
+                await this.devicesService.DeleteDevice(deviceId);
+                return this.Ok("the device was successfully deleted.");
+            }
+            catch (Exception e)
+            {
+                return this.BadRequest(e.Message);
+            }
         }
     }
 }
