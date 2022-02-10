@@ -47,6 +47,7 @@ Here are different settings that the user can configure:
 * **IoTDPS__ServiceEndpoint**: The IoT Device Provisioning Service endpoint.
 * **IoTDPS__DefaultEnrollmentGroup**: The default IoT Device Provisioning Service enrollment group.
 * **LoRaKeyManagement__Url**: The LoRa Key Management Facade URL.
+* **LoRaRegionRouterConfig__Url**: The LoRa Region Router Config URL.
 
 #### Connection strings
 
