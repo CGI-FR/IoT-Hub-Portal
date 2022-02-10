@@ -159,7 +159,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers
 
             this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(
                 It.Is<string>(x => x == twin.DeviceId),
-                It.Is<bool>(x => x == false),
+                It.Is<bool>(x => !x),
                 It.Is<Twin>(x => x.DeviceId == twin.DeviceId),
                 It.Is<DeviceStatus>(x => x == DeviceStatus.Enabled)))
                 .ReturnsAsync(mockResult);
