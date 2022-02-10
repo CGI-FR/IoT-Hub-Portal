@@ -24,10 +24,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
     {
         private MockRepository mockRepository;
 
+        private HttpClient mockHttpClient;
+        private Mock<IConfiguration> mockConfiguration;
+        private Mock<HttpMessageHandler> httpMessageHandlerMock;
+
         [SetUp]
         public void SetUp()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
+
+            this.mockConfiguration = this.mockRepository.Create<IConfiguration>();
+            this.httpMessageHandlerMock = this.mockRepository.Create<HttpMessageHandler>();
+            this.mockHttpClient = new HttpClient(this.httpMessageHandlerMock.Object);
         }
 
         private ConcentratorTwinMapper CreateConcentratorTwinMapper()
@@ -94,6 +102,29 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
                 AlreadyLoggedInOnce = false,
                 RouterConfig = new RouterConfig()
             };
+
+            using var deviceResponseMock = new HttpResponseMessage();
+
+            deviceResponseMock.Content = new StringContent("{}", Encoding.UTF8, "application/json");
+
+            this.httpMessageHandlerMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync((HttpRequestMessage req, CancellationToken token) =>
+                {
+                    if (req.RequestUri.LocalPath.Equals($"/{item.LoraRegion}.json", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return deviceResponseMock;
+                    }
+
+                    return null;
+                })
+                .Verifiable();
+
+
+            Twin twin = new Twin();
+            this.mockConfiguration.SetupGet(x => x[It.Is<string>(c => c == "LoRaRegionRouterConfig:Url")])
+                .Returns("http://fake.local");
             
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceFriendlyName), item.DeviceFriendlyName);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);

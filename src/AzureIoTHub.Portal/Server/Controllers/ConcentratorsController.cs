@@ -45,9 +45,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             try
             {
-                // Gets all the twins from this devices
-                var items = await this.devicesService.GetAllDevice();
-                var itemFilter = items.Where(x => x.Tags["deviceType"] == "LoRa Concentrator");
+            // Gets all the twins from this devices
+            var items = await this.devicesService.GetAllDevice();
+            var itemFilter = items.Where(x => x.Tags["deviceType"] == "LoRa Concentrator");
                 List<Concentrator> result = new List<Concentrator>();
 
                 foreach (var item in itemFilter)
@@ -67,8 +67,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
         public async Task<IActionResult> GetDeviceConcentrator(string deviceId)
         {
             try
-            {
-                var item = await this.devicesService.GetDeviceTwin(deviceId);
+        {
+            var item = await this.devicesService.GetDeviceTwin(deviceId);
                 return this.Ok(this.concentratorTwinMapper.CreateDeviceDetails(item));
             }
             catch (Exception e)
@@ -125,20 +125,20 @@ namespace AzureIoTHub.Portal.Server.Controllers
                     return this.BadRequest(this.ModelState);
                 }
 
-                // Device status (enabled/disabled) has to be dealt with afterwards
-                Device currentDevice = await this.devicesService.GetDevice(device.DeviceId);
-                currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+            // Device status (enabled/disabled) has to be dealt with afterwards
+            Device currentDevice = await this.devicesService.GetDevice(device.DeviceId);
+            currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
-                _ = await this.devicesService.UpdateDevice(currentDevice);
+            _ = await this.devicesService.UpdateDevice(currentDevice);
 
-                // Get the current twin from the hub, based on the device ID
-                Twin currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceId);
+            // Get the current twin from the hub, based on the device ID
+            Twin currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceId);
                 device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
 
-                // Update the twin properties
+            // Update the twin properties
                 this.concentratorTwinMapper.UpdateTwin(currentTwin, device);
 
-                _ = await this.devicesService.UpdateDeviceTwin(device.DeviceId, currentTwin);
+            _ = await this.devicesService.UpdateDeviceTwin(device.DeviceId, currentTwin);
 
                 return this.Ok("Device updated.");
             }
@@ -158,9 +158,9 @@ namespace AzureIoTHub.Portal.Server.Controllers
         {
             try
             {
-                await this.devicesService.DeleteDevice(deviceId);
-                return this.Ok("the device was successfully deleted.");
-            }
+            await this.devicesService.DeleteDevice(deviceId);
+            return this.Ok("the device was successfully deleted.");
+        }
             catch (Exception e)
             {
                 return this.BadRequest(e.Message);
