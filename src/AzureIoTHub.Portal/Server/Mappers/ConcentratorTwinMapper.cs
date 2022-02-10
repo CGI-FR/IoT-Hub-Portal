@@ -43,9 +43,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
             twin.Properties.Desired[nameof(item.ClientCertificateThumbprint)] = item.ClientCertificateThumbprint;
             twin.Properties.Desired[nameof(item.RouterConfig)] = item.RouterConfig;
-
-            // var result = await this.httpClient.GetFromJsonAsync<RouterConfig>($"{this.configHandler.LoRaRegionRouterConfigUrl}/{item.LoraRegion}.json");
-            // var result = await this.httpClient.GetFromJsonAsync<RouterConfig>($"{this.configuration["LoRaRegionRouterConfig:Url"]}/{item.LoraRegion}.json");
         }
     }
 }

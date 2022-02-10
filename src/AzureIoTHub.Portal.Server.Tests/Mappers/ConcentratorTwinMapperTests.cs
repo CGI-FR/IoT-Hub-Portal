@@ -104,22 +104,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
 
             deviceResponseMock.Content = new StringContent("{}", Encoding.UTF8, "application/json");
 
-            this.httpMessageHandlerMock
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync((HttpRequestMessage req, CancellationToken token) =>
-                {
-                    if (req.RequestUri.LocalPath.Equals($"/{item.LoraRegion}.json", StringComparison.OrdinalIgnoreCase))
-                    {
-                        return deviceResponseMock;
-                    }
-
-                    return null;
-                })
-                .Verifiable();
-
-            this.mockConfiguration.SetupGet(x => x[It.Is<string>(c => c == "LoRaRegionRouterConfig:Url")])
-                .Returns("http://fake.local");
+            // this.httpMessageHandlerMock
+            //     .Protected()
+            //     .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.RequestUri.LocalPath.Equals($"/{item.LoraRegion}.json", StringComparison.OrdinalIgnoreCase)), ItExpr.IsAny<CancellationToken>())
+            //     .ReturnsAsync((HttpRequestMessage req, CancellationToken token) => deviceResponseMock)
+            //     .Verifiable();
             
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceFriendlyName), item.DeviceFriendlyName);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
