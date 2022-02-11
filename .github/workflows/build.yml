@@ -66,6 +66,10 @@ jobs:
         run: dotnet build --no-restore
         working-directory: src/
 
+      - name: Create dotnet manifest
+        run: dotnet new tool-manifest
+        working-directory: src/
+
       - name: Install Swashbuckle
         run: dotnet tool install SwashBuckle.AspNetCore.Cli
         working-directory: src/
