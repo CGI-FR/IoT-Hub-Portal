@@ -62,7 +62,10 @@
                             </CardHeaderContent>
                         </MudCardHeader>
                         <MudCardContent>
-                            <MudGrid>
+                            <MudGrid>                                
+                                <MudItem xs="12">
+                                    <MudTextField @bind-Value="@Device.DeviceName" Label="Device name" Required="true" Variant="Variant.Outlined" />
+                                </MudItem>
                                 <MudItem xs="12" md="6">
                                     <MudTextField @bind-Value="@Device.AssetId" Label="IoT Asset ID" Variant="Variant.Outlined" />
                                 </MudItem>

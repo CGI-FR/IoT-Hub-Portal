@@ -124,7 +124,13 @@ namespace AzureIoTHub.Portal.Server
                 client.BaseAddress = new Uri(configuration.LoRaRegionRouterConfigUrl);
             }).AddPolicyHandler(transientHttpErrorPolicy);
 
+            services.AddControllers();
+
+            services.AddEndpointsApiExplorer();
+
             services.AddApplicationInsightsTelemetry();
+
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -134,6 +140,8 @@ namespace AzureIoTHub.Portal.Server
             {
                 app.UseDeveloperExceptionPage();
                 app.UseWebAssemblyDebugging();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
             else
             {

@@ -13,6 +13,9 @@ namespace AzureIoTHub.Portal.Shared.Models.Device
         [RegularExpression("^[A-F0-9]{16}$", ErrorMessage = "DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)")]
         public string DeviceID { get; set; }
 
+        [Required]
+        public string DeviceName { get; set; }
+
         public string ImageUrl { get; set; }
 
         public bool IsConnected { get; set; }

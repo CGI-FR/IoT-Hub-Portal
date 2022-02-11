@@ -25,7 +25,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             return new Concentrator
             {
                 DeviceId = twin.DeviceId,
-                DeviceFriendlyName = DeviceHelper.RetrieveTagValue(twin, nameof(Concentrator.DeviceFriendlyName)),
+                DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(Concentrator.DeviceName)),
                 LoraRegion = DeviceHelper.RetrieveTagValue(twin, nameof(Concentrator.LoraRegion)),
                 ClientCertificateThumbprint = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(Concentrator.ClientCertificateThumbprint)),
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
@@ -37,7 +37,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
         public void UpdateTwin(Twin twin, Concentrator item)
         {
-            DeviceHelper.SetTagValue(twin, nameof(item.DeviceFriendlyName), item.DeviceFriendlyName);
+            DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
             DeviceHelper.SetTagValue(twin, nameof(item.LoraRegion), item.LoraRegion);
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
 

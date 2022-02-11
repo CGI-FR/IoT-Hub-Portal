@@ -22,7 +22,7 @@
                 </MudCardHeader>
                 <MudCardContent>
                     <MudGrid>
-                        <MudItem xs="12" md="6">
+                        <MudItem xs="12">
                             <MudTextField @bind-Value="@concentrator.DeviceId"
                                           Label="Device Id"
                                           Variant="Variant.Outlined"
@@ -32,8 +32,10 @@
                                           />
                         </MudItem>
 
-                        <MudItem xs="12" md="6">
-                            <MudTextField @bind-Value="@concentrator.DeviceFriendlyName" Label="Friendly tag name" Variant="Variant.Outlined" Required="true"/>
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="@concentrator.DeviceName"
+                                          For="@(()=> concentrator.DeviceName)"
+                                          Label="Device name" Variant="Variant.Outlined" Required="true"/>
                         </MudItem>
 
                         <MudItem xs="12">

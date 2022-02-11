@@ -31,6 +31,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             {
                 DeviceID = twin.DeviceId,
                 ModelId = modelId,
+                DeviceName = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.DeviceName)),
                 AlreadyLoggedInOnce = Helpers.DeviceHelper.RetrieveReportedPropertyValue(twin, "DevAddr") != null,
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(modelId),
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
@@ -51,6 +52,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             return new DeviceListItem
             {
                 DeviceID = twin.DeviceId,
+                DeviceName = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.DeviceName)),
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))),
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
@@ -62,6 +64,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
         public void UpdateTwin(Twin twin, DeviceDetails item)
         {
             // Update the twin properties
+            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.LocationCode), item.LocationCode);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.AssetId), item.AssetId);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);

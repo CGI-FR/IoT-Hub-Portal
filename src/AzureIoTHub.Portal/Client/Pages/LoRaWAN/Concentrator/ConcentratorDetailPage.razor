@@ -56,10 +56,9 @@
                         </MudCardHeader>
                         <MudCardContent>
                             <MudGrid>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@concentrator.DeviceFriendlyName" Label="Device Friendly Name" Variant="Variant.Outlined" />
+                                <MudItem xs="12">
+                                    <MudTextField @bind-Value="@concentrator.DeviceName" Label="Device name" Variant="Variant.Outlined" Required="true" />
                                 </MudItem>
-
                                 <MudItem xs="12" md="6">
                                     <MudTextField @bind-Value="@concentrator.ClientCertificateThumbprint" Label="Client Certificate Thumbprint" Variant="Variant.Outlined" Required="true" />
                                 </MudItem>
