@@ -112,12 +112,10 @@ jobs:
         run: dir
 
       - name: Push Open API Markdown to GitHub
-        uses: actions-x/commit@v2
+        uses: actions-js/commit@master
         with:
           branch: 'docs/main'
-          files: .
           message: 'Adds auto-generated Open API doc'
-          rebase: 'true' # pull and rebase before commit
       
        
       
