@@ -76,6 +76,7 @@ jobs:
 
       - name: Generate Open API documentation
         run: dotnet swagger tofile --output ./swagger.json src/AzureIoTHub.Portal/Server/bin/Debug/net6.0/AzureIoTHub.Portal.Server.dll v1
+        working-directory: src/
 
       # Upload test results as artifact
       - uses: actions/upload-artifact@v2
