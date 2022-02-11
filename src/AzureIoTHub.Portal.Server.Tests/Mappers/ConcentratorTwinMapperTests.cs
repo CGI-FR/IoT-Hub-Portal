@@ -54,7 +54,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             };
 
             twin.Tags[nameof(Concentrator.DeviceType).ToCamelCase()] = Guid.NewGuid().ToString();
-            twin.Tags[nameof(Concentrator.DeviceFriendlyName).ToCamelCase()] = Guid.NewGuid().ToString();
+            twin.Tags[nameof(Concentrator.DeviceName).ToCamelCase()] = Guid.NewGuid().ToString();
             twin.Tags[nameof(Concentrator.LoraRegion).ToCamelCase()] = Guid.NewGuid().ToString();
 
             twin.Properties.Reported["DevAddr"] = Guid.NewGuid().ToString();
@@ -70,7 +70,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             Assert.IsFalse(result.IsConnected);
             Assert.IsFalse(result.IsEnabled);
 
-            Assert.AreEqual(twin.Tags[nameof(Concentrator.DeviceFriendlyName).ToCamelCase()].ToString(), result.DeviceFriendlyName);
+            Assert.AreEqual(twin.Tags[nameof(Concentrator.DeviceName).ToCamelCase()].ToString(), result.DeviceName);
             Assert.AreEqual(twin.Tags[nameof(Concentrator.LoraRegion).ToCamelCase()].ToString(), result.LoraRegion);
             Assert.AreEqual(twin.Tags[nameof(Concentrator.DeviceType).ToCamelCase()].ToString(), result.DeviceType);
 
@@ -91,7 +91,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             Concentrator item = new Concentrator
             {
                 LoraRegion = Guid.NewGuid().ToString(),
-                DeviceFriendlyName = Guid.NewGuid().ToString(),
+                DeviceName = Guid.NewGuid().ToString(),
                 DeviceType = Guid.NewGuid().ToString(),
                 ClientCertificateThumbprint = Guid.NewGuid().ToString(),
                 IsConnected = false,
@@ -110,7 +110,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             //     .ReturnsAsync((HttpRequestMessage req, CancellationToken token) => deviceResponseMock)
             //     .Verifiable();
             
-            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceFriendlyName), item.DeviceFriendlyName);
+            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.LoraRegion), item.LoraRegion);
 
@@ -120,7 +120,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             concentratorTwinMapper.UpdateTwin(twin, item);
 
             // Assert
-            Assert.AreEqual(item.DeviceFriendlyName, twin.Tags[nameof(Concentrator.DeviceFriendlyName).ToCamelCase()].ToString());
+            Assert.AreEqual(item.DeviceName, twin.Tags[nameof(Concentrator.DeviceName).ToCamelCase()].ToString());
             Assert.AreEqual(item.DeviceType, twin.Tags[nameof(Concentrator.DeviceType).ToCamelCase()].ToString());
             Assert.AreEqual(item.LoraRegion, twin.Tags[nameof(Concentrator.LoraRegion).ToCamelCase()].ToString());
 
