@@ -49,6 +49,8 @@ Here are different settings that the user can configure:
 * **LoRaKeyManagement__Url**: The LoRa Key Management Facade URL.
 * **LoRaRegionRouterConfig__Url**: The LoRa Region Router Config URL.
 
+> Note: ``LoRaRegionRouterConfig__Url`` is the URL of the LoRa Region Router Config file repository. By default you cane use 'https://raw.githubusercontent.com/Azure/iotedge-lorawan-starterkit/dev/Tools/Cli-LoRa-Device-Provisioning/DefaultRouterConfig/' which is where the Azure IoT Edge LoRaWAN project is hosted.
+
 #### Connection strings
 
 Here are different connection strings that the user can configure:
