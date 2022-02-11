@@ -46,8 +46,8 @@ jobs:
       with:
         directory: src/AzureIoTHub.Portal.Server.Tests/TestResults
 
-  docs: 
-    name: Build & Push Open API Docs
+  generate-openapi: 
+    name: Generate OpenAPI doc
     runs-on: ubuntu-latest
     needs: [ build ]
     steps:
@@ -80,7 +80,45 @@ jobs:
 
       # Upload test results as artifact
       - uses: actions/upload-artifact@v2
-        if: success() || failure()
+        if: success()
         with:
           name: swagger-doc
           path: ./src/swagger.json
+
+  add-openapi-docs: 
+    name: Import OpenAPI to documentation
+    runs-on: ubuntu-latest
+    needs: [ generate-openapi ]
+    steps:
+      - uses: actions/checkout@v2
+        with: 
+          ref: 'docs/main'
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+        
+      - name: Install widdershins
+        run: npm install -g widdershins
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: swagger-doc
+
+      - name: Generate Open API Markdown
+        run: widdershins swagger.json -o open-api.md
+
+      - name: Debug list
+        run: dir
+
+      - name: Push Open API Markdown to GitHub
+        uses: actions-x/commit@v2
+        with:
+          branch: 'docs/main'
+          files: .
+          message: 'Adds auto-generated Open API doc'
+          rebase: 'true' # pull and rebase before commit
+      
+       
+      
+
