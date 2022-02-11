@@ -83,4 +83,4 @@ jobs:
         if: success() || failure()
         with:
           name: swagger-doc
-          path: ./swagger.json
+          path: ./src/swagger.json
