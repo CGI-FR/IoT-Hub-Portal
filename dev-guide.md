@@ -40,7 +40,7 @@ Since the IoT Hub Portal is deployed as a Docker container. The application sett
 Here are different settings that the user can configure:
 
 * **OIDC__Authority**: The OpenID Connect issuer.
-* **OIDC__MetadataUrl**: The OpenID Connect metadata URL (aka: well-known/openid-configuration).
+* **OIDC__MetadataUrl**: The OpenID Connect metadata URL (aka: .well-known/openid-configuration).
 * **OIDC__ClientId**: The OpenID Connect client ID for the Web UI.
 * **OIDC__ApiClientId**: The OpenID Connect client ID for the API.
 * **OIDC__Scope**: The OpenID Connect scope that represents the portal API.
