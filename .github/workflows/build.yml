@@ -112,7 +112,7 @@ jobs:
         run: dir
 
       - name: Push Open API Markdown to GitHub
-        uses: actions-js/commit@master
+        uses: actions-js/push@master
         with:
           branch: 'docs/main'
           message: 'Adds auto-generated Open API doc'
