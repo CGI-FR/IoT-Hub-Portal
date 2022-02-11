@@ -21,8 +21,7 @@
         <MudItem xs="12">
             <MudTable Items="@concentrators" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
                 <ColGroup>
-                    <col style="width: 15%;" />
-                    <col style="width: 40%;" />
+                    <col style="width: 60%;" />
                     <col style="width: 10%;" />
                     <col style="width: 10%;" />
                     <col style="width: 10%;" />
@@ -35,8 +34,7 @@
                     <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" Class="ma-2"></MudIconButton>
                 </ToolBarContent>
                 <HeaderContent>
-                    <MudTh Style="text-align: center">Name</MudTh>
-                    <MudTh>Device Id</MudTh>
+                    <MudTh>Device</MudTh>
                     <MudTh Style="text-align: center">Status</MudTh>
                     <MudTh Style="text-align: center">Connection state</MudTh>
                     <MudTh Style="text-align: center">See details</MudTh>
@@ -44,10 +42,7 @@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Device" Style="word-break: break-all;">
-                        <a href="lorawan/concentrators/@context.DeviceId">@context.DeviceFriendlyName</a>
-                    </MudTd>
-                    <MudTd DataLabel="Device" Style="word-break: break-all;">
-                        <a href="lorawan/concentrators/@context.DeviceId">@context.DeviceId</a>
+                        <a href="lorawan/concentrators/@context.DeviceId">@context.DeviceName</a>
                     </MudTd>
                     <MudTd DataLabel="Status" Style="text-align: center">
                         @if (context.IsEnabled)

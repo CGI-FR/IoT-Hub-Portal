@@ -9,6 +9,8 @@ namespace AzureIoTHub.Portal.Shared.Models.Device
     {
         public string DeviceID { get; set; }
 
+        public string DeviceName { get; set; }
+
         public string ImageUrl { get; set; }
 
         public bool IsConnected { get; set; }

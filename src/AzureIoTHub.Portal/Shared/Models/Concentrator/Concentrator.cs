@@ -17,7 +17,7 @@ namespace AzureIoTHub.Portal.Shared.Models.Concentrator
         public string DeviceId { get; set; }
 
         [Required]
-        public string DeviceFriendlyName { get; set; }
+        public string DeviceName { get; set; }
 
         [Required]
         public string LoraRegion { get; set; }
