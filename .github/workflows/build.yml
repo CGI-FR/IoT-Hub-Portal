@@ -21,6 +21,10 @@ jobs:
       with:
         dotnet-version: 6.0.x
 
+    - name: Restore Dotnet tools
+      run: dotnet tool restore
+      working-directory: src/
+      
     - name: Restore dependencies
       run: dotnet restore
       working-directory: src/
@@ -28,7 +32,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
       working-directory: src/
-
+    
     - name: Generate Open API documentation
       run: dotnet swagger tofile --output ./swagger.json AzureIoTHub.Portal/Server/bin/Debug/net6.0/AzureIoTHub.Portal.Server.dll v1
       working-directory: src/
