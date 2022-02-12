@@ -116,6 +116,7 @@ jobs:
         with:
           branch: 'docs/main'
           message: 'Adds auto-generated Open API doc'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       
        
       
