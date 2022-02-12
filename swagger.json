@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "AzureIoTHub.Portal.Server",
+    "title": "Azure IoT Hub Portal API",
     "version": "1.0"
   },
   "paths": {
@@ -10,6 +10,7 @@
         "tags": [
           "Commands"
         ],
+        "summary": "Add a command to an Azure DataTable.",
         "parameters": [
           {
             "name": "modelId",
@@ -51,6 +52,7 @@
         "tags": [
           "Commands"
         ],
+        "summary": "Delete a command from an Azure DataTable.",
         "parameters": [
           {
             "name": "modelId",
@@ -171,10 +173,12 @@
         "tags": [
           "Concentrators"
         ],
+        "summary": "this function delete a device.",
         "parameters": [
           {
             "name": "deviceId",
             "in": "path",
+            "description": "the device id.",
             "required": true,
             "schema": {
               "type": "string"
@@ -193,6 +197,7 @@
         "tags": [
           "Configs"
         ],
+        "summary": "Gets a list of deployments as ConfigListItem from Azure IoT Hub.",
         "responses": {
           "200": {
             "description": "Success",
@@ -231,10 +236,12 @@
         "tags": [
           "Configs"
         ],
+        "summary": "Retrieve a specific deployment and its modules from the IoT Hub.\r\nConverts it to a ConfigListItem.",
         "parameters": [
           {
             "name": "configurationID",
             "in": "path",
+            "description": "ID of the deployment to retrieve.",
             "required": true,
             "schema": {
               "type": "string"
@@ -270,6 +277,7 @@
         "tags": [
           "DeviceModels"
         ],
+        "summary": "Gets a list of device models from an Azure DataTable.",
         "responses": {
           "200": {
             "description": "Success",
@@ -366,6 +374,7 @@
         "tags": [
           "DeviceModels"
         ],
+        "summary": "Get a specific device model from an Azure DataTable.",
         "parameters": [
           {
             "name": "modelID",
@@ -526,6 +535,7 @@
         "tags": [
           "Devices"
         ],
+        "summary": "Gets a list of devices as DeviceListItem from Azure IoT Hub.\r\nFields that do not appear in the device list are not defined here.",
         "responses": {
           "200": {
             "description": "Success",
@@ -591,7 +601,9 @@
         "tags": [
           "Devices"
         ],
+        "summary": "this function update the twin and the device.",
         "requestBody": {
+          "description": "the device object.",
           "content": {
             "application/json": {
               "schema": {
@@ -622,10 +634,12 @@
         "tags": [
           "Devices"
         ],
+        "summary": "Retrieve a specific device and from the IoT Hub.\r\nConverts it to a DeviceListItem.",
         "parameters": [
           {
             "name": "deviceID",
             "in": "path",
+            "description": "ID of the device to retrieve.",
             "required": true,
             "schema": {
               "type": "string"
@@ -659,10 +673,12 @@
         "tags": [
           "Devices"
         ],
+        "summary": "this function delete a device.",
         "parameters": [
           {
             "name": "deviceID",
             "in": "path",
+            "description": "the device id.",
             "required": true,
             "schema": {
               "type": "string"
@@ -681,10 +697,12 @@
         "tags": [
           "Devices"
         ],
+        "summary": "Permit to execute cloud to device message.",
         "parameters": [
           {
             "name": "deviceId",
             "in": "path",
+            "description": "id of the device.",
             "required": true,
             "schema": {
               "type": "string"
@@ -693,6 +711,7 @@
           {
             "name": "commandId",
             "in": "path",
+            "description": "the command who contain the name and the trame.",
             "required": true,
             "schema": {
               "type": "string"
@@ -711,6 +730,7 @@
         "tags": [
           "Gateways"
         ],
+        "summary": "Fonction permettant de récupèrer la liste des appareils Edge .\r\nAprès avoir éxecuté la query du registryManager on récupère le resultat\r\nsous la forme d'une liste de Twin.",
         "responses": {
           "200": {
             "description": "Success",
@@ -747,7 +767,9 @@
         "tags": [
           "Gateways"
         ],
+        "summary": "this function create a device with the twin information.",
         "requestBody": {
+          "description": "the gateway object.",
           "content": {
             "application/json": {
               "schema": {
@@ -778,10 +800,12 @@
         "tags": [
           "Gateways"
         ],
+        "summary": "This function return all the information we want of\r\na device.",
         "parameters": [
           {
             "name": "deviceId",
             "in": "path",
+            "description": "the device id.",
             "required": true,
             "schema": {
               "type": "string"
@@ -815,10 +839,12 @@
         "tags": [
           "Gateways"
         ],
+        "summary": "this function delete a device.",
         "parameters": [
           {
             "name": "deviceId",
             "in": "path",
+            "description": "the device id to delete.",
             "required": true,
             "schema": {
               "type": "string"
@@ -867,6 +893,7 @@
         "tags": [
           "Gateways"
         ],
+        "summary": "This function update the properties of a device.",
         "parameters": [
           {
             "name": "gateway",
@@ -878,6 +905,7 @@
           }
         ],
         "requestBody": {
+          "description": "a gateways object.",
           "content": {
             "application/json": {
               "schema": {
@@ -982,9 +1010,12 @@
         "tags": [
           "OIDCSettings"
         ],
+        "summary": "Get the Open ID Settings.",
+        "description": "Sample request:\r\n            \r\n    GET /OIDCSetings",
+        "operationId": "GetOIDCSettings",
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Returns the OIDC settings."
           }
         }
       }
