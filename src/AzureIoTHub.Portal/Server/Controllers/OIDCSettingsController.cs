@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers
 {
-    using System;
     using AzureIoTHub.Portal.Server.Identity;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;

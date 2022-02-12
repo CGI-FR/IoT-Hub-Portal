@@ -3,16 +3,10 @@
 
 namespace AzureIoTHub.Portal.Server.Mappers
 {
-    using System.Net.Http;
-    using System.Net.Http.Json;
-    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Shared.Models.Concentrator;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Configuration;
-    using Newtonsoft.Json.Linq;
-    using static AzureIoTHub.Portal.Server.Startup;
 
     public class ConcentratorTwinMapper : IConcentratorTwinMapper
     {

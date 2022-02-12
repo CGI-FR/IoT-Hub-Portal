@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers
 {
-    using System;
     using System.Threading.Tasks;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;

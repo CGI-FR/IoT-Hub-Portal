@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Interfaces;
-    using AzureIoTHub.Portal.Shared.Models;
     using Microsoft.Azure.Devices;
 
     public class ConfigsServices : IConfigs

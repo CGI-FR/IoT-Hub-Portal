@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Server.Managers
 {
-    using System;
     using System.Collections.Generic;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;

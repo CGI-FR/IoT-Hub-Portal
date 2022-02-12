@@ -4,18 +4,10 @@ using AzureIoTHub.Portal.Shared.Models.Concentrator;
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Extensions.Configuration;
 using Moq;
-using Moq.Protected;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using static AzureIoTHub.Portal.Server.Startup;
 
 namespace AzureIoTHub.Portal.Server.Tests.Mappers
 {

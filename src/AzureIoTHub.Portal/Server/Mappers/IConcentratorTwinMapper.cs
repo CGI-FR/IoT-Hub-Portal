@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Server.Mappers
 {
-    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Shared.Models.Concentrator;
     using Microsoft.Azure.Devices.Shared;
 
