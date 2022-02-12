@@ -28,6 +28,11 @@
     nav{
         margin-left: -830px;
         width: 330px;
+        max-height: calc(100vh - 300px);
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding-right: 20px;
+        
         ul{
             li{
                 &.tag-h3 {
