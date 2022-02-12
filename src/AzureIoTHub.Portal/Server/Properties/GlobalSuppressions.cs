@@ -4,3 +4,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:File name should match first type name", Justification = "ErrorModel is nested to the ErrorPage", Scope = "type", Target = "~T:AzureIoTHub.Portal.Server.Pages.ErrorModel")]
+[assembly: SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1629:Documentation text should end with a period", Justification = "SwashBuckle documentation need no period in remarks.", Scope = "member", Target = "~M:AzureIoTHub.Portal.Server.Controllers.OIDCSettingsController.GetOIDCSettings~Microsoft.AspNetCore.Mvc.IActionResult")]
