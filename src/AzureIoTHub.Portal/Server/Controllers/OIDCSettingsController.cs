@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     [ApiController]
     [AllowAnonymous]
     [Route("[controller]")]
+    [Produces("application/json")]
     public class OIDCSettingsController : ControllerBase
     {
         private readonly ClientApiIndentityOptions configuration;
