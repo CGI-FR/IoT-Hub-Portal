@@ -32,9 +32,17 @@
         overflow-x: hidden;
         overflow-y: auto;
         padding-right: 20px;
-        
+
         ul{
             li{
+                &.tag-h1 {
+                    font-size: 30px;
+                    margin-top: 30px;
+                }
+                &.tag-h2 {
+                    font-size: 20px;
+                    margin-top: 20px;
+                }
                 &.tag-h3 {
                     display: none;
                 }
