@@ -1011,8 +1011,7 @@
           "OIDCSettings"
         ],
         "summary": "Get the Open ID Settings.",
-        "description": "Sample request:\r\n            \r\n    GET /OIDCSetings",
-        "operationId": "GetOIDCSettings",
+        "operationId": "GET ODICSettings",
         "responses": {
           "200": {
             "description": "Returns the OIDC settings."

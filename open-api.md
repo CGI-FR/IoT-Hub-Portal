@@ -1365,9 +1365,9 @@ This operation does not require authentication
 
 <h1 id="azure-iot-hub-portal-api-oidcsettings">OIDCSettings</h1>
 
-## GetOIDCSettings
+## GET ODICSettings
 
-<a id="opIdGetOIDCSettings"></a>
+<a id="opIdGET ODICSettings"></a>
 
 > Code samples
 
@@ -1375,11 +1375,7 @@ This operation does not require authentication
 
 *Get the Open ID Settings.*
 
-Sample request:
-            
-    GET /OIDCSetings
-
-<h3 id="getoidcsettings-responses">Responses</h3>
+<h3 id="get-odicsettings-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
