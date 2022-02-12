@@ -1011,10 +1011,13 @@
           "OIDCSettings"
         ],
         "summary": "Get the Open ID Settings.",
-        "operationId": "GET ODICSettings",
+        "operationId": "GET Settings",
         "responses": {
           "200": {
             "description": "Returns the OIDC settings."
+          },
+          "500": {
+            "description": "Internal server error."
           }
         }
       }
