@@ -25,15 +25,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// Get the Open ID Settings.
         /// </summary>
         /// <returns>The portal OIDC settnigs.</returns>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET /OIDCSetings
-        ///
-        /// </remarks>
-        ///
         /// <response code="200">Returns the OIDC settings.</response>
-        [HttpGet(Name = nameof(GetOIDCSettings))]
+        [HttpGet(Name = "GET ODICSettings")]
         public IActionResult GetOIDCSettings()
         {
             return this.Ok(this.configuration);
