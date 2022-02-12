@@ -7,12 +7,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using AzureIoTHub.Portal.Server.Identity;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Options;
 
-    [Route("[controller]")]
     [ApiController]
     [AllowAnonymous]
+    [Route("[controller]")]
     public class OIDCSettingsController : ControllerBase
     {
         private readonly ClientApiIndentityOptions configuration;
@@ -22,8 +21,20 @@ namespace AzureIoTHub.Portal.Server.Controllers
             this.configuration = configuration.Value;
         }
 
-        [HttpGet]
-        public IActionResult Get()
+        /// <summary>
+        /// Get the Open ID Settings.
+        /// </summary>
+        /// <returns>The portal OIDC settnigs.</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /OIDCSetings
+        ///
+        /// </remarks>
+        ///
+        /// <response code="200">Returns the OIDC settings.</response>
+        [HttpGet(Name = nameof(GetOIDCSettings))]
+        public IActionResult GetOIDCSettings()
         {
             return this.Ok(this.configuration);
         }

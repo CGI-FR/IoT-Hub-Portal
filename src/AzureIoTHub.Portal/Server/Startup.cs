@@ -4,7 +4,9 @@
 namespace AzureIoTHub.Portal.Server
 {
     using System;
+    using System.IO;
     using System.Net;
+    using System.Reflection;
     using System.Threading.Tasks;
     using Azure.Storage.Blobs;
     using AzureIoTHub.Portal.Server.Factories;
@@ -23,6 +25,7 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Primitives;
+    using Microsoft.OpenApi.Models;
     using MudBlazor.Services;
     using Polly;
     using Polly.Extensions.Http;
@@ -130,7 +133,18 @@ namespace AzureIoTHub.Portal.Server
 
             services.AddApplicationInsightsTelemetry();
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(opts =>
+            {
+                opts.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "1.0",
+                    Title = "Azure IoT Hub Portal API"
+                });
+
+                // using System.Reflection;
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

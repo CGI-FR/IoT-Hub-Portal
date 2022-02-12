@@ -20,6 +20,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// from its Id.
         /// </summary>
         /// <param name="deviceId">the device id.</param>
+        /// <param name="attestation">the enrollment group attestation.</param>
         /// <returns>string.</returns>
         public static string RetrieveSymmetricKey(string deviceId, SymmetricKeyAttestation attestation)
         {
@@ -127,6 +128,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// This function get and return a list of the modules.
         /// </summary>
         /// <param name="twin">the twin of the device we want.</param>
+        /// <param name="moduleCount">the module count.</param>
         /// <returns> List of GatewayModule.</returns>
         public static List<GatewayModule> RetrieveModuleList(Twin twin, int moduleCount)
         {
