@@ -106,10 +106,7 @@ jobs:
           name: swagger-doc
 
       - name: Generate Open API Markdown
-        run: widdershins swagger.json -o open-api.md
-
-      - name: Debug list
-        run: dir
+        run: widdershins --environment widdershins.json swagger.json -o open-api.md
 
       - name: Push Open API Markdown to GitHub
         uses: actions-js/push@master
@@ -117,7 +114,4 @@ jobs:
           branch: 'docs/main'
           message: 'Adds auto-generated Open API doc'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      
-       
-      
 
