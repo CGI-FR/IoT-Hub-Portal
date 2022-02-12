@@ -27,6 +27,13 @@
 
     nav{
         margin-left: -730px;
+        ul{
+            li{
+                .tag-h3 {
+                    display: none;
+                }
+            }
+        }
     }
 
     section{
