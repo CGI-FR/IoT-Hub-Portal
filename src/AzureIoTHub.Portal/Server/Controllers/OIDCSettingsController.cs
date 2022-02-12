@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System;
     using AzureIoTHub.Portal.Server.Identity;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
 
@@ -26,7 +27,10 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// </summary>
         /// <returns>The portal OIDC settnigs.</returns>
         /// <response code="200">Returns the OIDC settings.</response>
-        [HttpGet(Name = "GET ODICSettings")]
+        /// <response code="500">Internal server error.</response>
+        [HttpGet(Name = "GET Settings")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetOIDCSettings()
         {
             return this.Ok(this.configuration);
