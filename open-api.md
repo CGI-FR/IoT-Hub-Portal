@@ -1,5 +1,5 @@
 ---
-title: AzureIoTHub.Portal.Server v1.0
+title: Azure IoT Hub Portal API v1.0
 language_tabs: []
 toc_footers: []
 includes: []
@@ -11,17 +11,19 @@ headingLevel: 2
 
 <!-- Generator: Widdershins v4.0.1 -->
 
-<h1 id="azureiothub-portal-server">AzureIoTHub.Portal.Server v1.0</h1>
+<h1 id="azure-iot-hub-portal-api">Azure IoT Hub Portal API v1.0</h1>
 
 > Scroll down for example requests and responses.
 
-<h1 id="azureiothub-portal-server-commands">Commands</h1>
+<h1 id="azure-iot-hub-portal-api-commands">Commands</h1>
 
 ## post__api_Commands_{modelId}
 
 > Code samples
 
 `POST /api/Commands/{modelId}`
+
+*Add a command to an Azure DataTable.*
 
 > Body parameter
 
@@ -56,6 +58,8 @@ This operation does not require authentication
 
 `DELETE /api/Commands/{modelId}/{commandId}`
 
+*Delete a command from an Azure DataTable.*
+
 <h3 id="delete__api_commands_{modelid}_{commandid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -73,7 +77,7 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-<h1 id="azureiothub-portal-server-concentrators">Concentrators</h1>
+<h1 id="azure-iot-hub-portal-api-concentrators">Concentrators</h1>
 
 ## get__api_Concentrators
 
@@ -279,11 +283,13 @@ This operation does not require authentication
 
 `DELETE /api/Concentrators/{deviceId}`
 
+*this function delete a device.*
+
 <h3 id="delete__api_concentrators_{deviceid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceId|path|string|true|none|
+|deviceId|path|string|true|the device id.|
 
 <h3 id="delete__api_concentrators_{deviceid}-responses">Responses</h3>
 
@@ -295,13 +301,15 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-<h1 id="azureiothub-portal-server-configs">Configs</h1>
+<h1 id="azure-iot-hub-portal-api-configs">Configs</h1>
 
 ## get__api_Configs
 
 > Code samples
 
 `GET /api/Configs`
+
+*Gets a list of deployments as ConfigListItem from Azure IoT Hub.*
 
 > Example responses
 
@@ -381,11 +389,14 @@ This operation does not require authentication
 
 `GET /api/Configs/{configurationID}`
 
+*Retrieve a specific deployment and its modules from the IoT Hub.
+Converts it to a ConfigListItem.*
+
 <h3 id="get__api_configs_{configurationid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|configurationID|path|string|true|none|
+|configurationID|path|string|true|ID of the deployment to retrieve.|
 
 > Example responses
 
@@ -433,13 +444,15 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-<h1 id="azureiothub-portal-server-devicemodels">DeviceModels</h1>
+<h1 id="azure-iot-hub-portal-api-devicemodels">DeviceModels</h1>
 
 ## get__api_DeviceModels
 
 > Code samples
 
 `GET /api/DeviceModels`
+
+*Gets a list of device models from an Azure DataTable.*
 
 > Example responses
 
@@ -587,6 +600,8 @@ This operation does not require authentication
 
 `GET /api/DeviceModels/{modelID}`
 
+*Get a specific device model from an Azure DataTable.*
+
 <h3 id="get__api_devicemodels_{modelid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -724,13 +739,16 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-<h1 id="azureiothub-portal-server-devices">Devices</h1>
+<h1 id="azure-iot-hub-portal-api-devices">Devices</h1>
 
 ## get__api_Devices
 
 > Code samples
 
 `GET /api/Devices`
+
+*Gets a list of devices as DeviceListItem from Azure IoT Hub.
+Fields that do not appear in the device list are not defined here.*
 
 > Example responses
 
@@ -839,6 +857,8 @@ This operation does not require authentication
 
 `PUT /api/Devices`
 
+*this function update the twin and the device.*
+
 > Body parameter
 
 ```json
@@ -871,7 +891,7 @@ This operation does not require authentication
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[DeviceDetails](#schemadevicedetails)|false|none|
+|body|body|[DeviceDetails](#schemadevicedetails)|false|the device object.|
 
 <h3 id="put__api_devices-responses">Responses</h3>
 
@@ -889,11 +909,14 @@ This operation does not require authentication
 
 `GET /api/Devices/{deviceID}`
 
+*Retrieve a specific device and from the IoT Hub.
+Converts it to a DeviceListItem.*
+
 <h3 id="get__api_devices_{deviceid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceID|path|string|true|none|
+|deviceID|path|string|true|ID of the device to retrieve.|
 
 > Example responses
 
@@ -945,11 +968,13 @@ This operation does not require authentication
 
 `DELETE /api/Devices/{deviceID}`
 
+*this function delete a device.*
+
 <h3 id="delete__api_devices_{deviceid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceID|path|string|true|none|
+|deviceID|path|string|true|the device id.|
 
 <h3 id="delete__api_devices_{deviceid}-responses">Responses</h3>
 
@@ -967,12 +992,14 @@ This operation does not require authentication
 
 `POST /api/Devices/{deviceId}/{commandId}`
 
+*Permit to execute cloud to device message.*
+
 <h3 id="post__api_devices_{deviceid}_{commandid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceId|path|string|true|none|
-|commandId|path|string|true|none|
+|deviceId|path|string|true|id of the device.|
+|commandId|path|string|true|the command who contain the name and the trame.|
 
 <h3 id="post__api_devices_{deviceid}_{commandid}-responses">Responses</h3>
 
@@ -984,13 +1011,17 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-<h1 id="azureiothub-portal-server-gateways">Gateways</h1>
+<h1 id="azure-iot-hub-portal-api-gateways">Gateways</h1>
 
 ## get__api_Gateways
 
 > Code samples
 
 `GET /api/Gateways`
+
+*Fonction permettant de récupèrer la liste des appareils Edge .
+Après avoir éxecuté la query du registryManager on récupère le resultat
+sous la forme d'une liste de Twin.*
 
 > Example responses
 
@@ -1039,6 +1070,8 @@ This operation does not require authentication
 
 `POST /api/Gateways`
 
+*this function create a device with the twin information.*
+
 > Body parameter
 
 ```json
@@ -1081,7 +1114,7 @@ This operation does not require authentication
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[Gateway](#schemagateway)|false|none|
+|body|body|[Gateway](#schemagateway)|false|the gateway object.|
 
 <h3 id="post__api_gateways-responses">Responses</h3>
 
@@ -1099,11 +1132,14 @@ This operation does not require authentication
 
 `GET /api/Gateways/{deviceId}`
 
+*This function return all the information we want of
+a device.*
+
 <h3 id="get__api_gateways_{deviceid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceId|path|string|true|none|
+|deviceId|path|string|true|the device id.|
 
 > Example responses
 
@@ -1165,11 +1201,13 @@ This operation does not require authentication
 
 `DELETE /api/Gateways/{deviceId}`
 
+*this function delete a device.*
+
 <h3 id="delete__api_gateways_{deviceid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceId|path|string|true|none|
+|deviceId|path|string|true|the device id to delete.|
 
 <h3 id="delete__api_gateways_{deviceid}-responses">Responses</h3>
 
@@ -1209,6 +1247,8 @@ This operation does not require authentication
 > Code samples
 
 `PUT /api/Gateways/{gateway}`
+
+*This function update the properties of a device.*
 
 > Body parameter
 
@@ -1253,7 +1293,7 @@ This operation does not require authentication
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |gateway|path|string|true|none|
-|body|body|[Gateway](#schemagateway)|false|none|
+|body|body|[Gateway](#schemagateway)|false|a gateways object.|
 
 <h3 id="put__api_gateways_{gateway}-responses">Responses</h3>
 
@@ -1323,19 +1363,27 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-<h1 id="azureiothub-portal-server-oidcsettings">OIDCSettings</h1>
+<h1 id="azure-iot-hub-portal-api-oidcsettings">OIDCSettings</h1>
 
-## get__OIDCSettings
+## GetOIDCSettings
+
+<a id="opIdGetOIDCSettings"></a>
 
 > Code samples
 
 `GET /OIDCSettings`
 
-<h3 id="get__oidcsettings-responses">Responses</h3>
+*Get the Open ID Settings.*
+
+Sample request:
+            
+    GET /OIDCSetings
+
+<h3 id="getoidcsettings-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Returns the OIDC settings.|None|
 
 <aside class="success">
 This operation does not require authentication
