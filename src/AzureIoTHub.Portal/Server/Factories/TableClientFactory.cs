@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Server.Factories
 {
-    using System.Threading.Tasks;
     using Azure.Data.Tables;
 
     public class TableClientFactory : ITableClientFactory

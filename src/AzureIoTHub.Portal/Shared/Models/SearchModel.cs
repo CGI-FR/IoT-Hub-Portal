@@ -3,13 +3,6 @@
 
 namespace AzureIoTHub.Portal.Shared.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     public class SearchModel
     {
         public string DeviceId { get; set; }

@@ -6,14 +6,11 @@ using AzureIoTHub.Portal.Shared.Models.Concentrator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Shared;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AzureIoTHub.Portal.Server.Tests.Controllers

@@ -10,7 +10,6 @@ namespace AzureIoTHub.Portal.Client
 
     using AzureIoTHub.Portal.Shared.Settings;
     using Blazored.Modal;
-    using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.DependencyInjection;
     using MudBlazor.Services;

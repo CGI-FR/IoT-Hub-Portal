@@ -3,7 +3,6 @@ using AzureIoTHub.Portal.Server.Mappers;
 using AzureIoTHub.Portal.Shared.Models;
 using Moq;
 using NUnit.Framework;
-using System;
 
 namespace AzureIoTHub.Portal.Server.Tests.Mappers
 {

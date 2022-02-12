@@ -16,7 +16,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using AzureIoTHub.Portal.Shared.Models;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json;
 
     [ApiController]
     [Route("api/[controller]")]

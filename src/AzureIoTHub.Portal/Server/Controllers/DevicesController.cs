@@ -10,7 +10,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using System.Threading.Tasks;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;

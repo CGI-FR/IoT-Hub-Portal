@@ -6,7 +6,6 @@ using AzureIoTHub.Portal.Shared.Models;
 using AzureIoTHub.Portal.Shared.Models.Device;
 using Moq;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Threading;
 

@@ -1,13 +1,6 @@
 ﻿using AzureIoTHub.Portal.Server.Helpers;
-using Microsoft.Azure.Devices.Provisioning.Service;
 using Microsoft.Azure.Devices.Shared;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AzureIoTHub.Portal.Server.Tests
 {

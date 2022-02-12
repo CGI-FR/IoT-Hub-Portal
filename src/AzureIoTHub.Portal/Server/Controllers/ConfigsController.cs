@@ -12,7 +12,6 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using AzureIoTHub.Portal.Shared.Models;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
-    using Microsoft.Extensions.Logging;
     using Newtonsoft.Json.Linq;
 
     [ApiController]
