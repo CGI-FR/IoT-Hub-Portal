@@ -1553,7 +1553,7 @@
     "securitySchemes": {
       "Bearer": {
         "type": "http",
-        "description": "Specify the authorization token.",
+        "description": "\r\n  Specify the authorization token got from your IDP as a header.\r\n  Ex: ``Authorization: Bearer ****``",
         "scheme": "bearer",
         "bearerFormat": "JWT"
       }
