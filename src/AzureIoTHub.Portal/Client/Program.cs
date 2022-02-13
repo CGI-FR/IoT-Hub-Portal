@@ -42,7 +42,7 @@ namespace AzureIoTHub.Portal.Client
         {
             using (var httpClient = new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
             {
-                var settings = await httpClient.GetFromJsonAsync<OIDCSettings>("OIDCSettings");
+                var settings = await httpClient.GetFromJsonAsync<OIDCSettings>("api/settings/oidc");
 
                 builder.Services.AddOidcAuthentication(options =>
                 {

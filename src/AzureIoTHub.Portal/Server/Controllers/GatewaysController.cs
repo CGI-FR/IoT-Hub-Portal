@@ -22,7 +22,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Newtonsoft.Json.Linq;
 
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/edge-device")]
+    [ApiExplorerSettings(GroupName = "IoT Edge")]
     public class GatewaysController : ControllerBase
     {
         private readonly ILogger<GatewaysController> logger;

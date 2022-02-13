@@ -156,11 +156,11 @@
 
     private async Task Save()
     {
-        var result = await httpClient.PostAsJsonAsync("api/DeviceModels", DeviceModel);
+        var result = await httpClient.PostAsJsonAsync("api/models", DeviceModel);
 
         if (content is not null)
         {
-            var response = await httpClient.PostAsync($"api/DeviceModels/{DeviceModel.ModelId}/avatar", content);
+            var response = await httpClient.PostAsync($"api/models/{DeviceModel.ModelId}/avatar", content);
         }
 
         if (result.IsSuccessStatusCode)

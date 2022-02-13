@@ -142,6 +142,9 @@ namespace AzureIoTHub.Portal.Server
                 // using System.Reflection;
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+                opts.TagActionsBy(api => new[] { api.GroupName });
+                opts.DocInclusionPredicate((name, api) => true);
             });
         }
 

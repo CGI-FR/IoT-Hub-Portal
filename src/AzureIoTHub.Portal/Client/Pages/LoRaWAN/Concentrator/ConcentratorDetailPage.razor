@@ -114,7 +114,7 @@
         try
         {
             // Sends a GET request to the DevicesController, to retrieve the specific device from Azure IoT Hub
-            concentrator = await Http.GetFromJsonAsync<Concentrator>($"api/concentrators/{DeviceID}");
+            concentrator = await Http.GetFromJsonAsync<Concentrator>($"api/lorawan/concentrators/{DeviceID}");
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -127,7 +127,7 @@
     /// </summary>
     public async void SaveDevice()
     {
-        var result = await Http.PutAsJsonAsync<Concentrator>($"api/concentrators", concentrator);
+        var result = await Http.PutAsJsonAsync<Concentrator>($"api/lorawan/concentrators", concentrator);
 
         if (result.IsSuccessStatusCode)
         {

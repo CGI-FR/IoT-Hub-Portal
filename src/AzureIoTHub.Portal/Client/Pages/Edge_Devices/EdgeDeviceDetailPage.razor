@@ -191,7 +191,7 @@
 
     public async Task LoadDevice()
     {
-        Gateway = await Http.GetFromJsonAsync<Gateway>($"api/Gateways/{deviceId}");
+        Gateway = await Http.GetFromJsonAsync<Gateway>($"api/edge-device/{deviceId}");
 
         if (Gateway.ConnectionState == "Disconnected")
         {
@@ -203,7 +203,7 @@
     public async Task UpdateDevice()
     {
         processingUpdate = true;
-        var result = await Http.PutAsJsonAsync($"api/Gateways/{Gateway.DeviceId}", Gateway);
+        var result = await Http.PutAsJsonAsync($"api/edge-device/{Gateway.DeviceId}", Gateway);
 
         if (result.IsSuccessStatusCode)
         {
@@ -215,7 +215,7 @@
 
     public async Task OnMethod(GatewayModule module, string methodName)
     {
-        var result = await Http.PostAsJsonAsync($"api/Gateways/{Gateway.DeviceId}/{module.ModuleName}/{methodName}", module);
+        var result = await Http.PostAsJsonAsync($"api/edge-device/{Gateway.DeviceId}/{module.ModuleName}/{methodName}", module);
 
         var c2dResult = result.Content.ReadFromJsonAsync<C2Dresult>().Result;
 
@@ -246,11 +246,11 @@
         {
             if (Gateway.Type is null)
             {
-                Gateway.SymmetricKey = await this.Http.GetStringAsync($"api/Gateways/{Gateway.DeviceId}/unknown/ConnectionString");
+                Gateway.SymmetricKey = await this.Http.GetStringAsync($"api/edge-device/{Gateway.DeviceId}/unknown/ConnectionString");
             }
             else
             {
-                Gateway.SymmetricKey = await this.Http.GetStringAsync($"api/Gateways/{Gateway.DeviceId}/{Gateway.Type}/ConnectionString");
+                Gateway.SymmetricKey = await this.Http.GetStringAsync($"api/edge-device/{Gateway.DeviceId}/{Gateway.Type}/ConnectionString");
             }
 
             var parameter = new DialogParameters();

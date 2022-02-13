@@ -15,7 +15,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Newtonsoft.Json.Linq;
 
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/edge-config")]
+    [ApiExplorerSettings(GroupName = "IoT Edge")]
     public class ConfigsController : ControllerBase
     {
         private readonly ConfigsServices configService;

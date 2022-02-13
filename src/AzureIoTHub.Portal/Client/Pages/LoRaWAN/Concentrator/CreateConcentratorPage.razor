@@ -87,7 +87,7 @@
     {
         concentrator.DeviceType = "LoRa Concentrator";
         // Sends the device to be added to the controller
-        var response = await Http.PostAsJsonAsync<Concentrator>($"api/Concentrators", concentrator);
+        var response = await Http.PostAsJsonAsync<Concentrator>($"api/lorawan/concentrators", concentrator);
 
         if (response.IsSuccessStatusCode)
         {

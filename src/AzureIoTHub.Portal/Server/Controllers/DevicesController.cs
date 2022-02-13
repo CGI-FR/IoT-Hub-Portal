@@ -22,7 +22,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Extensions.Logging;
 
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/devices")]
+    [ApiExplorerSettings(GroupName = "IoT Devices")]
     public class DevicesController : ControllerBase
     {
         private readonly ILogger<DevicesController> logger;

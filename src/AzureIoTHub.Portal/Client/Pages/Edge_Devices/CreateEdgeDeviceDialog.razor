@@ -61,7 +61,7 @@
 
     private async Task OnValidation()
     {
-        var result = await Http.PostAsJsonAsync("api/Gateways", gateway);
+        var result = await Http.PostAsJsonAsync("api/edge-device", gateway);
 
         if (result.IsSuccessStatusCode)
         {

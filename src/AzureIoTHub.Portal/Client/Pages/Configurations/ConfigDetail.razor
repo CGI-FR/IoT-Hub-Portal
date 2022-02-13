@@ -132,7 +132,7 @@
         try
         {
             // Sends a GET request to the ConfigController, to retrieve a specific deployment from Azure IoT Hub
-            Config = await Http.GetFromJsonAsync<ConfigListItem>($"api/Configs/{ConfigurationID}");
+            Config = await Http.GetFromJsonAsync<ConfigListItem>($"api/settings/oidc/{ConfigurationID}");
             ConditionOwner = RetrieveCondition("owner");
             ConditionEnv = RetrieveCondition("env");
             ConditionType = RetrieveCondition("type");

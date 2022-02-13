@@ -138,7 +138,7 @@
     {
         try
         {
-            result = await Http.GetFromJsonAsync<List<GatewayListItem>>("api/Gateways");
+            result = await Http.GetFromJsonAsync<List<GatewayListItem>>("api/edge-device");
         }
         catch (AccessTokenNotAvailableException exception)
         {

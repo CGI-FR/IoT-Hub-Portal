@@ -93,7 +93,7 @@
     {
         try
         {
-            result = await Http.GetFromJsonAsync<ConfigListItem[]>("api/Configs");
+            result = await Http.GetFromJsonAsync<ConfigListItem[]>("api/settings/oidc");
         }
         catch (AccessTokenNotAvailableException exception)
         {

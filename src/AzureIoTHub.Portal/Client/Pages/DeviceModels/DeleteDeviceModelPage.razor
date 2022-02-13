@@ -30,7 +30,7 @@
     private async Task DeleteDevice()
     {
         // var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/delete", device);
-        var response = await Http.DeleteAsync($"api/DeviceModels/{deviceModelID}");
+        var response = await Http.DeleteAsync($"api/models/{deviceModelID}");
         var errorMsg = await response.Content.ReadAsStringAsync();
 
         // Prompts a snack bar to inform if the action was successful

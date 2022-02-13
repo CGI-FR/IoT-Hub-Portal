@@ -101,7 +101,7 @@
     {
         try
         {
-            result = await httpClient.GetFromJsonAsync<DeviceModel[]>("api/DeviceModels");
+            result = await httpClient.GetFromJsonAsync<DeviceModel[]>("api/models");
         }
         catch (AccessTokenNotAvailableException exception)
         {

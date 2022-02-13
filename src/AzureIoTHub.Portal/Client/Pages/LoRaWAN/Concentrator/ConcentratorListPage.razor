@@ -97,7 +97,7 @@
     {
         try
         {
-            concentrators = await Http.GetFromJsonAsync<Concentrator[]>("api/Concentrators");
+            concentrators = await Http.GetFromJsonAsync<Concentrator[]>("api/lorawan/concentrators");
         }
         catch (AccessTokenNotAvailableException exception)
         {

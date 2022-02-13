@@ -11,13 +11,14 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
-    [Route("api/[controller]")]
-    public class CommandsController : ControllerBase
+    [Route("api/models/{modelId}/commands")]
+    [ApiExplorerSettings(GroupName = "Device Models")]
+    public class DeviceModelCommandsController : ControllerBase
     {
         private readonly ITableClientFactory tableClientFactory;
         private readonly IDeviceModelCommandMapper deviceModelCommandMapper;
 
-        public CommandsController(
+        public DeviceModelCommandsController(
             IDeviceModelCommandMapper deviceModelCommandMapper,
             ITableClientFactory tableClientFactory)
         {
@@ -29,7 +30,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// Add a command to an Azure DataTable.
         /// </summary>
         /// <returns>Operation status.</returns>
-        [HttpPost("{modelId}")]
+        [HttpPost]
         public async Task<IActionResult> Post(string modelId, DeviceModelCommand command)
         {
             TableEntity entity = new TableEntity()
@@ -48,7 +49,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// Delete a command from an Azure DataTable.
         /// </summary>
         /// <returns>Operation status.</returns>
-        [HttpDelete("{modelId}/{commandId}")]
+        [HttpDelete("{commandId}")]
         public async Task<IActionResult> Delete(string modelId, string commandId)
         {
             var result = await this.tableClientFactory.GetDeviceCommands().DeleteEntityAsync(modelId, commandId);
