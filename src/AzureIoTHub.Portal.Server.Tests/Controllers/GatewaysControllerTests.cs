@@ -21,7 +21,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers
         private MockRepository mockRepository;
 
         private Mock<IConfiguration> mockConfiguration;
-        private Mock<ILogger<GatewaysController>> mockLogger;
+        private Mock<ILogger<EdgeDevicesController>> mockLogger;
         private Mock<RegistryManager> mockRegistryManager;
         private Mock<IConnectionStringManager> mockConnectionStringManager;
         private Mock<IDeviceService> mockDeviceService;
@@ -32,15 +32,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockConfiguration = this.mockRepository.Create<IConfiguration>();
-            this.mockLogger = this.mockRepository.Create<ILogger<GatewaysController>>();
+            this.mockLogger = this.mockRepository.Create<ILogger<EdgeDevicesController>>();
             this.mockRegistryManager = this.mockRepository.Create<RegistryManager>();
             this.mockConnectionStringManager = this.mockRepository.Create<IConnectionStringManager>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
         }
 
-        private GatewaysController CreateGatewaysController()
+        private EdgeDevicesController CreateGatewaysController()
         {
-            return new GatewaysController(
+            return new EdgeDevicesController(
                 this.mockConfiguration.Object,
                 this.mockLogger.Object,
                 this.mockRegistryManager.Object,

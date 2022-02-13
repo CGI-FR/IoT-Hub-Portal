@@ -17,11 +17,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
     [ApiController]
     [Route("api/edge-config")]
     [ApiExplorerSettings(GroupName = "IoT Edge")]
-    public class ConfigsController : ControllerBase
+    public class EdgeConfigurationsController : ControllerBase
     {
         private readonly ConfigsServices configService;
 
-        public ConfigsController(ConfigsServices configService)
+        public EdgeConfigurationsController(ConfigsServices configService)
         {
             this.configService = configService;
         }

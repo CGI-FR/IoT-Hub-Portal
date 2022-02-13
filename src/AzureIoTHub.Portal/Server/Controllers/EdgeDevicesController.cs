@@ -24,18 +24,18 @@ namespace AzureIoTHub.Portal.Server.Controllers
     [ApiController]
     [Route("api/edge-device")]
     [ApiExplorerSettings(GroupName = "IoT Edge")]
-    public class GatewaysController : ControllerBase
+    public class EdgeDevicesController : ControllerBase
     {
-        private readonly ILogger<GatewaysController> logger;
+        private readonly ILogger<EdgeDevicesController> logger;
 
         private readonly RegistryManager registryManager;
         private readonly IConfiguration configuration;
         private readonly IDeviceService devicesService;
         private readonly IConnectionStringManager connectionStringManager;
 
-        public GatewaysController(
+        public EdgeDevicesController(
             IConfiguration configuration,
-            ILogger<GatewaysController> logger,
+            ILogger<EdgeDevicesController> logger,
             RegistryManager registryManager,
             IConnectionStringManager connectionStringManager,
             IDeviceService service)

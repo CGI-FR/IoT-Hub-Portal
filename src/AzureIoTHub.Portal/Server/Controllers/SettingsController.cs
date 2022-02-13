@@ -14,11 +14,11 @@ namespace AzureIoTHub.Portal.Server.Controllers
     [Route("/api/settings")]
     [Produces("application/json")]
     [ApiExplorerSettings(GroupName = "Portal Settings")]
-    public class OIDCSettingsController : ControllerBase
+    public class SettingsController : ControllerBase
     {
         private readonly ClientApiIndentityOptions configuration;
 
-        public OIDCSettingsController(IOptions<ClientApiIndentityOptions> configuration)
+        public SettingsController(IOptions<ClientApiIndentityOptions> configuration)
         {
             this.configuration = configuration.Value;
         }
