@@ -90,9 +90,9 @@ jobs:
         with:
           base: 'docs/main'
           branch: 'docs/feature/open-api'
-          commit-message: 'Adds auto-generated Open API doc.\nThis PR is related to the changed commited in the main branch named **${{ github.event.head_commit.message }}**.'
+          commit-message: 'Adds auto-generated Open API doc.'
           token: ${{ secrets.GITHUB_TOKEN }}
           title: '${{ github.event.head_commit.message }} - Update API documentation'
           labels: 'documentation'
           team-reviewers: '@CGI-FR/azure-iot-portal-authors'
-          body: 'Automated changes to the Open API documentation.'
+          body: 'Automated changes to the Open API documentation.\r\nThis PR is related to the changed commited in the main branch named **${{ github.event.head_commit.message }}**'

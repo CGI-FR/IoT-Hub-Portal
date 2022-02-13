@@ -157,7 +157,7 @@ namespace AzureIoTHub.Portal.Server
                     Name = "Bearer",
                     BearerFormat = "JWT",
                     Scheme = "bearer",
-                    Description = "Specify the authorization token.",
+                    Description = "\r\n  Specify the authorization token got from your IDP as a header.\r\n  Ex: ``Authorization: Bearer ****``",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
                 };
