@@ -12,13 +12,25 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/models/{modelId}/commands")]
+    [Route("api/models/{id}/commands")]
     [ApiExplorerSettings(GroupName = "Device Models")]
     public class DeviceModelCommandsController : ControllerBase
     {
+        /// <summary>
+        /// The table client factory.
+        /// </summary>
         private readonly ITableClientFactory tableClientFactory;
+
+        /// <summary>
+        /// The device model command mapper.
+        /// </summary>
         private readonly IDeviceModelCommandMapper deviceModelCommandMapper;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeviceModelCommandsController"/> class.
+        /// </summary>
+        /// <param name="deviceModelCommandMapper">The device model command mapper.</param>
+        /// <param name="tableClientFactory">The table client factory.</param>
         public DeviceModelCommandsController(
             IDeviceModelCommandMapper deviceModelCommandMapper,
             ITableClientFactory tableClientFactory)
@@ -28,9 +40,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         }
 
         /// <summary>
-        /// Add a command to an Azure DataTable.
+        /// Updates the specified device model's command.
         /// </summary>
-        /// <returns>Operation status.</returns>
+        /// <param name="modelId">The model identifier.</param>
+        /// <param name="command">The command.</param>
+        /// <returns>The action result.</returns>
+        /// <response code="200">If te device model's command is updated.</response>
         [HttpPost]
         public async Task<IActionResult> Post(string modelId, DeviceModelCommand command)
         {
@@ -39,22 +54,27 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 PartitionKey = modelId,
                 RowKey = command.Name
             };
+
             this.deviceModelCommandMapper.UpdateTableEntity(entity, command);
             await this.tableClientFactory
                 .GetDeviceCommands()
                 .AddEntityAsync(entity);
-            return this.Ok("Command successfully added");
+
+            return this.Ok();
         }
 
         /// <summary>
-        /// Delete a command from an Azure DataTable.
+        /// Deletes the specified device model's command.
         /// </summary>
-        /// <returns>Operation status.</returns>
+        /// <param name="modelId">The model identifier.</param>
+        /// <param name="commandId">The command identifier.</param>
+        /// <returns>The action result.</returns>
+        /// <response code="204">If the device model's command is deleted.</response>
         [HttpDelete("{commandId}")]
         public async Task<IActionResult> Delete(string modelId, string commandId)
         {
             var result = await this.tableClientFactory.GetDeviceCommands().DeleteEntityAsync(modelId, commandId);
-            return this.StatusCode(result.Status);
+            return this.NoContent();
         }
     }
 }

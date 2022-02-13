@@ -23,14 +23,44 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     [ApiExplorerSettings(GroupName = "Device Models")]
     public class DeviceModelsController : ControllerBase
     {
+        /// <summary>
+        /// The default partition key.
+        /// </summary>
         private const string DefaultPartitionKey = "0";
 
+        /// <summary>
+        /// The table client factory.
+        /// </summary>
         private readonly ITableClientFactory tableClientFactory;
+
+        /// <summary>
+        /// The device model mapper.
+        /// </summary>
         private readonly IDeviceModelMapper deviceModelMapper;
+
+        /// <summary>
+        /// The device model command mapper.
+        /// </summary>
         private readonly IDeviceModelCommandMapper deviceModelCommandMapper;
+
+        /// <summary>
+        /// The device model image manager.
+        /// </summary>
         private readonly IDeviceModelImageManager deviceModelImageManager;
+
+        /// <summary>
+        /// The devices service.
+        /// </summary>
         private readonly IDeviceService devicesService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeviceModelsController"/> class.
+        /// </summary>
+        /// <param name="deviceModelImageManager">The device model image manager.</param>
+        /// <param name="deviceModelCommandMapper">The device model command mapper.</param>
+        /// <param name="deviceModelMapper">The device model mapper.</param>
+        /// <param name="devicesService">The devices service.</param>
+        /// <param name="tableClientFactory">The table client factory.</param>
         public DeviceModelsController(
             IDeviceModelImageManager deviceModelImageManager,
             IDeviceModelCommandMapper deviceModelCommandMapper,
@@ -46,9 +76,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         }
 
         /// <summary>
-        /// Gets a list of device models from an Azure DataTable.
+        /// Gets the device models.
         /// </summary>
-        /// <returns>A list of DeviceModel.</returns>
+        /// <returns>The list of device models.</returns>
+        /// <response code="200">An array containing the existing device models.</response>
         [HttpGet]
         public IEnumerable<DeviceModel> Get()
         {
@@ -64,10 +95,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         }
 
         /// <summary>
-        /// Get a specific device model from an Azure DataTable.
+        /// Gets the specified model identifier.
         /// </summary>
-        /// <returns>A DeviceModel.</returns>
-        [HttpGet("{modelID}")]
+        /// <param name="modelID">The model identifier.</param>
+        /// <returns>The corresponding model.</returns>
+        /// <response code="200">The model.</response>
+        /// <response code="404">If the corresponding entity doesn't exist.</response>
+        [HttpGet("{id}")]
         public IActionResult Get(string modelID)
         {
             var query = this.tableClientFactory
@@ -82,24 +116,47 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             return this.Ok(this.deviceModelMapper.CreateDeviceModel(query.Single()));
         }
 
-        [HttpGet("{modelID}/avatar")]
+        /// <summary>
+        /// Gets the avatar.
+        /// </summary>
+        /// <param name="modelID">The model identifier.</param>
+        /// <returns>The avatar.</returns>
+        /// <response code="200">The device model's avatar URL.</response>
+        [HttpGet("{id}/avatar")]
         public string GetAvatar(string modelID)
         {
             return this.deviceModelImageManager.ComputeImageUri(modelID);
         }
 
-        [HttpPost("{modelID}/avatar")]
+        /// <summary>
+        /// Changes the avatar.
+        /// </summary>
+        /// <param name="modelID">The model identifier.</param>
+        /// <param name="file">The file.</param>
+        /// <returns>The avatar.</returns>
+        /// <response code="200">The new device model's avatar URL.</response>
+        [HttpPost("{id}/avatar")]
         public async Task<string> ChangeAvatar(string modelID, IFormFile file)
         {
             return await this.deviceModelImageManager.ChangeDeviceModelImageAsync(modelID, file.OpenReadStream());
         }
 
-        [HttpDelete("{modelID}/avatar")]
+        /// <summary>
+        /// Deletes the avatar.
+        /// </summary>
+        /// <param name="modelID">The model identifier.</param>
+        [HttpDelete("{id}/avatar")]
         public async Task DeleteAvatar(string modelID)
         {
             await this.deviceModelImageManager.DeleteDeviceModelImageAsync(modelID);
         }
 
+        /// <summary>
+        /// Creates the specified device model.
+        /// </summary>
+        /// <param name="deviceModel">The device model.</param>
+        /// <returns>The action result.</returns>
+        /// <response code="200">If the model is created.</response>
         [HttpPost]
         public async Task<IActionResult> Post(DeviceModel deviceModel)
         {
@@ -114,6 +171,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             return this.Ok();
         }
 
+        /// <summary>
+        /// Updates the specified device model.
+        /// </summary>
+        /// <param name="deviceModel">The device model.</param>
+        /// <returns>The action result.</returns>
+        /// <response code="200">If the device model is updated.</response>
         [HttpPut]
         public async Task<IActionResult> Put(DeviceModel deviceModel)
         {
@@ -128,7 +191,15 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             return this.Ok();
         }
 
-        [HttpDelete("{deviceModelID}")]
+        /// <summary>
+        /// Deletes the specified device model.
+        /// </summary>
+        /// <param name="deviceModelID">The device model identifier.</param>
+        /// <returns>The action result.</returns>
+        /// <response code="204">If the device model is deleted.</response>
+        /// <response code="404">If the device model is not found.</response>
+        /// <response code="400">If the device model is used by a device.</response>
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string deviceModelID)
         {
             // we get all devices
@@ -151,7 +222,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             if (deviceList.Any(x => DeviceHelper.RetrieveTagValue(x, "modelId") == deviceModel.ModelId))
             {
-                return this.Unauthorized("This model is already in use by a device and cannot be deleted.");
+                return this.BadRequest("This model is already in use by a device and cannot be deleted.");
             }
 
             var commands = queryCommand.Select(item => this.deviceModelCommandMapper.GetDeviceModelCommand(item)).ToList();
@@ -169,9 +240,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 .GetDeviceTemplates()
                 .DeleteEntityAsync(DefaultPartitionKey, deviceModelID);
 
-            return this.StatusCode(result.Status);
+            return this.NoContent();
         }
 
+        /// <summary>
+        /// Saves the entity.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <param name="deviceModelObject">The device model object.</param>
         private async Task SaveEntity(TableEntity entity, DeviceModel deviceModelObject)
         {
             this.deviceModelMapper.UpdateTableEntity(entity, deviceModelObject);
