@@ -152,23 +152,24 @@ namespace AzureIoTHub.Portal.Server
 
                 opts.DescribeAllParametersInCamelCase();
 
-                opts.AddSecurityRequirement(new OpenApiSecurityRequirement
+                OpenApiSecurityScheme securityDefinition = new OpenApiSecurityScheme()
                 {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            },
-                            Scheme = "Bearer",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header
-                        },
-                        new List<string>()
-                    }
-                });
+                    Name = "Bearer",
+                    BearerFormat = "JWT",
+                    Scheme = "bearer",
+                    Description = "Specify the authorization token.",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                };
+
+                OpenApiSecurityRequirement securityRequirements = new OpenApiSecurityRequirement()
+                {
+                    { securityDefinition, new string[] { } },
+                };
+
+                opts.AddSecurityDefinition("Bearer", securityDefinition);
+
+                opts.AddSecurityRequirement(securityRequirements);
 
                 opts.OrderActionsBy(api => api.RelativePath);
             });
