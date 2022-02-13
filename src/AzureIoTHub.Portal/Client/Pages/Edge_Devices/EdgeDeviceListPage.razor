@@ -1,4 +1,4 @@
-﻿@page "/edge-devices"
+﻿@page "/edge/devices"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Shared.Models
@@ -87,7 +87,7 @@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Device" Style="word-break: break-all;">
-                        <a href="/edge-device/detail/@context.DeviceId">@context.DeviceId</a>
+                        <a href="/edge/devices/@context.DeviceId">@context.DeviceId</a>
                     </MudTd>
                     <MudTd DataLabel="Status" Style="text-align: center">
                         @if (context.Status == "Enabled")
@@ -103,7 +103,7 @@
                 <MudTd DataLabel="Type" Style="text-align: center">@context.Type</MudTd>
                 <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
-                    <a href="/edge-device/detail/@context.DeviceId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                    <a href="/edge/devices/@context.DeviceId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
                     <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => ShowDeleteDialog(context))"></MudIconButton>
@@ -138,7 +138,7 @@
     {
         try
         {
-            result = await Http.GetFromJsonAsync<List<GatewayListItem>>("api/edge-device");
+            result = await Http.GetFromJsonAsync<List<GatewayListItem>>("api/edge/device");
         }
         catch (AccessTokenNotAvailableException exception)
         {
