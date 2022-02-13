@@ -1549,11 +1549,17 @@
         },
         "additionalProperties": false
       }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "Specify the authorization token.",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
     }
   },
   "security": [
-    {
-      "Bearer": [ ]
-    }
+    { }
   ]
 }

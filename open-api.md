@@ -17,6 +17,10 @@ headingLevel: 2
 
 Available APIs for managing devices from Azure IoT Hub.
 
+# Authentication
+
+- HTTP Authentication, scheme: bearer Specify the authorization token.
+
 <h1 id="azure-iot-hub-portal-api-iot-devices">IoT Devices</h1>
 
 ## get__api_devices
