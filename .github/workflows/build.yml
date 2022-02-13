@@ -94,5 +94,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: 'API: Update documentation'
           labels: 'documentation'
+          body: 'Automated changes to the Open API documentation'
 
 
