@@ -86,9 +86,12 @@ jobs:
         run: widdershins --environment widdershins.json swagger.json -o open-api.md
 
       - name: Push Open API Markdown to GitHub
-        uses: actions-js/push@master
+        uses: golfzaptw/action-commit-push-pr
         with:
-          branch: 'docs/main'
-          message: 'Adds auto-generated Open API doc'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCHES: 'docs/main'
+          PREFIX_BRANCHES: 'docs/feature'
+          COMMIT_MESSAGE: 'Adds auto-generated Open API doc'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TITLE_PR: 'API: Update documentation'
+
 
