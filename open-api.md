@@ -15,360 +15,7 @@ headingLevel: 2
 
 > Scroll down for example requests and responses.
 
-<h1 id="azure-iot-hub-portal-api-device-models">Device Models</h1>
-
-## post__api_models_{modelId}_commands
-
-> Code samples
-
-`POST /api/models/{modelId}/commands`
-
-*Add a command to an Azure DataTable.*
-
-> Body parameter
-
-```json
-{
-  "name": "string",
-  "frame": "string",
-  "port": 1
-}
-```
-
-<h3 id="post__api_models_{modelid}_commands-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|modelId|path|string|true|none|
-|body|body|[DeviceModelCommand](#schemadevicemodelcommand)|false|none|
-
-<h3 id="post__api_models_{modelid}_commands-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## delete__api_models_{modelId}_commands_{commandId}
-
-> Code samples
-
-`DELETE /api/models/{modelId}/commands/{commandId}`
-
-*Delete a command from an Azure DataTable.*
-
-<h3 id="delete__api_models_{modelid}_commands_{commandid}-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|modelId|path|string|true|none|
-|commandId|path|string|true|none|
-
-<h3 id="delete__api_models_{modelid}_commands_{commandid}-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## get__api_models
-
-> Code samples
-
-`GET /api/models`
-
-*Gets a list of device models from an Azure DataTable.*
-
-> Example responses
-
-> 200 Response
-
-```
-[{"modelId":"string","imageUrl":"string","name":"string","description":"string","appEUI":"string","sensorDecoderURL":"string","commands":[{"name":"string","frame":"string","port":1}]}]
-```
-
-```json
-[
-  {
-    "modelId": "string",
-    "imageUrl": "string",
-    "name": "string",
-    "description": "string",
-    "appEUI": "string",
-    "sensorDecoderURL": "string",
-    "commands": [
-      {
-        "name": "string",
-        "frame": "string",
-        "port": 1
-      }
-    ]
-  }
-]
-```
-
-<h3 id="get__api_models-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
-
-<h3 id="get__api_models-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[DeviceModel](#schemadevicemodel)]|false|none|none|
-|» modelId|string¦null|false|none|none|
-|» imageUrl|string¦null|false|none|none|
-|» name|string|true|none|none|
-|» description|string¦null|false|none|none|
-|» appEUI|string|true|none|none|
-|» sensorDecoderURL|string¦null|false|none|none|
-|» commands|[[DeviceModelCommand](#schemadevicemodelcommand)]¦null|false|none|none|
-|»» name|string|true|none|none|
-|»» frame|string|true|none|none|
-|»» port|integer(int32)|true|none|none|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## post__api_models
-
-> Code samples
-
-`POST /api/models`
-
-> Body parameter
-
-```json
-{
-  "modelId": "string",
-  "imageUrl": "string",
-  "name": "string",
-  "description": "string",
-  "appEUI": "string",
-  "sensorDecoderURL": "string",
-  "commands": [
-    {
-      "name": "string",
-      "frame": "string",
-      "port": 1
-    }
-  ]
-}
-```
-
-<h3 id="post__api_models-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[DeviceModel](#schemadevicemodel)|false|none|
-
-<h3 id="post__api_models-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## put__api_models
-
-> Code samples
-
-`PUT /api/models`
-
-> Body parameter
-
-```json
-{
-  "modelId": "string",
-  "imageUrl": "string",
-  "name": "string",
-  "description": "string",
-  "appEUI": "string",
-  "sensorDecoderURL": "string",
-  "commands": [
-    {
-      "name": "string",
-      "frame": "string",
-      "port": 1
-    }
-  ]
-}
-```
-
-<h3 id="put__api_models-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[DeviceModel](#schemadevicemodel)|false|none|
-
-<h3 id="put__api_models-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## get__api_models_{modelID}
-
-> Code samples
-
-`GET /api/models/{modelID}`
-
-*Get a specific device model from an Azure DataTable.*
-
-<h3 id="get__api_models_{modelid}-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|modelID|path|string|true|none|
-
-<h3 id="get__api_models_{modelid}-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## get__api_models_{modelID}_avatar
-
-> Code samples
-
-`GET /api/models/{modelID}/avatar`
-
-<h3 id="get__api_models_{modelid}_avatar-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|modelID|path|string|true|none|
-
-> Example responses
-
-> 200 Response
-
-```
-"string"
-```
-
-```json
-"string"
-```
-
-<h3 id="get__api_models_{modelid}_avatar-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|string|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## post__api_models_{modelID}_avatar
-
-> Code samples
-
-`POST /api/models/{modelID}/avatar`
-
-> Body parameter
-
-```yaml
-file: string
-
-```
-
-<h3 id="post__api_models_{modelid}_avatar-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|modelID|path|string|true|none|
-|body|body|object|false|none|
-|» file|body|string(binary)|false|none|
-
-> Example responses
-
-> 200 Response
-
-```
-"string"
-```
-
-```json
-"string"
-```
-
-<h3 id="post__api_models_{modelid}_avatar-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|string|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## delete__api_models_{modelID}_avatar
-
-> Code samples
-
-`DELETE /api/models/{modelID}/avatar`
-
-<h3 id="delete__api_models_{modelid}_avatar-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|modelID|path|string|true|none|
-
-<h3 id="delete__api_models_{modelid}_avatar-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## delete__api_models_{deviceModelID}
-
-> Code samples
-
-`DELETE /api/models/{deviceModelID}`
-
-<h3 id="delete__api_models_{devicemodelid}-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|deviceModelID|path|string|true|none|
-
-<h3 id="delete__api_models_{devicemodelid}-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
+Available APIs for managing devices from Azure IoT Hub.
 
 <h1 id="azure-iot-hub-portal-api-iot-devices">IoT Devices</h1>
 
@@ -428,8 +75,9 @@ Status Code **200**
 |» appKey|string¦null|false|none|none|
 |» locationCode|string¦null|false|none|none|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## post__api_devices
@@ -478,8 +126,9 @@ This operation does not require authentication
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## put__api_devices
@@ -530,8 +179,9 @@ This operation does not require authentication
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## get__api_devices_{deviceID}
@@ -589,8 +239,9 @@ Converts it to a DeviceListItem.*
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[DeviceDetails](#schemadevicedetails)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## delete__api_devices_{deviceID}
@@ -613,8 +264,9 @@ This operation does not require authentication
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## post__api_devices_{deviceId}_{commandId}
@@ -638,8 +290,9 @@ This operation does not require authentication
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 <h1 id="azure-iot-hub-portal-api-iot-edge">IoT Edge</h1>
@@ -720,8 +373,9 @@ Status Code **200**
 |»» moduleIdentityTwinSettings|object¦null|false|none|none|
 |»»» **additionalProperties**|string|false|none|none|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## get__api_edge_configurations_{configurationID}
@@ -781,8 +435,9 @@ Converts it to a ConfigListItem.*
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ConfigListItem](#schemaconfiglistitem)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## get__api_edge_device
@@ -832,8 +487,9 @@ Status Code **200**
 |» type|string¦null|false|none|none|
 |» nbDevices|integer(int32)|false|none|none|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## post__api_edge_device
@@ -894,8 +550,9 @@ This operation does not require authentication
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## get__api_edge_device_{deviceId}
@@ -963,8 +620,9 @@ a device.*
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[Gateway](#schemagateway)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## delete__api_edge_device_{deviceId}
@@ -987,8 +645,9 @@ This operation does not require authentication
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## get__api_edge_device_{deviceId}_{deviceType}_ConnectionString
@@ -1010,8 +669,68 @@ This operation does not require authentication
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## post__api_edge_device_{deviceId}_{moduleId}_{methodName}
+
+> Code samples
+
+`POST /api/edge/device/{deviceId}/{moduleId}/{methodName}`
+
+> Body parameter
+
+```json
+{
+  "moduleName": "string",
+  "version": "string",
+  "status": "string",
+  "environmentVariables": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "moduleIdentityTwinSettings": {
+    "property1": "string",
+    "property2": "string"
+  }
+}
+```
+
+<h3 id="post__api_edge_device_{deviceid}_{moduleid}_{methodname}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceId|path|string|true|none|
+|methodName|path|string|true|none|
+|moduleId|path|string|true|none|
+|body|body|[GatewayModule](#schemagatewaymodule)|false|none|
+
+> Example responses
+
+> 200 Response
+
+```
+{"payload":"string","status":0}
+```
+
+```json
+{
+  "payload": "string",
+  "status": 0
+}
+```
+
+<h3 id="post__api_edge_device_{deviceid}_{moduleid}_{methodname}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[C2Dresult](#schemac2dresult)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## put__api_edge_device_{gateway}
@@ -1073,66 +792,9 @@ This operation does not require authentication
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## post__api_edge_device_{deviceId}_{moduleId}_{methodName}
-
-> Code samples
-
-`POST /api/edge/device/{deviceId}/{moduleId}/{methodName}`
-
-> Body parameter
-
-```json
-{
-  "moduleName": "string",
-  "version": "string",
-  "status": "string",
-  "environmentVariables": {
-    "property1": "string",
-    "property2": "string"
-  },
-  "moduleIdentityTwinSettings": {
-    "property1": "string",
-    "property2": "string"
-  }
-}
-```
-
-<h3 id="post__api_edge_device_{deviceid}_{moduleid}_{methodname}-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|deviceId|path|string|true|none|
-|methodName|path|string|true|none|
-|moduleId|path|string|true|none|
-|body|body|[GatewayModule](#schemagatewaymodule)|false|none|
-
-> Example responses
-
-> 200 Response
-
-```
-{"payload":"string","status":0}
-```
-
-```json
-{
-  "payload": "string",
-  "status": 0
-}
-```
-
-<h3 id="post__api_edge_device_{deviceid}_{moduleid}_{methodname}-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[C2Dresult](#schemac2dresult)|
-
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 <h1 id="azure-iot-hub-portal-api-lora-wan">LoRa WAN</h1>
@@ -1149,8 +811,9 @@ This operation does not require authentication
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## post__api_lorawan_concentrators
@@ -1229,8 +892,9 @@ This operation does not require authentication
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## put__api_lorawan_concentrators
@@ -1309,8 +973,9 @@ This operation does not require authentication
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## get__api_lorawan_concentrators_{deviceId}
@@ -1331,8 +996,9 @@ This operation does not require authentication
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 ## delete__api_lorawan_concentrators_{deviceId}
@@ -1355,8 +1021,374 @@ This operation does not require authentication
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+<h1 id="azure-iot-hub-portal-api-device-models">Device Models</h1>
+
+## get__api_models
+
+> Code samples
+
+`GET /api/models`
+
+*Gets a list of device models from an Azure DataTable.*
+
+> Example responses
+
+> 200 Response
+
+```
+[{"modelId":"string","imageUrl":"string","name":"string","description":"string","appEUI":"string","sensorDecoderURL":"string","commands":[{"name":"string","frame":"string","port":1}]}]
+```
+
+```json
+[
+  {
+    "modelId": "string",
+    "imageUrl": "string",
+    "name": "string",
+    "description": "string",
+    "appEUI": "string",
+    "sensorDecoderURL": "string",
+    "commands": [
+      {
+        "name": "string",
+        "frame": "string",
+        "port": 1
+      }
+    ]
+  }
+]
+```
+
+<h3 id="get__api_models-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+
+<h3 id="get__api_models-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[DeviceModel](#schemadevicemodel)]|false|none|none|
+|» modelId|string¦null|false|none|none|
+|» imageUrl|string¦null|false|none|none|
+|» name|string|true|none|none|
+|» description|string¦null|false|none|none|
+|» appEUI|string|true|none|none|
+|» sensorDecoderURL|string¦null|false|none|none|
+|» commands|[[DeviceModelCommand](#schemadevicemodelcommand)]¦null|false|none|none|
+|»» name|string|true|none|none|
+|»» frame|string|true|none|none|
+|»» port|integer(int32)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## post__api_models
+
+> Code samples
+
+`POST /api/models`
+
+> Body parameter
+
+```json
+{
+  "modelId": "string",
+  "imageUrl": "string",
+  "name": "string",
+  "description": "string",
+  "appEUI": "string",
+  "sensorDecoderURL": "string",
+  "commands": [
+    {
+      "name": "string",
+      "frame": "string",
+      "port": 1
+    }
+  ]
+}
+```
+
+<h3 id="post__api_models-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[DeviceModel](#schemadevicemodel)|false|none|
+
+<h3 id="post__api_models-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## put__api_models
+
+> Code samples
+
+`PUT /api/models`
+
+> Body parameter
+
+```json
+{
+  "modelId": "string",
+  "imageUrl": "string",
+  "name": "string",
+  "description": "string",
+  "appEUI": "string",
+  "sensorDecoderURL": "string",
+  "commands": [
+    {
+      "name": "string",
+      "frame": "string",
+      "port": 1
+    }
+  ]
+}
+```
+
+<h3 id="put__api_models-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[DeviceModel](#schemadevicemodel)|false|none|
+
+<h3 id="put__api_models-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## delete__api_models_{deviceModelID}
+
+> Code samples
+
+`DELETE /api/models/{deviceModelID}`
+
+<h3 id="delete__api_models_{devicemodelid}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceModelID|path|string|true|none|
+
+<h3 id="delete__api_models_{devicemodelid}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## get__api_models_{modelID}
+
+> Code samples
+
+`GET /api/models/{modelID}`
+
+*Get a specific device model from an Azure DataTable.*
+
+<h3 id="get__api_models_{modelid}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|modelID|path|string|true|none|
+
+<h3 id="get__api_models_{modelid}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## get__api_models_{modelID}_avatar
+
+> Code samples
+
+`GET /api/models/{modelID}/avatar`
+
+<h3 id="get__api_models_{modelid}_avatar-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|modelID|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```
+"string"
+```
+
+```json
+"string"
+```
+
+<h3 id="get__api_models_{modelid}_avatar-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|string|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## post__api_models_{modelID}_avatar
+
+> Code samples
+
+`POST /api/models/{modelID}/avatar`
+
+> Body parameter
+
+```yaml
+file: string
+
+```
+
+<h3 id="post__api_models_{modelid}_avatar-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|modelID|path|string|true|none|
+|body|body|object|false|none|
+|» file|body|string(binary)|false|none|
+
+> Example responses
+
+> 200 Response
+
+```
+"string"
+```
+
+```json
+"string"
+```
+
+<h3 id="post__api_models_{modelid}_avatar-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|string|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## delete__api_models_{modelID}_avatar
+
+> Code samples
+
+`DELETE /api/models/{modelID}/avatar`
+
+<h3 id="delete__api_models_{modelid}_avatar-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|modelID|path|string|true|none|
+
+<h3 id="delete__api_models_{modelid}_avatar-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## post__api_models_{modelId}_commands
+
+> Code samples
+
+`POST /api/models/{modelId}/commands`
+
+*Add a command to an Azure DataTable.*
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "frame": "string",
+  "port": 1
+}
+```
+
+<h3 id="post__api_models_{modelid}_commands-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|modelId|path|string|true|none|
+|body|body|[DeviceModelCommand](#schemadevicemodelcommand)|false|none|
+
+<h3 id="post__api_models_{modelid}_commands-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## delete__api_models_{modelId}_commands_{commandId}
+
+> Code samples
+
+`DELETE /api/models/{modelId}/commands/{commandId}`
+
+*Delete a command from an Azure DataTable.*
+
+<h3 id="delete__api_models_{modelid}_commands_{commandid}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|modelId|path|string|true|none|
+|commandId|path|string|true|none|
+
+<h3 id="delete__api_models_{modelid}_commands_{commandid}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 <h1 id="azure-iot-hub-portal-api-portal-settings">Portal Settings</h1>
@@ -1378,8 +1410,9 @@ This operation does not require authentication
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Returns the OIDC settings.|None|
 |500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal server error.|None|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
 </aside>
 
 # Schemas
