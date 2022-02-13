@@ -94,7 +94,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: 'API: Update documentation'
           labels: 'documentation'
-          reviewers: '@CGI-FR/azure-iot-portal-authors'
+          team-reviewers: '@CGI-FR/azure-iot-portal-authors'
           body: 'Automated changes to the Open API documentation.'
-
-
