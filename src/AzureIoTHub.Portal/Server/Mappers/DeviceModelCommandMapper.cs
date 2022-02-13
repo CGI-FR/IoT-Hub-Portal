@@ -14,7 +14,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
             {
                 Name = entity.RowKey,
                 Frame = entity[nameof(DeviceModelCommand.Frame)].ToString(),
-                Port = int.Parse(entity[nameof(DeviceModelCommand.Port)].ToString())
+                Port = int.Parse(entity[nameof(DeviceModelCommand.Port)].ToString()),
+                IsBuiltin = bool.Parse(entity[nameof(DeviceModelCommand.IsBuiltin)].ToString()),
             };
         }
 
@@ -22,6 +23,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
         {
             commandEntity[nameof(DeviceModelCommand.Frame)] = element.Frame;
             commandEntity[nameof(DeviceModelCommand.Port)] = element.Port;
+            commandEntity[nameof(DeviceModelCommand.IsBuiltin)] = element.IsBuiltin;
         }
     }
 }

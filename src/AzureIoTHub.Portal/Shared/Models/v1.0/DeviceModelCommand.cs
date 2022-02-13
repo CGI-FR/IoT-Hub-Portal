@@ -16,5 +16,7 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
         [Required(ErrorMessage = "The port number is required.")]
         [Range(1, 223, ErrorMessage = "The port number should be between 1 and 223.")]
         public int Port { get; set; } = 1;
+
+        public bool IsBuiltin { get; set; }
     }
 }

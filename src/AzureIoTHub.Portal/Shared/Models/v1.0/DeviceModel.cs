@@ -22,6 +22,8 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
 
         public string SensorDecoderURL { get; set; }
 
+        public bool IsBuiltin { get; set; }
+
         [ValidateComplexType]
         public List<DeviceModelCommand> Commands { get; set; }
 
