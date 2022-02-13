@@ -5,10 +5,10 @@
     "version": "1.0"
   },
   "paths": {
-    "/api/Commands/{modelId}": {
+    "/api/models/{modelId}/commands": {
       "post": {
         "tags": [
-          "Commands"
+          "Device Models"
         ],
         "summary": "Add a command to an Azure DataTable.",
         "parameters": [
@@ -47,10 +47,10 @@
         }
       }
     },
-    "/api/Commands/{modelId}/{commandId}": {
+    "/api/models/{modelId}/commands/{commandId}": {
       "delete": {
         "tags": [
-          "Commands"
+          "Device Models"
         ],
         "summary": "Delete a command from an Azure DataTable.",
         "parameters": [
@@ -78,204 +78,10 @@
         }
       }
     },
-    "/api/Concentrators": {
+    "/api/models": {
       "get": {
         "tags": [
-          "Concentrators"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Concentrators"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Concentrator"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Concentrator"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Concentrator"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Concentrators"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Concentrator"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Concentrator"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Concentrator"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Concentrators/{deviceId}": {
-      "get": {
-        "tags": [
-          "Concentrators"
-        ],
-        "parameters": [
-          {
-            "name": "deviceId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Concentrators"
-        ],
-        "summary": "this function delete a device.",
-        "parameters": [
-          {
-            "name": "deviceId",
-            "in": "path",
-            "description": "the device id.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Configs": {
-      "get": {
-        "tags": [
-          "Configs"
-        ],
-        "summary": "Gets a list of deployments as ConfigListItem from Azure IoT Hub.",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ConfigListItem"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ConfigListItem"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ConfigListItem"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Configs/{configurationID}": {
-      "get": {
-        "tags": [
-          "Configs"
-        ],
-        "summary": "Retrieve a specific deployment and its modules from the IoT Hub.\r\nConverts it to a ConfigListItem.",
-        "parameters": [
-          {
-            "name": "configurationID",
-            "in": "path",
-            "description": "ID of the deployment to retrieve.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConfigListItem"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConfigListItem"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConfigListItem"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DeviceModels": {
-      "get": {
-        "tags": [
-          "DeviceModels"
+          "Device Models"
         ],
         "summary": "Gets a list of device models from an Azure DataTable.",
         "responses": {
@@ -312,7 +118,7 @@
       },
       "post": {
         "tags": [
-          "DeviceModels"
+          "Device Models"
         ],
         "requestBody": {
           "content": {
@@ -341,7 +147,7 @@
       },
       "put": {
         "tags": [
-          "DeviceModels"
+          "Device Models"
         ],
         "requestBody": {
           "content": {
@@ -369,10 +175,10 @@
         }
       }
     },
-    "/api/DeviceModels/{modelID}": {
+    "/api/models/{modelID}": {
       "get": {
         "tags": [
-          "DeviceModels"
+          "Device Models"
         ],
         "summary": "Get a specific device model from an Azure DataTable.",
         "parameters": [
@@ -392,10 +198,10 @@
         }
       }
     },
-    "/api/DeviceModels/{modelID}/avatar": {
+    "/api/models/{modelID}/avatar": {
       "get": {
         "tags": [
-          "DeviceModels"
+          "Device Models"
         ],
         "parameters": [
           {
@@ -432,7 +238,7 @@
       },
       "post": {
         "tags": [
-          "DeviceModels"
+          "Device Models"
         ],
         "parameters": [
           {
@@ -489,7 +295,7 @@
       },
       "delete": {
         "tags": [
-          "DeviceModels"
+          "Device Models"
         ],
         "parameters": [
           {
@@ -508,10 +314,10 @@
         }
       }
     },
-    "/api/DeviceModels/{deviceModelID}": {
+    "/api/models/{deviceModelID}": {
       "delete": {
         "tags": [
-          "DeviceModels"
+          "Device Models"
         ],
         "parameters": [
           {
@@ -530,10 +336,10 @@
         }
       }
     },
-    "/api/Devices": {
+    "/api/devices": {
       "get": {
         "tags": [
-          "Devices"
+          "IoT Devices"
         ],
         "summary": "Gets a list of devices as DeviceListItem from Azure IoT Hub.\r\nFields that do not appear in the device list are not defined here.",
         "responses": {
@@ -570,7 +376,7 @@
       },
       "post": {
         "tags": [
-          "Devices"
+          "IoT Devices"
         ],
         "requestBody": {
           "content": {
@@ -599,7 +405,7 @@
       },
       "put": {
         "tags": [
-          "Devices"
+          "IoT Devices"
         ],
         "summary": "this function update the twin and the device.",
         "requestBody": {
@@ -629,10 +435,10 @@
         }
       }
     },
-    "/api/Devices/{deviceID}": {
+    "/api/devices/{deviceID}": {
       "get": {
         "tags": [
-          "Devices"
+          "IoT Devices"
         ],
         "summary": "Retrieve a specific device and from the IoT Hub.\r\nConverts it to a DeviceListItem.",
         "parameters": [
@@ -671,7 +477,7 @@
       },
       "delete": {
         "tags": [
-          "Devices"
+          "IoT Devices"
         ],
         "summary": "this function delete a device.",
         "parameters": [
@@ -692,10 +498,10 @@
         }
       }
     },
-    "/api/Devices/{deviceId}/{commandId}": {
+    "/api/devices/{deviceId}/{commandId}": {
       "post": {
         "tags": [
-          "Devices"
+          "IoT Devices"
         ],
         "summary": "Permit to execute cloud to device message.",
         "parameters": [
@@ -725,10 +531,90 @@
         }
       }
     },
-    "/api/Gateways": {
+    "/api/edge/configurations": {
       "get": {
         "tags": [
-          "Gateways"
+          "IoT Edge"
+        ],
+        "summary": "Gets a list of deployments as ConfigListItem from Azure IoT Hub.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConfigListItem"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConfigListItem"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConfigListItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/configurations/{configurationID}": {
+      "get": {
+        "tags": [
+          "IoT Edge"
+        ],
+        "summary": "Retrieve a specific deployment and its modules from the IoT Hub.\r\nConverts it to a ConfigListItem.",
+        "parameters": [
+          {
+            "name": "configurationID",
+            "in": "path",
+            "description": "ID of the deployment to retrieve.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigListItem"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigListItem"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigListItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/device": {
+      "get": {
+        "tags": [
+          "IoT Edge"
         ],
         "summary": "Fonction permettant de récupèrer la liste des appareils Edge .\r\nAprès avoir éxecuté la query du registryManager on récupère le resultat\r\nsous la forme d'une liste de Twin.",
         "responses": {
@@ -765,7 +651,7 @@
       },
       "post": {
         "tags": [
-          "Gateways"
+          "IoT Edge"
         ],
         "summary": "this function create a device with the twin information.",
         "requestBody": {
@@ -795,10 +681,10 @@
         }
       }
     },
-    "/api/Gateways/{deviceId}": {
+    "/api/edge/device/{deviceId}": {
       "get": {
         "tags": [
-          "Gateways"
+          "IoT Edge"
         ],
         "summary": "This function return all the information we want of\r\na device.",
         "parameters": [
@@ -837,7 +723,7 @@
       },
       "delete": {
         "tags": [
-          "Gateways"
+          "IoT Edge"
         ],
         "summary": "this function delete a device.",
         "parameters": [
@@ -858,10 +744,10 @@
         }
       }
     },
-    "/api/Gateways/{deviceId}/{deviceType}/ConnectionString": {
+    "/api/edge/device/{deviceId}/{deviceType}/ConnectionString": {
       "get": {
         "tags": [
-          "Gateways"
+          "IoT Edge"
         ],
         "parameters": [
           {
@@ -888,10 +774,10 @@
         }
       }
     },
-    "/api/Gateways/{gateway}": {
+    "/api/edge/device/{gateway}": {
       "put": {
         "tags": [
-          "Gateways"
+          "IoT Edge"
         ],
         "summary": "This function update the properties of a device.",
         "parameters": [
@@ -931,10 +817,10 @@
         }
       }
     },
-    "/api/Gateways/{deviceId}/{moduleId}/{methodName}": {
+    "/api/edge/device/{deviceId}/{moduleId}/{methodName}": {
       "post": {
         "tags": [
-          "Gateways"
+          "IoT Edge"
         ],
         "parameters": [
           {
@@ -1005,13 +891,127 @@
         }
       }
     },
-    "/OIDCSettings": {
+    "/api/lorawan/concentrators": {
       "get": {
         "tags": [
-          "OIDCSettings"
+          "LoRa WAN"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Concentrator"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Concentrator"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Concentrator"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Concentrator"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Concentrator"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Concentrator"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/lorawan/concentrators/{deviceId}": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "this function delete a device.",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "the device id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/settings/oidc": {
+      "get": {
+        "tags": [
+          "Portal Settings"
         ],
         "summary": "Get the Open ID Settings.",
-        "operationId": "GET Settings",
+        "operationId": "GET OIDC",
         "responses": {
           "200": {
             "description": "Returns the OIDC settings."

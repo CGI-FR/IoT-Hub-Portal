@@ -15,13 +15,13 @@ headingLevel: 2
 
 > Scroll down for example requests and responses.
 
-<h1 id="azure-iot-hub-portal-api-commands">Commands</h1>
+<h1 id="azure-iot-hub-portal-api-device-models">Device Models</h1>
 
-## post__api_Commands_{modelId}
+## post__api_models_{modelId}_commands
 
 > Code samples
 
-`POST /api/Commands/{modelId}`
+`POST /api/models/{modelId}/commands`
 
 *Add a command to an Azure DataTable.*
 
@@ -35,14 +35,14 @@ headingLevel: 2
 }
 ```
 
-<h3 id="post__api_commands_{modelid}-parameters">Parameters</h3>
+<h3 id="post__api_models_{modelid}_commands-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |modelId|path|string|true|none|
 |body|body|[DeviceModelCommand](#schemadevicemodelcommand)|false|none|
 
-<h3 id="post__api_commands_{modelid}-responses">Responses</h3>
+<h3 id="post__api_models_{modelid}_commands-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -52,22 +52,22 @@ headingLevel: 2
 This operation does not require authentication
 </aside>
 
-## delete__api_Commands_{modelId}_{commandId}
+## delete__api_models_{modelId}_commands_{commandId}
 
 > Code samples
 
-`DELETE /api/Commands/{modelId}/{commandId}`
+`DELETE /api/models/{modelId}/commands/{commandId}`
 
 *Delete a command from an Azure DataTable.*
 
-<h3 id="delete__api_commands_{modelid}_{commandid}-parameters">Parameters</h3>
+<h3 id="delete__api_models_{modelid}_commands_{commandid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |modelId|path|string|true|none|
 |commandId|path|string|true|none|
 
-<h3 id="delete__api_commands_{modelid}_{commandid}-responses">Responses</h3>
+<h3 id="delete__api_models_{modelid}_commands_{commandid}-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -77,380 +77,11 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-<h1 id="azure-iot-hub-portal-api-concentrators">Concentrators</h1>
-
-## get__api_Concentrators
+## get__api_models
 
 > Code samples
 
-`GET /api/Concentrators`
-
-<h3 id="get__api_concentrators-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## post__api_Concentrators
-
-> Code samples
-
-`POST /api/Concentrators`
-
-> Body parameter
-
-```json
-{
-  "deviceId": "string",
-  "deviceName": "string",
-  "loraRegion": "string",
-  "deviceType": "string",
-  "clientCertificateThumbprint": "string",
-  "isConnected": true,
-  "isEnabled": true,
-  "alreadyLoggedInOnce": true,
-  "routerConfig": {
-    "netID": [
-      0
-    ],
-    "joinEui": [
-      [
-        "string"
-      ]
-    ],
-    "region": "string",
-    "hwspec": "string",
-    "freq_range": [
-      0
-    ],
-    "dRs": [
-      [
-        0
-      ]
-    ],
-    "sx1301_conf": [
-      {
-        "property1": {
-          "enable": true,
-          "freq": 0,
-          "radio": 0,
-          "if": 0,
-          "bandwidth": 0,
-          "spread_factor": 0
-        },
-        "property2": {
-          "enable": true,
-          "freq": 0,
-          "radio": 0,
-          "if": 0,
-          "bandwidth": 0,
-          "spread_factor": 0
-        }
-      }
-    ],
-    "nocca": true,
-    "nodc": true,
-    "nodwell": true
-  }
-}
-```
-
-<h3 id="post__api_concentrators-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[Concentrator](#schemaconcentrator)|false|none|
-
-<h3 id="post__api_concentrators-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## put__api_Concentrators
-
-> Code samples
-
-`PUT /api/Concentrators`
-
-> Body parameter
-
-```json
-{
-  "deviceId": "string",
-  "deviceName": "string",
-  "loraRegion": "string",
-  "deviceType": "string",
-  "clientCertificateThumbprint": "string",
-  "isConnected": true,
-  "isEnabled": true,
-  "alreadyLoggedInOnce": true,
-  "routerConfig": {
-    "netID": [
-      0
-    ],
-    "joinEui": [
-      [
-        "string"
-      ]
-    ],
-    "region": "string",
-    "hwspec": "string",
-    "freq_range": [
-      0
-    ],
-    "dRs": [
-      [
-        0
-      ]
-    ],
-    "sx1301_conf": [
-      {
-        "property1": {
-          "enable": true,
-          "freq": 0,
-          "radio": 0,
-          "if": 0,
-          "bandwidth": 0,
-          "spread_factor": 0
-        },
-        "property2": {
-          "enable": true,
-          "freq": 0,
-          "radio": 0,
-          "if": 0,
-          "bandwidth": 0,
-          "spread_factor": 0
-        }
-      }
-    ],
-    "nocca": true,
-    "nodc": true,
-    "nodwell": true
-  }
-}
-```
-
-<h3 id="put__api_concentrators-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[Concentrator](#schemaconcentrator)|false|none|
-
-<h3 id="put__api_concentrators-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## get__api_Concentrators_{deviceId}
-
-> Code samples
-
-`GET /api/Concentrators/{deviceId}`
-
-<h3 id="get__api_concentrators_{deviceid}-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|deviceId|path|string|true|none|
-
-<h3 id="get__api_concentrators_{deviceid}-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## delete__api_Concentrators_{deviceId}
-
-> Code samples
-
-`DELETE /api/Concentrators/{deviceId}`
-
-*this function delete a device.*
-
-<h3 id="delete__api_concentrators_{deviceid}-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|deviceId|path|string|true|the device id.|
-
-<h3 id="delete__api_concentrators_{deviceid}-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-<h1 id="azure-iot-hub-portal-api-configs">Configs</h1>
-
-## get__api_Configs
-
-> Code samples
-
-`GET /api/Configs`
-
-*Gets a list of deployments as ConfigListItem from Azure IoT Hub.*
-
-> Example responses
-
-> 200 Response
-
-```
-[{"configurationID":"string","conditions":"string","metricsTargeted":0,"metricsApplied":0,"metricsSuccess":0,"metricsFailure":0,"priority":0,"creationDate":"2019-08-24T14:15:22Z","modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":{"property1":"string","property2":"string"},"moduleIdentityTwinSettings":{"property1":"string","property2":"string"}}]}]
-```
-
-```json
-[
-  {
-    "configurationID": "string",
-    "conditions": "string",
-    "metricsTargeted": 0,
-    "metricsApplied": 0,
-    "metricsSuccess": 0,
-    "metricsFailure": 0,
-    "priority": 0,
-    "creationDate": "2019-08-24T14:15:22Z",
-    "modules": [
-      {
-        "moduleName": "string",
-        "version": "string",
-        "status": "string",
-        "environmentVariables": {
-          "property1": "string",
-          "property2": "string"
-        },
-        "moduleIdentityTwinSettings": {
-          "property1": "string",
-          "property2": "string"
-        }
-      }
-    ]
-  }
-]
-```
-
-<h3 id="get__api_configs-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
-
-<h3 id="get__api_configs-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[ConfigListItem](#schemaconfiglistitem)]|false|none|none|
-|» configurationID|string¦null|false|none|none|
-|» conditions|string¦null|false|none|none|
-|» metricsTargeted|integer(int64)|false|none|none|
-|» metricsApplied|integer(int64)|false|none|none|
-|» metricsSuccess|integer(int64)|false|none|none|
-|» metricsFailure|integer(int64)|false|none|none|
-|» priority|integer(int32)|false|none|none|
-|» creationDate|string(date-time)|false|none|none|
-|» modules|[[GatewayModule](#schemagatewaymodule)]¦null|false|none|none|
-|»» moduleName|string¦null|false|none|none|
-|»» version|string¦null|false|none|none|
-|»» status|string¦null|false|none|none|
-|»» environmentVariables|object¦null|false|none|none|
-|»»» **additionalProperties**|string|false|none|none|
-|»» moduleIdentityTwinSettings|object¦null|false|none|none|
-|»»» **additionalProperties**|string|false|none|none|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## get__api_Configs_{configurationID}
-
-> Code samples
-
-`GET /api/Configs/{configurationID}`
-
-*Retrieve a specific deployment and its modules from the IoT Hub.
-Converts it to a ConfigListItem.*
-
-<h3 id="get__api_configs_{configurationid}-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|configurationID|path|string|true|ID of the deployment to retrieve.|
-
-> Example responses
-
-> 200 Response
-
-```
-{"configurationID":"string","conditions":"string","metricsTargeted":0,"metricsApplied":0,"metricsSuccess":0,"metricsFailure":0,"priority":0,"creationDate":"2019-08-24T14:15:22Z","modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":{"property1":"string","property2":"string"},"moduleIdentityTwinSettings":{"property1":"string","property2":"string"}}]}
-```
-
-```json
-{
-  "configurationID": "string",
-  "conditions": "string",
-  "metricsTargeted": 0,
-  "metricsApplied": 0,
-  "metricsSuccess": 0,
-  "metricsFailure": 0,
-  "priority": 0,
-  "creationDate": "2019-08-24T14:15:22Z",
-  "modules": [
-    {
-      "moduleName": "string",
-      "version": "string",
-      "status": "string",
-      "environmentVariables": {
-        "property1": "string",
-        "property2": "string"
-      },
-      "moduleIdentityTwinSettings": {
-        "property1": "string",
-        "property2": "string"
-      }
-    }
-  ]
-}
-```
-
-<h3 id="get__api_configs_{configurationid}-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ConfigListItem](#schemaconfiglistitem)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-<h1 id="azure-iot-hub-portal-api-devicemodels">DeviceModels</h1>
-
-## get__api_DeviceModels
-
-> Code samples
-
-`GET /api/DeviceModels`
+`GET /api/models`
 
 *Gets a list of device models from an Azure DataTable.*
 
@@ -482,13 +113,13 @@ This operation does not require authentication
 ]
 ```
 
-<h3 id="get__api_devicemodels-responses">Responses</h3>
+<h3 id="get__api_models-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
 
-<h3 id="get__api_devicemodels-responseschema">Response Schema</h3>
+<h3 id="get__api_models-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -510,11 +141,11 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## post__api_DeviceModels
+## post__api_models
 
 > Code samples
 
-`POST /api/DeviceModels`
+`POST /api/models`
 
 > Body parameter
 
@@ -536,13 +167,13 @@ This operation does not require authentication
 }
 ```
 
-<h3 id="post__api_devicemodels-parameters">Parameters</h3>
+<h3 id="post__api_models-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[DeviceModel](#schemadevicemodel)|false|none|
 
-<h3 id="post__api_devicemodels-responses">Responses</h3>
+<h3 id="post__api_models-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -552,11 +183,11 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-## put__api_DeviceModels
+## put__api_models
 
 > Code samples
 
-`PUT /api/DeviceModels`
+`PUT /api/models`
 
 > Body parameter
 
@@ -578,13 +209,13 @@ This operation does not require authentication
 }
 ```
 
-<h3 id="put__api_devicemodels-parameters">Parameters</h3>
+<h3 id="put__api_models-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[DeviceModel](#schemadevicemodel)|false|none|
 
-<h3 id="put__api_devicemodels-responses">Responses</h3>
+<h3 id="put__api_models-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -594,21 +225,21 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-## get__api_DeviceModels_{modelID}
+## get__api_models_{modelID}
 
 > Code samples
 
-`GET /api/DeviceModels/{modelID}`
+`GET /api/models/{modelID}`
 
 *Get a specific device model from an Azure DataTable.*
 
-<h3 id="get__api_devicemodels_{modelid}-parameters">Parameters</h3>
+<h3 id="get__api_models_{modelid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |modelID|path|string|true|none|
 
-<h3 id="get__api_devicemodels_{modelid}-responses">Responses</h3>
+<h3 id="get__api_models_{modelid}-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -618,13 +249,13 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-## get__api_DeviceModels_{modelID}_avatar
+## get__api_models_{modelID}_avatar
 
 > Code samples
 
-`GET /api/DeviceModels/{modelID}/avatar`
+`GET /api/models/{modelID}/avatar`
 
-<h3 id="get__api_devicemodels_{modelid}_avatar-parameters">Parameters</h3>
+<h3 id="get__api_models_{modelid}_avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -642,7 +273,7 @@ This operation does not require authentication
 "string"
 ```
 
-<h3 id="get__api_devicemodels_{modelid}_avatar-responses">Responses</h3>
+<h3 id="get__api_models_{modelid}_avatar-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -652,11 +283,11 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-## post__api_DeviceModels_{modelID}_avatar
+## post__api_models_{modelID}_avatar
 
 > Code samples
 
-`POST /api/DeviceModels/{modelID}/avatar`
+`POST /api/models/{modelID}/avatar`
 
 > Body parameter
 
@@ -665,7 +296,7 @@ file: string
 
 ```
 
-<h3 id="post__api_devicemodels_{modelid}_avatar-parameters">Parameters</h3>
+<h3 id="post__api_models_{modelid}_avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -685,7 +316,7 @@ file: string
 "string"
 ```
 
-<h3 id="post__api_devicemodels_{modelid}_avatar-responses">Responses</h3>
+<h3 id="post__api_models_{modelid}_avatar-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -695,19 +326,19 @@ file: string
 This operation does not require authentication
 </aside>
 
-## delete__api_DeviceModels_{modelID}_avatar
+## delete__api_models_{modelID}_avatar
 
 > Code samples
 
-`DELETE /api/DeviceModels/{modelID}/avatar`
+`DELETE /api/models/{modelID}/avatar`
 
-<h3 id="delete__api_devicemodels_{modelid}_avatar-parameters">Parameters</h3>
+<h3 id="delete__api_models_{modelid}_avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |modelID|path|string|true|none|
 
-<h3 id="delete__api_devicemodels_{modelid}_avatar-responses">Responses</h3>
+<h3 id="delete__api_models_{modelid}_avatar-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -717,19 +348,19 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-## delete__api_DeviceModels_{deviceModelID}
+## delete__api_models_{deviceModelID}
 
 > Code samples
 
-`DELETE /api/DeviceModels/{deviceModelID}`
+`DELETE /api/models/{deviceModelID}`
 
-<h3 id="delete__api_devicemodels_{devicemodelid}-parameters">Parameters</h3>
+<h3 id="delete__api_models_{devicemodelid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |deviceModelID|path|string|true|none|
 
-<h3 id="delete__api_devicemodels_{devicemodelid}-responses">Responses</h3>
+<h3 id="delete__api_models_{devicemodelid}-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -739,13 +370,13 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-<h1 id="azure-iot-hub-portal-api-devices">Devices</h1>
+<h1 id="azure-iot-hub-portal-api-iot-devices">IoT Devices</h1>
 
-## get__api_Devices
+## get__api_devices
 
 > Code samples
 
-`GET /api/Devices`
+`GET /api/devices`
 
 *Gets a list of devices as DeviceListItem from Azure IoT Hub.
 Fields that do not appear in the device list are not defined here.*
@@ -801,11 +432,11 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## post__api_Devices
+## post__api_devices
 
 > Code samples
 
-`POST /api/Devices`
+`POST /api/devices`
 
 > Body parameter
 
@@ -851,11 +482,11 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-## put__api_Devices
+## put__api_devices
 
 > Code samples
 
-`PUT /api/Devices`
+`PUT /api/devices`
 
 *this function update the twin and the device.*
 
@@ -903,11 +534,11 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-## get__api_Devices_{deviceID}
+## get__api_devices_{deviceID}
 
 > Code samples
 
-`GET /api/Devices/{deviceID}`
+`GET /api/devices/{deviceID}`
 
 *Retrieve a specific device and from the IoT Hub.
 Converts it to a DeviceListItem.*
@@ -962,11 +593,11 @@ Converts it to a DeviceListItem.*
 This operation does not require authentication
 </aside>
 
-## delete__api_Devices_{deviceID}
+## delete__api_devices_{deviceID}
 
 > Code samples
 
-`DELETE /api/Devices/{deviceID}`
+`DELETE /api/devices/{deviceID}`
 
 *this function delete a device.*
 
@@ -986,11 +617,11 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-## post__api_Devices_{deviceId}_{commandId}
+## post__api_devices_{deviceId}_{commandId}
 
 > Code samples
 
-`POST /api/Devices/{deviceId}/{commandId}`
+`POST /api/devices/{deviceId}/{commandId}`
 
 *Permit to execute cloud to device message.*
 
@@ -1011,13 +642,154 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-<h1 id="azure-iot-hub-portal-api-gateways">Gateways</h1>
+<h1 id="azure-iot-hub-portal-api-iot-edge">IoT Edge</h1>
 
-## get__api_Gateways
+## get__api_edge_configurations
 
 > Code samples
 
-`GET /api/Gateways`
+`GET /api/edge/configurations`
+
+*Gets a list of deployments as ConfigListItem from Azure IoT Hub.*
+
+> Example responses
+
+> 200 Response
+
+```
+[{"configurationID":"string","conditions":"string","metricsTargeted":0,"metricsApplied":0,"metricsSuccess":0,"metricsFailure":0,"priority":0,"creationDate":"2019-08-24T14:15:22Z","modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":{"property1":"string","property2":"string"},"moduleIdentityTwinSettings":{"property1":"string","property2":"string"}}]}]
+```
+
+```json
+[
+  {
+    "configurationID": "string",
+    "conditions": "string",
+    "metricsTargeted": 0,
+    "metricsApplied": 0,
+    "metricsSuccess": 0,
+    "metricsFailure": 0,
+    "priority": 0,
+    "creationDate": "2019-08-24T14:15:22Z",
+    "modules": [
+      {
+        "moduleName": "string",
+        "version": "string",
+        "status": "string",
+        "environmentVariables": {
+          "property1": "string",
+          "property2": "string"
+        },
+        "moduleIdentityTwinSettings": {
+          "property1": "string",
+          "property2": "string"
+        }
+      }
+    ]
+  }
+]
+```
+
+<h3 id="get__api_edge_configurations-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+
+<h3 id="get__api_edge_configurations-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[ConfigListItem](#schemaconfiglistitem)]|false|none|none|
+|» configurationID|string¦null|false|none|none|
+|» conditions|string¦null|false|none|none|
+|» metricsTargeted|integer(int64)|false|none|none|
+|» metricsApplied|integer(int64)|false|none|none|
+|» metricsSuccess|integer(int64)|false|none|none|
+|» metricsFailure|integer(int64)|false|none|none|
+|» priority|integer(int32)|false|none|none|
+|» creationDate|string(date-time)|false|none|none|
+|» modules|[[GatewayModule](#schemagatewaymodule)]¦null|false|none|none|
+|»» moduleName|string¦null|false|none|none|
+|»» version|string¦null|false|none|none|
+|»» status|string¦null|false|none|none|
+|»» environmentVariables|object¦null|false|none|none|
+|»»» **additionalProperties**|string|false|none|none|
+|»» moduleIdentityTwinSettings|object¦null|false|none|none|
+|»»» **additionalProperties**|string|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## get__api_edge_configurations_{configurationID}
+
+> Code samples
+
+`GET /api/edge/configurations/{configurationID}`
+
+*Retrieve a specific deployment and its modules from the IoT Hub.
+Converts it to a ConfigListItem.*
+
+<h3 id="get__api_edge_configurations_{configurationid}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|configurationID|path|string|true|ID of the deployment to retrieve.|
+
+> Example responses
+
+> 200 Response
+
+```
+{"configurationID":"string","conditions":"string","metricsTargeted":0,"metricsApplied":0,"metricsSuccess":0,"metricsFailure":0,"priority":0,"creationDate":"2019-08-24T14:15:22Z","modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":{"property1":"string","property2":"string"},"moduleIdentityTwinSettings":{"property1":"string","property2":"string"}}]}
+```
+
+```json
+{
+  "configurationID": "string",
+  "conditions": "string",
+  "metricsTargeted": 0,
+  "metricsApplied": 0,
+  "metricsSuccess": 0,
+  "metricsFailure": 0,
+  "priority": 0,
+  "creationDate": "2019-08-24T14:15:22Z",
+  "modules": [
+    {
+      "moduleName": "string",
+      "version": "string",
+      "status": "string",
+      "environmentVariables": {
+        "property1": "string",
+        "property2": "string"
+      },
+      "moduleIdentityTwinSettings": {
+        "property1": "string",
+        "property2": "string"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="get__api_edge_configurations_{configurationid}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ConfigListItem](#schemaconfiglistitem)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## get__api_edge_device
+
+> Code samples
+
+`GET /api/edge/device`
 
 *Fonction permettant de récupèrer la liste des appareils Edge .
 Après avoir éxecuté la query du registryManager on récupère le resultat
@@ -1042,13 +814,13 @@ sous la forme d'une liste de Twin.*
 ]
 ```
 
-<h3 id="get__api_gateways-responses">Responses</h3>
+<h3 id="get__api_edge_device-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
 
-<h3 id="get__api_gateways-responseschema">Response Schema</h3>
+<h3 id="get__api_edge_device-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -1064,11 +836,11 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## post__api_Gateways
+## post__api_edge_device
 
 > Code samples
 
-`POST /api/Gateways`
+`POST /api/edge/device`
 
 *this function create a device with the twin information.*
 
@@ -1110,13 +882,13 @@ This operation does not require authentication
 }
 ```
 
-<h3 id="post__api_gateways-parameters">Parameters</h3>
+<h3 id="post__api_edge_device-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[Gateway](#schemagateway)|false|the gateway object.|
 
-<h3 id="post__api_gateways-responses">Responses</h3>
+<h3 id="post__api_edge_device-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1126,16 +898,16 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-## get__api_Gateways_{deviceId}
+## get__api_edge_device_{deviceId}
 
 > Code samples
 
-`GET /api/Gateways/{deviceId}`
+`GET /api/edge/device/{deviceId}`
 
 *This function return all the information we want of
 a device.*
 
-<h3 id="get__api_gateways_{deviceid}-parameters">Parameters</h3>
+<h3 id="get__api_edge_device_{deviceid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1185,7 +957,7 @@ a device.*
 }
 ```
 
-<h3 id="get__api_gateways_{deviceid}-responses">Responses</h3>
+<h3 id="get__api_edge_device_{deviceid}-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1195,21 +967,21 @@ a device.*
 This operation does not require authentication
 </aside>
 
-## delete__api_Gateways_{deviceId}
+## delete__api_edge_device_{deviceId}
 
 > Code samples
 
-`DELETE /api/Gateways/{deviceId}`
+`DELETE /api/edge/device/{deviceId}`
 
 *this function delete a device.*
 
-<h3 id="delete__api_gateways_{deviceid}-parameters">Parameters</h3>
+<h3 id="delete__api_edge_device_{deviceid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |deviceId|path|string|true|the device id to delete.|
 
-<h3 id="delete__api_gateways_{deviceid}-responses">Responses</h3>
+<h3 id="delete__api_edge_device_{deviceid}-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1219,20 +991,20 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-## get__api_Gateways_{deviceId}_{deviceType}_ConnectionString
+## get__api_edge_device_{deviceId}_{deviceType}_ConnectionString
 
 > Code samples
 
-`GET /api/Gateways/{deviceId}/{deviceType}/ConnectionString`
+`GET /api/edge/device/{deviceId}/{deviceType}/ConnectionString`
 
-<h3 id="get__api_gateways_{deviceid}_{devicetype}_connectionstring-parameters">Parameters</h3>
+<h3 id="get__api_edge_device_{deviceid}_{devicetype}_connectionstring-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |deviceId|path|string|true|none|
 |deviceType|path|string|true|none|
 
-<h3 id="get__api_gateways_{deviceid}_{devicetype}_connectionstring-responses">Responses</h3>
+<h3 id="get__api_edge_device_{deviceid}_{devicetype}_connectionstring-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1242,11 +1014,11 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-## put__api_Gateways_{gateway}
+## put__api_edge_device_{gateway}
 
 > Code samples
 
-`PUT /api/Gateways/{gateway}`
+`PUT /api/edge/device/{gateway}`
 
 *This function update the properties of a device.*
 
@@ -1288,14 +1060,14 @@ This operation does not require authentication
 }
 ```
 
-<h3 id="put__api_gateways_{gateway}-parameters">Parameters</h3>
+<h3 id="put__api_edge_device_{gateway}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |gateway|path|string|true|none|
 |body|body|[Gateway](#schemagateway)|false|a gateways object.|
 
-<h3 id="put__api_gateways_{gateway}-responses">Responses</h3>
+<h3 id="put__api_edge_device_{gateway}-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1305,11 +1077,11 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-## post__api_Gateways_{deviceId}_{moduleId}_{methodName}
+## post__api_edge_device_{deviceId}_{moduleId}_{methodName}
 
 > Code samples
 
-`POST /api/Gateways/{deviceId}/{moduleId}/{methodName}`
+`POST /api/edge/device/{deviceId}/{moduleId}/{methodName}`
 
 > Body parameter
 
@@ -1329,7 +1101,7 @@ This operation does not require authentication
 }
 ```
 
-<h3 id="post__api_gateways_{deviceid}_{moduleid}_{methodname}-parameters">Parameters</h3>
+<h3 id="post__api_edge_device_{deviceid}_{moduleid}_{methodname}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1353,7 +1125,7 @@ This operation does not require authentication
 }
 ```
 
-<h3 id="post__api_gateways_{deviceid}_{moduleid}_{methodname}-responses">Responses</h3>
+<h3 id="post__api_edge_device_{deviceid}_{moduleid}_{methodname}-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1363,19 +1135,243 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-<h1 id="azure-iot-hub-portal-api-oidcsettings">OIDCSettings</h1>
+<h1 id="azure-iot-hub-portal-api-lora-wan">LoRa WAN</h1>
 
-## GET Settings
-
-<a id="opIdGET Settings"></a>
+## get__api_lorawan_concentrators
 
 > Code samples
 
-`GET /OIDCSettings`
+`GET /api/lorawan/concentrators`
+
+<h3 id="get__api_lorawan_concentrators-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## post__api_lorawan_concentrators
+
+> Code samples
+
+`POST /api/lorawan/concentrators`
+
+> Body parameter
+
+```json
+{
+  "deviceId": "string",
+  "deviceName": "string",
+  "loraRegion": "string",
+  "deviceType": "string",
+  "clientCertificateThumbprint": "string",
+  "isConnected": true,
+  "isEnabled": true,
+  "alreadyLoggedInOnce": true,
+  "routerConfig": {
+    "netID": [
+      0
+    ],
+    "joinEui": [
+      [
+        "string"
+      ]
+    ],
+    "region": "string",
+    "hwspec": "string",
+    "freq_range": [
+      0
+    ],
+    "dRs": [
+      [
+        0
+      ]
+    ],
+    "sx1301_conf": [
+      {
+        "property1": {
+          "enable": true,
+          "freq": 0,
+          "radio": 0,
+          "if": 0,
+          "bandwidth": 0,
+          "spread_factor": 0
+        },
+        "property2": {
+          "enable": true,
+          "freq": 0,
+          "radio": 0,
+          "if": 0,
+          "bandwidth": 0,
+          "spread_factor": 0
+        }
+      }
+    ],
+    "nocca": true,
+    "nodc": true,
+    "nodwell": true
+  }
+}
+```
+
+<h3 id="post__api_lorawan_concentrators-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[Concentrator](#schemaconcentrator)|false|none|
+
+<h3 id="post__api_lorawan_concentrators-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## put__api_lorawan_concentrators
+
+> Code samples
+
+`PUT /api/lorawan/concentrators`
+
+> Body parameter
+
+```json
+{
+  "deviceId": "string",
+  "deviceName": "string",
+  "loraRegion": "string",
+  "deviceType": "string",
+  "clientCertificateThumbprint": "string",
+  "isConnected": true,
+  "isEnabled": true,
+  "alreadyLoggedInOnce": true,
+  "routerConfig": {
+    "netID": [
+      0
+    ],
+    "joinEui": [
+      [
+        "string"
+      ]
+    ],
+    "region": "string",
+    "hwspec": "string",
+    "freq_range": [
+      0
+    ],
+    "dRs": [
+      [
+        0
+      ]
+    ],
+    "sx1301_conf": [
+      {
+        "property1": {
+          "enable": true,
+          "freq": 0,
+          "radio": 0,
+          "if": 0,
+          "bandwidth": 0,
+          "spread_factor": 0
+        },
+        "property2": {
+          "enable": true,
+          "freq": 0,
+          "radio": 0,
+          "if": 0,
+          "bandwidth": 0,
+          "spread_factor": 0
+        }
+      }
+    ],
+    "nocca": true,
+    "nodc": true,
+    "nodwell": true
+  }
+}
+```
+
+<h3 id="put__api_lorawan_concentrators-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[Concentrator](#schemaconcentrator)|false|none|
+
+<h3 id="put__api_lorawan_concentrators-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## get__api_lorawan_concentrators_{deviceId}
+
+> Code samples
+
+`GET /api/lorawan/concentrators/{deviceId}`
+
+<h3 id="get__api_lorawan_concentrators_{deviceid}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceId|path|string|true|none|
+
+<h3 id="get__api_lorawan_concentrators_{deviceid}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## delete__api_lorawan_concentrators_{deviceId}
+
+> Code samples
+
+`DELETE /api/lorawan/concentrators/{deviceId}`
+
+*this function delete a device.*
+
+<h3 id="delete__api_lorawan_concentrators_{deviceid}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceId|path|string|true|the device id.|
+
+<h3 id="delete__api_lorawan_concentrators_{deviceid}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+<h1 id="azure-iot-hub-portal-api-portal-settings">Portal Settings</h1>
+
+## GET OIDC
+
+<a id="opIdGET OIDC"></a>
+
+> Code samples
+
+`GET /api/settings/oidc`
 
 *Get the Open ID Settings.*
 
-<h3 id="get-settings-responses">Responses</h3>
+<h3 id="get-oidc-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
