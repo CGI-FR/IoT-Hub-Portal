@@ -28,7 +28,7 @@
     /// <returns></returns>
     private async Task DeleteDevice()
     {
-        var response = await Http.DeleteAsync($"api/Concentrators/{deviceId}");
+        var response = await Http.DeleteAsync($"api/lorawan/concentrators/{deviceId}");
 
         // Prompts a snack bar to inform if the action was successful
         // TODO : Deal more effectively with error/success messages

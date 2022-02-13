@@ -18,7 +18,8 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/models")]
+    [ApiExplorerSettings(GroupName = "Device Models")]
     public class DeviceModelsController : ControllerBase
     {
         private const string DefaultPartitionKey = "0";

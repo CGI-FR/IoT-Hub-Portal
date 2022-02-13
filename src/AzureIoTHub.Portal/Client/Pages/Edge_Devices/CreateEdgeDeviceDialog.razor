@@ -1,4 +1,4 @@
-﻿@page "/edge-devices/add"
+﻿@page "/edge/devices/add"
 @using Microsoft.AspNetCore.Authorization
 @using AzureIoTHub.Portal.Shared.Models;
 
@@ -61,7 +61,7 @@
 
     private async Task OnValidation()
     {
-        var result = await Http.PostAsJsonAsync("api/Gateways", gateway);
+        var result = await Http.PostAsJsonAsync("api/edge/device", gateway);
 
         if (result.IsSuccessStatusCode)
         {

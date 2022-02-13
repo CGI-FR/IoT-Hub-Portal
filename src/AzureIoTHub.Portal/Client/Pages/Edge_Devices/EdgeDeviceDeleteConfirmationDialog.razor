@@ -24,7 +24,7 @@
 
     private async Task DeleteDevice()
     {
-        var result = await Http.DeleteAsync($"api/Gateways/{DeviceId}");
+        var result = await Http.DeleteAsync($"api/edge/device/{DeviceId}");
 
         if (!result.IsSuccessStatusCode)
         {

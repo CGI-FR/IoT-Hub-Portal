@@ -23,22 +23,22 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers
         private Mock<IRouterConfigManager> mockRouterManager;
         private Mock<IConcentratorTwinMapper> mockConcentratorTwinMapper;
         private Mock<IDeviceService> mockDeviceService;
-        private Mock<ILogger<ConcentratorsController>> mockLogger;
+        private Mock<ILogger<LoRaWANConcentratorsController>> mockLogger;
 
         [SetUp]
         public void SetUp()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockLogger = this.mockRepository.Create<ILogger<ConcentratorsController>>();
+            this.mockLogger = this.mockRepository.Create<ILogger<LoRaWANConcentratorsController>>();
             this.mockRouterManager = this.mockRepository.Create<IRouterConfigManager>();
             this.mockConcentratorTwinMapper = this.mockRepository.Create<IConcentratorTwinMapper>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
         }
 
-        private ConcentratorsController CreateController()
+        private LoRaWANConcentratorsController CreateController()
         {
-            return new ConcentratorsController(
+            return new LoRaWANConcentratorsController(
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
                 this.mockRouterManager.Object,

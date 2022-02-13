@@ -11,13 +11,14 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
     [ApiController]
     [AllowAnonymous]
-    [Route("[controller]")]
+    [Route("/api/settings")]
     [Produces("application/json")]
-    public class OIDCSettingsController : ControllerBase
+    [ApiExplorerSettings(GroupName = "Portal Settings")]
+    public class SettingsController : ControllerBase
     {
         private readonly ClientApiIndentityOptions configuration;
 
-        public OIDCSettingsController(IOptions<ClientApiIndentityOptions> configuration)
+        public SettingsController(IOptions<ClientApiIndentityOptions> configuration)
         {
             this.configuration = configuration.Value;
         }
@@ -28,7 +29,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
         /// <returns>The portal OIDC settnigs.</returns>
         /// <response code="200">Returns the OIDC settings.</response>
         /// <response code="500">Internal server error.</response>
-        [HttpGet(Name = "GET Settings")]
+        [HttpGet("oidc", Name = "GET OIDC")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetOIDCSettings()

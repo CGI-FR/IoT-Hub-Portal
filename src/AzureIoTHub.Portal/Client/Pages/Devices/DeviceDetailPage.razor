@@ -147,7 +147,7 @@
             // Gets the DeviceModel Name from the DeviceModel ID
             if (!string.IsNullOrEmpty(Device.ModelId))
             {
-                DeviceModel model = await Http.GetFromJsonAsync<DeviceModel>($"api/DeviceModels/{Device.ModelId}");
+                DeviceModel model = await Http.GetFromJsonAsync<DeviceModel>($"api/models/{Device.ModelId}");
                 Device.ModelName = model?.Name;
             }
 

@@ -127,13 +127,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        DeviceModel = await httpClient.GetFromJsonAsync<DeviceModel>($"api/DeviceModels/{ModelID}");
-        imageDataUrl = await httpClient.GetStringAsync($"api/DeviceModels/{ModelID}/avatar");
+        DeviceModel = await httpClient.GetFromJsonAsync<DeviceModel>($"api/models/{ModelID}");
+        imageDataUrl = await httpClient.GetStringAsync($"api/models/{ModelID}/avatar");
     }
 
     async Task DeleteAvatar()
     {
-        await httpClient.DeleteAsync($"api/DeviceModels/{ModelID}/avatar");
+        await httpClient.DeleteAsync($"api/models/{ModelID}/avatar");
         imageDataUrl = null;
     }
 
@@ -150,14 +150,14 @@
                       name: "\"file\"",
                       fileName: e.File.Name);
 
-        var response = await httpClient.PostAsync($"api/DeviceModels/{ModelID}/avatar", content);
+        var response = await httpClient.PostAsync($"api/models/{ModelID}/avatar", content);
 
         imageDataUrl = await response.Content.ReadAsStringAsync();
     }
 
     private async Task Save()
     {
-        var result = await httpClient.PutAsJsonAsync("api/DeviceModels", DeviceModel);
+        var result = await httpClient.PutAsJsonAsync("api/models", DeviceModel);
 
         if (result.IsSuccessStatusCode)
         {

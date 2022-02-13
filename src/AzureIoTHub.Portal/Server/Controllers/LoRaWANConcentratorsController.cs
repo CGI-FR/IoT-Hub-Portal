@@ -17,17 +17,18 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
 
-    [Route("api/[controller]")]
     [ApiController]
-    public class ConcentratorsController : ControllerBase
+    [Route("api/lorawan/concentrators")]
+    [ApiExplorerSettings(GroupName = "LoRa WAN")]
+    public class LoRaWANConcentratorsController : ControllerBase
     {
         private readonly IDeviceService devicesService;
         private readonly IConcentratorTwinMapper concentratorTwinMapper;
         private readonly IRouterConfigManager routerConfigManager;
-        private readonly ILogger<ConcentratorsController> logger;
+        private readonly ILogger<LoRaWANConcentratorsController> logger;
 
-        public ConcentratorsController(
-            ILogger<ConcentratorsController> logger,
+        public LoRaWANConcentratorsController(
+            ILogger<LoRaWANConcentratorsController> logger,
             IDeviceService devicesService,
             IRouterConfigManager routerConfigManager,
             IConcentratorTwinMapper concentratorTwinMapper)

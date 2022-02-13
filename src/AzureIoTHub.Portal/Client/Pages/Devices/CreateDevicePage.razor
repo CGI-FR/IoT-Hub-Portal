@@ -140,7 +140,7 @@
         Device.IsEnabled = true;
 
         // Gets a list of device model previously registered to Azure to allow autocomplete field in the form
-        DeviceModelList = await Http.GetFromJsonAsync<DeviceModel[]>("api/DeviceModels");
+        DeviceModelList = await Http.GetFromJsonAsync<DeviceModel[]>("api/models");
     }
 
     /// <summary>
