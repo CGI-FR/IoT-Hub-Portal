@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
 
     [ApiController]
     [AllowAnonymous]
+    [ApiVersion("1.0")]
     [Route("/api/settings")]
     [Produces("application/json")]
     [ApiExplorerSettings(GroupName = "Portal Settings")]

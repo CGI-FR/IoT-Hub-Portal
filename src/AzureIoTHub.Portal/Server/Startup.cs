@@ -17,6 +17,8 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Versioning;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Extensions.Configuration;
@@ -145,6 +147,16 @@ namespace AzureIoTHub.Portal.Server
 
                 opts.TagActionsBy(api => new[] { api.GroupName });
                 opts.DocInclusionPredicate((name, api) => true);
+            });
+
+            services.AddApiVersioning(o =>
+            {
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new ApiVersion(1, 0);
+                o.ReportApiVersions = true;
+                o.ApiVersionReader = ApiVersionReader.Combine(
+                    new QueryStringApiVersionReader("api-version"),
+                    new HeaderApiVersionReader("X-Version"));
             });
         }
 

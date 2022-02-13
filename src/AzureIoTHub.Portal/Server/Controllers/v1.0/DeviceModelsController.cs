@@ -18,6 +18,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
+    [ApiVersion("1.0")]
     [Route("api/models")]
     [ApiExplorerSettings(GroupName = "Device Models")]
     public class DeviceModelsController : ControllerBase
