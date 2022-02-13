@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Server
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Net;
     using System.Reflection;
@@ -138,7 +139,8 @@ namespace AzureIoTHub.Portal.Server
                 opts.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "1.0",
-                    Title = "Azure IoT Hub Portal API"
+                    Title = "Azure IoT Hub Portal API",
+                    Description = "Available APIs for managing devices from Azure IoT Hub."
                 });
 
                 // using System.Reflection;
@@ -147,6 +149,28 @@ namespace AzureIoTHub.Portal.Server
 
                 opts.TagActionsBy(api => new[] { api.GroupName });
                 opts.DocInclusionPredicate((name, api) => true);
+
+                opts.DescribeAllParametersInCamelCase();
+
+                opts.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "Bearer",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header
+                        },
+                        new List<string>()
+                    }
+                });
+
+                opts.OrderActionsBy(api => api.RelativePath);
             });
 
             services.AddApiVersioning(o =>
