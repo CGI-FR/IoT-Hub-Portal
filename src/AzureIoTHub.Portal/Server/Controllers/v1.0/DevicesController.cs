@@ -22,6 +22,7 @@ namespace AzureIoTHub.Portal.Server.Controllers
     using Microsoft.Extensions.Logging;
 
     [ApiController]
+    [ApiVersion("1.0")]
     [Route("api/devices")]
     [ApiExplorerSettings(GroupName = "IoT Devices")]
     public class DevicesController : ControllerBase

@@ -22,8 +22,12 @@ namespace AzureIoTHub.Portal.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddHttpClient("api", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
-                                                    /*.AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>()*/;
+            builder.Services.AddHttpClient("api", client =>
+            {
+                client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+                client.DefaultRequestHeaders.Add("X-Version", "1.0");
+            })
+                /*.AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>()*/;
 
             builder.Services.AddFileReaderService(o => o.UseWasmSharedBuffer = true);
 
