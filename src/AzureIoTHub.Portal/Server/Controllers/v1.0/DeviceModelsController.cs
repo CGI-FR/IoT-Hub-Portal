@@ -97,16 +97,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the specified model identifier.
         /// </summary>
-        /// <param name="modelID">The model identifier.</param>
+        /// <param name="id">The model identifier.</param>
         /// <returns>The corresponding model.</returns>
         /// <response code="200">The model.</response>
         /// <response code="404">If the corresponding entity doesn't exist.</response>
         [HttpGet("{id}")]
-        public IActionResult Get(string modelID)
+        public IActionResult Get(string id)
         {
             var query = this.tableClientFactory
                             .GetDeviceTemplates()
-                            .Query<TableEntity>(t => t.RowKey == modelID);
+                            .Query<TableEntity>(t => t.RowKey == id);
 
             if (!query.Any())
             {
@@ -119,36 +119,36 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the avatar.
         /// </summary>
-        /// <param name="modelID">The model identifier.</param>
+        /// <param name="id">The model identifier.</param>
         /// <returns>The avatar.</returns>
         /// <response code="200">The device model's avatar URL.</response>
         [HttpGet("{id}/avatar")]
-        public string GetAvatar(string modelID)
+        public string GetAvatar(string id)
         {
-            return this.deviceModelImageManager.ComputeImageUri(modelID);
+            return this.deviceModelImageManager.ComputeImageUri(id);
         }
 
         /// <summary>
         /// Changes the avatar.
         /// </summary>
-        /// <param name="modelID">The model identifier.</param>
+        /// <param name="id">The model identifier.</param>
         /// <param name="file">The file.</param>
         /// <returns>The avatar.</returns>
         /// <response code="200">The new device model's avatar URL.</response>
         [HttpPost("{id}/avatar")]
-        public async Task<string> ChangeAvatar(string modelID, IFormFile file)
+        public async Task<string> ChangeAvatar(string id, IFormFile file)
         {
-            return await this.deviceModelImageManager.ChangeDeviceModelImageAsync(modelID, file.OpenReadStream());
+            return await this.deviceModelImageManager.ChangeDeviceModelImageAsync(id, file.OpenReadStream());
         }
 
         /// <summary>
         /// Deletes the avatar.
         /// </summary>
-        /// <param name="modelID">The model identifier.</param>
+        /// <param name="id">The model identifier.</param>
         [HttpDelete("{id}/avatar")]
-        public async Task DeleteAvatar(string modelID)
+        public async Task DeleteAvatar(string id)
         {
-            await this.deviceModelImageManager.DeleteDeviceModelImageAsync(modelID);
+            await this.deviceModelImageManager.DeleteDeviceModelImageAsync(id);
         }
 
         /// <summary>
@@ -194,20 +194,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Deletes the specified device model.
         /// </summary>
-        /// <param name="deviceModelID">The device model identifier.</param>
+        /// <param name="id">The device model identifier.</param>
         /// <returns>The action result.</returns>
         /// <response code="204">If the device model is deleted.</response>
         /// <response code="404">If the device model is not found.</response>
         /// <response code="400">If the device model is used by a device.</response>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string deviceModelID)
+        public async Task<IActionResult> Delete(string id)
         {
             // we get all devices
             var deviceList = await this.devicesService.GetAllDevice();
             // we get the device model with a query
             var query = this.tableClientFactory
                             .GetDeviceTemplates()
-                            .Query<TableEntity>(t => t.RowKey == deviceModelID);
+                            .Query<TableEntity>(t => t.RowKey == id);
 
             if (!query.Any())
             {
@@ -230,15 +230,15 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             foreach (var item in commands)
             {
                 _ = await this.tableClientFactory
-                    .GetDeviceCommands().DeleteEntityAsync(deviceModelID, item.Name);
+                    .GetDeviceCommands().DeleteEntityAsync(id, item.Name);
             }
 
             // Image deletion
-            await this.deviceModelImageManager.DeleteDeviceModelImageAsync(deviceModelID);
+            await this.deviceModelImageManager.DeleteDeviceModelImageAsync(id);
 
             var result = await this.tableClientFactory
                 .GetDeviceTemplates()
-                .DeleteEntityAsync(DefaultPartitionKey, deviceModelID);
+                .DeleteEntityAsync(DefaultPartitionKey, id);
 
             return this.NoContent();
         }

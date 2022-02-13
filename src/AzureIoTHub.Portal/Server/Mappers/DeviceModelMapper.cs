@@ -23,7 +23,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             return new DeviceModel
             {
                 ModelId = entity.RowKey,
-                IsBuiltin = bool.Parse(entity[nameof(DeviceModel.IsBuiltin)].ToString()),
+                IsBuiltin = bool.Parse(entity[nameof(DeviceModel.IsBuiltin)]?.ToString() ?? "false"),
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey).ToString(),
                 Name = entity[nameof(DeviceModel.Name)]?.ToString(),
                 Description = entity[nameof(DeviceModel.Description)]?.ToString(),
