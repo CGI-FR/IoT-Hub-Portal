@@ -1,7 +1,7 @@
 ﻿@page "/edge/devices/{deviceId}"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using AzureIoTHub.Portal.Shared.Models
+@using AzureIoTHub.Portal.Shared.Models.V10
 @using System.Net.Http.Json
 
 @attribute [Authorize]
@@ -255,9 +255,9 @@
 
             var parameter = new DialogParameters();
 
-            parameter.Add(nameof(Portal.Shared.Models.Gateway.DeviceId), Gateway.DeviceId);
-            parameter.Add(nameof(Portal.Shared.Models.Gateway.EndPoint), Gateway.EndPoint);
-            parameter.Add(nameof(Portal.Shared.Models.Gateway.SymmetricKey), Gateway.SymmetricKey);
+            parameter.Add(nameof(Gateway.DeviceId), Gateway.DeviceId);
+            parameter.Add(nameof(Gateway.EndPoint), Gateway.EndPoint);
+            parameter.Add(nameof(Gateway.SymmetricKey), Gateway.SymmetricKey);
 
 
             DialogService.Show<ConnectionStringDialog>("Edge Device Connection String", parameter);
@@ -280,7 +280,7 @@
         processingDelete = true;
         var parameter = new DialogParameters();
 
-        parameter.Add(nameof(Portal.Shared.Models.Gateway.DeviceId), Gateway.DeviceId);
+        parameter.Add(nameof(Gateway.DeviceId), Gateway.DeviceId);
 
         var result = await DialogService.Show<EdgeDeviceDeleteConfirmationDialog>("Edge device deletion confirmation", parameter).Result;
         processingDelete = false;

@@ -3,7 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Mappers
 {
-    using AzureIoTHub.Portal.Shared.Models.Device;
+    using AzureIoTHub.Portal.Shared.Models.V10.Device;
     using Microsoft.Azure.Devices.Shared;
 
     public interface IDeviceTwinMapper

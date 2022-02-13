@@ -1,7 +1,7 @@
-﻿using AzureIoTHub.Portal.Server.Controllers;
+﻿using AzureIoTHub.Portal.Server.Controllers.V10;
 using AzureIoTHub.Portal.Server.Managers;
 using AzureIoTHub.Portal.Server.Services;
-using AzureIoTHub.Portal.Shared.Models;
+using AzureIoTHub.Portal.Shared.Models.V10;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Shared;

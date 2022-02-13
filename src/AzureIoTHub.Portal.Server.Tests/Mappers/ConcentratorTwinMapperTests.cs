@@ -1,6 +1,6 @@
 ﻿using AzureIoTHub.Portal.Server.Extensions;
 using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Shared.Models.Concentrator;
+using AzureIoTHub.Portal.Shared.Models.V10.Concentrator;
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Extensions.Configuration;
 using Moq;

@@ -1,7 +1,7 @@
 ﻿using AzureIoTHub.Portal.Server.Factories;
 using AzureIoTHub.Portal.Server.Managers;
 using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Shared.Models.Device;
+using AzureIoTHub.Portal.Shared.Models.V10.Device;
 using AzureIoTHub.Portal.Server.Extensions;
 using Microsoft.Azure.Devices.Shared;
 using Moq;

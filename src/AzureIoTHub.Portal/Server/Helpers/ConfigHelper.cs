@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
 {
     using System;
     using System.Collections.Generic;
-    using AzureIoTHub.Portal.Shared.Models;
+    using AzureIoTHub.Portal.Shared.Models.V10;
     using Microsoft.Azure.Devices;
     using Newtonsoft.Json.Linq;
 

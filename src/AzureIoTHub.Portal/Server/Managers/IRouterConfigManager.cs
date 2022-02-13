@@ -4,7 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Shared.Models.Concentrator;
+    using AzureIoTHub.Portal.Shared.Models.V10.Concentrator;
 
     public interface IRouterConfigManager
     {

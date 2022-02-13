@@ -4,8 +4,8 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using System.Collections.Generic;
-    using AzureIoTHub.Portal.Shared.Models;
-    using AzureIoTHub.Portal.Shared.Models.Device;
+    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.V10.Device;
 
     public interface IDeviceModelCommandsManager
     {

@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
     using System.Security.Cryptography;
     using System.Text;
     using AzureIoTHub.Portal.Server.Extensions;
-    using AzureIoTHub.Portal.Shared.Models;
+    using AzureIoTHub.Portal.Shared.Models.V10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Newtonsoft.Json.Linq;

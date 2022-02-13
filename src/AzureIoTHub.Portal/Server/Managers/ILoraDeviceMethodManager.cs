@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 {
     using System.Net.Http;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Shared.Models;
+    using AzureIoTHub.Portal.Shared.Models.V10;
 
     public interface ILoraDeviceMethodManager
     {

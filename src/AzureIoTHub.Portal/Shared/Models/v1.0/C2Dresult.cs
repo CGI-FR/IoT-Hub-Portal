@@ -1,12 +1,12 @@
 ﻿// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Shared.Models.Device
+namespace AzureIoTHub.Portal.Shared.Models.V10
 {
-    public class Command
+    public class C2Dresult
     {
-        public string CommandId { get; set; }
+        public string Payload { get; set; }
 
-        public string Frame { get; set; }
+        public int Status { get; set; }
     }
 }

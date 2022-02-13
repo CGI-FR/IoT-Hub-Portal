@@ -2,8 +2,8 @@
 using Azure.Data.Tables;
 using AzureIoTHub.Portal.Server.Factories;
 using AzureIoTHub.Portal.Server.Managers;
-using AzureIoTHub.Portal.Shared.Models;
-using AzureIoTHub.Portal.Shared.Models.Device;
+using AzureIoTHub.Portal.Shared.Models.V10;
+using AzureIoTHub.Portal.Shared.Models.V10.Device;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
