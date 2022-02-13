@@ -20,8 +20,8 @@ Available APIs for managing devices from Azure IoT Hub.
 # Authentication
 
 - HTTP Authentication, scheme: bearer 
-  Specify the authorization token got from your IDP as a header.
-  Ex: ``Authorization: Bearer ****``
+    Specify the authorization token got from your IDP as a header.
+    > Ex: ``Authorization: Bearer * ***``
 
 <h1 id="azure-iot-hub-portal-api-iot-devices">IoT Devices</h1>
 
