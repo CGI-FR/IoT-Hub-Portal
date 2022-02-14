@@ -681,6 +681,7 @@
           "Device Models"
         ],
         "summary": "Gets the device models.",
+        "operationId": "GET Device models",
         "responses": {
           "200": {
             "description": "Success",
@@ -718,6 +719,7 @@
           "Device Models"
         ],
         "summary": "Creates the specified device model.",
+        "operationId": "POST Device model",
         "requestBody": {
           "description": "The device model.",
           "content": {
@@ -769,6 +771,7 @@
           "Device Models"
         ],
         "summary": "Updates the specified device model.",
+        "operationId": "PUT Device model",
         "requestBody": {
           "description": "The device model.",
           "content": {
@@ -842,6 +845,7 @@
           "Device Models"
         ],
         "summary": "Gets the specified model identifier.",
+        "operationId": "GET Device model",
         "parameters": [
           {
             "name": "id",
@@ -884,6 +888,7 @@
           "Device Models"
         ],
         "summary": "Deletes the specified device model.",
+        "operationId": "DELETE Device model",
         "parameters": [
           {
             "name": "id",
@@ -948,6 +953,7 @@
           "Device Models"
         ],
         "summary": "Gets the avatar.",
+        "operationId": "GET Device model avatar",
         "parameters": [
           {
             "name": "id",
@@ -990,6 +996,7 @@
           "Device Models"
         ],
         "summary": "Changes the avatar.",
+        "operationId": "POST Device model avatar",
         "parameters": [
           {
             "name": "id",
@@ -1052,6 +1059,7 @@
           "Device Models"
         ],
         "summary": "Deletes the avatar.",
+        "operationId": "DELETE Device model avatar",
         "parameters": [
           {
             "name": "id",
@@ -1096,6 +1104,7 @@
           "Device Models"
         ],
         "summary": "Creates the specified device model's command.",
+        "operationId": "POST Device model command",
         "parameters": [
           {
             "name": "id",
@@ -1160,6 +1169,7 @@
           "Device Models"
         ],
         "summary": "Deletes the specified device model's command.",
+        "operationId": "DELETE Device model command",
         "parameters": [
           {
             "name": "modelId",

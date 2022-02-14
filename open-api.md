@@ -1034,7 +1034,9 @@ None
 
 <h1 id="azure-iot-hub-portal-api-device-models">Device Models</h1>
 
-## get__api_models
+## GET Device models
+
+<a id="opIdGET Device models"></a>
 
 > Code samples
 
@@ -1072,13 +1074,13 @@ None
 ]
 ```
 
-<h3 id="get__api_models-responses">Responses</h3>
+<h3 id="get-device-models-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
 
-<h3 id="get__api_models-responseschema">Response Schema</h3>
+<h3 id="get-device-models-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -1103,7 +1105,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## post__api_models
+## POST Device model
+
+<a id="opIdPOST Device model"></a>
 
 > Code samples
 
@@ -1133,7 +1137,7 @@ None
 }
 ```
 
-<h3 id="post__api_models-parameters">Parameters</h3>
+<h3 id="post-device-model-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1159,7 +1163,7 @@ None
 }
 ```
 
-<h3 id="post__api_models-responses">Responses</h3>
+<h3 id="post-device-model-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1171,7 +1175,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## put__api_models
+## PUT Device model
+
+<a id="opIdPUT Device model"></a>
 
 > Code samples
 
@@ -1201,7 +1207,7 @@ None
 }
 ```
 
-<h3 id="put__api_models-parameters">Parameters</h3>
+<h3 id="put-device-model-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1227,7 +1233,7 @@ None
 }
 ```
 
-<h3 id="put__api_models-responses">Responses</h3>
+<h3 id="put-device-model-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1240,7 +1246,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_models_{id}
+## GET Device model
+
+<a id="opIdGET Device model"></a>
 
 > Code samples
 
@@ -1248,7 +1256,7 @@ None
 
 *Gets the specified model identifier.*
 
-<h3 id="get__api_models_{id}-parameters">Parameters</h3>
+<h3 id="get-device-model-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1274,7 +1282,7 @@ None
 }
 ```
 
-<h3 id="get__api_models_{id}-responses">Responses</h3>
+<h3 id="get-device-model-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1286,7 +1294,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## delete__api_models_{id}
+## DELETE Device model
+
+<a id="opIdDELETE Device model"></a>
 
 > Code samples
 
@@ -1294,7 +1304,7 @@ None
 
 *Deletes the specified device model.*
 
-<h3 id="delete__api_models_{id}-parameters">Parameters</h3>
+<h3 id="delete-device-model-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1320,7 +1330,7 @@ None
 }
 ```
 
-<h3 id="delete__api_models_{id}-responses">Responses</h3>
+<h3 id="delete-device-model-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1333,7 +1343,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_models_{id}_avatar
+## GET Device model avatar
+
+<a id="opIdGET Device model avatar"></a>
 
 > Code samples
 
@@ -1341,7 +1353,7 @@ None
 
 *Gets the avatar.*
 
-<h3 id="get__api_models_{id}_avatar-parameters">Parameters</h3>
+<h3 id="get-device-model-avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1367,7 +1379,7 @@ None
 }
 ```
 
-<h3 id="get__api_models_{id}_avatar-responses">Responses</h3>
+<h3 id="get-device-model-avatar-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1379,7 +1391,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## post__api_models_{id}_avatar
+## POST Device model avatar
+
+<a id="opIdPOST Device model avatar"></a>
 
 > Code samples
 
@@ -1394,7 +1408,7 @@ file: string
 
 ```
 
-<h3 id="post__api_models_{id}_avatar-parameters">Parameters</h3>
+<h3 id="post-device-model-avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1422,7 +1436,7 @@ file: string
 }
 ```
 
-<h3 id="post__api_models_{id}_avatar-responses">Responses</h3>
+<h3 id="post-device-model-avatar-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1434,7 +1448,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## delete__api_models_{id}_avatar
+## DELETE Device model avatar
+
+<a id="opIdDELETE Device model avatar"></a>
 
 > Code samples
 
@@ -1442,7 +1458,7 @@ None
 
 *Deletes the avatar.*
 
-<h3 id="delete__api_models_{id}_avatar-parameters">Parameters</h3>
+<h3 id="delete-device-model-avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1468,7 +1484,7 @@ None
 }
 ```
 
-<h3 id="delete__api_models_{id}_avatar-responses">Responses</h3>
+<h3 id="delete-device-model-avatar-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1480,7 +1496,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## post__api_models_{id}_commands
+## POST Device model command
+
+<a id="opIdPOST Device model command"></a>
 
 > Code samples
 
@@ -1499,7 +1517,7 @@ None
 }
 ```
 
-<h3 id="post__api_models_{id}_commands-parameters">Parameters</h3>
+<h3 id="post-device-model-command-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1526,7 +1544,7 @@ None
 }
 ```
 
-<h3 id="post__api_models_{id}_commands-responses">Responses</h3>
+<h3 id="post-device-model-command-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1538,7 +1556,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## delete__api_models_{id}_commands_{commandId}
+## DELETE Device model command
+
+<a id="opIdDELETE Device model command"></a>
 
 > Code samples
 
@@ -1546,7 +1566,7 @@ None
 
 *Deletes the specified device model's command.*
 
-<h3 id="delete__api_models_{id}_commands_{commandid}-parameters">Parameters</h3>
+<h3 id="delete-device-model-command-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1554,7 +1574,7 @@ None
 |commandId|path|string|true|The command identifier.|
 |id|path|string|true|none|
 
-<h3 id="delete__api_models_{id}_commands_{commandid}-responses">Responses</h3>
+<h3 id="delete-device-model-command-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
