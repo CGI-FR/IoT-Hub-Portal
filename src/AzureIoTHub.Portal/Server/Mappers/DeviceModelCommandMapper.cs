@@ -8,20 +8,32 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
     public class DeviceModelCommandMapper : IDeviceModelCommandMapper
     {
+        /// <summary>
+        /// Gets the device model command.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <returns>The device model comamnd.</returns>
         public DeviceModelCommand GetDeviceModelCommand(TableEntity entity)
         {
             return new DeviceModelCommand
             {
                 Name = entity.RowKey,
                 Frame = entity[nameof(DeviceModelCommand.Frame)].ToString(),
-                Port = int.Parse(entity[nameof(DeviceModelCommand.Port)].ToString())
+                Port = int.Parse(entity[nameof(DeviceModelCommand.Port)].ToString()),
+                IsBuiltin = bool.Parse(entity[nameof(DeviceModelCommand.IsBuiltin)]?.ToString() ?? "false"),
             };
         }
 
+        /// <summary>
+        /// Updates the table entity.
+        /// </summary>
+        /// <param name="commandEntity">The command entity.</param>
+        /// <param name="element">The element.</param>
         public void UpdateTableEntity(TableEntity commandEntity, DeviceModelCommand element)
         {
             commandEntity[nameof(DeviceModelCommand.Frame)] = element.Frame;
             commandEntity[nameof(DeviceModelCommand.Port)] = element.Port;
+            commandEntity[nameof(DeviceModelCommand.IsBuiltin)] = element.IsBuiltin;
         }
     }
 }

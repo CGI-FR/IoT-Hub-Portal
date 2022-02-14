@@ -4,18 +4,22 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Shared.Models.V10;
     using AzureIoTHub.Portal.Shared.Models.V10.Device;
 
     public class DeviceModelCommandsManager : IDeviceModelCommandsManager
     {
         private readonly ITableClientFactory tableClientFactory;
+        private readonly IDeviceModelCommandMapper deviceModelCommandMapper;
 
-        public DeviceModelCommandsManager(ITableClientFactory tableClientFactory)
+        public DeviceModelCommandsManager(ITableClientFactory tableClientFactory, IDeviceModelCommandMapper deviceModelCommandMapper)
         {
             this.tableClientFactory = tableClientFactory;
+            this.deviceModelCommandMapper = deviceModelCommandMapper;
         }
 
         /// <summary>
@@ -62,15 +66,7 @@ namespace AzureIoTHub.Portal.Server.Managers
                     .GetDeviceCommands()
                     .Query<TableEntity>(filter: $"PartitionKey  eq '{deviceModel}'");
 
-            foreach (TableEntity qEntity in queryResultsFilter)
-            {
-                commands.Add(new DeviceModelCommand()
-                {
-                    Name = qEntity.RowKey,
-                    Frame = qEntity[nameof(DeviceModelCommand.Frame)].ToString(),
-                    Port = int.Parse(qEntity[nameof(DeviceModelCommand.Port)].ToString())
-                });
-            }
+            commands.AddRange(queryResultsFilter.Select(this.deviceModelCommandMapper.GetDeviceModelCommand));
 
             return commands;
         }

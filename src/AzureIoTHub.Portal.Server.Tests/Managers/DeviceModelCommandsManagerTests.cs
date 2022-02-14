@@ -2,6 +2,7 @@
 using Azure.Data.Tables;
 using AzureIoTHub.Portal.Server.Factories;
 using AzureIoTHub.Portal.Server.Managers;
+using AzureIoTHub.Portal.Server.Mappers;
 using AzureIoTHub.Portal.Shared.Models.V10;
 using AzureIoTHub.Portal.Shared.Models.V10.Device;
 using Moq;
@@ -29,7 +30,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Managers
         private DeviceModelCommandsManager CreateManager()
         {
             return new DeviceModelCommandsManager(
-                this.mockTableClientFactory.Object);
+                this.mockTableClientFactory.Object, 
+                new DeviceModelCommandMapper());
         }
 
         [Test]
