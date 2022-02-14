@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Azure;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Helpers;
@@ -16,6 +17,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Shared.Models.V10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
 
     [ApiController]
     [ApiVersion("1.0")]
@@ -26,7 +28,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// The default partition key.
         /// </summary>
-        private const string DefaultPartitionKey = "0";
+        public const string DefaultPartitionKey = "0";
+
+        /// <summary>
+        /// The logger.
+        /// </summary>
+        private readonly ILogger<DeviceModelsController> log;
 
         /// <summary>
         /// The table client factory.
@@ -56,18 +63,21 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceModelsController"/> class.
         /// </summary>
+        /// <param name="log">The logger.</param>
         /// <param name="deviceModelImageManager">The device model image manager.</param>
         /// <param name="deviceModelCommandMapper">The device model command mapper.</param>
         /// <param name="deviceModelMapper">The device model mapper.</param>
         /// <param name="devicesService">The devices service.</param>
         /// <param name="tableClientFactory">The table client factory.</param>
         public DeviceModelsController(
+            ILogger<DeviceModelsController> log,
             IDeviceModelImageManager deviceModelImageManager,
             IDeviceModelCommandMapper deviceModelCommandMapper,
             IDeviceModelMapper deviceModelMapper,
             IDeviceService devicesService,
             ITableClientFactory tableClientFactory)
         {
+            this.log = log;
             this.deviceModelMapper = deviceModelMapper;
             this.tableClientFactory = tableClientFactory;
             this.deviceModelCommandMapper = deviceModelCommandMapper;
@@ -79,8 +89,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the device models.
         /// </summary>
         /// <returns>The list of device models.</returns>
-        /// <response code="200">An array containing the existing device models.</response>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IEnumerable<DeviceModel> Get()
         {
             // PartitionKey 0 contains all device models
@@ -99,21 +109,30 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The model identifier.</param>
         /// <returns>The corresponding model.</returns>
-        /// <response code="200">The model.</response>
-        /// <response code="404">If the corresponding entity doesn't exist.</response>
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Get(string id)
         {
-            var query = this.tableClientFactory
-                            .GetDeviceTemplates()
-                            .Query<TableEntity>(t => t.RowKey == id);
-
-            if (!query.Any())
+            try
             {
-                return this.NotFound();
-            }
+                var query = this.tableClientFactory
+                            .GetDeviceTemplates()
+                            .GetEntity<TableEntity>(DefaultPartitionKey, id);
 
-            return this.Ok(this.deviceModelMapper.CreateDeviceModel(query.Single()));
+                return this.Ok(this.deviceModelMapper.CreateDeviceModel(query.Value));
+            }
+            catch (RequestFailedException e)
+            {
+                if (e.Status == StatusCodes.Status404NotFound)
+                {
+                    return this.NotFound();
+                }
+
+                this.log.LogError(e.Message, e);
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -121,11 +140,30 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The model identifier.</param>
         /// <returns>The avatar.</returns>
-        /// <response code="200">The device model's avatar URL.</response>
         [HttpGet("{id}/avatar")]
-        public string GetAvatar(string id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetAvatar(string id)
         {
-            return this.deviceModelImageManager.ComputeImageUri(id);
+            try
+            {
+                var query = this.tableClientFactory
+                            .GetDeviceTemplates()
+                            .GetEntity<TableEntity>(DefaultPartitionKey, id);
+
+                return this.Ok(this.deviceModelImageManager.ComputeImageUri(id));
+            }
+            catch (RequestFailedException e)
+            {
+                if (e.Status == StatusCodes.Status404NotFound)
+                {
+                    return this.NotFound();
+                }
+
+                this.log.LogError(e.Message, e);
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -134,11 +172,30 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="id">The model identifier.</param>
         /// <param name="file">The file.</param>
         /// <returns>The avatar.</returns>
-        /// <response code="200">The new device model's avatar URL.</response>
         [HttpPost("{id}/avatar")]
-        public async Task<string> ChangeAvatar(string id, IFormFile file)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ChangeAvatar(string id, IFormFile file)
         {
-            return await this.deviceModelImageManager.ChangeDeviceModelImageAsync(id, file.OpenReadStream());
+            try
+            {
+                var query = this.tableClientFactory
+                               .GetDeviceTemplates()
+                               .GetEntity<TableEntity>(DefaultPartitionKey, id);
+
+                return this.Ok(await this.deviceModelImageManager.ChangeDeviceModelImageAsync(id, file.OpenReadStream()));
+            }
+            catch (RequestFailedException e)
+            {
+                if (e.Status == StatusCodes.Status404NotFound)
+                {
+                    return this.NotFound();
+                }
+
+                this.log.LogError(e.Message, e);
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -146,9 +203,31 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The model identifier.</param>
         [HttpDelete("{id}/avatar")]
-        public async Task DeleteAvatar(string id)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteAvatar(string id)
         {
-            await this.deviceModelImageManager.DeleteDeviceModelImageAsync(id);
+            try
+            {
+                var query = this.tableClientFactory
+                               .GetDeviceTemplates()
+                               .GetEntity<TableEntity>(DefaultPartitionKey, id);
+
+                await this.deviceModelImageManager.DeleteDeviceModelImageAsync(id);
+
+                return this.NoContent();
+            }
+            catch (RequestFailedException e)
+            {
+                if (e.Status == StatusCodes.Status404NotFound)
+                {
+                    return this.NotFound();
+                }
+
+                this.log.LogError(e.Message, e);
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -156,10 +235,32 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceModel">The device model.</param>
         /// <returns>The action result.</returns>
-        /// <response code="200">If the model is created.</response>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post(DeviceModel deviceModel)
         {
+            if (!string.IsNullOrEmpty(deviceModel.ModelId))
+            {
+                try
+                {
+                    var query = this.tableClientFactory
+                                   .GetDeviceTemplates()
+                                   .GetEntity<TableEntity>(DefaultPartitionKey, deviceModel.ModelId);
+
+                    return this.BadRequest("Cannot create a device model with an existing id.");
+                }
+                catch (RequestFailedException e)
+                {
+                    if (e.Status != StatusCodes.Status404NotFound)
+                    {
+                        this.log.LogError(e.Message, e);
+
+                        throw;
+                    }
+                }
+            }
+
             TableEntity entity = new TableEntity()
             {
                 PartitionKey = DefaultPartitionKey,
@@ -176,15 +277,36 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceModel">The device model.</param>
         /// <returns>The action result.</returns>
-        /// <response code="200">If the device model is updated.</response>
         [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Put(DeviceModel deviceModel)
         {
-            TableEntity entity = new TableEntity()
+            if (string.IsNullOrEmpty(deviceModel.ModelId))
             {
-                PartitionKey = DefaultPartitionKey,
-                RowKey = deviceModel.ModelId
-            };
+                return this.BadRequest("Should provide the model id.");
+            }
+
+            TableEntity entity;
+
+            try
+            {
+                entity = this.tableClientFactory
+                               .GetDeviceTemplates()
+                               .GetEntity<TableEntity>(DefaultPartitionKey, deviceModel.ModelId);
+            }
+            catch (RequestFailedException e)
+            {
+                if (e.Status == StatusCodes.Status404NotFound)
+                {
+                    return this.NotFound();
+                }
+
+                this.log.LogError(e.Message, e);
+
+                throw;
+            }
 
             await this.SaveEntity(entity, deviceModel);
 
@@ -196,41 +318,49 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The device model identifier.</param>
         /// <returns>The action result.</returns>
-        /// <response code="204">If the device model is deleted.</response>
-        /// <response code="404">If the device model is not found.</response>
-        /// <response code="400">If the device model is used by a device.</response>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(string id)
         {
             // we get all devices
             var deviceList = await this.devicesService.GetAllDevice();
-            // we get the device model with a query
-            var query = this.tableClientFactory
-                            .GetDeviceTemplates()
-                            .Query<TableEntity>(t => t.RowKey == id);
+            TableEntity entity = null;
 
-            if (!query.Any())
+            try
             {
-                return this.NotFound();
+                entity = this.tableClientFactory
+                            .GetDeviceTemplates()
+                            .GetEntity<TableEntity>(DefaultPartitionKey, id);
+            }
+            catch (RequestFailedException e)
+            {
+                if (e.Status == StatusCodes.Status404NotFound)
+                {
+                    return this.NotFound();
+                }
+
+                this.log.LogError(e.Message, e);
+
+                throw;
             }
 
-            var deviceModel = this.deviceModelMapper.CreateDeviceModel(query.Single());
-
-            var queryCommand = this.tableClientFactory
-                                   .GetDeviceCommands()
-                                   .Query<TableEntity>(t => t.PartitionKey == deviceModel.ModelId);
-
-            if (deviceList.Any(x => DeviceHelper.RetrieveTagValue(x, "modelId") == deviceModel.ModelId))
+            if (deviceList.Any(x => DeviceHelper.RetrieveTagValue(x, "modelId") == id))
             {
                 return this.BadRequest("This model is already in use by a device and cannot be deleted.");
             }
 
-            var commands = queryCommand.Select(item => this.deviceModelCommandMapper.GetDeviceModelCommand(item)).ToList();
+            var queryCommand = this.tableClientFactory
+                                   .GetDeviceCommands()
+                                   .Query<TableEntity>(t => t.PartitionKey == id)
+                                   .ToArray();
 
-            foreach (var item in commands)
+            foreach (var item in queryCommand)
             {
                 _ = await this.tableClientFactory
-                    .GetDeviceCommands().DeleteEntityAsync(id, item.Name);
+                                .GetDeviceCommands()
+                                .DeleteEntityAsync(id, item.RowKey);
             }
 
             // Image deletion
@@ -257,15 +387,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 .UpsertEntityAsync(entity);
 
             var commandsTable = this.tableClientFactory.GetDeviceCommands();
-            var commandsPage = commandsTable.QueryAsync<TableEntity>(c => c.PartitionKey == entity.RowKey)
-                                            .AsPages();
+            var commandsPage = commandsTable.Query<TableEntity>(c => c.PartitionKey == entity.RowKey);
 
-            await foreach (var page in commandsPage)
+            foreach (var item in commandsPage.Where(x => !deviceModelObject.Commands.Any(c => c.Name == x.RowKey)))
             {
-                foreach (var item in page.Values.Where(x => !deviceModelObject.Commands.Any(c => c.Name == x.RowKey)))
-                {
-                    await commandsTable.DeleteEntityAsync(item.PartitionKey, item.RowKey);
-                }
+                await commandsTable.DeleteEntityAsync(item.PartitionKey, item.RowKey);
             }
 
             foreach (var item in deviceModelObject.Commands)
