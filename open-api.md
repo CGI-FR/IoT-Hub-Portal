@@ -1087,18 +1087,18 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*anonymous*|[[DeviceModel](#schemadevicemodel)]|false|none|none|
-|» modelId|string¦null|false|none|none|
-|» imageUrl|string¦null|false|none|none|
-|» name|string|true|none|none|
-|» description|string¦null|false|none|none|
-|» appEUI|string|true|none|none|
-|» sensorDecoderURL|string¦null|false|none|none|
-|» isBuiltin|boolean|false|none|none|
-|» commands|[[DeviceModelCommand](#schemadevicemodelcommand)]¦null|false|none|none|
-|»» name|string|true|none|none|
-|»» frame|string|true|none|none|
-|»» port|integer(int32)|true|none|none|
-|»» isBuiltin|boolean|false|none|none|
+|» modelId|string¦null|false|none|The device model identifier.|
+|» imageUrl|string¦null|false|none|The device model image URL.|
+|» name|string|true|none|The device model name.|
+|» description|string¦null|false|none|The device model description.|
+|» appEUI|string|true|none|The device OTAA Application eui.|
+|» sensorDecoderURL|string¦null|false|none|The sensor decoder URL.|
+|» isBuiltin|boolean|false|none|A<br>            A value indicating whether this instance is builtin.|
+|» commands|[[DeviceModelCommand](#schemadevicemodelcommand)]¦null|false|none|The commands.|
+|»» name|string|true|none|The command name.|
+|»» frame|string|true|none|The command frame in hexa.|
+|»» port|integer(int32)|true|none|The LoRa WAN port.|
+|»» isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1960,14 +1960,14 @@ None
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|modelId|string¦null|false|none|none|
-|imageUrl|string¦null|false|none|none|
-|name|string|true|none|none|
-|description|string¦null|false|none|none|
-|appEUI|string|true|none|none|
-|sensorDecoderURL|string¦null|false|none|none|
-|isBuiltin|boolean|false|none|none|
-|commands|[[DeviceModelCommand](#schemadevicemodelcommand)]¦null|false|none|none|
+|modelId|string¦null|false|none|The device model identifier.|
+|imageUrl|string¦null|false|none|The device model image URL.|
+|name|string|true|none|The device model name.|
+|description|string¦null|false|none|The device model description.|
+|appEUI|string|true|none|The device OTAA Application eui.|
+|sensorDecoderURL|string¦null|false|none|The sensor decoder URL.|
+|isBuiltin|boolean|false|none|A<br>            A value indicating whether this instance is builtin.|
+|commands|[[DeviceModelCommand](#schemadevicemodelcommand)]¦null|false|none|The commands.|
 
 <h2 id="tocS_DeviceModelCommand">DeviceModelCommand</h2>
 <!-- backwards compatibility -->
@@ -1990,10 +1990,10 @@ None
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|frame|string|true|none|none|
-|port|integer(int32)|true|none|none|
-|isBuiltin|boolean|false|none|none|
+|name|string|true|none|The command name.|
+|frame|string|true|none|The command frame in hexa.|
+|port|integer(int32)|true|none|The LoRa WAN port.|
+|isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
 
 <h2 id="tocS_Gateway">Gateway</h2>
 <!-- backwards compatibility -->
