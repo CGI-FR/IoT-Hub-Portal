@@ -1093,7 +1093,7 @@ Status Code **200**
 |» description|string¦null|false|none|The device model description.|
 |» appEUI|string|true|none|The device OTAA Application eui.|
 |» sensorDecoderURL|string¦null|false|none|The sensor decoder URL.|
-|» isBuiltin|boolean|false|none|A<br>            A value indicating whether this instance is builtin.|
+|» isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
 |» commands|[[DeviceModelCommand](#schemadevicemodelcommand)]¦null|false|none|The commands.|
 |»» name|string|true|none|The command name.|
 |»» frame|string|true|none|The command frame in hexa.|
@@ -1966,7 +1966,7 @@ None
 |description|string¦null|false|none|The device model description.|
 |appEUI|string|true|none|The device OTAA Application eui.|
 |sensorDecoderURL|string¦null|false|none|The sensor decoder URL.|
-|isBuiltin|boolean|false|none|A<br>            A value indicating whether this instance is builtin.|
+|isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
 |commands|[[DeviceModelCommand](#schemadevicemodelcommand)]¦null|false|none|The commands.|
 
 <h2 id="tocS_DeviceModelCommand">DeviceModelCommand</h2>

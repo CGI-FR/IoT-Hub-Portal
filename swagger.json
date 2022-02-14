@@ -1536,7 +1536,7 @@
           },
           "isBuiltin": {
             "type": "boolean",
-            "description": "A\r\n            A value indicating whether this instance is builtin."
+            "description": "A value indicating whether this instance is builtin."
           },
           "commands": {
             "type": "array",
