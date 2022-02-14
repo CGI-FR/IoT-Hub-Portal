@@ -41,7 +41,7 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
         /// </summary>
         public string SensorDecoderURL { get; set; }
 
-        /// <summary>A
+        /// <summary>
         /// A value indicating whether this instance is builtin.
         /// </summary>
         public bool IsBuiltin { get; set; }
