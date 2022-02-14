@@ -56,7 +56,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="id">The model identifier.</param>
         /// <param name="command">The command.</param>
         /// <returns>The action result.</returns>
-        [HttpPost]
+        [HttpPost(Name = "POST Device model command")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Post(string id, DeviceModelCommand command)
@@ -101,7 +101,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="commandId">The command identifier.</param>
         /// <returns>The action result.</returns>
         /// <response code="204">If the device model's command is deleted.</response>
-        [HttpDelete("{commandId}")]
+        [HttpDelete("{commandId}", Name = "DELETE Device model command")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete(string modelId, string commandId)
         {

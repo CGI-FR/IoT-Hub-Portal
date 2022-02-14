@@ -89,7 +89,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the device models.
         /// </summary>
         /// <returns>The list of device models.</returns>
-        [HttpGet]
+        [HttpGet(Name = "GET Device models")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IEnumerable<DeviceModel> Get()
         {
@@ -109,7 +109,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The model identifier.</param>
         /// <returns>The corresponding model.</returns>
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GET Device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Get(string id)
@@ -140,7 +140,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The model identifier.</param>
         /// <returns>The avatar.</returns>
-        [HttpGet("{id}/avatar")]
+        [HttpGet("{id}/avatar", Name = "GET Device model avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetAvatar(string id)
@@ -172,7 +172,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="id">The model identifier.</param>
         /// <param name="file">The file.</param>
         /// <returns>The avatar.</returns>
-        [HttpPost("{id}/avatar")]
+        [HttpPost("{id}/avatar", Name = "POST Device model avatar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ChangeAvatar(string id, IFormFile file)
@@ -202,7 +202,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Deletes the avatar.
         /// </summary>
         /// <param name="id">The model identifier.</param>
-        [HttpDelete("{id}/avatar")]
+        [HttpDelete("{id}/avatar", Name = "DELETE Device model avatar")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteAvatar(string id)
@@ -235,7 +235,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceModel">The device model.</param>
         /// <returns>The action result.</returns>
-        [HttpPost]
+        [HttpPost(Name = "POST Device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post(DeviceModel deviceModel)
@@ -277,7 +277,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceModel">The device model.</param>
         /// <returns>The action result.</returns>
-        [HttpPut]
+        [HttpPut(Name = "PUT Device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -318,7 +318,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The device model identifier.</param>
         /// <returns>The action result.</returns>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}", Name = "DELETE Device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
