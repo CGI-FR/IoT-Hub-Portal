@@ -64,7 +64,7 @@
                         <a href="/device-models/@context.ModelId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
                     </MudTd>
                     <MudTd DataLabel="Delete" Style="text-align: center">
-                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDeviceModel(context))"></MudIconButton>
+                        <MudIconButton Color="Color.Default" Disabled="context.IsBuiltin" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDeviceModel(context))"></MudIconButton>
                     </MudTd>
                 </RowTemplate>
                 <PagerContent>
