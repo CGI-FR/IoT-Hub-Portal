@@ -5,73 +5,50 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using Newtonsoft.Json;
 
     public class DeviceModel
     {
         /// <summary>
-        /// Gets or sets the model identifier.
+        /// The device model identifier.
         /// </summary>
-        /// <value>
-        /// The model identifier.
-        /// </value>
         public string ModelId { get; set; }
 
         /// <summary>
-        /// Gets or sets the image URL.
+        /// The device model image URL.
         /// </summary>
-        /// <value>
-        /// The image URL.
-        /// </value>
         public string ImageUrl { get; set; }
 
         /// <summary>
-        /// Gets or sets the name.
+        /// The device model name.
         /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
         [Required(ErrorMessage = "The device model name is required.")]
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the description.
+        /// The device model description.
         /// </summary>
-        /// <value>
-        /// The description.
-        /// </value>
         public string Description { get; set; }
 
         /// <summary>
-        /// Gets or sets the application eui.
+        /// The device OTAA Application eui.
         /// </summary>
-        /// <value>
-        /// The application eui.
-        /// </value>
         [Required(ErrorMessage = "The OTAA App EUI is required.")]
         public string AppEUI { get; set; }
 
         /// <summary>
-        /// Gets or sets the sensor decoder URL.
-        /// </summary>
-        /// <value>
         /// The sensor decoder URL.
-        /// </value>
+        /// </summary>
         public string SensorDecoderURL { get; set; }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is builtin.
+        /// <summary>A
+        /// A value indicating whether this instance is builtin.
         /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is builtin; otherwise, <c>false</c>.
-        /// </value>
         public bool IsBuiltin { get; set; }
 
         /// <summary>
-        /// Gets or sets the commands.
-        /// </summary>
-        /// <value>
         /// The commands.
-        /// </value>
+        /// </summary>
         [ValidateComplexType]
         public List<DeviceModelCommand> Commands { get; set; }
 
