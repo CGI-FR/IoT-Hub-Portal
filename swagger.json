@@ -680,8 +680,7 @@
         "tags": [
           "Device Models"
         ],
-        "summary": "Gets the device models.",
-        "operationId": "GET Device models",
+        "summary": "Gets a list of device models from an Azure DataTable.",
         "responses": {
           "200": {
             "description": "Success",
@@ -718,10 +717,7 @@
         "tags": [
           "Device Models"
         ],
-        "summary": "Creates the specified device model.",
-        "operationId": "POST Device model",
         "requestBody": {
-          "description": "The device model.",
           "content": {
             "application/json": {
               "schema": {
@@ -743,26 +739,6 @@
         "responses": {
           "200": {
             "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
           }
         }
       },
@@ -770,10 +746,7 @@
         "tags": [
           "Device Models"
         ],
-        "summary": "Updates the specified device model.",
-        "operationId": "PUT Device model",
         "requestBody": {
-          "description": "The device model.",
           "content": {
             "application/json": {
               "schema": {
@@ -795,105 +768,19 @@
         "responses": {
           "200": {
             "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
           }
         }
       }
     },
-    "/api/models/{id}": {
-      "get": {
-        "tags": [
-          "Device Models"
-        ],
-        "summary": "Gets the specified model identifier.",
-        "operationId": "GET Device model",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The model identifier.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
+    "/api/models/{deviceModelID}": {
       "delete": {
         "tags": [
           "Device Models"
         ],
-        "summary": "Deletes the specified device model.",
-        "operationId": "DELETE Device model",
         "parameters": [
           {
-            "name": "id",
+            "name": "deviceModelID",
             "in": "path",
-            "description": "The device model identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -903,62 +790,20 @@
         "responses": {
           "200": {
             "description": "Success"
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
           }
         }
       }
     },
-    "/api/models/{id}/avatar": {
+    "/api/models/{modelID}": {
       "get": {
         "tags": [
           "Device Models"
         ],
-        "summary": "Gets the avatar.",
-        "operationId": "GET Device model avatar",
+        "summary": "Get a specific device model from an Azure DataTable.",
         "parameters": [
           {
-            "name": "id",
+            "name": "modelID",
             "in": "path",
-            "description": "The model identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -968,23 +813,42 @@
         "responses": {
           "200": {
             "description": "Success"
-          },
-          "404": {
-            "description": "Not Found",
+          }
+        }
+      }
+    },
+    "/api/models/{modelID}/avatar": {
+      "get": {
+        "tags": [
+          "Device Models"
+        ],
+        "parameters": [
+          {
+            "name": "modelID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "type": "string"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "type": "string"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "type": "string"
                 }
               }
             }
@@ -995,13 +859,10 @@
         "tags": [
           "Device Models"
         ],
-        "summary": "Changes the avatar.",
-        "operationId": "POST Device model avatar",
         "parameters": [
           {
-            "name": "id",
+            "name": "modelID",
             "in": "path",
-            "description": "The model identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -1030,24 +891,21 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
-          },
-          "404": {
-            "description": "Not Found",
+            "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "type": "string"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "type": "string"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "type": "string"
                 }
               }
             }
@@ -1058,13 +916,10 @@
         "tags": [
           "Device Models"
         ],
-        "summary": "Deletes the avatar.",
-        "operationId": "DELETE Device model avatar",
         "parameters": [
           {
-            "name": "id",
+            "name": "modelID",
             "in": "path",
-            "description": "The model identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -1072,44 +927,22 @@
           }
         ],
         "responses": {
-          "204": {
+          "200": {
             "description": "Success"
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
           }
         }
       }
     },
-    "/api/models/{id}/commands": {
+    "/api/models/{modelId}/commands": {
       "post": {
         "tags": [
           "Device Models"
         ],
-        "summary": "Creates the specified device model's command.",
-        "operationId": "POST Device model command",
+        "summary": "Add a command to an Azure DataTable.",
         "parameters": [
           {
-            "name": "id",
+            "name": "modelId",
             "in": "path",
-            "description": "The model identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -1117,7 +950,6 @@
           }
         ],
         "requestBody": {
-          "description": "The command.",
           "content": {
             "application/json": {
               "schema": {
@@ -1139,57 +971,27 @@
         "responses": {
           "200": {
             "description": "Success"
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
           }
         }
       }
     },
-    "/api/models/{id}/commands/{commandId}": {
+    "/api/models/{modelId}/commands/{commandId}": {
       "delete": {
         "tags": [
           "Device Models"
         ],
-        "summary": "Deletes the specified device model's command.",
-        "operationId": "DELETE Device model command",
+        "summary": "Delete a command from an Azure DataTable.",
         "parameters": [
           {
             "name": "modelId",
-            "in": "query",
-            "description": "The model identifier.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "commandId",
             "in": "path",
-            "description": "The command identifier.",
             "required": true,
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "id",
+            "name": "commandId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1198,8 +1000,8 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "If the device model's command is deleted."
+          "200": {
+            "description": "Success"
           }
         }
       }
@@ -1528,9 +1330,6 @@
             "type": "string",
             "nullable": true
           },
-          "isBuiltin": {
-            "type": "boolean"
-          },
           "commands": {
             "type": "array",
             "items": {
@@ -1682,33 +1481,6 @@
           }
         },
         "additionalProperties": false
-      },
-      "ProblemDetails": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "nullable": true
-          },
-          "title": {
-            "type": "string",
-            "nullable": true
-          },
-          "status": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "detail": {
-            "type": "string",
-            "nullable": true
-          },
-          "instance": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": { }
       },
       "RouterConfig": {
         "type": "object",

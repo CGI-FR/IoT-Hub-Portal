@@ -1034,22 +1034,20 @@ None
 
 <h1 id="azure-iot-hub-portal-api-device-models">Device Models</h1>
 
-## GET Device models
-
-<a id="opIdGET Device models"></a>
+## get__api_models
 
 > Code samples
 
 `GET /api/models`
 
-*Gets the device models.*
+*Gets a list of device models from an Azure DataTable.*
 
 > Example responses
 
 > 200 Response
 
 ```
-[{"modelId":"string","imageUrl":"string","name":"string","description":"string","appEUI":"string","sensorDecoderURL":"string","isBuiltin":true,"commands":[{"name":"string","frame":"string","port":1,"isBuiltin":true}]}]
+[{"modelId":"string","imageUrl":"string","name":"string","description":"string","appEUI":"string","sensorDecoderURL":"string","commands":[{"name":"string","frame":"string","port":1,"isBuiltin":true}]}]
 ```
 
 ```json
@@ -1061,7 +1059,6 @@ None
     "description": "string",
     "appEUI": "string",
     "sensorDecoderURL": "string",
-    "isBuiltin": true,
     "commands": [
       {
         "name": "string",
@@ -1074,13 +1071,13 @@ None
 ]
 ```
 
-<h3 id="get-device-models-responses">Responses</h3>
+<h3 id="get__api_models-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
 
-<h3 id="get-device-models-responseschema">Response Schema</h3>
+<h3 id="get__api_models-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -1093,7 +1090,6 @@ Status Code **200**
 |» description|string¦null|false|none|none|
 |» appEUI|string|true|none|none|
 |» sensorDecoderURL|string¦null|false|none|none|
-|» isBuiltin|boolean|false|none|none|
 |» commands|[[DeviceModelCommand](#schemadevicemodelcommand)]¦null|false|none|none|
 |»» name|string|true|none|none|
 |»» frame|string|true|none|none|
@@ -1105,16 +1101,12 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## POST Device model
-
-<a id="opIdPOST Device model"></a>
+## post__api_models
 
 > Code samples
 
 `POST /api/models`
 
-*Creates the specified device model.*
-
 > Body parameter
 
 ```json
@@ -1125,7 +1117,6 @@ None
   "description": "string",
   "appEUI": "string",
   "sensorDecoderURL": "string",
-  "isBuiltin": true,
   "commands": [
     {
       "name": "string",
@@ -1137,54 +1128,29 @@ None
 }
 ```
 
-<h3 id="post-device-model-parameters">Parameters</h3>
+<h3 id="post__api_models-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[DeviceModel](#schemadevicemodel)|false|The device model.|
+|body|body|[DeviceModel](#schemadevicemodel)|false|none|
 
-> Example responses
-
-> 400 Response
-
-```
-{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
-```
-
-```json
-{
-  "type": "string",
-  "title": "string",
-  "status": 0,
-  "detail": "string",
-  "instance": "string",
-  "property1": null,
-  "property2": null
-}
-```
-
-<h3 id="post-device-model-responses">Responses</h3>
+<h3 id="post__api_models-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ProblemDetails](#schemaproblemdetails)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 None
 </aside>
 
-## PUT Device model
-
-<a id="opIdPUT Device model"></a>
+## put__api_models
 
 > Code samples
 
 `PUT /api/models`
 
-*Updates the specified device model.*
-
 > Body parameter
 
 ```json
@@ -1195,7 +1161,6 @@ None
   "description": "string",
   "appEUI": "string",
   "sensorDecoderURL": "string",
-  "isBuiltin": true,
   "commands": [
     {
       "name": "string",
@@ -1207,199 +1172,111 @@ None
 }
 ```
 
-<h3 id="put-device-model-parameters">Parameters</h3>
+<h3 id="put__api_models-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[DeviceModel](#schemadevicemodel)|false|The device model.|
+|body|body|[DeviceModel](#schemadevicemodel)|false|none|
 
-> Example responses
-
-> 400 Response
-
-```
-{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
-```
-
-```json
-{
-  "type": "string",
-  "title": "string",
-  "status": 0,
-  "detail": "string",
-  "instance": "string",
-  "property1": null,
-  "property2": null
-}
-```
-
-<h3 id="put-device-model-responses">Responses</h3>
+<h3 id="put__api_models-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ProblemDetails](#schemaproblemdetails)|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 None
 </aside>
 
-## GET Device model
-
-<a id="opIdGET Device model"></a>
+## delete__api_models_{deviceModelID}
 
 > Code samples
 
-`GET /api/models/{id}`
+`DELETE /api/models/{deviceModelID}`
 
-*Gets the specified model identifier.*
-
-<h3 id="get-device-model-parameters">Parameters</h3>
+<h3 id="delete__api_models_{devicemodelid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|The model identifier.|
+|deviceModelID|path|string|true|none|
 
-> Example responses
-
-> 404 Response
-
-```
-{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
-```
-
-```json
-{
-  "type": "string",
-  "title": "string",
-  "status": 0,
-  "detail": "string",
-  "instance": "string",
-  "property1": null,
-  "property2": null
-}
-```
-
-<h3 id="get-device-model-responses">Responses</h3>
+<h3 id="delete__api_models_{devicemodelid}-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 None
 </aside>
 
-## DELETE Device model
-
-<a id="opIdDELETE Device model"></a>
+## get__api_models_{modelID}
 
 > Code samples
 
-`DELETE /api/models/{id}`
+`GET /api/models/{modelID}`
 
-*Deletes the specified device model.*
+*Get a specific device model from an Azure DataTable.*
 
-<h3 id="delete-device-model-parameters">Parameters</h3>
+<h3 id="get__api_models_{modelid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|The device model identifier.|
+|modelID|path|string|true|none|
 
-> Example responses
-
-> 400 Response
-
-```
-{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
-```
-
-```json
-{
-  "type": "string",
-  "title": "string",
-  "status": 0,
-  "detail": "string",
-  "instance": "string",
-  "property1": null,
-  "property2": null
-}
-```
-
-<h3 id="delete-device-model-responses">Responses</h3>
+<h3 id="get__api_models_{modelid}-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ProblemDetails](#schemaproblemdetails)|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 None
 </aside>
 
-## GET Device model avatar
-
-<a id="opIdGET Device model avatar"></a>
+## get__api_models_{modelID}_avatar
 
 > Code samples
 
-`GET /api/models/{id}/avatar`
+`GET /api/models/{modelID}/avatar`
 
-*Gets the avatar.*
-
-<h3 id="get-device-model-avatar-parameters">Parameters</h3>
+<h3 id="get__api_models_{modelid}_avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|The model identifier.|
+|modelID|path|string|true|none|
 
 > Example responses
 
-> 404 Response
+> 200 Response
 
 ```
-{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
+"string"
 ```
 
 ```json
-{
-  "type": "string",
-  "title": "string",
-  "status": 0,
-  "detail": "string",
-  "instance": "string",
-  "property1": null,
-  "property2": null
-}
+"string"
 ```
 
-<h3 id="get-device-model-avatar-responses">Responses</h3>
+<h3 id="get__api_models_{modelid}_avatar-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|string|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 None
 </aside>
 
-## POST Device model avatar
-
-<a id="opIdPOST Device model avatar"></a>
+## post__api_models_{modelID}_avatar
 
 > Code samples
 
-`POST /api/models/{id}/avatar`
-
-*Changes the avatar.*
+`POST /api/models/{modelID}/avatar`
 
 > Body parameter
 
@@ -1408,103 +1285,67 @@ file: string
 
 ```
 
-<h3 id="post-device-model-avatar-parameters">Parameters</h3>
+<h3 id="post__api_models_{modelid}_avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|The model identifier.|
+|modelID|path|string|true|none|
 |body|body|object|false|none|
 |» file|body|string(binary)|false|none|
 
 > Example responses
 
-> 404 Response
+> 200 Response
 
 ```
-{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
+"string"
 ```
 
 ```json
-{
-  "type": "string",
-  "title": "string",
-  "status": 0,
-  "detail": "string",
-  "instance": "string",
-  "property1": null,
-  "property2": null
-}
+"string"
 ```
 
-<h3 id="post-device-model-avatar-responses">Responses</h3>
+<h3 id="post__api_models_{modelid}_avatar-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|string|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## delete__api_models_{modelID}_avatar
+
+> Code samples
+
+`DELETE /api/models/{modelID}/avatar`
+
+<h3 id="delete__api_models_{modelid}_avatar-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|modelID|path|string|true|none|
+
+<h3 id="delete__api_models_{modelid}_avatar-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 None
 </aside>
 
-## DELETE Device model avatar
-
-<a id="opIdDELETE Device model avatar"></a>
+## post__api_models_{modelId}_commands
 
 > Code samples
 
-`DELETE /api/models/{id}/avatar`
+`POST /api/models/{modelId}/commands`
 
-*Deletes the avatar.*
-
-<h3 id="delete-device-model-avatar-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|The model identifier.|
-
-> Example responses
-
-> 404 Response
-
-```
-{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
-```
-
-```json
-{
-  "type": "string",
-  "title": "string",
-  "status": 0,
-  "detail": "string",
-  "instance": "string",
-  "property1": null,
-  "property2": null
-}
-```
-
-<h3 id="delete-device-model-avatar-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|Success|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-None
-</aside>
-
-## POST Device model command
-
-<a id="opIdPOST Device model command"></a>
-
-> Code samples
-
-`POST /api/models/{id}/commands`
-
-*Creates the specified device model's command.*
+*Add a command to an Azure DataTable.*
 
 > Body parameter
 
@@ -1517,68 +1358,44 @@ None
 }
 ```
 
-<h3 id="post-device-model-command-parameters">Parameters</h3>
+<h3 id="post__api_models_{modelid}_commands-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|The model identifier.|
-|body|body|[DeviceModelCommand](#schemadevicemodelcommand)|false|The command.|
+|modelId|path|string|true|none|
+|body|body|[DeviceModelCommand](#schemadevicemodelcommand)|false|none|
 
-> Example responses
-
-> 404 Response
-
-```
-{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
-```
-
-```json
-{
-  "type": "string",
-  "title": "string",
-  "status": 0,
-  "detail": "string",
-  "instance": "string",
-  "property1": null,
-  "property2": null
-}
-```
-
-<h3 id="post-device-model-command-responses">Responses</h3>
+<h3 id="post__api_models_{modelid}_commands-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 None
 </aside>
 
-## DELETE Device model command
-
-<a id="opIdDELETE Device model command"></a>
+## delete__api_models_{modelId}_commands_{commandId}
 
 > Code samples
 
-`DELETE /api/models/{id}/commands/{commandId}`
+`DELETE /api/models/{modelId}/commands/{commandId}`
 
-*Deletes the specified device model's command.*
+*Delete a command from an Azure DataTable.*
 
-<h3 id="delete-device-model-command-parameters">Parameters</h3>
+<h3 id="delete__api_models_{modelid}_commands_{commandid}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|modelId|query|string|false|The model identifier.|
-|commandId|path|string|true|The command identifier.|
-|id|path|string|true|none|
+|modelId|path|string|true|none|
+|commandId|path|string|true|none|
 
-<h3 id="delete-device-model-command-responses">Responses</h3>
+<h3 id="delete__api_models_{modelid}_commands_{commandid}-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|If the device model's command is deleted.|None|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1943,7 +1760,6 @@ None
   "description": "string",
   "appEUI": "string",
   "sensorDecoderURL": "string",
-  "isBuiltin": true,
   "commands": [
     {
       "name": "string",
@@ -1966,7 +1782,6 @@ None
 |description|string¦null|false|none|none|
 |appEUI|string|true|none|none|
 |sensorDecoderURL|string¦null|false|none|none|
-|isBuiltin|boolean|false|none|none|
 |commands|[[DeviceModelCommand](#schemadevicemodelcommand)]¦null|false|none|none|
 
 <h2 id="tocS_DeviceModelCommand">DeviceModelCommand</h2>
@@ -2118,37 +1933,6 @@ None
 |» **additionalProperties**|string|false|none|none|
 |moduleIdentityTwinSettings|object¦null|false|none|none|
 |» **additionalProperties**|string|false|none|none|
-
-<h2 id="tocS_ProblemDetails">ProblemDetails</h2>
-<!-- backwards compatibility -->
-<a id="schemaproblemdetails"></a>
-<a id="schema_ProblemDetails"></a>
-<a id="tocSproblemdetails"></a>
-<a id="tocsproblemdetails"></a>
-
-```json
-{
-  "type": "string",
-  "title": "string",
-  "status": 0,
-  "detail": "string",
-  "instance": "string",
-  "property1": null,
-  "property2": null
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|**additionalProperties**|any|false|none|none|
-|type|string¦null|false|none|none|
-|title|string¦null|false|none|none|
-|status|integer(int32)¦null|false|none|none|
-|detail|string¦null|false|none|none|
-|instance|string¦null|false|none|none|
 
 <h2 id="tocS_RouterConfig">RouterConfig</h2>
 <!-- backwards compatibility -->
