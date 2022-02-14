@@ -1508,34 +1508,42 @@
         "properties": {
           "modelId": {
             "type": "string",
+            "description": "The device model identifier.",
             "nullable": true
           },
           "imageUrl": {
             "type": "string",
+            "description": "The device model image URL.",
             "nullable": true
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "The device model name."
           },
           "description": {
             "type": "string",
+            "description": "The device model description.",
             "nullable": true
           },
           "appEUI": {
-            "type": "string"
+            "type": "string",
+            "description": "The device OTAA Application eui."
           },
           "sensorDecoderURL": {
             "type": "string",
+            "description": "The sensor decoder URL.",
             "nullable": true
           },
           "isBuiltin": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "A\r\n            A value indicating whether this instance is builtin."
           },
           "commands": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DeviceModelCommand"
             },
+            "description": "The commands.",
             "nullable": true
           }
         },
@@ -1550,19 +1558,23 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "The command name."
           },
           "frame": {
-            "type": "string"
+            "type": "string",
+            "description": "The command frame in hexa."
           },
           "port": {
             "maximum": 223,
             "minimum": 1,
             "type": "integer",
+            "description": "The LoRa WAN port.",
             "format": "int32"
           },
           "isBuiltin": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "A value indicating whether this instance is builtin."
           }
         },
         "additionalProperties": false
