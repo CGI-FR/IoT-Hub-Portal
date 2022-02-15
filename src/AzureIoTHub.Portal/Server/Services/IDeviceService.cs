@@ -30,6 +30,6 @@ namespace AzureIoTHub.Portal.Server.Services
 
         Task DeleteDevice(string deviceId);
 
-        Task<IEnumerable<Twin>> GetAllDevice();
+        Task<IEnumerable<Twin>> GetAllDevice(string filterDeviceType = null, string excludeDeviceType = null);
     }
 }

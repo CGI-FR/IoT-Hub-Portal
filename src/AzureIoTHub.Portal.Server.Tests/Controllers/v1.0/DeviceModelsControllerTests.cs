@@ -498,7 +498,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mockResponse.Object);
 
-            this.mockDeviceService.Setup(c => c.GetAllDevice())
+            this.mockDeviceService.Setup(c => c.GetAllDevice(
+                    It.Is<string>(x => string.IsNullOrEmpty(x)),
+                    It.Is<string>(x => string.IsNullOrEmpty(x))))
                 .ReturnsAsync(new List<Twin>());
 
             this.mockDeviceModelImageManager.Setup(c => c.DeleteDeviceModelImageAsync(It.Is<string>(x => x == id)))

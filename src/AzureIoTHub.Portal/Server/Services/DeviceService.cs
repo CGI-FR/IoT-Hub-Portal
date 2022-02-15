@@ -58,9 +58,22 @@ namespace AzureIoTHub.Portal.Server.Services
         /// this function return a list of all device exept edge device.
         /// </summary>
         /// <returns>IEnumerable twin.</returns>
-        public async Task<IEnumerable<Twin>> GetAllDevice()
+        public async Task<IEnumerable<Twin>> GetAllDevice(string filterDeviceType = null, string excludeDeviceType = null)
         {
-            var query = this.registryManager.CreateQuery("SELECT * FROM devices WHERE devices.capabilities.iotEdge = false");
+            var queryString = "SELECT * FROM devices WHERE devices.capabilities.iotEdge = false";
+
+            if (!string.IsNullOrWhiteSpace(filterDeviceType))
+            {
+                queryString += $" AND devices.tags.deviceType = '{ filterDeviceType }'";
+            }
+
+            if (!string.IsNullOrWhiteSpace(excludeDeviceType))
+            {
+                queryString += $" AND devices.tags.deviceType != '{ excludeDeviceType }'";
+            }
+
+            var query = this.registryManager
+                    .CreateQuery(queryString);
 
             while (query.HasMoreResults)
             {
