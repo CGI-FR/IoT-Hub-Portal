@@ -4,8 +4,7 @@
 namespace AzureIoTHub.Portal.Shared.Models.V10.DeviceModel
 {
     using System.ComponentModel.DataAnnotations;
-    using Newtonsoft.Json;
-
+    
     public class DeviceModel
     {
         /// <summary>
