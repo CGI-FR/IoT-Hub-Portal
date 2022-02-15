@@ -11,6 +11,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AzureIoTHub.Portal.Server.Tests.Controllers
@@ -57,7 +58,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers
                 DeviceType = "LoRa Concentrator"
             };
 
-            this.mockDeviceService.Setup(x => x.GetAllDevice())
+            this.mockDeviceService.Setup(x => x.GetAllDevice(
+                    It.Is<string>(x => x == "LoRa Concentrator"),
+                    It.Is<string>(x => string.IsNullOrEmpty(x))))
                 .ReturnsAsync(new[]
                 {
                     twin
@@ -79,11 +82,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers
             Assert.IsNotNull(okObjectResult);
             Assert.AreEqual(200, okObjectResult.StatusCode);
             Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<List<Concentrator>>(okObjectResult.Value);
-            var deviceList = okObjectResult.Value as List<Concentrator>;
+            var deviceList = okObjectResult.Value as IEnumerable<Concentrator>;
             Assert.IsNotNull(deviceList);
-            Assert.AreEqual(1, deviceList.Count);
-            var device = deviceList[0];
+            Assert.AreEqual(1, deviceList.Count());
+            var device = deviceList.First();
             Assert.IsNotNull(device);
             Assert.AreEqual(twin.DeviceId, device.DeviceId);
             Assert.AreEqual("LoRa Concentrator", device.DeviceType);
@@ -136,10 +138,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers
         {
             // Arrange
             var concentratorController = this.CreateController();
-            var concentrator = new Concentrator 
+            var concentrator = new Concentrator
             {
                 DeviceId = "4512457896451156",
-                LoraRegion = Guid.NewGuid().ToString() ,
+                LoraRegion = Guid.NewGuid().ToString(),
                 IsEnabled = true
             };
 

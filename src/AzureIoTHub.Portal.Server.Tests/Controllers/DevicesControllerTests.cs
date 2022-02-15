@@ -60,7 +60,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers
             TwinCollection twinCollection = new TwinCollection();
             twinCollection["deviceType"] = "test";
 
-            this.mockDeviceService.Setup(c => c.GetAllDevice())
+            this.mockDeviceService.Setup(c => c.GetAllDevice(
+                    It.Is<string>(x => string.IsNullOrEmpty(x)),
+                    It.Is<string>(x => x == "LoRa Concentrator")))
                 .ReturnsAsync(Enumerable.Range(0, 100).Select(x => new Twin
                 {
                     DeviceId = x.ToString(),
