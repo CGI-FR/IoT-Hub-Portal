@@ -38,29 +38,27 @@ namespace AzureIoTHub.Portal.Server.Services
             return Enumerable.Empty<Twin>();
         }
 
-        /// <summary>
-        /// this function get and return the list of all the edge device with the tags.
-        /// </summary>
-        /// <returns>IEnumerable Twin.</returns>
-        public async Task<IEnumerable<Twin>> GetAllEdgeDeviceWithTags()
-        {
-            IQuery queryEdgeDevice = this.registryManager.CreateQuery("SELECT * FROM devices where devices.capabilities.iotEdge = true", 10);
-
-            while (queryEdgeDevice.HasMoreResults)
-            {
-                return await queryEdgeDevice.GetNextAsTwinAsync();
-            }
-
-            return Enumerable.Empty<Twin>();
-        }
 
         /// <summary>
         /// this function return a list of all device exept edge device.
         /// </summary>
         /// <returns>IEnumerable twin.</returns>
-        public async Task<IEnumerable<Twin>> GetAllDevice()
+        public async Task<IEnumerable<Twin>> GetAllDevice(string filterDeviceType = null, string excludeDeviceType = null)
         {
-            var query = this.registryManager.CreateQuery("SELECT * FROM devices WHERE devices.capabilities.iotEdge = false");
+            var queryString = "SELECT * FROM devices WHERE devices.capabilities.iotEdge = false";
+
+            if (!string.IsNullOrWhiteSpace(filterDeviceType))
+            {
+                queryString += $" AND devices.tags.deviceType = '{ filterDeviceType }'";
+            }
+
+            if (!string.IsNullOrWhiteSpace(excludeDeviceType))
+            {
+                queryString += $" AND devices.tags.deviceType != '{ excludeDeviceType }'";
+            }
+
+            var query = this.registryManager
+                    .CreateQuery(queryString);
 
             while (query.HasMoreResults)
             {

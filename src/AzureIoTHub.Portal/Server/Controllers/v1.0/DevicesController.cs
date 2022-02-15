@@ -58,17 +58,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpGet]
         public async Task<IEnumerable<DeviceListItem>> Get()
         {
-            // Gets all the twins from this devices
-            var items = await this.devicesService.GetAllDevice();
-            List<Twin> listTwin = new List<Twin>();
-            var itemFilter = items.Where(item => item.Tags.Contains("deviceType") && item.Tags["deviceType"] != "LoRa Concentrator");
+            var items = await this.devicesService.GetAllDevice(excludeDeviceType: "LoRa Concentrator");
 
-            foreach (var item in itemFilter)
-            {
-                listTwin.Add(item);
-            }
-
-            return listTwin.Select(this.deviceTwinMapper.CreateDeviceListItem);
+            return items.Select(this.deviceTwinMapper.CreateDeviceListItem);
         }
 
         /// <summary>

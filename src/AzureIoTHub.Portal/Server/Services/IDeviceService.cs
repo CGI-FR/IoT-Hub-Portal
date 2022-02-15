@@ -10,8 +10,6 @@ namespace AzureIoTHub.Portal.Server.Services
 
     public interface IDeviceService
     {
-        Task<IEnumerable<Twin>> GetAllEdgeDeviceWithTags();
-
         Task<IEnumerable<Twin>> GetAllEdgeDevice();
 
         Task<Device> GetDevice(string deviceId);
@@ -30,6 +28,6 @@ namespace AzureIoTHub.Portal.Server.Services
 
         Task DeleteDevice(string deviceId);
 
-        Task<IEnumerable<Twin>> GetAllDevice();
+        Task<IEnumerable<Twin>> GetAllDevice(string filterDeviceType = null, string excludeDeviceType = null);
     }
 }
