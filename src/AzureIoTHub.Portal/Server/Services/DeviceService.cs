@@ -38,21 +38,6 @@ namespace AzureIoTHub.Portal.Server.Services
             return Enumerable.Empty<Twin>();
         }
 
-        /// <summary>
-        /// this function get and return the list of all the edge device with the tags.
-        /// </summary>
-        /// <returns>IEnumerable Twin.</returns>
-        public async Task<IEnumerable<Twin>> GetAllEdgeDeviceWithTags()
-        {
-            IQuery queryEdgeDevice = this.registryManager.CreateQuery("SELECT * FROM devices where devices.capabilities.iotEdge = true", 10);
-
-            while (queryEdgeDevice.HasMoreResults)
-            {
-                return await queryEdgeDevice.GetNextAsTwinAsync();
-            }
-
-            return Enumerable.Empty<Twin>();
-        }
 
         /// <summary>
         /// this function return a list of all device exept edge device.

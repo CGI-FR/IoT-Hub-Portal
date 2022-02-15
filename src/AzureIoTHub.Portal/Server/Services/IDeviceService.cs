@@ -10,8 +10,6 @@ namespace AzureIoTHub.Portal.Server.Services
 
     public interface IDeviceService
     {
-        Task<IEnumerable<Twin>> GetAllEdgeDeviceWithTags();
-
         Task<IEnumerable<Twin>> GetAllEdgeDevice();
 
         Task<Device> GetDevice(string deviceId);
