@@ -13,37 +13,37 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
             this.Modules = new List<GatewayModule>();
         }
         ///<summary>
-        /// The command configurationId.
+        /// The device configurationId.
         /// </summary>
         public string ConfigurationID { get; set; }
 
         ///<summary>
-        /// The command conditions.
+        /// The device conditions.
         /// </summary>
         public string Conditions { get; set; }
 
         ///<summary>
-        /// The command metricsTargered.
+        /// The device metricsTargered.
         /// </summary>
         public long MetricsTargeted { get; set; }
 
         ///<summary>
-        /// The command metricsApplied.
+        /// The device metricsApplied.
         /// </summary>
         public long MetricsApplied { get; set; }
 
         ///<summary>
-        /// The command metricsSuccess.
+        /// The device metricsSuccess.
         /// </summary>
         public long MetricsSuccess { get; set; }
 
         ///<summary>
-        /// The command metricsFailure.
+        /// The device metricsFailure.
         /// </summary>
         public long MetricsFailure { get; set; }
 
         ///<summary>
-        /// The command priority.
+        /// The device priority.
         /// </summary>
         public int Priority { get; set; }
 

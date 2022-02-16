@@ -11,33 +11,33 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
         /// <summary>
         /// The device identifier.
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "The device identifier is required.")]
         public string DeviceId { get; set; }
 
         /// <summary>
-        /// Creates a new symmetric key.
+        /// The device symmetric key.
         /// </summary>
         public string SymmetricKey { get; set; }
 
         /// <summary>
-        /// Gets connection state.
+        /// The device connection state.
         /// </summary>
         public string ConnectionState { get; set; }
 
         /// <summary>
-        /// Called the scope of a variable.
+        /// The device scope.
         /// </summary>
         public string Scope { get; set; }
 
         /// <summary>
-        /// Create the binding to be used par le service.
+        /// The device end point.
         /// </summary>
         public string EndPoint { get; set; }
 
         /// <summary>
-        /// Initialize a new instance of the type class.
+        /// The device type.
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "The device type is required.")]
         public string Type { get; set; }
 
         /// <summary>
@@ -46,28 +46,38 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
         public string Status { get; set; }
 
         /// <summary>
-        /// A methode response.
+        /// The device runtime response.
         /// </summary>
         public string RuntimeResponse { get; set; }
 
-        
+        /// <summary>
+        /// The device nbdevices.
+        /// </summary>
         public int NbDevices { get; set; }
 
-        
+        /// <summary>
+        /// The device nbmodules.
+        /// </summary>
         public int NbModules { get; set; }
 
         /// <summary>
-        /// The variable environment.
+        /// The device environment.
         /// </summary>
         public string Environment { get; set; }
 
-        
+        /// <summary>
+        /// The device nbdevices.
+        /// </summary>
         public ConfigItem LastDeployment { get; set; }
 
-        
+        /// <summary>
+        /// The device modules.
+        /// </summary>
         public List<GatewayModule> Modules { get; set; }
 
-        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Gateway"/> class.
+        /// </summary>
         public Gateway()
         {
             this.Modules = new List<GatewayModule>();

@@ -3,6 +3,9 @@
 
 namespace AzureIoTHub.Portal.Shared.Models.V10
 {
+    /// <summary>
+    /// The device request payload.
+    /// </summary>
     class RequestPayload
     {
     }
