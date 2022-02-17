@@ -39,7 +39,7 @@ Fields that do not appear in the device list are not defined here.*
 > 200 Response
 
 ```
-[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","appEUI":"string","appKey":"string","locationCode":"string"}]
+[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z"}]
 ```
 
 ```json
@@ -50,10 +50,8 @@ Fields that do not appear in the device list are not defined here.*
     "imageUrl": "string",
     "isConnected": true,
     "isEnabled": true,
-    "statusUpdatedTime": "2019-08-24T14:15:22Z",
-    "appEUI": "string",
-    "appKey": "string",
-    "locationCode": "string"
+    "supportLoRaFeatures": true,
+    "statusUpdatedTime": "2019-08-24T14:15:22Z"
   }
 ]
 ```
@@ -71,15 +69,13 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*anonymous*|[[DeviceListItem](#schemadevicelistitem)]|false|none|none|
-|» deviceID|string¦null|false|none|none|
-|» deviceName|string¦null|false|none|none|
-|» imageUrl|string¦null|false|none|none|
-|» isConnected|boolean|false|none|none|
-|» isEnabled|boolean|false|none|none|
-|» statusUpdatedTime|string(date-time)|false|none|none|
-|» appEUI|string¦null|false|none|none|
-|» appKey|string¦null|false|none|none|
-|» locationCode|string¦null|false|none|none|
+|» deviceID|string¦null|false|none|The device Identifier.|
+|» deviceName|string¦null|false|none|The device friendly name.|
+|» imageUrl|string¦null|false|none|The device model image Url.|
+|» isConnected|boolean|false|none|A value indicating whether the device is currently connected.|
+|» isEnabled|boolean|false|none|A value indicating whether the device is enabled on the platform.|
+|» supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
+|» statusUpdatedTime|string(date-time)|false|none|The device last status updated time.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -98,25 +94,13 @@ None
 {
   "deviceID": "string",
   "deviceName": "string",
+  "modelId": "string",
   "imageUrl": "string",
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "appEUI": "string",
-  "appKey": "string",
   "locationCode": "string",
-  "assetId": "string",
-  "deviceType": "string",
-  "modelId": "string",
-  "modelName": "string",
-  "sensorDecoder": "string",
-  "alreadyLoggedInOnce": true,
-  "commands": [
-    {
-      "commandId": "string",
-      "frame": "string"
-    }
-  ]
+  "assetId": "string"
 }
 ```
 
@@ -151,25 +135,13 @@ None
 {
   "deviceID": "string",
   "deviceName": "string",
+  "modelId": "string",
   "imageUrl": "string",
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "appEUI": "string",
-  "appKey": "string",
   "locationCode": "string",
-  "assetId": "string",
-  "deviceType": "string",
-  "modelId": "string",
-  "modelName": "string",
-  "sensorDecoder": "string",
-  "alreadyLoggedInOnce": true,
-  "commands": [
-    {
-      "commandId": "string",
-      "frame": "string"
-    }
-  ]
+  "assetId": "string"
 }
 ```
 
@@ -210,32 +182,20 @@ Converts it to a DeviceListItem.*
 > 200 Response
 
 ```
-{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","appEUI":"string","appKey":"string","locationCode":"string","assetId":"string","deviceType":"string","modelId":"string","modelName":"string","sensorDecoder":"string","alreadyLoggedInOnce":true,"commands":[{"commandId":"string","frame":"string"}]}
+{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","locationCode":"string","assetId":"string"}
 ```
 
 ```json
 {
   "deviceID": "string",
   "deviceName": "string",
+  "modelId": "string",
   "imageUrl": "string",
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "appEUI": "string",
-  "appKey": "string",
   "locationCode": "string",
-  "assetId": "string",
-  "deviceType": "string",
-  "modelId": "string",
-  "modelName": "string",
-  "sensorDecoder": "string",
-  "alreadyLoggedInOnce": true,
-  "commands": [
-    {
-      "commandId": "string",
-      "frame": "string"
-    }
-  ]
+  "assetId": "string"
 }
 ```
 
@@ -265,32 +225,6 @@ None
 |deviceID|path|string|true|the device id.|
 
 <h3 id="delete__api_devices_{deviceid}-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-None
-</aside>
-
-## post__api_devices_{deviceId}_{commandId}
-
-> Code samples
-
-`POST /api/devices/{deviceId}/{commandId}`
-
-*Permit to execute cloud to device message.*
-
-<h3 id="post__api_devices_{deviceid}_{commandid}-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|deviceId|path|string|true|id of the device.|
-|commandId|path|string|true|the command who contain the name and the trame.|
-
-<h3 id="post__api_devices_{deviceid}_{commandid}-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1032,15 +966,259 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-<h1 id="azure-iot-hub-portal-api-device-models">Device Models</h1>
-
-## GET Device models
-
-<a id="opIdGET Device models"></a>
+## get__api_lorawan_devices
 
 > Code samples
 
-`GET /api/models`
+`GET /api/lorawan/devices`
+
+*Gets a list of devices as DeviceListItem from Azure IoT Hub.
+Fields that do not appear in the device list are not defined here.*
+
+> Example responses
+
+> 200 Response
+
+```
+[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z"}]
+```
+
+```json
+[
+  {
+    "deviceID": "string",
+    "deviceName": "string",
+    "imageUrl": "string",
+    "isConnected": true,
+    "isEnabled": true,
+    "supportLoRaFeatures": true,
+    "statusUpdatedTime": "2019-08-24T14:15:22Z"
+  }
+]
+```
+
+<h3 id="get__api_lorawan_devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+
+<h3 id="get__api_lorawan_devices-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[DeviceListItem](#schemadevicelistitem)]|false|none|none|
+|» deviceID|string¦null|false|none|The device Identifier.|
+|» deviceName|string¦null|false|none|The device friendly name.|
+|» imageUrl|string¦null|false|none|The device model image Url.|
+|» isConnected|boolean|false|none|A value indicating whether the device is currently connected.|
+|» isEnabled|boolean|false|none|A value indicating whether the device is enabled on the platform.|
+|» supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
+|» statusUpdatedTime|string(date-time)|false|none|The device last status updated time.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## post__api_lorawan_devices
+
+> Code samples
+
+`POST /api/lorawan/devices`
+
+> Body parameter
+
+```json
+{
+  "deviceID": "string",
+  "deviceName": "string",
+  "modelId": "string",
+  "imageUrl": "string",
+  "isConnected": true,
+  "isEnabled": true,
+  "statusUpdatedTime": "2019-08-24T14:15:22Z",
+  "locationCode": "string",
+  "assetId": "string",
+  "appEUI": "string",
+  "appKey": "string",
+  "sensorDecoder": "string",
+  "alreadyLoggedInOnce": true
+}
+```
+
+<h3 id="post__api_lorawan_devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[LoRaDeviceDetails](#schemaloradevicedetails)|false|none|
+
+<h3 id="post__api_lorawan_devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## put__api_lorawan_devices
+
+> Code samples
+
+`PUT /api/lorawan/devices`
+
+*this function update the twin and the device.*
+
+> Body parameter
+
+```json
+{
+  "deviceID": "string",
+  "deviceName": "string",
+  "modelId": "string",
+  "imageUrl": "string",
+  "isConnected": true,
+  "isEnabled": true,
+  "statusUpdatedTime": "2019-08-24T14:15:22Z",
+  "locationCode": "string",
+  "assetId": "string",
+  "appEUI": "string",
+  "appKey": "string",
+  "sensorDecoder": "string",
+  "alreadyLoggedInOnce": true
+}
+```
+
+<h3 id="put__api_lorawan_devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[LoRaDeviceDetails](#schemaloradevicedetails)|false|the device object.|
+
+<h3 id="put__api_lorawan_devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## get__api_lorawan_devices_{deviceID}
+
+> Code samples
+
+`GET /api/lorawan/devices/{deviceID}`
+
+*Retrieve a specific device and from the IoT Hub.
+Converts it to a DeviceListItem.*
+
+<h3 id="get__api_lorawan_devices_{deviceid}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceID|path|string|true|ID of the device to retrieve.|
+
+> Example responses
+
+> 200 Response
+
+```
+{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","locationCode":"string","assetId":"string","appEUI":"string","appKey":"string","sensorDecoder":"string","alreadyLoggedInOnce":true}
+```
+
+```json
+{
+  "deviceID": "string",
+  "deviceName": "string",
+  "modelId": "string",
+  "imageUrl": "string",
+  "isConnected": true,
+  "isEnabled": true,
+  "statusUpdatedTime": "2019-08-24T14:15:22Z",
+  "locationCode": "string",
+  "assetId": "string",
+  "appEUI": "string",
+  "appKey": "string",
+  "sensorDecoder": "string",
+  "alreadyLoggedInOnce": true
+}
+```
+
+<h3 id="get__api_lorawan_devices_{deviceid}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[LoRaDeviceDetails](#schemaloradevicedetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## delete__api_lorawan_devices_{deviceID}
+
+> Code samples
+
+`DELETE /api/lorawan/devices/{deviceID}`
+
+*this function delete a device.*
+
+<h3 id="delete__api_lorawan_devices_{deviceid}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceID|path|string|true|the device id.|
+
+<h3 id="delete__api_lorawan_devices_{deviceid}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## post__api_lorawan_devices_{deviceId}__command_{commandId}
+
+> Code samples
+
+`POST /api/lorawan/devices/{deviceId}/_command/{commandId}`
+
+*Permit to execute cloud to device message.*
+
+<h3 id="post__api_lorawan_devices_{deviceid}__command_{commandid}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceId|path|string|true|id of the device.|
+|commandId|path|string|true|the command who contain the name and the trame.|
+
+<h3 id="post__api_lorawan_devices_{deviceid}__command_{commandid}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## get__api_lorawan_models
+
+> Code samples
+
+`GET /api/lorawan/models`
 
 *Gets the device models.*
 
@@ -1049,7 +1227,7 @@ None
 > 200 Response
 
 ```
-[{"modelId":"string","imageUrl":"string","name":"string","description":"string","appEUI":"string","sensorDecoderURL":"string","isBuiltin":true,"commands":[{"name":"string","frame":"string","port":1,"isBuiltin":true}]}]
+[{"modelId":"string","imageUrl":"string","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true}]
 ```
 
 ```json
@@ -1059,28 +1237,19 @@ None
     "imageUrl": "string",
     "name": "string",
     "description": "string",
-    "appEUI": "string",
-    "sensorDecoderURL": "string",
     "isBuiltin": true,
-    "commands": [
-      {
-        "name": "string",
-        "frame": "string",
-        "port": 1,
-        "isBuiltin": true
-      }
-    ]
+    "supportLoRaFeatures": true
   }
 ]
 ```
 
-<h3 id="get-device-models-responses">Responses</h3>
+<h3 id="get__api_lorawan_models-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
 
-<h3 id="get-device-models-responseschema">Response Schema</h3>
+<h3 id="get__api_lorawan_models-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -1091,27 +1260,19 @@ Status Code **200**
 |» imageUrl|string¦null|false|none|The device model image URL.|
 |» name|string|true|none|The device model name.|
 |» description|string¦null|false|none|The device model description.|
-|» appEUI|string|true|none|The device OTAA Application eui.|
-|» sensorDecoderURL|string¦null|false|none|The sensor decoder URL.|
 |» isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
-|» commands|[[DeviceModelCommand](#schemadevicemodelcommand)]¦null|false|none|The commands.|
-|»» name|string|true|none|The command name.|
-|»» frame|string|true|none|The command frame in hexa.|
-|»» port|integer(int32)|true|none|The LoRa WAN port.|
-|»» isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
+|» supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 None
 </aside>
 
-## POST Device model
-
-<a id="opIdPOST Device model"></a>
+## post__api_lorawan_models
 
 > Code samples
 
-`POST /api/models`
+`POST /api/lorawan/models`
 
 *Creates the specified device model.*
 
@@ -1123,25 +1284,18 @@ None
   "imageUrl": "string",
   "name": "string",
   "description": "string",
-  "appEUI": "string",
-  "sensorDecoderURL": "string",
   "isBuiltin": true,
-  "commands": [
-    {
-      "name": "string",
-      "frame": "string",
-      "port": 1,
-      "isBuiltin": true
-    }
-  ]
+  "supportLoRaFeatures": true,
+  "appEUI": "string",
+  "sensorDecoderURL": "string"
 }
 ```
 
-<h3 id="post-device-model-parameters">Parameters</h3>
+<h3 id="post__api_lorawan_models-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[DeviceModel](#schemadevicemodel)|false|The device model.|
+|body|body|[LoRaDeviceModel](#schemaloradevicemodel)|false|The device model.|
 
 > Example responses
 
@@ -1163,7 +1317,7 @@ None
 }
 ```
 
-<h3 id="post-device-model-responses">Responses</h3>
+<h3 id="post__api_lorawan_models-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1175,13 +1329,58 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## PUT Device model
-
-<a id="opIdPUT Device model"></a>
+## get__api_lorawan_models_{id}
 
 > Code samples
 
-`PUT /api/models`
+`GET /api/lorawan/models/{id}`
+
+*Gets the specified model identifier.*
+
+<h3 id="get__api_lorawan_models_{id}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The model identifier.|
+
+> Example responses
+
+> 200 Response
+
+```
+{"modelId":"string","imageUrl":"string","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true,"appEUI":"string","sensorDecoderURL":"string"}
+```
+
+```json
+{
+  "modelId": "string",
+  "imageUrl": "string",
+  "name": "string",
+  "description": "string",
+  "isBuiltin": true,
+  "supportLoRaFeatures": true,
+  "appEUI": "string",
+  "sensorDecoderURL": "string"
+}
+```
+
+<h3 id="get__api_lorawan_models_{id}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[LoRaDeviceModel](#schemaloradevicemodel)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## put__api_lorawan_models_{id}
+
+> Code samples
+
+`PUT /api/lorawan/models/{id}`
 
 *Updates the specified device model.*
 
@@ -1193,25 +1392,19 @@ None
   "imageUrl": "string",
   "name": "string",
   "description": "string",
-  "appEUI": "string",
-  "sensorDecoderURL": "string",
   "isBuiltin": true,
-  "commands": [
-    {
-      "name": "string",
-      "frame": "string",
-      "port": 1,
-      "isBuiltin": true
-    }
-  ]
+  "supportLoRaFeatures": true,
+  "appEUI": "string",
+  "sensorDecoderURL": "string"
 }
 ```
 
-<h3 id="put-device-model-parameters">Parameters</h3>
+<h3 id="put__api_lorawan_models_{id}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[DeviceModel](#schemadevicemodel)|false|The device model.|
+|id|path|string|true|none|
+|body|body|[LoRaDeviceModel](#schemaloradevicemodel)|false|The device model.|
 
 > Example responses
 
@@ -1233,7 +1426,7 @@ None
 }
 ```
 
-<h3 id="put-device-model-responses">Responses</h3>
+<h3 id="put__api_lorawan_models_{id}-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1246,65 +1439,15 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## GET Device model
-
-<a id="opIdGET Device model"></a>
+## delete__api_lorawan_models_{id}
 
 > Code samples
 
-`GET /api/models/{id}`
-
-*Gets the specified model identifier.*
-
-<h3 id="get-device-model-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|The model identifier.|
-
-> Example responses
-
-> 404 Response
-
-```
-{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
-```
-
-```json
-{
-  "type": "string",
-  "title": "string",
-  "status": 0,
-  "detail": "string",
-  "instance": "string",
-  "property1": null,
-  "property2": null
-}
-```
-
-<h3 id="get-device-model-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-None
-</aside>
-
-## DELETE Device model
-
-<a id="opIdDELETE Device model"></a>
-
-> Code samples
-
-`DELETE /api/models/{id}`
+`DELETE /api/lorawan/models/{id}`
 
 *Deletes the specified device model.*
 
-<h3 id="delete-device-model-parameters">Parameters</h3>
+<h3 id="delete__api_lorawan_models_{id}-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1330,11 +1473,11 @@ None
 }
 ```
 
-<h3 id="delete-device-model-responses">Responses</h3>
+<h3 id="delete__api_lorawan_models_{id}-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|Success|None|
 |400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ProblemDetails](#schemaproblemdetails)|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
 
@@ -1343,17 +1486,100 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## GET Device model avatar
-
-<a id="opIdGET Device model avatar"></a>
+## get__api_lorawan_models_{id}_avatar
 
 > Code samples
 
-`GET /api/models/{id}/avatar`
+`GET /api/lorawan/models/{id}/avatar`
 
 *Gets the avatar.*
 
-<h3 id="get-device-model-avatar-parameters">Parameters</h3>
+<h3 id="get__api_lorawan_models_{id}_avatar-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The model identifier.|
+
+> Example responses
+
+> 200 Response
+
+```
+"string"
+```
+
+```json
+"string"
+```
+
+<h3 id="get__api_lorawan_models_{id}_avatar-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|string|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## post__api_lorawan_models_{id}_avatar
+
+> Code samples
+
+`POST /api/lorawan/models/{id}/avatar`
+
+*Changes the avatar.*
+
+> Body parameter
+
+```yaml
+file: string
+
+```
+
+<h3 id="post__api_lorawan_models_{id}_avatar-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The model identifier.|
+|body|body|object|false|none|
+|» file|body|string(binary)|false|none|
+
+> Example responses
+
+> 200 Response
+
+```
+"string"
+```
+
+```json
+"string"
+```
+
+<h3 id="post__api_lorawan_models_{id}_avatar-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|string|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## delete__api_lorawan_models_{id}_avatar
+
+> Code samples
+
+`DELETE /api/lorawan/models/{id}/avatar`
+
+*Deletes the avatar.*
+
+<h3 id="delete__api_lorawan_models_{id}_avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1379,7 +1605,69 @@ None
 }
 ```
 
-<h3 id="get-device-model-avatar-responses">Responses</h3>
+<h3 id="delete__api_lorawan_models_{id}_avatar-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|Success|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## POST Device model commands
+
+<a id="opIdPOST Device model commands"></a>
+
+> Code samples
+
+`POST /api/lorawan/models/{id}/commands`
+
+*Sets the device model's commands.*
+
+> Body parameter
+
+```json
+[
+  {
+    "name": "string",
+    "frame": "string",
+    "port": 1,
+    "isBuiltin": true
+  }
+]
+```
+
+<h3 id="post-device-model-commands-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The model identifier.|
+|body|body|[DeviceModelCommand](#schemadevicemodelcommand)|false|The commands.|
+
+> Example responses
+
+> 404 Response
+
+```
+{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
+```
+
+```json
+{
+  "type": "string",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "instance": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+<h3 id="post-device-model-commands-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1391,9 +1679,372 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## POST Device model avatar
+## GET Device model commands
 
-<a id="opIdPOST Device model avatar"></a>
+<a id="opIdGET Device model commands"></a>
+
+> Code samples
+
+`GET /api/lorawan/models/{id}/commands`
+
+*Sets the device model's commands.*
+
+<h3 id="get-device-model-commands-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The model identifier.|
+
+> Example responses
+
+> 200 Response
+
+```
+[{"name":"string","frame":"string","port":1,"isBuiltin":true}]
+```
+
+```json
+[
+  {
+    "name": "string",
+    "frame": "string",
+    "port": 1,
+    "isBuiltin": true
+  }
+]
+```
+
+<h3 id="get-device-model-commands-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
+
+<h3 id="get-device-model-commands-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[DeviceModelCommand](#schemadevicemodelcommand)]|false|none|none|
+|» name|string|true|none|The command name.|
+|» frame|string|true|none|The command frame in hexa.|
+|» port|integer(int32)|true|none|The LoRa WAN port.|
+|» isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+<h1 id="azure-iot-hub-portal-api-device-models">Device Models</h1>
+
+## get__api_models
+
+> Code samples
+
+`GET /api/models`
+
+*Gets the device models.*
+
+> Example responses
+
+> 200 Response
+
+```
+[{"modelId":"string","imageUrl":"string","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true}]
+```
+
+```json
+[
+  {
+    "modelId": "string",
+    "imageUrl": "string",
+    "name": "string",
+    "description": "string",
+    "isBuiltin": true,
+    "supportLoRaFeatures": true
+  }
+]
+```
+
+<h3 id="get__api_models-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+
+<h3 id="get__api_models-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[DeviceModel](#schemadevicemodel)]|false|none|none|
+|» modelId|string¦null|false|none|The device model identifier.|
+|» imageUrl|string¦null|false|none|The device model image URL.|
+|» name|string|true|none|The device model name.|
+|» description|string¦null|false|none|The device model description.|
+|» isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
+|» supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## post__api_models
+
+> Code samples
+
+`POST /api/models`
+
+*Creates the specified device model.*
+
+> Body parameter
+
+```json
+{
+  "modelId": "string",
+  "imageUrl": "string",
+  "name": "string",
+  "description": "string",
+  "isBuiltin": true,
+  "supportLoRaFeatures": true
+}
+```
+
+<h3 id="post__api_models-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[DeviceModel](#schemadevicemodel)|false|The device model.|
+
+> Example responses
+
+> 400 Response
+
+```
+{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
+```
+
+```json
+{
+  "type": "string",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "instance": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+<h3 id="post__api_models-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ProblemDetails](#schemaproblemdetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## get__api_models_{id}
+
+> Code samples
+
+`GET /api/models/{id}`
+
+*Gets the specified model identifier.*
+
+<h3 id="get__api_models_{id}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The model identifier.|
+
+> Example responses
+
+> 200 Response
+
+```
+{"modelId":"string","imageUrl":"string","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true}
+```
+
+```json
+{
+  "modelId": "string",
+  "imageUrl": "string",
+  "name": "string",
+  "description": "string",
+  "isBuiltin": true,
+  "supportLoRaFeatures": true
+}
+```
+
+<h3 id="get__api_models_{id}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[DeviceModel](#schemadevicemodel)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## put__api_models_{id}
+
+> Code samples
+
+`PUT /api/models/{id}`
+
+*Updates the specified device model.*
+
+> Body parameter
+
+```json
+{
+  "modelId": "string",
+  "imageUrl": "string",
+  "name": "string",
+  "description": "string",
+  "isBuiltin": true,
+  "supportLoRaFeatures": true
+}
+```
+
+<h3 id="put__api_models_{id}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+|body|body|[DeviceModel](#schemadevicemodel)|false|The device model.|
+
+> Example responses
+
+> 400 Response
+
+```
+{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
+```
+
+```json
+{
+  "type": "string",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "instance": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+<h3 id="put__api_models_{id}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ProblemDetails](#schemaproblemdetails)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## delete__api_models_{id}
+
+> Code samples
+
+`DELETE /api/models/{id}`
+
+*Deletes the specified device model.*
+
+<h3 id="delete__api_models_{id}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The device model identifier.|
+
+> Example responses
+
+> 400 Response
+
+```
+{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
+```
+
+```json
+{
+  "type": "string",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "instance": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+<h3 id="delete__api_models_{id}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|Success|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ProblemDetails](#schemaproblemdetails)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## get__api_models_{id}_avatar
+
+> Code samples
+
+`GET /api/models/{id}/avatar`
+
+*Gets the avatar.*
+
+<h3 id="get__api_models_{id}_avatar-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The model identifier.|
+
+> Example responses
+
+> 200 Response
+
+```
+"string"
+```
+
+```json
+"string"
+```
+
+<h3 id="get__api_models_{id}_avatar-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|string|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## post__api_models_{id}_avatar
 
 > Code samples
 
@@ -1408,7 +2059,7 @@ file: string
 
 ```
 
-<h3 id="post-device-model-avatar-parameters">Parameters</h3>
+<h3 id="post__api_models_{id}_avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1418,29 +2069,21 @@ file: string
 
 > Example responses
 
-> 404 Response
+> 200 Response
 
 ```
-{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
+"string"
 ```
 
 ```json
-{
-  "type": "string",
-  "title": "string",
-  "status": 0,
-  "detail": "string",
-  "instance": "string",
-  "property1": null,
-  "property2": null
-}
+"string"
 ```
 
-<h3 id="post-device-model-avatar-responses">Responses</h3>
+<h3 id="post__api_models_{id}_avatar-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|string|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
 
 <aside class="warning">
@@ -1448,9 +2091,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## DELETE Device model avatar
-
-<a id="opIdDELETE Device model avatar"></a>
+## delete__api_models_{id}_avatar
 
 > Code samples
 
@@ -1458,7 +2099,7 @@ None
 
 *Deletes the avatar.*
 
-<h3 id="delete-device-model-avatar-parameters">Parameters</h3>
+<h3 id="delete__api_models_{id}_avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1484,101 +2125,12 @@ None
 }
 ```
 
-<h3 id="delete-device-model-avatar-responses">Responses</h3>
+<h3 id="delete__api_models_{id}_avatar-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|Success|None|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-None
-</aside>
-
-## POST Device model command
-
-<a id="opIdPOST Device model command"></a>
-
-> Code samples
-
-`POST /api/models/{id}/commands`
-
-*Creates the specified device model's command.*
-
-> Body parameter
-
-```json
-{
-  "name": "string",
-  "frame": "string",
-  "port": 1,
-  "isBuiltin": true
-}
-```
-
-<h3 id="post-device-model-command-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|The model identifier.|
-|body|body|[DeviceModelCommand](#schemadevicemodelcommand)|false|The command.|
-
-> Example responses
-
-> 404 Response
-
-```
-{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
-```
-
-```json
-{
-  "type": "string",
-  "title": "string",
-  "status": 0,
-  "detail": "string",
-  "instance": "string",
-  "property1": null,
-  "property2": null
-}
-```
-
-<h3 id="post-device-model-command-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-None
-</aside>
-
-## DELETE Device model command
-
-<a id="opIdDELETE Device model command"></a>
-
-> Code samples
-
-`DELETE /api/models/{id}/commands/{commandId}`
-
-*Deletes the specified device model's command.*
-
-<h3 id="delete-device-model-command-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|modelId|query|string|false|The model identifier.|
-|commandId|path|string|true|The command identifier.|
-|id|path|string|true|none|
-
-<h3 id="delete-device-model-command-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|If the device model's command is deleted.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1662,28 +2214,6 @@ None
 |if|integer(int32)|false|none|none|
 |bandwidth|integer(int32)|false|none|none|
 |spread_factor|integer(int32)|false|none|none|
-
-<h2 id="tocS_Command">Command</h2>
-<!-- backwards compatibility -->
-<a id="schemacommand"></a>
-<a id="schema_Command"></a>
-<a id="tocScommand"></a>
-<a id="tocscommand"></a>
-
-```json
-{
-  "commandId": "string",
-  "frame": "string"
-}
-
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|commandId|string¦null|false|none|none|
-|frame|string¦null|false|none|none|
 
 <h2 id="tocS_Concentrator">Concentrator</h2>
 <!-- backwards compatibility -->
@@ -1848,25 +2378,13 @@ None
 {
   "deviceID": "string",
   "deviceName": "string",
+  "modelId": "string",
   "imageUrl": "string",
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "appEUI": "string",
-  "appKey": "string",
   "locationCode": "string",
-  "assetId": "string",
-  "deviceType": "string",
-  "modelId": "string",
-  "modelName": "string",
-  "sensorDecoder": "string",
-  "alreadyLoggedInOnce": true,
-  "commands": [
-    {
-      "commandId": "string",
-      "frame": "string"
-    }
-  ]
+  "assetId": "string"
 }
 
 ```
@@ -1877,20 +2395,13 @@ None
 |---|---|---|---|---|
 |deviceID|string|true|none|none|
 |deviceName|string|true|none|none|
+|modelId|string|true|none|none|
 |imageUrl|string¦null|false|none|none|
 |isConnected|boolean|false|none|none|
 |isEnabled|boolean|false|none|none|
 |statusUpdatedTime|string(date-time)|false|none|none|
-|appEUI|string|true|none|none|
-|appKey|string¦null|false|none|none|
 |locationCode|string¦null|false|none|none|
 |assetId|string¦null|false|none|none|
-|deviceType|string¦null|false|none|none|
-|modelId|string¦null|false|none|none|
-|modelName|string|true|none|none|
-|sensorDecoder|string¦null|false|none|none|
-|alreadyLoggedInOnce|boolean|false|none|none|
-|commands|[[Command](#schemacommand)]¦null|false|none|none|
 
 <h2 id="tocS_DeviceListItem">DeviceListItem</h2>
 <!-- backwards compatibility -->
@@ -1906,10 +2417,8 @@ None
   "imageUrl": "string",
   "isConnected": true,
   "isEnabled": true,
-  "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "appEUI": "string",
-  "appKey": "string",
-  "locationCode": "string"
+  "supportLoRaFeatures": true,
+  "statusUpdatedTime": "2019-08-24T14:15:22Z"
 }
 
 ```
@@ -1918,15 +2427,13 @@ None
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|deviceID|string¦null|false|none|none|
-|deviceName|string¦null|false|none|none|
-|imageUrl|string¦null|false|none|none|
-|isConnected|boolean|false|none|none|
-|isEnabled|boolean|false|none|none|
-|statusUpdatedTime|string(date-time)|false|none|none|
-|appEUI|string¦null|false|none|none|
-|appKey|string¦null|false|none|none|
-|locationCode|string¦null|false|none|none|
+|deviceID|string¦null|false|none|The device Identifier.|
+|deviceName|string¦null|false|none|The device friendly name.|
+|imageUrl|string¦null|false|none|The device model image Url.|
+|isConnected|boolean|false|none|A value indicating whether the device is currently connected.|
+|isEnabled|boolean|false|none|A value indicating whether the device is enabled on the platform.|
+|supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
+|statusUpdatedTime|string(date-time)|false|none|The device last status updated time.|
 
 <h2 id="tocS_DeviceModel">DeviceModel</h2>
 <!-- backwards compatibility -->
@@ -1941,17 +2448,8 @@ None
   "imageUrl": "string",
   "name": "string",
   "description": "string",
-  "appEUI": "string",
-  "sensorDecoderURL": "string",
   "isBuiltin": true,
-  "commands": [
-    {
-      "name": "string",
-      "frame": "string",
-      "port": 1,
-      "isBuiltin": true
-    }
-  ]
+  "supportLoRaFeatures": true
 }
 
 ```
@@ -1964,10 +2462,8 @@ None
 |imageUrl|string¦null|false|none|The device model image URL.|
 |name|string|true|none|The device model name.|
 |description|string¦null|false|none|The device model description.|
-|appEUI|string|true|none|The device OTAA Application eui.|
-|sensorDecoderURL|string¦null|false|none|The sensor decoder URL.|
 |isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
-|commands|[[DeviceModelCommand](#schemadevicemodelcommand)]¦null|false|none|The commands.|
+|supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
 
 <h2 id="tocS_DeviceModelCommand">DeviceModelCommand</h2>
 <!-- backwards compatibility -->
@@ -2118,6 +2614,84 @@ None
 |» **additionalProperties**|string|false|none|none|
 |moduleIdentityTwinSettings|object¦null|false|none|none|
 |» **additionalProperties**|string|false|none|none|
+
+<h2 id="tocS_LoRaDeviceDetails">LoRaDeviceDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaloradevicedetails"></a>
+<a id="schema_LoRaDeviceDetails"></a>
+<a id="tocSloradevicedetails"></a>
+<a id="tocsloradevicedetails"></a>
+
+```json
+{
+  "deviceID": "string",
+  "deviceName": "string",
+  "modelId": "string",
+  "imageUrl": "string",
+  "isConnected": true,
+  "isEnabled": true,
+  "statusUpdatedTime": "2019-08-24T14:15:22Z",
+  "locationCode": "string",
+  "assetId": "string",
+  "appEUI": "string",
+  "appKey": "string",
+  "sensorDecoder": "string",
+  "alreadyLoggedInOnce": true
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deviceID|string|true|none|none|
+|deviceName|string|true|none|none|
+|modelId|string|true|none|none|
+|imageUrl|string¦null|false|none|none|
+|isConnected|boolean|false|none|none|
+|isEnabled|boolean|false|none|none|
+|statusUpdatedTime|string(date-time)|false|none|none|
+|locationCode|string¦null|false|none|none|
+|assetId|string¦null|false|none|none|
+|appEUI|string|true|none|The OTAA App EUI.|
+|appKey|string|true|none|The OTAA App Key.|
+|sensorDecoder|string¦null|false|none|The sensor decoder API url.|
+|alreadyLoggedInOnce|boolean|false|none|A value indicating whether the device has already joined the platform.|
+
+<h2 id="tocS_LoRaDeviceModel">LoRaDeviceModel</h2>
+<!-- backwards compatibility -->
+<a id="schemaloradevicemodel"></a>
+<a id="schema_LoRaDeviceModel"></a>
+<a id="tocSloradevicemodel"></a>
+<a id="tocsloradevicemodel"></a>
+
+```json
+{
+  "modelId": "string",
+  "imageUrl": "string",
+  "name": "string",
+  "description": "string",
+  "isBuiltin": true,
+  "supportLoRaFeatures": true,
+  "appEUI": "string",
+  "sensorDecoderURL": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|modelId|string¦null|false|none|The device model identifier.|
+|imageUrl|string¦null|false|none|The device model image URL.|
+|name|string|true|none|The device model name.|
+|description|string¦null|false|none|The device model description.|
+|isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
+|supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
+|appEUI|string|true|none|The device OTAA Application eui.|
+|sensorDecoderURL|string¦null|false|none|The sensor decoder URL.|
 
 <h2 id="tocS_ProblemDetails">ProblemDetails</h2>
 <!-- backwards compatibility -->
