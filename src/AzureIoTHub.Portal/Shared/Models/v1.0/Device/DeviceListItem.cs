@@ -7,22 +7,39 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.Device
 
     public class DeviceListItem
     {
+        /// <summary>
+        /// The device Identifier.
+        /// </summary>
         public string DeviceID { get; set; }
 
+        /// <summary>
+        /// The device friendly name.
+        /// </summary>
         public string DeviceName { get; set; }
 
+        /// <summary>
+        /// The device model image Url.
+        /// </summary>
         public string ImageUrl { get; set; }
 
+        /// <summary>
+        /// A value indicating whether the device is currently connected.
+        /// </summary>
         public bool IsConnected { get; set; }
 
+        /// <summary>
+        /// A value indicating whether the device is enabled on the platform.
+        /// </summary>
         public bool IsEnabled { get; set; }
 
+        /// <summary>
+        /// A value indicating whether the LoRa features is supported on this model.
+        /// </summary>
+        public bool SupportLoRaFeatures { get; set; }
+
+        /// <summary>
+        /// The device last status updated time.
+        /// </summary>
         public DateTime StatusUpdatedTime { get; set; }
-
-        public string AppEUI { get; set; }
-
-        public string AppKey { get; set; }
-
-        public string LocationCode { get; set; }
     }
 }

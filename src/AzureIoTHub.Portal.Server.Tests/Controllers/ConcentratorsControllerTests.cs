@@ -1,8 +1,8 @@
-﻿using AzureIoTHub.Portal.Server.Controllers.V10;
+﻿using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
 using AzureIoTHub.Portal.Server.Managers;
 using AzureIoTHub.Portal.Server.Mappers;
 using AzureIoTHub.Portal.Server.Services;
-using AzureIoTHub.Portal.Shared.Models.V10.Concentrator;
+using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Shared;
@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AzureIoTHub.Portal.Server.Tests.Controllers
+namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
 {
     [TestFixture]
     public class ConcentratorsControllerTests

@@ -1,70 +1,61 @@
 ﻿@page "/devices/{DeviceID}"
-@using AzureIoTHub.Portal.Shared.Models.V10
+@using AzureIoTHub.Portal.Client.Pages.Devices.LoRaWAN
+@using AzureIoTHub.Portal.Client.Validators
+@using AzureIoTHub.Portal.Shared.Models.V10.Device
+@using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel
+@using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice
+@using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using AzureIoTHub.Portal.Shared.Models.V10.Device
-@using System.Text.Json;
-@using Newtonsoft.Json
-@using Newtonsoft.Json.Linq
 
 @attribute [Authorize]
 @inject HttpClient Http
-@inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Details</MudText>
-
-<MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
-    <MudTabPanel Text="General">
-        <MudGrid>
-            <MudItem xs="12" sm="4" md="3">
-                <MudCard>
-                    <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudText Align="Align.Center" Typo="Typo.h5">@Device.DeviceID</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderAvatar>
-                            @if (Device.IsConnected)
-                            {
-                                <MudTooltip Text="@($"Device connected since {StatusUpdatedTimeString}")">
-                                    <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
-                                </MudTooltip>
-                            }
-                            else
-                            {
-                                <MudTooltip Text="@($"Device disconnected since {StatusUpdatedTimeString}")">
-                                    <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
-                                </MudTooltip>
-                            }
-                        </CardHeaderAvatar>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <div class="d-flex justify-center mb-4">
-                            <MudAvatar Image="@Device.ImageUrl" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
-                        </div>
-                        <MudText Align="Align.Center" Typo="Typo.h6">@Device.ModelName</MudText>
-                        @if (string.IsNullOrEmpty(Device.ModelId))
-                        {
-                            <MudText Align="Align.Center" Typo="Typo.body1" Color="Color.Error">No model selected</MudText>
-                            <MudText Align="Align.Center" Typo="Typo.body2" Color="Color.Error">The device cannot be updated</MudText>
-                        }
-                    </MudCardContent>
-                </MudCard>
-            </MudItem>
-            <MudItem xs="12" sm="8" md="9">
-                <MudCard>
-                    <EditForm Model="@Device" OnValidSubmit="SaveDevice">
-                        <DataAnnotationsValidator />
+<MudForm Model="@Device" @ref="form">
+    <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
+        <MudTabPanel Text="General" Style=@(standardValidator.Validate(Device).IsValid ? "" : "color: red")>
+            <MudGrid>
+                <MudItem xs="12" sm="4" md="3">
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Align="Align.Center" Typo="Typo.h5">@Device.DeviceID</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <div class="d-flex justify-center mb-4">
+                                <MudAvatar Image="@Device.ImageUrl" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                            </div>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="12" sm="8" md="9">
+                    <MudCard>
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <MudText>Device Details</MudText>
                             </CardHeaderContent>
                         </MudCardHeader>
                         <MudCardContent>
-                            <MudGrid>                                
+                            <MudGrid>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="@Device.DeviceID"
+                                                  Label="Device ID"
+                                                  Variant="Variant.Outlined"
+                                                  For="@(()=> Device.DeviceID)"
+                                                  Required="true"
+                                                  ReadOnly="true"
+                                                  HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
+                                </MudItem>
                                 <MudItem xs="12">
-                                    <MudTextField @bind-Value="@Device.DeviceName" Label="Device name" Required="true" Variant="Variant.Outlined" />
+                                    <MudTextField @bind-Value="@Device.DeviceName"
+                                                  Label="Device name"
+                                                  Variant="Variant.Outlined"
+                                                  For="@(()=> Device.DeviceName)"
+                                                  Required="true" />
                                 </MudItem>
                                 <MudItem xs="12" md="6">
                                     <MudTextField @bind-Value="@Device.AssetId" Label="IoT Asset ID" Variant="Variant.Outlined" />
@@ -86,137 +77,111 @@
                                         <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
                                     }
                                 </MudItem>
-
-                                <MudSpacer />
-
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Device.AppEUI" Label="OTAA AppEUI" Variant="Variant.Outlined" ReadOnly="true" Required="true" HelperText="OTAA AppEUI is automatically set from the selected model" />
-                                </MudItem>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Device.AppKey" Label="OTAA AppKey" Variant="Variant.Outlined" />
-                                </MudItem>
-
                             </MudGrid>
                         </MudCardContent>
                         <MudCardActions Class="pb-4 pl-4">
-                            <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="DeleteDevice">Delete Device</MudButton>
-                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-4">Save Changes</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save">Save Changes</MudButton>
                         </MudCardActions>
-                    </EditForm>
-                </MudCard>
-            </MudItem>
-            <MudItem xs="12">
-                <MudCard>
-                    <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudText>Device Commands</MudText>
-                        </CardHeaderContent>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <MudItem xs="12">
-                            @foreach (var command in Device.Commands)
-                            {
-                                <MudItem xs="12" Class="custom-form command_button" Style="padding:3px;">
-                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!Device.AlreadyLoggedInOnce)" OnClick="@(async () => await ExecuteMethod(command))"> @command.CommandId</MudButton>
-                                </MudItem>
-                            }
-                        </MudItem>
-                    </MudCardContent>
-                </MudCard>
-            </MudItem>
-        </MudGrid>
-    </MudTabPanel>
-</MudTabs>
-
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </MudTabPanel>
+        @if (IsLoRa && Device != null && Commands != null)
+        {
+            <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Device as LoRaDeviceDetails).IsValid ? "" : "color: red")>
+                <MudGrid>
+                    <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" Commands="@Commands" OnSaveClick="Save" />
+                </MudGrid>
+            </MudTabPanel>
+        }
+    </MudTabs>
+</MudForm>
 @code {
+
+    private MudForm form;
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public bool IsLoRa
+    {
+        get;
+        set;
+    }
+
+    private string ApiUrlBase => this.IsLoRa ? "/api/lorawan/devices" : "api/devices";
+    private DeviceDetailsValidator standardValidator = new DeviceDetailsValidator();
+    private LoRaDeviceDetailsValidator loraValidator = new LoRaDeviceDetailsValidator();
 
     [Parameter]
     public string DeviceID { get; set; }
 
     private DeviceDetails Device { get; set; } = new DeviceDetails();
 
-    private string StatusUpdatedTimeString { get; set; }
+    private IEnumerable<DeviceModel> DeviceModelList { get; set; } = new List<DeviceModel>();
+
+    private IEnumerable<DeviceModelCommand> Commands { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        try
+        if (IsLoRa)
         {
-            // Sends a GET request to the DevicesController, to retrieve the specific device from Azure IoT Hub
-            Device = await Http.GetFromJsonAsync<DeviceDetails>($"api/Devices/{DeviceID}");
-
-            // Gets the DeviceModel Name from the DeviceModel ID
-            if (!string.IsNullOrEmpty(Device.ModelId))
-            {
-                DeviceModel model = await Http.GetFromJsonAsync<DeviceModel>($"api/models/{Device.ModelId}");
-                Device.ModelName = model?.Name;
-            }
-
-            // StatusUpdatedTime set to string to have a more human-readable format
-            StatusUpdatedTimeString = Device.StatusUpdatedTime.ToString();
+            Device = await Http.GetFromJsonAsync<LoRaDeviceDetails>($"{ApiUrlBase}/{DeviceID}");
+            Commands = await Http.GetFromJsonAsync<DeviceModelCommand[]>($"/api/lorawan/models/{Device.ModelId}/commands");
         }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
-        }
-    }
-
-    /// <summary>
-    /// Sends a POST request to the DevicesController, to update the device in the Azure IoT Hub
-    /// </summary>
-    public async void SaveDevice()
-    {
-        var result = await Http.PutAsJsonAsync<DeviceDetails>($"api/Devices", Device);
-
-        if (result.IsSuccessStatusCode)
-        {
-            // Prompts a snack bar to inform the action was successful
-            Snackbar.Add($"Device {Device.DeviceID} has been successfully updated!", Severity.Success);
-
-            // Go back to the list of device
-            NavManager.NavigateTo("devices");
-        }
-
-        // TODO : Deal more effectively with different error messages
         else
         {
-            string errorMsg = await result.Content.ReadAsStringAsync();
-            Snackbar.Add($"Oh oh, something went wrong while updating device {Device.DeviceID}... <br> {errorMsg}", Severity.Error);
+            Device = await Http.GetFromJsonAsync<DeviceDetails>($"{ApiUrlBase}/{DeviceID}");
         }
     }
 
     /// <summary>
-    /// Prompts a pop-up windows to confirm the device's deletion.
+    /// Sends a POST request to the DevicesController, to add the new device to the Azure IoT Hub
     /// </summary>
-    /// <returns></returns>
-    private async Task DeleteDevice()
+    public async void Save()
     {
-        var parameters = new DialogParameters();
-        parameters.Add("deviceID", Device.DeviceID);
-        var result = await DialogService.Show<DeleteDevicePage>("Confirm Deletion", parameters).Result;
-
-        if (result.Cancelled)
+        if (!standardValidator.Validate(Device).IsValid
+            || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid))
         {
+            Snackbar.Add("One or more validation errors occurred", Severity.Error);
+
+            var loraValidation = this.loraValidator.Validate(this.Device as LoRaDeviceDetails);
+
+            loraValidation.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
+
             return;
         }
 
-        // Go back to the list of devices after the deletion
+        HttpResponseMessage result;
+
+        if (IsLoRa)
+            result = await Http.PutAsJsonAsync(ApiUrlBase, Device as LoRaDeviceDetails);
+        else
+            result = await Http.PutAsJsonAsync(ApiUrlBase, Device);
+
+        result.EnsureSuccessStatusCode();
+
+        // Prompts a snack bar to inform the action was successful
+        Snackbar.Add($"Device {Device.DeviceID} has been successfully updated!", Severity.Success);
+
+        // Go back to the list of devices
         NavManager.NavigateTo("devices");
     }
 
-    private async Task ExecuteMethod(Command method)
+    /// <summary>
+    /// Allows to autocomplete the Device Model field in the form.
+    /// </summary>
+    /// <param name="value">Text entered in the field</param>
+    /// <returns>Item of the device model list that matches the user's value</returns>
+    private async Task<IEnumerable<DeviceModel>> Search(string value)
     {
+        // In real life use an asynchronous function for fetching data from an api.
+        await Task.Delay(0);
 
-        var result = await Http.PostAsJsonAsync($"api/Devices/{Device.DeviceID}/{method.CommandId}", method);
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return DeviceModelList;
 
-        if (result.IsSuccessStatusCode)
-        {
-            Snackbar.Add($"{method.CommandId} has been successfully executed!",
-                Severity.Success);
-        }
-        else
-        {
-            Snackbar.Add(await result.Content.ReadAsStringAsync(), Severity.Error, (option) => { option.VisibleStateDuration = 1000; });
-        }
+        return DeviceModelList
+                    .Where(x => x.Name.StartsWith(value, StringComparison.InvariantCultureIgnoreCase));
     }
 }
-

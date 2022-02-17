@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Shared.Models.V10.Concentrator;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator;
 
     public class RouterConfigManager : IRouterConfigManager
     {

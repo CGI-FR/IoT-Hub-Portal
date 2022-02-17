@@ -3,7 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Mappers
 {
-    using AzureIoTHub.Portal.Shared.Models.V10.Concentrator;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator;
     using Microsoft.Azure.Devices.Shared;
 
     public interface IConcentratorTwinMapper

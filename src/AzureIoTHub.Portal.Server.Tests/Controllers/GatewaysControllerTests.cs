@@ -13,7 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace AzureIoTHub.Portal.Server.Tests.Controllers
+namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
 {
     [TestFixture]
     public class GatewaysControllerTests

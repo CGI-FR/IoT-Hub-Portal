@@ -13,7 +13,7 @@ using NUnit.Framework;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AzureIoTHub.Portal.Server.Tests.Controllers
+namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
 {
     [TestFixture]
     public class DevicesControllerTests
@@ -23,7 +23,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers
         private Mock<ILogger<DevicesController>> mockLogger;
         private Mock<ITableClientFactory> mockTableClientFactory;
         private Mock<IDeviceService> mockDeviceService;
-        private Mock<IDeviceTwinMapper> mockDeviceTwinMapper;
+        private Mock<IDeviceTwinMapper<DeviceListItem, DeviceDetails>> mockDeviceTwinMapper;
         private Mock<ILoraDeviceMethodManager> mockLoraDeviceMethodManager;
         private Mock<IDeviceModelCommandMapper> mockDeviceModelCommandMapper;
 
@@ -35,7 +35,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers
             this.mockLogger = this.mockRepository.Create<ILogger<DevicesController>>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
-            this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper>();
+            this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
             this.mockLoraDeviceMethodManager = this.mockRepository.Create<ILoraDeviceMethodManager>();
             this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>();
         }
@@ -44,11 +44,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers
         {
             return new DevicesController(
                 this.mockLogger.Object,
-                this.mockTableClientFactory.Object,
                 this.mockDeviceService.Object,
-                this.mockDeviceTwinMapper.Object,
-                this.mockLoraDeviceMethodManager.Object,
-                this.mockDeviceModelCommandMapper.Object);
+                this.mockDeviceTwinMapper.Object);
         }
 
         [Test]

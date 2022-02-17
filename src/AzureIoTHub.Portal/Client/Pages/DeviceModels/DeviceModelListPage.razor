@@ -1,4 +1,5 @@
 ﻿@page "/device-models"
+@using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Shared.Models.V10
@@ -29,7 +30,6 @@
                     <col style="width: 5%;" />
                     <col style="width: 30%;" />
                     <col style="width: 30%;" />
-                    <col style="width: 25%;" />
                     <col style="width: 5%;" />
                     <col style="width: 5%;" />
                 </ColGroup>
@@ -43,7 +43,6 @@
                     <MudTh></MudTh>
                     <MudTh>Name</MudTh>
                     <MudTh Style="text-align: center">Description</MudTh>
-                    <MudTh Style="text-align: center">AppEUI</MudTh>
                     <MudTh Style="text-align: center">Details</MudTh>
                     <MudTh Style="text-align: center">Delete</MudTh>
                 </HeaderContent>
@@ -52,16 +51,13 @@
                         <img height="25" src="@context.ImageUrl" />
                     </MudTd>
                     <MudTd DataLabel="Name" Style="word-break: break-all;">
-                        <a href="/device-models/@context.ModelId">@context.Name</a>
+                        <a href=@($"/device-models/{@context.ModelId}{(@context.SupportLoRaFeatures ? "?isLora=true": "")}")>@context.Name</a>
                     </MudTd>
                     <MudTd DataLabel="Description" Style="word-break: break-all; ">
                         @context.Description
                     </MudTd>
-                    <MudTd DataLabel="AppEUI" Style="text-align: center;">
-                        @context.AppEUI
-                    </MudTd>
                     <MudTd DataLabel="Details" Style="text-align: center">
-                        <a href="/device-models/@context.ModelId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                        <a href="@($"/device-models/{@context.ModelId}{(@context.SupportLoRaFeatures ? "?isLora=true": "")}")"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
                     </MudTd>
                     <MudTd DataLabel="Delete" Style="text-align: center">
                         <MudIconButton Color="Color.Default" Disabled="context.IsBuiltin" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDeviceModel(context))"></MudIconButton>

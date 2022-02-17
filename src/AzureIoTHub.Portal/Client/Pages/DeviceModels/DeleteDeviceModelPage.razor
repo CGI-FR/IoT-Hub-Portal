@@ -37,7 +37,7 @@
         // TODO : Deal more effectively with error/success messages
         if (!response.IsSuccessStatusCode)
         {
-            
+
             Snackbar.Add($"Oh oh, something went wrong while deleting device model {deviceModelName}... <br/>{errorMsg} ", Severity.Error);
             return;
         }

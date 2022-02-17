@@ -4,10 +4,8 @@
 namespace AzureIoTHub.Portal.Server
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Net;
-    using System.Reflection;
     using System.Threading.Tasks;
     using Azure.Storage.Blobs;
     using AzureIoTHub.Portal.Server.Factories;
@@ -15,6 +13,10 @@ namespace AzureIoTHub.Portal.Server
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -96,13 +98,17 @@ namespace AzureIoTHub.Portal.Server
             services.AddTransient<ITableClientFactory>(sp => new TableClientFactory(configuration.StorageAccountConnectionString));
             services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
             services.AddTransient<IDeviceService, DeviceService>();
-            services.AddTransient<IDeviceTwinMapper, DeviceTwinMapper>();
             services.AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>();
             services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
-            services.AddTransient<IDeviceModelMapper, DeviceModelMapper>();
             services.AddTransient<IConnectionStringManager, ConnectionStringManager>();
             services.AddTransient<IDeviceModelCommandsManager, DeviceModelCommandsManager>();
             services.AddTransient<IDeviceProvisioningServiceManager, DeviceProvisioningServiceManager>();
+
+            services.AddTransient<IDeviceTwinMapper<DeviceListItem, DeviceDetails>, DeviceTwinMapper>();
+            services.AddTransient<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>, LoRaDeviceTwinMapper>();
+
+            services.AddTransient<IDeviceModelMapper<DeviceModel, DeviceModel>, DeviceModelMapper>();
+            services.AddTransient<IDeviceModelMapper<DeviceModel, LoRaDeviceModel>, LoRaDeviceModelMapper>();
 
             services.AddTransient<ConfigsServices>();
 

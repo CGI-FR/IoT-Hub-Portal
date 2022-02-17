@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.Modal" Version="6.0.1" />
+    <PackageReference Include="FluentValidation" Version="10.3.6" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.2" PrivateAssets="all" />
@@ -34,6 +35,12 @@
     <CodeAnalysisRuleSet>../../stylecop.ruleset</CodeAnalysisRuleSet>
     <UserSecretsId>e1670ee9-d8c1-450e-a7ed-ad2b3f6398c8</UserSecretsId>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;0649</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;0649</NoWarn>
+  </PropertyGroup>
   <Import Project="../../stylecop.props" />
   <ItemGroup>
     <PackageReference Update="StyleCop.Analyzers" Version="1.1.118">
@@ -54,6 +61,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Pages\LoRaWAN\DeviceModels\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>

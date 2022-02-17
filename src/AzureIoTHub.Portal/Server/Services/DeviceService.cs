@@ -54,7 +54,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             if (!string.IsNullOrWhiteSpace(excludeDeviceType))
             {
-                queryString += $" AND devices.tags.deviceType != '{ excludeDeviceType }'";
+                queryString += $" AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != '{ excludeDeviceType }')";
             }
 
             var query = this.registryManager

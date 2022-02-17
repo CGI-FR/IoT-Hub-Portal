@@ -1,9 +1,8 @@
 ﻿// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Shared.Models.V10
+namespace AzureIoTHub.Portal.Shared.Models.V10.DeviceModel
 {
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using Newtonsoft.Json;
 
@@ -31,33 +30,20 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
         public string Description { get; set; }
 
         /// <summary>
-        /// The device OTAA Application eui.
-        /// </summary>
-        [Required(ErrorMessage = "The OTAA App EUI is required.")]
-        public string AppEUI { get; set; }
-
-        /// <summary>
-        /// The sensor decoder URL.
-        /// </summary>
-        public string SensorDecoderURL { get; set; }
-
-        /// <summary>
         /// A value indicating whether this instance is builtin.
         /// </summary>
         public bool IsBuiltin { get; set; }
 
         /// <summary>
-        /// The commands.
+        /// A value indicating whether the LoRa features is supported on this model.
         /// </summary>
-        [ValidateComplexType]
-        public List<DeviceModelCommand> Commands { get; set; }
+        public bool SupportLoRaFeatures { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceModel"/> class.
         /// </summary>
         public DeviceModel()
         {
-            this.Commands = new List<DeviceModelCommand>();
         }
     }
 }
