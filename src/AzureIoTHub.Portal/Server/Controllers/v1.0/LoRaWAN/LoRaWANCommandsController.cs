@@ -19,7 +19,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     [ApiVersion("1.0")]
     [Route("api/lorawan/models/{id}/commands")]
     [ApiExplorerSettings(GroupName = "LoRa WAN")]
-    public class DeviceCommandsController : ControllerBase
+    public class LoRaWANCommandsController : ControllerBase
     {
         /// <summary>
         /// The table client factory.
@@ -34,16 +34,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <summary>
         /// The logger.
         /// </summary>
-        private readonly ILogger<DeviceCommandsController> log;
+        private readonly ILogger<LoRaWANCommandsController> log;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceCommandsController"/> class.
+        /// Initializes a new instance of the <see cref="LoRaWANCommandsController"/> class.
         /// </summary>
         /// <param name="log">The logger.</param>
         /// <param name="deviceModelCommandMapper">The device model command mapper.</param>
         /// <param name="tableClientFactory">The table client factory.</param>
-        public DeviceCommandsController(
-            ILogger<DeviceCommandsController> log,
+        public LoRaWANCommandsController(
+            ILogger<LoRaWANCommandsController> log,
             IDeviceModelCommandMapper deviceModelCommandMapper,
             ITableClientFactory tableClientFactory)
         {

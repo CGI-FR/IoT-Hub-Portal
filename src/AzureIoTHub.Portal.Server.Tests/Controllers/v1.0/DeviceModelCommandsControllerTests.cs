@@ -25,23 +25,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         private Mock<ITableClientFactory> mockTableClientFactory;
         private Mock<TableClient> mockDeviceTemplatesTableClient;
         private Mock<TableClient> mockCommandsTableClient;
-        private Mock<ILogger<DeviceCommandsController>> mockLogger;
+        private Mock<ILogger<LoRaWANCommandsController>> mockLogger;
 
         [SetUp]
         public void SetUp()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockLogger = this.mockRepository.Create<ILogger<DeviceCommandsController>>();
+            this.mockLogger = this.mockRepository.Create<ILogger<LoRaWANCommandsController>>();
             this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockDeviceTemplatesTableClient = this.mockRepository.Create<TableClient>();
             this.mockCommandsTableClient = this.mockRepository.Create<TableClient>();
         }
 
-        private DeviceCommandsController CreateDeviceModelCommandsController()
+        private LoRaWANCommandsController CreateDeviceModelCommandsController()
         {
-            return new DeviceCommandsController(
+            return new LoRaWANCommandsController(
                 this.mockLogger.Object,
                 this.mockDeviceModelCommandMapper.Object,
                 this.mockTableClientFactory.Object);
