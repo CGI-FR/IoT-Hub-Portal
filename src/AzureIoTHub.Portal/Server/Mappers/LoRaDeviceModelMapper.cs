@@ -54,7 +54,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             entity[nameof(LoRaDeviceModel.IsBuiltin)] = model.IsBuiltin;
             entity[nameof(LoRaDeviceModel.AppEUI)] = model.AppEUI;
             entity[nameof(LoRaDeviceModel.SensorDecoderURL)] = model.SensorDecoderURL;
-            entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)] = true;
+            entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)] = model.SupportLoRaFeatures;
         }
     }
 }
