@@ -132,6 +132,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public void When_Model_NotExists_Get_Should_Return_404()
+        {
+            // Arrange
+            var deviceModelCommandsController = this.CreateDeviceModelCommandsController();
+
+            SetupNotFoundDeviceModel();
+
+            // Act
+            var result = deviceModelCommandsController.Get(Guid.NewGuid().ToString());
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<NotFoundResult>(result.Result);
+
+            this.mockRepository.VerifyAll();
+        }
+
         private TableEntity SetupMockDeviceModel()
         {
             var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
