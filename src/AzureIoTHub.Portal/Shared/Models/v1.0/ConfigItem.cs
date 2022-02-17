@@ -9,23 +9,23 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
     public class ConfigItem
     {
         /// <summary>
-        /// The device model name.
+        /// The IoT Edge configuration name.
         /// </summary>
-        [Required(ErrorMessage = "The device model name is required.")]
+        [Required(ErrorMessage = "The configuration model name is required.")]
         public string Name { get; set; }
 
         /// <summary>
-        /// The device dateCreation.
+        /// The IoT Edge configuration creation date.
         /// </summary>
         public DateTime DateCreation { get; set; }
 
         /// <summary>
-        /// The device status.
+        /// The IoT Edge configuration status.
         /// </summary>
         public string Status { get; set; }
 
         /// <summary>
-        /// The command configItem.
+        /// Initializes a new instance of the <see cref="ConfigItem"/> class.
         /// </summary>
         public ConfigItem()
         {

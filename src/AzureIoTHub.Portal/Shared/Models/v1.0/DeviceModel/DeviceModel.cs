@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.DeviceModel
         public string ModelId { get; set; }
 
         /// <summary>
-        /// The device model image URL.
+        /// The device model image Url.
         /// </summary>
         public string ImageUrl { get; set; }
 

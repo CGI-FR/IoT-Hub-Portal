@@ -24,7 +24,7 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
         public string Type { get; set; }
 
         /// <summary>
-        /// The device nbdevices.
+        /// The number of devices connected on the IoT Edge.
         /// </summary>
         public int NbDevices { get; set; }
     }

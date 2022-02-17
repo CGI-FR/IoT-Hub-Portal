@@ -9,28 +9,28 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
     public class GatewayModule
     {
         /// <summary>
-        /// The device module name.
+        /// The module name.
         /// </summary>
         [Required(ErrorMessage = "The device model name is required.")]
         public string ModuleName { get; set; }
 
         /// <summary>
-        /// The device version.
+        /// The module configuration version.
         /// </summary>
         public string Version { get; set; }
 
         /// <summary>
-        /// The device status.
+        /// The module status.
         /// </summary>
         public string Status { get; set; }
 
         /// <summary>
-        /// The device environment variables.
+        /// The module environment variables.
         /// </summary>
         public Dictionary<string, string> EnvironmentVariables { get; set; }
 
         /// <summary>
-        /// The device module identity twin settings.
+        /// The module identity twin settings.
         /// </summary>
         public Dictionary<string, string> ModuleIdentityTwinSettings { get; set; }
     }

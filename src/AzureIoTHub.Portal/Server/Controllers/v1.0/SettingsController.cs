@@ -17,8 +17,15 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     [ApiExplorerSettings(GroupName = "Portal Settings")]
     public class SettingsController : ControllerBase
     {
+        /// <summary>
+        /// The device client api indentity options.
+        /// </summary>
         private readonly ClientApiIndentityOptions configuration;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SettingsController"/> class.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
         public SettingsController(IOptions<ClientApiIndentityOptions> configuration)
         {
             this.configuration = configuration.Value;
@@ -30,7 +37,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <returns>The portal OIDC settnigs.</returns>
         /// <response code="200">Returns the OIDC settings.</response>
         /// <response code="500">Internal server error.</response>
-        [HttpGet("oidc", Name = "GET OIDC")]
+        [HttpGet("oidc", Name = "GET Open ID settings")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetOIDCSettings()

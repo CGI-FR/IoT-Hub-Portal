@@ -6,12 +6,12 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
     public class C2Dresult
     {
         /// <summary>
-        /// The device payload.
+        /// The C2D result payload.
         /// </summary>
         public string Payload { get; set; }
 
         /// <summary>
-        /// The device status.
+        /// The C2D status.
         /// </summary>
         public int Status { get; set; }
     }

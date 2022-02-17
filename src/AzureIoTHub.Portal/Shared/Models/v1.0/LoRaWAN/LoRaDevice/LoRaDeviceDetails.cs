@@ -21,7 +21,7 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice
         public string AppKey { get; set; }
 
         /// <summary>
-        /// The sensor decoder API url.
+        /// The sensor decoder API Url.
         /// </summary>
         public string SensorDecoder { get; set; }
 

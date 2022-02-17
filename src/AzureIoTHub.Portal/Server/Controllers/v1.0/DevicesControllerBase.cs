@@ -6,15 +6,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net.Http.Json;
     using System.Threading.Tasks;
-    using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.V10.Device;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
@@ -40,12 +35,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         }
 
         /// <summary>
-        /// Gets a list of devices as DeviceListItem from Azure IoT Hub.
-        /// Fields that do not appear in the device list are not defined here.
+        /// Gets the device list.
         /// </summary>
-        /// <returns>A list of DeviceListItem.</returns>
-        [HttpGet]
-        public async Task<IEnumerable<TListItem>> Get()
+        /// <returns></returns>
+        public virtual async Task<IEnumerable<TListItem>> Get()
         {
             var items = await this.devicesService.GetAllDevice(excludeDeviceType: "LoRa Concentrator");
 
@@ -53,21 +46,23 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         }
 
         /// <summary>
-        /// Retrieve a specific device and from the IoT Hub.
-        /// Converts it to a DeviceListItem.
+        /// Gets the specified device.
         /// </summary>
-        /// <param name="deviceID">ID of the device to retrieve.</param>
-        /// <returns>The DeviceListItem corresponding to the given ID.</returns>
-        [HttpGet("{deviceID}")]
-        public async Task<TModel> Get(string deviceID)
+        /// <param name="deviceID">The device identifier.</param>
+        /// <returns></returns>
+        public virtual async Task<TModel> Get(string deviceID)
         {
             var item = await this.devicesService.GetDeviceTwin(deviceID);
 
             return this.deviceTwinMapper.CreateDeviceDetails(item);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateDeviceAsync(TModel device)
+        /// <summary>
+        /// Creates the device.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <returns></returns>
+        public virtual async Task<IActionResult> CreateDeviceAsync(TModel device)
         {
             try
             {
@@ -103,12 +98,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         }
 
         /// <summary>
-        /// this function update the twin and the device.
+        /// Updates the device.
         /// </summary>
-        /// <param name="device">the device object.</param>
-        /// <returns>the update twin.</returns>
-        [HttpPut]
-        public async Task<IActionResult> UpdateDeviceAsync(TModel device)
+        /// <param name="device">The device.</param>
+        /// <returns></returns>
+        public virtual async Task<IActionResult> UpdateDeviceAsync(TModel device)
         {
             if (!this.ModelState.IsValid)
             {
@@ -132,13 +126,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             return this.Ok();
         }
 
+
         /// <summary>
-        /// this function delete a device.
+        /// Deletes the specified device.
         /// </summary>
-        /// <param name="deviceID">the device id.</param>
-        /// <returns>ok status on success.</returns>
-        [HttpDelete("{deviceID}")]
-        public async Task<IActionResult> Delete(string deviceID)
+        /// <param name="deviceID">The device identifier.</param>
+        /// <returns></returns>
+        public virtual async Task<IActionResult> Delete(string deviceID)
         {
             await this.devicesService.DeleteDevice(deviceID);
             return this.Ok();
