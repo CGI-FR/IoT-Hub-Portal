@@ -55,7 +55,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             {
                 var commandEntity = this.tableClientFactory
                        .GetDeviceCommands()
-                       .Query<TableEntity>(filter: $"RowKey  eq '{commandId}'")
+                       .Query<TableEntity>(filter: $"RowKey eq '{commandId}'")
                        .Single();
 
                 var deviceModelCommand = this.deviceModelCommandMapper.GetDeviceModelCommand(commandEntity);
@@ -71,7 +71,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
                 this.logger.LogInformation($"{deviceId} - Execute command: {result}");
 
-                return this.Ok(await result.Content.ReadFromJsonAsync<dynamic>());
+                return this.Ok();
             }
             catch (FormatException e)
             {
