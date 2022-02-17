@@ -62,7 +62,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.LocationCode), item.LocationCode);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.AssetId), item.AssetId);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
-            Helpers.DeviceHelper.SetTagValue(twin, "SupportLoRaFeatures", "true");
 
 
             // Update the twin properties
