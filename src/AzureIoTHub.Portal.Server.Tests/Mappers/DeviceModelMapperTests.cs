@@ -63,6 +63,34 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
         }
 
         [Test]
+        public void CreateDeviceModelListItem_StateUnderTest_ExpectedBehavior()
+        {
+            // Arrange
+            var deviceModelMapper = this.CreateDeviceModelMapper();
+            var entity = new TableEntity();
+
+            entity.RowKey = "000-000-001";
+            entity["Name"] = "DeviceModelName";
+            entity["Description"] = "aaa";
+            entity["AppEUI"] = "AppEUI";
+            entity["SensorDecoderURL"] = "SensorDecoderURL";
+
+            this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
+                .Returns("http://fake.local/000-000-001")
+                .Verifiable();
+
+            // Act
+            var result = deviceModelMapper.CreateDeviceModelListItem(entity);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("000-000-001", result.ModelId);
+            Assert.AreEqual("DeviceModelName", result.Name);
+            Assert.AreEqual("aaa", result.Description);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public void UpdateTableEntity_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
