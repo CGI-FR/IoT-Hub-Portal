@@ -226,22 +226,5 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             Assert.IsAssignableFrom<OkResult>(result);
             this.mockRepository.VerifyAll();
         }
-
-        [Test]
-        public async Task ExecuteCommand_StateUnderTest_ExpectedBehavior()
-        {
-            await Task.CompletedTask;
-            //// Arrange
-            //var devicesController = this.CreateDevicesController();
-            //string deviceId = null;
-            //string commandId = null;
-
-            //// Act
-            //var result = await devicesController.ExecuteCommand(deviceId, commandId);
-
-            // Assert
-            Assert.Inconclusive();
-            this.mockRepository.VerifyAll();
-        }
     }
 }
