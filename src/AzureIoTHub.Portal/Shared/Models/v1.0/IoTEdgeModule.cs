@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-    public class GatewayModule
+    public class IoTEdgeModule
     {
         /// <summary>
         /// The module name.

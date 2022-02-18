@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
         /// </summary>
         public ConfigListItem()
         {
-            this.Modules = new List<GatewayModule>();
+            this.Modules = new List<IoTEdgeModule>();
         }
 
         /// <summary>
@@ -59,6 +59,6 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
         ///<summary>
         /// The IoT Edge modules configuration.
         /// </summary>
-        public List<GatewayModule> Modules { get; set; }
+        public List<IoTEdgeModule> Modules { get; set; }
     }
 }

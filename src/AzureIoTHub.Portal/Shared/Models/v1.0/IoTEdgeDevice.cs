@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-    public class Gateway
+    public class IoTEdgeDevice
     {
         /// <summary>
         /// The IoT Edge identifier.
@@ -73,14 +73,14 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
         /// <summary>
         /// The IoT Edge modules.
         /// </summary>
-        public List<GatewayModule> Modules { get; set; }
+        public List<IoTEdgeModule> Modules { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Gateway"/> class.
+        /// Initializes a new instance of the <see cref="IoTEdgeDevice"/> class.
         /// </summary>
-        public Gateway()
+        public IoTEdgeDevice()
         {
-            this.Modules = new List<GatewayModule>();
+            this.Modules = new List<IoTEdgeModule>();
             this.LastDeployment = new ConfigItem();
         }
     }

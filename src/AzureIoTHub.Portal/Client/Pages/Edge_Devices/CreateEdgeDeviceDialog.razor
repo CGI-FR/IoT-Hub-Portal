@@ -55,7 +55,7 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    private Gateway gateway = new Gateway();
+    private IoTEdgeDevice gateway = new IoTEdgeDevice();
 
     void Cancel() => MudDialog.Cancel();
 

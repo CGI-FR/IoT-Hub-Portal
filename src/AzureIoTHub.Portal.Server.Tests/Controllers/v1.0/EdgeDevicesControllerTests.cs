@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
 {
     [TestFixture]
-    public class GatewaysControllerTests
+    public class EdgeDevicesControllerTests
     {
         private MockRepository mockRepository;
 
@@ -38,7 +38,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
         }
 
-        private EdgeDevicesController CreateGatewaysController()
+        private EdgeDevicesController CreateEdgeDevicesController()
         {
             return new EdgeDevicesController(
                 this.mockConfiguration.Object,
@@ -64,10 +64,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             this.mockDeviceService.Setup(x => x.GetDeviceTwin(It.Is<string>(c => c == twin.DeviceId)))
                 .ReturnsAsync(twin);
 
-            var gatewaysController = this.CreateGatewaysController();
+            var edgeDevicesController = this.CreateEdgeDevicesController();
 
             // Act
-            var result = await gatewaysController.Get();
+            var result = await edgeDevicesController.Get();
 
             // Assert
             Assert.IsNotNull(result);
@@ -77,8 +77,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             Assert.IsNotNull(okObjectResult);
             Assert.AreEqual(200, okObjectResult.StatusCode);
             Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<List<GatewayListItem>>(okObjectResult.Value);
-            var gatewayList = okObjectResult.Value as List<GatewayListItem>;
+            Assert.IsAssignableFrom<List<IoTEdgeListItem>>(okObjectResult.Value);
+            var gatewayList = okObjectResult.Value as List<IoTEdgeListItem>;
             Assert.IsNotNull(gatewayList);
             Assert.AreEqual(1, gatewayList.Count);
             var gateway = gatewayList[0];
@@ -94,12 +94,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         public async Task GetSymmetricKey_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
-            var gatewaysController = this.CreateGatewaysController();
+            var edgeDevicesController = this.CreateEdgeDevicesController();
             this.mockConnectionStringManager.Setup(c => c.GetSymmetricKey("aaa", "bbb"))
                 .ReturnsAsync("dfhjkfdgh");
 
             // Act
-            var result = await gatewaysController.GetSymmetricKey("aaa", "bbb");
+            var result = await edgeDevicesController.GetSymmetricKey("aaa", "bbb");
 
             // Assert
             Assert.IsNotNull(result);
@@ -119,8 +119,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         public async Task CreateGatewayAsync_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
-            var gatewaysController = this.CreateGatewaysController();
-            var gateway = new Gateway()
+            var edgeDevicesController = this.CreateEdgeDevicesController();
+            var gateway = new IoTEdgeDevice()
             {
                 DeviceId = "aaa",
                 Type = "lora"
@@ -140,7 +140,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             // Act
-            var result = await gatewaysController.CreateGatewayAsync(gateway);
+            var result = await edgeDevicesController.CreateGatewayAsync(gateway);
 
             // Assert
             Assert.IsNotNull(result);
@@ -157,8 +157,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         public async Task UpdateDeviceAsync_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
-            var gatewaysController = this.CreateGatewaysController();
-            var gateway = new Gateway()
+            var edgeDevicesController = this.CreateEdgeDevicesController();
+            var gateway = new IoTEdgeDevice()
             {
                 DeviceId = "aaa",
                 Type = "lora",
@@ -195,7 +195,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             // Act
-            var result = await gatewaysController.UpdateDeviceAsync(gateway);
+            var result = await edgeDevicesController.UpdateDeviceAsync(gateway);
 
             // Assert
             Assert.IsNotNull(result);
