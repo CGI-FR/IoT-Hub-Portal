@@ -348,6 +348,46 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         }
 
         [Test]
+        public async Task WhenEmptyModelId_Post_Should_Create_A_New_Entity()
+        {
+            // Arrange
+            var deviceModelsController = this.CreateDeviceModelsController();
+
+            var requestModel = new DeviceModel
+            {
+                ModelId = String.Empty
+            };
+
+            var mockResponse = this.mockRepository.Create<Response>();
+
+            this.mockDeviceTemplatesTableClient.Setup(c => c.UpsertEntityAsync(
+                    It.Is<TableEntity>(x => x.RowKey != requestModel.ModelId && x.PartitionKey == LoRaWANDeviceModelsController.DefaultPartitionKey),
+                    It.IsAny<TableUpdateMode>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockResponse.Object);
+
+            this.mockDeviceModelMapper.Setup(c => c.UpdateTableEntity(
+                    It.Is<TableEntity>(x => x.RowKey != requestModel.ModelId && x.PartitionKey == LoRaWANDeviceModelsController.DefaultPartitionKey),
+                    It.IsAny<DeviceModel>()));
+
+            this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(mockDeviceTemplatesTableClient.Object);
+
+            // Act
+            var result = await deviceModelsController.Post(requestModel);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<OkResult>(result);
+            var okObjectResult = result as OkResult;
+
+            Assert.IsNotNull(okObjectResult);
+            Assert.AreEqual(200, okObjectResult.StatusCode);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task When_DeviceModelId_Exists_Post_Should_Return_BadRequest()
         {
             // Arrange
