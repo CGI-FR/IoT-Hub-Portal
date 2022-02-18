@@ -272,7 +272,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GatewayListItem"
+                    "$ref": "#/components/schemas/IoTEdgeListItem"
                   }
                 }
               },
@@ -280,7 +280,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GatewayListItem"
+                    "$ref": "#/components/schemas/IoTEdgeListItem"
                   }
                 }
               },
@@ -288,7 +288,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GatewayListItem"
+                    "$ref": "#/components/schemas/IoTEdgeListItem"
                   }
                 }
               }
@@ -307,17 +307,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Gateway"
+                "$ref": "#/components/schemas/IoTEdgeDevice"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Gateway"
+                "$ref": "#/components/schemas/IoTEdgeDevice"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Gateway"
+                "$ref": "#/components/schemas/IoTEdgeDevice"
               }
             }
           }
@@ -359,17 +359,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Gateway"
+                "$ref": "#/components/schemas/IoTEdgeDevice"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Gateway"
+                "$ref": "#/components/schemas/IoTEdgeDevice"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Gateway"
+                "$ref": "#/components/schemas/IoTEdgeDevice"
               }
             }
           }
@@ -405,17 +405,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/Gateway"
+                  "$ref": "#/components/schemas/IoTEdgeDevice"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Gateway"
+                  "$ref": "#/components/schemas/IoTEdgeDevice"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Gateway"
+                  "$ref": "#/components/schemas/IoTEdgeDevice"
                 }
               }
             }
@@ -520,17 +520,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GatewayModule"
+                "$ref": "#/components/schemas/IoTEdgeModule"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/GatewayModule"
+                "$ref": "#/components/schemas/IoTEdgeModule"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/GatewayModule"
+                "$ref": "#/components/schemas/IoTEdgeModule"
               }
             }
           }
@@ -2272,7 +2272,7 @@
           "modules": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/GatewayModule"
+              "$ref": "#/components/schemas/IoTEdgeModule"
             },
             "description": "The IoT Edge modules configuration.",
             "nullable": true
@@ -2435,7 +2435,7 @@
         },
         "additionalProperties": false
       },
-      "Gateway": {
+      "IoTEdgeDevice": {
         "required": [
           "deviceId",
           "type"
@@ -2501,7 +2501,7 @@
           "modules": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/GatewayModule"
+              "$ref": "#/components/schemas/IoTEdgeModule"
             },
             "description": "The IoT Edge modules.",
             "nullable": true
@@ -2509,7 +2509,7 @@
         },
         "additionalProperties": false
       },
-      "GatewayListItem": {
+      "IoTEdgeListItem": {
         "required": [
           "deviceId"
         ],
@@ -2537,7 +2537,7 @@
         },
         "additionalProperties": false
       },
-      "GatewayModule": {
+      "IoTEdgeModule": {
         "required": [
           "moduleName"
         ],
