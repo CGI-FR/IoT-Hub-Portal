@@ -181,17 +181,17 @@
     private bool processingUpdate = false;
     private bool processingDelete = false;
 
-    private Gateway Gateway;
+    private IoTEdgeDevice Gateway;
 
     protected override async Task OnInitializedAsync()
     {
-        Gateway = new Gateway();
+        Gateway = new IoTEdgeDevice();
         await LoadDevice();
     }
 
     public async Task LoadDevice()
     {
-        Gateway = await Http.GetFromJsonAsync<Gateway>($"api/edge/device/{deviceId}");
+        Gateway = await Http.GetFromJsonAsync<IoTEdgeDevice>($"api/edge/device/{deviceId}");
 
         if (Gateway.ConnectionState == "Disconnected")
         {
@@ -213,7 +213,7 @@
         processingUpdate = false;
     }
 
-    public async Task OnMethod(GatewayModule module, string methodName)
+    public async Task OnMethod(IoTEdgeModule module, string methodName)
     {
         var result = await Http.PostAsJsonAsync($"api/edge/device/{Gateway.DeviceId}/{module.ModuleName}/{methodName}", module);
 

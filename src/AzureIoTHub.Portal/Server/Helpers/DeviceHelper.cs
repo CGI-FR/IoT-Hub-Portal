@@ -130,15 +130,15 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <param name="twin">the twin of the device we want.</param>
         /// <param name="moduleCount">the module count.</param>
         /// <returns> List of GatewayModule.</returns>
-        public static List<GatewayModule> RetrieveModuleList(Twin twin, int moduleCount)
+        public static List<IoTEdgeModule> RetrieveModuleList(Twin twin, int moduleCount)
         {
-            var list = new List<GatewayModule>();
+            var list = new List<IoTEdgeModule>();
 
             if (twin.Properties.Reported.Contains("modules") && moduleCount > 0)
             {
                 foreach (var element in twin.Properties.Reported["modules"])
                 {
-                    var module = new GatewayModule()
+                    var module = new IoTEdgeModule()
                     {
                         ModuleName = element.Key
                     };

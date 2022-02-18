@@ -45,12 +45,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             // Azure Configurations may have different types: "Configuration", "Deployment" or "LayeredDeployment"
             foreach (Configuration config in configList)
             {
-                var moduleList = new List<GatewayModule>();
+                var moduleList = new List<IoTEdgeModule>();
 
                 // Only deployments have modules. If it doesn't, it's a configuration and we don't want to keep it.
                 if (config.Content.ModulesContent != null)
                 {
-                    moduleList.AddRange(config.Content.ModulesContent.Select(x => new GatewayModule
+                    moduleList.AddRange(config.Content.ModulesContent.Select(x => new IoTEdgeModule
                     {
                         ModuleName = x.Key
                     }));
@@ -73,7 +73,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public async Task<ConfigListItem> Get(string configurationID)
         {
             var config = await this.configService.GetConfigItem(configurationID);
-            var moduleList = new List<GatewayModule>();
+            var moduleList = new List<IoTEdgeModule>();
 
             // Details of every modules are stored within the EdgeAgent module data
             if (config.Content.ModulesContent != null
@@ -93,7 +93,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 {
                     foreach (var m in modules.Values<JProperty>())
                     {
-                        GatewayModule newModule = ConfigHelper.CreateGatewayModule(config, m);
+                        IoTEdgeModule newModule = ConfigHelper.CreateGatewayModule(config, m);
                         moduleList.Add(newModule);
                     }
                 }
@@ -103,7 +103,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 {
                     foreach (var sm in systemModulesToken.Values<JProperty>())
                     {
-                        GatewayModule newModule = ConfigHelper.CreateGatewayModule(config, sm);
+                        IoTEdgeModule newModule = ConfigHelper.CreateGatewayModule(config, sm);
                         moduleList.Add(newModule);
                     }
                 }

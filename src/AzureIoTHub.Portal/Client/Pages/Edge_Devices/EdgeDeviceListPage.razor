@@ -62,7 +62,7 @@
     else
     {
         <MudItem xs="12">
-            <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<GatewayListItem, bool>(FilterFunc)">
+            <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true Filter="new Func<IoTEdgeListItem, bool>(FilterFunc)">
                 <ColGroup>
                     <col style="width: 40%;" />
                     <col style="width: 10%;" />
@@ -122,7 +122,7 @@
 </MudGrid>
 
 @code {
-    private List<GatewayListItem> result;
+    private List<IoTEdgeListItem> result;
     private List<string> typeList = new List<string>() { "LoRa", "Other" };
     private SearchModel searchModel = new SearchModel(null, "");
 
@@ -138,7 +138,7 @@
     {
         try
         {
-            result = await Http.GetFromJsonAsync<List<GatewayListItem>>("api/edge/device");
+            result = await Http.GetFromJsonAsync<List<IoTEdgeListItem>>("api/edge/device");
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -146,7 +146,7 @@
         }
     }
 
-    private bool FilterFunc(GatewayListItem element)
+    private bool FilterFunc(IoTEdgeListItem element)
     {
         if (element.Type == null)
         {
@@ -186,10 +186,10 @@
         await LoadGatewaysList();
     }
 
-    public async Task ShowDeleteDialog(GatewayListItem gateway)
+    public async Task ShowDeleteDialog(IoTEdgeListItem gateway)
     {
         var parameters = new DialogParameters();
-        parameters.Add(nameof(Gateway.DeviceId), gateway.DeviceId);
+        parameters.Add(nameof(IoTEdgeDevice.DeviceId), gateway.DeviceId);
         var result = await DialogService.Show<EdgeDeviceDeleteConfirmationDialog>("Confirm Deletion", parameters).Result;
 
         if (result.Cancelled)

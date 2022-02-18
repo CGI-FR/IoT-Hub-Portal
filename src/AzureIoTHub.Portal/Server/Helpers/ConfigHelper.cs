@@ -34,7 +34,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <param name="config">Configuration object from Azure IoT Hub.</param>
         /// <param name="moduleList">List of modules related to this configuration.</param>
         /// <returns>A configuration converted to a ConfigListItem.</returns>
-        public static ConfigListItem CreateConfigListItem(Configuration config, List<GatewayModule> moduleList)
+        public static ConfigListItem CreateConfigListItem(Configuration config, List<IoTEdgeModule> moduleList)
         {
             return new ConfigListItem
             {
@@ -56,9 +56,9 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <param name="config">Configuration object from Azure IoT Hub.</param>
         /// <param name="module">Dictionnary containing the module's name and its properties.</param>
         /// <returns>A module with all its details as a GatewayModule object.</returns>
-        public static GatewayModule CreateGatewayModule(Configuration config, JProperty module)
+        public static IoTEdgeModule CreateGatewayModule(Configuration config, JProperty module)
         {
-            return new GatewayModule
+            return new IoTEdgeModule
             {
                 ModuleName = module.Name,
                 Version = module.Value["settings"]["image"]?.Value<string>(),

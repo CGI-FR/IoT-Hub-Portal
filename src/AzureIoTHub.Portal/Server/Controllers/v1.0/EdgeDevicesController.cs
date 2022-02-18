@@ -79,13 +79,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GET IoT Edge devices")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<GatewayListItem>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<IoTEdgeListItem>))]
         public async Task<IActionResult> Get()
         {
             // don't contain tags
             IEnumerable<Twin> edgeDevices = await this.devicesService.GetAllEdgeDevice();
 
-            List<GatewayListItem> newGatewayList = new();
+            List<IoTEdgeListItem> newGatewayList = new();
 
             foreach (Twin deviceTwin in edgeDevices)
             {
@@ -93,7 +93,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
                 if (twin != null)
                 {
-                    GatewayListItem gateway = new()
+                    IoTEdgeListItem gateway = new()
                     {
                         DeviceId = deviceTwin.DeviceId,
                         Status = twin.Status?.ToString(),
@@ -114,7 +114,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceId">The device identifier.</param>
         /// <returns></returns>
         [HttpGet("{deviceId}", Name = "GET IoT Edge device")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Gateway))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IoTEdgeDevice))]
         public async Task<IActionResult> Get(string deviceId)
         {
             try
@@ -122,7 +122,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 Twin deviceTwin = await this.devicesService.GetDeviceTwin(deviceId);
                 Twin deviceWithModules = await this.devicesService.GetDeviceTwinWithModule(deviceId);
 
-                Gateway gateway = new()
+                IoTEdgeDevice gateway = new()
                 {
                     DeviceId = deviceTwin.DeviceId,
                     Status = deviceTwin.Status?.ToString(),
@@ -171,7 +171,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpPost(Name = "POST Create IoT Edge")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateGatewayAsync(Gateway gateway)
+        public async Task<IActionResult> CreateGatewayAsync(IoTEdgeDevice gateway)
         {
             try
             {
@@ -199,7 +199,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <returns></returns>
         [HttpPut(Name = "PUT Update IoT Edge")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateDeviceAsync(Gateway gateway)
+        public async Task<IActionResult> UpdateDeviceAsync(IoTEdgeDevice gateway)
         {
             Device device = await this.devicesService.GetDevice(gateway.DeviceId);
 
@@ -241,7 +241,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="methodName">Name of the method.</param>
         /// <returns></returns>
         [HttpPost("{deviceId}/{moduleId}/{methodName}", Name = "POST Execute module command")]
-        public async Task<C2Dresult> ExecuteMethode(GatewayModule module, string deviceId, string methodName)
+        public async Task<C2Dresult> ExecuteMethode(IoTEdgeModule module, string deviceId, string methodName)
         {
             CloudToDeviceMethod method = new(methodName);
             string payload = string.Empty;

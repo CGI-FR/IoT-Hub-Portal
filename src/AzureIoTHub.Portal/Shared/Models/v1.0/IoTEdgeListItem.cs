@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AzureIoTHub.Portal.Shared.Models.V10
 {
-    public class GatewayListItem
+    public class IoTEdgeListItem
     {
         /// <summary>
         /// The device identifier.

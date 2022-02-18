@@ -77,8 +77,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             Assert.IsNotNull(okObjectResult);
             Assert.AreEqual(200, okObjectResult.StatusCode);
             Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<List<GatewayListItem>>(okObjectResult.Value);
-            var gatewayList = okObjectResult.Value as List<GatewayListItem>;
+            Assert.IsAssignableFrom<List<IoTEdgeListItem>>(okObjectResult.Value);
+            var gatewayList = okObjectResult.Value as List<IoTEdgeListItem>;
             Assert.IsNotNull(gatewayList);
             Assert.AreEqual(1, gatewayList.Count);
             var gateway = gatewayList[0];
@@ -120,7 +120,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         {
             // Arrange
             var gatewaysController = this.CreateGatewaysController();
-            var gateway = new Gateway()
+            var gateway = new IoTEdgeDevice()
             {
                 DeviceId = "aaa",
                 Type = "lora"
@@ -158,7 +158,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         {
             // Arrange
             var gatewaysController = this.CreateGatewaysController();
-            var gateway = new Gateway()
+            var gateway = new IoTEdgeDevice()
             {
                 DeviceId = "aaa",
                 Type = "lora",
