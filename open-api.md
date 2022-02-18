@@ -316,7 +316,7 @@ Status Code **200**
 |» metricsFailure|integer(int64)|false|none|The IoT Edge configuration failure metrics.|
 |» priority|integer(int32)|false|none|The IoT Edge configuration priority.|
 |» creationDate|string(date-time)|false|none|The IoT Edge configuration creation date.|
-|» modules|[[GatewayModule](#schemagatewaymodule)]¦null|false|none|The IoT Edge modules configuration.|
+|» modules|[[IoTEdgeModule](#schemaiotedgemodule)]¦null|false|none|The IoT Edge modules configuration.|
 |»» moduleName|string|true|none|The module name.|
 |»» version|string¦null|false|none|The module configuration version.|
 |»» status|string¦null|false|none|The module status.|
@@ -434,7 +434,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[[GatewayListItem](#schemagatewaylistitem)]|false|none|none|
+|*anonymous*|[[IoTEdgeListItem](#schemaiotedgelistitem)]|false|none|none|
 |» deviceId|string|true|none|The device identifier.|
 |» status|string¦null|false|none|The device status.|
 |» type|string¦null|false|none|The device type.|
@@ -497,7 +497,7 @@ None
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[Gateway](#schemagateway)|false|The IoT Edge device.|
+|body|body|[IoTEdgeDevice](#schemaiotedgedevice)|false|The IoT Edge device.|
 
 > Example responses
 
@@ -583,7 +583,7 @@ None
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[Gateway](#schemagateway)|false|The IoT Edge device.|
+|body|body|[IoTEdgeDevice](#schemaiotedgedevice)|false|The IoT Edge device.|
 
 <h3 id="put-update-iot-edge-responses">Responses</h3>
 
@@ -660,7 +660,7 @@ None
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[Gateway](#schemagateway)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[IoTEdgeDevice](#schemaiotedgedevice)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -757,7 +757,7 @@ None
 |deviceId|path|string|true|The device identifier.|
 |methodName|path|string|true|Name of the method.|
 |moduleId|path|string|true|none|
-|body|body|[GatewayModule](#schemagatewaymodule)|false|The module.|
+|body|body|[IoTEdgeModule](#schemaiotedgemodule)|false|The module.|
 
 > Example responses
 
@@ -2681,7 +2681,7 @@ None
 |metricsFailure|integer(int64)|false|none|The IoT Edge configuration failure metrics.|
 |priority|integer(int32)|false|none|The IoT Edge configuration priority.|
 |creationDate|string(date-time)|false|none|The IoT Edge configuration creation date.|
-|modules|[[GatewayModule](#schemagatewaymodule)]¦null|false|none|The IoT Edge modules configuration.|
+|modules|[[IoTEdgeModule](#schemaiotedgemodule)]¦null|false|none|The IoT Edge modules configuration.|
 
 <h2 id="tocS_DeviceDetails">DeviceDetails</h2>
 <!-- backwards compatibility -->
@@ -2807,12 +2807,12 @@ None
 |port|integer(int32)|true|none|The LoRa WAN port.|
 |isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
 
-<h2 id="tocS_Gateway">Gateway</h2>
+<h2 id="tocS_IoTEdgeDevice">IoTEdgeDevice</h2>
 <!-- backwards compatibility -->
-<a id="schemagateway"></a>
-<a id="schema_Gateway"></a>
-<a id="tocSgateway"></a>
-<a id="tocsgateway"></a>
+<a id="schemaiotedgedevice"></a>
+<a id="schema_IoTEdgeDevice"></a>
+<a id="tocSiotedgedevice"></a>
+<a id="tocsiotedgedevice"></a>
 
 ```json
 {
@@ -2867,14 +2867,14 @@ None
 |nbModules|integer(int32)|false|none|The number of modules on IoT Edge device.|
 |environment|string¦null|false|none|The IoT Edge environment tag value.|
 |lastDeployment|[ConfigItem](#schemaconfigitem)|false|none|none|
-|modules|[[GatewayModule](#schemagatewaymodule)]¦null|false|none|The IoT Edge modules.|
+|modules|[[IoTEdgeModule](#schemaiotedgemodule)]¦null|false|none|The IoT Edge modules.|
 
-<h2 id="tocS_GatewayListItem">GatewayListItem</h2>
+<h2 id="tocS_IoTEdgeListItem">IoTEdgeListItem</h2>
 <!-- backwards compatibility -->
-<a id="schemagatewaylistitem"></a>
-<a id="schema_GatewayListItem"></a>
-<a id="tocSgatewaylistitem"></a>
-<a id="tocsgatewaylistitem"></a>
+<a id="schemaiotedgelistitem"></a>
+<a id="schema_IoTEdgeListItem"></a>
+<a id="tocSiotedgelistitem"></a>
+<a id="tocsiotedgelistitem"></a>
 
 ```json
 {
@@ -2895,12 +2895,12 @@ None
 |type|string¦null|false|none|The device type.|
 |nbDevices|integer(int32)|false|none|The number of devices connected on the IoT Edge.|
 
-<h2 id="tocS_GatewayModule">GatewayModule</h2>
+<h2 id="tocS_IoTEdgeModule">IoTEdgeModule</h2>
 <!-- backwards compatibility -->
-<a id="schemagatewaymodule"></a>
-<a id="schema_GatewayModule"></a>
-<a id="tocSgatewaymodule"></a>
-<a id="tocsgatewaymodule"></a>
+<a id="schemaiotedgemodule"></a>
+<a id="schema_IoTEdgeModule"></a>
+<a id="tocSiotedgemodule"></a>
+<a id="tocsiotedgemodule"></a>
 
 ```json
 {
