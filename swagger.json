@@ -11,7 +11,8 @@
         "tags": [
           "IoT Devices"
         ],
-        "summary": "Gets a list of devices as DeviceListItem from Azure IoT Hub.\r\nFields that do not appear in the device list are not defined here.",
+        "summary": "Gets the device list.",
+        "operationId": "GET Device list",
         "responses": {
           "200": {
             "description": "Success",
@@ -48,7 +49,10 @@
         "tags": [
           "IoT Devices"
         ],
+        "summary": "Creates the device.",
+        "operationId": "POST Create device",
         "requestBody": {
+          "description": "The device.",
           "content": {
             "application/json": {
               "schema": {
@@ -77,9 +81,10 @@
         "tags": [
           "IoT Devices"
         ],
-        "summary": "this function update the twin and the device.",
+        "summary": "Updates the device.",
+        "operationId": "PUT Update device",
         "requestBody": {
-          "description": "the device object.",
+          "description": "The device.",
           "content": {
             "application/json": {
               "schema": {
@@ -110,12 +115,13 @@
         "tags": [
           "IoT Devices"
         ],
-        "summary": "Retrieve a specific device and from the IoT Hub.\r\nConverts it to a DeviceListItem.",
+        "summary": "Gets the specified device.",
+        "operationId": "GET Device details",
         "parameters": [
           {
             "name": "deviceID",
             "in": "path",
-            "description": "ID of the device to retrieve.",
+            "description": "The device identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -149,12 +155,13 @@
         "tags": [
           "IoT Devices"
         ],
-        "summary": "this function delete a device.",
+        "summary": "Deletes the specified device.",
+        "operationId": "DELETE Remove device",
         "parameters": [
           {
             "name": "deviceID",
             "in": "path",
-            "description": "the device id.",
+            "description": "The device identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -173,7 +180,8 @@
         "tags": [
           "IoT Edge"
         ],
-        "summary": "Gets a list of deployments as ConfigListItem from Azure IoT Hub.",
+        "summary": "Gets the IoT Edge deployment configurations.",
+        "operationId": "GET IoT Edge config list",
         "responses": {
           "200": {
             "description": "Success",
@@ -212,12 +220,13 @@
         "tags": [
           "IoT Edge"
         ],
-        "summary": "Retrieve a specific deployment and its modules from the IoT Hub.\r\nConverts it to a ConfigListItem.",
+        "summary": "Gets the specified configuration.",
+        "operationId": "GET IoT Edge configuration",
         "parameters": [
           {
             "name": "configurationID",
             "in": "path",
-            "description": "ID of the deployment to retrieve.",
+            "description": "The configuration identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -253,7 +262,8 @@
         "tags": [
           "IoT Edge"
         ],
-        "summary": "Fonction permettant de récupèrer la liste des appareils Edge .\r\nAprès avoir éxecuté la query du registryManager on récupère le resultat\r\nsous la forme d'une liste de Twin.",
+        "summary": "Gets the IoT Edge device list.",
+        "operationId": "GET IoT Edge devices",
         "responses": {
           "200": {
             "description": "Success",
@@ -290,9 +300,62 @@
         "tags": [
           "IoT Edge"
         ],
-        "summary": "this function create a device with the twin information.",
+        "summary": "Creates the IoT Edge device.",
+        "operationId": "POST Gateway",
         "requestBody": {
-          "description": "the gateway object.",
+          "description": "The IoT Edge device.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Gateway"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Gateway"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Gateway"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "IoT Edge"
+        ],
+        "summary": "Updates the device.",
+        "operationId": "PUT",
+        "requestBody": {
+          "description": "The IoT Edge device.",
           "content": {
             "application/json": {
               "schema": {
@@ -316,6 +379,28 @@
             "description": "Success"
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "IoT Edge"
+        ],
+        "summary": "Deletes the device.",
+        "operationId": "{deviceId}",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "query",
+            "description": "The device identifier.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
       }
     },
     "/api/edge/device/{deviceId}": {
@@ -323,12 +408,13 @@
         "tags": [
           "IoT Edge"
         ],
-        "summary": "This function return all the information we want of\r\na device.",
+        "summary": "Gets the specified device.",
+        "operationId": "GET IoT Edge device",
         "parameters": [
           {
             "name": "deviceId",
             "in": "path",
-            "description": "the device id.",
+            "description": "The device identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -357,28 +443,6 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "IoT Edge"
-        ],
-        "summary": "this function delete a device.",
-        "parameters": [
-          {
-            "name": "deviceId",
-            "in": "path",
-            "description": "the device id to delete.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
       }
     },
     "/api/edge/device/{deviceId}/{deviceType}/ConnectionString": {
@@ -386,10 +450,13 @@
         "tags": [
           "IoT Edge"
         ],
+        "summary": "Gets the IoT Edge device symmetric key.",
+        "operationId": "GET Device symmetric key",
         "parameters": [
           {
             "name": "deviceId",
             "in": "path",
+            "description": "The device identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -398,6 +465,7 @@
           {
             "name": "deviceType",
             "in": "path",
+            "description": "Type of the device.",
             "required": true,
             "schema": {
               "type": "string"
@@ -416,10 +484,13 @@
         "tags": [
           "IoT Edge"
         ],
+        "summary": "Executes the module method on the IoT Edge device.",
+        "operationId": "POST Execute module command",
         "parameters": [
           {
             "name": "deviceId",
             "in": "path",
+            "description": "The device identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -428,6 +499,7 @@
           {
             "name": "methodName",
             "in": "path",
+            "description": "Name of the method.",
             "required": true,
             "schema": {
               "type": "string"
@@ -443,6 +515,7 @@
           }
         ],
         "requestBody": {
+          "description": "The module.",
           "content": {
             "application/json": {
               "schema": {
@@ -485,57 +558,42 @@
         }
       }
     },
-    "/api/edge/device/{gateway}": {
-      "put": {
-        "tags": [
-          "IoT Edge"
-        ],
-        "summary": "This function update the properties of a device.",
-        "parameters": [
-          {
-            "name": "gateway",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "a gateways object.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Gateway"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Gateway"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Gateway"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
     "/api/lorawan/concentrators": {
       "get": {
         "tags": [
           "LoRa WAN"
         ],
+        "summary": "Gets all device concentrators.",
+        "operationId": "GET LoRaWAN Concentrator list",
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Concentrator"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Concentrator"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Concentrator"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -543,7 +601,10 @@
         "tags": [
           "LoRa WAN"
         ],
+        "summary": "Creates the device.",
+        "operationId": "POST Create LoRaWAN concentrator",
         "requestBody": {
+          "description": "The device.",
           "content": {
             "application/json": {
               "schema": {
@@ -565,6 +626,26 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       },
@@ -572,7 +653,10 @@
         "tags": [
           "LoRa WAN"
         ],
+        "summary": "Updates the device.",
+        "operationId": "PUT Update LoRaWAN concentrator",
         "requestBody": {
+          "description": "The device.",
           "content": {
             "application/json": {
               "schema": {
@@ -594,6 +678,26 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       }
@@ -603,10 +707,13 @@
         "tags": [
           "LoRa WAN"
         ],
+        "summary": "Gets the device concentrator.",
+        "operationId": "GET LoRaWAN Concentrator",
         "parameters": [
           {
             "name": "deviceId",
             "in": "path",
+            "description": "The device identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -615,7 +722,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Concentrator"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Concentrator"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Concentrator"
+                }
+              }
+            }
           }
         }
       },
@@ -623,12 +747,13 @@
         "tags": [
           "LoRa WAN"
         ],
-        "summary": "this function delete a device.",
+        "summary": "Deletes the specified device.",
+        "operationId": "DELETE Remove LoRaWAN concentrator",
         "parameters": [
           {
             "name": "deviceId",
             "in": "path",
-            "description": "the device id.",
+            "description": "The device identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -647,7 +772,8 @@
         "tags": [
           "LoRa WAN"
         ],
-        "summary": "Gets a list of devices as DeviceListItem from Azure IoT Hub.\r\nFields that do not appear in the device list are not defined here.",
+        "summary": "Gets the device list.",
+        "operationId": "GET LoRaWAN device list",
         "responses": {
           "200": {
             "description": "Success",
@@ -684,7 +810,10 @@
         "tags": [
           "LoRa WAN"
         ],
+        "summary": "Creates the device.",
+        "operationId": "POST Create LoRaWAN device",
         "requestBody": {
+          "description": "The device.",
           "content": {
             "application/json": {
               "schema": {
@@ -713,9 +842,10 @@
         "tags": [
           "LoRa WAN"
         ],
-        "summary": "this function update the twin and the device.",
+        "summary": "Updates the device.",
+        "operationId": "PUT Update LoRaWAN device",
         "requestBody": {
-          "description": "the device object.",
+          "description": "The device.",
           "content": {
             "application/json": {
               "schema": {
@@ -746,12 +876,13 @@
         "tags": [
           "LoRa WAN"
         ],
-        "summary": "Retrieve a specific device and from the IoT Hub.\r\nConverts it to a DeviceListItem.",
+        "summary": "Gets the specified device.",
+        "operationId": "GET LoRaWAN device details",
         "parameters": [
           {
             "name": "deviceID",
             "in": "path",
-            "description": "ID of the device to retrieve.",
+            "description": "The device identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -785,12 +916,13 @@
         "tags": [
           "LoRa WAN"
         ],
-        "summary": "this function delete a device.",
+        "summary": "Deletes the specified device.",
+        "operationId": "DELETE Remove LoRaWAN device",
         "parameters": [
           {
             "name": "deviceID",
             "in": "path",
-            "description": "the device id.",
+            "description": "The device identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -809,12 +941,13 @@
         "tags": [
           "LoRa WAN"
         ],
-        "summary": "Permit to execute cloud to device message.",
+        "summary": "Executes the command on the device..",
+        "operationId": "POST Execute LoRaWAN command",
         "parameters": [
           {
             "name": "deviceId",
             "in": "path",
-            "description": "id of the device.",
+            "description": "The device identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -823,7 +956,7 @@
           {
             "name": "commandId",
             "in": "path",
-            "description": "the command who contain the name and the trame.",
+            "description": "The command identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -842,7 +975,8 @@
         "tags": [
           "LoRa WAN"
         ],
-        "summary": "Gets the device models.",
+        "summary": "Gets the device model list.",
+        "operationId": "GET LoRaWAN device model list",
         "responses": {
           "200": {
             "description": "Success",
@@ -880,6 +1014,7 @@
           "LoRa WAN"
         ],
         "summary": "Creates the specified device model.",
+        "operationId": "POST Create a new LoRaWAN device model",
         "requestBody": {
           "description": "The device model.",
           "content": {
@@ -932,12 +1067,13 @@
         "tags": [
           "LoRa WAN"
         ],
-        "summary": "Gets the specified model identifier.",
+        "summary": "Get the device model details.",
+        "operationId": "GET LoRaWAN device model",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "The model identifier.",
+            "description": "The devic emodel identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -992,6 +1128,7 @@
           "LoRa WAN"
         ],
         "summary": "Updates the specified device model.",
+        "operationId": "PUT Update the LoRaWAN device model",
         "parameters": [
           {
             "name": "id",
@@ -1073,6 +1210,7 @@
           "LoRa WAN"
         ],
         "summary": "Deletes the specified device model.",
+        "operationId": "DELETE Remove the LoRaWAN device model",
         "parameters": [
           {
             "name": "id",
@@ -1136,12 +1274,13 @@
         "tags": [
           "LoRa WAN"
         ],
-        "summary": "Gets the avatar.",
+        "summary": "Gets the device model avatar.",
+        "operationId": "GET LoRaWAN device model avatar URL",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "The model identifier.",
+            "description": "The device model identifier",
             "required": true,
             "schema": {
               "type": "string"
@@ -1196,6 +1335,7 @@
           "LoRa WAN"
         ],
         "summary": "Changes the avatar.",
+        "operationId": "POST Update the LoRaWAN device model avatar",
         "parameters": [
           {
             "name": "id",
@@ -1275,6 +1415,7 @@
           "LoRa WAN"
         ],
         "summary": "Deletes the avatar.",
+        "operationId": "DELETE Remove the LoRaWAN device model avatar",
         "parameters": [
           {
             "name": "id",
@@ -1318,8 +1459,8 @@
         "tags": [
           "LoRa WAN"
         ],
-        "summary": "Sets the device model's commands.",
-        "operationId": "POST Device model commands",
+        "summary": "Updates the device model's commands.",
+        "operationId": "POST Set device model commands",
         "parameters": [
           {
             "name": "id",
@@ -1390,7 +1531,7 @@
         "tags": [
           "LoRa WAN"
         ],
-        "summary": "Sets the device model's commands.",
+        "summary": "Gets the device model's commands.",
         "operationId": "GET Device model commands",
         "parameters": [
           {
@@ -1461,7 +1602,8 @@
         "tags": [
           "Device Models"
         ],
-        "summary": "Gets the device models.",
+        "summary": "Gets the device model list.",
+        "operationId": "GET Device model list",
         "responses": {
           "200": {
             "description": "Success",
@@ -1499,6 +1641,7 @@
           "Device Models"
         ],
         "summary": "Creates the specified device model.",
+        "operationId": "POST Create a new device model",
         "requestBody": {
           "description": "The device model.",
           "content": {
@@ -1551,12 +1694,13 @@
         "tags": [
           "Device Models"
         ],
-        "summary": "Gets the specified model identifier.",
+        "summary": "Get the device model details.",
+        "operationId": "GET Device model",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "The model identifier.",
+            "description": "The devic emodel identifier.",
             "required": true,
             "schema": {
               "type": "string"
@@ -1611,6 +1755,7 @@
           "Device Models"
         ],
         "summary": "Updates the specified device model.",
+        "operationId": "PUT Update the device model",
         "parameters": [
           {
             "name": "id",
@@ -1692,6 +1837,7 @@
           "Device Models"
         ],
         "summary": "Deletes the specified device model.",
+        "operationId": "DELETE Remove the device model",
         "parameters": [
           {
             "name": "id",
@@ -1755,12 +1901,13 @@
         "tags": [
           "Device Models"
         ],
-        "summary": "Gets the avatar.",
+        "summary": "Gets the device model avatar.",
+        "operationId": "GET Device model avatar URL",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "The model identifier.",
+            "description": "The device model identifier",
             "required": true,
             "schema": {
               "type": "string"
@@ -1815,6 +1962,7 @@
           "Device Models"
         ],
         "summary": "Changes the avatar.",
+        "operationId": "POST Update the device model avatar",
         "parameters": [
           {
             "name": "id",
@@ -1894,6 +2042,7 @@
           "Device Models"
         ],
         "summary": "Deletes the avatar.",
+        "operationId": "DELETE Remove the device model avatar",
         "parameters": [
           {
             "name": "id",
@@ -1938,7 +2087,7 @@
           "Portal Settings"
         ],
         "summary": "Get the Open ID Settings.",
-        "operationId": "GET OIDC",
+        "operationId": "GET Open ID settings",
         "responses": {
           "200": {
             "description": "Returns the OIDC settings."
@@ -1957,10 +2106,12 @@
         "properties": {
           "payload": {
             "type": "string",
+            "description": "The C2D result payload.",
             "nullable": true
           },
           "status": {
             "type": "integer",
+            "description": "The C2D status.",
             "format": "int32"
           }
         },
@@ -1971,26 +2122,32 @@
         "properties": {
           "enable": {
             "type": "boolean",
+            "description": "A value indicating whether the channel is enabled.",
             "nullable": true
           },
           "freq": {
             "type": "integer",
+            "description": "The frequency.",
             "format": "int32"
           },
           "radio": {
             "type": "integer",
+            "description": "The radio.",
             "format": "int32"
           },
           "if": {
             "type": "integer",
+            "description": "The interface.",
             "format": "int32"
           },
           "bandwidth": {
             "type": "integer",
+            "description": "The bandwidth.",
             "format": "int32"
           },
           "spread_factor": {
             "type": "integer",
+            "description": "The spread factor.",
             "format": "int32"
           }
         },
@@ -2006,30 +2163,38 @@
         "properties": {
           "deviceId": {
             "pattern": "^[A-F0-9]{16}$",
-            "type": "string"
+            "type": "string",
+            "description": "The device identifier."
           },
           "deviceName": {
-            "type": "string"
+            "type": "string",
+            "description": "The name of the device."
           },
           "loraRegion": {
-            "type": "string"
+            "type": "string",
+            "description": "The lora region."
           },
           "deviceType": {
             "type": "string",
+            "description": "The type of the device.",
             "nullable": true
           },
           "clientCertificateThumbprint": {
             "type": "string",
+            "description": "The client certificate thumbprint.",
             "nullable": true
           },
           "isConnected": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "{true} if this instance is connected; otherwise, {false}."
           },
           "isEnabled": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "{true} if this instance is enabled; otherwise, {false}."
           },
           "alreadyLoggedInOnce": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "{true} if [already logged in once]; otherwise, {false}."
           },
           "routerConfig": {
             "$ref": "#/components/schemas/RouterConfig"
@@ -2038,18 +2203,23 @@
         "additionalProperties": false
       },
       "ConfigItem": {
+        "required": [
+          "name"
+        ],
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
-            "nullable": true
+            "description": "The IoT Edge configuration name."
           },
           "dateCreation": {
             "type": "string",
+            "description": "The IoT Edge configuration creation date.",
             "format": "date-time"
           },
           "status": {
             "type": "string",
+            "description": "The IoT Edge configuration status.",
             "nullable": true
           }
         },
@@ -2060,34 +2230,42 @@
         "properties": {
           "configurationID": {
             "type": "string",
+            "description": "The IoT Edge configuration identifier.",
             "nullable": true
           },
           "conditions": {
             "type": "string",
+            "description": "The IoT Edge configuration target conditions.",
             "nullable": true
           },
           "metricsTargeted": {
             "type": "integer",
+            "description": "The IoT Edge configuration targeted metrics.",
             "format": "int64"
           },
           "metricsApplied": {
             "type": "integer",
+            "description": "The IoT Edge configuration applied metrics.",
             "format": "int64"
           },
           "metricsSuccess": {
             "type": "integer",
+            "description": "The IoT Edge configuration success metrics.",
             "format": "int64"
           },
           "metricsFailure": {
             "type": "integer",
+            "description": "The IoT Edge configuration failure metrics.",
             "format": "int64"
           },
           "priority": {
             "type": "integer",
+            "description": "The IoT Edge configuration priority.",
             "format": "int32"
           },
           "creationDate": {
             "type": "string",
+            "description": "The IoT Edge configuration creation date.",
             "format": "date-time"
           },
           "modules": {
@@ -2095,6 +2273,7 @@
             "items": {
               "$ref": "#/components/schemas/GatewayModule"
             },
+            "description": "The IoT Edge modules configuration.",
             "nullable": true
           }
         },
@@ -2109,34 +2288,43 @@
         "type": "object",
         "properties": {
           "deviceID": {
-            "type": "string"
+            "type": "string",
+            "description": "The device identifier."
           },
           "deviceName": {
-            "type": "string"
+            "type": "string",
+            "description": "The name of the device."
           },
           "modelId": {
-            "type": "string"
+            "type": "string",
+            "description": "The model identifier."
           },
           "imageUrl": {
             "type": "string",
+            "description": "The device model image Url.",
             "nullable": true
           },
           "isConnected": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "{true} if this instance is connected; otherwise, {false}."
           },
           "isEnabled": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "{true} if this instance is enabled; otherwise, {false}."
           },
           "statusUpdatedTime": {
             "type": "string",
+            "description": "The status updated time.",
             "format": "date-time"
           },
           "locationCode": {
             "type": "string",
+            "description": "The location code.",
             "nullable": true
           },
           "assetId": {
             "type": "string",
+            "description": "The asset identifier.",
             "nullable": true
           }
         },
@@ -2193,7 +2381,7 @@
           },
           "imageUrl": {
             "type": "string",
-            "description": "The device model image URL.",
+            "description": "The device model image Url.",
             "nullable": true
           },
           "name": {
@@ -2254,45 +2442,56 @@
         "type": "object",
         "properties": {
           "deviceId": {
-            "type": "string"
+            "type": "string",
+            "description": "The IoT Edge identifier."
           },
           "symmetricKey": {
             "type": "string",
+            "description": "The IoT Edge device symmetric key.",
             "nullable": true
           },
           "connectionState": {
             "type": "string",
+            "description": "The IoT Edge connection state.",
             "nullable": true
           },
           "scope": {
             "type": "string",
+            "description": "The IoT Edge scope tag value.",
             "nullable": true
           },
           "endPoint": {
             "type": "string",
+            "description": "The IoT Edge end point.",
             "nullable": true
           },
           "type": {
-            "type": "string"
+            "type": "string",
+            "description": "The IoT Edge device type."
           },
           "status": {
             "type": "string",
+            "description": "The IoT Edge device status.",
             "nullable": true
           },
           "runtimeResponse": {
             "type": "string",
+            "description": "The IoT Edge runtime response.",
             "nullable": true
           },
           "nbDevices": {
             "type": "integer",
+            "description": "The number of connected devices on IoT Edge device.",
             "format": "int32"
           },
           "nbModules": {
             "type": "integer",
+            "description": "The number of modules on IoT Edge device.",
             "format": "int32"
           },
           "environment": {
             "type": "string",
+            "description": "The IoT Edge environment tag value.",
             "nullable": true
           },
           "lastDeployment": {
@@ -2303,46 +2502,58 @@
             "items": {
               "$ref": "#/components/schemas/GatewayModule"
             },
+            "description": "The IoT Edge modules.",
             "nullable": true
           }
         },
         "additionalProperties": false
       },
       "GatewayListItem": {
+        "required": [
+          "deviceId"
+        ],
         "type": "object",
         "properties": {
           "deviceId": {
             "type": "string",
-            "nullable": true
+            "description": "The device identifier."
           },
           "status": {
             "type": "string",
+            "description": "The device status.",
             "nullable": true
           },
           "type": {
             "type": "string",
+            "description": "The device type.",
             "nullable": true
           },
           "nbDevices": {
             "type": "integer",
+            "description": "The number of devices connected on the IoT Edge.",
             "format": "int32"
           }
         },
         "additionalProperties": false
       },
       "GatewayModule": {
+        "required": [
+          "moduleName"
+        ],
         "type": "object",
         "properties": {
           "moduleName": {
             "type": "string",
-            "nullable": true
+            "description": "The module name."
           },
           "version": {
             "type": "string",
+            "description": "The module configuration version.",
             "nullable": true
           },
           "status": {
             "type": "string",
+            "description": "The module status.",
             "nullable": true
           },
           "environmentVariables": {
@@ -2350,6 +2561,7 @@
             "additionalProperties": {
               "type": "string"
             },
+            "description": "The module environment variables.",
             "nullable": true
           },
           "moduleIdentityTwinSettings": {
@@ -2357,6 +2569,7 @@
             "additionalProperties": {
               "type": "string"
             },
+            "description": "The module identity twin settings.",
             "nullable": true
           }
         },
@@ -2373,34 +2586,43 @@
         "type": "object",
         "properties": {
           "deviceID": {
-            "type": "string"
+            "type": "string",
+            "description": "The device identifier."
           },
           "deviceName": {
-            "type": "string"
+            "type": "string",
+            "description": "The name of the device."
           },
           "modelId": {
-            "type": "string"
+            "type": "string",
+            "description": "The model identifier."
           },
           "imageUrl": {
             "type": "string",
+            "description": "The device model image Url.",
             "nullable": true
           },
           "isConnected": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "{true} if this instance is connected; otherwise, {false}."
           },
           "isEnabled": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "{true} if this instance is enabled; otherwise, {false}."
           },
           "statusUpdatedTime": {
             "type": "string",
+            "description": "The status updated time.",
             "format": "date-time"
           },
           "locationCode": {
             "type": "string",
+            "description": "The location code.",
             "nullable": true
           },
           "assetId": {
             "type": "string",
+            "description": "The asset identifier.",
             "nullable": true
           },
           "appEUI": {
@@ -2413,7 +2635,7 @@
           },
           "sensorDecoder": {
             "type": "string",
-            "description": "The sensor decoder API url.",
+            "description": "The sensor decoder API Url.",
             "nullable": true
           },
           "alreadyLoggedInOnce": {
@@ -2437,7 +2659,7 @@
           },
           "imageUrl": {
             "type": "string",
-            "description": "The device model image URL.",
+            "description": "The device model image Url.",
             "nullable": true
           },
           "name": {
@@ -2463,7 +2685,7 @@
           },
           "sensorDecoderURL": {
             "type": "string",
-            "description": "The sensor decoder URL.",
+            "description": "The sensor decoder Url.",
             "nullable": true
           }
         },
@@ -2505,6 +2727,7 @@
               "type": "integer",
               "format": "int32"
             },
+            "description": "The network identifier.",
             "nullable": true
           },
           "joinEui": {
@@ -2515,14 +2738,17 @@
                 "type": "string"
               }
             },
+            "description": "The join eui.",
             "nullable": true
           },
           "region": {
             "type": "string",
+            "description": "The region.",
             "nullable": true
           },
           "hwspec": {
             "type": "string",
+            "description": "The hardware specifications.",
             "nullable": true
           },
           "freq_range": {
@@ -2531,6 +2757,7 @@
               "type": "integer",
               "format": "int32"
             },
+            "description": "The frequency range.",
             "nullable": true
           },
           "dRs": {
@@ -2542,6 +2769,7 @@
                 "format": "int32"
               }
             },
+            "description": "The DRs.",
             "nullable": true
           },
           "sx1301_conf": {
@@ -2552,16 +2780,20 @@
                 "$ref": "#/components/schemas/Channel"
               }
             },
+            "description": "The SX1301 conf.",
             "nullable": true
           },
           "nocca": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "{true} if nocca; otherwise, {false}."
           },
           "nodc": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "{true} if nodc; otherwise, {false}."
           },
           "nodwell": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "{true} if nodwell; otherwise, {false}."
           }
         },
         "additionalProperties": false

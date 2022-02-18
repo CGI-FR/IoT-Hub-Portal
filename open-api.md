@@ -25,14 +25,15 @@ Available APIs for managing devices from Azure IoT Hub.
 
 <h1 id="azure-iot-hub-portal-api-iot-devices">IoT Devices</h1>
 
-## get__api_devices
+## GET Device list
+
+<a id="opIdGET Device list"></a>
 
 > Code samples
 
 `GET /api/devices`
 
-*Gets a list of devices as DeviceListItem from Azure IoT Hub.
-Fields that do not appear in the device list are not defined here.*
+*Gets the device list.*
 
 > Example responses
 
@@ -56,13 +57,13 @@ Fields that do not appear in the device list are not defined here.*
 ]
 ```
 
-<h3 id="get__api_devices-responses">Responses</h3>
+<h3 id="get-device-list-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
 
-<h3 id="get__api_devices-responseschema">Response Schema</h3>
+<h3 id="get-device-list-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -82,12 +83,16 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## post__api_devices
+## POST Create device
+
+<a id="opIdPOST Create device"></a>
 
 > Code samples
 
 `POST /api/devices`
 
+*Creates the device.*
+
 > Body parameter
 
 ```json
@@ -104,13 +109,13 @@ None
 }
 ```
 
-<h3 id="post__api_devices-parameters">Parameters</h3>
+<h3 id="post-create-device-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[DeviceDetails](#schemadevicedetails)|false|none|
+|body|body|[DeviceDetails](#schemadevicedetails)|false|The device.|
 
-<h3 id="post__api_devices-responses">Responses</h3>
+<h3 id="post-create-device-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -121,13 +126,15 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## put__api_devices
+## PUT Update device
+
+<a id="opIdPUT Update device"></a>
 
 > Code samples
 
 `PUT /api/devices`
 
-*this function update the twin and the device.*
+*Updates the device.*
 
 > Body parameter
 
@@ -145,13 +152,13 @@ None
 }
 ```
 
-<h3 id="put__api_devices-parameters">Parameters</h3>
+<h3 id="put-update-device-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[DeviceDetails](#schemadevicedetails)|false|the device object.|
+|body|body|[DeviceDetails](#schemadevicedetails)|false|The device.|
 
-<h3 id="put__api_devices-responses">Responses</h3>
+<h3 id="put-update-device-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -162,20 +169,21 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_devices_{deviceID}
+## GET Device details
+
+<a id="opIdGET Device details"></a>
 
 > Code samples
 
 `GET /api/devices/{deviceID}`
 
-*Retrieve a specific device and from the IoT Hub.
-Converts it to a DeviceListItem.*
+*Gets the specified device.*
 
-<h3 id="get__api_devices_{deviceid}-parameters">Parameters</h3>
+<h3 id="get-device-details-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceID|path|string|true|ID of the device to retrieve.|
+|deviceID|path|string|true|The device identifier.|
 
 > Example responses
 
@@ -199,7 +207,7 @@ Converts it to a DeviceListItem.*
 }
 ```
 
-<h3 id="get__api_devices_{deviceid}-responses">Responses</h3>
+<h3 id="get-device-details-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -210,21 +218,23 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## delete__api_devices_{deviceID}
+## DELETE Remove device
+
+<a id="opIdDELETE Remove device"></a>
 
 > Code samples
 
 `DELETE /api/devices/{deviceID}`
 
-*this function delete a device.*
+*Deletes the specified device.*
 
-<h3 id="delete__api_devices_{deviceid}-parameters">Parameters</h3>
+<h3 id="delete-remove-device-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceID|path|string|true|the device id.|
+|deviceID|path|string|true|The device identifier.|
 
-<h3 id="delete__api_devices_{deviceid}-responses">Responses</h3>
+<h3 id="delete-remove-device-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -237,13 +247,15 @@ None
 
 <h1 id="azure-iot-hub-portal-api-iot-edge">IoT Edge</h1>
 
-## get__api_edge_configurations
+## GET IoT Edge config list
+
+<a id="opIdGET IoT Edge config list"></a>
 
 > Code samples
 
 `GET /api/edge/configurations`
 
-*Gets a list of deployments as ConfigListItem from Azure IoT Hub.*
+*Gets the IoT Edge deployment configurations.*
 
 > Example responses
 
@@ -283,34 +295,34 @@ None
 ]
 ```
 
-<h3 id="get__api_edge_configurations-responses">Responses</h3>
+<h3 id="get-iot-edge-config-list-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
 
-<h3 id="get__api_edge_configurations-responseschema">Response Schema</h3>
+<h3 id="get-iot-edge-config-list-responseschema">Response Schema</h3>
 
 Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*anonymous*|[[ConfigListItem](#schemaconfiglistitem)]|false|none|none|
-|» configurationID|string¦null|false|none|none|
-|» conditions|string¦null|false|none|none|
-|» metricsTargeted|integer(int64)|false|none|none|
-|» metricsApplied|integer(int64)|false|none|none|
-|» metricsSuccess|integer(int64)|false|none|none|
-|» metricsFailure|integer(int64)|false|none|none|
-|» priority|integer(int32)|false|none|none|
-|» creationDate|string(date-time)|false|none|none|
-|» modules|[[GatewayModule](#schemagatewaymodule)]¦null|false|none|none|
-|»» moduleName|string¦null|false|none|none|
-|»» version|string¦null|false|none|none|
-|»» status|string¦null|false|none|none|
-|»» environmentVariables|object¦null|false|none|none|
+|» configurationID|string¦null|false|none|The IoT Edge configuration identifier.|
+|» conditions|string¦null|false|none|The IoT Edge configuration target conditions.|
+|» metricsTargeted|integer(int64)|false|none|The IoT Edge configuration targeted metrics.|
+|» metricsApplied|integer(int64)|false|none|The IoT Edge configuration applied metrics.|
+|» metricsSuccess|integer(int64)|false|none|The IoT Edge configuration success metrics.|
+|» metricsFailure|integer(int64)|false|none|The IoT Edge configuration failure metrics.|
+|» priority|integer(int32)|false|none|The IoT Edge configuration priority.|
+|» creationDate|string(date-time)|false|none|The IoT Edge configuration creation date.|
+|» modules|[[GatewayModule](#schemagatewaymodule)]¦null|false|none|The IoT Edge modules configuration.|
+|»» moduleName|string|true|none|The module name.|
+|»» version|string¦null|false|none|The module configuration version.|
+|»» status|string¦null|false|none|The module status.|
+|»» environmentVariables|object¦null|false|none|The module environment variables.|
 |»»» **additionalProperties**|string|false|none|none|
-|»» moduleIdentityTwinSettings|object¦null|false|none|none|
+|»» moduleIdentityTwinSettings|object¦null|false|none|The module identity twin settings.|
 |»»» **additionalProperties**|string|false|none|none|
 
 <aside class="warning">
@@ -318,20 +330,21 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_edge_configurations_{configurationID}
+## GET IoT Edge configuration
+
+<a id="opIdGET IoT Edge configuration"></a>
 
 > Code samples
 
 `GET /api/edge/configurations/{configurationID}`
 
-*Retrieve a specific deployment and its modules from the IoT Hub.
-Converts it to a ConfigListItem.*
+*Gets the specified configuration.*
 
-<h3 id="get__api_edge_configurations_{configurationid}-parameters">Parameters</h3>
+<h3 id="get-iot-edge-configuration-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|configurationID|path|string|true|ID of the deployment to retrieve.|
+|configurationID|path|string|true|The configuration identifier.|
 
 > Example responses
 
@@ -369,7 +382,7 @@ Converts it to a ConfigListItem.*
 }
 ```
 
-<h3 id="get__api_edge_configurations_{configurationid}-responses">Responses</h3>
+<h3 id="get-iot-edge-configuration-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -380,15 +393,15 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_edge_device
+## GET IoT Edge devices
+
+<a id="opIdGET IoT Edge devices"></a>
 
 > Code samples
 
 `GET /api/edge/device`
 
-*Fonction permettant de récupèrer la liste des appareils Edge .
-Après avoir éxecuté la query du registryManager on récupère le resultat
-sous la forme d'une liste de Twin.*
+*Gets the IoT Edge device list.*
 
 > Example responses
 
@@ -409,36 +422,38 @@ sous la forme d'une liste de Twin.*
 ]
 ```
 
-<h3 id="get__api_edge_device-responses">Responses</h3>
+<h3 id="get-iot-edge-devices-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
 
-<h3 id="get__api_edge_device-responseschema">Response Schema</h3>
+<h3 id="get-iot-edge-devices-responseschema">Response Schema</h3>
 
 Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*anonymous*|[[GatewayListItem](#schemagatewaylistitem)]|false|none|none|
-|» deviceId|string¦null|false|none|none|
-|» status|string¦null|false|none|none|
-|» type|string¦null|false|none|none|
-|» nbDevices|integer(int32)|false|none|none|
+|» deviceId|string|true|none|The device identifier.|
+|» status|string¦null|false|none|The device status.|
+|» type|string¦null|false|none|The device type.|
+|» nbDevices|integer(int32)|false|none|The number of devices connected on the IoT Edge.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 None
 </aside>
 
-## post__api_edge_device
+## POST Gateway
+
+<a id="opIdPOST Gateway"></a>
 
 > Code samples
 
 `POST /api/edge/device`
 
-*this function create a device with the twin information.*
+*Creates the IoT Edge device.*
 
 > Body parameter
 
@@ -478,13 +493,99 @@ None
 }
 ```
 
-<h3 id="post__api_edge_device-parameters">Parameters</h3>
+<h3 id="post-gateway-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[Gateway](#schemagateway)|false|the gateway object.|
+|body|body|[Gateway](#schemagateway)|false|The IoT Edge device.|
 
-<h3 id="post__api_edge_device-responses">Responses</h3>
+> Example responses
+
+> 400 Response
+
+```
+{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
+```
+
+```json
+{
+  "type": "string",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "instance": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+<h3 id="post-gateway-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ProblemDetails](#schemaproblemdetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## PUT
+
+<a id="opIdPUT"></a>
+
+> Code samples
+
+`PUT /api/edge/device`
+
+*Updates the device.*
+
+> Body parameter
+
+```json
+{
+  "deviceId": "string",
+  "symmetricKey": "string",
+  "connectionState": "string",
+  "scope": "string",
+  "endPoint": "string",
+  "type": "string",
+  "status": "string",
+  "runtimeResponse": "string",
+  "nbDevices": 0,
+  "nbModules": 0,
+  "environment": "string",
+  "lastDeployment": {
+    "name": "string",
+    "dateCreation": "2019-08-24T14:15:22Z",
+    "status": "string"
+  },
+  "modules": [
+    {
+      "moduleName": "string",
+      "version": "string",
+      "status": "string",
+      "environmentVariables": {
+        "property1": "string",
+        "property2": "string"
+      },
+      "moduleIdentityTwinSettings": {
+        "property1": "string",
+        "property2": "string"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="put-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[Gateway](#schemagateway)|false|The IoT Edge device.|
+
+<h3 id="put-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -495,20 +596,48 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_edge_device_{deviceId}
+## {deviceId}
+
+<a id="opId{deviceId}"></a>
+
+> Code samples
+
+`DELETE /api/edge/device`
+
+*Deletes the device.*
+
+<h3 id="{deviceid}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceId|query|string|false|The device identifier.|
+
+<h3 id="{deviceid}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## GET IoT Edge device
+
+<a id="opIdGET IoT Edge device"></a>
 
 > Code samples
 
 `GET /api/edge/device/{deviceId}`
 
-*This function return all the information we want of
-a device.*
+*Gets the specified device.*
 
-<h3 id="get__api_edge_device_{deviceid}-parameters">Parameters</h3>
+<h3 id="get-iot-edge-device-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceId|path|string|true|the device id.|
+|deviceId|path|string|true|The device identifier.|
 
 > Example responses
 
@@ -554,7 +683,7 @@ a device.*
 }
 ```
 
-<h3 id="get__api_edge_device_{deviceid}-responses">Responses</h3>
+<h3 id="get-iot-edge-device-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -565,45 +694,24 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## delete__api_edge_device_{deviceId}
+## GET Device symmetric key
 
-> Code samples
-
-`DELETE /api/edge/device/{deviceId}`
-
-*this function delete a device.*
-
-<h3 id="delete__api_edge_device_{deviceid}-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|deviceId|path|string|true|the device id to delete.|
-
-<h3 id="delete__api_edge_device_{deviceid}-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-None
-</aside>
-
-## get__api_edge_device_{deviceId}_{deviceType}_ConnectionString
+<a id="opIdGET Device symmetric key"></a>
 
 > Code samples
 
 `GET /api/edge/device/{deviceId}/{deviceType}/ConnectionString`
 
-<h3 id="get__api_edge_device_{deviceid}_{devicetype}_connectionstring-parameters">Parameters</h3>
+*Gets the IoT Edge device symmetric key.*
+
+<h3 id="get-device-symmetric-key-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceId|path|string|true|none|
-|deviceType|path|string|true|none|
+|deviceId|path|string|true|The device identifier.|
+|deviceType|path|string|true|Type of the device.|
 
-<h3 id="get__api_edge_device_{deviceid}_{devicetype}_connectionstring-responses">Responses</h3>
+<h3 id="get-device-symmetric-key-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -614,11 +722,15 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## post__api_edge_device_{deviceId}_{moduleId}_{methodName}
+## POST Execute module command
+
+<a id="opIdPOST Execute module command"></a>
 
 > Code samples
 
 `POST /api/edge/device/{deviceId}/{moduleId}/{methodName}`
+
+*Executes the module method on the IoT Edge device.*
 
 > Body parameter
 
@@ -638,14 +750,14 @@ None
 }
 ```
 
-<h3 id="post__api_edge_device_{deviceid}_{moduleid}_{methodname}-parameters">Parameters</h3>
+<h3 id="post-execute-module-command-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceId|path|string|true|none|
-|methodName|path|string|true|none|
+|deviceId|path|string|true|The device identifier.|
+|methodName|path|string|true|Name of the method.|
 |moduleId|path|string|true|none|
-|body|body|[GatewayModule](#schemagatewaymodule)|false|none|
+|body|body|[GatewayModule](#schemagatewaymodule)|false|The module.|
 
 > Example responses
 
@@ -662,7 +774,7 @@ None
 }
 ```
 
-<h3 id="post__api_edge_device_{deviceid}_{moduleid}_{methodname}-responses">Responses</h3>
+<h3 id="post-execute-module-command-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -673,95 +785,139 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## put__api_edge_device_{gateway}
-
-> Code samples
-
-`PUT /api/edge/device/{gateway}`
-
-*This function update the properties of a device.*
-
-> Body parameter
-
-```json
-{
-  "deviceId": "string",
-  "symmetricKey": "string",
-  "connectionState": "string",
-  "scope": "string",
-  "endPoint": "string",
-  "type": "string",
-  "status": "string",
-  "runtimeResponse": "string",
-  "nbDevices": 0,
-  "nbModules": 0,
-  "environment": "string",
-  "lastDeployment": {
-    "name": "string",
-    "dateCreation": "2019-08-24T14:15:22Z",
-    "status": "string"
-  },
-  "modules": [
-    {
-      "moduleName": "string",
-      "version": "string",
-      "status": "string",
-      "environmentVariables": {
-        "property1": "string",
-        "property2": "string"
-      },
-      "moduleIdentityTwinSettings": {
-        "property1": "string",
-        "property2": "string"
-      }
-    }
-  ]
-}
-```
-
-<h3 id="put__api_edge_device_{gateway}-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|gateway|path|string|true|none|
-|body|body|[Gateway](#schemagateway)|false|a gateways object.|
-
-<h3 id="put__api_edge_device_{gateway}-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-None
-</aside>
-
 <h1 id="azure-iot-hub-portal-api-lora-wan">LoRa WAN</h1>
 
-## get__api_lorawan_concentrators
+## GET LoRaWAN Concentrator list
+
+<a id="opIdGET LoRaWAN Concentrator list"></a>
 
 > Code samples
 
 `GET /api/lorawan/concentrators`
 
-<h3 id="get__api_lorawan_concentrators-responses">Responses</h3>
+*Gets all device concentrators.*
+
+> Example responses
+
+> 200 Response
+
+```
+[{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientCertificateThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"netID":[0],"joinEui":[["string"]],"region":"string","hwspec":"string","freq_range":[0],"dRs":[[0]],"sx1301_conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0}}],"nocca":true,"nodc":true,"nodwell":true}}]
+```
+
+```json
+[
+  {
+    "deviceId": "string",
+    "deviceName": "string",
+    "loraRegion": "string",
+    "deviceType": "string",
+    "clientCertificateThumbprint": "string",
+    "isConnected": true,
+    "isEnabled": true,
+    "alreadyLoggedInOnce": true,
+    "routerConfig": {
+      "netID": [
+        0
+      ],
+      "joinEui": [
+        [
+          "string"
+        ]
+      ],
+      "region": "string",
+      "hwspec": "string",
+      "freq_range": [
+        0
+      ],
+      "dRs": [
+        [
+          0
+        ]
+      ],
+      "sx1301_conf": [
+        {
+          "property1": {
+            "enable": true,
+            "freq": 0,
+            "radio": 0,
+            "if": 0,
+            "bandwidth": 0,
+            "spread_factor": 0
+          },
+          "property2": {
+            "enable": true,
+            "freq": 0,
+            "radio": 0,
+            "if": 0,
+            "bandwidth": 0,
+            "spread_factor": 0
+          }
+        }
+      ],
+      "nocca": true,
+      "nodc": true,
+      "nodwell": true
+    }
+  }
+]
+```
+
+<h3 id="get-lorawan-concentrator-list-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+
+<h3 id="get-lorawan-concentrator-list-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[Concentrator](#schemaconcentrator)]|false|none|none|
+|» deviceId|string|true|none|The device identifier.|
+|» deviceName|string|true|none|The name of the device.|
+|» loraRegion|string|true|none|The lora region.|
+|» deviceType|string¦null|false|none|The type of the device.|
+|» clientCertificateThumbprint|string¦null|false|none|The client certificate thumbprint.|
+|» isConnected|boolean|false|none|{true} if this instance is connected; otherwise, {false}.|
+|» isEnabled|boolean|false|none|{true} if this instance is enabled; otherwise, {false}.|
+|» alreadyLoggedInOnce|boolean|false|none|{true} if [already logged in once]; otherwise, {false}.|
+|» routerConfig|[RouterConfig](#schemarouterconfig)|false|none|none|
+|»» netID|[integer]¦null|false|none|The network identifier.|
+|»» joinEui|[array]¦null|false|none|The join eui.|
+|»» region|string¦null|false|none|The region.|
+|»» hwspec|string¦null|false|none|The hardware specifications.|
+|»» freq_range|[integer]¦null|false|none|The frequency range.|
+|»» dRs|[array]¦null|false|none|The DRs.|
+|»» sx1301_conf|[object]¦null|false|none|The SX1301 conf.|
+|»»» **additionalProperties**|[Channel](#schemachannel)|false|none|none|
+|»»»» enable|boolean¦null|false|none|A value indicating whether the channel is enabled.|
+|»»»» freq|integer(int32)|false|none|The frequency.|
+|»»»» radio|integer(int32)|false|none|The radio.|
+|»»»» if|integer(int32)|false|none|The interface.|
+|»»»» bandwidth|integer(int32)|false|none|The bandwidth.|
+|»»»» spread_factor|integer(int32)|false|none|The spread factor.|
+|»» nocca|boolean|false|none|{true} if nocca; otherwise, {false}.|
+|»» nodc|boolean|false|none|{true} if nodc; otherwise, {false}.|
+|»» nodwell|boolean|false|none|{true} if nodwell; otherwise, {false}.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 None
 </aside>
 
-## post__api_lorawan_concentrators
+## POST Create LoRaWAN concentrator
+
+<a id="opIdPOST Create LoRaWAN concentrator"></a>
 
 > Code samples
 
 `POST /api/lorawan/concentrators`
 
+*Creates the device.*
+
 > Body parameter
 
 ```json
@@ -820,29 +976,54 @@ None
 }
 ```
 
-<h3 id="post__api_lorawan_concentrators-parameters">Parameters</h3>
+<h3 id="post-create-lorawan-concentrator-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[Concentrator](#schemaconcentrator)|false|none|
+|body|body|[Concentrator](#schemaconcentrator)|false|The device.|
 
-<h3 id="post__api_lorawan_concentrators-responses">Responses</h3>
+> Example responses
+
+> 400 Response
+
+```
+{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
+```
+
+```json
+{
+  "type": "string",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "instance": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+<h3 id="post-create-lorawan-concentrator-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ProblemDetails](#schemaproblemdetails)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 None
 </aside>
 
-## put__api_lorawan_concentrators
+## PUT Update LoRaWAN concentrator
+
+<a id="opIdPUT Update LoRaWAN concentrator"></a>
 
 > Code samples
 
 `PUT /api/lorawan/concentrators`
 
+*Updates the device.*
+
 > Body parameter
 
 ```json
@@ -901,61 +1082,152 @@ None
 }
 ```
 
-<h3 id="put__api_lorawan_concentrators-parameters">Parameters</h3>
+<h3 id="put-update-lorawan-concentrator-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[Concentrator](#schemaconcentrator)|false|none|
+|body|body|[Concentrator](#schemaconcentrator)|false|The device.|
 
-<h3 id="put__api_lorawan_concentrators-responses">Responses</h3>
+> Example responses
+
+> 400 Response
+
+```
+{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
+```
+
+```json
+{
+  "type": "string",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "instance": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+<h3 id="put-update-lorawan-concentrator-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ProblemDetails](#schemaproblemdetails)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 None
 </aside>
 
-## get__api_lorawan_concentrators_{deviceId}
+## GET LoRaWAN Concentrator
+
+<a id="opIdGET LoRaWAN Concentrator"></a>
 
 > Code samples
 
 `GET /api/lorawan/concentrators/{deviceId}`
 
-<h3 id="get__api_lorawan_concentrators_{deviceid}-parameters">Parameters</h3>
+*Gets the device concentrator.*
+
+<h3 id="get-lorawan-concentrator-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceId|path|string|true|none|
+|deviceId|path|string|true|The device identifier.|
 
-<h3 id="get__api_lorawan_concentrators_{deviceid}-responses">Responses</h3>
+> Example responses
+
+> 200 Response
+
+```
+{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientCertificateThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"netID":[0],"joinEui":[["string"]],"region":"string","hwspec":"string","freq_range":[0],"dRs":[[0]],"sx1301_conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0}}],"nocca":true,"nodc":true,"nodwell":true}}
+```
+
+```json
+{
+  "deviceId": "string",
+  "deviceName": "string",
+  "loraRegion": "string",
+  "deviceType": "string",
+  "clientCertificateThumbprint": "string",
+  "isConnected": true,
+  "isEnabled": true,
+  "alreadyLoggedInOnce": true,
+  "routerConfig": {
+    "netID": [
+      0
+    ],
+    "joinEui": [
+      [
+        "string"
+      ]
+    ],
+    "region": "string",
+    "hwspec": "string",
+    "freq_range": [
+      0
+    ],
+    "dRs": [
+      [
+        0
+      ]
+    ],
+    "sx1301_conf": [
+      {
+        "property1": {
+          "enable": true,
+          "freq": 0,
+          "radio": 0,
+          "if": 0,
+          "bandwidth": 0,
+          "spread_factor": 0
+        },
+        "property2": {
+          "enable": true,
+          "freq": 0,
+          "radio": 0,
+          "if": 0,
+          "bandwidth": 0,
+          "spread_factor": 0
+        }
+      }
+    ],
+    "nocca": true,
+    "nodc": true,
+    "nodwell": true
+  }
+}
+```
+
+<h3 id="get-lorawan-concentrator-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[Concentrator](#schemaconcentrator)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 None
 </aside>
 
-## delete__api_lorawan_concentrators_{deviceId}
+## DELETE Remove LoRaWAN concentrator
+
+<a id="opIdDELETE Remove LoRaWAN concentrator"></a>
 
 > Code samples
 
 `DELETE /api/lorawan/concentrators/{deviceId}`
 
-*this function delete a device.*
+*Deletes the specified device.*
 
-<h3 id="delete__api_lorawan_concentrators_{deviceid}-parameters">Parameters</h3>
+<h3 id="delete-remove-lorawan-concentrator-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceId|path|string|true|the device id.|
+|deviceId|path|string|true|The device identifier.|
 
-<h3 id="delete__api_lorawan_concentrators_{deviceid}-responses">Responses</h3>
+<h3 id="delete-remove-lorawan-concentrator-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -966,14 +1238,15 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_lorawan_devices
+## GET LoRaWAN device list
+
+<a id="opIdGET LoRaWAN device list"></a>
 
 > Code samples
 
 `GET /api/lorawan/devices`
 
-*Gets a list of devices as DeviceListItem from Azure IoT Hub.
-Fields that do not appear in the device list are not defined here.*
+*Gets the device list.*
 
 > Example responses
 
@@ -997,13 +1270,13 @@ Fields that do not appear in the device list are not defined here.*
 ]
 ```
 
-<h3 id="get__api_lorawan_devices-responses">Responses</h3>
+<h3 id="get-lorawan-device-list-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
 
-<h3 id="get__api_lorawan_devices-responseschema">Response Schema</h3>
+<h3 id="get-lorawan-device-list-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -1023,12 +1296,16 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## post__api_lorawan_devices
+## POST Create LoRaWAN device
+
+<a id="opIdPOST Create LoRaWAN device"></a>
 
 > Code samples
 
 `POST /api/lorawan/devices`
 
+*Creates the device.*
+
 > Body parameter
 
 ```json
@@ -1049,13 +1326,13 @@ None
 }
 ```
 
-<h3 id="post__api_lorawan_devices-parameters">Parameters</h3>
+<h3 id="post-create-lorawan-device-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[LoRaDeviceDetails](#schemaloradevicedetails)|false|none|
+|body|body|[LoRaDeviceDetails](#schemaloradevicedetails)|false|The device.|
 
-<h3 id="post__api_lorawan_devices-responses">Responses</h3>
+<h3 id="post-create-lorawan-device-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1066,13 +1343,15 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## put__api_lorawan_devices
+## PUT Update LoRaWAN device
+
+<a id="opIdPUT Update LoRaWAN device"></a>
 
 > Code samples
 
 `PUT /api/lorawan/devices`
 
-*this function update the twin and the device.*
+*Updates the device.*
 
 > Body parameter
 
@@ -1094,13 +1373,13 @@ None
 }
 ```
 
-<h3 id="put__api_lorawan_devices-parameters">Parameters</h3>
+<h3 id="put-update-lorawan-device-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[LoRaDeviceDetails](#schemaloradevicedetails)|false|the device object.|
+|body|body|[LoRaDeviceDetails](#schemaloradevicedetails)|false|The device.|
 
-<h3 id="put__api_lorawan_devices-responses">Responses</h3>
+<h3 id="put-update-lorawan-device-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1111,20 +1390,21 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_lorawan_devices_{deviceID}
+## GET LoRaWAN device details
+
+<a id="opIdGET LoRaWAN device details"></a>
 
 > Code samples
 
 `GET /api/lorawan/devices/{deviceID}`
 
-*Retrieve a specific device and from the IoT Hub.
-Converts it to a DeviceListItem.*
+*Gets the specified device.*
 
-<h3 id="get__api_lorawan_devices_{deviceid}-parameters">Parameters</h3>
+<h3 id="get-lorawan-device-details-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceID|path|string|true|ID of the device to retrieve.|
+|deviceID|path|string|true|The device identifier.|
 
 > Example responses
 
@@ -1152,7 +1432,7 @@ Converts it to a DeviceListItem.*
 }
 ```
 
-<h3 id="get__api_lorawan_devices_{deviceid}-responses">Responses</h3>
+<h3 id="get-lorawan-device-details-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1163,21 +1443,23 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## delete__api_lorawan_devices_{deviceID}
+## DELETE Remove LoRaWAN device
+
+<a id="opIdDELETE Remove LoRaWAN device"></a>
 
 > Code samples
 
 `DELETE /api/lorawan/devices/{deviceID}`
 
-*this function delete a device.*
+*Deletes the specified device.*
 
-<h3 id="delete__api_lorawan_devices_{deviceid}-parameters">Parameters</h3>
+<h3 id="delete-remove-lorawan-device-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceID|path|string|true|the device id.|
+|deviceID|path|string|true|The device identifier.|
 
-<h3 id="delete__api_lorawan_devices_{deviceid}-responses">Responses</h3>
+<h3 id="delete-remove-lorawan-device-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1188,22 +1470,24 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## post__api_lorawan_devices_{deviceId}__command_{commandId}
+## POST Execute LoRaWAN command
+
+<a id="opIdPOST Execute LoRaWAN command"></a>
 
 > Code samples
 
 `POST /api/lorawan/devices/{deviceId}/_command/{commandId}`
 
-*Permit to execute cloud to device message.*
+*Executes the command on the device..*
 
-<h3 id="post__api_lorawan_devices_{deviceid}__command_{commandid}-parameters">Parameters</h3>
+<h3 id="post-execute-lorawan-command-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|deviceId|path|string|true|id of the device.|
-|commandId|path|string|true|the command who contain the name and the trame.|
+|deviceId|path|string|true|The device identifier.|
+|commandId|path|string|true|The command identifier.|
 
-<h3 id="post__api_lorawan_devices_{deviceid}__command_{commandid}-responses">Responses</h3>
+<h3 id="post-execute-lorawan-command-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1214,13 +1498,15 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_lorawan_models
+## GET LoRaWAN device model list
+
+<a id="opIdGET LoRaWAN device model list"></a>
 
 > Code samples
 
 `GET /api/lorawan/models`
 
-*Gets the device models.*
+*Gets the device model list.*
 
 > Example responses
 
@@ -1243,13 +1529,13 @@ None
 ]
 ```
 
-<h3 id="get__api_lorawan_models-responses">Responses</h3>
+<h3 id="get-lorawan-device-model-list-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
 
-<h3 id="get__api_lorawan_models-responseschema">Response Schema</h3>
+<h3 id="get-lorawan-device-model-list-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -1257,7 +1543,7 @@ Status Code **200**
 |---|---|---|---|---|
 |*anonymous*|[[DeviceModel](#schemadevicemodel)]|false|none|none|
 |» modelId|string¦null|false|none|The device model identifier.|
-|» imageUrl|string¦null|false|none|The device model image URL.|
+|» imageUrl|string¦null|false|none|The device model image Url.|
 |» name|string|true|none|The device model name.|
 |» description|string¦null|false|none|The device model description.|
 |» isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
@@ -1268,7 +1554,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## post__api_lorawan_models
+## POST Create a new LoRaWAN device model
+
+<a id="opIdPOST Create a new LoRaWAN device model"></a>
 
 > Code samples
 
@@ -1291,7 +1579,7 @@ None
 }
 ```
 
-<h3 id="post__api_lorawan_models-parameters">Parameters</h3>
+<h3 id="post-create-a-new-lorawan-device-model-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1317,7 +1605,7 @@ None
 }
 ```
 
-<h3 id="post__api_lorawan_models-responses">Responses</h3>
+<h3 id="post-create-a-new-lorawan-device-model-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1329,19 +1617,21 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_lorawan_models_{id}
+## GET LoRaWAN device model
+
+<a id="opIdGET LoRaWAN device model"></a>
 
 > Code samples
 
 `GET /api/lorawan/models/{id}`
 
-*Gets the specified model identifier.*
+*Get the device model details.*
 
-<h3 id="get__api_lorawan_models_{id}-parameters">Parameters</h3>
+<h3 id="get-lorawan-device-model-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|The model identifier.|
+|id|path|string|true|The devic emodel identifier.|
 
 > Example responses
 
@@ -1364,7 +1654,7 @@ None
 }
 ```
 
-<h3 id="get__api_lorawan_models_{id}-responses">Responses</h3>
+<h3 id="get-lorawan-device-model-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1376,7 +1666,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## put__api_lorawan_models_{id}
+## PUT Update the LoRaWAN device model
+
+<a id="opIdPUT Update the LoRaWAN device model"></a>
 
 > Code samples
 
@@ -1399,7 +1691,7 @@ None
 }
 ```
 
-<h3 id="put__api_lorawan_models_{id}-parameters">Parameters</h3>
+<h3 id="put-update-the-lorawan-device-model-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1426,7 +1718,7 @@ None
 }
 ```
 
-<h3 id="put__api_lorawan_models_{id}-responses">Responses</h3>
+<h3 id="put-update-the-lorawan-device-model-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1439,7 +1731,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## delete__api_lorawan_models_{id}
+## DELETE Remove the LoRaWAN device model
+
+<a id="opIdDELETE Remove the LoRaWAN device model"></a>
 
 > Code samples
 
@@ -1447,7 +1741,7 @@ None
 
 *Deletes the specified device model.*
 
-<h3 id="delete__api_lorawan_models_{id}-parameters">Parameters</h3>
+<h3 id="delete-remove-the-lorawan-device-model-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1473,7 +1767,7 @@ None
 }
 ```
 
-<h3 id="delete__api_lorawan_models_{id}-responses">Responses</h3>
+<h3 id="delete-remove-the-lorawan-device-model-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1486,19 +1780,21 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_lorawan_models_{id}_avatar
+## GET LoRaWAN device model avatar URL
+
+<a id="opIdGET LoRaWAN device model avatar URL"></a>
 
 > Code samples
 
 `GET /api/lorawan/models/{id}/avatar`
 
-*Gets the avatar.*
+*Gets the device model avatar.*
 
-<h3 id="get__api_lorawan_models_{id}_avatar-parameters">Parameters</h3>
+<h3 id="get-lorawan-device-model-avatar-url-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|The model identifier.|
+|id|path|string|true|The device model identifier|
 
 > Example responses
 
@@ -1512,7 +1808,7 @@ None
 "string"
 ```
 
-<h3 id="get__api_lorawan_models_{id}_avatar-responses">Responses</h3>
+<h3 id="get-lorawan-device-model-avatar-url-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1524,7 +1820,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## post__api_lorawan_models_{id}_avatar
+## POST Update the LoRaWAN device model avatar
+
+<a id="opIdPOST Update the LoRaWAN device model avatar"></a>
 
 > Code samples
 
@@ -1539,7 +1837,7 @@ file: string
 
 ```
 
-<h3 id="post__api_lorawan_models_{id}_avatar-parameters">Parameters</h3>
+<h3 id="post-update-the-lorawan-device-model-avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1559,7 +1857,7 @@ file: string
 "string"
 ```
 
-<h3 id="post__api_lorawan_models_{id}_avatar-responses">Responses</h3>
+<h3 id="post-update-the-lorawan-device-model-avatar-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1571,7 +1869,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## delete__api_lorawan_models_{id}_avatar
+## DELETE Remove the LoRaWAN device model avatar
+
+<a id="opIdDELETE Remove the LoRaWAN device model avatar"></a>
 
 > Code samples
 
@@ -1579,7 +1879,7 @@ None
 
 *Deletes the avatar.*
 
-<h3 id="delete__api_lorawan_models_{id}_avatar-parameters">Parameters</h3>
+<h3 id="delete-remove-the-lorawan-device-model-avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1605,7 +1905,7 @@ None
 }
 ```
 
-<h3 id="delete__api_lorawan_models_{id}_avatar-responses">Responses</h3>
+<h3 id="delete-remove-the-lorawan-device-model-avatar-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1617,15 +1917,15 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## POST Device model commands
+## POST Set device model commands
 
-<a id="opIdPOST Device model commands"></a>
+<a id="opIdPOST Set device model commands"></a>
 
 > Code samples
 
 `POST /api/lorawan/models/{id}/commands`
 
-*Sets the device model's commands.*
+*Updates the device model's commands.*
 
 > Body parameter
 
@@ -1640,7 +1940,7 @@ None
 ]
 ```
 
-<h3 id="post-device-model-commands-parameters">Parameters</h3>
+<h3 id="post-set-device-model-commands-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1667,7 +1967,7 @@ None
 }
 ```
 
-<h3 id="post-device-model-commands-responses">Responses</h3>
+<h3 id="post-set-device-model-commands-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1687,7 +1987,7 @@ None
 
 `GET /api/lorawan/models/{id}/commands`
 
-*Sets the device model's commands.*
+*Gets the device model's commands.*
 
 <h3 id="get-device-model-commands-parameters">Parameters</h3>
 
@@ -1740,13 +2040,15 @@ None
 
 <h1 id="azure-iot-hub-portal-api-device-models">Device Models</h1>
 
-## get__api_models
+## GET Device model list
+
+<a id="opIdGET Device model list"></a>
 
 > Code samples
 
 `GET /api/models`
 
-*Gets the device models.*
+*Gets the device model list.*
 
 > Example responses
 
@@ -1769,13 +2071,13 @@ None
 ]
 ```
 
-<h3 id="get__api_models-responses">Responses</h3>
+<h3 id="get-device-model-list-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
 
-<h3 id="get__api_models-responseschema">Response Schema</h3>
+<h3 id="get-device-model-list-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -1783,7 +2085,7 @@ Status Code **200**
 |---|---|---|---|---|
 |*anonymous*|[[DeviceModel](#schemadevicemodel)]|false|none|none|
 |» modelId|string¦null|false|none|The device model identifier.|
-|» imageUrl|string¦null|false|none|The device model image URL.|
+|» imageUrl|string¦null|false|none|The device model image Url.|
 |» name|string|true|none|The device model name.|
 |» description|string¦null|false|none|The device model description.|
 |» isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
@@ -1794,7 +2096,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## post__api_models
+## POST Create a new device model
+
+<a id="opIdPOST Create a new device model"></a>
 
 > Code samples
 
@@ -1815,7 +2119,7 @@ None
 }
 ```
 
-<h3 id="post__api_models-parameters">Parameters</h3>
+<h3 id="post-create-a-new-device-model-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1841,7 +2145,7 @@ None
 }
 ```
 
-<h3 id="post__api_models-responses">Responses</h3>
+<h3 id="post-create-a-new-device-model-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1853,19 +2157,21 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_models_{id}
+## GET Device model
+
+<a id="opIdGET Device model"></a>
 
 > Code samples
 
 `GET /api/models/{id}`
 
-*Gets the specified model identifier.*
+*Get the device model details.*
 
-<h3 id="get__api_models_{id}-parameters">Parameters</h3>
+<h3 id="get-device-model-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|The model identifier.|
+|id|path|string|true|The devic emodel identifier.|
 
 > Example responses
 
@@ -1886,7 +2192,7 @@ None
 }
 ```
 
-<h3 id="get__api_models_{id}-responses">Responses</h3>
+<h3 id="get-device-model-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1898,7 +2204,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## put__api_models_{id}
+## PUT Update the device model
+
+<a id="opIdPUT Update the device model"></a>
 
 > Code samples
 
@@ -1919,7 +2227,7 @@ None
 }
 ```
 
-<h3 id="put__api_models_{id}-parameters">Parameters</h3>
+<h3 id="put-update-the-device-model-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1946,7 +2254,7 @@ None
 }
 ```
 
-<h3 id="put__api_models_{id}-responses">Responses</h3>
+<h3 id="put-update-the-device-model-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1959,7 +2267,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## delete__api_models_{id}
+## DELETE Remove the device model
+
+<a id="opIdDELETE Remove the device model"></a>
 
 > Code samples
 
@@ -1967,7 +2277,7 @@ None
 
 *Deletes the specified device model.*
 
-<h3 id="delete__api_models_{id}-parameters">Parameters</h3>
+<h3 id="delete-remove-the-device-model-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1993,7 +2303,7 @@ None
 }
 ```
 
-<h3 id="delete__api_models_{id}-responses">Responses</h3>
+<h3 id="delete-remove-the-device-model-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -2006,19 +2316,21 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_models_{id}_avatar
+## GET Device model avatar URL
+
+<a id="opIdGET Device model avatar URL"></a>
 
 > Code samples
 
 `GET /api/models/{id}/avatar`
 
-*Gets the avatar.*
+*Gets the device model avatar.*
 
-<h3 id="get__api_models_{id}_avatar-parameters">Parameters</h3>
+<h3 id="get-device-model-avatar-url-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|The model identifier.|
+|id|path|string|true|The device model identifier|
 
 > Example responses
 
@@ -2032,7 +2344,7 @@ None
 "string"
 ```
 
-<h3 id="get__api_models_{id}_avatar-responses">Responses</h3>
+<h3 id="get-device-model-avatar-url-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -2044,7 +2356,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## post__api_models_{id}_avatar
+## POST Update the device model avatar
+
+<a id="opIdPOST Update the device model avatar"></a>
 
 > Code samples
 
@@ -2059,7 +2373,7 @@ file: string
 
 ```
 
-<h3 id="post__api_models_{id}_avatar-parameters">Parameters</h3>
+<h3 id="post-update-the-device-model-avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2079,7 +2393,7 @@ file: string
 "string"
 ```
 
-<h3 id="post__api_models_{id}_avatar-responses">Responses</h3>
+<h3 id="post-update-the-device-model-avatar-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -2091,7 +2405,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## delete__api_models_{id}_avatar
+## DELETE Remove the device model avatar
+
+<a id="opIdDELETE Remove the device model avatar"></a>
 
 > Code samples
 
@@ -2099,7 +2415,7 @@ None
 
 *Deletes the avatar.*
 
-<h3 id="delete__api_models_{id}_avatar-parameters">Parameters</h3>
+<h3 id="delete-remove-the-device-model-avatar-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2125,7 +2441,7 @@ None
 }
 ```
 
-<h3 id="delete__api_models_{id}_avatar-responses">Responses</h3>
+<h3 id="delete-remove-the-device-model-avatar-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -2139,9 +2455,9 @@ None
 
 <h1 id="azure-iot-hub-portal-api-portal-settings">Portal Settings</h1>
 
-## GET OIDC
+## GET Open ID settings
 
-<a id="opIdGET OIDC"></a>
+<a id="opIdGET Open ID settings"></a>
 
 > Code samples
 
@@ -2149,7 +2465,7 @@ None
 
 *Get the Open ID Settings.*
 
-<h3 id="get-oidc-responses">Responses</h3>
+<h3 id="get-open-id-settings-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -2182,8 +2498,8 @@ None
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|payload|string¦null|false|none|none|
-|status|integer(int32)|false|none|none|
+|payload|string¦null|false|none|The C2D result payload.|
+|status|integer(int32)|false|none|The C2D status.|
 
 <h2 id="tocS_Channel">Channel</h2>
 <!-- backwards compatibility -->
@@ -2208,12 +2524,12 @@ None
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|enable|boolean¦null|false|none|none|
-|freq|integer(int32)|false|none|none|
-|radio|integer(int32)|false|none|none|
-|if|integer(int32)|false|none|none|
-|bandwidth|integer(int32)|false|none|none|
-|spread_factor|integer(int32)|false|none|none|
+|enable|boolean¦null|false|none|A value indicating whether the channel is enabled.|
+|freq|integer(int32)|false|none|The frequency.|
+|radio|integer(int32)|false|none|The radio.|
+|if|integer(int32)|false|none|The interface.|
+|bandwidth|integer(int32)|false|none|The bandwidth.|
+|spread_factor|integer(int32)|false|none|The spread factor.|
 
 <h2 id="tocS_Concentrator">Concentrator</h2>
 <!-- backwards compatibility -->
@@ -2283,14 +2599,14 @@ None
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|deviceId|string|true|none|none|
-|deviceName|string|true|none|none|
-|loraRegion|string|true|none|none|
-|deviceType|string¦null|false|none|none|
-|clientCertificateThumbprint|string¦null|false|none|none|
-|isConnected|boolean|false|none|none|
-|isEnabled|boolean|false|none|none|
-|alreadyLoggedInOnce|boolean|false|none|none|
+|deviceId|string|true|none|The device identifier.|
+|deviceName|string|true|none|The name of the device.|
+|loraRegion|string|true|none|The lora region.|
+|deviceType|string¦null|false|none|The type of the device.|
+|clientCertificateThumbprint|string¦null|false|none|The client certificate thumbprint.|
+|isConnected|boolean|false|none|{true} if this instance is connected; otherwise, {false}.|
+|isEnabled|boolean|false|none|{true} if this instance is enabled; otherwise, {false}.|
+|alreadyLoggedInOnce|boolean|false|none|{true} if [already logged in once]; otherwise, {false}.|
 |routerConfig|[RouterConfig](#schemarouterconfig)|false|none|none|
 
 <h2 id="tocS_ConfigItem">ConfigItem</h2>
@@ -2313,9 +2629,9 @@ None
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string¦null|false|none|none|
-|dateCreation|string(date-time)|false|none|none|
-|status|string¦null|false|none|none|
+|name|string|true|none|The IoT Edge configuration name.|
+|dateCreation|string(date-time)|false|none|The IoT Edge configuration creation date.|
+|status|string¦null|false|none|The IoT Edge configuration status.|
 
 <h2 id="tocS_ConfigListItem">ConfigListItem</h2>
 <!-- backwards compatibility -->
@@ -2357,15 +2673,15 @@ None
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|configurationID|string¦null|false|none|none|
-|conditions|string¦null|false|none|none|
-|metricsTargeted|integer(int64)|false|none|none|
-|metricsApplied|integer(int64)|false|none|none|
-|metricsSuccess|integer(int64)|false|none|none|
-|metricsFailure|integer(int64)|false|none|none|
-|priority|integer(int32)|false|none|none|
-|creationDate|string(date-time)|false|none|none|
-|modules|[[GatewayModule](#schemagatewaymodule)]¦null|false|none|none|
+|configurationID|string¦null|false|none|The IoT Edge configuration identifier.|
+|conditions|string¦null|false|none|The IoT Edge configuration target conditions.|
+|metricsTargeted|integer(int64)|false|none|The IoT Edge configuration targeted metrics.|
+|metricsApplied|integer(int64)|false|none|The IoT Edge configuration applied metrics.|
+|metricsSuccess|integer(int64)|false|none|The IoT Edge configuration success metrics.|
+|metricsFailure|integer(int64)|false|none|The IoT Edge configuration failure metrics.|
+|priority|integer(int32)|false|none|The IoT Edge configuration priority.|
+|creationDate|string(date-time)|false|none|The IoT Edge configuration creation date.|
+|modules|[[GatewayModule](#schemagatewaymodule)]¦null|false|none|The IoT Edge modules configuration.|
 
 <h2 id="tocS_DeviceDetails">DeviceDetails</h2>
 <!-- backwards compatibility -->
@@ -2393,15 +2709,15 @@ None
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|deviceID|string|true|none|none|
-|deviceName|string|true|none|none|
-|modelId|string|true|none|none|
-|imageUrl|string¦null|false|none|none|
-|isConnected|boolean|false|none|none|
-|isEnabled|boolean|false|none|none|
-|statusUpdatedTime|string(date-time)|false|none|none|
-|locationCode|string¦null|false|none|none|
-|assetId|string¦null|false|none|none|
+|deviceID|string|true|none|The device identifier.|
+|deviceName|string|true|none|The name of the device.|
+|modelId|string|true|none|The model identifier.|
+|imageUrl|string¦null|false|none|The device model image Url.|
+|isConnected|boolean|false|none|{true} if this instance is connected; otherwise, {false}.|
+|isEnabled|boolean|false|none|{true} if this instance is enabled; otherwise, {false}.|
+|statusUpdatedTime|string(date-time)|false|none|The status updated time.|
+|locationCode|string¦null|false|none|The location code.|
+|assetId|string¦null|false|none|The asset identifier.|
 
 <h2 id="tocS_DeviceListItem">DeviceListItem</h2>
 <!-- backwards compatibility -->
@@ -2459,7 +2775,7 @@ None
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |modelId|string¦null|false|none|The device model identifier.|
-|imageUrl|string¦null|false|none|The device model image URL.|
+|imageUrl|string¦null|false|none|The device model image Url.|
 |name|string|true|none|The device model name.|
 |description|string¦null|false|none|The device model description.|
 |isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
@@ -2539,19 +2855,19 @@ None
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|deviceId|string|true|none|none|
-|symmetricKey|string¦null|false|none|none|
-|connectionState|string¦null|false|none|none|
-|scope|string¦null|false|none|none|
-|endPoint|string¦null|false|none|none|
-|type|string|true|none|none|
-|status|string¦null|false|none|none|
-|runtimeResponse|string¦null|false|none|none|
-|nbDevices|integer(int32)|false|none|none|
-|nbModules|integer(int32)|false|none|none|
-|environment|string¦null|false|none|none|
+|deviceId|string|true|none|The IoT Edge identifier.|
+|symmetricKey|string¦null|false|none|The IoT Edge device symmetric key.|
+|connectionState|string¦null|false|none|The IoT Edge connection state.|
+|scope|string¦null|false|none|The IoT Edge scope tag value.|
+|endPoint|string¦null|false|none|The IoT Edge end point.|
+|type|string|true|none|The IoT Edge device type.|
+|status|string¦null|false|none|The IoT Edge device status.|
+|runtimeResponse|string¦null|false|none|The IoT Edge runtime response.|
+|nbDevices|integer(int32)|false|none|The number of connected devices on IoT Edge device.|
+|nbModules|integer(int32)|false|none|The number of modules on IoT Edge device.|
+|environment|string¦null|false|none|The IoT Edge environment tag value.|
 |lastDeployment|[ConfigItem](#schemaconfigitem)|false|none|none|
-|modules|[[GatewayModule](#schemagatewaymodule)]¦null|false|none|none|
+|modules|[[GatewayModule](#schemagatewaymodule)]¦null|false|none|The IoT Edge modules.|
 
 <h2 id="tocS_GatewayListItem">GatewayListItem</h2>
 <!-- backwards compatibility -->
@@ -2574,10 +2890,10 @@ None
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|deviceId|string¦null|false|none|none|
-|status|string¦null|false|none|none|
-|type|string¦null|false|none|none|
-|nbDevices|integer(int32)|false|none|none|
+|deviceId|string|true|none|The device identifier.|
+|status|string¦null|false|none|The device status.|
+|type|string¦null|false|none|The device type.|
+|nbDevices|integer(int32)|false|none|The number of devices connected on the IoT Edge.|
 
 <h2 id="tocS_GatewayModule">GatewayModule</h2>
 <!-- backwards compatibility -->
@@ -2607,12 +2923,12 @@ None
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|moduleName|string¦null|false|none|none|
-|version|string¦null|false|none|none|
-|status|string¦null|false|none|none|
-|environmentVariables|object¦null|false|none|none|
+|moduleName|string|true|none|The module name.|
+|version|string¦null|false|none|The module configuration version.|
+|status|string¦null|false|none|The module status.|
+|environmentVariables|object¦null|false|none|The module environment variables.|
 |» **additionalProperties**|string|false|none|none|
-|moduleIdentityTwinSettings|object¦null|false|none|none|
+|moduleIdentityTwinSettings|object¦null|false|none|The module identity twin settings.|
 |» **additionalProperties**|string|false|none|none|
 
 <h2 id="tocS_LoRaDeviceDetails">LoRaDeviceDetails</h2>
@@ -2645,18 +2961,18 @@ None
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|deviceID|string|true|none|none|
-|deviceName|string|true|none|none|
-|modelId|string|true|none|none|
-|imageUrl|string¦null|false|none|none|
-|isConnected|boolean|false|none|none|
-|isEnabled|boolean|false|none|none|
-|statusUpdatedTime|string(date-time)|false|none|none|
-|locationCode|string¦null|false|none|none|
-|assetId|string¦null|false|none|none|
+|deviceID|string|true|none|The device identifier.|
+|deviceName|string|true|none|The name of the device.|
+|modelId|string|true|none|The model identifier.|
+|imageUrl|string¦null|false|none|The device model image Url.|
+|isConnected|boolean|false|none|{true} if this instance is connected; otherwise, {false}.|
+|isEnabled|boolean|false|none|{true} if this instance is enabled; otherwise, {false}.|
+|statusUpdatedTime|string(date-time)|false|none|The status updated time.|
+|locationCode|string¦null|false|none|The location code.|
+|assetId|string¦null|false|none|The asset identifier.|
 |appEUI|string|true|none|The OTAA App EUI.|
 |appKey|string|true|none|The OTAA App Key.|
-|sensorDecoder|string¦null|false|none|The sensor decoder API url.|
+|sensorDecoder|string¦null|false|none|The sensor decoder API Url.|
 |alreadyLoggedInOnce|boolean|false|none|A value indicating whether the device has already joined the platform.|
 
 <h2 id="tocS_LoRaDeviceModel">LoRaDeviceModel</h2>
@@ -2685,13 +3001,13 @@ None
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |modelId|string¦null|false|none|The device model identifier.|
-|imageUrl|string¦null|false|none|The device model image URL.|
+|imageUrl|string¦null|false|none|The device model image Url.|
 |name|string|true|none|The device model name.|
 |description|string¦null|false|none|The device model description.|
 |isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
 |supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
 |appEUI|string|true|none|The device OTAA Application eui.|
-|sensorDecoderURL|string¦null|false|none|The sensor decoder URL.|
+|sensorDecoderURL|string¦null|false|none|The sensor decoder Url.|
 
 <h2 id="tocS_ProblemDetails">ProblemDetails</h2>
 <!-- backwards compatibility -->
@@ -2782,15 +3098,15 @@ None
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|netID|[integer]¦null|false|none|none|
-|joinEui|[array]¦null|false|none|none|
-|region|string¦null|false|none|none|
-|hwspec|string¦null|false|none|none|
-|freq_range|[integer]¦null|false|none|none|
-|dRs|[array]¦null|false|none|none|
-|sx1301_conf|[object]¦null|false|none|none|
+|netID|[integer]¦null|false|none|The network identifier.|
+|joinEui|[array]¦null|false|none|The join eui.|
+|region|string¦null|false|none|The region.|
+|hwspec|string¦null|false|none|The hardware specifications.|
+|freq_range|[integer]¦null|false|none|The frequency range.|
+|dRs|[array]¦null|false|none|The DRs.|
+|sx1301_conf|[object]¦null|false|none|The SX1301 conf.|
 |» **additionalProperties**|[Channel](#schemachannel)|false|none|none|
-|nocca|boolean|false|none|none|
-|nodc|boolean|false|none|none|
-|nodwell|boolean|false|none|none|
+|nocca|boolean|false|none|{true} if nocca; otherwise, {false}.|
+|nodc|boolean|false|none|{true} if nodc; otherwise, {false}.|
+|nodwell|boolean|false|none|{true} if nodwell; otherwise, {false}.|
 
