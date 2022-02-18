@@ -19,7 +19,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Microsoft.Extensions.Logging;
 
     public abstract class DeviceModelsControllerBase<TListItemModel, TModel> : ControllerBase
-        where TModel: DeviceModel
+        where TModel : DeviceModel
         where TListItemModel : DeviceModel
     {
         /// <summary>
@@ -71,7 +71,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             IDeviceModelImageManager deviceModelImageManager,
             IDeviceModelMapper<TListItemModel, TModel> deviceModelMapper,
             IDeviceService devicesService,
-            ITableClientFactory tableClientFactory, 
+            ITableClientFactory tableClientFactory,
             string filter)
         {
             this.log = log;
@@ -86,9 +86,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the device models.
         /// </summary>
         /// <returns>The list of device models.</returns>
-        [HttpGet()]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<TListItemModel>> Get()
+        public virtual ActionResult<IEnumerable<TListItemModel>> Get()
         {
             // PartitionKey 0 contains all device models
             var entities = this.tableClientFactory
@@ -106,10 +104,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The model identifier.</param>
         /// <returns>The corresponding model.</returns>
-        [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<TModel> Get(string id)
+        public virtual ActionResult<TModel> Get(string id)
         {
             try
             {
@@ -137,10 +132,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The model identifier.</param>
         /// <returns>The avatar.</returns>
-        [HttpGet("{id}/avatar")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<string> GetAvatar(string id)
+        public virtual ActionResult<string> GetAvatar(string id)
         {
             try
             {
@@ -169,10 +161,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="id">The model identifier.</param>
         /// <param name="file">The file.</param>
         /// <returns>The avatar.</returns>
-        [HttpPost("{id}/avatar")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<string>> ChangeAvatar(string id, IFormFile file)
+        public virtual async Task<ActionResult<string>> ChangeAvatar(string id, IFormFile file)
         {
             try
             {
@@ -199,10 +188,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Deletes the avatar.
         /// </summary>
         /// <param name="id">The model identifier.</param>
-        [HttpDelete("{id}/avatar")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteAvatar(string id)
+        public virtual async Task<IActionResult> DeleteAvatar(string id)
         {
             try
             {
@@ -232,10 +218,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceModel">The device model.</param>
         /// <returns>The action result.</returns>
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Post(TModel deviceModel)
+        public virtual async Task<IActionResult> Post(TModel deviceModel)
         {
             if (!string.IsNullOrEmpty(deviceModel.ModelId))
             {
@@ -274,11 +257,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceModel">The device model.</param>
         /// <returns>The action result.</returns>
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Put(TModel deviceModel)
+        public virtual async Task<IActionResult> Put(TModel deviceModel)
         {
             if (string.IsNullOrEmpty(deviceModel.ModelId))
             {
@@ -315,11 +294,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The device model identifier.</param>
         /// <returns>The action result.</returns>
-        [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(string id)
+        public virtual async Task<IActionResult> Delete(string id)
         {
             // we get all devices
             var deviceList = await this.devicesService.GetAllDevice();

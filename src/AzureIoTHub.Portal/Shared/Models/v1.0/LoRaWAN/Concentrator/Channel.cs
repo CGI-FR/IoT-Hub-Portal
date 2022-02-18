@@ -5,16 +5,34 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator
 {
     public class Channel
     {
+        /// <summary>
+        /// A value indicating whether the channel is enabled.
+        /// </summary>
         public bool? Enable { get; set; }
 
+        /// <summary>
+        /// The frequency.
+        /// </summary>
         public int Freq { get; set; }
 
+        /// <summary>
+        /// The radio.
+        /// </summary>
         public int Radio { get; set; }
 
+        /// <summary>
+        /// The interface.
+        /// </summary>
         public int If { get; set; }
 
+        /// <summary>
+        /// The bandwidth.
+        /// </summary>
         public int Bandwidth { get; set; }
 
+        /// <summary>
+        /// The spread factor.
+        /// </summary>
         public int Spread_factor { get; set; }
     }
 }

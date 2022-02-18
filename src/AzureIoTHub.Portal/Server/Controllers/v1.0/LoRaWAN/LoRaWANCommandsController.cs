@@ -53,12 +53,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         }
 
         /// <summary>
-        /// Sets the device model's commands.
+        /// Updates the device model's commands.
         /// </summary>
         /// <param name="id">The model identifier.</param>
         /// <param name="commands">The commands.</param>
         /// <returns>The action result.</returns>
-        [HttpPost(Name = "POST Device model commands")]
+        [HttpPost(Name = "POST Set device model commands")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Post(string id, DeviceModelCommand[] commands)
@@ -115,7 +115,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         }
 
         /// <summary>
-        /// Sets the device model's commands.
+        /// Gets the device model's commands.
         /// </summary>
         /// <param name="id">The model identifier.</param>
         /// <returns>The action result.</returns>

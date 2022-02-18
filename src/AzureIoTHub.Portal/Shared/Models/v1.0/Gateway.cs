@@ -8,34 +8,76 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
 
     public class Gateway
     {
-        [Required]
+        /// <summary>
+        /// The IoT Edge identifier.
+        /// </summary>
+        [Required(ErrorMessage = "The device identifier is required.")]
         public string DeviceId { get; set; }
 
+        /// <summary>
+        /// The IoT Edge device symmetric key.
+        /// </summary>
         public string SymmetricKey { get; set; }
 
+        /// <summary>
+        /// The IoT Edge connection state.
+        /// </summary>
         public string ConnectionState { get; set; }
 
+        /// <summary>
+        /// The IoT Edge scope tag value.
+        /// </summary>
         public string Scope { get; set; }
 
+        /// <summary>
+        /// The IoT Edge end point.
+        /// </summary>
         public string EndPoint { get; set; }
 
-        [Required]
+        /// <summary>
+        /// The IoT Edge device type.
+        /// </summary>
+        [Required(ErrorMessage = "The device type is required.")]
         public string Type { get; set; }
 
+        /// <summary>
+        /// The IoT Edge device status.
+        /// </summary>
         public string Status { get; set; }
 
+        /// <summary>
+        /// The IoT Edge runtime response.
+        /// </summary>
         public string RuntimeResponse { get; set; }
 
+        /// <summary>
+        /// The number of connected devices on IoT Edge device.
+        /// </summary>
         public int NbDevices { get; set; }
 
+        /// <summary>
+        /// The number of modules on IoT Edge device.
+        /// </summary>
         public int NbModules { get; set; }
 
+        /// <summary>
+        /// The IoT Edge environment tag value.
+        /// </summary>
         public string Environment { get; set; }
 
+        /// <summary>
+        /// The IoT Edge configuraton.
+        /// </summary>
         public ConfigItem LastDeployment { get; set; }
 
+        /// <summary>
+        /// The IoT Edge modules.
+        /// </summary>
         public List<GatewayModule> Modules { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Gateway"/> class.
+        /// </summary>
         public Gateway()
         {
             this.Modules = new List<GatewayModule>();

@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.V10;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
     using Newtonsoft.Json.Linq;
@@ -28,10 +29,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         }
 
         /// <summary>
-        /// Gets a list of deployments as ConfigListItem from Azure IoT Hub.
+        /// Gets the IoT Edge deployment configurations.
         /// </summary>
-        /// <returns>A list of ConfigListItem.</returns>
-        [HttpGet]
+        /// <returns></returns>
+        [HttpGet(Name = "GET IoT Edge config list")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IEnumerable<ConfigListItem>> Get()
         {
             // Retrieve every Configurations, regardless of the parameter given... Why?
@@ -62,12 +64,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         }
 
         /// <summary>
-        /// Retrieve a specific deployment and its modules from the IoT Hub.
-        /// Converts it to a ConfigListItem.
+        /// Gets the specified configuration.
         /// </summary>
-        /// <param name="configurationID">ID of the deployment to retrieve.</param>
-        /// <returns>The ConfigListItem corresponding to the given ID.</returns>
-        [HttpGet("{configurationID}")]
+        /// <param name="configurationID">The configuration identifier.</param>
+        /// <returns></returns>
+        /// <exception cref="System.InvalidOperationException">Could not parse properties.desired.</exception>
+        [HttpGet("{configurationID}", Name ="GET IoT Edge configuration")]
         public async Task<ConfigListItem> Get(string configurationID)
         {
             var config = await this.configService.GetConfigItem(configurationID);

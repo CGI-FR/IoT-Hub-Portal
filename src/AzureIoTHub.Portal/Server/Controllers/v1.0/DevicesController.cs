@@ -8,6 +8,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Shared.Models.V10.Device;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     [ApiController]
     [ApiVersion("1.0")]
@@ -22,6 +24,60 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             : base (logger, devicesService, deviceTwinMapper)
         {
 
+        }
+
+        /// <summary>
+        /// Gets the device list.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet(Name = "GET Device list")]
+        public override Task<IEnumerable<DeviceListItem>> Get()
+        {
+            return base.Get();
+        }
+
+        /// <summary>
+        /// Gets the specified device.
+        /// </summary>
+        /// <param name="deviceID">The device identifier.</param>
+        /// <returns></returns>
+        [HttpGet("{deviceID}", Name = "GET Device details")]
+        public override Task<DeviceDetails> Get(string deviceID)
+        {
+            return base.Get(deviceID);
+        }
+
+        /// <summary>
+        /// Creates the device.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <returns></returns>
+        [HttpPost(Name = "POST Create device")]
+        public override Task<IActionResult> CreateDeviceAsync(DeviceDetails device)
+        {
+            return base.CreateDeviceAsync(device);
+        }
+
+        /// <summary>
+        /// Updates the device.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <returns></returns>
+        [HttpPut(Name = "PUT Update device")]
+        public override Task<IActionResult> UpdateDeviceAsync(DeviceDetails device)
+        {
+            return base.UpdateDeviceAsync(device);
+        }
+
+        /// <summary>
+        /// Deletes the specified device.
+        /// </summary>
+        /// <param name="deviceID">The device identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("{deviceID}", Name = "DELETE Remove device")]
+        public override Task<IActionResult> Delete(string deviceID)
+        {
+            return base.Delete(deviceID);
         }
     }
 }

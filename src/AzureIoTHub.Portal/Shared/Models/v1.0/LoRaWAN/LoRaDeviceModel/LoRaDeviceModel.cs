@@ -15,7 +15,7 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel
         public string AppEUI { get; set; }
 
         /// <summary>
-        /// The sensor decoder URL.
+        /// The sensor decoder Url.
         /// </summary>
         public string SensorDecoderURL { get; set; }
 
@@ -31,7 +31,6 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel
             this.IsBuiltin = from.IsBuiltin;
             this.ImageUrl = from.ImageUrl;
         }
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LoRaDeviceModel"/> class.

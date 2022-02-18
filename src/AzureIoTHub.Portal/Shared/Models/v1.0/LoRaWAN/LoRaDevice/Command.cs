@@ -5,8 +5,14 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice
 {
     public class Command
     {
+        /// <summary>
+        /// The command identifier.
+        /// </summary>
         public string CommandId { get; set; }
 
+        /// <summary>
+        /// The frame.
+        /// </summary>
         public string Frame { get; set; }
     }
 }

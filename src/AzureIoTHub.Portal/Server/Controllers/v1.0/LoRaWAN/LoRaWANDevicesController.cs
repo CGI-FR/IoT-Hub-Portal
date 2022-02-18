@@ -13,9 +13,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net;
-    using System.Net.Http.Json;
     using System.Threading.Tasks;
 
     [ApiController]
@@ -43,12 +43,67 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         }
 
         /// <summary>
-        /// Permit to execute cloud to device message.
+        /// Gets the device list.
         /// </summary>
-        /// <param name="deviceId">id of the device.</param>
-        /// <param name="commandId">the command who contain the name and the trame.</param>
-        /// <returns>a CloudToDeviceMethodResult .</returns>
-        [HttpPost("{deviceId}/_command/{commandId}")]
+        /// <returns></returns>
+        [HttpGet(Name = "GET LoRaWAN device list")]
+        public override Task<IEnumerable<DeviceListItem>> Get()
+        {
+            return base.Get();
+        }
+
+        /// <summary>
+        /// Gets the specified device.
+        /// </summary>
+        /// <param name="deviceID">The device identifier.</param>
+        /// <returns></returns>
+        [HttpGet("{deviceID}", Name = "GET LoRaWAN device details")]
+        public override Task<LoRaDeviceDetails> Get(string deviceID)
+        {
+            return base.Get(deviceID);
+        }
+
+        /// <summary>
+        /// Creates the device.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <returns></returns>
+        [HttpPost(Name = "POST Create LoRaWAN device")]
+        public override Task<IActionResult> CreateDeviceAsync(LoRaDeviceDetails device)
+        {
+            return base.CreateDeviceAsync(device);
+        }
+
+        /// <summary>
+        /// Updates the device.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <returns></returns>
+        [HttpPut(Name = "PUT Update LoRaWAN device")]
+        public override Task<IActionResult> UpdateDeviceAsync(LoRaDeviceDetails device)
+        {
+            return base.UpdateDeviceAsync(device);
+        }
+
+        /// <summary>
+        /// Deletes the specified device.
+        /// </summary>
+        /// <param name="deviceID">The device identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("{deviceID}", Name = "DELETE Remove LoRaWAN device")]
+        public override Task<IActionResult> Delete(string deviceID)
+        {
+            return base.Delete(deviceID);
+        }
+
+        /// <summary>
+        /// Executes the command on the device..
+        /// </summary>
+        /// <param name="deviceId">The device identifier.</param>
+        /// <param name="commandId">The command identifier.</param>
+        /// <returns></returns>
+        /// <exception cref="System.FormatException">Incorrect port or invalid DevEui Format.</exception>
+        [HttpPost("{deviceId}/_command/{commandId}", Name ="POST Execute LoRaWAN command")]
         public async Task<IActionResult> ExecuteCommand(string deviceId, string commandId)
         {
             try
