@@ -72,12 +72,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             var concentratorController = this.CreateController();
 
             // Act
-            var result = await concentratorController.GetAllDeviceConcentrator();
+            var response = await concentratorController.GetAllDeviceConcentrator();
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<OkObjectResult>(result);
-            var okObjectResult = result as ObjectResult;
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<OkObjectResult>(response.Result);
+            var okObjectResult = response.Result as ObjectResult;
 
             Assert.IsNotNull(okObjectResult);
             Assert.AreEqual(200, okObjectResult.StatusCode);
@@ -114,12 +114,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             var concentratorController = this.CreateController();
 
             // Act
-            var result = await concentratorController.GetDeviceConcentrator(twin.DeviceId);
+            var response = await concentratorController.GetDeviceConcentrator(twin.DeviceId);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<OkObjectResult>(result);
-            var okObjectResult = result as ObjectResult;
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<OkObjectResult>(response.Result);
+            var okObjectResult = response.Result as OkObjectResult;
 
             Assert.IsNotNull(okObjectResult);
             Assert.AreEqual(200, okObjectResult.StatusCode);
