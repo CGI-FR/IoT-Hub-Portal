@@ -301,7 +301,7 @@
           "IoT Edge"
         ],
         "summary": "Creates the IoT Edge device.",
-        "operationId": "POST Gateway",
+        "operationId": "POST Create IoT Edge",
         "requestBody": {
           "description": "The IoT Edge device.",
           "content": {
@@ -353,7 +353,7 @@
           "IoT Edge"
         ],
         "summary": "Updates the device.",
-        "operationId": "PUT",
+        "operationId": "PUT Update IoT Edge",
         "requestBody": {
           "description": "The IoT Edge device.",
           "content": {
@@ -374,28 +374,6 @@
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "IoT Edge"
-        ],
-        "summary": "Deletes the device.",
-        "operationId": "{deviceId}",
-        "parameters": [
-          {
-            "name": "deviceId",
-            "in": "query",
-            "description": "The device identifier.",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Success"
@@ -441,6 +419,29 @@
                 }
               }
             }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "IoT Edge"
+        ],
+        "summary": "Deletes the device.",
+        "operationId": "DELETE Remove IoT Edge",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
           }
         }
       }
