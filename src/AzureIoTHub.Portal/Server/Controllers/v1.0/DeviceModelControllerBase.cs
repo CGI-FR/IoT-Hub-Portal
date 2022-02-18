@@ -244,7 +244,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             TableEntity entity = new TableEntity()
             {
                 PartitionKey = DefaultPartitionKey,
-                RowKey = deviceModel.ModelId ?? Guid.NewGuid().ToString()
+                RowKey = string.IsNullOrEmpty(deviceModel.ModelId) ? Guid.NewGuid().ToString() : deviceModel.ModelId
             };
 
             await this.SaveEntity(entity, deviceModel);
