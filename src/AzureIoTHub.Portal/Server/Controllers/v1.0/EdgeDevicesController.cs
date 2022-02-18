@@ -168,7 +168,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="gateway">The IoT Edge device.</param>
         /// <returns></returns>
-        [HttpPost(Name = "POST Gateway")]
+        [HttpPost(Name = "POST Create IoT Edge")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateGatewayAsync(Gateway gateway)
@@ -197,7 +197,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="gateway">The IoT Edge device.</param>
         /// <returns></returns>
-        [HttpPut(Name = "PUT")]
+        [HttpPut(Name = "PUT Update IoT Edge")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateDeviceAsync(Gateway gateway)
         {
@@ -223,7 +223,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         /// <returns></returns>
-        [HttpDelete(Name = "{deviceId}")]
+        [HttpDelete("{deviceId}", Name = "DELETE Remove IoT Edge")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteDeviceAsync(string deviceId)
         {
