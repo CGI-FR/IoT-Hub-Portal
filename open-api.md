@@ -445,9 +445,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## POST Gateway
+## POST Create IoT Edge
 
-<a id="opIdPOST Gateway"></a>
+<a id="opIdPOST Create IoT Edge"></a>
 
 > Code samples
 
@@ -493,7 +493,7 @@ None
 }
 ```
 
-<h3 id="post-gateway-parameters">Parameters</h3>
+<h3 id="post-create-iot-edge-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -519,7 +519,7 @@ None
 }
 ```
 
-<h3 id="post-gateway-responses">Responses</h3>
+<h3 id="post-create-iot-edge-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -531,9 +531,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## PUT
+## PUT Update IoT Edge
 
-<a id="opIdPUT"></a>
+<a id="opIdPUT Update IoT Edge"></a>
 
 > Code samples
 
@@ -579,40 +579,13 @@ None
 }
 ```
 
-<h3 id="put-parameters">Parameters</h3>
+<h3 id="put-update-iot-edge-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[Gateway](#schemagateway)|false|The IoT Edge device.|
 
-<h3 id="put-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-None
-</aside>
-
-## {deviceId}
-
-<a id="opId{deviceId}"></a>
-
-> Code samples
-
-`DELETE /api/edge/device`
-
-*Deletes the device.*
-
-<h3 id="{deviceid}-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|deviceId|query|string|false|The device identifier.|
-
-<h3 id="{deviceid}-responses">Responses</h3>
+<h3 id="put-update-iot-edge-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -688,6 +661,33 @@ None
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[Gateway](#schemagateway)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## DELETE Remove IoT Edge
+
+<a id="opIdDELETE Remove IoT Edge"></a>
+
+> Code samples
+
+`DELETE /api/edge/device/{deviceId}`
+
+*Deletes the device.*
+
+<h3 id="delete-remove-iot-edge-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceId|path|string|true|The device identifier.|
+
+<h3 id="delete-remove-iot-edge-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
