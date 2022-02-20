@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Linq;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
-    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Server.Interfaces;
     using AzureIoTHub.Portal.Shared.Models.V10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -21,9 +21,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     [ApiExplorerSettings(GroupName = "IoT Edge")]
     public class EdgeConfigurationsController : ControllerBase
     {
-        private readonly ConfigsServices configService;
+        private readonly IConfigs configService;
 
-        public EdgeConfigurationsController(ConfigsServices configService)
+        public EdgeConfigurationsController(IConfigs configService)
         {
             this.configService = configService;
         }

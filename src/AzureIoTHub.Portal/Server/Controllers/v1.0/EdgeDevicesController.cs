@@ -241,7 +241,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="methodName">Name of the method.</param>
         /// <returns></returns>
         [HttpPost("{deviceId}/{moduleId}/{methodName}", Name = "POST Execute module command")]
-        public async Task<C2Dresult> ExecuteMethode(IoTEdgeModule module, string deviceId, string methodName)
+        public async Task<C2Dresult> ExecuteModuleMethod(IoTEdgeModule module, string deviceId, string methodName)
         {
             CloudToDeviceMethod method = new(methodName);
             string payload = string.Empty;
