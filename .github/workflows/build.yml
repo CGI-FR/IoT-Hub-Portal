@@ -45,7 +45,7 @@ jobs:
         path: ./src/swagger.json
 
     - name: Run unit tests
-      run: dotnet test --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura AzureIoTHub.Portal.Server.Tests/AzureIoTHub.Portal.Server.Tests.csproj
+      run: dotnet test --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura AzureIoTHub.Portal.Server.Tests.Unit/AzureIoTHub.Portal.Server.Tests.Unit.csproj
       working-directory: src/
 
     # Upload test results as artifact
