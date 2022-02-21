@@ -74,9 +74,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
             // Gets all the twins from this devices
             var items = await this.devicesService.GetAllDevice(filterDeviceType: "LoRa Concentrator");
 
-            var result = items.Select(this.concentratorTwinMapper.CreateDeviceDetails);
+            if (items.Any())
+            {
+                var result = items.Select(this.concentratorTwinMapper.CreateDeviceDetails);
 
-            return this.Ok(result);
+                return this.Ok(result);
+            }
+            else
+            {
+                return this.Ok(items);
+            }
         }
 
         /// <summary>
