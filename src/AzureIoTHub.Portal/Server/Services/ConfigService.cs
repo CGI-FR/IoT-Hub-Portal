@@ -5,14 +5,13 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Server.Interfaces;
     using Microsoft.Azure.Devices;
 
-    public class ConfigsServices : IConfigs
+    public class ConfigService : IConfigService
     {
         private readonly RegistryManager registryManager;
 
-        public ConfigsServices(
+        public ConfigService(
             RegistryManager registry)
         {
             this.registryManager = registry;

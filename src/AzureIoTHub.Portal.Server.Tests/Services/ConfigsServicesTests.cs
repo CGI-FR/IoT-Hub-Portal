@@ -22,9 +22,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Services
             this.mockRegistryManager = this.mockRepository.Create<RegistryManager>();
         }
 
-        private ConfigsServices CreateConfigsServices()
+        private ConfigService CreateConfigsServices()
         {
-            return new ConfigsServices(this.mockRegistryManager.Object);
+            return new ConfigService(this.mockRegistryManager.Object);
         }
 
         [Test]
