@@ -1,5 +1,4 @@
 ﻿using AzureIoTHub.Portal.Server.Controllers.V10;
-using AzureIoTHub.Portal.Server.Interfaces;
 using AzureIoTHub.Portal.Server.Services;
 using Microsoft.Azure.Devices;
 using Moq;
@@ -17,14 +16,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
     {
         private MockRepository mockRepository;
 
-        private Mock<IConfigs> mockConfigsServices;
+        private Mock<IConfigService> mockConfigsServices;
 
         [SetUp]
         public void SetUp()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockConfigsServices = this.mockRepository.Create<IConfigs>();
+            this.mockConfigsServices = this.mockRepository.Create<IConfigService>();
         }
 
         private EdgeConfigurationsController CreateEdgeConfigurationsController()
