@@ -13,11 +13,11 @@ namespace AzureIoTHub.Portal.Server.Helpers
     {
         /// <summary>
         /// Checks if the specific metric (targeted/applied/success/failure) exists within the device,
-        /// Returns the corresponding value if so, else returns -1 as an error code.
+        /// Returns the corresponding value if so, else returns 0.
         /// </summary>
         /// <param name="item">Configuration item to convert into a ConfigListItem.</param>
         /// <param name="metricName">Metric to retrieve (targetedCount, appliedCount, reportedSuccessfulCount or reportedFailedCount). </param>
-        /// <returns>Corresponding metric value, or -1 if it doesn't exist.</returns>
+        /// <returns>Corresponding metric value, or 0 if it doesn't exist.</returns>
         public static long RetrieveMetricValue(Configuration item, string metricName)
         {
             if (item.SystemMetrics.Results.TryGetValue(metricName, out long result))
@@ -25,7 +25,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
                 return result;
             }
 
-            return -1;
+            return 0;
         }
 
         /// <summary>
