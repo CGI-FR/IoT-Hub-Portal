@@ -193,7 +193,7 @@
 
             result.EnsureSuccessStatusCode();
 
-            result = await httpClient.PostAsJsonAsync($"{ApiUrlBase}/commands", Commands);
+            result = await httpClient.PostAsJsonAsync($"{ApiUrlBase}/{Model.ModelId}/commands", Commands);
         }
         else
         {
