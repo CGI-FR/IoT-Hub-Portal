@@ -17,7 +17,7 @@
             <MudExpansionPanel Text="Search panel">
                 <MudGrid>
                     <MudItem xs="12" md="6">
-                        <MudTextField @bind-Value="searchID" Placeholder="DeviceID"></MudTextField>
+                        <MudTextField @bind-Value="searchID" Placeholder="DeviceID / DeviceName"></MudTextField>
                     </MudItem>
                     <MudItem xs="12" md="6">
                         @*<MudTextField @bind-Value="searchName" Placeholder="Name"></MudTextField>*@
@@ -102,7 +102,9 @@
                         <img height="25" src="@context.ImageUrl" />
                     </MudTd>
                     <MudTd DataLabel="Device" Style="word-break: break-all;">
-                        <a href="@($"devices/{@context.DeviceID}{(@context.SupportLoRaFeatures ? "?isLora=true": "")}")">@context.DeviceName</a>
+                        <a href="@($"devices/{@context.DeviceID}{(@context.SupportLoRaFeatures ? "?isLora=true": "")}")">
+                            @(string.IsNullOrEmpty(context.DeviceName) ? context.DeviceID : context.DeviceName)
+                            </a>
                     </MudTd>
 
                     <MudTd DataLabel="Status" Style="text-align: center">
@@ -154,7 +156,6 @@
     private string searchID = "";
     private string searchStatus = "";
     private string searchState = "";
-    // private string searchName = "";
 
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
 
@@ -193,7 +194,6 @@
         searchID = "";
         searchStatus = "";
         searchState = "";
-        // searchName = "";
     }
 
     /// <summary>
@@ -224,12 +224,12 @@
     private bool FilterFunc(DeviceListItem item)
     {
         bool flagID = checkFlag(item.DeviceID, searchID);
+        bool flagName = checkFlag(item.DeviceName, searchID);
         bool flagStatus = checkFlag(item.IsEnabled.ToString(), searchStatus);
         bool flagState = checkFlag(item.IsConnected.ToString(), searchState);
-        // bool flagLocation = checkFlag(item.Name, searchName);
 
         // Current row is shown only if all the flags are true
-        if (flagID && flagStatus && flagState)
+        if ((flagID || flagName) && flagStatus && flagState)
             return true;
 
         return false;
