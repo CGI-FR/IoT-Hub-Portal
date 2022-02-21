@@ -1,0 +1,107 @@
+﻿@page "/settings/device-tag"
+@using AzureIoTHub.Portal.Shared.Models.v1._0.Device
+@using System.ComponentModel.DataAnnotations
+@using System.Net.Http.Json
+@using System.Net.Http.Headers
+@using System.IO
+@using AzureIoTHub.Portal.Client.Pages.DeviceModels.LoRaWAN
+@using AzureIoTHub.Portal.Client.Validators
+@using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel
+@using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel
+@using Blazored.Modal
+@using Blazored.Modal.Services
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Newtonsoft.Json
+
+@attribute [Authorize]
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device tags setting</MudText>
+
+
+<MudItem xs="12">
+    <MudTable Items="@Tags" Dense=true Hover=true Bordered=true Striped=true>
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Tags</MudText>
+            <MudSpacer />
+        </ToolBarContent>
+        <ColGroup>
+            <col style="width: 40%;" />
+            <col style="width: 40%;" />
+            <col style="width: 5%;" />
+            <col style="width: 5%;" />
+            <col style="width: 10%;" />
+        </ColGroup>
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Label</MudTh>
+            <MudTh Style="text-align: center">Required</MudTh>
+            <MudTh Style="text-align: center">Searchable</MudTh>
+            <MudTh Style="text-align: center">Delete</MudTh>
+        </HeaderContent>
+        <RowTemplate Context="TagContexte">
+            <MudTd DataLabel="Name" Style="word-break: break-all;">
+                <MudTextField @bind-Value="@TagContexte.Name" Label="Name"
+                HelperText = "Name that will be registered in the device twin" HelperTextOnFocus = "true"
+                For="@(() => TagContexte.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+            </MudTd>
+            <MudTd DataLabel="Label" Style="word-break: break-all; ">
+                <MudTextField @bind-Value="@TagContexte.Label" Label="Label"
+                HelperText = "The label shown to the user" HelperTextOnFocus = "true"
+                For="@(() => TagContexte.Label)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+            </MudTd>
+            <MudTd DataLabel="Required" Style="text-align: center;">
+                <MudCheckBox @bind-Checked="@TagContexte.Required"></MudCheckBox>
+            </MudTd>
+            <MudTd DataLabel="Searchable" Style="text-align: center;">
+                <MudCheckBox @bind-Checked="@TagContexte.Searchable"></MudCheckBox>
+            </MudTd>
+            <MudTd DataLabel="Delete" Style="text-align: center">
+                <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteTag(TagContexte))"></MudIconButton>
+            </MudTd>
+        </RowTemplate>
+        <FooterContent>
+            <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddTag">Add a new Tag</MudButton>
+        </FooterContent>
+    </MudTable>
+    <MudCardActions Class="pb-4 pl-4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save">Save Changes</MudButton>
+    </MudCardActions>
+
+</MudItem>
+
+
+
+
+@code {
+    List<DeviceTag> Tags = new();
+
+    private void AddTag()
+    {
+        var last = Tags.LastOrDefault();
+
+        if (Tags.Count == 0 || (last.Name is not null && last.Label is not null))
+        {
+            Tags.Add(new DeviceTag());
+        }
+    }
+
+    private void DeleteTag(DeviceTag item)
+    {
+        Tags.Remove(item);
+    }
+
+    private async Task Save()
+    {
+        await Task.Delay(0); // TODO
+        foreach (DeviceTag tag in Tags)
+        {
+            Console.Write(tag.Name + " / ");
+            Console.Write(tag.Label + " / ");
+            Console.Write(tag.Required + " / ");
+            Console.WriteLine(tag.Searchable);
+        }
+    }
+
+
+}
