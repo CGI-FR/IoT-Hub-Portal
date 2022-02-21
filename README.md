@@ -74,15 +74,34 @@ You can find below some screenshot that can help you to understand the possibili
 
 ### Device list
 
-![image](https://user-images.githubusercontent.com/9513635/153055836-11bd5c30-2efc-4d43-95e9-5e07e0e2e6cc.png)
+![image](https://user-images.githubusercontent.com/9513635/154951103-8a1a9103-6106-4eee-9013-76425016cb7f.png)
 
 ### Device details
 
-![image](https://user-images.githubusercontent.com/9513635/153073182-aec2e029-272a-4a8a-b713-424308d51c81.png)
+![image](https://user-images.githubusercontent.com/9513635/154951181-3c018b80-1d22-48ac-98ee-1e4550244ec7.png)
 
 ### Device models
 
-![image](https://user-images.githubusercontent.com/9513635/153073065-0fa9b282-c722-464b-93f8-c412812c5ada.png)
+![image](https://user-images.githubusercontent.com/9513635/154951250-0fe289ae-aa2d-485a-aa29-e45f9e7bdd69.png)
+
+### LoRa WAN Support
+
+This IoT Hub portal supports LoRaWAN device management on device model and device details.
+Byt the portal, the user can send LoRa WAN downstream messages to the devices...
+
+It supports also managing LoRaWAN Concentrators (Basic Stations) on the portal.
+
+#### LoRa WAN Device model
+
+![image](https://user-images.githubusercontent.com/9513635/154951470-069c7511-0a07-4727-bea7-77cad955479e.png)
+
+#### LoRa WAN device commands
+
+![image](https://user-images.githubusercontent.com/9513635/154951697-f7160d7b-e611-4575-898e-87fed835e65d.png)
+
+#### LoRa WAN Concentrators
+
+![image](https://user-images.githubusercontent.com/9513635/154951860-011cee2c-a0ad-4ac9-adc7-2b4221777c48.png)
 
 ## Documentation
 
