@@ -53,7 +53,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpGet("lora", Name = "GET LoRa settings")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetLoRaDeviceSetting()
+        public IActionResult GetLoRaActivationSetting()
         {
             return this.Ok(this.configHandler.LoRaSupportSetting);
         }
