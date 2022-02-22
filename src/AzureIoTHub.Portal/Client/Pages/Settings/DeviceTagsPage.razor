@@ -1,11 +1,13 @@
 ﻿@page "/settings/device-tag"
-@using AzureIoTHub.Portal.Shared.Models.v1._0.Device
+@using AzureIoTHub.Portal.Shared.Models.v10.Device
 @using System.ComponentModel.DataAnnotations
 @using System.IO
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @attribute [Authorize]
+@inject HttpClient HttpClient
+@inject ISnackbar Snackbar
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device tags setting</MudText>
 
@@ -84,15 +86,10 @@
 
     private async Task Save()
     {
-        await Task.Delay(0); // TODO
-        foreach (DeviceTag tag in Tags)
-        {
-            Console.Write(tag.Name + " / ");
-            Console.Write(tag.Label + " / ");
-            Console.Write(tag.Required + " / ");
-            Console.WriteLine(tag.Searchable);
-        }
+        var response = await HttpClient.PostAsJsonAsync($"api/DeviceTagSettings", Tags);
+        response.EnsureSuccessStatusCode();
+
+        // Prompts a snack bar to inform the action was successful
+        Snackbar.Add($"Settings have been successfully updated!", Severity.Success);
     }
-
-
 }

@@ -9,9 +9,12 @@ namespace AzureIoTHub.Portal.Server.Factories
     {
         const string DeviceCommandTableName = "DeviceCommands";
         const string DeviceTemplateTableName = "DeviceTemplates";
+        const string DeviceTagSettingTableName = "DeviceTagSettings";
 
         TableClient GetDeviceCommands();
 
         TableClient GetDeviceTemplates();
+
+        TableClient GetDeviceTagSettings();
     }
 }
