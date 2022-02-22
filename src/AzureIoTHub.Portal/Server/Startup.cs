@@ -258,7 +258,7 @@ namespace AzureIoTHub.Portal.Server
             protected const string OIDCClientIdKey = "OIDC:ClientId";
             protected const string OIDCApiClientIdKey = "OIDC:ApiClientId";
 
-            protected const string LoRaSupportSettingKey = "LoRaSupportSettingKey";
+            protected const string LoRaFeatureSettingKey = "LoRaFeatureSetting";
 
             protected const string StorageAccountConnectionStringKey = "StorageAccount:ConnectionString";
             protected const string StorageAccountBlobContainerNameKey = "StorageAccount:BlobContainerName";
@@ -298,7 +298,7 @@ namespace AzureIoTHub.Portal.Server
 
             internal abstract string OIDCAuthority { get; }
 
-            internal abstract bool LoRaSupportSetting { get; }
+            internal abstract string LoRaFeatureSetting { get; }
 
             internal abstract string StorageAccountBlobContainerName { get; }
 
@@ -340,7 +340,7 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string OIDCApiClientId => this.config[OIDCApiClientIdKey];
 
-            internal override bool LoRaSupportSetting => Convert.ToBoolean(this.config[LoRaSupportSettingKey]);
+            internal override string LoRaFeatureSetting => this.config[LoRaFeatureSettingKey];
 
             internal override string StorageAccountBlobContainerName => this.config[StorageAccountBlobContainerNameKey];
 
@@ -382,7 +382,7 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string OIDCApiClientId => this.config[OIDCApiClientIdKey];
 
-            internal override bool LoRaSupportSetting => Convert.ToBoolean(this.config[LoRaSupportSettingKey]);
+            internal override string LoRaFeatureSetting => this.config[LoRaFeatureSettingKey];
 
             internal override string StorageAccountBlobContainerName => this.config[StorageAccountBlobContainerNameKey];
 
