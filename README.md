@@ -68,41 +68,6 @@ The template will deploy in your Azure subscription the Following resources:
 
     > see: [https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure](https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure) for more information about the LoRaWan IoT Hub and Azure deployment.
 
-## Screenshots
-
-You can find below some screenshot that can help you to understand the possibilities of this solution.
-
-### Device list
-
-![image](https://user-images.githubusercontent.com/9513635/154951103-8a1a9103-6106-4eee-9013-76425016cb7f.png)
-
-### Device details
-
-![image](https://user-images.githubusercontent.com/9513635/154951181-3c018b80-1d22-48ac-98ee-1e4550244ec7.png)
-
-### Device models
-
-![image](https://user-images.githubusercontent.com/9513635/154951250-0fe289ae-aa2d-485a-aa29-e45f9e7bdd69.png)
-
-### LoRa WAN Support
-
-This IoT Hub portal supports LoRaWAN device management on device model and device details.
-Byt the portal, the user can send LoRa WAN downstream messages to the devices...
-
-It supports also managing LoRaWAN Concentrators (Basic Stations) on the portal.
-
-#### LoRa WAN Device model
-
-![image](https://user-images.githubusercontent.com/9513635/154951470-069c7511-0a07-4727-bea7-77cad955479e.png)
-
-#### LoRa WAN device commands
-
-![image](https://user-images.githubusercontent.com/9513635/154951697-f7160d7b-e611-4575-898e-87fed835e65d.png)
-
-#### LoRa WAN Concentrators
-
-![image](https://user-images.githubusercontent.com/9513635/154951860-011cee2c-a0ad-4ac9-adc7-2b4221777c48.png)
-
 ## Documentation
 
 Our documentation is present at github page: [https://cgi-fr.github.io/IoT-Hub-Portal/](https://cgi-fr.github.io/IoT-Hub-Portal/).
