@@ -55,9 +55,9 @@ To store additional information about the device, the application uses device tw
 
 | Name       	| Position        	| Description                                                                                                                                                  	|
 |------------	|-----------------	|--------------------------------------------------------------------------------------------------------------------------------------------------------------	|
-| deviceName 	| tags.deviceName 	| Field that contains the device friendly name.<br>_**note**: if not set, the portal will show the device id instead of the device name until its configured._ 	|
-| modelId    	| tags.modelId    	| Field that contains the device model identifier that the device is related.<br>_**note**: if not set, the device is not usable on the IoT hub portal._       	|
-| deviceType 	| tags.deviceType 	| Field that contains a human readable device type (ex: 'LoRa Device')                                                                                         	|
+| deviceName 	| ``tags.deviceName`` 	| Field that contains the device friendly name.<br>_**note**: if not set, the portal will show the device id instead of the device name until its configured._ 	|
+| modelId    	| ``tags.modelId``    	| Field that contains the device model identifier that the device is related.<br>_**note**: if not set, the device is not usable on the IoT hub portal._       	|
+| deviceType 	| ``tags.deviceType`` 	| Field that contains a human readable device type (ex: 'LoRa Device')                                                                                         	|
 
 ## IoT Edge
 
@@ -94,7 +94,8 @@ To store additional information about the device, the application uses device tw
 
 | Name    	| Position     	| Description                                                                                                                                 	|
 |---------	|--------------	|---------------------------------------------------------------------------------------------------------------------------------------------	|
-| purpose 	| tags.purpose 	| Field that contains the Device Type value.<br>_**note**: this is the tag that might be used to target deployment manifest for the IoT Edge_ 	|
+| Purpose 	| ``tags.purpose`` 	| Field that contains the Device Type value.<br>_**note**: this is the tag that might be used to target deployment manifest for the IoT Edge_ 	|
+| Environment 	| ``tags.env`` 	| Field that contains the Device Environment value.<br>_**note**: this is the tag that might be used to target deployment manifest for the IoT Edge_ 	|
 
 ### DPS Enrollment groups
 
@@ -112,3 +113,16 @@ The IoT Edge configuration concerns the IoT Edge deployment manifest that are cu
 The portal can be used to see the details of the configuration. 
 
 > Note: at that time the portal cannot be used to update the configuration.
+
+![./assets/images/edge-configuration.png](./assets/images/edge-configuration.png)
+
+### Target
+
+The parameters are related to the IoT Edge deployment manifest target condition field.
+The IoT Hub portal will use the Target condition to extract this values from the deployment manifest.
+
+| Name        	| Position       	| Description                                              	|
+|-------------	|----------------	|----------------------------------------------------------	|
+| Owner       	| ``tags.owner`` 	| Owner tag filter condition from the Deployment Manifest. 	|
+| Environment 	| ``tags.env``   	| Environment tag filter from the Deployment Manifest.     	|
+| Type        	| ``tags.type``  	| Device type tag filter from the Deployment Manifest.     	|
