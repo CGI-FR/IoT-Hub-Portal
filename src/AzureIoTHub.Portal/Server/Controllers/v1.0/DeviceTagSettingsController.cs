@@ -44,6 +44,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             this.log = log;
             this.deviceTagMapper = deviceTagMapper;
             this.tableClientFactory = tableClientFactory;
+            this.deviceTagMapper = deviceTagMapper;
         }
 
         /// <summary>
