@@ -183,9 +183,9 @@ The schema below explain how the command execution flow works.
 <div class="mermaid">
 sequenceDiagram
     User->>+IoT Hub Portal: Send Command (DeviceId, FrameId)
-    IoT Hub Portal->>+LoRa Key Management Facade: 
-    LoRa Key Management Facade->>+Azure IoT Hub: C2D Message
-    Azure IoT Hub-->>-LoRa Key Management Facade: 
-    LoRa Key Management Facade-->>-IoT Hub Portal: 
-    IoT Hub Portal-->>-User: 
+    IoT Hub Portal->>+LoRa Key Management Facade: POST /api/cloudtodevicemessage
+    LoRa Key Management Facade->>+Azure IoT Hub: Invoke Device Method to Network Server
+    Azure IoT Hub-->>-LoRa Key Management Facade: Cloud To Device Method Result
+    LoRa Key Management Facade-->>-IoT Hub Portal: Send Cloud To Device Message Result
+    IoT Hub Portal-->>-User: Command send result
 </div>
