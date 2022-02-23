@@ -8,6 +8,7 @@ Inside the Portal, the solution leverage the following concepts:
 - IoT Hub Device Twin
 - IoT Hub Device Twin Properties
 - IoT Hub Edge deployment manifest
+- Cloud To Device Message
 
 ## Device models
 
