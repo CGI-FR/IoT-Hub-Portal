@@ -170,7 +170,7 @@ The LoRaWAN tab presents the device details.
 
 > Note:by selecting the correct device model on the first tab, the portal will automatically take LoRaWAN settings from the device model to apply on the device.
 
-### Command Execution
+## Command Execution
 
 To execute the command, the device should have joined the network. The message below explain that the device have to be connected to the network ant commands are disabled until the device is connected to the network.
 
