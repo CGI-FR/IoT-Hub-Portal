@@ -126,3 +126,4 @@ The IoT Hub portal will use the Target condition to extract this values from the
 | Owner       	| ``tags.owner`` 	| Owner tag filter condition from the Deployment Manifest. 	|
 | Environment 	| ``tags.env``   	| Environment tag filter from the Deployment Manifest.     	|
 | Type        	| ``tags.type``  	| Device type tag filter from the Deployment Manifest.     	|
+
