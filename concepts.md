@@ -161,5 +161,31 @@ The devices commands are pre-stored frames that the user can add to the device m
 * ``Name``: The command name. This name is only a friendly name that the user can set to understand what the command is supposed to do.
 * ```Frame```: The LoRaWAN frame (in hexa) to be sent to the device.
 
+## Devices
 
+LoRa WAN devices are accessible from the IoT Hub portal for devices that inherits from the LoRaWAN device model.
+The LoRaWAN tab presents the device details.
 
+![./assets/images/lorawan-device-details.png](./assets/images/lorawan-device-details.png)
+
+> Note:by selecting the correct device model on the first tab, the portal will automatically take LoRaWAN settings from the device model to apply on the device.
+
+### Command Execution
+
+To execute the command, the device should have joined the network. The message below explain that the device have to be connected to the network ant commands are disabled until the device is connected to the network.
+
+![./assets/images/lorawan-device-not-joined-message.png](./assets/images/lorawan-device-not-joined-message.png)
+
+#### Command execution flow
+
+The schema below explain how the command execution flow works.
+
+<div class="mermaid">
+sequenceDiagram
+    User->>+IoT Hub Portal: Send Command (DeviceId, FrameId)
+    IoT Hub Portal->>+LoRa Key Management Facade: 
+    LoRa Key Management Facade->>+Azure IoT Hub: C2D Message
+    Azure IoT Hub-->>-LoRa Key Management Facade: 
+    LoRa Key Management Facade-->>-IoT Hub Portal: 
+    IoT Hub Portal-->>-User: 
+</div>
