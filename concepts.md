@@ -127,3 +127,39 @@ The IoT Hub portal will use the Target condition to extract this values from the
 | Environment 	| ``tags.env``   	| Environment tag filter from the Deployment Manifest.     	|
 | Type        	| ``tags.type``  	| Device type tag filter from the Deployment Manifest.     	|
 
+# LoRa WAN
+
+LoRaWAN features are activated by default providing in the Portal the way to configure IoT Devices that supports LoRaWAN connectivity.
+Internally, the LoRaWAN connectivity is expected to be provided by [IoTEdge LoRaWAN StarterKit](https://github.com/Azure/iotedge-lorawan-starterkit/). The IoT Hub portal will manage devices by modifying there twin properties to make them working with this solution.
+
+## Device models
+
+As for regulare Device Models the IoT hub portal provides the possibility to manage LoRa WEN device models.
+To activate the LoRa WAN features on the device model, user have to select that on the `LoRa Device` compatibility
+
+![./assets/images/lora-feature-device-model-toggle.png](./assets/images/lora-feature-device-model-toggle.png)
+
+> Note: once activated, the device model detail activate a new tab called "LoRaWAN" that presents new settings for the device model.
+
+![./assets/images/lorawan-device-model.png](./assets/images/lorawan-device-model.png)
+
+### Parameters
+
+The parameters for the device models are parameters that are stored in the IoT Hub portal and retrieved for devices that inherits from this device model.
+
+> Note: At that time, some of this settings are not automatically changed on devices when changed to the device model. Only commands will be automatically avilable on device details after the model modification.
+>
+> In that case, user should then modify each device and re-save it to get the correct properties.
+
+* ``OTAA AppEUI``: The device model OTAA App EUI used for the device during the OTAA Join procedure.
+* ```Sensor Decoder URL```: The Sensor Decoder URL that the network server should use to decode frames comming from the devices that inherit from this model.
+
+### Commands
+
+The devices commands are pre-stored frames that the user can add to the device model and then will be able to use on device detail page to launch to the device.
+
+* ``Name``: The command name. This name is only a friendly name that the user can set to understand what the command is supposed to do.
+* ```Frame```: The LoRaWAN frame (in hexa) to be sent to the device.
+
+
+
