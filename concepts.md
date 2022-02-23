@@ -1,4 +1,4 @@
-# Concepts
+# Core Concepts
 
 The Azure IoT Hub portal inherit from Azure IoT Hub concepts for mananing IoT devices.
 
