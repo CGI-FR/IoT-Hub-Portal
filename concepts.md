@@ -189,3 +189,5 @@ sequenceDiagram
     LoRa Key Management Facade-->>-IoT Hub Portal: Send Cloud To Device Message Result
     IoT Hub Portal-->>-User: Command send result
 </div>
+
+> See [https://azure.github.io/iotedge-lorawan-starterkit/2.0.0/quickstart/#cloud-to-device-message](https://azure.github.io/iotedge-lorawan-starterkit/2.0.0/quickstart/#cloud-to-device-message) for more information about the Cloud To Device Message involed  in the LoRa WAN device commands execution flow.
