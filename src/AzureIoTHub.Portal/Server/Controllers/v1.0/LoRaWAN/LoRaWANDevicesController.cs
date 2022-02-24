@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
@@ -22,6 +23,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     [ApiVersion("1.0")]
     [Route("api/lorawan/devices")]
     [ApiExplorerSettings(GroupName = "LoRa WAN")]
+    [LoRaFeatureActiveFilter]
     public class LoRaWANDevicesController : DevicesControllerBase<DeviceListItem, LoRaDeviceDetails>
     {
         private readonly ITableClientFactory tableClientFactory;
@@ -35,7 +37,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             ITableClientFactory tableClientFactory,
             ILoraDeviceMethodManager loraDeviceMethodManager,
             IDeviceModelCommandMapper deviceModelCommandMapper)
-            : base (logger, devicesService, deviceTwinMapper)
+            : base(logger, devicesService, deviceTwinMapper)
         {
             this.tableClientFactory = tableClientFactory;
             this.loraDeviceMethodManager = loraDeviceMethodManager;
