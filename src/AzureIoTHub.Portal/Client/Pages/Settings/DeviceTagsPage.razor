@@ -105,10 +105,23 @@
     private async Task Save()
     {
 
+        // Checks empty field and regex validation
         await FormLabel.Validate();
         await FormName.Validate();
 
-        if (FormLabel.IsValid && FormName.IsValid)
+        // Checks duplicate
+        bool duplicated = false;
+        var query = Tags.GroupBy(x => x.Name)
+                        .Where(x => x.Count() > 1)
+                        .Select(x => x.Key)
+                        .ToList();
+        foreach (var item in query)
+        {
+            Snackbar.Add($"The name '{item}' appears more than once!", Severity.Warning);
+            duplicated = true;
+        }
+
+        if (FormLabel.IsValid && FormName.IsValid && !duplicated)
         {
             var response = await HttpClient.PostAsJsonAsync($"api/DeviceTagSettings", Tags);
             response.EnsureSuccessStatusCode();
