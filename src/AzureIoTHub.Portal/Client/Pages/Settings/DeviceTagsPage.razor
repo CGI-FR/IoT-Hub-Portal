@@ -4,6 +4,7 @@
 @using System.IO
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Client.Validators
 
 @attribute [Authorize]
 @inject HttpClient HttpClient
@@ -11,6 +12,12 @@
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device tags setting</MudText>
 
+@if (Tags == null)
+{
+    <MudItem Class="custom-centered-container">
+        <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+    </MudItem>
+}
 
 <MudItem xs="12">
     <MudTable Items="@Tags" Dense=true Hover=true Bordered=true Striped=true>
@@ -35,13 +42,13 @@
         <RowTemplate Context="TagContexte">
             <MudTd DataLabel="Name" Style="word-break: break-all;">
                 <MudTextField @bind-Value="@TagContexte.Name" Label="Name"
-                HelperText = "Name that will be registered in the device twin" HelperTextOnFocus = "true"
-                For="@(() => TagContexte.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                              HelperText="Name that will be registered in the device twin" HelperTextOnFocus="true"
+                              For="@(() => TagContexte.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
             </MudTd>
             <MudTd DataLabel="Label" Style="word-break: break-all; ">
                 <MudTextField @bind-Value="@TagContexte.Label" Label="Label"
-                HelperText = "The label shown to the user" HelperTextOnFocus = "true"
-                For="@(() => TagContexte.Label)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                              HelperText="The label shown to the user" HelperTextOnFocus="true"
+                              For="@(() => TagContexte.Label)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
             </MudTd>
             <MudTd DataLabel="Required" Style="text-align: center;">
                 <MudCheckBox @bind-Checked="@TagContexte.Required"></MudCheckBox>
@@ -63,17 +70,16 @@
 
 </MudItem>
 
-
-
-
 @code {
     List<DeviceTag> Tags { get; set; }
+
+    private DeviceTagValidator testValidator = new DeviceTagValidator();
 
     protected override async Task OnInitializedAsync()
     {
         Tags = new List<DeviceTag>(
             await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"api/DeviceTagSettings")
-        ) ;
+        );
     }
 
     private void AddTag()
@@ -93,10 +99,21 @@
 
     private async Task Save()
     {
-        var response = await HttpClient.PostAsJsonAsync($"api/DeviceTagSettings", Tags);
-        response.EnsureSuccessStatusCode();
+        var lastTag = Tags.Last();
 
-        // Prompts a snack bar to inform the action was successful
-        Snackbar.Add($"Settings have been successfully updated!", Severity.Success);
+        if (!testValidator.Validate(lastTag).IsValid)
+        {
+            Snackbar.Add("One or more validation errors occurred", Severity.Error);
+            return;
+        }
+
+        else
+        {
+            var response = await HttpClient.PostAsJsonAsync($"api/DeviceTagSettings", Tags);
+            response.EnsureSuccessStatusCode();
+
+            // Prompts a snack bar to inform the action was successful
+            Snackbar.Add($"Settings have been successfully updated!", Severity.Success);
+        }
     }
 }
