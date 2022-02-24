@@ -21,7 +21,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Filters
     public class LoRaFeatureActiveFilterAttributeTest
     {
         private MockRepository mockRepository;
-        // private Mock<ActionExecutingContext> mockActionExecutingContext;
         private Mock<ConfigHandler> mockConfigHandler;
 
         [SetUp]
@@ -39,7 +38,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Filters
         }
 
         [Test]
-        public void OnActionExecuting_With_LoRa_feature_disable_Should_return_400()
+        public void When_LoRa_Is_Disabled_Should_Return_Http_400()
         {
             // Arrange
             this.mockConfigHandler
@@ -65,10 +64,42 @@ namespace AzureIoTHub.Portal.Server.Tests.Filters
                 new Dictionary<string, object>(),
                 Mock.Of<Controller>());
 
-            //var mockActionExecutingContext = new Mock<ActionExecutingContext>();
-            //mockActionExecutingContext
-            //    .Setup(x => x.HttpContext.RequestServices.GetService(typeof(ConfigHandler)))
-            //    .Returns(this.mockConfigHandler.Object);
+            var actionFilter = this.CreateAttributeFilter();
+
+            // Act
+            actionFilter.OnActionExecuting(actionExecutingContext);
+
+            // Assert
+            Assert.IsAssignableFrom<BadRequestObjectResult>(actionExecutingContext.Result);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void When_LoRa_Is_Enabled_Should_Return_Null()
+        {
+            // Arrange
+            this.mockConfigHandler
+                .SetupGet(c => c.IsLoRaEnabled)
+                .Returns(true);
+
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            serviceProviderMock.Setup(provider => provider.GetService(typeof(ConfigHandler)))
+                .Returns(this.mockConfigHandler.Object);
+
+            var httpContextMock = new Mock<HttpContext>();
+            httpContextMock.SetupGet(context => context.RequestServices)
+                .Returns(serviceProviderMock.Object);
+
+            var actionContext = new ActionContext(
+                httpContextMock.Object,
+                Mock.Of<RouteData>(),
+                Mock.Of<ActionDescriptor>());
+
+            var actionExecutingContext = new ActionExecutingContext(
+                actionContext,
+                new List<IFilterMetadata>(),
+                new Dictionary<string, object>(),
+                Mock.Of<Controller>());
 
             var actionFilter = this.CreateAttributeFilter();
 
@@ -76,8 +107,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Filters
             actionFilter.OnActionExecuting(actionExecutingContext);
 
             // Assert
-            var contentResult = actionExecutingContext.Result as ContentResult;
-            Assert.AreEqual((int)System.Net.HttpStatusCode.BadRequest, contentResult.StatusCode);
+            Assert.IsNull(actionExecutingContext.Result);
+            this.mockRepository.VerifyAll();
         }
     }
 }
