@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,11 +12,13 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.Device
         /// <summary>
         /// The registered name in the device twin.
         /// </summary>
+        [Required(ErrorMessage = "The tag should have a name.")]
         public string Name { get; set; }
 
         /// <summary>
         /// The label shown to the user.
         /// </summary>
+        [Required(ErrorMessage = "The tag should have a label.")]
         public string Label { get; set; }
 
         /// <summary>

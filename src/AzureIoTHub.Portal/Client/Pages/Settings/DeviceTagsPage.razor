@@ -41,14 +41,18 @@
         </HeaderContent>
         <RowTemplate Context="TagContexte">
             <MudTd DataLabel="Name" Style="word-break: break-all;">
-                <MudTextField @bind-Value="@TagContexte.Name" Label="Name"
-                              HelperText="Name that will be registered in the device twin" HelperTextOnFocus="true"
-                              For="@(() => TagContexte.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                <MudForm @ref="FormName" Model="TagContexte">
+                    <MudTextField @bind-Value="@TagContexte.Name" Label="Name"
+                                  HelperText="Name that will be registered in the device twin" HelperTextOnFocus="true"
+                                  For="@(() => TagContexte.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                </MudForm>
             </MudTd>
             <MudTd DataLabel="Label" Style="word-break: break-all; ">
-                <MudTextField @bind-Value="@TagContexte.Label" Label="Label"
-                              HelperText="The label shown to the user" HelperTextOnFocus="true"
-                              For="@(() => TagContexte.Label)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                <MudForm @ref="FormLabel" Model="TagContexte">
+                    <MudTextField @bind-Value="@TagContexte.Label" Label="Label"
+                                  HelperText="The label shown to the user" HelperTextOnFocus="true"
+                                  For="@(() => TagContexte.Label)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                </MudForm>
             </MudTd>
             <MudTd DataLabel="Required" Style="text-align: center;">
                 <MudCheckBox @bind-Checked="@TagContexte.Required"></MudCheckBox>
@@ -73,7 +77,8 @@
 @code {
     List<DeviceTag> Tags { get; set; }
 
-    private DeviceTagValidator testValidator = new DeviceTagValidator();
+    private MudForm FormName { get; set; }
+    private MudForm FormLabel { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -99,21 +104,22 @@
 
     private async Task Save()
     {
-        var lastTag = Tags.Last();
 
-        if (!testValidator.Validate(lastTag).IsValid)
-        {
-            Snackbar.Add("One or more validation errors occurred", Severity.Error);
-            return;
-        }
+        await FormLabel.Validate();
+        await FormName.Validate();
 
-        else
+        if (FormLabel.IsValid && FormName.IsValid)
         {
             var response = await HttpClient.PostAsJsonAsync($"api/DeviceTagSettings", Tags);
             response.EnsureSuccessStatusCode();
 
             // Prompts a snack bar to inform the action was successful
             Snackbar.Add($"Settings have been successfully updated!", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add("One or more validation errors occurred", Severity.Error);
+            return;
         }
     }
 }
