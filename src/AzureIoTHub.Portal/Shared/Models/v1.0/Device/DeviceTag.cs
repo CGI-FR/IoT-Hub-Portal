@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.Device
         /// The registered name in the device twin.
         /// </summary>
         [Required(ErrorMessage = "The tag should have a name.")]
+        [RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Name may only contain alphanumeric characters")]
         public string Name { get; set; }
 
         /// <summary>
