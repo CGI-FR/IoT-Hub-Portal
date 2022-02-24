@@ -67,7 +67,14 @@
 
 
 @code {
-    List<DeviceTag> Tags = new();
+    List<DeviceTag> Tags { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Tags = new List<DeviceTag>(
+            await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"api/DeviceTagSettings")
+        ) ;
+    }
 
     private void AddTag()
     {
