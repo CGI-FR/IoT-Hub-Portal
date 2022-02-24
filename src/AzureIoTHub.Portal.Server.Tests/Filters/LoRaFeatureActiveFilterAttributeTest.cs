@@ -21,6 +21,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Filters
     public class LoRaFeatureActiveFilterAttributeTest
     {
         private MockRepository mockRepository;
+        // private Mock<ActionExecutingContext> mockActionExecutingContext;
         private Mock<ConfigHandler> mockConfigHandler;
 
         [SetUp]
