@@ -3,13 +3,8 @@ using AzureIoTHub.Portal.Server.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Moq;
-using Moq.Protected;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static AzureIoTHub.Portal.Server.Startup;
 
 namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
@@ -73,12 +68,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         public void GetLoRaActivationSetting_Should_return_true_to_string()
         {
             // Arrange
-            string loraFeatureStatus = "true";
+            bool loraFeatureStatus = true;
 
             this.mockConfiguration.SetupGet(c => c.Value).Returns(value: null);
 
             this.mockConfigHandler
-                .SetupGet(c => c.LoRaFeatureSetting)
+                .SetupGet(c => c.IsLoRaEnabled)
                 .Returns(loraFeatureStatus);
 
             var controller = this.CreateController();
