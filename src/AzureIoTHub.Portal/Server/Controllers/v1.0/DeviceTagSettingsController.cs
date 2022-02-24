@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.v10
 {
+    using Azure;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Mappers;
@@ -11,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     [Route("api/[controller]")]
@@ -48,13 +50,38 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
         }
 
         /// <summary>
-        /// Update the device tag settings to be used in the application.
+        /// Updates the device tag settings to be used in the application.
         /// </summary>
         /// <param name="tags">List of tags.</param>
         /// <returns>The action result.</returns>
-        [HttpPost(Name = "POST Set device tag settings")]
+        [HttpPost(Name = "POST a set of device tag settings")]
         public async Task<IActionResult> Post(List<DeviceTag> tags)
         {
+            try
+            {
+                var query = this.tableClientFactory
+                    .GetDeviceTagSettings()
+                    .Query<TableEntity>();
+
+                foreach (var item in query)
+                {
+                    await this.tableClientFactory
+                        .GetDeviceTagSettings()
+                        .DeleteEntityAsync(item.PartitionKey, item.RowKey);
+                }
+            }
+            catch(RequestFailedException e)
+            {
+                if(e.Status == StatusCodes.Status404NotFound)
+                {
+                    return this.NotFound();
+                }
+
+                this.log.LogError(e.Message, e);
+
+                throw;
+            }
+
             foreach (DeviceTag tag in tags)
             {
                 TableEntity entity = new TableEntity()
@@ -65,6 +92,36 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
                 await this.SaveEntity(entity, tag);
             }
             return this.Ok();
+        }
+
+        /// <summary>
+        /// Gets the device tag settings to be used in the application
+        /// </summary>
+        /// <returns>The list of tags</returns>
+        [HttpGet(Name = "GET a set of device settings")]
+        public ActionResult<List<DeviceTag>> Get()
+        {
+            try
+            {
+                var query = this.tableClientFactory
+                    .GetDeviceTagSettings()
+                    .Query<TableEntity>();
+
+                var tagList = query.Select(this.deviceTagMapper.GetDeviceTag);
+
+                return this.Ok(tagList.ToList());
+            }
+            catch(RequestFailedException e)
+            {
+                if(e.Status == StatusCodes.Status404NotFound)
+                {
+                    return this.NotFound();
+                }
+
+                this.log.LogError(e.Message, e);
+
+                throw;
+            }
         }
 
         /// <summary>
