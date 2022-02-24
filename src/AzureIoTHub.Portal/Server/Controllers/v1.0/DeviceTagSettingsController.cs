@@ -57,29 +57,19 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
         [HttpPost(Name = "POST a set of device tag settings")]
         public async Task<IActionResult> Post(List<DeviceTag> tags)
         {
-            try
-            {
-                var query = this.tableClientFactory
-                    .GetDeviceTagSettings()
-                    .Query<TableEntity>();
+            var query = this.tableClientFactory
+                .GetDeviceTagSettings()
+                .Query<TableEntity>()
+                .AsPages();
 
-                foreach (var item in query)
+            foreach (var page in query)
+            {
+                foreach (var item in page.Values)
                 {
                     await this.tableClientFactory
                         .GetDeviceTagSettings()
                         .DeleteEntityAsync(item.PartitionKey, item.RowKey);
                 }
-            }
-            catch(RequestFailedException e)
-            {
-                if(e.Status == StatusCodes.Status404NotFound)
-                {
-                    return this.NotFound();
-                }
-
-                this.log.LogError(e.Message, e);
-
-                throw;
             }
 
             foreach (DeviceTag tag in tags)
@@ -101,8 +91,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
         [HttpGet(Name = "GET a set of device settings")]
         public ActionResult<List<DeviceTag>> Get()
         {
-            try
-            {
                 var query = this.tableClientFactory
                     .GetDeviceTagSettings()
                     .Query<TableEntity>();
@@ -110,18 +98,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
                 var tagList = query.Select(this.deviceTagMapper.GetDeviceTag);
 
                 return this.Ok(tagList.ToList());
-            }
-            catch(RequestFailedException e)
-            {
-                if(e.Status == StatusCodes.Status404NotFound)
-                {
-                    return this.NotFound();
-                }
-
-                this.log.LogError(e.Message, e);
-
-                throw;
-            }
         }
 
         /// <summary>
@@ -135,7 +111,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             this.deviceTagMapper.UpdateTableEntity(entity, tag);
             await this.tableClientFactory
                 .GetDeviceTagSettings()
-                .UpsertEntityAsync(entity);
+                .AddEntityAsync(entity);
         }
     }
 }
