@@ -25,7 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static AzureIoTHub.Portal.Server.Startup;
 
-namespace AzureIoTHub.Portal.Server.Tests.Controllers.v10.LoRaWAN
+namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
 {
     [TestFixture]
     public class LoRaWANConcentratorsControllerTest
