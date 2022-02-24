@@ -58,8 +58,7 @@
 
     protected async override void OnInitialized()
     {
-        var result = await this.httpClient.GetFromJsonAsync<string>("api/settings/lora");
-        Boolean.TryParse(result, out activateLoRaFeature);
+        activateLoRaFeature = await this.httpClient.GetFromJsonAsync<bool>("api/settings/lora");
     }
 
     void DrawerToggle()

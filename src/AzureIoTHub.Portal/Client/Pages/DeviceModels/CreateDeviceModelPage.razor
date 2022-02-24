@@ -128,8 +128,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await httpClient.GetFromJsonAsync<string>("api/settings/lora");
-        Boolean.TryParse(result, out this.activateLoRaFeature);
+        this.activateLoRaFeature = await httpClient.GetFromJsonAsync<bool>("api/settings/lora");
     }
 
     private void SetLoRaDeviceModel()

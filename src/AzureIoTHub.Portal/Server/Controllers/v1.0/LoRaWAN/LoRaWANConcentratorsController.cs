@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
@@ -22,6 +23,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     [ApiVersion("1.0")]
     [Route("api/lorawan/concentrators")]
     [ApiExplorerSettings(GroupName = "LoRa WAN")]
+    [LoRaFeatureActiveFilter]
     public class LoRaWANConcentratorsController : ControllerBase
     {
         /// <summary>
