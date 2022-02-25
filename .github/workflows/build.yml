@@ -85,10 +85,6 @@ jobs:
       - name: Generate Open API Markdown
         run: widdershins --environment widdershins.json swagger.json -o open-api.md
 
-      - name: Logging
-        run: |
-          echo "${{toJSON(github.event)}}"
-
       - name: Push Open API Markdown to GitHub
         uses: peter-evans/create-pull-request@v3
         with:
