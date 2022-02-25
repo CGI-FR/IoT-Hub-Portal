@@ -5,6 +5,7 @@
 
 @inject SignOutSessionStateManager SignOutManager
 @inject NavigationManager Navigation
+@inject HttpClient httpClient
 
 <MudThemeProvider Theme="currentTheme" />
 <MudDialogProvider />
@@ -35,7 +36,7 @@
     </MudAppBar>
 
     <MudDrawer @bind-Open="_drawerOpen" Elevation="25" ClipMode="DrawerClipMode.Always">
-        <NavMenu />
+        <NavMenu activateLoRaFeature="@activateLoRaFeature" />
     </MudDrawer>
 
     <MudMainContent>
@@ -53,6 +54,12 @@
 
 @code {
     public bool _drawerOpen = true;
+    public bool activateLoRaFeature;
+
+    protected async override void OnInitialized()
+    {
+        activateLoRaFeature = await this.httpClient.GetFromJsonAsync<bool>("api/settings/lora");
+    }
 
     void DrawerToggle()
     {

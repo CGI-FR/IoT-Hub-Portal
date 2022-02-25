@@ -5,6 +5,7 @@ VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00. Solution Items", "00. Solution Items", "{20EC2171-363D-4DDE-827F-F56D4FE9ADF3}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		codecov.yml = codecov.yml
 		Dockerfile = Dockerfile
@@ -32,17 +33,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		..\.github\workflows\publish.yml = ..\.github\workflows\publish.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Server.Tests", "AzureIoTHub.Portal.Server.Tests\AzureIoTHub.Portal.Server.Tests.csproj", "{51FD5B90-B422-47BF-83F2-516520CFB124}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Server.Tests.Unit", "AzureIoTHub.Portal.Server.Tests.Unit\AzureIoTHub.Portal.Server.Tests.Unit.csproj", "{51FD5B90-B422-47BF-83F2-516520CFB124}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{3F7A2982-4F0B-45F9-9FCA-923D5A7A1511}"
 	ProjectSection(SolutionItems) = preProject
 		..\templates\azuredeploy.json = ..\templates\azuredeploy.json
 		..\templates\portalDeploy.json = ..\templates\portalDeploy.json
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7C441992-2BA8-4F06-B355-F0A54AAC9FDD}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
 Global

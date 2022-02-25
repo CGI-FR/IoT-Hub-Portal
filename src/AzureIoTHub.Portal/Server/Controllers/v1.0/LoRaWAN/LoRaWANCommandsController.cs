@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using Azure;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
     using Microsoft.AspNetCore.Http;
@@ -19,6 +20,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     [ApiVersion("1.0")]
     [Route("api/lorawan/models/{id}/commands")]
     [ApiExplorerSettings(GroupName = "LoRa WAN")]
+    [LoRaFeatureActiveFilter]
     public class LoRaWANCommandsController : ControllerBase
     {
         /// <summary>

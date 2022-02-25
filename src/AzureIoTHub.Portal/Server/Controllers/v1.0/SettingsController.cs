@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
+    using static AzureIoTHub.Portal.Server.Startup;
 
     [ApiController]
     [AllowAnonymous]
@@ -22,13 +23,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         private readonly ClientApiIndentityOptions configuration;
 
+        private readonly ConfigHandler configHandler;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsController"/> class.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
-        public SettingsController(IOptions<ClientApiIndentityOptions> configuration)
+        /// <param name="configHandler">The configHandler.</param>
+        public SettingsController(IOptions<ClientApiIndentityOptions> configuration, ConfigHandler configHandler)
         {
             this.configuration = configuration.Value;
+            this.configHandler = configHandler;
         }
 
         /// <summary>
@@ -43,6 +48,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public IActionResult GetOIDCSettings()
         {
             return this.Ok(this.configuration);
+        }
+
+        /// <summary>
+        /// Get the a boolean for LoRa feature enable on the portal or not.
+        /// </summary>
+        /// <returns>The LoRa support setting.</returns>
+        /// <response code="200">Returns the LoRa support setting.</response>
+        /// <response code="500">Internal server error.</response>
+        [HttpGet("lora", Name = "GET LoRa settings")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetLoRaActivationSetting()
+        {
+            return this.Ok(this.configHandler.IsLoRaEnabled);
         }
     }
 }

@@ -60,21 +60,24 @@
                                 <MudItem xs="12" md="6">
                                     <MudTextField @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
                                 </MudItem>
-                                <MudItem xs="12">
-                                    <MudText>
-                                        <b>LoRa Device</b>
-                                    </MudText>
-                                    <MudSwitch @bind-Checked="@IsLoRa" Color="Color.Secondary">
-                                        @if (IsLoRa)
-                                        {
-                                            <MudText Typo="Typo.body2">The device <b>is</b> a LoRa Device.</MudText>
-                                        }
-                                        else
-                                        {
-                                            <MudText Typo="Typo.body2">The device <b>is not</b> a LoRa Device.</MudText>
-                                        }
+                                @if(activateLoRaFeature)
+                                {
+                                     <MudItem xs="12">
+                                        <MudText>
+                                            <b>LoRa Device</b>
+                                        </MudText>
+                                        <MudSwitch @bind-Checked="@IsLoRa" Color="Color.Secondary">
+                                            @if (IsLoRa)
+                                            {
+                                                <MudText Typo="Typo.body2">The device <b>is</b> a LoRa Device.</MudText>
+                                            }
+                                            else
+                                            {
+                                                <MudText Typo="Typo.body2">The device <b>is not</b> a LoRa Device.</MudText>
+                                            }
                                     </MudSwitch>
                                 </MudItem>
+                                }
                             </MudGrid>
                         </MudCardContent>
                         <MudCardActions Class="pb-4 pl-4">
@@ -119,6 +122,13 @@
 
             SetStandardDeviceModel();
         }
+    }
+
+    private bool activateLoRaFeature;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.activateLoRaFeature = await httpClient.GetFromJsonAsync<bool>("api/settings/lora");
     }
 
     private void SetLoRaDeviceModel()

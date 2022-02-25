@@ -12,9 +12,12 @@
             <MudNavLink Href="/edge/devices">Devices</MudNavLink>
             <MudNavLink Href="/edge/configurations">Configuration</MudNavLink>
 
-            <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">LoRaWAN Management</MudText>
-            <MudNavLink Href="/lorawan/concentrators">Concentrators</MudNavLink>
-
+            @if (activateLoRaFeature)
+            {
+                <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">LoRaWAN Management</MudText>
+                <MudNavLink Href="/lorawan/concentrators">Concentrators</MudNavLink>
+            }
+            
             <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Device Models</MudText>
             <MudNavLink Href="/device-models">List</MudNavLink>
 
@@ -24,3 +27,8 @@
         </MudNavMenu>
     </Authorized>
 </AuthorizeView>
+
+@code {
+    [Parameter]
+    public bool activateLoRaFeature { get; set; }
+}

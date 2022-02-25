@@ -131,6 +131,8 @@
 
     private bool IsLoRa => this.Model?.SupportLoRaFeatures ?? false;
 
+    // private bool activateLoRaFeature;
+
     [Parameter]
     public string DeviceID { get; set; }
 
@@ -142,11 +144,16 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // var activateLoRaFeature;
+        //var result = await Http.GetFromJsonAsync<string>("api/settings/lora");
+        //Boolean.TryParse(result, out var activateLoRaFeature);
+
         // Enable device by default
         Device.IsEnabled = true;
 
         // Gets a list of device model previously registered to Azure to allow autocomplete field in the form
         DeviceModelList = await Http.GetFromJsonAsync<DeviceModel[]>("api/models");
+
     }
 
     /// <summary>
