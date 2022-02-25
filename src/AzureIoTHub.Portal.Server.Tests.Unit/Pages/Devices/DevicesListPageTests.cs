@@ -90,10 +90,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Pages
         {
             // Act
             var cut = RenderComponent<DeviceListPage>();
+            bool finished = false;
+
+            var task = Task.Factory.StartNew(() =>
+            {
+                while (!finished) { }
+
+                return new object[0];
+            });
+
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiBaseUrl)
+                .RespondJsonAsync(task);
 
             // Assert
             cut.Find("#progress-bar")
                  .MarkupMatches("<div id=\"progress-bar\" class=\"mud-grid-item custom-centered-container\"><!--!--><div class=\"mud-progress-circular mud-default-text mud-progress-medium mud-progress-indeterminate custom-centered-item\" role=\"progressbar\" aria-valuenow=\"0\"><svg class=\"mud-progress-circular-svg\" viewBox=\"22 22 44 44\"><circle class=\"mud-progress-circular-circle mud-progress-indeterminate\" cx=\"44\" cy=\"44\" r=\"20\" fill=\"none\" stroke-width=\"3\"></circle></svg></div><!--!--></div>");
+
+            finished = true;
 
             this.mockRepository.VerifyAll();
         }
