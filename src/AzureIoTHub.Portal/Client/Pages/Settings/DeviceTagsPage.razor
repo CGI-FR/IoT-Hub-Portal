@@ -83,7 +83,7 @@
     protected override async Task OnInitializedAsync()
     {
         Tags = new List<DeviceTag>(
-            await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"api/DeviceTagSettings")
+            await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags")
         );
     }
 
