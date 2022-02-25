@@ -1,0 +1,138 @@
+﻿@page "/settings/device-tag"
+@using AzureIoTHub.Portal.Shared.Models.v10.Device
+@using System.ComponentModel.DataAnnotations
+@using System.IO
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Client.Validators
+
+@attribute [Authorize]
+@inject HttpClient HttpClient
+@inject ISnackbar Snackbar
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device tags setting</MudText>
+
+@if (Tags == null)
+{
+    <MudItem Class="custom-centered-container">
+        <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+    </MudItem>
+}
+
+<MudItem xs="12">
+    <MudTable Items="@Tags" Dense=true Hover=true Bordered=true Striped=true>
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Tags</MudText>
+            <MudSpacer />
+        </ToolBarContent>
+        <ColGroup>
+            <col style="width: 40%;" />
+            <col style="width: 40%;" />
+            <col style="width: 5%;" />
+            <col style="width: 5%;" />
+            <col style="width: 10%;" />
+        </ColGroup>
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Label</MudTh>
+            <MudTh Style="text-align: center">Required</MudTh>
+            <MudTh Style="text-align: center">Searchable</MudTh>
+            <MudTh Style="text-align: center">Delete</MudTh>
+        </HeaderContent>
+        <RowTemplate Context="TagContexte">
+            <MudTd DataLabel="Name" Style="word-break: break-all;">
+                <MudForm @ref="FormName" Model="TagContexte">
+                    <MudTextField @bind-Value="@TagContexte.Name" Label="Name"
+                                  HelperText="Name that will be registered in the device twin" HelperTextOnFocus="true"
+                                  For="@(() => TagContexte.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                </MudForm>
+            </MudTd>
+            <MudTd DataLabel="Label" Style="word-break: break-all; ">
+                <MudForm @ref="FormLabel" Model="TagContexte">
+                    <MudTextField @bind-Value="@TagContexte.Label" Label="Label"
+                                  HelperText="The label shown to the user" HelperTextOnFocus="true"
+                                  For="@(() => TagContexte.Label)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                </MudForm>
+            </MudTd>
+            <MudTd DataLabel="Required" Style="text-align: center;">
+                <MudCheckBox @bind-Checked="@TagContexte.Required"></MudCheckBox>
+            </MudTd>
+            <MudTd DataLabel="Searchable" Style="text-align: center;">
+                <MudCheckBox @bind-Checked="@TagContexte.Searchable"></MudCheckBox>
+            </MudTd>
+            <MudTd DataLabel="Delete" Style="text-align: center">
+                <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteTag(TagContexte))"></MudIconButton>
+            </MudTd>
+        </RowTemplate>
+        <FooterContent>
+            <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddTag">Add a new Tag</MudButton>
+        </FooterContent>
+    </MudTable>
+    <MudCardActions Class="pb-4 pl-4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save">Save Changes</MudButton>
+    </MudCardActions>
+
+</MudItem>
+
+@code {
+    List<DeviceTag> Tags { get; set; }
+
+    private MudForm FormName { get; set; }
+    private MudForm FormLabel { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Tags = new List<DeviceTag>(
+            await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags")
+        );
+    }
+
+    private void AddTag()
+    {
+        var last = Tags.LastOrDefault();
+
+        if (Tags.Count == 0 || (last.Name is not null && last.Label is not null))
+        {
+            Tags.Add(new DeviceTag());
+        }
+    }
+
+    private void DeleteTag(DeviceTag item)
+    {
+        Tags.Remove(item);
+    }
+
+    private async Task Save()
+    {
+
+        // Checks empty field and regex validation
+        await FormLabel.Validate();
+        await FormName.Validate();
+
+        // Checks duplicate
+        bool duplicated = false;
+        var query = Tags.GroupBy(x => x.Name)
+                        .Where(x => x.Count() > 1)
+                        .Select(x => x.Key)
+                        .ToList();
+        foreach (var item in query)
+        {
+            Snackbar.Add($"The name '{item}' appears more than once!", Severity.Warning);
+            duplicated = true;
+        }
+
+        if (FormLabel.IsValid && FormName.IsValid && !duplicated)
+        {
+            var response = await HttpClient.PostAsJsonAsync($"/api/settings/device-tags", Tags);
+            response.EnsureSuccessStatusCode();
+
+            // Prompts a snack bar to inform the action was successful
+            Snackbar.Add($"Settings have been successfully updated!", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add("One or more validation errors occurred", Severity.Error);
+            return;
+        }
+    }
+}
