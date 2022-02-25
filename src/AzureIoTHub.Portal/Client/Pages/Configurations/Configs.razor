@@ -41,7 +41,6 @@
                         <MudTh Style="text-align: center">Priority</MudTh>
                         <MudTh Style="text-align: center">Creation date</MudTh>
                         <MudTh Style="text-align: center">Detail</MudTh>
-                        <MudTh Style="text-align: center">Delete</MudTh>
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="ID" Style="word-break: break-all;">
@@ -62,9 +61,6 @@
                         <MudTd DataLabel="Creation date" Style="text-align: center;">@context.CreationDate</MudTd>
                         <MudTd DataLabel="Details" Style="text-align: center">
                             <a href="/edge/configurations/@context.ConfigurationID"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
-                        </MudTd>
-                        <MudTd DataLabel="Delete" Style="text-align: center">
-                            <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteConfiguration(context))"></MudIconButton>
                         </MudTd>
                     </RowTemplate>
                     <PagerContent>
@@ -99,10 +95,5 @@
         {
             exception.Redirect();
         }
-    }
-
-    private async Task DeleteConfiguration(ConfigListItem config)
-    {
-        await Task.Delay(0); //TODO?
     }
 }
