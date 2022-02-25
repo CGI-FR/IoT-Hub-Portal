@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 {
@@ -22,6 +23,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         public static MockedRequest RespondJson<T>(this MockedRequest request, T content)
+        {
+            request.Respond(req =>
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.OK);
+                response.Content = new StringContent(JsonSerializer.Serialize(content));
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                return response;
+            });
+
+            return request;
+        }
+        public static MockedRequest RespondJsonAsync<T>(this MockedRequest request, Task<T> content)
         {
             request.Respond(req =>
             {
