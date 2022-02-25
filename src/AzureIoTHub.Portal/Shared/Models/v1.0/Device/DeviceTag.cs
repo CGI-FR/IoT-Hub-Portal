@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AzureIoTHub.Portal.Shared.Models.v10.Device
+namespace AzureIoTHub.Portal.Shared.Models.V10.Device
 {
     public class DeviceTag
     {
