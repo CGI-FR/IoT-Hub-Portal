@@ -2082,6 +2082,23 @@
         }
       }
     },
+    "/api/settings/lora": {
+      "get": {
+        "tags": [
+          "Portal Settings"
+        ],
+        "summary": "Get the a boolean for LoRa feature enable on the portal or not.",
+        "operationId": "GET LoRa settings",
+        "responses": {
+          "200": {
+            "description": "Returns the LoRa support setting."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
     "/api/settings/oidc": {
       "get": {
         "tags": [

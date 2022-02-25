@@ -2455,6 +2455,28 @@ None
 
 <h1 id="azure-iot-hub-portal-api-portal-settings">Portal Settings</h1>
 
+## GET LoRa settings
+
+<a id="opIdGET LoRa settings"></a>
+
+> Code samples
+
+`GET /api/settings/lora`
+
+*Get the a boolean for LoRa feature enable on the portal or not.*
+
+<h3 id="get-lora-settings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Returns the LoRa support setting.|None|
+|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal server error.|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
 ## GET Open ID settings
 
 <a id="opIdGET Open ID settings"></a>
