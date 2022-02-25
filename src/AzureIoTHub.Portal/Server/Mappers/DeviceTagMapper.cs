@@ -1,5 +1,5 @@
 ﻿using Azure.Data.Tables;
-using AzureIoTHub.Portal.Shared.Models.v10.Device;
+using AzureIoTHub.Portal.Shared.Models.V10.Device;
 
 namespace AzureIoTHub.Portal.Server.Mappers
 {
