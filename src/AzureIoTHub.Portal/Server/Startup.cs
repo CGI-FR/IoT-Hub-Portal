@@ -258,7 +258,7 @@ namespace AzureIoTHub.Portal.Server
             protected const string OIDCClientIdKey = "OIDC:ClientId";
             protected const string OIDCApiClientIdKey = "OIDC:ApiClientId";
 
-            protected const string LoRaFeatureSettingKey = "LoRaFeatureSetting";
+            protected const string IsLoRaFeatureEnabledKey = "LoRaFeature:Enabled";
 
             protected const string StorageAccountConnectionStringKey = "StorageAccount:ConnectionString";
             protected const string StorageAccountBlobContainerNameKey = "StorageAccount:BlobContainerName";
@@ -340,7 +340,7 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string OIDCApiClientId => this.config[OIDCApiClientIdKey];
 
-            internal override bool IsLoRaEnabled => bool.Parse(this.config[LoRaFeatureSettingKey] ?? "true");
+            internal override bool IsLoRaEnabled => bool.Parse(this.config[IsLoRaFeatureEnabledKey] ?? "true");
 
             internal override string StorageAccountBlobContainerName => this.config[StorageAccountBlobContainerNameKey];
 
@@ -382,7 +382,7 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string OIDCApiClientId => this.config[OIDCApiClientIdKey];
 
-            internal override bool IsLoRaEnabled => bool.Parse(this.config[LoRaFeatureSettingKey] ?? "true");
+            internal override bool IsLoRaEnabled => bool.Parse(this.config[IsLoRaFeatureEnabledKey] ?? "true");
 
             internal override string StorageAccountBlobContainerName => this.config[StorageAccountBlobContainerNameKey];
 
