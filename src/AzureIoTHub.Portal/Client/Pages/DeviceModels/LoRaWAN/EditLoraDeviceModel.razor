@@ -10,10 +10,10 @@
         <MudCardContent>
             <MudGrid>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="@LoRaDeviceModel.AppEUI" Label="OTAA AppEUI" For="@(() => LoRaDeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                    <MudTextField @bind-Value="@LoRaDeviceModel.AppEUI" Label="OTAA AppEUI" For="@(() => LoRaDeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" Disabled="LoRaDeviceModel.IsBuiltin"></MudTextField>
                 </MudItem>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="@LoRaDeviceModel.SensorDecoderURL" Label="Sensor Decoder URL" For="@(() => LoRaDeviceModel.SensorDecoderURL)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                    <MudTextField @bind-Value="@LoRaDeviceModel.SensorDecoderURL" Label="Sensor Decoder URL" For="@(() => LoRaDeviceModel.SensorDecoderURL)" Margin="Margin.Dense" Variant="Variant.Outlined" Disabled="LoRaDeviceModel.IsBuiltin"></MudTextField>
                 </MudItem>
                 <MudItem xs="12">
                     <MudTable Items="@Commands" Dense=true Hover=true Bordered=true Striped=true>
@@ -35,13 +35,13 @@
                         </HeaderContent>
                         <RowTemplate Context="CommandContext">
                             <MudTd DataLabel="Name" Style="word-break: break-all;">
-                                <MudTextField @bind-Value="@CommandContext.Name" Label="Name" For="@(() => CommandContext.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                <MudTextField @bind-Value="@CommandContext.Name" Label="Name" For="@(() => CommandContext.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" Disabled="CommandContext.IsBuiltin"></MudTextField>
                             </MudTd>
                             <MudTd DataLabel="Frame" Style="word-break: break-all; ">
-                                <MudTextField @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                <MudTextField @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"  Disabled="CommandContext.IsBuiltin"></MudTextField>
                             </MudTd>
                             <MudTd DataLabel="Port" Style="text-align: center;">
-                                <MudNumericField @bind-Value="@CommandContext.Port" Label="Port" For="@(() => CommandContext.Port)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudNumericField>
+                                <MudNumericField @bind-Value="@CommandContext.Port" Label="Port" For="@(() => CommandContext.Port)" Margin="Margin.Dense" Variant="Variant.Outlined"  Disabled="CommandContext.IsBuiltin"></MudNumericField>
                             </MudTd>
                             <MudTd DataLabel="Delete" Style="text-align: center">
                                 <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" Disabled="@CommandContext.IsBuiltin" OnClick="@(() => DeleteCommand(CommandContext))"></MudIconButton>

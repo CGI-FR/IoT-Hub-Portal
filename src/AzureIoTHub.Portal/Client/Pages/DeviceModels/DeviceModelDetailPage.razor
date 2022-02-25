@@ -36,12 +36,12 @@
                         <MudCardActions Class="d-flex justify-center">
                             @if (imageDataUrl != null)
                             {
-                                <MudButton OnClick="DeleteAvatar" Color="Color.Error">Delete Picture</MudButton>
+                                <MudButton OnClick="DeleteAvatar" Color="Color.Error" Disabled="Model.IsBuiltin">Delete Picture</MudButton>
                             }
                             else
                             {
                                 <InputFile id="fileInput" hidden accept=".jpg, .jpeg, .png" OnChange="UploadFiles" />
-                                <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Filled.CloudUpload">Change Picture</MudButton>
+                                <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Filled.CloudUpload" Disabled="Model.IsBuiltin">Change Picture</MudButton>
                             }
                         </MudCardActions>
                     </MudCard>
@@ -56,10 +56,10 @@
                         <MudCardContent>
                             <MudGrid>
                                 <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
+                                    <MudTextField @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"  Disabled="Model.IsBuiltin" />
                                 </MudItem>
                                 <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
+                                    <MudTextField @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" Disabled="Model.IsBuiltin" />
                                 </MudItem>
                             </MudGrid>
                         </MudCardContent>
