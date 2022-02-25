@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Shared.Models.V10.Device
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     public class DeviceDetails
@@ -55,5 +56,10 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.Device
         /// The asset identifier.
         /// </summary>
         public string AssetId { get; set; }
+
+        /// <summary>
+        /// Set of customs device tags and their values.
+        /// </summary>
+        public Dictionary<DeviceTag,string> CustomTags {get;set;}
     }
 }
