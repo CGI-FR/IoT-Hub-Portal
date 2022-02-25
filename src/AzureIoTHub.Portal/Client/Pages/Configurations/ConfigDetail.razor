@@ -13,7 +13,7 @@
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
         <MudItem xs="12">
-            <EditForm Model="@Config" OnValidSubmit="SaveConfig">
+            <EditForm Model="@Config">
                 <MudCard>
                     <MudCardHeader>
                         <CardHeaderContent>
@@ -76,10 +76,6 @@
                             }
                     </MudCardContent>
                 </MudCard>
-                <MudCardActions>
-                    <MudFab ButtonType="ButtonType.Submit" Color="Color.Secondary" Icon="@Icons.Material.Filled.Save" Label="Save" Disabled="@(!success)" Class="ml-auto" />
-                    <MudFab Color="Color.Dark" Icon="@Icons.Material.Filled.Delete" Label="Delete" OnClick="DeleteConfig" />
-                </MudCardActions>
             </EditForm>
         </MudItem>
     </MudGrid>
@@ -121,8 +117,6 @@
 
     private ConfigListItem Config { get; set; } = new ConfigListItem();
 
-    private bool success = true;
-
     public string ConditionEnv { get; set; }
     public string ConditionType { get; set; }
     public string ConditionOwner { get; set; }
@@ -160,16 +154,6 @@
         {
             return string.Empty;
         }
-    }
-
-    public async void SaveConfig()
-    {
-        await Task.Delay(0); // TODO?
-    }
-
-    private async Task DeleteConfig()
-    {
-        await Task.Delay(0); // TODO?
     }
 
     /// <summary>
