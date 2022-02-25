@@ -2082,6 +2082,71 @@
         }
       }
     },
+    "/api/settings/device-tags": {
+      "post": {
+        "tags": [
+          "Portal Settings"
+        ],
+        "summary": "Updates the device tag settings to be used in the application.",
+        "operationId": "POST a set of device tag settings",
+        "requestBody": {
+          "description": "List of tags.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceTag"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceTag"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceTag"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Portal Settings"
+        ],
+        "summary": "Gets the device tag settings to be used in the application",
+        "operationId": "GET a set of device settings",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceTag"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/settings/lora": {
       "get": {
         "tags": [
@@ -2448,6 +2513,33 @@
           "isBuiltin": {
             "type": "boolean",
             "description": "A value indicating whether this instance is builtin."
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeviceTag": {
+        "required": [
+          "label",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "pattern": "^[a-zA-Z0-9]*$",
+            "type": "string",
+            "description": "The registered name in the device twin."
+          },
+          "label": {
+            "type": "string",
+            "description": "The label shown to the user."
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether the field is required when creating a new device or not."
+          },
+          "searchable": {
+            "type": "boolean",
+            "description": "Whether the field can be searcheable via the device search panel or not."
           }
         },
         "additionalProperties": false

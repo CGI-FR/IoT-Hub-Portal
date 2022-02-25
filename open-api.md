@@ -2455,6 +2455,94 @@ None
 
 <h1 id="azure-iot-hub-portal-api-portal-settings">Portal Settings</h1>
 
+## POST a set of device tag settings
+
+<a id="opIdPOST a set of device tag settings"></a>
+
+> Code samples
+
+`POST /api/settings/device-tags`
+
+*Updates the device tag settings to be used in the application.*
+
+> Body parameter
+
+```json
+[
+  {
+    "name": "string",
+    "label": "string",
+    "required": true,
+    "searchable": true
+  }
+]
+```
+
+<h3 id="post-a-set-of-device-tag-settings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[DeviceTag](#schemadevicetag)|false|List of tags.|
+
+<h3 id="post-a-set-of-device-tag-settings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## GET a set of device settings
+
+<a id="opIdGET a set of device settings"></a>
+
+> Code samples
+
+`GET /api/settings/device-tags`
+
+*Gets the device tag settings to be used in the application*
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "name": "string",
+    "label": "string",
+    "required": true,
+    "searchable": true
+  }
+]
+```
+
+<h3 id="get-a-set-of-device-settings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+
+<h3 id="get-a-set-of-device-settings-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[DeviceTag](#schemadevicetag)]|false|none|none|
+|» name|string|true|none|The registered name in the device twin.|
+|» label|string|true|none|The label shown to the user.|
+|» required|boolean|false|none|Whether the field is required when creating a new device or not.|
+|» searchable|boolean|false|none|Whether the field can be searcheable via the device search panel or not.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
 ## GET LoRa settings
 
 <a id="opIdGET LoRa settings"></a>
@@ -2828,6 +2916,32 @@ None
 |frame|string|true|none|The command frame in hexa.|
 |port|integer(int32)|true|none|The LoRa WAN port.|
 |isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
+
+<h2 id="tocS_DeviceTag">DeviceTag</h2>
+<!-- backwards compatibility -->
+<a id="schemadevicetag"></a>
+<a id="schema_DeviceTag"></a>
+<a id="tocSdevicetag"></a>
+<a id="tocsdevicetag"></a>
+
+```json
+{
+  "name": "string",
+  "label": "string",
+  "required": true,
+  "searchable": true
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|The registered name in the device twin.|
+|label|string|true|none|The label shown to the user.|
+|required|boolean|false|none|Whether the field is required when creating a new device or not.|
+|searchable|boolean|false|none|Whether the field can be searcheable via the device search panel or not.|
 
 <h2 id="tocS_IoTEdgeDevice">IoTEdgeDevice</h2>
 <!-- backwards compatibility -->
