@@ -133,6 +133,8 @@ The IoT Hub portal will use the Target condition to extract this values from the
 LoRaWAN features are activated by default providing in the Portal the way to configure IoT Devices that supports LoRaWAN connectivity.
 Internally, the LoRaWAN connectivity is expected to be provided by [IoTEdge LoRaWAN StarterKit](https://github.com/Azure/iotedge-lorawan-starterkit/). The IoT Hub portal will manage devices by modifying there twin properties to make them working with this solution.
 
+> Note: to disable LoRa Features, change the value of ``LoRaFeature__Enabled`` to false in the Portal App Settings.
+
 ## Device models
 
 As for regulare Device Models the IoT hub portal provides the possibility to manage LoRa WEN device models.

@@ -46,6 +46,7 @@ Here are different settings that the user can configure:
 * **OIDC__Scope**: The OpenID Connect scope that represents the portal API.
 * **IoTDPS__ServiceEndpoint**: The IoT Device Provisioning Service endpoint.
 * **IoTDPS__DefaultEnrollmentGroup**: The default IoT Device Provisioning Service enrollment group.
+* **LoRaFeature__Enabled**: Whether the LoRaWAN feature is enabled or not.
 * **LoRaKeyManagement__Url**: The LoRa Key Management Facade URL.
 * **LoRaRegionRouterConfig__Url**: The LoRa Region Router Config URL.
 
