@@ -15,7 +15,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
     using System.Linq;
     using System.Threading.Tasks;
 
-    [Route("api/[controller]")]
+    [Route("/api/settings/device-tags")]
     [ApiController]
     public class DeviceTagSettingsController : ControllerBase
     {
