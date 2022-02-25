@@ -123,7 +123,7 @@
 
         if (FormLabel.IsValid && FormName.IsValid && !duplicated)
         {
-            var response = await HttpClient.PostAsJsonAsync($"api/DeviceTagSettings", Tags);
+            var response = await HttpClient.PostAsJsonAsync($"/api/settings/device-tags", Tags);
             response.EnsureSuccessStatusCode();
 
             // Prompts a snack bar to inform the action was successful
