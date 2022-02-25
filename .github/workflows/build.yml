@@ -45,7 +45,7 @@ jobs:
         path: ./src/swagger.json
 
     - name: Run unit tests
-      run: dotnet test --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura AzureIoTHub.Portal.Server.Tests/AzureIoTHub.Portal.Server.Tests.csproj
+      run: dotnet test --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura AzureIoTHub.Portal.Server.Tests.Unit/AzureIoTHub.Portal.Server.Tests.Unit.csproj
       working-directory: src/
 
     # Upload test results as artifact
@@ -54,12 +54,12 @@ jobs:
       with:
         name: test-results
         path: |
-          src/AzureIoTHub.Portal.Server.Tests/TestResults
+          src/AzureIoTHub.Portal.Server.Tests.Unit/TestResults
 
     - name: Upload to Codecov test reports
       uses: codecov/codecov-action@v2
       with:
-        directory: src/AzureIoTHub.Portal.Server.Tests/TestResults
+        directory: src/AzureIoTHub.Portal.Server.Tests.Unit/TestResults
 
   add-openapi-docs: 
     name: Import OpenAPI to documentation
