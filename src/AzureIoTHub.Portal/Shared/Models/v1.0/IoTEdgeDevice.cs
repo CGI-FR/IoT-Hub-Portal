@@ -15,11 +15,6 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
         public string DeviceId { get; set; }
 
         /// <summary>
-        /// The IoT Edge device symmetric key.
-        /// </summary>
-        public string SymmetricKey { get; set; }
-
-        /// <summary>
         /// The IoT Edge connection state.
         /// </summary>
         public string ConnectionState { get; set; }
@@ -28,11 +23,6 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
         /// The IoT Edge scope tag value.
         /// </summary>
         public string Scope { get; set; }
-
-        /// <summary>
-        /// The IoT Edge end point.
-        /// </summary>
-        public string EndPoint { get; set; }
 
         /// <summary>
         /// The IoT Edge device type.
@@ -80,8 +70,6 @@ namespace AzureIoTHub.Portal.Shared.Models.V10
         /// </summary>
         public IoTEdgeDevice()
         {
-            this.Modules = new List<IoTEdgeModule>();
-            this.LastDeployment = new ConfigItem();
         }
     }
 }

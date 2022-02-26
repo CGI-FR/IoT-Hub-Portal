@@ -44,10 +44,10 @@
                         <EditForm Model="@Gateway" OnValidSubmit="UpdateDevice">
                             <DataAnnotationsValidator />
                             <MudCardContent>
-                                    <MudText Typo="Typo.h6" Class="mb-6">Edge Device Details</MudText>
+                                <MudText Typo="Typo.h6" Class="mb-6">Edge Device Details</MudText>
                                 <MudGrid>
                                     <MudItem xs="12" md="6">
-                                        <MudTextField @bind-Value="@Gateway.Type" Label="Type" Variant="Variant.Outlined" ReadOnly="true" Required="true"/>
+                                        <MudTextField @bind-Value="@Gateway.Type" Label="Type" Variant="Variant.Outlined" ReadOnly="true" Required="true" />
                                     </MudItem>
                                     <MudItem xs="12" md="6">
                                         <MudSelect T="string" @bind-Value="@Gateway.Environment" Label="Environment" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
@@ -99,17 +99,17 @@
 
                                     <MudItem xs="12">
                                         <MudText Typo="Typo.h6" Class="mb-6">Last deployment</MudText>
-                                                <MudGrid>
-                                                    <MudItem xs="12" md="4">
-                                                        <MudTextField @bind-Value="@Gateway.LastDeployment.Name" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
-                                                    </MudItem>
-                                                    <MudItem xs="12" md="4">
-                                                        <MudTextField @bind-Value="@Gateway.LastDeployment.DateCreation" Label="Date" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
-                                                    </MudItem>
-                                                    <MudItem xs="12" md="4">
-                                                        <MudTextField @bind-Value="@Gateway.LastDeployment.Status" Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
-                                                    </MudItem>
-                                                </MudGrid>
+                                        <MudGrid>
+                                            <MudItem xs="12" md="4">
+                                                <MudTextField @bind-Value="@Gateway.LastDeployment.Name" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                                            </MudItem>
+                                            <MudItem xs="12" md="4">
+                                                <MudTextField @bind-Value="@Gateway.LastDeployment.DateCreation" Label="Date" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                                            </MudItem>
+                                            <MudItem xs="12" md="4">
+                                                <MudTextField @bind-Value="@Gateway.LastDeployment.Status" Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                                            </MudItem>
+                                        </MudGrid>
                                     </MudItem>
 
                                 </MudGrid>
@@ -240,39 +240,12 @@
         }
     }
 
-    public async Task ShowConnectionString()
+    public void ShowConnectionString()
     {
-        try
-        {
-            if (Gateway.Type is null)
-            {
-                Gateway.SymmetricKey = await this.Http.GetStringAsync($"api/edge/device/{Gateway.DeviceId}/unknown/ConnectionString");
-            }
-            else
-            {
-                Gateway.SymmetricKey = await this.Http.GetStringAsync($"api/edge/device/{Gateway.DeviceId}/{Gateway.Type}/ConnectionString");
-            }
+        var parameters = new DialogParameters();
+        parameters.Add(nameof(ConnectionStringDialog.deviceId), this.deviceId);
 
-            var parameter = new DialogParameters();
-
-            parameter.Add(nameof(Gateway.DeviceId), Gateway.DeviceId);
-            parameter.Add(nameof(Gateway.EndPoint), Gateway.EndPoint);
-            parameter.Add(nameof(Gateway.SymmetricKey), Gateway.SymmetricKey);
-
-
-            DialogService.Show<ConnectionStringDialog>("Edge Device Connection String", parameter);
-        }
-        catch (HttpRequestException e)
-        {
-            if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                Snackbar.Add("Cannot obtain the connection string <br> because the enrollment group does not exist.", Severity.Error);
-            }
-            else
-            {
-                Snackbar.Add($"Something went wrong.", Severity.Error);
-            }
-        }
+        DialogService.Show<ConnectionStringDialog>("Edge Device Connection String", parameters);
     }
 
     public async Task ShowDeleteModal()

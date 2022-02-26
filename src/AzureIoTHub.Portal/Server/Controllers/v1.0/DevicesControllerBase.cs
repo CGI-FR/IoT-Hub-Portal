@@ -7,8 +7,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.V10;
     using AzureIoTHub.Portal.Shared.Models.V10.Device;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
@@ -23,15 +25,18 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         protected readonly ILogger logger;
         private readonly IDeviceService devicesService;
         private readonly IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper;
+        private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
 
         public DevicesControllerBase(
             ILogger logger,
             IDeviceService devicesService,
-            IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper)
+            IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper,
+            IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
         {
             this.logger = logger;
             this.devicesService = devicesService;
             this.deviceTwinMapper = deviceTwinMapper;
+            this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
         }
 
         /// <summary>
@@ -135,7 +140,32 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public virtual async Task<IActionResult> Delete(string deviceID)
         {
             await this.devicesService.DeleteDevice(deviceID);
+
             return this.Ok();
+        }
+
+        /// <summary>
+        /// Returns the device enrollment credentials.
+        /// </summary>
+        /// <param name="deviceID">The device identifier.</param>
+        /// <returns></returns>
+        public virtual async Task<ActionResult<EnrollmentCredentials>> GetEnrollmentCredentialsAsync(string deviceID)
+        {
+            var item = await this.devicesService.GetDeviceTwin(deviceID);
+
+            if (item == null)
+            {
+                return this.NotFound("Device doesn't exist.");
+            }
+
+            if (!item.Tags.Contains("deviceType"))
+            {
+                return this.BadRequest($"Cannot find device type from device {deviceID}");
+            }
+
+            var credentials = await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceID, item.Tags["deviceType"].ToString());
+
+            return this.Ok(credentials);
         }
     }
 }

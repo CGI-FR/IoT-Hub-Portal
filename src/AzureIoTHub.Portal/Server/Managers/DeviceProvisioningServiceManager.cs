@@ -6,6 +6,8 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System;
     using System.Security.Cryptography;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Server.Helpers;
+    using AzureIoTHub.Portal.Shared.Models.V10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using static AzureIoTHub.Portal.Server.Startup;
@@ -24,7 +26,7 @@ namespace AzureIoTHub.Portal.Server.Managers
         public async Task<EnrollmentGroup> CreateEnrollmentGroupAsync(string deviceType)
         {
             var twinState = new TwinState(
-                tags: new TwinCollection($"{{ \"purpose\":\"{deviceType}\" }}"),
+                tags: new TwinCollection($"{{ \"deviceType\":\"{deviceType}\" }}"),
                 desiredProperties: new TwinCollection());
 
             return await this.CreateNewEnrollmentGroup(deviceType, true, twinState);
@@ -33,16 +35,12 @@ namespace AzureIoTHub.Portal.Server.Managers
         public async Task<EnrollmentGroup> CreateEnrollmentGroupFormModelAsync(string modelId, string modelName, TwinCollection desiredProperties)
         {
             var twinState = new TwinState(
-                tags: new TwinCollection($"{{ \"modelId\":\"{modelId}\" }}"), 
+                tags: new TwinCollection($"{{ \"modelId\":\"{modelId}\", \"deviceType\": \"{modelName}\" }}"),
                 desiredProperties: new TwinCollection());
 
             return await this.CreateNewEnrollmentGroup(modelName, false, twinState);
         }
 
-        /// <summary>
-        /// Create
-        /// </summary>
-        /// <returns></returns>
         private async Task<EnrollmentGroup> CreateNewEnrollmentGroup(string name, bool iotEdge, TwinState initialTwinState)
         {
             string enrollmentGroupPrimaryKey = GenerateKey();
@@ -72,6 +70,49 @@ namespace AzureIoTHub.Portal.Server.Managers
             var attetationMechanism = await this.dps.GetEnrollmentGroupAttestationAsync(ComputeEnrollmentGroupName(deviceType));
 
             return attetationMechanism.GetAttestation();
+        }
+
+        public async Task<EnrollmentCredentials> GetEnrollmentCredentialsAsync(string deviceId, string deviceType)
+        {
+            Attestation attestation;
+
+            try
+            {
+                attestation = await this.GetAttestation(deviceType);
+            }
+            catch (ProvisioningServiceClientHttpException e)
+            {
+                if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    await this.CreateEnrollmentGroupAsync(deviceType);
+                    attestation = await this.GetAttestation(deviceType);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Failed to get symmetricKey.", e);
+                }
+            }
+
+            var symmetricKey = DeviceHelper.RetrieveSymmetricKey(deviceId, this.CheckAttestation(attestation));
+
+            return new EnrollmentCredentials
+            {
+                SymmetricKey = symmetricKey,
+                RegistrationID = deviceId,
+                ProvisioningEndpoint = this.config.DPSEndpoint,
+                ScopeID = this.config.DPSIDScope
+            };
+        }
+        private SymmetricKeyAttestation CheckAttestation(Attestation attestation)
+        {
+            var symmetricKeyAttestation = attestation as SymmetricKeyAttestation;
+
+            if (symmetricKeyAttestation == null)
+            {
+                throw new InvalidOperationException($"Cannot get symmetric key for {attestation.GetType()}.");
+            }
+
+            return symmetricKeyAttestation;
         }
 
         private static string GenerateKey()

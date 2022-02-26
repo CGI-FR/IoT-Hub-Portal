@@ -24,9 +24,11 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns>string.</returns>
         public static string RetrieveSymmetricKey(string deviceId, SymmetricKeyAttestation attestation)
         {
-            using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(attestation.PrimaryKey));
+            using var hmac = new HMACSHA256();
+            hmac.Key = Convert.FromBase64String(attestation.PrimaryKey);
+            var sig = hmac.ComputeHash(Encoding.UTF8.GetBytes(deviceId));
 
-            return Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(deviceId)));
+            return Convert.ToBase64String(sig);
         }
 
         /// <summary>
