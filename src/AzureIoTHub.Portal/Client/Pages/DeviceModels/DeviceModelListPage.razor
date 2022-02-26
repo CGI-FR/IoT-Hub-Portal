@@ -51,13 +51,13 @@
                         <img height="25" src="@context.ImageUrl" />
                     </MudTd>
                     <MudTd DataLabel="Name" Style="word-break: break-all;">
-                        <a href=@($"/device-models/{@context.ModelId}{(@context.SupportLoRaFeatures ? "?isLora=true": "")}")>@context.Name</a>
+                        <a href=@($"/device-models/{@context.ModelId}{((@context.SupportLoRaFeatures && isLoraEnable) ? "?isLora=true": "")}")>@context.Name</a>
                     </MudTd>
                     <MudTd DataLabel="Description" Style="word-break: break-all; ">
                         @context.Description
                     </MudTd>
                     <MudTd DataLabel="Details" Style="text-align: center">
-                        <a href="@($"/device-models/{@context.ModelId}{(@context.SupportLoRaFeatures ? "?isLora=true": "")}")"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                        <a href="@($"/device-models/{@context.ModelId}{((@context.SupportLoRaFeatures && isLoraEnable) ? "?isLora=true": "")}")"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
                     </MudTd>
                     <MudTd DataLabel="Delete" Style="text-align: center">
                         <MudIconButton Color="Color.Default" Disabled="context.IsBuiltin" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDeviceModel(context))"></MudIconButton>
@@ -78,9 +78,11 @@
 @code {
     private DeviceModel[] result;
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
+    private bool isLoraEnable;
 
     protected override async Task OnInitializedAsync()
     {
+        isLoraEnable = await this.httpClient.GetFromJsonAsync<bool>("api/settings/lora");
         await LoadDeviceModels();
     }
 
