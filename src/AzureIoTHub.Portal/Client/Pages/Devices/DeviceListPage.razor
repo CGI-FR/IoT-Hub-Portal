@@ -104,7 +104,7 @@
                         <img height="25" src="@context.ImageUrl" />
                     </MudTd>
                     <MudTd DataLabel="Device" Style="word-break: break-all;">
-                        <a href="@($"devices/{@context.DeviceID}{(@context.SupportLoRaFeatures ? "?isLora=true": "")}")">
+                        <a href="@($"devices/{@context.DeviceID}{((@context.SupportLoRaFeatures && isLoraEnable) ? "?isLora=true": "")}")">
                             @(string.IsNullOrEmpty(context.DeviceName) ? context.DeviceID : context.DeviceName)
                             </a>
                     </MudTd>
@@ -132,7 +132,7 @@
                 </MudTd>
                 <MudTd DataLabel="LSU" Style="text-align: center">@context.StatusUpdatedTime</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
-                    <a href="@($"devices/{@context.DeviceID}{(@context.SupportLoRaFeatures ? "?isLora=true": "")}")">
+                    <a href="@($"devices/{@context.DeviceID}{((@context.SupportLoRaFeatures && isLoraEnable) ? "?isLora=true": "")}")">
                         <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" />
                     </a>
                 </MudTd>
@@ -158,11 +158,13 @@
     private string searchID = "";
     private string searchStatus = "";
     private string searchState = "";
+    private bool isLoraEnable;
 
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
 
     protected override async Task OnInitializedAsync()
     {
+        isLoraEnable = await this.Http.GetFromJsonAsync<bool>("api/settings/lora");
         await LoadDevices();
     }
 
