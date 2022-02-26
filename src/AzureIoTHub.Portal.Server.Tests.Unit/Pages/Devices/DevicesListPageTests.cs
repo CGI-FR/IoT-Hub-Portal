@@ -9,6 +9,7 @@ using AzureIoTHub.Portal.Client.Pages.Devices;
 using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
 using Bunit;
 using Bunit.TestDoubles;
+using FluentAssertions.Extensions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -169,7 +170,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Pages
                 .RespondJson(new object[0]);
 
             var cut = RenderComponent<DeviceListPage>();
-            await Task.Delay(100);
+            cut.WaitForAssertion(() => cut.Find($"#tableRefreshButton"), 1.Seconds());
 
             // Act
             for (int i = 0; i < 3; i++)
