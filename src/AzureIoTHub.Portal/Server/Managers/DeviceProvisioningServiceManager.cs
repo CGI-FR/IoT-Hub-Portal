@@ -23,41 +23,44 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         public async Task<EnrollmentGroup> CreateEnrollmentGroupAsync(string deviceType)
         {
-            string enrollmentGroupId;
-            TwinCollection tags;
-            TwinCollection desiredProperties;
+            var twinState = new TwinState(
+                tags: new TwinCollection($"{{ \"purpose\":\"{deviceType}\" }}"),
+                desiredProperties: new TwinCollection());
 
-            if (deviceType == "LoRa Network Server")
-            {
-                enrollmentGroupId = this.config.DPSLoRaEnrollmentGroup;
-                tags = new TwinCollection("{ \"purpose\":\"" + "LoRa Network Server" + "\" }");
-                desiredProperties = new TwinCollection("{ }");
-            }
-            else
-            {
-                enrollmentGroupId = this.config.DPSDefaultEnrollmentGroup;
-                tags = new TwinCollection("{ \"purpose\":\"" + "Unknown" + "\" }");
-                desiredProperties = new TwinCollection("{ }");
-            }
+            return await this.CreateNewEnrollmentGroup(deviceType, true, twinState);
+        }
 
+        public async Task<EnrollmentGroup> CreateEnrollmentGroupFormModelAsync(string modelId, string modelName, TwinCollection desiredProperties)
+        {
+            var twinState = new TwinState(
+                tags: new TwinCollection($"{{ \"modelId\":\"{modelId}\" }}"), 
+                desiredProperties: new TwinCollection());
+
+            return await this.CreateNewEnrollmentGroup(modelName, false, twinState);
+        }
+
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <returns></returns>
+        private async Task<EnrollmentGroup> CreateNewEnrollmentGroup(string name, bool iotEdge, TwinState initialTwinState)
+        {
             string enrollmentGroupPrimaryKey = GenerateKey();
             string enrollmentGroupSecondaryKey = GenerateKey();
 
             SymmetricKeyAttestation attestation = new SymmetricKeyAttestation(enrollmentGroupPrimaryKey, enrollmentGroupSecondaryKey);
 
-            EnrollmentGroup enrollmentGroup = new EnrollmentGroup(enrollmentGroupId, attestation)
+            EnrollmentGroup enrollmentGroup = new EnrollmentGroup(ComputeEnrollmentGroupName(name), attestation)
             {
                 ProvisioningStatus = ProvisioningStatus.Enabled,
                 Capabilities = new DeviceCapabilities
                 {
-                    IotEdge = true
+                    IotEdge = iotEdge
                 },
-                InitialTwinState = new TwinState(tags, desiredProperties)
+                InitialTwinState = initialTwinState
             };
 
-            var enrollmentResult = await this.dps.CreateOrUpdateEnrollmentGroupAsync(enrollmentGroup).ConfigureAwait(false);
-
-            return enrollmentResult;
+            return await this.dps.CreateOrUpdateEnrollmentGroupAsync(enrollmentGroup);
         }
 
         /// <summary>
@@ -66,11 +69,9 @@ namespace AzureIoTHub.Portal.Server.Managers
         /// <returns>AttestationMechanism.</returns>
         public async Task<Attestation> GetAttestation(string deviceType)
         {
-            var attestationMechanism = deviceType == "LoRa Network Server" ?
-                    await this.dps.GetEnrollmentGroupAttestationAsync(this.config.DPSLoRaEnrollmentGroup) :
-                    await this.dps.GetEnrollmentGroupAttestationAsync(this.config.DPSDefaultEnrollmentGroup);
+            var attetationMechanism = await this.dps.GetEnrollmentGroupAttestationAsync(ComputeEnrollmentGroupName(deviceType));
 
-            return attestationMechanism.GetAttestation();
+            return attetationMechanism.GetAttestation();
         }
 
         private static string GenerateKey()
@@ -79,6 +80,13 @@ namespace AzureIoTHub.Portal.Server.Managers
             var rnd = RandomNumberGenerator.GetBytes(length);
 
             return Convert.ToBase64String(rnd);
+        }
+
+        private static string ComputeEnrollmentGroupName(string deviceType)
+        {
+            return deviceType.Trim()
+                .ToLowerInvariant()
+                .Replace(" ", "-");
         }
     }
 }

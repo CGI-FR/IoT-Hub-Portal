@@ -27,12 +27,6 @@ namespace AzureIoTHub.Portal.Server.Managers
             }
             catch (ProvisioningServiceClientHttpException e)
             {
-                if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
-                {
-                    _ = await this.deviceProvisioningServiceManager.CreateEnrollmentGroupAsync(deviceType);
-                    attestation = await this.deviceProvisioningServiceManager.GetAttestation(deviceType);
-                }
-
                 throw new InvalidOperationException("Failed to get symmetricKey.", e);
             }
 
