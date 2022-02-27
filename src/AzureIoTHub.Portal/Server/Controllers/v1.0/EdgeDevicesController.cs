@@ -137,7 +137,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                     // récupération des informations sur le modules de la gateways²
                     NbModules = DeviceHelper.RetrieveNbModuleCount(deviceWithModules, deviceId),
                     RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceWithModules, deviceId),
-                    Modules = DeviceHelper.RetrieveModuleList(deviceWithModules, DeviceHelper.RetrieveNbModuleCount(deviceWithModules, deviceId)),
+                    Modules = DeviceHelper.RetrieveModuleList(deviceWithModules),
                     // recup du dernier deployment
                     LastDeployment = await this.RetrieveLastConfiguration(deviceWithModules)
                 };

@@ -130,41 +130,41 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// This function get and return a list of the modules.
         /// </summary>
         /// <param name="twin">the twin of the device we want.</param>
-        /// <param name="moduleCount">the module count.</param>
         /// <returns> List of GatewayModule.</returns>
-        public static List<IoTEdgeModule> RetrieveModuleList(Twin twin, int moduleCount)
+        public static List<IoTEdgeModule> RetrieveModuleList(Twin twin)
         {
             var list = new List<IoTEdgeModule>();
+            var reportedProperties = JObject.Parse(twin.Properties.Reported.ToJson());
 
-            if (twin.Properties.Reported.Contains("modules") && moduleCount > 0)
+            if (!reportedProperties.TryGetValue("modules", out JToken modules))
             {
-                foreach (var element in twin.Properties.Reported["modules"])
+                return list;
+            }
+
+            foreach (var property in modules.Value<JObject>())
+            {
+                var propertyObject = property.Value.Value<JObject>();
+
+                var module = new IoTEdgeModule()
                 {
-                    var module = new IoTEdgeModule()
-                    {
-                        ModuleName = element.Key
-                    };
+                    ModuleName = property.Key
+                };
 
-                    if (element.Value.Contains("status"))
-                        module.Status = element.Value["status"];
-
-                    if (element.Value.Contains("version"))
-                        module.Version = element.Value["version"];
-
-                    list.Add(module);
+                if (propertyObject.TryGetValue("status", out JToken status))
+                {
+                    module.Status = status.Value<string>();
                 }
 
-                return list;
-            }
-            else
-            {
-                return list;
-            }
-        }
+                if (propertyObject.TryGetValue("version", out JToken version))
+                {
+                    module.Status = version.Value<string>();
+                }
 
-        public static bool IsValidDevEUI(ulong value)
-        {
-            return value is not 0 and not 0xffff_ffff_ffff_ffff;
+                list.Add(module);
+            }
+
+
+            return list;
         }
     }
 }
