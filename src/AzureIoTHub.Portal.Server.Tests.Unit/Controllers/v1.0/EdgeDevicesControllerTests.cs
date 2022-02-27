@@ -21,10 +21,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
     {
         private MockRepository mockRepository;
 
+        private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
         private Mock<IConfiguration> mockConfiguration;
         private Mock<ILogger<EdgeDevicesController>> mockLogger;
         private Mock<RegistryManager> mockRegistryManager;
-        private Mock<IConnectionStringManager> mockConnectionStringManager;
         private Mock<IDeviceService> mockDeviceService;
 
         [SetUp]
@@ -32,10 +32,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
+            this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
             this.mockConfiguration = this.mockRepository.Create<IConfiguration>();
             this.mockLogger = this.mockRepository.Create<ILogger<EdgeDevicesController>>();
             this.mockRegistryManager = this.mockRepository.Create<RegistryManager>();
-            this.mockConnectionStringManager = this.mockRepository.Create<IConnectionStringManager>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
         }
 
@@ -45,8 +45,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
                 this.mockConfiguration.Object,
                 this.mockLogger.Object,
                 this.mockRegistryManager.Object,
-                this.mockConnectionStringManager.Object,
-                this.mockDeviceService.Object);
+                this.mockDeviceService.Object,
+                this.mockProvisioningServiceManager.Object);
         }
 
         [Test]
@@ -108,9 +108,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             this.mockDeviceService.Setup(c => c.GetDeviceTwinWithModule(It.Is<string>(x => x == deviceId)))
                 .ReturnsAsync(twin);
 
-            this.mockConfiguration.Setup(c => c[It.Is<string>(x => x == "IoTDPS:ServiceEndpoint")])
-                .Returns("fake.local");
-
             var edgeHubTwin = new Twin("edgeHub");
             edgeHubTwin.Properties.Reported["clients"] = new[]
             {
@@ -167,22 +164,31 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         {
             // Arrange
             var edgeDevicesController = this.CreateEdgeDevicesController();
-            this.mockConnectionStringManager.Setup(c => c.GetSymmetricKey("aaa", "bbb"))
-                .ReturnsAsync("dfhjkfdgh");
+            var mockRegistrationCredentials = new EnrollmentCredentials
+            {
+                RegistrationID = "aaa",
+                SymmetricKey = "dfhjkfdgh"
+            };
+
+            var mockTwin = new Twin("aaa");
+            mockTwin.Tags["purpose"] = "bbb";
+
+            this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", "bbb"))
+                .ReturnsAsync(mockRegistrationCredentials);
+
+            this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+                .ReturnsAsync(mockTwin);
 
             // Act
-            var result = await edgeDevicesController.GetSymmetricKey("aaa", "bbb");
+            var response = await edgeDevicesController.GetCredentials("aaa");
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<OkObjectResult>(result);
-            var okObjectResult = result as ObjectResult;
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<OkObjectResult>(response.Result);
 
-            Assert.IsNotNull(okObjectResult);
-            Assert.AreEqual(200, okObjectResult.StatusCode);
-            Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<string>(okObjectResult.Value);
-            Assert.AreEqual("dfhjkfdgh", okObjectResult.Value);
+            var okObjectResult = (OkObjectResult)response.Result;
+            Assert.IsNotNull(okObjectResult);  
+            Assert.AreEqual(mockRegistrationCredentials, okObjectResult.Value);
 
             this.mockRepository.VerifyAll();
         }

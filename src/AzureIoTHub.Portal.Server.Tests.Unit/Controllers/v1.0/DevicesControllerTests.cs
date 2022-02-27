@@ -20,6 +20,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
     {
         private MockRepository mockRepository;
 
+        private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
         private Mock<ILogger<DevicesController>> mockLogger;
         private Mock<ITableClientFactory> mockTableClientFactory;
         private Mock<IDeviceService> mockDeviceService;
@@ -32,6 +33,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
+            this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
             this.mockLogger = this.mockRepository.Create<ILogger<DevicesController>>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
@@ -45,6 +47,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             return new DevicesController(
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
+                this.mockProvisioningServiceManager.Object,
                 this.mockDeviceTwinMapper.Object);
         }
 

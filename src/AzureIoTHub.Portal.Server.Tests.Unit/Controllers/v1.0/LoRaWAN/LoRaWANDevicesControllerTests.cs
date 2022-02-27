@@ -29,6 +29,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
     {
         private MockRepository mockRepository;
 
+        private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
         private Mock<ILogger<LoRaWANDevicesController>> mockLogger;
         private Mock<IDeviceService> mockDeviceService;
         private Mock<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>> mockDeviceTwinMapper;
@@ -42,6 +43,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
+            this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
             this.mockLogger = this.mockRepository.Create<ILogger<LoRaWANDevicesController>>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>>();
@@ -60,7 +62,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
                 this.mockDeviceTwinMapper.Object,
                 this.mockTableClientFactory.Object,
                 this.mockLoraDeviceMethodManager.Object,
-                this.mockDeviceModelCommandMapper.Object);
+                this.mockDeviceModelCommandMapper.Object,
+                this.mockProvisioningServiceManager.Object);
         }
 
         [Test]

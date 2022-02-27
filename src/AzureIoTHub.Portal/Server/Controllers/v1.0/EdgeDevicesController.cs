@@ -157,11 +157,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <returns></returns>
         [HttpGet("{deviceId}/credentials", Name = "GET Device enrollment credentials")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<EnrollmentCredentials>> GetSymmetricKey(string deviceId)
+        public async Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceId)
         {
             Twin deviceTwin = await this.devicesService.GetDeviceTwin(deviceId);
-            
-            if(deviceTwin == null)
+
+            if (deviceTwin == null)
             {
                 return this.NotFound($"IoT Edge {deviceId} doesn' exist.");
             }
