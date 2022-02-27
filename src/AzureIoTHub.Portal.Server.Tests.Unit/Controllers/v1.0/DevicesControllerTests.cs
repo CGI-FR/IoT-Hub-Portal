@@ -259,7 +259,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         }
 
         [Test]
-        public async Task When_Device_Not_Exist_GetEnrollmentCredentials_Should_Return_BadRequest()
+        public async Task When_DeviceType_Property_Not_Exist_GetEnrollmentCredentials_Should_Return_BadRequest()
         {
             // Arrange
             var devicesController = this.CreateDevicesController();
@@ -280,7 +280,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         }
 
         [Test]
-        public async Task When_DeviceType_Not_Exist_GetEnrollmentCredentials_Should_Return_NotFound()
+        public async Task When_Device_Not_Exist_GetEnrollmentCredentials_Should_Return_NotFound()
         {
             // Arrange
             var devicesController = this.CreateDevicesController();

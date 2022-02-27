@@ -194,6 +194,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         }
 
         [Test]
+        public async Task When_Device_Not_Exist_GetEnrollmentCredentials_Should_Return_NotFound()
+        {
+            // Arrange
+            var devicesController = this.CreateEdgeDevicesController();
+
+            this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+                .ReturnsAsync((Twin)null);
+
+            // Act
+            var response = await devicesController.GetCredentials("aaa");
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<NotFoundObjectResult>(response.Result);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task CreateGatewayAsync_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
