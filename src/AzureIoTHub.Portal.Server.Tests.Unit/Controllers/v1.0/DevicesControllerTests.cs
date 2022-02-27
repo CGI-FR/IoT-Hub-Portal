@@ -23,11 +23,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
 
         private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
         private Mock<ILogger<DevicesController>> mockLogger;
-        private Mock<ITableClientFactory> mockTableClientFactory;
         private Mock<IDeviceService> mockDeviceService;
         private Mock<IDeviceTwinMapper<DeviceListItem, DeviceDetails>> mockDeviceTwinMapper;
-        private Mock<ILoraDeviceMethodManager> mockLoraDeviceMethodManager;
-        private Mock<IDeviceModelCommandMapper> mockDeviceModelCommandMapper;
 
         [SetUp]
         public void SetUp()
@@ -36,11 +33,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
 
             this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
             this.mockLogger = this.mockRepository.Create<ILogger<DevicesController>>();
-            this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
-            this.mockLoraDeviceMethodManager = this.mockRepository.Create<ILoraDeviceMethodManager>();
-            this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>();
         }
 
         private DevicesController CreateDevicesController()
@@ -146,7 +140,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             {
                 DeviceID = "aaa",
             };
-
 
             devicesController.ModelState.AddModelError("Key", "Device model is invalid");
 
@@ -261,6 +254,47 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             var okObjectResult = (OkObjectResult)response.Result;
             Assert.IsNotNull(okObjectResult);
             Assert.AreEqual(mockRegistrationCredentials, okObjectResult.Value);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task When_Device_Not_Exist_GetEnrollmentCredentials_Should_Return_BadRequest()
+        {
+            // Arrange
+            var devicesController = this.CreateDevicesController();
+
+            var mockTwin = new Twin("aaa");
+
+            this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+                .ReturnsAsync(mockTwin);
+
+            // Act
+            var response = await devicesController.GetCredentials("aaa");
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<BadRequestObjectResult>(response.Result);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task When_DeviceType_Not_Exist_GetEnrollmentCredentials_Should_Return_NotFound()
+        {
+            // Arrange
+            var devicesController = this.CreateDevicesController();
+
+
+            this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+                .ReturnsAsync((Twin)null);
+
+            // Act
+            var response = await devicesController.GetCredentials("aaa");
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<NotFoundObjectResult>(response.Result);
 
             this.mockRepository.VerifyAll();
         }
