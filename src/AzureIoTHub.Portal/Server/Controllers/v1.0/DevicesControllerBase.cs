@@ -149,7 +149,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
         /// <returns></returns>
-        public virtual async Task<ActionResult<EnrollmentCredentials>> GetEnrollmentCredentialsAsync(string deviceID)
+        public virtual async Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
         {
             var item = await this.devicesService.GetDeviceTwin(deviceID);
 

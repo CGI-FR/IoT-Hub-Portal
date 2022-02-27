@@ -360,5 +360,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
             Assert.IsAssignableFrom<OkResult>(result);
             this.mockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task GetEnrollmentCredentials_Should_Always_Return_404()
+        {
+            // Arrange
+            var devicesController = this.CreateLoRaWANDevicesController();
+            string deviceID = "aaa";
+
+            // Act
+            var response = await devicesController.GetCredentials(deviceID);
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<NotFoundResult>(response.Result);
+            this.mockRepository.VerifyAll();
+        }
     }
 }

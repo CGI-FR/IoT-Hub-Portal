@@ -89,9 +89,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceID">The device identifier.</param>
         /// <returns></returns>
         [HttpGet("{deviceID}/credentials", Name = "GET Device Credentials")]
-        public override Task<ActionResult<EnrollmentCredentials>> GetEnrollmentCredentialsAsync(string deviceID)
+        public override Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
         {
-            return base.GetEnrollmentCredentialsAsync(deviceID);
+            return base.GetCredentials(deviceID);
         }
     }
 }

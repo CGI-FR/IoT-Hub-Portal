@@ -160,7 +160,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         }
 
         [Test]
-        public async Task GetSymmetricKey_StateUnderTest_ExpectedBehavior()
+        public async Task GetEnrollmentCredentials_Should_Return_Enrollment_Credentials()
         {
             // Arrange
             var edgeDevicesController = this.CreateEdgeDevicesController();

@@ -3,6 +3,7 @@ using AzureIoTHub.Portal.Server.Factories;
 using AzureIoTHub.Portal.Server.Managers;
 using AzureIoTHub.Portal.Server.Mappers;
 using AzureIoTHub.Portal.Server.Services;
+using AzureIoTHub.Portal.Shared.Models.V10;
 using AzureIoTHub.Portal.Shared.Models.V10.Device;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Devices;
@@ -227,6 +228,40 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsAssignableFrom<OkResult>(result);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetEnrollmentCredentials_Should_Return_Enrollment_Credentials()
+        {
+            // Arrange
+            var devicesController = this.CreateDevicesController();
+            var mockRegistrationCredentials = new EnrollmentCredentials
+            {
+                RegistrationID = "aaa",
+                SymmetricKey = "dfhjkfdgh"
+            };
+
+            var mockTwin = new Twin("aaa");
+            mockTwin.Tags["deviceType"] = "bbb";
+
+            this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", "bbb"))
+                .ReturnsAsync(mockRegistrationCredentials);
+
+            this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+                .ReturnsAsync(mockTwin);
+
+            // Act
+            var response = await devicesController.GetCredentials("aaa");
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<OkObjectResult>(response.Result);
+
+            var okObjectResult = (OkObjectResult)response.Result;
+            Assert.IsNotNull(okObjectResult);
+            Assert.AreEqual(mockRegistrationCredentials, okObjectResult.Value);
+
             this.mockRepository.VerifyAll();
         }
     }
