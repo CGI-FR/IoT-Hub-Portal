@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Server
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Server.Wrappers;
     using AzureIoTHub.Portal.Shared.Models.V10.Device;
     using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
     using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
@@ -94,6 +95,7 @@ namespace AzureIoTHub.Portal.Server
                 return ProvisioningServiceClient.CreateFromConnectionString(configuration.DPSConnectionString);
             });
 
+            services.AddTransient<IProvisioningServiceClient, ProvisioningServiceClientWrapper>();
             services.AddTransient(sp => new BlobServiceClient(configuration.StorageAccountConnectionString));
             services.AddTransient<ITableClientFactory>(sp => new TableClientFactory(configuration.StorageAccountConnectionString));
             services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();

@@ -4,9 +4,11 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using System;
+    using System.Net.Http;
     using System.Security.Cryptography;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
+    using AzureIoTHub.Portal.Server.Wrappers;
     using AzureIoTHub.Portal.Shared.Models.V10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
@@ -14,10 +16,10 @@ namespace AzureIoTHub.Portal.Server.Managers
 
     public class DeviceProvisioningServiceManager : IDeviceProvisioningServiceManager
     {
-        private readonly ProvisioningServiceClient dps;
+        private readonly IProvisioningServiceClient dps;
         private readonly ConfigHandler config;
 
-        public DeviceProvisioningServiceManager(ProvisioningServiceClient dps, ConfigHandler config)
+        public DeviceProvisioningServiceManager(IProvisioningServiceClient dps, ConfigHandler config)
         {
             this.dps = dps;
             this.config = config;
@@ -80,7 +82,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             {
                 attestation = await this.GetAttestation(deviceType);
             }
-            catch (ProvisioningServiceClientHttpException e)
+            catch (HttpRequestException e)
             {
                 if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
@@ -103,6 +105,7 @@ namespace AzureIoTHub.Portal.Server.Managers
                 ScopeID = this.config.DPSIDScope
             };
         }
+
         private SymmetricKeyAttestation CheckAttestation(Attestation attestation)
         {
             var symmetricKeyAttestation = attestation as SymmetricKeyAttestation;
