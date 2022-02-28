@@ -64,12 +64,16 @@
                                                   For="@(()=> Device.DeviceName)"
                                                   Required="true" />
                                 </MudItem>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Device.AssetId" Label="IoT Asset ID" Variant="Variant.Outlined" />
-                                </MudItem>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Device.LocationCode" Label="Location Asset ID" Variant="Variant.Outlined" />
-                                </MudItem>
+
+                                @foreach (DeviceTag tag in TagList)
+                                {
+                                    <MudItem xs="12" md="6">
+                                        <MudTextField @bind-Value="Device.CustomTags[tag.Name]" Label="@tag.Label"
+                                                  Required="@tag.Required"
+                                                  Variant="Variant.Outlined" />
+                                    </MudItem>
+                                }
+
                                 <MudItem xs="12">
                                     <MudText>
                                         <b>Status</b>
@@ -130,6 +134,8 @@
 
     private IEnumerable<DeviceModelCommand> Commands { get; set; }
 
+    private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
+
     protected override async Task OnInitializedAsync()
     {
         if (IsLoRa)
@@ -142,6 +148,7 @@
             Device = await Http.GetFromJsonAsync<DeviceDetails>($"{ApiUrlBase}/{DeviceID}");
         }
 
+        TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
         isLoaded = true;
     }
 
