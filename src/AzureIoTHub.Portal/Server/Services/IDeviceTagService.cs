@@ -8,6 +8,8 @@ namespace AzureIoTHub.Portal.Server.Services
     {
         IEnumerable<DeviceTag> GetAllTags();
 
+        IEnumerable<string> GetAllTagsNames();
+
         Task UpdateTags(List<DeviceTag> tags);
     }
 }

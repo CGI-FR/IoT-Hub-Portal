@@ -1,6 +1,6 @@
 ﻿using Azure.Data.Tables;
 using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Shared.Models.v10.Device;
+using AzureIoTHub.Portal.Shared.Models.V10.Device;
 using Moq;
 using NUnit.Framework;
 using System;

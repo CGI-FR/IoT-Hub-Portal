@@ -68,7 +68,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public virtual async Task<TModel> Get(string deviceID)
         {
             var item = await this.devicesService.GetDeviceTwin(deviceID);
-            var tagList = this.deviceTagService.GetAllTags();
+            var tagList = this.deviceTagService.GetAllTagsNames();
 
             return this.deviceTwinMapper.CreateDeviceDetails(item,tagList);
         }

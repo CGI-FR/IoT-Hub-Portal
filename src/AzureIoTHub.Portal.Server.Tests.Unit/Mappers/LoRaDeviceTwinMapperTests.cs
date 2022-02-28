@@ -6,6 +6,7 @@ using Microsoft.Azure.Devices.Shared;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace AzureIoTHub.Portal.Server.Tests.Mappers
 {
@@ -40,8 +41,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
 
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.ModelId), modelId);
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.DeviceName), Guid.NewGuid().ToString());
-            DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.AssetId), Guid.NewGuid().ToString());
-            DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.LocationCode), Guid.NewGuid().ToString());
+
+            Dictionary<string, string> customTags = new()
+            {
+                { "assetId", Guid.NewGuid().ToString() },
+                { "locationCode", Guid.NewGuid().ToString() }
+            };
+
+            foreach (KeyValuePair<string, string> customTag in customTags)
+            {
+                DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
+            }
 
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)] = Guid.NewGuid().ToString();
@@ -53,15 +63,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
                 .Returns(expectedModelImageUri);
 
             // Act
-            var result = loRaDeviceTwinMapper.CreateDeviceDetails(twin);
+            var result = loRaDeviceTwinMapper.CreateDeviceDetails(twin,customTags.Keys);
 
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(twin.DeviceId, result.DeviceID);
             Assert.AreEqual(modelId, result.ModelId);
             Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
-            Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LocationCode)), result.LocationCode);
-            Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.AssetId)), result.AssetId);
+
+            foreach (string tagName in customTags.Keys)
+            {
+                Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, tagName), result.CustomTags[tagName]);
+            }
 
             Assert.AreEqual(expectedModelImageUri, result.ImageUrl);
 
