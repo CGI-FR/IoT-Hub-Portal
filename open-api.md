@@ -245,6 +245,50 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
+## GET Device Credentials
+
+<a id="opIdGET Device Credentials"></a>
+
+> Code samples
+
+`GET /api/devices/{deviceID}/credentials`
+
+*Gets the device credentials.*
+
+<h3 id="get-device-credentials-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceID|path|string|true|The device identifier.|
+
+> Example responses
+
+> 200 Response
+
+```
+{"registrationID":"string","symmetricKey":"string","scopeID":"string","provisioningEndpoint":"string"}
+```
+
+```json
+{
+  "registrationID": "string",
+  "symmetricKey": "string",
+  "scopeID": "string",
+  "provisioningEndpoint": "string"
+}
+```
+
+<h3 id="get-device-credentials-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[EnrollmentCredentials](#schemaenrollmentcredentials)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
 <h1 id="azure-iot-hub-portal-api-iot-edge">IoT Edge</h1>
 
 ## GET IoT Edge config list
@@ -460,10 +504,8 @@ None
 ```json
 {
   "deviceId": "string",
-  "symmetricKey": "string",
   "connectionState": "string",
   "scope": "string",
-  "endPoint": "string",
   "type": "string",
   "status": "string",
   "runtimeResponse": "string",
@@ -546,10 +588,8 @@ None
 ```json
 {
   "deviceId": "string",
-  "symmetricKey": "string",
   "connectionState": "string",
   "scope": "string",
-  "endPoint": "string",
   "type": "string",
   "status": "string",
   "runtimeResponse": "string",
@@ -617,16 +657,14 @@ None
 > 200 Response
 
 ```
-{"deviceId":"string","symmetricKey":"string","connectionState":"string","scope":"string","endPoint":"string","type":"string","status":"string","runtimeResponse":"string","nbDevices":0,"nbModules":0,"environment":"string","lastDeployment":{"name":"string","dateCreation":"2019-08-24T14:15:22Z","status":"string"},"modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":{"property1":"string","property2":"string"},"moduleIdentityTwinSettings":{"property1":"string","property2":"string"}}]}
+{"deviceId":"string","connectionState":"string","scope":"string","type":"string","status":"string","runtimeResponse":"string","nbDevices":0,"nbModules":0,"environment":"string","lastDeployment":{"name":"string","dateCreation":"2019-08-24T14:15:22Z","status":"string"},"modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":{"property1":"string","property2":"string"},"moduleIdentityTwinSettings":{"property1":"string","property2":"string"}}]}
 ```
 
 ```json
 {
   "deviceId": "string",
-  "symmetricKey": "string",
   "connectionState": "string",
   "scope": "string",
-  "endPoint": "string",
   "type": "string",
   "status": "string",
   "runtimeResponse": "string",
@@ -694,34 +732,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## GET Device symmetric key
-
-<a id="opIdGET Device symmetric key"></a>
-
-> Code samples
-
-`GET /api/edge/device/{deviceId}/{deviceType}/ConnectionString`
-
-*Gets the IoT Edge device symmetric key.*
-
-<h3 id="get-device-symmetric-key-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|deviceId|path|string|true|The device identifier.|
-|deviceType|path|string|true|Type of the device.|
-
-<h3 id="get-device-symmetric-key-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-None
-</aside>
-
 ## POST Execute module command
 
 <a id="opIdPOST Execute module command"></a>
@@ -779,6 +789,50 @@ None
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[C2Dresult](#schemac2dresult)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## GET Device enrollment credentials
+
+<a id="opIdGET Device enrollment credentials"></a>
+
+> Code samples
+
+`GET /api/edge/device/{deviceId}/credentials`
+
+*Gets the IoT Edge device enrollement credentials.*
+
+<h3 id="get-device-enrollment-credentials-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceId|path|string|true|The device identifier.|
+
+> Example responses
+
+> 200 Response
+
+```
+{"registrationID":"string","symmetricKey":"string","scopeID":"string","provisioningEndpoint":"string"}
+```
+
+```json
+{
+  "registrationID": "string",
+  "symmetricKey": "string",
+  "scopeID": "string",
+  "provisioningEndpoint": "string"
+}
+```
+
+<h3 id="get-device-enrollment-credentials-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[EnrollmentCredentials](#schemaenrollmentcredentials)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1575,7 +1629,7 @@ None
   "isBuiltin": true,
   "supportLoRaFeatures": true,
   "appEUI": "string",
-  "sensorDecoderURL": "string"
+  "sensorDecoder": "string"
 }
 ```
 
@@ -1638,7 +1692,7 @@ None
 > 200 Response
 
 ```
-{"modelId":"string","imageUrl":"string","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true,"appEUI":"string","sensorDecoderURL":"string"}
+{"modelId":"string","imageUrl":"string","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true,"appEUI":"string","sensorDecoder":"string"}
 ```
 
 ```json
@@ -1650,7 +1704,7 @@ None
   "isBuiltin": true,
   "supportLoRaFeatures": true,
   "appEUI": "string",
-  "sensorDecoderURL": "string"
+  "sensorDecoder": "string"
 }
 ```
 
@@ -1687,7 +1741,7 @@ None
   "isBuiltin": true,
   "supportLoRaFeatures": true,
   "appEUI": "string",
-  "sensorDecoderURL": "string"
+  "sensorDecoder": "string"
 }
 ```
 
@@ -2943,6 +2997,32 @@ None
 |required|boolean|false|none|Whether the field is required when creating a new device or not.|
 |searchable|boolean|false|none|Whether the field can be searcheable via the device search panel or not.|
 
+<h2 id="tocS_EnrollmentCredentials">EnrollmentCredentials</h2>
+<!-- backwards compatibility -->
+<a id="schemaenrollmentcredentials"></a>
+<a id="schema_EnrollmentCredentials"></a>
+<a id="tocSenrollmentcredentials"></a>
+<a id="tocsenrollmentcredentials"></a>
+
+```json
+{
+  "registrationID": "string",
+  "symmetricKey": "string",
+  "scopeID": "string",
+  "provisioningEndpoint": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|registrationID|string¦null|false|none|none|
+|symmetricKey|string¦null|false|none|none|
+|scopeID|string¦null|false|none|none|
+|provisioningEndpoint|string¦null|false|none|none|
+
 <h2 id="tocS_IoTEdgeDevice">IoTEdgeDevice</h2>
 <!-- backwards compatibility -->
 <a id="schemaiotedgedevice"></a>
@@ -2953,10 +3033,8 @@ None
 ```json
 {
   "deviceId": "string",
-  "symmetricKey": "string",
   "connectionState": "string",
   "scope": "string",
-  "endPoint": "string",
   "type": "string",
   "status": "string",
   "runtimeResponse": "string",
@@ -2992,10 +3070,8 @@ None
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |deviceId|string|true|none|The IoT Edge identifier.|
-|symmetricKey|string¦null|false|none|The IoT Edge device symmetric key.|
 |connectionState|string¦null|false|none|The IoT Edge connection state.|
 |scope|string¦null|false|none|The IoT Edge scope tag value.|
-|endPoint|string¦null|false|none|The IoT Edge end point.|
 |type|string|true|none|The IoT Edge device type.|
 |status|string¦null|false|none|The IoT Edge device status.|
 |runtimeResponse|string¦null|false|none|The IoT Edge runtime response.|
@@ -3127,7 +3203,7 @@ None
   "isBuiltin": true,
   "supportLoRaFeatures": true,
   "appEUI": "string",
-  "sensorDecoderURL": "string"
+  "sensorDecoder": "string"
 }
 
 ```
@@ -3143,7 +3219,7 @@ None
 |isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
 |supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
 |appEUI|string|true|none|The device OTAA Application eui.|
-|sensorDecoderURL|string¦null|false|none|The sensor decoder Url.|
+|sensorDecoder|string¦null|false|none|The sensor decoder Url.|
 
 <h2 id="tocS_ProblemDetails">ProblemDetails</h2>
 <!-- backwards compatibility -->

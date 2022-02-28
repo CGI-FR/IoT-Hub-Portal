@@ -175,6 +175,48 @@
         }
       }
     },
+    "/api/devices/{deviceID}/credentials": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "summary": "Gets the device credentials.",
+        "operationId": "GET Device Credentials",
+        "parameters": [
+          {
+            "name": "deviceID",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentCredentials"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentCredentials"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentCredentials"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/edge/configurations": {
       "get": {
         "tags": [
@@ -446,40 +488,6 @@
         }
       }
     },
-    "/api/edge/device/{deviceId}/{deviceType}/ConnectionString": {
-      "get": {
-        "tags": [
-          "IoT Edge"
-        ],
-        "summary": "Gets the IoT Edge device symmetric key.",
-        "operationId": "GET Device symmetric key",
-        "parameters": [
-          {
-            "name": "deviceId",
-            "in": "path",
-            "description": "The device identifier.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "deviceType",
-            "in": "path",
-            "description": "Type of the device.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
     "/api/edge/device/{deviceId}/{moduleId}/{methodName}": {
       "post": {
         "tags": [
@@ -552,6 +560,48 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/C2Dresult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/device/{deviceId}/credentials": {
+      "get": {
+        "tags": [
+          "IoT Edge"
+        ],
+        "summary": "Gets the IoT Edge device enrollement credentials.",
+        "operationId": "GET Device enrollment credentials",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentCredentials"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentCredentials"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentCredentials"
                 }
               }
             }
@@ -2544,6 +2594,28 @@
         },
         "additionalProperties": false
       },
+      "EnrollmentCredentials": {
+        "type": "object",
+        "properties": {
+          "registrationID": {
+            "type": "string",
+            "nullable": true
+          },
+          "symmetricKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "scopeID": {
+            "type": "string",
+            "nullable": true
+          },
+          "provisioningEndpoint": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "IoTEdgeDevice": {
         "required": [
           "deviceId",
@@ -2555,11 +2627,6 @@
             "type": "string",
             "description": "The IoT Edge identifier."
           },
-          "symmetricKey": {
-            "type": "string",
-            "description": "The IoT Edge device symmetric key.",
-            "nullable": true
-          },
           "connectionState": {
             "type": "string",
             "description": "The IoT Edge connection state.",
@@ -2568,11 +2635,6 @@
           "scope": {
             "type": "string",
             "description": "The IoT Edge scope tag value.",
-            "nullable": true
-          },
-          "endPoint": {
-            "type": "string",
-            "description": "The IoT Edge end point.",
             "nullable": true
           },
           "type": {
@@ -2793,7 +2855,7 @@
             "type": "string",
             "description": "The device OTAA Application eui."
           },
-          "sensorDecoderURL": {
+          "sensorDecoder": {
             "type": "string",
             "description": "The sensor decoder Url.",
             "nullable": true
