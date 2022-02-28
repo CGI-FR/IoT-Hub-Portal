@@ -38,7 +38,7 @@ namespace AzureIoTHub.Portal.Server.Services
             return this.registryManager.GetConfigurationAsync(id);
         }
 
-        public async Task RolloutDeviceConfiguration(string modelName, Dictionary<string, object> desiredProperties)
+        public async Task RolloutDeviceConfiguration(string modelId, string modelName, Dictionary<string, object> desiredProperties)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
@@ -59,7 +59,7 @@ namespace AzureIoTHub.Portal.Server.Services
             var newConfiguration = new Configuration($"{configurationNamePrefix}-{DateTime.UtcNow.Ticks}");
 
             newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
-            newConfiguration.TargetCondition = $"tags.deviceType = '{modelName}'";
+            newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'";
             newConfiguration.Content.DeviceContent = desiredProperties;
 
             await this.registryManager.AddConfigurationAsync(newConfiguration);

@@ -111,6 +111,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Services
                 { "prop1", "value1" }
             };
             Configuration newConfiguration = null;
+            string modelId = Guid.NewGuid().ToString();
 
             this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.IsAny<int>()))
                 .ReturnsAsync(new Configuration[0]);
@@ -120,7 +121,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Services
                 .ReturnsAsync((Configuration conf) => conf);
 
             // Act
-            await configsServices.RolloutDeviceConfiguration(deviceType, desiredProperties);
+            await configsServices.RolloutDeviceConfiguration(modelId, deviceType, desiredProperties);
 
             // Assert
             Assert.IsNotNull(newConfiguration);
@@ -129,7 +130,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Services
             Assert.AreEqual(0, newConfiguration.Content.ModuleContent.Count);
             Assert.AreEqual(1, newConfiguration.Content.DeviceContent.Count);
             Assert.AreEqual(desiredProperties, newConfiguration.Content.DeviceContent);
-            Assert.AreEqual($"tags.deviceType = '{deviceType}'", newConfiguration.TargetCondition);
+            Assert.AreEqual($"tags.modelId = '{modelId}'", newConfiguration.TargetCondition);
             Assert.AreEqual(0, newConfiguration.Priority);
 
             this.mockRepository.VerifyAll();
@@ -150,6 +151,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Services
             };
             Configuration newConfiguration;
             var suffix = Guid.NewGuid().ToString();
+            string modelId = Guid.NewGuid().ToString();
 
             this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.IsAny<int>()))
                 .ReturnsAsync(new Configuration[]
@@ -166,7 +168,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Services
                 .Returns(Task.CompletedTask);
 
             // Act
-            await configsServices.RolloutDeviceConfiguration(deviceType, desirectProperties);
+            await configsServices.RolloutDeviceConfiguration(modelId, deviceType, desirectProperties);
 
             // Assert
             this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());
