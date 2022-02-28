@@ -45,20 +45,37 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         private async Task<EnrollmentGroup> CreateNewEnrollmentGroup(string name, bool iotEdge, TwinState initialTwinState)
         {
-            string enrollmentGroupPrimaryKey = GenerateKey();
-            string enrollmentGroupSecondaryKey = GenerateKey();
+            var enrollmentGroupName = ComputeEnrollmentGroupName(name);
+            EnrollmentGroup enrollmentGroup;
 
-            SymmetricKeyAttestation attestation = new SymmetricKeyAttestation(enrollmentGroupPrimaryKey, enrollmentGroupSecondaryKey);
-
-            EnrollmentGroup enrollmentGroup = new EnrollmentGroup(ComputeEnrollmentGroupName(name), attestation)
+            try
             {
-                ProvisioningStatus = ProvisioningStatus.Enabled,
-                Capabilities = new DeviceCapabilities
+                enrollmentGroup = await this.dps.GetEnrollmentGroupAsync(enrollmentGroupName);
+            }
+            catch (HttpRequestException e)
+            {
+                if(e.StatusCode != System.Net.HttpStatusCode.NotFound)
                 {
-                    IotEdge = iotEdge
-                },
-                InitialTwinState = initialTwinState
-            };
+                    throw;
+                }
+
+                string enrollmentGroupPrimaryKey = GenerateKey();
+                string enrollmentGroupSecondaryKey = GenerateKey();
+
+                SymmetricKeyAttestation attestation = new SymmetricKeyAttestation(enrollmentGroupPrimaryKey, enrollmentGroupSecondaryKey);
+
+                enrollmentGroup = new EnrollmentGroup(enrollmentGroupName, attestation)
+                {
+                    ProvisioningStatus = ProvisioningStatus.Enabled,
+                    Capabilities = new DeviceCapabilities
+                    {
+                        IotEdge = iotEdge
+                    },
+                };
+            }
+
+            enrollmentGroup.InitialTwinState = initialTwinState;
+            enrollmentGroup.Capabilities.IotEdge = iotEdge;
 
             return await this.dps.CreateOrUpdateEnrollmentGroupAsync(enrollmentGroup);
         }

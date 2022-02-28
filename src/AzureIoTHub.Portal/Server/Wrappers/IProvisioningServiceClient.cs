@@ -10,6 +10,8 @@ namespace AzureIoTHub.Portal.Server.Wrappers
     {
         Task<EnrollmentGroup> CreateOrUpdateEnrollmentGroupAsync(EnrollmentGroup enrollmentGroup);
 
+        Task<EnrollmentGroup> GetEnrollmentGroupAsync(string enrollmentGroupId);
+
         Task<IAttestationMechanism> GetEnrollmentGroupAttestationAsync(string v);
     }
 }

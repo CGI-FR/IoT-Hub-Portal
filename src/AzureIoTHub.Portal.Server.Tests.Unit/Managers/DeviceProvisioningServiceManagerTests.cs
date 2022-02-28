@@ -47,6 +47,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             var manager = this.CreateManager();
             EnrollmentGroup enrollmentGroup = null;
 
+            this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
+                .Throws(new HttpRequestException(null, null, HttpStatusCode.NotFound));
+
             this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
                 It.Is<EnrollmentGroup>(x => x.EnrollmentGroupId == enrollmentGroupName && x.Attestation is SymmetricKeyAttestation)))
                 .ReturnsAsync((EnrollmentGroup e) =>
@@ -72,6 +75,49 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
+        public async Task When_EnrollmentGroup_Already_Exist_CreateEnrollmentGroupAsync_Should_Update_Enrollment_Group(string deviceType, string enrollmentGroupName)
+        {
+            // Arrange
+            var manager = this.CreateManager();
+            EnrollmentGroup enrollmentGroup = null;
+            var attestation = new SymmetricKeyAttestation("aaa", "bbb");
+
+            this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
+                .ReturnsAsync(new EnrollmentGroup (enrollmentGroupName, attestation)
+                {
+                    Capabilities = new DeviceCapabilities
+                    {
+                        IotEdge = false
+                    }
+                });
+
+            this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
+                It.Is<EnrollmentGroup>(x => x.EnrollmentGroupId == enrollmentGroupName && x.Attestation is SymmetricKeyAttestation)))
+                .ReturnsAsync((EnrollmentGroup e) =>
+                {
+                    enrollmentGroup = e;
+                    return e;
+                });
+
+            // Act
+            var result = await manager.CreateEnrollmentGroupAsync(deviceType);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(enrollmentGroup, result);
+            Assert.IsTrue(enrollmentGroup.Capabilities.IotEdge);
+            Assert.IsNotNull(enrollmentGroup.InitialTwinState);
+            Assert.IsTrue(enrollmentGroup.InitialTwinState.Tags.Contains("deviceType"));
+            Assert.AreEqual(deviceType, enrollmentGroup.InitialTwinState.Tags["deviceType"].ToString());
+            Assert.IsAssignableFrom<SymmetricKeyAttestation>(result.Attestation);
+            Assert.AreEqual(attestation, result.Attestation);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [TestCase("aaa", "aaa")]
+        [TestCase("AAA", "aaa")]
+        [TestCase("AAA AAA", "aaa-aaa")]
         public async Task CreateEnrollmentGroupFormModelAsync_Should_Create_A_New_Enrollment_Group(string modelName, string enrollmentGroupName)
         {
             // Arrange
@@ -79,6 +125,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             string modelId = "bbb";
             TwinCollection desiredProperties = new TwinCollection();
             EnrollmentGroup enrollmentGroup = null;
+
+            this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
+                .Throws(new HttpRequestException(null, null, HttpStatusCode.NotFound));
 
             this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
                 It.Is<EnrollmentGroup>(x =>
@@ -106,6 +155,60 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             Assert.IsTrue(enrollmentGroup.InitialTwinState.Tags.Contains("deviceType"));
             Assert.AreEqual(modelName, enrollmentGroup.InitialTwinState.Tags["deviceType"].ToString());
             Assert.AreEqual(desiredProperties, enrollmentGroup.InitialTwinState.DesiredProperties);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [TestCase("aaa", "aaa")]
+        [TestCase("AAA", "aaa")]
+        [TestCase("AAA AAA", "aaa-aaa")]
+        public async Task When_EnrollmentGroup_Exist_CreateEnrollmentGroupFormModelAsync_Should_Update(string modelName, string enrollmentGroupName)
+        {
+            // Arrange
+            var manager = this.CreateManager();
+            string modelId = "bbb";
+            TwinCollection desiredProperties = new TwinCollection();
+            EnrollmentGroup enrollmentGroup = null;
+
+            var attestation = new SymmetricKeyAttestation("aaa", "bbb");
+
+            this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
+                .ReturnsAsync(new EnrollmentGroup(enrollmentGroupName, attestation)
+                {
+                    Capabilities = new DeviceCapabilities
+                    {
+                        IotEdge = true
+                    }
+                });
+
+            this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
+                It.Is<EnrollmentGroup>(x =>
+                x.EnrollmentGroupId == enrollmentGroupName &&
+                x.Attestation is SymmetricKeyAttestation)))
+                .ReturnsAsync((EnrollmentGroup e) =>
+                {
+                    enrollmentGroup = e;
+                    return e;
+                });
+
+            // Act
+            var result = await manager.CreateEnrollmentGroupFormModelAsync(
+                modelId,
+                modelName,
+                desiredProperties);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(enrollmentGroup, result);
+            Assert.IsFalse(enrollmentGroup.Capabilities.IotEdge);
+            Assert.IsNotNull(enrollmentGroup.InitialTwinState);
+            Assert.IsTrue(enrollmentGroup.InitialTwinState.Tags.Contains("modelId"));
+            Assert.AreEqual(modelId, enrollmentGroup.InitialTwinState.Tags["modelId"].ToString());
+            Assert.IsTrue(enrollmentGroup.InitialTwinState.Tags.Contains("deviceType"));
+            Assert.AreEqual(modelName, enrollmentGroup.InitialTwinState.Tags["deviceType"].ToString());
+            Assert.AreEqual(desiredProperties, enrollmentGroup.InitialTwinState.DesiredProperties);
+            Assert.IsAssignableFrom<SymmetricKeyAttestation>(result.Attestation);
+            Assert.AreEqual(attestation, result.Attestation);
 
             this.mockRepository.VerifyAll();
         }
@@ -185,6 +288,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
 
             mockAttestationMehanism.Setup(c => c.GetAttestation())
                 .Returns(new SymmetricKeyAttestation("8isrFI1sGsIlvvFSSFRiMfCNzv21fjbE/+ah/lSh3lF8e2YG1Te7w1KpZhJFFXJrqYKi9yegxkqIChbqOS9Egw==", "8isrFI1sGsIlvvFSSFRiMfCNzv21fjbE/+ah/lSh3lF8e2YG1Te7w1KpZhJFFXJrqYKi9yegxkqIChbqOS9Egw=="));
+
+            this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
+                .Throws(new HttpRequestException(null, null, HttpStatusCode.NotFound));
 
             this.mockProvisioningServiceClient
                 .Setup(c => c.GetEnrollmentGroupAttestationAsync(It.Is<string>(x => x == enrollmentGroupName)))
