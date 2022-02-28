@@ -58,7 +58,6 @@ To store additional information about the device, the application uses device tw
 |------------	|-----------------	|--------------------------------------------------------------------------------------------------------------------------------------------------------------	|
 | deviceName 	| ``tags.deviceName`` 	| Field that contains the device friendly name.<br>_**note**: if not set, the portal will show the device id instead of the device name until its configured._ 	|
 | modelId    	| ``tags.modelId``    	| Field that contains the device model identifier that the device is related.<br>_**note**: if not set, the device is not usable on the IoT hub portal._       	|
-| deviceType 	| ``tags.deviceType`` 	| Field that contains a human readable device type (ex: 'LoRa Device')                                                                                         	|
 
 ## IoT Edge
 
