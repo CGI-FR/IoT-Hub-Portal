@@ -145,6 +145,11 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         private static string ComputeEnrollmentGroupName(string deviceType)
         {
+            if (string.IsNullOrEmpty(deviceType))
+            {
+                return "default";
+            }
+
             return deviceType.Trim()
                 .ToLowerInvariant()
                 .Replace(" ", "-");
