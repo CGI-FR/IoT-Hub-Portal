@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Server
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Server.Wrappers;
     using AzureIoTHub.Portal.Shared.Models.V10.Device;
     using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
     using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
@@ -94,13 +95,13 @@ namespace AzureIoTHub.Portal.Server
                 return ProvisioningServiceClient.CreateFromConnectionString(configuration.DPSConnectionString);
             });
 
+            services.AddTransient<IProvisioningServiceClient, ProvisioningServiceClientWrapper>();
             services.AddTransient(sp => new BlobServiceClient(configuration.StorageAccountConnectionString));
             services.AddTransient<ITableClientFactory>(sp => new TableClientFactory(configuration.StorageAccountConnectionString));
             services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
             services.AddTransient<IDeviceService, DeviceService>();
             services.AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>();
             services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
-            services.AddTransient<IConnectionStringManager, ConnectionStringManager>();
             services.AddTransient<IDeviceModelCommandsManager, DeviceModelCommandsManager>();
             services.AddTransient<IDeviceProvisioningServiceManager, DeviceProvisioningServiceManager>();
 
@@ -251,8 +252,8 @@ namespace AzureIoTHub.Portal.Server
         {
             protected const string IoTHubConnectionStringKey = "IoTHub:ConnectionString";
             protected const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
-            protected const string DPSDefaultEnrollmentGroupKey = "IoTDPS:DefaultEnrollmentGroup";
-            protected const string DPSLoRaEnrollmentGroupKey = "IoTDPS:LoRaEnrollmentGroup";
+            protected const string DPSServiceEndpointKey = "IoTDPS:ServiceEndpoint";
+            protected const string DPSIDScopeKey = "IoTDPS:IDScope";
 
             protected const string OIDCScopeKey = "OIDC:Scope";
             protected const string OIDCAuthorityKey = "OIDC:Authority";
@@ -284,9 +285,9 @@ namespace AzureIoTHub.Portal.Server
 
             internal abstract string DPSConnectionString { get; }
 
-            internal abstract string DPSDefaultEnrollmentGroup { get; }
+            internal abstract string DPSIDScope { get; }
 
-            internal abstract string DPSLoRaEnrollmentGroup { get; }
+            internal abstract string DPSEndpoint { get; }
 
             internal abstract string StorageAccountConnectionString { get; }
 
@@ -326,9 +327,9 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string DPSConnectionString => this.config.GetConnectionString(DPSConnectionStringKey);
 
-            internal override string DPSDefaultEnrollmentGroup => this.config[DPSDefaultEnrollmentGroupKey];
+            internal override string DPSIDScope => this.config[DPSIDScopeKey];
 
-            internal override string DPSLoRaEnrollmentGroup => this.config[DPSLoRaEnrollmentGroupKey];
+            internal override string DPSEndpoint => this.config[DPSServiceEndpointKey];
 
             internal override string StorageAccountConnectionString => this.config.GetConnectionString(StorageAccountConnectionStringKey);
 
@@ -368,9 +369,9 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string DPSConnectionString => this.config[DPSConnectionStringKey];
 
-            internal override string DPSDefaultEnrollmentGroup => this.config[DPSDefaultEnrollmentGroupKey];
+            internal override string DPSIDScope => this.config[DPSIDScopeKey];
 
-            internal override string DPSLoRaEnrollmentGroup => this.config[DPSLoRaEnrollmentGroupKey];
+            internal override string DPSEndpoint => this.config[DPSServiceEndpointKey];
 
             internal override string StorageAccountConnectionString => this.config[StorageAccountConnectionStringKey];
 

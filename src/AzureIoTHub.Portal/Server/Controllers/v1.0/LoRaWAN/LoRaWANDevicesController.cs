@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.V10;
     using AzureIoTHub.Portal.Shared.Models.V10.Device;
     using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
     using Microsoft.AspNetCore.Mvc;
@@ -36,8 +37,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper,
             ITableClientFactory tableClientFactory,
             ILoraDeviceMethodManager loraDeviceMethodManager,
-            IDeviceModelCommandMapper deviceModelCommandMapper)
-            : base(logger, devicesService, deviceTwinMapper)
+            IDeviceModelCommandMapper deviceModelCommandMapper, 
+            IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
+            : base(logger, devicesService, deviceTwinMapper, deviceProvisioningServiceManager)
         {
             this.tableClientFactory = tableClientFactory;
             this.loraDeviceMethodManager = loraDeviceMethodManager;
@@ -105,7 +107,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="commandId">The command identifier.</param>
         /// <returns></returns>
         /// <exception cref="System.FormatException">Incorrect port or invalid DevEui Format.</exception>
-        [HttpPost("{deviceId}/_command/{commandId}", Name ="POST Execute LoRaWAN command")]
+        [HttpPost("{deviceId}/_command/{commandId}", Name = "POST Execute LoRaWAN command")]
         public async Task<IActionResult> ExecuteCommand(string deviceId, string commandId)
         {
             try
@@ -136,6 +138,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
                 return this.BadRequest("Something went wrong when executing the command.");
             }
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public override Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
+        {
+            return Task.FromResult<ActionResult<EnrollmentCredentials>>(this.NotFound());
         }
     }
 }

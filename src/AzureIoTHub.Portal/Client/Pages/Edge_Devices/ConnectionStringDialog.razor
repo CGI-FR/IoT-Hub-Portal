@@ -1,29 +1,43 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using AzureIoTHub.Portal.Shared.Models.V10
 
 @inject HttpClient Http
+@inject ISnackbar Snackbar
 
 <div class="ConnectionString-dialog">
     <MudDialog>
         <DialogContent>
-            <MudCard Outlined="true">
-
-                <MudCardContent>
-                    <MudGrid>
-                        <MudItem Class="mt-0" xs="12">
-                            <MudText Style="text-decoration:underline"><b>Device Id :</b></MudText>
-                            <MudTextField @bind-Value="@DeviceId" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" />
-                        </MudItem>
-                        <MudItem Class="mt-0" xs="12">
-                            <MudText Style="text-decoration:underline"><b>Symmetric Key :</b></MudText>
-                            <MudTextField @bind-Value="@SymmetricKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" />
-                        </MudItem>
-                        <MudItem xs="12">
-                            <MudText Style="text-decoration:underline"><b>Service Endpoint :</b></MudText>
-                            <MudTextField @bind-Value="@Endpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" />
-                        </MudItem>
-                    </MudGrid>
-                </MudCardContent>
-            </MudCard>
+            @if (loading)
+            {
+                <MudItem Class="custom-centered-container">
+                    <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+                </MudItem>
+            }
+            else
+            {
+                <MudCard Outlined="true">
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudText Style="text-decoration:underline"><b>Service Endpoint</b></MudText>
+                                <MudTextField @bind-Value="@Credentials.ProvisioningEndpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" />
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudText Style="text-decoration:underline"><b>Registation Scope ID</b></MudText>
+                                <MudTextField @bind-Value="@Credentials.ScopeID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" />
+                            </MudItem>
+                            <MudItem Class="mt-0" xs="12">
+                                <MudText Style="text-decoration:underline"><b>Device Id</b></MudText>
+                                <MudTextField @bind-Value="@Credentials.RegistrationID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" />
+                            </MudItem>
+                            <MudItem Class="mt-0" xs="12">
+                                <MudText Style="text-decoration:underline"><b>Symmetric Key</b></MudText>
+                                <MudTextField @bind-Value="@Credentials.SymmetricKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            }
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -33,9 +47,34 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public string Endpoint { get; set; }
-    [Parameter] public string SymmetricKey { get; set; }
-    [Parameter] public string DeviceId { get; set; }
+    [Parameter] public string deviceId { get; set; }
+    private EnrollmentCredentials Credentials;
+    private bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await base.OnInitializedAsync();
+
+            Credentials = await this.Http.GetFromJsonAsync<EnrollmentCredentials>($"api/edge/device/{deviceId}/credentials");
+            loading = false;
+
+        }
+        catch (HttpRequestException e)
+        {
+            if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                Snackbar.Add("Cannot obtain the connection string <br> because the enrollment group does not exist.", Severity.Error);
+            }
+            else
+            {
+                Snackbar.Add($"Something went wrong.", Severity.Error);
+            }
+
+            MudDialog.Close();
+        }
+    }
 
     void Cancel() => MudDialog.Cancel();
 }

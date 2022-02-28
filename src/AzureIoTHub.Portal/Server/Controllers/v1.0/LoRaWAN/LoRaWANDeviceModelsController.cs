@@ -30,13 +30,15 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <param name="deviceModelMapper">The device model mapper.</param>
         /// <param name="devicesService">The devices service.</param>
         /// <param name="tableClientFactory">The table client factory.</param>
+        /// <param name="deviceProvisioningServiceManager">The device provisioning service manager.</param>
         public LoRaWANDeviceModelsController(
             ILogger<DeviceModelsControllerBase<DeviceModel, LoRaDeviceModel>> log,
             IDeviceModelImageManager deviceModelImageManager,
             IDeviceModelMapper<DeviceModel, LoRaDeviceModel> deviceModelMapper,
             IDeviceService devicesService,
-            ITableClientFactory tableClientFactory)
-            : base(log, deviceModelImageManager, deviceModelMapper, devicesService, tableClientFactory, 
+            ITableClientFactory tableClientFactory, 
+            IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
+            : base(log, deviceModelImageManager, deviceModelMapper, devicesService, tableClientFactory, deviceProvisioningServiceManager,
                   $"{nameof(DeviceModel.SupportLoRaFeatures)} eq true")
         {
         }

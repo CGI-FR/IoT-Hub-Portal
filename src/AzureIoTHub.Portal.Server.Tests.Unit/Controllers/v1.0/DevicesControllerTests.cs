@@ -3,6 +3,7 @@ using AzureIoTHub.Portal.Server.Factories;
 using AzureIoTHub.Portal.Server.Managers;
 using AzureIoTHub.Portal.Server.Mappers;
 using AzureIoTHub.Portal.Server.Services;
+using AzureIoTHub.Portal.Shared.Models.V10;
 using AzureIoTHub.Portal.Shared.Models.V10.Device;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Devices;
@@ -20,24 +21,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
     {
         private MockRepository mockRepository;
 
+        private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
         private Mock<ILogger<DevicesController>> mockLogger;
-        private Mock<ITableClientFactory> mockTableClientFactory;
         private Mock<IDeviceService> mockDeviceService;
         private Mock<IDeviceTwinMapper<DeviceListItem, DeviceDetails>> mockDeviceTwinMapper;
-        private Mock<ILoraDeviceMethodManager> mockLoraDeviceMethodManager;
-        private Mock<IDeviceModelCommandMapper> mockDeviceModelCommandMapper;
 
         [SetUp]
         public void SetUp()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
+            this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
             this.mockLogger = this.mockRepository.Create<ILogger<DevicesController>>();
-            this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
-            this.mockLoraDeviceMethodManager = this.mockRepository.Create<ILoraDeviceMethodManager>();
-            this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>();
         }
 
         private DevicesController CreateDevicesController()
@@ -45,6 +42,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             return new DevicesController(
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
+                this.mockProvisioningServiceManager.Object,
                 this.mockDeviceTwinMapper.Object);
         }
 
@@ -143,7 +141,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
                 DeviceID = "aaa",
             };
 
-
             devicesController.ModelState.AddModelError("Key", "Device model is invalid");
 
             // Act
@@ -224,6 +221,81 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsAssignableFrom<OkResult>(result);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetEnrollmentCredentials_Should_Return_Enrollment_Credentials()
+        {
+            // Arrange
+            var devicesController = this.CreateDevicesController();
+            var mockRegistrationCredentials = new EnrollmentCredentials
+            {
+                RegistrationID = "aaa",
+                SymmetricKey = "dfhjkfdgh"
+            };
+
+            var mockTwin = new Twin("aaa");
+            mockTwin.Tags["deviceType"] = "bbb";
+
+            this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", "bbb"))
+                .ReturnsAsync(mockRegistrationCredentials);
+
+            this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+                .ReturnsAsync(mockTwin);
+
+            // Act
+            var response = await devicesController.GetCredentials("aaa");
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<OkObjectResult>(response.Result);
+
+            var okObjectResult = (OkObjectResult)response.Result;
+            Assert.IsNotNull(okObjectResult);
+            Assert.AreEqual(mockRegistrationCredentials, okObjectResult.Value);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task When_DeviceType_Property_Not_Exist_GetEnrollmentCredentials_Should_Return_BadRequest()
+        {
+            // Arrange
+            var devicesController = this.CreateDevicesController();
+
+            var mockTwin = new Twin("aaa");
+
+            this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+                .ReturnsAsync(mockTwin);
+
+            // Act
+            var response = await devicesController.GetCredentials("aaa");
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<BadRequestObjectResult>(response.Result);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task When_Device_Not_Exist_GetEnrollmentCredentials_Should_Return_NotFound()
+        {
+            // Arrange
+            var devicesController = this.CreateDevicesController();
+
+
+            this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+                .ReturnsAsync((Twin)null);
+
+            // Act
+            var response = await devicesController.GetCredentials("aaa");
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<NotFoundObjectResult>(response.Result);
+
             this.mockRepository.VerifyAll();
         }
     }

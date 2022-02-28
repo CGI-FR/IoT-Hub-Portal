@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Azure;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
@@ -48,9 +49,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         private readonly IDeviceService devicesService;
 
         /// <summary>
-        /// The device iconnection string manager.
+        /// The device provisioning srevice manager.
         /// </summary>
-        private readonly IConnectionStringManager connectionStringManager;
+        private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDevicesController"/> class.
@@ -58,20 +59,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="logger">The logger.</param>
         /// <param name="configuration">The configuration.</param>
         /// <param name="registryManager">The registry manager.</param>
-        /// <param name="connectionStringManager">The connection string manager.</param>
         /// <param name="service">The service.</param>
+        /// <param name="deviceProvisioningServiceManager">The device provisioning service manager.</param>
         public EdgeDevicesController(
             IConfiguration configuration,
             ILogger<EdgeDevicesController> logger,
             RegistryManager registryManager,
-            IConnectionStringManager connectionStringManager,
-            IDeviceService service)
+            IDeviceService service,
+            IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
         {
             this.logger = logger;
             this.registryManager = registryManager;
             this.configuration = configuration;
             this.devicesService = service;
-            this.connectionStringManager = connectionStringManager;
+            this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
         }
 
         /// <summary>
@@ -126,7 +127,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 {
                     DeviceId = deviceTwin.DeviceId,
                     Status = deviceTwin.Status?.ToString(),
-                    EndPoint = this.configuration["IoTDPS:ServiceEndpoint"],
                     Scope = deviceTwin.DeviceScope,
                     ConnectionState = deviceTwin.ConnectionState?.ToString(),
                     // We retrieve the values of tags
@@ -137,7 +137,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                     // récupération des informations sur le modules de la gateways²
                     NbModules = DeviceHelper.RetrieveNbModuleCount(deviceWithModules, deviceId),
                     RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceWithModules, deviceId),
-                    Modules = DeviceHelper.RetrieveModuleList(deviceWithModules, DeviceHelper.RetrieveNbModuleCount(deviceWithModules, deviceId)),
+                    Modules = DeviceHelper.RetrieveModuleList(deviceWithModules),
                     // recup du dernier deployment
                     LastDeployment = await this.RetrieveLastConfiguration(deviceWithModules)
                 };
@@ -151,16 +151,26 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         }
 
         /// <summary>
-        /// Gets the IoT Edge device symmetric key.
+        /// Gets the IoT Edge device enrollement credentials.
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
-        /// <param name="deviceType">Type of the device.</param>
         /// <returns></returns>
-        [HttpGet("{deviceId}/{deviceType}/ConnectionString", Name = "GET Device symmetric key")]
+        [HttpGet("{deviceId}/credentials", Name = "GET Device enrollment credentials")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSymmetricKey(string deviceId, string deviceType)
+        public async Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceId)
         {
-            return this.Ok(await this.connectionStringManager.GetSymmetricKey(deviceId, deviceType));
+            Twin deviceTwin = await this.devicesService.GetDeviceTwin(deviceId);
+
+            if (deviceTwin == null)
+            {
+                return this.NotFound($"IoT Edge {deviceId} doesn' exist.");
+            }
+
+            var deviceType = DeviceHelper.RetrieveTagValue(deviceTwin, "purpose");
+
+            var credentials = await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceId, deviceType);
+
+            return this.Ok(credentials);
         }
 
         /// <summary>

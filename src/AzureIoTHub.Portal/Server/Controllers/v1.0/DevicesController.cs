@@ -3,8 +3,10 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
+    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.V10;
     using AzureIoTHub.Portal.Shared.Models.V10.Device;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -20,8 +22,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public DevicesController(
             ILogger<DevicesController> logger,
             IDeviceService devicesService,
+            IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper)
-            : base (logger, devicesService, deviceTwinMapper)
+            : base (logger, devicesService, deviceTwinMapper, deviceProvisioningServiceManager)
         {
 
         }
@@ -78,6 +81,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public override Task<IActionResult> Delete(string deviceID)
         {
             return base.Delete(deviceID);
+        }
+
+        /// <summary>
+        /// Gets the device credentials.
+        /// </summary>
+        /// <param name="deviceID">The device identifier.</param>
+        /// <returns></returns>
+        [HttpGet("{deviceID}/credentials", Name = "GET Device Credentials")]
+        public override Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
+        {
+            return base.GetCredentials(deviceID);
         }
     }
 }

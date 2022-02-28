@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
 
     public abstract class DeviceModelsControllerBase<TListItemModel, TModel> : ControllerBase
@@ -53,6 +54,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         private readonly IDeviceService devicesService;
 
         /// <summary>
+        /// The device provisioning service manager.
+        /// </summary>
+        private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
+
+        /// <summary>
         /// The device template filter.
         /// </summary>
         private readonly string filter;
@@ -66,12 +72,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="devicesService">The devices service.</param>
         /// <param name="tableClientFactory">The table client factory.</param>
         /// <param name="filter">The device template filter query string.</param>
+        /// <param name="deviceProvisioningServiceManager">The device provisioning service manager.</param>
         public DeviceModelsControllerBase(
             ILogger log,
             IDeviceModelImageManager deviceModelImageManager,
             IDeviceModelMapper<TListItemModel, TModel> deviceModelMapper,
             IDeviceService devicesService,
             ITableClientFactory tableClientFactory,
+            IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             string filter)
         {
             this.log = log;
@@ -80,6 +88,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             this.deviceModelImageManager = deviceModelImageManager;
             this.devicesService = devicesService;
             this.filter = filter;
+            this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
         }
 
         /// <summary>
@@ -357,6 +366,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             await this.tableClientFactory
                 .GetDeviceTemplates()
                 .UpsertEntityAsync(entity);
+
+            var deviceModelTwin = new TwinCollection();
+
+            await this.deviceProvisioningServiceManager.CreateEnrollmentGroupFormModelAsync(deviceModelObject.ModelId, deviceModelObject.Name, deviceModelTwin);
         }
     }
 }

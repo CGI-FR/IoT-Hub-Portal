@@ -4,18 +4,22 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using System;
+    using System.Net.Http;
     using System.Security.Cryptography;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Server.Helpers;
+    using AzureIoTHub.Portal.Server.Wrappers;
+    using AzureIoTHub.Portal.Shared.Models.V10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using static AzureIoTHub.Portal.Server.Startup;
 
     public class DeviceProvisioningServiceManager : IDeviceProvisioningServiceManager
     {
-        private readonly ProvisioningServiceClient dps;
+        private readonly IProvisioningServiceClient dps;
         private readonly ConfigHandler config;
 
-        public DeviceProvisioningServiceManager(ProvisioningServiceClient dps, ConfigHandler config)
+        public DeviceProvisioningServiceManager(IProvisioningServiceClient dps, ConfigHandler config)
         {
             this.dps = dps;
             this.config = config;
@@ -23,41 +27,57 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         public async Task<EnrollmentGroup> CreateEnrollmentGroupAsync(string deviceType)
         {
-            string enrollmentGroupId;
-            TwinCollection tags;
-            TwinCollection desiredProperties;
+            var twinState = new TwinState(
+                tags: new TwinCollection($"{{ \"deviceType\":\"{deviceType}\" }}"),
+                desiredProperties: new TwinCollection());
 
-            if (deviceType == "LoRa Network Server")
+            return await this.CreateNewEnrollmentGroup(deviceType, true, twinState);
+        }
+
+        public async Task<EnrollmentGroup> CreateEnrollmentGroupFormModelAsync(string modelId, string modelName, TwinCollection desiredProperties)
+        {
+            var twinState = new TwinState(
+                tags: new TwinCollection($"{{ \"modelId\":\"{modelId}\", \"deviceType\": \"{modelName}\" }}"),
+                desiredProperties: new TwinCollection());
+
+            return await this.CreateNewEnrollmentGroup(modelName, false, twinState);
+        }
+
+        private async Task<EnrollmentGroup> CreateNewEnrollmentGroup(string name, bool iotEdge, TwinState initialTwinState)
+        {
+            var enrollmentGroupName = ComputeEnrollmentGroupName(name);
+            EnrollmentGroup enrollmentGroup;
+
+            try
             {
-                enrollmentGroupId = this.config.DPSLoRaEnrollmentGroup;
-                tags = new TwinCollection("{ \"purpose\":\"" + "LoRa Network Server" + "\" }");
-                desiredProperties = new TwinCollection("{ }");
+                enrollmentGroup = await this.dps.GetEnrollmentGroupAsync(enrollmentGroupName);
             }
-            else
+            catch (HttpRequestException e)
             {
-                enrollmentGroupId = this.config.DPSDefaultEnrollmentGroup;
-                tags = new TwinCollection("{ \"purpose\":\"" + "Unknown" + "\" }");
-                desiredProperties = new TwinCollection("{ }");
-            }
-
-            string enrollmentGroupPrimaryKey = GenerateKey();
-            string enrollmentGroupSecondaryKey = GenerateKey();
-
-            SymmetricKeyAttestation attestation = new SymmetricKeyAttestation(enrollmentGroupPrimaryKey, enrollmentGroupSecondaryKey);
-
-            EnrollmentGroup enrollmentGroup = new EnrollmentGroup(enrollmentGroupId, attestation)
-            {
-                ProvisioningStatus = ProvisioningStatus.Enabled,
-                Capabilities = new DeviceCapabilities
+                if(e.StatusCode != System.Net.HttpStatusCode.NotFound)
                 {
-                    IotEdge = true
-                },
-                InitialTwinState = new TwinState(tags, desiredProperties)
-            };
+                    throw;
+                }
 
-            var enrollmentResult = await this.dps.CreateOrUpdateEnrollmentGroupAsync(enrollmentGroup).ConfigureAwait(false);
+                string enrollmentGroupPrimaryKey = GenerateKey();
+                string enrollmentGroupSecondaryKey = GenerateKey();
 
-            return enrollmentResult;
+                SymmetricKeyAttestation attestation = new SymmetricKeyAttestation(enrollmentGroupPrimaryKey, enrollmentGroupSecondaryKey);
+
+                enrollmentGroup = new EnrollmentGroup(enrollmentGroupName, attestation)
+                {
+                    ProvisioningStatus = ProvisioningStatus.Enabled,
+                    Capabilities = new DeviceCapabilities
+                    {
+                        IotEdge = iotEdge
+                    },
+                };
+            }
+
+            enrollmentGroup.InitialTwinState = initialTwinState;
+            enrollmentGroup.Capabilities.IotEdge = iotEdge;
+
+            return await this.dps.CreateOrUpdateEnrollmentGroupAsync(enrollmentGroup);
         }
 
         /// <summary>
@@ -66,11 +86,53 @@ namespace AzureIoTHub.Portal.Server.Managers
         /// <returns>AttestationMechanism.</returns>
         public async Task<Attestation> GetAttestation(string deviceType)
         {
-            var attestationMechanism = deviceType == "LoRa Network Server" ?
-                    await this.dps.GetEnrollmentGroupAttestationAsync(this.config.DPSLoRaEnrollmentGroup) :
-                    await this.dps.GetEnrollmentGroupAttestationAsync(this.config.DPSDefaultEnrollmentGroup);
+            var attetationMechanism = await this.dps.GetEnrollmentGroupAttestationAsync(ComputeEnrollmentGroupName(deviceType));
 
-            return attestationMechanism.GetAttestation();
+            return attetationMechanism.GetAttestation();
+        }
+
+        public async Task<EnrollmentCredentials> GetEnrollmentCredentialsAsync(string deviceId, string deviceType)
+        {
+            Attestation attestation;
+
+            try
+            {
+                attestation = await this.GetAttestation(deviceType);
+            }
+            catch (HttpRequestException e)
+            {
+                if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    await this.CreateEnrollmentGroupAsync(deviceType);
+                    attestation = await this.GetAttestation(deviceType);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Failed to get symmetricKey.", e);
+                }
+            }
+
+            var symmetricKey = DeviceHelper.RetrieveSymmetricKey(deviceId, this.CheckAttestation(attestation));
+
+            return new EnrollmentCredentials
+            {
+                SymmetricKey = symmetricKey,
+                RegistrationID = deviceId,
+                ProvisioningEndpoint = this.config.DPSEndpoint,
+                ScopeID = this.config.DPSIDScope
+            };
+        }
+
+        private SymmetricKeyAttestation CheckAttestation(Attestation attestation)
+        {
+            var symmetricKeyAttestation = attestation as SymmetricKeyAttestation;
+
+            if (symmetricKeyAttestation == null)
+            {
+                throw new InvalidOperationException($"Cannot get symmetric key for {attestation.GetType()}.");
+            }
+
+            return symmetricKeyAttestation;
         }
 
         private static string GenerateKey()
@@ -79,6 +141,13 @@ namespace AzureIoTHub.Portal.Server.Managers
             var rnd = RandomNumberGenerator.GetBytes(length);
 
             return Convert.ToBase64String(rnd);
+        }
+
+        private static string ComputeEnrollmentGroupName(string deviceType)
+        {
+            return deviceType.Trim()
+                .ToLowerInvariant()
+                .Replace(" ", "-");
         }
     }
 }

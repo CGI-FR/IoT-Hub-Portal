@@ -27,12 +27,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceModelMapper">The device model mapper.</param>
         /// <param name="devicesService">The devices service.</param>
         /// <param name="tableClientFactory">The table client factory.</param>
+        /// <param name="deviceProvisioningServiceManager">The device provisioning service manager.</param>
         public DeviceModelsController(ILogger<DeviceModelsControllerBase<DeviceModel, DeviceModel>> log, 
             IDeviceModelImageManager deviceModelImageManager, 
             IDeviceModelMapper<DeviceModel, DeviceModel> deviceModelMapper, 
             IDeviceService devicesService, 
-            ITableClientFactory tableClientFactory) 
-            : base(log, deviceModelImageManager, deviceModelMapper, devicesService, tableClientFactory, $"")
+            ITableClientFactory tableClientFactory,
+            IDeviceProvisioningServiceManager deviceProvisioningServiceManager) 
+            : base(log, deviceModelImageManager, deviceModelMapper, devicesService, tableClientFactory, deviceProvisioningServiceManager, $"")
         {
         }
 
