@@ -20,8 +20,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public DevicesController(
             ILogger<DevicesController> logger,
             IDeviceService devicesService,
+            IDeviceTagService deviceTagService,
             IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper)
-            : base (logger, devicesService, deviceTwinMapper)
+            : base (logger, devicesService, deviceTagService, deviceTwinMapper)
         {
 
         }

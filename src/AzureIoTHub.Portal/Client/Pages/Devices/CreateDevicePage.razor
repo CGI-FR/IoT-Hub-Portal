@@ -71,12 +71,16 @@
                                                   For="@(()=> Device.DeviceName)"
                                                   Required="true" />
                                 </MudItem>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Device.AssetId" Label="IoT Asset ID" Variant="Variant.Outlined" />
-                                </MudItem>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Device.LocationCode" Label="Location Asset ID" Variant="Variant.Outlined" />
-                                </MudItem>
+
+                                    @foreach(DeviceTag tag in TagList)
+                                    {
+                                        <MudItem xs="12" md="6">
+                                            <MudTextField @bind-Value="Device.CustomTags[tag.Name]" Label="@tag.Label" 
+                                            Required = "@tag.Required"
+                                            Variant="Variant.Outlined" />
+                                        </MudItem>
+                                    }
+
                                 <MudItem xs="12">
                                     <MudText>
                                         <b>Status</b>
@@ -140,6 +144,9 @@
 
     private IEnumerable<DeviceModel> DeviceModelList { get; set; } = new List<DeviceModel>();
 
+    private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
+    private Dictionary<string, string> TagDict { get; set; } = new Dictionary<string, string>();
+
     private bool displayValidationErrorMessages = false;
 
     protected override async Task OnInitializedAsync()
@@ -154,6 +161,13 @@
         // Gets a list of device model previously registered to Azure to allow autocomplete field in the form
         DeviceModelList = await Http.GetFromJsonAsync<DeviceModel[]>("api/models");
 
+        // Gets the custom tags that can be set when creating a device
+        TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
+        foreach(DeviceTag tag in TagList)
+        {
+            TagDict.Add(tag.Name, "");
+        }
+        Device.CustomTags = TagDict;
     }
 
     /// <summary>
@@ -238,7 +252,7 @@
         }
         else
         {
-             Device = new DeviceDetails
+            Device = new DeviceDetails
             {
                 DeviceID = Device.DeviceID,
                 DeviceName = Device.DeviceName,
@@ -250,6 +264,7 @@
 
         Device.ModelId = model?.ModelId;
         Device.ImageUrl = model?.ImageUrl;
+        Device.CustomTags = TagDict;
     }
 }
 

@@ -22,15 +22,18 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     {
         protected readonly ILogger logger;
         private readonly IDeviceService devicesService;
+        private readonly IDeviceTagService deviceTagService;
         private readonly IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper;
 
         public DevicesControllerBase(
             ILogger logger,
             IDeviceService devicesService,
+            IDeviceTagService deviceTagService,
             IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper)
         {
             this.logger = logger;
             this.devicesService = devicesService;
+            this.deviceTagService = deviceTagService;
             this.deviceTwinMapper = deviceTwinMapper;
         }
 
@@ -53,8 +56,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public virtual async Task<TModel> Get(string deviceID)
         {
             var item = await this.devicesService.GetDeviceTwin(deviceID);
+            var tagList = this.deviceTagService.GetAllTags();
 
-            return this.deviceTwinMapper.CreateDeviceDetails(item);
+            return this.deviceTwinMapper.CreateDeviceDetails(item,tagList);
         }
 
         /// <summary>
