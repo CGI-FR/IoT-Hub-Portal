@@ -379,7 +379,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             await this.deviceProvisioningServiceManager.CreateEnrollmentGroupFormModelAsync(deviceModelObject.ModelId, deviceModelObject.Name, deviceModelTwin);
 
-            await this.configService.RolloutDeviceConfiguration(deviceModelObject.Name, desiredProperties);
+            await this.configService.RolloutDeviceConfiguration(deviceModelObject.ModelId, deviceModelObject.Name, desiredProperties);
         }
     }
 }

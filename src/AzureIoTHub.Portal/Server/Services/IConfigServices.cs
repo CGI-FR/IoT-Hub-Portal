@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         Task<IEnumerable<Configuration>> GetDevicesConfigurations();
 
-        Task RolloutDeviceConfiguration(string modelName, Dictionary<string, object> desiredProperties);
+        Task RolloutDeviceConfiguration(string modelId, string modelName, Dictionary<string, object> desiredProperties);
 
         Task<Configuration> GetConfigItem(string id);
     }
