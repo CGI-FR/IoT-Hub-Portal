@@ -13,7 +13,7 @@
                     <MudTextField @bind-Value="@LoRaDeviceModel.AppEUI" Label="OTAA AppEUI" For="@(() => LoRaDeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                 </MudItem>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="@LoRaDeviceModel.SensorDecoderURL" Label="Sensor Decoder URL" For="@(() => LoRaDeviceModel.SensorDecoderURL)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                    <MudTextField @bind-Value="@LoRaDeviceModel.SensorDecoder" Label="Sensor Decoder URL" For="@(() => LoRaDeviceModel.SensorDecoder)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                 </MudItem>
                 <MudItem xs="12">
                     <MudTable Items="@Commands" Dense=true Hover=true Bordered=true Striped=true>

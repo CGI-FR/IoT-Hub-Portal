@@ -39,7 +39,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             // Retrieve every Configurations, regardless of the parameter given... Why?
             // TODO : Check & fix this
             // List<Configuration> configList = await this.registryManager.GetConfigurationsAsync(0) as List<Configuration>;
-            var configList = await this.configService.GetAllConfigs();
+            var configList = await this.configService.GetIoTEdgeConfigurations();
             var results = new List<ConfigListItem>();
 
             // Azure Configurations may have different types: "Configuration", "Deployment" or "LayeredDeployment"

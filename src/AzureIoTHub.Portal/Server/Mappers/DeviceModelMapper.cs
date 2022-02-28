@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+    using System.Collections.Generic;
 
     public class DeviceModelMapper : IDeviceModelMapper<DeviceModel, DeviceModel>
     {
@@ -41,12 +42,14 @@ namespace AzureIoTHub.Portal.Server.Mappers
             };
         }
 
-        public void UpdateTableEntity(TableEntity entity, DeviceModel model)
+        public Dictionary<string, object> UpdateTableEntity(TableEntity entity, DeviceModel model)
         {
             entity[nameof(DeviceModel.Name)] = model.Name;
             entity[nameof(DeviceModel.Description)] = model.Description;
             entity[nameof(DeviceModel.IsBuiltin)] = model.IsBuiltin;
             entity[nameof(DeviceModel.SupportLoRaFeatures)] = false;
+
+            return new Dictionary<string, object>();
         }
     }
 }

@@ -9,7 +9,12 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     public interface IConfigService
     {
-        Task<IEnumerable<Configuration>> GetAllConfigs();
+        Task<IEnumerable<Configuration>> GetIoTEdgeConfigurations();
+
+        Task<IEnumerable<Configuration>> GetDevicesConfigurations();
+
+        Task RolloutDeviceConfiguration(string modelName, Dictionary<string, object> desiredProperties);
+
         Task<Configuration> GetConfigItem(string id);
     }
 }

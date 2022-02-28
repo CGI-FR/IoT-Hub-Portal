@@ -233,7 +233,7 @@
                 .ContinueWith(c =>
                 {
                     device.AppEUI = c.Result.AppEUI;
-                    device.SensorDecoder = c.Result.SensorDecoderURL;                
+                    device.SensorDecoder = c.Result.SensorDecoder;                
                 });
         }
         else

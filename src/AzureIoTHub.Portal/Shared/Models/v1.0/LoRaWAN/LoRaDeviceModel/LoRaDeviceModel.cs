@@ -17,7 +17,7 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel
         /// <summary>
         /// The sensor decoder Url.
         /// </summary>
-        public string SensorDecoderURL { get; set; }
+        public string SensorDecoder { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LoRaDeviceModel"/> class.
