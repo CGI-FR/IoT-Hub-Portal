@@ -44,6 +44,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         private readonly IDeviceTagService deviceTagService;
 
+        public const string DefaultPartitionKey = "0";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceTagSettingsController"/> class.
         /// </summary>

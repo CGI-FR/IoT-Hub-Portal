@@ -1,9 +1,10 @@
 ﻿using Azure;
 using Azure.Data.Tables;
-using AzureIoTHub.Portal.Server.Controllers.v10;
+using AzureIoTHub.Portal.Server.Controllers.V10;
 using AzureIoTHub.Portal.Server.Factories;
 using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Shared.Models.v10.Device;
+using AzureIoTHub.Portal.Server.Services;
+using AzureIoTHub.Portal.Shared.Models.V10.Device;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -26,6 +27,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         private Mock<IDeviceTagMapper> mockDeviceTagMapper;
         private Mock<ITableClientFactory> mockTableClientFactory;
         private Mock<TableClient> mockDeviceTagTableClient;
+        private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<ILogger<DeviceTagSettingsController>> mockLogger;
 
         [SetUp]
@@ -36,6 +38,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             this.mockDeviceTagMapper = this.mockRepository.Create<IDeviceTagMapper>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockDeviceTagTableClient = this.mockRepository.Create<TableClient>();
+            this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
             this.mockLogger = this.mockRepository.Create<ILogger<DeviceTagSettingsController>>();
         }
 
@@ -44,8 +47,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             return new DeviceTagSettingsController(
                 this.mockLogger.Object,
                 this.mockDeviceTagMapper.Object,
-                this.mockTableClientFactory.Object
-                );
+                this.mockTableClientFactory.Object,
+                this.mockDeviceTagService.Object
+           );
         }
 
         [Test]

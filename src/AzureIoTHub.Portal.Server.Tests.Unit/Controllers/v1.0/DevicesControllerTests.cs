@@ -23,6 +23,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         private Mock<ILogger<DevicesController>> mockLogger;
         private Mock<ITableClientFactory> mockTableClientFactory;
         private Mock<IDeviceService> mockDeviceService;
+        private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceTwinMapper<DeviceListItem, DeviceDetails>> mockDeviceTwinMapper;
         private Mock<ILoraDeviceMethodManager> mockLoraDeviceMethodManager;
         private Mock<IDeviceModelCommandMapper> mockDeviceModelCommandMapper;
@@ -35,6 +36,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             this.mockLogger = this.mockRepository.Create<ILogger<DevicesController>>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
+            this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
             this.mockLoraDeviceMethodManager = this.mockRepository.Create<ILoraDeviceMethodManager>();
             this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>();
@@ -45,6 +47,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             return new DevicesController(
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
+                this.mockDeviceTagService.Object,
                 this.mockDeviceTwinMapper.Object);
         }
 
@@ -91,7 +94,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceID)))
                 .Returns<string>(x => Task.FromResult(new Twin(x)));
 
-            this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>()))
+            this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(),null))
                 .Returns<Twin>(x => new DeviceDetails
                 {
                     DeviceID = x.DeviceId
