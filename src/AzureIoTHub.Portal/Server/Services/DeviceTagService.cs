@@ -37,7 +37,7 @@ namespace AzureIoTHub.Portal.Server.Services
         public IEnumerable<DeviceTag> GetAllTags()
         {
             var tagList = this.tableClientFactory
-                            .GetDeviceTagSettings()
+    .GetDeviceTagSettings()
                             .Query<TableEntity>()
                             .Select(this.deviceTagMapper.GetDeviceTag);
 
@@ -57,9 +57,9 @@ namespace AzureIoTHub.Portal.Server.Services
         public async Task UpdateTags(List<DeviceTag> tags)
         {
             var query = this.tableClientFactory
-                        .GetDeviceTagSettings()
-                        .Query<TableEntity>()
-                        .AsPages();
+                .GetDeviceTagSettings()
+                .Query<TableEntity>()
+                .AsPages();
 
             foreach (var page in query)
             {
