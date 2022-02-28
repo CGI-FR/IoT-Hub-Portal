@@ -54,7 +54,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             }
             catch (HttpRequestException e)
             {
-                if(e.StatusCode != System.Net.HttpStatusCode.NotFound)
+                if (e.StatusCode != System.Net.HttpStatusCode.NotFound)
                 {
                     throw;
                 }

@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
     using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
+    using System.Collections.Generic;
 
     public class LoRaDeviceModelMapper : IDeviceModelMapper<DeviceModel, LoRaDeviceModel>
     {
@@ -42,19 +43,27 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 Name = entity[nameof(LoRaDeviceModel.Name)]?.ToString(),
                 Description = entity[nameof(LoRaDeviceModel.Description)]?.ToString(),
                 AppEUI = entity[nameof(LoRaDeviceModel.AppEUI)]?.ToString(),
-                SensorDecoderURL = entity[nameof(LoRaDeviceModel.SensorDecoderURL)]?.ToString(),
+                SensorDecoder = entity[nameof(LoRaDeviceModel.SensorDecoder)]?.ToString(),
                 SupportLoRaFeatures = true
             };
         }
 
-        public void UpdateTableEntity(TableEntity entity, LoRaDeviceModel model)
+        public Dictionary<string, object> UpdateTableEntity(TableEntity entity, LoRaDeviceModel model)
         {
             entity[nameof(LoRaDeviceModel.Name)] = model.Name;
             entity[nameof(LoRaDeviceModel.Description)] = model.Description;
             entity[nameof(LoRaDeviceModel.IsBuiltin)] = model.IsBuiltin;
-            entity[nameof(LoRaDeviceModel.AppEUI)] = model.AppEUI;
-            entity[nameof(LoRaDeviceModel.SensorDecoderURL)] = model.SensorDecoderURL;
             entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)] = model.SupportLoRaFeatures;
+
+            entity[nameof(LoRaDeviceModel.AppEUI)] = model.AppEUI;
+            entity[nameof(LoRaDeviceModel.SensorDecoder)] = model.SensorDecoder;
+
+            var desiredProperties = new Dictionary<string, object>();
+
+            desiredProperties.Add($"properties.desired.{nameof(LoRaDeviceModel.AppEUI)}", model.AppEUI);
+            desiredProperties.Add($"properties.desired.{nameof(LoRaDeviceModel.SensorDecoder)}", model.SensorDecoder);
+
+            return desiredProperties;
         }
     }
 }
