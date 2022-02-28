@@ -30,7 +30,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Services
         }
 
         [Test]
-        public async Task GetAllConfigs_StateUnderTest_ExpectedBehavior()
+        public async Task GetIoTEdgeConfigs_Should_Return_Modules_Configurations()
         {
             // Arrange
             var configsServices = this.CreateConfigsServices();
@@ -51,6 +51,33 @@ namespace AzureIoTHub.Portal.Server.Tests.Services
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual("bbb", result.Single().Id);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetDevicesConfigs_Should_Return_DeviceTwin_Configurations()
+        {
+            // Arrange
+            var configsServices = this.CreateConfigsServices();
+            var iotEdgeConfiguration = new Configuration("bbb");
+
+            iotEdgeConfiguration.Content.ModulesContent.Add("test", new Dictionary<string, object>());
+            this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ReturnsAsync(new[]
+                {
+                    new Configuration("aaa"),
+                    iotEdgeConfiguration
+                });
+
+            // Act
+            var result = await configsServices.GetDevicesConfigurations();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count());
+            Assert.AreEqual("aaa", result.Single().Id);
+
             this.mockRepository.VerifyAll();
         }
 
