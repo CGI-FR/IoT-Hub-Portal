@@ -2,6 +2,7 @@
 using Microsoft.Azure.Devices;
 using Moq;
 using NUnit.Framework;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,20 +33,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Services
         {
             // Arrange
             var configsServices = this.CreateConfigsServices();
+            var iotEdgeConfiguration = new Configuration("bbb");
+
+            iotEdgeConfiguration.Content.ModulesContent.Add("test", new Dictionary<string, object>());
             this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
                 .ReturnsAsync(new[]
                 {
                     new Configuration("aaa"),
-                    new Configuration("bbb")
+                    iotEdgeConfiguration
                 });
 
             // Act
-            var result = await configsServices.GetAllConfigs();
+            var result = await configsServices.GetIoTEdgeConfigurations();
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(2, result.Count());
-            Assert.AreEqual("aaa", result.First().Id);
+            Assert.AreEqual(1, result.Count());
+            Assert.AreEqual("bbb", result.Single().Id);
             this.mockRepository.VerifyAll();
         }
 

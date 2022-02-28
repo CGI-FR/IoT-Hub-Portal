@@ -168,5 +168,6 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             return await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
         }
+
     }
 }
