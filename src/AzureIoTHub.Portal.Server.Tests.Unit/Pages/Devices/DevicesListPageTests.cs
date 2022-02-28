@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AzureIoTHub.Portal.Client.Pages.Devices;
 using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
+using AzureIoTHub.Portal.Shared.Models.V10.Device;
 using Bunit;
 using Bunit.TestDoubles;
 using FluentAssertions.Extensions;
@@ -33,6 +34,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Pages
         private MockHttpMessageHandler mockHttpClient;
 
         private string apiBaseUrl = "/api/Devices";
+        private string apiSettingsBaseUrl = "/api/settings/lora";
 
         [SetUp]
         public void SetUp()
@@ -71,6 +73,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Pages
                 .When(HttpMethod.Get, apiBaseUrl)
                 .RespondJson(new object[0]);
 
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiSettingsBaseUrl)
+                .RespondJson(true);
+
             // Act
             var cut = RenderComponent<DeviceListPage>();
 
@@ -101,6 +107,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Pages
                 .When(HttpMethod.Get, apiBaseUrl)
                 .RespondJsonAsync(task);
 
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiSettingsBaseUrl)
+                .RespondJson(true);
+
             // Act
             var cut = RenderComponent<DeviceListPage>();
 
@@ -118,6 +128,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Pages
             this.mockHttpClient
                 .When(HttpMethod.Get, apiBaseUrl)
                 .RespondJson(new object[0]);
+
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiSettingsBaseUrl)
+                .RespondJson(true);
 
             var cut = RenderComponent<DeviceListPage>();
 
@@ -148,6 +162,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Pages
                 .When(HttpMethod.Get, apiBaseUrl)
                 .RespondJson(new object[0]);
 
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiSettingsBaseUrl)
+                .RespondJson(true);
+
             var cut = RenderComponent<DeviceListPage>();
             await Task.Delay(100);
 
@@ -169,6 +187,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Pages
                 .When(HttpMethod.Get, apiBaseUrl)
                 .RespondJson(new object[0]);
 
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiSettingsBaseUrl)
+                .RespondJson(true);
+
             var cut = RenderComponent<DeviceListPage>();
             cut.WaitForAssertion(() => cut.Find($"#tableRefreshButton"), 1.Seconds());
 
@@ -184,6 +206,62 @@ namespace AzureIoTHub.Portal.Server.Tests.Pages
             var matchCount = this.mockHttpClient.GetMatchCount(apiCall);
             Assert.AreEqual(4, matchCount);
             this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void When_Lora_Feature_disable_device_detail_link_Should_not_contain_lora()
+        {
+            // Arrange
+            string deviceId = Guid.NewGuid().ToString();
+
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiBaseUrl)
+                .RespondJson(new DeviceListItem[] { new DeviceListItem { DeviceID = deviceId } });
+
+            _ = this.mockHttpClient
+                    .When(HttpMethod.Get, apiSettingsBaseUrl)
+                    .RespondJson(false);
+
+            var cut = RenderComponent<DeviceListPage>();
+            _ = cut.WaitForElements(".detail-link");
+
+            // Act
+            var link = cut.FindAll("a.detail-link");
+
+            // Assert
+            Assert.IsNotNull(link);
+            foreach (var item in link)
+            {
+                Assert.AreEqual($"devices/{deviceId}", item.GetAttribute("href"));
+            }
+        }
+
+        [Test]
+        public void When_Lora_Feature_enable_device_detail_link_Should_contain_lora()
+        {
+            // Arrange
+            string deviceId = Guid.NewGuid().ToString();
+
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiBaseUrl)
+                .RespondJson(new DeviceListItem[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } });
+
+            _ = this.mockHttpClient
+                    .When(HttpMethod.Get, apiSettingsBaseUrl)
+                    .RespondJson(true);
+
+            var cut = RenderComponent<DeviceListPage>();
+            _ = cut.WaitForElements(".detail-link");
+
+            // Act
+            var link = cut.FindAll("a.detail-link");
+
+            // Assert
+            Assert.IsNotNull(link);
+            foreach (var item in link)
+            {
+                Assert.AreEqual($"devices/{deviceId}?isLora=true", item.GetAttribute("href"));
+            }
         }
     }
 }
