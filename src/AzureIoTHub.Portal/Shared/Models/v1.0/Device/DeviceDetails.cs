@@ -58,8 +58,8 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.Device
         public string AssetId { get; set; }
 
         /// <summary>
-        /// Set of customs device tags and their values.
+        /// List of custom device tags and their values.
         /// </summary>
-        public Dictionary<DeviceTag,string> CustomTags {get;set;}
+        public Dictionary<string, string> CustomTags { get; set; } = new();
     }
 }
