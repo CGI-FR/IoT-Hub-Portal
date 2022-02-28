@@ -179,6 +179,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Pages
                 .When(HttpMethod.Get, apiBaseUrl)
                 .RespondJson(new object[0]);
 
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiSettingsBaseUrl)
+                .RespondJson(true);
+
             var cut = RenderComponent<DeviceListPage>();
             cut.WaitForAssertion(() => cut.Find($"#tableRefreshButton"), 1.Seconds());
 
