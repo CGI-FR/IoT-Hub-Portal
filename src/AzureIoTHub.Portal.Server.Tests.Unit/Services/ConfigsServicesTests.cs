@@ -2,6 +2,7 @@
 using Microsoft.Azure.Devices;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,6 +70,80 @@ namespace AzureIoTHub.Portal.Server.Tests.Services
             Assert.IsNotNull(result);
             Assert.AreEqual(id, result.Id);  
             this.mockRepository.VerifyAll();
+        }
+
+        [TestCase("aaa", "aaa")]
+        [TestCase("AAA", "aaa")]
+        [TestCase("AAA AAA", "aaa-aaa")]
+        public async Task RolloutDeviceConfiguration_StateUnderTest_ExpectedBehavior(string deviceType, string configurationPrefix)
+        {
+            // Arrange
+            var configsServices = this.CreateConfigsServices();
+            var desiredProperties = new Dictionary<string, object>
+            {
+                { "prop1", "value1" }
+            };
+            Configuration newConfiguration = null;
+
+            this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.IsAny<int>()))
+                .ReturnsAsync(new Configuration[0]);
+
+            this.mockRegistryManager.Setup(c => c.AddConfigurationAsync(It.Is<Configuration>(x => x.Id.StartsWith(configurationPrefix))))
+                .Callback((Configuration conf) => newConfiguration = conf)
+                .ReturnsAsync((Configuration conf) => conf);
+
+            // Act
+            await configsServices.RolloutDeviceConfiguration(deviceType, desiredProperties);
+
+            // Assert
+            Assert.IsNotNull(newConfiguration);
+            Assert.IsTrue(newConfiguration.Id.StartsWith(configurationPrefix));
+            Assert.AreEqual(0, newConfiguration.Content.ModulesContent.Count);
+            Assert.AreEqual(0, newConfiguration.Content.ModuleContent.Count);
+            Assert.AreEqual(1, newConfiguration.Content.DeviceContent.Count);
+            Assert.AreEqual(desiredProperties, newConfiguration.Content.DeviceContent);
+            Assert.AreEqual($"tags.deviceType = '{deviceType}'", newConfiguration.TargetCondition);
+            Assert.AreEqual(0, newConfiguration.Priority);
+
+            this.mockRepository.VerifyAll();
+            this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());
+
+        }
+
+        [TestCase("aaa", "aaa")]
+        [TestCase("AAA", "aaa")]
+        [TestCase("AAA AAA", "aaa-aaa")]
+        public async Task When_Configuration_Exists_RolloutDeviceConfiguration_Should_Remove_It(string deviceType, string configurationPrefix)
+        {
+            // Arrange
+            var configsServices = this.CreateConfigsServices();
+            var desirectProperties = new Dictionary<string, object>
+            {
+                { "prop1", "value1" }
+            };
+            Configuration newConfiguration;
+            var suffix = Guid.NewGuid().ToString();
+
+            this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.IsAny<int>()))
+                .ReturnsAsync(new Configuration[]
+                {
+                    new Configuration($"{configurationPrefix}-{suffix}"),
+                    new Configuration($"null-{suffix}")
+                });
+
+            this.mockRegistryManager.Setup(c => c.AddConfigurationAsync(It.Is<Configuration>(x => x.Id.StartsWith(configurationPrefix))))
+                .Callback((Configuration conf) => newConfiguration = conf)
+                .ReturnsAsync((Configuration conf) => conf);
+
+            this.mockRegistryManager.Setup(c => c.RemoveConfigurationAsync(It.Is<string>(x => x == $"{configurationPrefix}-{suffix}")))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await configsServices.RolloutDeviceConfiguration(deviceType, desirectProperties);
+
+            // Assert
+            this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());
+            this.mockRegistryManager.Verify(c => c.RemoveConfigurationAsync(It.IsAny<string>()), Times.Once());
         }
     }
 }

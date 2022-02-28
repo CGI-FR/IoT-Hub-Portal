@@ -21,15 +21,15 @@ namespace AzureIoTHub.Portal.Server.Wrappers
             return this.provisioningServiceClient.CreateOrUpdateEnrollmentGroupAsync(enrollmentGroup);
         }
 
-        public Task<EnrollmentGroup> GetEnrollmentGroupAsync(string enrollmentGroupId)
+        public async Task<EnrollmentGroup> GetEnrollmentGroupAsync(string enrollmentGroupId)
         {
             try
             {
-                return this.provisioningServiceClient.GetEnrollmentGroupAsync(enrollmentGroupId);
+                return await this.provisioningServiceClient.GetEnrollmentGroupAsync(enrollmentGroupId);
             }
-            catch (ProvisioningServiceClientHttpException e)
+            catch (ProvisioningServiceClientHttpException provExc)
             {
-                throw new HttpRequestException(e.ErrorMessage, e, e.StatusCode);
+                throw new HttpRequestException(provExc.ErrorMessage, provExc, provExc.StatusCode);
             }
         }
 
