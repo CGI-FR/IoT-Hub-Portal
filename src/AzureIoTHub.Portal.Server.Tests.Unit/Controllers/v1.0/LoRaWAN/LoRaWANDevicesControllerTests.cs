@@ -32,6 +32,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
         private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
         private Mock<ILogger<LoRaWANDevicesController>> mockLogger;
         private Mock<IDeviceService> mockDeviceService;
+        private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>> mockDeviceTwinMapper;
         private Mock<ITableClientFactory> mockTableClientFactory;
         private Mock<ILoraDeviceMethodManager> mockLoraDeviceMethodManager;
@@ -46,6 +47,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
             this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
             this.mockLogger = this.mockRepository.Create<ILogger<LoRaWANDevicesController>>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
+            this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockLoraDeviceMethodManager = this.mockRepository.Create<ILoraDeviceMethodManager>();
@@ -59,6 +61,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
             return new LoRaWANDevicesController(
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
+                this.mockDeviceTagService.Object,
                 this.mockDeviceTwinMapper.Object,
                 this.mockTableClientFactory.Object,
                 this.mockLoraDeviceMethodManager.Object,
@@ -221,7 +224,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
             this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceID)))
                 .Returns<string>(x => Task.FromResult(new Twin(x)));
 
-            this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>()))
+            this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(),null))
                 .Returns<Twin>(x => new LoRaDeviceDetails
                 {
                     DeviceID = x.DeviceId,

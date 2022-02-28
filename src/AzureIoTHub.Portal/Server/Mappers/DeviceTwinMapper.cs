@@ -19,15 +19,15 @@ namespace AzureIoTHub.Portal.Server.Mappers
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
-        public DeviceDetails CreateDeviceDetails(Twin twin, IEnumerable<DeviceTag> tags = null)
+        public DeviceDetails CreateDeviceDetails(Twin twin, IEnumerable<string> tags = null)
         {
             var modelId = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId));
             Dictionary<string, string> customTags = new Dictionary<string, string>();
             if(tags != null)
             {
-                foreach(DeviceTag tag in tags)
+                foreach(string tag in tags)
                 {
-                    customTags.Add(tag.Name, Helpers.DeviceHelper.RetrieveTagValue(twin, tag.Name));
+                    customTags.Add(tag, Helpers.DeviceHelper.RetrieveTagValue(twin, tag));
                 }
             }
 

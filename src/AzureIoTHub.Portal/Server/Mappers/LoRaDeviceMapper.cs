@@ -20,14 +20,17 @@ namespace AzureIoTHub.Portal.Server.Mappers
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
-        public LoRaDeviceDetails CreateDeviceDetails(Twin twin, IEnumerable<DeviceTag> tags = null)
+        public LoRaDeviceDetails CreateDeviceDetails(Twin twin, IEnumerable<string> tags = null)
         {
             var modelId = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.ModelId));
 
             Dictionary<string, string> customTags = new Dictionary<string, string>();
-            foreach (DeviceTag tag in tags)
+            if(tags != null)
             {
-                customTags.Add(tag.Name, Helpers.DeviceHelper.RetrieveTagValue(twin, tag.Name));
+                foreach (string tag in tags)
+                {
+                    customTags.Add(tag, Helpers.DeviceHelper.RetrieveTagValue(twin, tag));
+                }
             }
 
             return new LoRaDeviceDetails
