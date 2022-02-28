@@ -12,6 +12,7 @@
 @inject HttpClient Http
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
+@inject IDialogService DialogService
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Details</MudText>
 <MudForm Model="@Device" @ref="form">
@@ -22,8 +23,14 @@
                     <MudCard>
                         <MudCardHeader>
                             <CardHeaderContent>
-                                <MudText Align="Align.Center" Typo="Typo.h5">@Device.DeviceID</MudText>
+                                <MudText Typo="Typo.h5">@Device.DeviceID</MudText>
                             </CardHeaderContent>
+                            <CardHeaderActions>
+                                @if (isLoaded && (!IsLoRa || !(Device is LoRaDeviceDetails)))
+                                {
+                                    <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString">Connect</MudButton>
+                                }
+                            </CardHeaderActions>
                         </MudCardHeader>
                         <MudCardContent>
                             <div class="d-flex justify-center mb-4">
@@ -117,6 +124,8 @@
 
     private DeviceDetails Device { get; set; } = new DeviceDetails();
 
+    private bool isLoaded = false;
+
     private IEnumerable<DeviceModel> DeviceModelList { get; set; } = new List<DeviceModel>();
 
     private IEnumerable<DeviceModelCommand> Commands { get; set; }
@@ -132,6 +141,8 @@
         {
             Device = await Http.GetFromJsonAsync<DeviceDetails>($"{ApiUrlBase}/{DeviceID}");
         }
+
+        isLoaded = true;
     }
 
     /// <summary>
@@ -184,4 +195,13 @@
         return DeviceModelList
                     .Where(x => x.Name.StartsWith(value, StringComparison.InvariantCultureIgnoreCase));
     }
+
+    public void ShowConnectionString()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add(nameof(ConnectionStringDialog.deviceId), this.DeviceID);
+
+        DialogService.Show<ConnectionStringDialog>("Device Credentials", parameters);
+    }
+
 }

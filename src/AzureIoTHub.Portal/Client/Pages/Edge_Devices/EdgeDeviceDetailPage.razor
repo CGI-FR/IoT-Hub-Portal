@@ -28,14 +28,12 @@
                     <MudCard>
                         <MudCardHeader>
                             <CardHeaderContent>
-                                <MudText Align="Align.Center" Typo="Typo.h5">@Gateway.DeviceId</MudText>
+                                <MudText Typo="Typo.h5">@Gateway.DeviceId</MudText>
                             </CardHeaderContent>
+                            <CardHeaderActions>
+                                <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString">Connect</MudButton>
+                            </CardHeaderActions>
                         </MudCardHeader>
-                        <MudCardContent>
-                            <div class="d-flex justify-center mb-4">
-                                <MudButton Variant="Variant.Filled" Color="Color.Dark" OnClick="ShowConnectionString">Connect</MudButton>
-                            </div>
-                        </MudCardContent>
                     </MudCard>
                 </MudItem>
 
