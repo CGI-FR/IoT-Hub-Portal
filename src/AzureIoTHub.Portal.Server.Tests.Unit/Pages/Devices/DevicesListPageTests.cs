@@ -73,6 +73,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Pages
                 .When(HttpMethod.Get, apiBaseUrl)
                 .RespondJson(new object[0]);
 
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiSettingsBaseUrl)
+                .RespondJson(true);
+
             // Act
             var cut = RenderComponent<DeviceListPage>();
 
@@ -102,6 +106,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Pages
             this.mockHttpClient
                 .When(HttpMethod.Get, apiBaseUrl)
                 .RespondJsonAsync(task);
+
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiSettingsBaseUrl)
+                .RespondJson(true);
 
             // Act
             var cut = RenderComponent<DeviceListPage>();
