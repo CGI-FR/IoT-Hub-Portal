@@ -24,19 +24,10 @@ Hi there! Thank you for discovering and submitting an issue!
 <!-- Provide a detailed set of steps to reproduce the bug. -->
 1.
 2.
-3.
-4.
 
 ## Context (Environment)
 
-### Browser
-<!-- Mozilla FireFox, Chrome, Edge, etc. -->
-
-### Container Operating System
-<!-- Linux containers, Windows containers -->
-
-#### Docker
-<!-- Run `docker version` -->
+**Portal version**: <!-- ex: 1.0.2 -->
 
 ## Logs
 <!-- Please share as many logs as possible. This will help to debug -->
