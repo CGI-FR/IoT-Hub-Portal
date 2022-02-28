@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.V10.Device;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -37,7 +38,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// The logger.
         /// </summary>
         private readonly ILogger<DeviceTagSettingsController> log;
-        public const string DefaultPartitionKey = "0";
+
+        /// <summary>
+        /// The DeviceTag service.
+        /// </summary>
+        private readonly IDeviceTagService deviceTagService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceTagSettingsController"/> class.
@@ -45,11 +50,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="log">The logger.</param>
         /// <param name="deviceTagMapper">The device tag mapper.</param>
         /// <param name="tableClientFactory">The table client factory.</param>
-        public DeviceTagSettingsController(ILogger<DeviceTagSettingsController> log, IDeviceTagMapper deviceTagMapper, ITableClientFactory tableClientFactory)
+        /// <param name="deviceTagService">The device tag service.</param>
+        public DeviceTagSettingsController(
+            ILogger<DeviceTagSettingsController> log,
+            IDeviceTagMapper deviceTagMapper,
+            ITableClientFactory tableClientFactory,
+            IDeviceTagService deviceTagService)
         {
             this.log = log;
             this.deviceTagMapper = deviceTagMapper;
             this.tableClientFactory = tableClientFactory;
+            this.deviceTagService = deviceTagService;
         }
 
         /// <summary>
@@ -60,26 +71,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpPost(Name = "POST a set of device tag settings")]
         public async Task<IActionResult> Post(List<DeviceTag> tags)
         {
-            var query = this.tableClientFactory
-                .GetDeviceTagSettings()
-                .Query<TableEntity>();
-
-            foreach (var item in query)
-            {
-                await this.tableClientFactory
-                    .GetDeviceTagSettings()
-                    .DeleteEntityAsync(item.PartitionKey, item.RowKey);
-            }
-
-            foreach (DeviceTag tag in tags)
-            {
-                TableEntity entity = new TableEntity()
-                {
-                    PartitionKey = DefaultPartitionKey,
-                    RowKey = tag.Name
-                };
-                await this.SaveEntity(entity, tag);
-            }
+            await this.deviceTagService.UpdateTags(tags);
             return this.Ok();
         }
 
@@ -90,27 +82,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpGet(Name = "GET a set of device settings")]
         public ActionResult<List<DeviceTag>> Get()
         {
-            var query = this.tableClientFactory
-                .GetDeviceTagSettings()
-                .Query<TableEntity>();
-
-            var tagList = query.Select(this.deviceTagMapper.GetDeviceTag);
-
-            return this.Ok(tagList.ToList());
-        }
-
-        /// <summary>
-        /// Saves the entity.
-        /// </summary>
-        /// <param name="entity">The entity</param>
-        /// <param name="tag">The device tag</param>
-        /// <returns></returns>
-        private async Task SaveEntity(TableEntity entity, DeviceTag tag)
-        {
-            this.deviceTagMapper.UpdateTableEntity(entity, tag);
-            await this.tableClientFactory
-                .GetDeviceTagSettings()
-                .AddEntityAsync(entity);
+            return this.Ok(deviceTagService.GetAllTags());
         }
     }
 }

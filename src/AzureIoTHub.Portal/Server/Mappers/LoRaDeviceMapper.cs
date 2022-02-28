@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Mappers
 {
     using System;
+    using System.Collections.Generic;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Shared.Models.V10.Device;
     using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
@@ -19,9 +20,15 @@ namespace AzureIoTHub.Portal.Server.Mappers
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
-        public LoRaDeviceDetails CreateDeviceDetails(Twin twin)
+        public LoRaDeviceDetails CreateDeviceDetails(Twin twin, IEnumerable<DeviceTag> tags = null)
         {
             var modelId = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.ModelId));
+
+            Dictionary<string, string> customTags = new Dictionary<string, string>();
+            foreach (DeviceTag tag in tags)
+            {
+                customTags.Add(tag.Name, Helpers.DeviceHelper.RetrieveTagValue(twin, tag.Name));
+            }
 
             return new LoRaDeviceDetails
             {
@@ -35,9 +42,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 StatusUpdatedTime = twin.StatusUpdatedTime.GetValueOrDefault(DateTime.MinValue),
                 AppEUI = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppEUI)),
                 AppKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppKey)),
-                LocationCode = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LocationCode)),
-                AssetId = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.AssetId)),
                 SensorDecoder = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.SensorDecoder)),
+                CustomTags = customTags
             };
         }
 
@@ -59,8 +65,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
         {
             // Update the twin properties
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
-            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.LocationCode), item.LocationCode);
-            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.AssetId), item.AssetId);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures), "true");
 
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
@@ -69,6 +73,11 @@ namespace AzureIoTHub.Portal.Server.Mappers
             twin.Properties.Desired[nameof(item.AppEUI)] = item.AppEUI;
             twin.Properties.Desired[nameof(item.AppKey)] = item.AppKey;
             twin.Properties.Desired[nameof(item.SensorDecoder)] = item.SensorDecoder;
+
+            foreach (KeyValuePair<string, string> customTag in item.CustomTags)
+            {
+                Helpers.DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
+            }
         }
     }
 }
