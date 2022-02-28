@@ -84,7 +84,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             entity[nameof(LoRaDeviceModel.Name)] = "FAKE DEVICE";
             entity[nameof(LoRaDeviceModel.Description)] = "FAKE DESCRIPTION";
             entity[nameof(LoRaDeviceModel.AppEUI)] = "FAKE APP EUI";
-            entity[nameof(LoRaDeviceModel.SensorDecoderURL)] = "FAKE SENSORDECODERURL";
+            entity[nameof(LoRaDeviceModel.SensorDecoder)] = "FAKE SENSORDECODERURL";
 
             // Act
             var result = loRaDeviceModelMapper.CreateDeviceModel(
@@ -96,7 +96,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             Assert.AreEqual(entity[nameof(LoRaDeviceModel.Name)], result.Name);
             Assert.AreEqual(entity[nameof(LoRaDeviceModel.Description)], result.Description);
             Assert.AreEqual(entity[nameof(LoRaDeviceModel.AppEUI)], result.AppEUI);
-            Assert.AreEqual(entity[nameof(LoRaDeviceModel.SensorDecoderURL)], result.SensorDecoderURL);
+            Assert.AreEqual(entity[nameof(LoRaDeviceModel.SensorDecoder)], result.SensorDecoder);
             Assert.AreEqual(entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)], supportLora);
             Assert.AreEqual(entity[nameof(LoRaDeviceModel.IsBuiltin)], isBuiltin);
             this.mockRepository.VerifyAll();
@@ -118,7 +118,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
                 AppEUI = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
                 ImageUrl = Guid.NewGuid().ToString(),
-                SensorDecoderURL = Guid.NewGuid().ToString(),
+                SensorDecoder = Guid.NewGuid().ToString(),
                 IsBuiltin = isBuiltin,
                 SupportLoRaFeatures = supportLora
             };
@@ -135,7 +135,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             Assert.AreEqual(supportLora, entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)]);
             Assert.AreEqual(isBuiltin, entity[nameof(LoRaDeviceModel.IsBuiltin)]);
             Assert.AreEqual(model.AppEUI, entity[nameof(LoRaDeviceModel.AppEUI)]);
-            Assert.AreEqual(model.SensorDecoderURL, entity[nameof(LoRaDeviceModel.SensorDecoderURL)]);
+            Assert.AreEqual(model.SensorDecoder, entity[nameof(LoRaDeviceModel.SensorDecoder)]);
             this.mockRepository.VerifyAll();
         }
     }

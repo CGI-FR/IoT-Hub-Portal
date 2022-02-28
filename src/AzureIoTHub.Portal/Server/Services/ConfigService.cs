@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.Azure.Devices;
 
@@ -17,14 +18,28 @@ namespace AzureIoTHub.Portal.Server.Services
             this.registryManager = registry;
         }
 
-        public async Task<IEnumerable<Configuration>> GetAllConfigs()
+        public async Task<IEnumerable<Configuration>> GetIoTEdgeConfigurations()
         {
-            return await this.registryManager.GetConfigurationsAsync(0);
+            var configurations = await this.registryManager.GetConfigurationsAsync(0);
+
+            return configurations.Where(c => c.Content.ModulesContent.Any());
+        }
+
+        public async Task<IEnumerable<Configuration>> GetDevicesConfigurations()
+        {
+            var configurations = await this.registryManager.GetConfigurationsAsync(0);
+
+            return configurations.Where(c => !c.Content.ModulesContent.Any());
         }
 
         public Task<Configuration> GetConfigItem(string id)
         {
             return this.registryManager.GetConfigurationAsync(id);
+        }
+
+        public async Task RolloutDeviceConfiguration(string deviceModel, Dictionary<string, object> desiredProperties)
+        {
+            await Task.CompletedTask;
         }
     }
 }

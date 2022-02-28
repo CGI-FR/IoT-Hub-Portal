@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 {
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+    using System.Collections.Generic;
 
     public interface IDeviceModelMapper<TListItem, TModel>
         where TModel : DeviceModel
@@ -14,6 +15,6 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         public TModel CreateDeviceModel(TableEntity entity);
 
-        public void UpdateTableEntity(TableEntity entity, TModel model);
+        public Dictionary<string, object> UpdateTableEntity(TableEntity entity, TModel model);
     }
 }

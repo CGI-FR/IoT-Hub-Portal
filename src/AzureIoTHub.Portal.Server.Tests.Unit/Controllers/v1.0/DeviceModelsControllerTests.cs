@@ -39,6 +39,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
         private Mock<IDeviceProvisioningServiceManager> mockDeviceProvisioningServiceManager;
         private Mock<TableClient> mockDeviceTemplatesTableClient;
         private Mock<TableClient> mockCommandsTableClient;
+        private Mock<IConfigService> mockConfigService;
 
         [SetUp]
         public void SetUp()
@@ -54,6 +55,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockDeviceTemplatesTableClient = this.mockRepository.Create<TableClient>();
             this.mockCommandsTableClient = this.mockRepository.Create<TableClient>();
+            this.mockConfigService = this.mockRepository.Create<IConfigService>();
         }
 
         private DeviceModelsController CreateDeviceModelsController()
@@ -64,7 +66,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
                 this.mockDeviceModelMapper.Object,
                 this.mockDeviceService.Object,
                 this.mockTableClientFactory.Object,
-                mockDeviceProvisioningServiceManager.Object);
+                this.mockDeviceProvisioningServiceManager.Object, 
+                this.mockConfigService.Object);
 
             return result;
         }
@@ -337,13 +340,19 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
 
             this.mockDeviceModelMapper.Setup(c => c.UpdateTableEntity(
                     It.Is<TableEntity>(x => x.RowKey == requestModel.ModelId && x.PartitionKey == LoRaWANDeviceModelsController.DefaultPartitionKey),
-                    It.IsAny<DeviceModel>()));
+                    It.IsAny<DeviceModel>()))
+                .Returns(new Dictionary<string, object>());
 
             this.mockDeviceProvisioningServiceManager.Setup(c => c.CreateEnrollmentGroupFormModelAsync(
                 It.IsAny<string>(),
                 It.Is<string>(x => x == requestModel.Name),
                 It.IsAny<TwinCollection>()))
                 .ReturnsAsync(mockEnrollmentGroup.Object);
+
+            this.mockConfigService.Setup(c => c.RolloutDeviceConfiguration(
+                It.Is<string>(x => x == requestModel.Name), 
+                It.IsAny<Dictionary<string, object>>()))
+                .Returns(Task.CompletedTask);
 
             // Act
             var result = await deviceModelsController.Post(requestModel);
@@ -382,7 +391,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
 
             this.mockDeviceModelMapper.Setup(c => c.UpdateTableEntity(
                     It.Is<TableEntity>(x => x.RowKey != requestModel.ModelId && x.PartitionKey == LoRaWANDeviceModelsController.DefaultPartitionKey),
-                    It.IsAny<DeviceModel>()));
+                    It.IsAny<DeviceModel>()))
+                .Returns(new Dictionary<string, object>());
 
             this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
                 .Returns(mockDeviceTemplatesTableClient.Object);
@@ -392,6 +402,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
                 It.Is<string>(x => x == requestModel.Name),
                 It.IsAny<TwinCollection>()))
                 .ReturnsAsync(mockEnrollmentGroup.Object);
+
+            this.mockConfigService.Setup(c => c.RolloutDeviceConfiguration(
+                It.Is<string>(x => x == requestModel.Name), 
+                It.IsAny<Dictionary<string, object>>()))
+                .Returns(Task.CompletedTask);
 
             // Act
             var result = await deviceModelsController.Post(requestModel);
@@ -451,7 +466,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
 
             this.mockDeviceModelMapper.Setup(c => c.UpdateTableEntity(
                     It.Is<TableEntity>(x => x.RowKey == deviceModel.RowKey && x.PartitionKey == LoRaWANDeviceModelsController.DefaultPartitionKey),
-                    It.Is<DeviceModel>(x => x == requestModel)));
+                    It.Is<DeviceModel>(x => x == requestModel)))
+                .Returns(new Dictionary<string, object>());
 
             this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
                     .Returns(mockDeviceTemplatesTableClient.Object);
@@ -461,6 +477,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
                 It.Is<string>(x => x == requestModel.Name),
                 It.IsAny<TwinCollection>()))
                 .ReturnsAsync(mockEnrollmentGroup.Object);
+
+            this.mockConfigService.Setup(c => c.RolloutDeviceConfiguration(
+                It.Is<string>(x => x == requestModel.Name), 
+                It.IsAny<Dictionary<string, object>>()))
+                .Returns(Task.CompletedTask);
 
             // Act
             var result = await deviceModelsController.Put(requestModel);

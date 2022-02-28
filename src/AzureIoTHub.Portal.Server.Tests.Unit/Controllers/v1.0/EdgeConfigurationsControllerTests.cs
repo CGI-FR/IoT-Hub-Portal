@@ -39,7 +39,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             var expected = GetModuleConfiguration(3).ToArray();
 
             var edgeConfigurationsController = this.CreateEdgeConfigurationsController();
-            this.mockConfigsServices.Setup(c => c.GetAllConfigs())
+            this.mockConfigsServices.Setup(c => c.GetIoTEdgeConfigurations())
                 .ReturnsAsync(expected);
 
             // Act
