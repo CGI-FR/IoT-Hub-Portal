@@ -217,7 +217,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Pages
         }
 
         [Test]
-        public void When_Lora_Feature_enable_device_detail_link_Should_not_contain_lora()
+        public void When_Lora_Feature_enable_device_detail_link_Should_contain_lora()
         {
             // Arrange
             string deviceId = Guid.NewGuid().ToString();
