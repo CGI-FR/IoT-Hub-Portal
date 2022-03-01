@@ -255,9 +255,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
                 .Setup(c => c.GetEnrollmentGroupAttestationAsync(It.Is<string>(x => x == enrollmentGroupName)))
                 .ReturnsAsync(mockAttestationMehanism.Object);
 
-            this.mockConfigHandler.SetupGet(c => c.DPSIDScope)
-                .Returns("FakeIDScope");
-
             this.mockConfigHandler.SetupGet(c => c.DPSEndpoint)
                 .Returns("FakeEndpoint");
 
@@ -269,7 +266,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6", result.RegistrationID);
-            Assert.AreEqual("FakeIDScope", result.ScopeID);
             Assert.AreEqual("FakeEndpoint", result.ProvisioningEndpoint);
             Assert.AreEqual("Jsm0lyGpjaVYVP2g3FnmnmG9dI/9qU24wNoykUmermc=", result.SymmetricKey);
             this.mockRepository.VerifyAll();
@@ -295,9 +291,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             this.mockProvisioningServiceClient
                 .Setup(c => c.GetEnrollmentGroupAttestationAsync(It.Is<string>(x => x == enrollmentGroupName)))
                 .Throws(new HttpRequestException(null, null, HttpStatusCode.NotFound));
-
-            this.mockConfigHandler.SetupGet(c => c.DPSIDScope)
-                .Returns("FakeIDScope");
 
             this.mockConfigHandler.SetupGet(c => c.DPSEndpoint)
                 .Returns("FakeEndpoint");
@@ -325,7 +318,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6", result.RegistrationID);
-            Assert.AreEqual("FakeIDScope", result.ScopeID);
             Assert.AreEqual("FakeEndpoint", result.ProvisioningEndpoint);
             Assert.AreEqual("Jsm0lyGpjaVYVP2g3FnmnmG9dI/9qU24wNoykUmermc=", result.SymmetricKey);
 

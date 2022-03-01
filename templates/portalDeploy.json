@@ -165,10 +165,6 @@
           ],
           "appSettings": [
             {
-              "name": "IoTDPS__DefaultEnrollmentGroup",
-              "value": "[variables('enrollmentGroupName')]"
-            },
-            {
               "name": "IoTDPS__ServiceEndpoint",
               "value": "[concat(variables('dpsName'), '.azure-devices-provisioning.net')]"
             },

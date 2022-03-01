@@ -253,7 +253,6 @@ namespace AzureIoTHub.Portal.Server
             protected const string IoTHubConnectionStringKey = "IoTHub:ConnectionString";
             protected const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
             protected const string DPSServiceEndpointKey = "IoTDPS:ServiceEndpoint";
-            protected const string DPSIDScopeKey = "IoTDPS:IDScope";
 
             protected const string OIDCScopeKey = "OIDC:Scope";
             protected const string OIDCAuthorityKey = "OIDC:Authority";
@@ -284,8 +283,6 @@ namespace AzureIoTHub.Portal.Server
             internal abstract string IoTHubConnectionString { get; }
 
             internal abstract string DPSConnectionString { get; }
-
-            internal abstract string DPSIDScope { get; }
 
             internal abstract string DPSEndpoint { get; }
 
@@ -327,8 +324,6 @@ namespace AzureIoTHub.Portal.Server
 
             internal override string DPSConnectionString => this.config.GetConnectionString(DPSConnectionStringKey);
 
-            internal override string DPSIDScope => this.config[DPSIDScopeKey];
-
             internal override string DPSEndpoint => this.config[DPSServiceEndpointKey];
 
             internal override string StorageAccountConnectionString => this.config.GetConnectionString(StorageAccountConnectionStringKey);
@@ -368,8 +363,6 @@ namespace AzureIoTHub.Portal.Server
             internal override string IoTHubConnectionString => this.config[IoTHubConnectionStringKey];
 
             internal override string DPSConnectionString => this.config[DPSConnectionStringKey];
-
-            internal override string DPSIDScope => this.config[DPSIDScopeKey];
 
             internal override string DPSEndpoint => this.config[DPSServiceEndpointKey];
 
