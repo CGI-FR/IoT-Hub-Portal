@@ -105,8 +105,6 @@ On click to "Connect" button in the IoT Edge details page, the user can access t
 > Note: see [Provision the device with its cloud identity
 ](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-provision-devices-at-scale-linux-symmetric?view=iotedge-2020-11&tabs=individual-enrollment%2Cubuntu#provision-the-device-with-its-cloud-identity) to know how to configure the IoT Edge to use these credentials to connect to the platform.
 
-Fom more information, see [Azure Device Provisioning Enrollement groups](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-dev-preview-enrollment-groups).
-
 ## IoT Edge Configuration
 
 The IoT Edge configuration concerns the IoT Edge deployment manifest that are currently present in the IoT Hub.
@@ -126,6 +124,27 @@ The IoT Hub portal will use the Target condition to extract this values from the
 | Owner       	| ``tags.owner`` 	| Owner tag filter condition from the Deployment Manifest. 	|
 | Environment 	| ``tags.env``   	| Environment tag filter from the Deployment Manifest.     	|
 | Type        	| ``tags.type``  	| Device type tag filter from the Deployment Manifest.     	|
+
+## Enrollment groups
+
+The IoT Hub portal leverage on Azure Device Provisioning Enrollement groups to manage IoT device connection credentials.
+
+For each device model, the portal will create a new enrollment group with symmetric key attestation. By clicking to the connect button in the device details page, the portal will provide unique credentials to the device for the corresponding enrollment group.
+
+Further more, the enrollment group is configured to provide initial device twin state: 
+
+```json
+{
+  "tags": {
+    "modelId": "......"
+  },
+  "properties": {
+    "desired": {}
+  }
+}
+```
+
+Fom more information, see [Azure Device Provisioning Enrollement groups](https://docs.microsoft.com/en-us/azure/iot-dps/concepts-symmetric-key-attestation?tabs=windows#group-enrollments).
 
 # LoRa WAN
 
@@ -193,3 +212,36 @@ sequenceDiagram
 </div>
 
 > See [https://azure.github.io/iotedge-lorawan-starterkit/2.0.0/quickstart/#cloud-to-device-message](https://azure.github.io/iotedge-lorawan-starterkit/2.0.0/quickstart/#cloud-to-device-message) for more information about the Cloud To Device Message involed  in the LoRa WAN device commands execution flow.
+
+## Automatic device configuration for LoRa WAN
+
+When modifying the device model, the IoT Hub portal will automatically create a new Device Configuration that will target the IoT devices that have the corresponding ``modelId`` tag.
+
+The IoT Hub portal will create a new Rollout deployment that will remove older configuration and add the new configuration.
+
+This process ensure that the devices twin will be updated at scale by the IoT hub and each devices that inherit for the model will be updated according the model configuration.
+
+The configuration will be created with the following schema:
+
+```json
+{
+    "id": "<model-name>-<timestamp>",
+    "schemaVersion": "1.0",
+    "labels": {
+        "created-by": "Azure IoT hub Portal"
+    },
+    "content": {
+        "deviceContent": {
+            "properties.desired.AppEUI": "<The Device Model OTAA AppEUI>",
+            "properties.desired.SensorDecoder": "<The Device Model Sensor Decoder>"
+        }
+    },
+    "targetCondition": "tags.modelId = '<The model identifier>'",
+    "createdTimeUtc": "2022-02-28T20:29:39.128Z",
+    "lastUpdatedTimeUtc": "2022-02-28T20:29:39.128Z",
+    "priority": 0
+}
+```
+Please note that the ``created-by`` label is used to identify the configuration created by the IoT Hub portal.
+
+> For more information see [Automatic IoT device and module management](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-automatic-device-management).
