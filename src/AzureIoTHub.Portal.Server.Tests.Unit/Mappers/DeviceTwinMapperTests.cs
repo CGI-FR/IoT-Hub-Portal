@@ -49,8 +49,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             };
 
             twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()] = "000-000-001";
-            twin.Tags[nameof(DeviceDetails.LocationCode).ToCamelCase()] = Guid.NewGuid().ToString();
-            twin.Tags[nameof(DeviceDetails.AssetId).ToCamelCase()] = Guid.NewGuid().ToString();
+
+            Dictionary<string, string> customTags = new()
+            {
+                { "assetId", Guid.NewGuid().ToString() },
+                { "locationCode", Guid.NewGuid().ToString() }
+            };
+
+            foreach (KeyValuePair<string, string> customTag in customTags)
+            {
+                twin.Tags[customTag.Key.ToCamelCase()] = customTag.Value;
+            }
+
 
             twin.Properties.Reported["DevAddr"] = Guid.NewGuid().ToString();
 
@@ -59,7 +69,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
                 .Verifiable();
 
             // Act
-            var result = deviceTwinMapper.CreateDeviceDetails(twin);
+            var result = deviceTwinMapper.CreateDeviceDetails(twin,customTags.Keys);
 
             // Assert
             Assert.IsNotNull(result);
@@ -68,8 +78,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             Assert.IsFalse(result.IsEnabled);
 
             Assert.AreEqual(twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()].ToString(), result.ModelId);
-            Assert.AreEqual(twin.Tags[nameof(DeviceDetails.LocationCode).ToCamelCase()].ToString(), result.LocationCode);
-            Assert.AreEqual(twin.Tags[nameof(DeviceDetails.AssetId).ToCamelCase()].ToString(), result.AssetId);
+
+            foreach (string tagName in customTags.Keys)
+            {
+                Assert.AreEqual(twin.Tags[tagName.ToCamelCase()].ToString(), result.CustomTags[tagName]);
+            }
 
             Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl);
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
