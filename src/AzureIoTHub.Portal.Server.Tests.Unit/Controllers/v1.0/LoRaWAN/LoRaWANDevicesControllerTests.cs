@@ -49,7 +49,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockLoraDeviceMethodManager = this.mockRepository.Create<ILoraDeviceMethodManager>();
-            this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>(); 
+            this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>();
             this.mockCommandsTableClient = this.mockRepository.Create<TableClient>();
 
         }
@@ -110,7 +110,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()));                
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
 
             // Act
             var result = await loRaWANDevicesController.ExecuteCommand(deviceId, commandId);
@@ -221,14 +221,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
             this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceID)))
                 .Returns<string>(x => Task.FromResult(new Twin(x)));
 
-            this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(),null))
-                .Returns<Twin>(x => new LoRaDeviceDetails
+            this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
+                .Returns<Twin, IEnumerable<string>>((x, y) => new LoRaDeviceDetails
                 {
                     DeviceID = x.DeviceId,
                     AppEUI = Guid.NewGuid().ToString(),
                     AppKey = Guid.NewGuid().ToString(),
                     SensorDecoder = Guid.NewGuid().ToString(),
                 });
+
+            this.mockDeviceTagService.Setup(c => c.GetAllTagsNames())
+                .Returns(new List<string>());
 
             // Act
             var result = await devicesController.Get(deviceID);
