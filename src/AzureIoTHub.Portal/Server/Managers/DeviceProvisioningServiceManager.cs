@@ -37,7 +37,7 @@ namespace AzureIoTHub.Portal.Server.Managers
         public async Task<EnrollmentGroup> CreateEnrollmentGroupFormModelAsync(string modelId, string modelName, TwinCollection desiredProperties)
         {
             var twinState = new TwinState(
-                tags: new TwinCollection($"{{ \"modelId\":\"{modelId}\", \"deviceType\": \"{modelName}\" }}"),
+                tags: new TwinCollection($"{{ \"modelId\":\"{modelId}\" }}"),
                 desiredProperties: new TwinCollection());
 
             return await this.CreateNewEnrollmentGroup(modelName, false, twinState);

@@ -152,8 +152,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             Assert.IsNotNull(enrollmentGroup.InitialTwinState);
             Assert.IsTrue(enrollmentGroup.InitialTwinState.Tags.Contains("modelId"));
             Assert.AreEqual(modelId, enrollmentGroup.InitialTwinState.Tags["modelId"].ToString());
-            Assert.IsTrue(enrollmentGroup.InitialTwinState.Tags.Contains("deviceType"));
-            Assert.AreEqual(modelName, enrollmentGroup.InitialTwinState.Tags["deviceType"].ToString());
             Assert.AreEqual(desiredProperties, enrollmentGroup.InitialTwinState.DesiredProperties);
 
             this.mockRepository.VerifyAll();
@@ -204,8 +202,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             Assert.IsNotNull(enrollmentGroup.InitialTwinState);
             Assert.IsTrue(enrollmentGroup.InitialTwinState.Tags.Contains("modelId"));
             Assert.AreEqual(modelId, enrollmentGroup.InitialTwinState.Tags["modelId"].ToString());
-            Assert.IsTrue(enrollmentGroup.InitialTwinState.Tags.Contains("deviceType"));
-            Assert.AreEqual(modelName, enrollmentGroup.InitialTwinState.Tags["deviceType"].ToString());
             Assert.AreEqual(desiredProperties, enrollmentGroup.InitialTwinState.DesiredProperties);
             Assert.IsAssignableFrom<SymmetricKeyAttestation>(result.Attestation);
             Assert.AreEqual(attestation, result.Attestation);
