@@ -123,8 +123,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
 
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.ModelId), Guid.NewGuid().ToString());
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.DeviceName), Guid.NewGuid().ToString());
-            DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.AssetId), Guid.NewGuid().ToString());
-            DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.LocationCode), Guid.NewGuid().ToString());
+
+            Dictionary<string, string> customTags = new()
+            {
+                { "assetId", Guid.NewGuid().ToString() },
+                { "locationCode", Guid.NewGuid().ToString() }
+            };
+
+            foreach (KeyValuePair<string, string> customTag in customTags)
+            {
+                DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
+            }
 
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)] = Guid.NewGuid().ToString();
@@ -140,7 +149,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
                 AppEUI = Guid.NewGuid().ToString(),
                 AppKey = Guid.NewGuid().ToString(),
                 SensorDecoder = Guid.NewGuid().ToString(),
-            };
+                CustomTags = new()
+                {
+                    { "assetId", Guid.NewGuid().ToString() },
+                    { "locationCode", Guid.NewGuid().ToString() }
+                }
+        };
 
             // Act
             loRaDeviceTwinMapper.UpdateTwin(twin, item);
@@ -149,8 +163,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             Assert.AreEqual(item.DeviceID, twin.DeviceId);
             Assert.AreEqual(item.ModelId, DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.ModelId)));
             Assert.AreEqual(item.DeviceName, DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)));
-            Assert.AreEqual(item.LocationCode, DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LocationCode)));
-            Assert.AreEqual(item.AssetId, DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.AssetId)));
+            foreach (string tagName in customTags.Keys)
+            {
+                Assert.AreEqual(item.CustomTags[tagName], DeviceHelper.RetrieveTagValue(twin, tagName));
+            }
 
             Assert.AreEqual(item.AppEUI, twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)].ToString());
             Assert.AreEqual(item.AppKey, twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)].ToString());

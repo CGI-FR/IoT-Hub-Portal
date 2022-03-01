@@ -11,7 +11,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
         where TListItem: DeviceListItem
         where TDevice: DeviceDetails
     {
-        TDevice CreateDeviceDetails(Twin twin, IEnumerable<string> tags = null);
+        TDevice CreateDeviceDetails(Twin twin, IEnumerable<string> tags);
 
         TListItem CreateDeviceListItem(Twin twin);
 
