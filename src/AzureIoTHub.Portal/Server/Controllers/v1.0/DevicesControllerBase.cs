@@ -7,11 +7,15 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Azure;
+    using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.V10;
     using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
@@ -25,18 +29,21 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         protected readonly ILogger logger;
         private readonly IDeviceService devicesService;
         private readonly IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper;
+        private readonly ITableClientFactory tableClientFactory;
         private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
 
         public DevicesControllerBase(
             ILogger logger,
             IDeviceService devicesService,
             IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper,
-            IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
+            IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
+            ITableClientFactory tableClientFactory)
         {
             this.logger = logger;
             this.devicesService = devicesService;
             this.deviceTwinMapper = deviceTwinMapper;
             this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
+            this.tableClientFactory = tableClientFactory;
         }
 
         /// <summary>
@@ -158,12 +165,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 return this.NotFound("Device doesn't exist.");
             }
 
-            if (!item.Tags.Contains("deviceType"))
+            if (!item.Tags.Contains("modelId"))
             {
                 return this.BadRequest($"Cannot find device type from device {deviceID}");
             }
 
-            var credentials = await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceID, item.Tags["deviceType"].ToString());
+            Response<TableEntity> response = await this.tableClientFactory.GetDeviceTemplates()
+                                            .GetEntityAsync<TableEntity>("0", item.Tags["modelId"].ToString());
+
+            var modelEntity = response.Value;
+
+            var credentials = await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceID, modelEntity[nameof(DeviceModel.Name)].ToString());
 
             return this.Ok(credentials);
         }

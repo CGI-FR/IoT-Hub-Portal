@@ -39,7 +39,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             ILoraDeviceMethodManager loraDeviceMethodManager,
             IDeviceModelCommandMapper deviceModelCommandMapper, 
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
-            : base(logger, devicesService, deviceTwinMapper, deviceProvisioningServiceManager)
+            : base(logger, devicesService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
         {
             this.tableClientFactory = tableClientFactory;
             this.loraDeviceMethodManager = loraDeviceMethodManager;

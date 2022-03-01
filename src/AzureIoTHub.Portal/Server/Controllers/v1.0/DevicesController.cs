@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
+    using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
@@ -23,8 +24,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             ILogger<DevicesController> logger,
             IDeviceService devicesService,
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
-            IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper)
-            : base (logger, devicesService, deviceTwinMapper, deviceProvisioningServiceManager)
+            IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper,
+            ITableClientFactory tableClientFactory)
+            : base (logger, devicesService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
         {
 
         }
