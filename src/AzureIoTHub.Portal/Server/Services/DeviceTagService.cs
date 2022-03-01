@@ -36,24 +36,22 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public IEnumerable<DeviceTag> GetAllTags()
         {
-            var query = this.tableClientFactory
+            var tagList = this.tableClientFactory
                             .GetDeviceTagSettings()
-                            .Query<TableEntity>();
-
-            var tagList = query.Select(this.deviceTagMapper.GetDeviceTag);
+                            .Query<TableEntity>()
+                            .Select(this.deviceTagMapper.GetDeviceTag);
 
             return tagList.ToList();
         }
 
         public IEnumerable<string> GetAllTagsNames()
         {
-            var tagList = this.GetAllTags();
-            List<string> tagNameList = new();
-            foreach(var tag in tagList)
-            {
-                tagNameList.Add(tag.Name);
-            }
-            return tagNameList;
+            var tagNameList = this.tableClientFactory
+                .GetDeviceTagSettings()
+                .Query<TableEntity>()
+                .Select(c => this.deviceTagMapper.GetDeviceTag(c).Name);
+
+            return tagNameList.ToList();
         }
 
         public async Task UpdateTags(List<DeviceTag> tags)
