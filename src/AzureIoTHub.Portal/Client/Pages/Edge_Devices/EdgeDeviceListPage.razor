@@ -117,7 +117,7 @@
     }
 
     <MudItem xs="12">
-        <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add a new gateway" OnClick="ShowAddDialog" />
+        <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add IoT Edge" OnClick="ShowAddDialog" />
     </MudItem>
 </MudGrid>
 
@@ -177,7 +177,7 @@
 
     private async Task ShowAddDialog()
     {
-        var result = await DialogService.Show<CreateEdgeDeviceDialog>("Add a new edge device", maxWidth).Result;
+        var result = await DialogService.Show<CreateEdgeDeviceDialog>("Add IoT Edge", maxWidth).Result;
 
         if (result.Cancelled)
         {
