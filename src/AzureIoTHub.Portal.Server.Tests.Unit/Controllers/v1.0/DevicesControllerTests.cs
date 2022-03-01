@@ -101,11 +101,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceID)))
                 .Returns<string>(x => Task.FromResult(new Twin(x)));
 
-            this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(),null))
-                .Returns<Twin>(x => new DeviceDetails
+            this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
+                .Returns<Twin, IEnumerable<string>>((x, y) => new DeviceDetails
                 {
                     DeviceID = x.DeviceId
                 });
+
+            this.mockDeviceTagService.Setup(c => c.GetAllTagsNames())
+                .Returns(new List<string>());
 
             // Act
             var result = await devicesController.Get(deviceID);
