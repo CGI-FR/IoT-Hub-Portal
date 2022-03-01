@@ -25,16 +25,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     public class DeviceTagSettingsController : ControllerBase
     {
         /// <summary>
-        /// The table client factory.
-        /// </summary>
-        private readonly ITableClientFactory tableClientFactory;
-
-        /// <summary>
-        /// The device tag mapper.
-        /// </summary>
-        private readonly IDeviceTagMapper deviceTagMapper;
-
-        /// <summary>
         /// The logger.
         /// </summary>
         private readonly ILogger<DeviceTagSettingsController> log;
@@ -44,24 +34,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         private readonly IDeviceTagService deviceTagService;
 
-        public const string DefaultPartitionKey = "0";
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceTagSettingsController"/> class.
         /// </summary>
         /// <param name="log">The logger.</param>
-        /// <param name="deviceTagMapper">The device tag mapper.</param>
-        /// <param name="tableClientFactory">The table client factory.</param>
         /// <param name="deviceTagService">The device tag service.</param>
         public DeviceTagSettingsController(
             ILogger<DeviceTagSettingsController> log,
-            IDeviceTagMapper deviceTagMapper,
-            ITableClientFactory tableClientFactory,
             IDeviceTagService deviceTagService)
         {
             this.log = log;
-            this.deviceTagMapper = deviceTagMapper;
-            this.tableClientFactory = tableClientFactory;
             this.deviceTagService = deviceTagService;
         }
 
