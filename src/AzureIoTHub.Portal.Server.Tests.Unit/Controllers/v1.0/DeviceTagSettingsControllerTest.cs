@@ -22,7 +22,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
     [TestFixture]
     public class DeviceTagSettingsControllerTest
     {
-        private MockRepository mockRepository;
+        /* private MockRepository mockRepository;
 
         //private Mock<IDeviceTagMapper> mockDeviceTagMapper;
         //private Mock<ITableClientFactory> mockTableClientFactory;
@@ -105,6 +105,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
 
             this.mockDeviceTagService.VerifyAll();
             this.mockRepository.VerifyAll();
-        }
+        }*/
     }
 }

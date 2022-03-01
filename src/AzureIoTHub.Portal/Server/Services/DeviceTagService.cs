@@ -37,7 +37,7 @@ namespace AzureIoTHub.Portal.Server.Services
         public IEnumerable<DeviceTag> GetAllTags()
         {
             var tagList = this.tableClientFactory
-    .GetDeviceTagSettings()
+                            .GetDeviceTagSettings()
                             .Query<TableEntity>()
                             .Select(this.deviceTagMapper.GetDeviceTag);
 
