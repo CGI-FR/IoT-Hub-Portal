@@ -27,7 +27,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper,
             ITableClientFactory tableClientFactory)
-            : base (logger, devicesService, deviceTagService deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
+            : base (logger, devicesService, deviceTagService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
         {
 
         }

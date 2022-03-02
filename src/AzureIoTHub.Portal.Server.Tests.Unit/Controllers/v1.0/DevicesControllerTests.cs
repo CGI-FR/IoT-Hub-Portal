@@ -53,8 +53,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
                 this.mockDeviceTagService.Object,
-                this.mockDeviceTwinMapper.Object);
                 this.mockProvisioningServiceManager.Object,
+                this.mockDeviceTwinMapper.Object,
                 this.mockTableClientFactory.Object);
         }
 
