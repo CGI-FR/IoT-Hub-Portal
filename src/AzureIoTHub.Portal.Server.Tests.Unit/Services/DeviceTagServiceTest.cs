@@ -108,7 +108,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Services
             var deviceTagService = this.CreateDeviceTagService();
             var returnedIndex = 10;
 
-            var mockTable = this.mockRepository.Create<TableClient>();
             var mockTableResponse = this.mockRepository.Create<Pageable<TableEntity>>();
             var mockEnumerator = this.mockRepository.Create<IEnumerator<TableEntity>>();
             mockEnumerator.Setup(x => x.Dispose()).Callback(() => { });
@@ -155,7 +154,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Services
             var deviceTagService = this.CreateDeviceTagService();
             var returnedIndex = 10;
 
-            var mockTable = this.mockRepository.Create<TableClient>();
             var mockTableResponse = this.mockRepository.Create<Pageable<TableEntity>>();
             var mockEnumerator = this.mockRepository.Create<IEnumerator<TableEntity>>();
             mockEnumerator.Setup(x => x.Dispose()).Callback(() => { });

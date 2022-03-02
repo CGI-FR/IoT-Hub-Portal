@@ -66,8 +66,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
                 Searchable = true
             };
 
-            var mockResponse = this.mockRepository.Create<Response>();
-
             this.mockDeviceTagService.Setup(c => c.UpdateTags(It.IsAny<List<DeviceTag>>()))
                 .Returns(Task.CompletedTask);
 
