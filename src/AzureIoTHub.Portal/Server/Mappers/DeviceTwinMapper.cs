@@ -64,9 +64,12 @@ namespace AzureIoTHub.Portal.Server.Mappers
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
 
-            foreach(KeyValuePair<string,string> customTag in item.CustomTags)
+            if(item.CustomTags != null)
             {
-                Helpers.DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
+                foreach(KeyValuePair<string,string> customTag in item.CustomTags)
+                {
+                    Helpers.DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
+                }
             }
         }
     }

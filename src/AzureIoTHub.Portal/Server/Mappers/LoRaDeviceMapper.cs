@@ -77,9 +77,12 @@ namespace AzureIoTHub.Portal.Server.Mappers
             twin.Properties.Desired[nameof(item.AppKey)] = item.AppKey;
             twin.Properties.Desired[nameof(item.SensorDecoder)] = item.SensorDecoder;
 
-            foreach (KeyValuePair<string, string> customTag in item.CustomTags)
+            if(item.CustomTags != null)
             {
-                Helpers.DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
+                foreach (KeyValuePair<string, string> customTag in item.CustomTags)
+                {
+                    Helpers.DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
+                }
             }
         }
     }
