@@ -46,7 +46,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="tags">List of tags.</param>
         /// <returns>The action result.</returns>
-        [HttpPost(Name = "POST a set of device tag settings")]
+        [HttpPost(Name = "Update the Device tags set")]
         public async Task<IActionResult> Post(List<DeviceTag> tags)
         {
             await this.deviceTagService.UpdateTags(tags);
@@ -57,7 +57,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the device tag settings to be used in the application
         /// </summary>
         /// <returns>The list of tags</returns>
-        [HttpGet(Name = "GET a set of device settings")]
+        [HttpGet(Name = "GET Device tags settings")]
         public ActionResult<List<DeviceTag>> Get()
         {
             return this.Ok(deviceTagService.GetAllTags());
