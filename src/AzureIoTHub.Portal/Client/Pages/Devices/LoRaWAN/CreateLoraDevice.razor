@@ -1,4 +1,5 @@
-﻿@using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice
+﻿@using AzureIoTHub.Portal.Client.Validators
+@using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice
 @using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel
 
 <MudItem xs="12">
@@ -20,7 +21,12 @@
                                   HelperText="OTAA AppEUI is automatically set from the selected model" />
                 </MudItem>
                 <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="@LoRaDevice.AppKey" Label="OTAA AppKey" Variant="Variant.Outlined" />
+                    <MudTextField @bind-Value="@LoRaDevice.AppKey"
+                                  Label="OTAA AppKey"
+                                  Validation="@(LoraValidator.ValidateValue)"
+                                  For="@(() => LoRaDevice.AppKey)"
+                                  Required="true"
+                                  Variant="Variant.Outlined" />
                 </MudItem>
                 <MudItem xs="12">
                     <MudTextField @bind-Value="@LoRaDevice.SensorDecoder" Label="Sensor Decoder URL" For="@(() => LoRaDevice.SensorDecoder)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
@@ -36,6 +42,9 @@
 @code {
     [Parameter]
     public LoRaDeviceDetails LoRaDevice { get; set; }
+
+    [Parameter]
+    public LoRaDeviceDetailsValidator LoraValidator { get; set; }
 
     [Parameter]
     public EventCallback OnSaveClick { get; set; }
