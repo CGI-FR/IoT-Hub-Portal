@@ -294,7 +294,16 @@
 
         if (IsLoRa)
         {
-            result = await httpClient.PostAsJsonAsync(ApiUrlBase, Model as LoRaDeviceModel);
+            var loraDeviceModel = Model as LoRaDeviceModel;
+
+            if (!loraDeviceModel.IsOTAAsetting)
+            {
+                loraDeviceModel.AppEUI = null;
+            }
+
+            loraDeviceModel.SupportLoRaFeatures = true;
+
+            result = await httpClient.PostAsJsonAsync(ApiUrlBase, loraDeviceModel);
 
             result.EnsureSuccessStatusCode();
 

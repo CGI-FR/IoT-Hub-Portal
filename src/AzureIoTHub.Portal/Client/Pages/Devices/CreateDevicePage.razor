@@ -133,6 +133,7 @@
             ChangeModel(value);
         }
     }
+    private LoRaDeviceModel loRaDeviceModel { get; set; }
 
     private bool IsLoRa => this.Model?.SupportLoRaFeatures ?? false;
 

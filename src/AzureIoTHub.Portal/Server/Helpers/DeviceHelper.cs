@@ -74,6 +74,11 @@ namespace AzureIoTHub.Portal.Server.Helpers
                 twin.Properties.Desired[propertyName] : null;
         }
 
+        public static void SetDesiredProperty(Twin twin, string tagName, string value)
+        {
+            twin.Properties.Desired[tagName] = value;
+        }
+
         public static string RetrieveReportedPropertyValue(Twin twin, string propertyName)
         {
             return twin.Properties.Reported.Contains(propertyName) ?
