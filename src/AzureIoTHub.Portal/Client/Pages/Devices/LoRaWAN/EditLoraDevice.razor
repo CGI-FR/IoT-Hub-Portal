@@ -1,4 +1,5 @@
-﻿@using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice
+﻿@using AzureIoTHub.Portal.Client.Validators
+@using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice
 @using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel
 
 @inject HttpClient Http
@@ -17,7 +18,7 @@
                     <MudTextField @bind-Value="@LoRaDevice.AppEUI" Label="OTAA App EUI" For="@(() => LoRaDevice.AppEUI)" ReadOnly="true" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                 </MudItem>
                 <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="@LoRaDevice.AppKey" Label="OTAA App Key" For="@(() => LoRaDevice.AppKey)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                    <MudTextField @bind-Value="@LoRaDevice.AppKey" Label="OTAA App Key" Validation="@(LoraValidator.ValidateValue)" For="@(() => LoRaDevice.AppKey)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                 </MudItem>
                 <MudItem xs="12">
                     <MudTextField @bind-Value="@LoRaDevice.SensorDecoder" Label="Sensor Decoder URL" For="@(() => LoRaDevice.SensorDecoder)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
@@ -62,6 +63,9 @@
 @code {
     [Parameter]
     public LoRaDeviceDetails LoRaDevice { get; set; }
+
+    [Parameter]
+    public LoRaDeviceDetailsValidator LoraValidator { get; set; }
 
     [Parameter]
     public IEnumerable<DeviceModelCommand> Commands { get; set; }
