@@ -9,9 +9,15 @@
         </MudCardHeader>
         <MudCardContent>
             <MudGrid>
-                <MudItem xs="12">
-                    <MudTextField @bind-Value="@LoRaDeviceModel.AppEUI" Label="OTAA AppEUI" For="@(() => LoRaDeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                <MudItem xs="12" md="6">
+                    <MudSwitch @bind-Checked="@LoRaDeviceModel.IsOTAAsetting">@(LoRaDeviceModel.IsOTAAsetting ? "OTAA setting enable" : "APB setting enable")</MudSwitch>
                 </MudItem>
+                @if (LoRaDeviceModel.IsOTAAsetting)
+                {
+                    <MudItem xs="12">
+                        <MudTextField @bind-Value="@LoRaDeviceModel.AppEUI" Label="OTAA AppEUI" For="@(() => LoRaDeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                    </MudItem>
+                }
                 <MudItem xs="12">
                     <MudTextField @bind-Value="@LoRaDeviceModel.SensorDecoder" Label="Sensor Decoder URL" For="@(() => LoRaDeviceModel.SensorDecoder)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                 </MudItem>
