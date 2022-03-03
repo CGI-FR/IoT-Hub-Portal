@@ -142,7 +142,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 
             var query = this.tableClientFactory
                                   .GetDeviceCommands()
-                                  .Query<TableEntity>(filter: $"PartitionKey  eq '{id}'");
+                                  .Query<TableEntity>(filter: $"PartitionKey eq '{id}'");
 
             var commands = new List<DeviceModelCommand>();
 
@@ -152,7 +152,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
                 commands.Add(command);
             }
 
-            return this.Ok(commands);
+            return this.Ok(commands.ToArray());
         }
     }
 }
