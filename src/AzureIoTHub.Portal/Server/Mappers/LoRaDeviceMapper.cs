@@ -43,9 +43,16 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime.GetValueOrDefault(DateTime.MinValue),
+                GatewayID = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.GatewayID)),
+                SensorDecoder = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.SensorDecoder)),
                 AppEUI = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppEUI)),
                 AppKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppKey)),
-                SensorDecoder = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.SensorDecoder)),
+                DevAddr = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.DevAddr)),
+                AppSKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppSKey)),
+                NwkSKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.NwkSKey)),
+                LocationCode = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LocationCode)),
+                AssetId = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.AssetId)),
+                IsOTTAsetting = bool.Parse(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.IsOTTAsetting)) ?? "True"),
                 CustomTags = customTags
             };
         }
@@ -71,13 +78,26 @@ namespace AzureIoTHub.Portal.Server.Mappers
             Helpers.DeviceHelper.SetTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures), "true");
 
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
+            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.IsOTTAsetting), item.IsOTTAsetting.ToString());
+            // Helpers.DeviceHelper.SetTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures), true.ToString());
 
             // Update the twin properties
-            twin.Properties.Desired[nameof(item.AppEUI)] = item.AppEUI;
-            twin.Properties.Desired[nameof(item.AppKey)] = item.AppKey;
-            twin.Properties.Desired[nameof(item.SensorDecoder)] = item.SensorDecoder;
+            if (item.IsOTTAsetting)
+            {
+                Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppEUI), item.AppEUI);
+                Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppKey), item.AppKey);
+            }
+            else
+            {
+                Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.NwkSKey), item.NwkSKey);
+                Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppSKey), item.AppSKey);
+                Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.DevAddr), item.DevAddr);
+            }
 
-            if(item.CustomTags != null)
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.GatewayID), item.GatewayID);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.SensorDecoder), item.SensorDecoder);
+
+            if (item.CustomTags != null)
             {
                 foreach (KeyValuePair<string, string> customTag in item.CustomTags)
                 {

@@ -14,16 +14,34 @@
         </MudCardHeader>
         <MudCardContent>
             <MudGrid>
+                @if (LoRaDevice.IsOTTAsetting)
+                {
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="@LoRaDevice.AppEUI" Label="OTAA App EUI" For="@(() => LoRaDevice.AppEUI)" ReadOnly="true" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                 </MudItem>
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="@LoRaDevice.AppKey" Label="OTAA App Key" Validation="@(LoraValidator.ValidateValue)" For="@(() => LoRaDevice.AppKey)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                 </MudItem>
+                }
+                else
+                {
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="@LoRaDevice.AppSKey" Label="APB App SKey" For="@(() => LoRaDevice.AppSKey)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="@LoRaDevice.NwkSKey" Label="APB Nwk SKey" For="@(() => LoRaDevice.NwkSKey)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="@LoRaDevice.DevAddr" Label="DevAddr" For="@(() => LoRaDevice.DevAddr)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                     </MudItem>
+                }
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="@LoRaDevice.GatewayID" Label="Gateway Id" For="@(() => LoRaDevice.GatewayID)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                </MudItem>
                 <MudItem xs="12">
                     <MudTextField @bind-Value="@LoRaDevice.SensorDecoder" Label="Sensor Decoder URL" For="@(() => LoRaDevice.SensorDecoder)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                 </MudItem>
-            </MudGrid>
+             </MudGrid>
         </MudCardContent>
         <MudCardActions Class="pb-4 pl-4">
             <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="OnSaveClick">Save Changes</MudButton>
@@ -36,9 +54,9 @@
         <ToolBarContent>
             <MudText Typo="Typo.h6">Commands</MudText>
             <MudSpacer />
-            @if(!LoRaDevice.AlreadyLoggedInOnce)
+            @if (!LoRaDevice.AlreadyLoggedInOnce)
             {
-                <MudText Typo="Typo.caption" style="color: red">Device hasn't joined the network. You cannot send command at this moment.</MudText>
+                    <MudText Typo="Typo.caption" style="color: red">Device hasn't joined the network. You cannot send command at this moment.</MudText>
             }
         </ToolBarContent>
         <ColGroup>

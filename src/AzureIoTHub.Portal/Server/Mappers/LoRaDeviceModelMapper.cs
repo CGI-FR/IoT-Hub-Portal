@@ -44,7 +44,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 Description = entity[nameof(LoRaDeviceModel.Description)]?.ToString(),
                 AppEUI = entity[nameof(LoRaDeviceModel.AppEUI)]?.ToString(),
                 SensorDecoder = entity[nameof(LoRaDeviceModel.SensorDecoder)]?.ToString(),
-                SupportLoRaFeatures = true
+                SupportLoRaFeatures = true,
+                IsOTAAsetting = bool.Parse(entity[nameof(LoRaDeviceModel.IsOTAAsetting)]?.ToString() ?? "true")
             };
         }
 
@@ -54,13 +55,22 @@ namespace AzureIoTHub.Portal.Server.Mappers
             entity[nameof(LoRaDeviceModel.Description)] = model.Description;
             entity[nameof(LoRaDeviceModel.IsBuiltin)] = model.IsBuiltin;
             entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)] = model.SupportLoRaFeatures;
+            entity[nameof(LoRaDeviceModel.IsOTAAsetting)] = model.IsOTAAsetting;
 
-            entity[nameof(LoRaDeviceModel.AppEUI)] = model.AppEUI;
+            if (model.IsOTAAsetting)
+            {
+                entity[nameof(LoRaDeviceModel.AppEUI)] = model.AppEUI;
+            }
+
             entity[nameof(LoRaDeviceModel.SensorDecoder)] = model.SensorDecoder;
 
             var desiredProperties = new Dictionary<string, object>();
 
-            desiredProperties.Add($"properties.desired.{nameof(LoRaDeviceModel.AppEUI)}", model.AppEUI);
+            if (model.IsOTAAsetting)
+            {
+                desiredProperties.Add($"properties.desired.{nameof(LoRaDeviceModel.AppEUI)}", model.AppEUI);
+            }
+
             desiredProperties.Add($"properties.desired.{nameof(LoRaDeviceModel.SensorDecoder)}", model.SensorDecoder);
 
             return desiredProperties;
