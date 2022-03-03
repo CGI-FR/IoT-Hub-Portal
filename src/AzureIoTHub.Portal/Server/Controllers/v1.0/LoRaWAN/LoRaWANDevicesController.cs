@@ -37,7 +37,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper,
             ITableClientFactory tableClientFactory,
             ILoraDeviceMethodManager loraDeviceMethodManager,
-            IDeviceModelCommandMapper deviceModelCommandMapper, 
+            IDeviceModelCommandMapper deviceModelCommandMapper,
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
             : base(logger, devicesService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
         {
@@ -110,34 +110,25 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpPost("{deviceId}/_command/{commandId}", Name = "POST Execute LoRaWAN command")]
         public async Task<IActionResult> ExecuteCommand(string deviceId, string commandId)
         {
-            try
+            var commandEntity = this.tableClientFactory
+                   .GetDeviceCommands()
+                   .Query<TableEntity>(filter: $"RowKey eq '{commandId}'")
+                   .Single();
+
+            var deviceModelCommand = this.deviceModelCommandMapper.GetDeviceModelCommand(commandEntity);
+
+            var result = await this.loraDeviceMethodManager.ExecuteLoRaDeviceMessage(deviceId, deviceModelCommand);
+
+            if (!result.IsSuccessStatusCode)
             {
-                var commandEntity = this.tableClientFactory
-                       .GetDeviceCommands()
-                       .Query<TableEntity>(filter: $"RowKey eq '{commandId}'")
-                       .Single();
-
-                var deviceModelCommand = this.deviceModelCommandMapper.GetDeviceModelCommand(commandEntity);
-
-                var result = await this.loraDeviceMethodManager.ExecuteLoRaDeviceMessage(deviceId, deviceModelCommand);
-
-                if (result.StatusCode == HttpStatusCode.InternalServerError)
-                {
-                    this.logger.LogError($"{deviceId} - Execute command on device failed \n {result}");
-
-                    throw new FormatException("Incorrect port or invalid DevEui Format.");
-                }
-
-                this.logger.LogInformation($"{deviceId} - Execute command: {result}");
-
-                return this.Ok();
-            }
-            catch (FormatException e)
-            {
-                this.logger.LogError($"{deviceId} - Execute command on device failed \n {e.Message}");
+                this.logger.LogError($"{deviceId} - Execute command on device failed \n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}");
 
                 return this.BadRequest("Something went wrong when executing the command.");
             }
+
+            this.logger.LogInformation($"{deviceId} - Execute command: \n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}");
+
+            return this.Ok();
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]

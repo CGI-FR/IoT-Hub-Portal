@@ -129,6 +129,7 @@ namespace AzureIoTHub.Portal.Server
             {
                 client.BaseAddress = new Uri(configuration.LoRaKeyManagementUrl);
                 client.DefaultRequestHeaders.Add("x-functions-key", configuration.LoRaKeyManagementCode);
+                client.DefaultRequestHeaders.Add("api-version", "2020-10-09");
             })
                 .AddPolicyHandler(transientHttpErrorPolicy);
 
