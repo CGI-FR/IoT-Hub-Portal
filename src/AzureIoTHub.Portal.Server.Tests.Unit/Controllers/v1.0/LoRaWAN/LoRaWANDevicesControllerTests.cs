@@ -32,6 +32,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
         private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
         private Mock<ILogger<LoRaWANDevicesController>> mockLogger;
         private Mock<IDeviceService> mockDeviceService;
+        private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>> mockDeviceTwinMapper;
         private Mock<ITableClientFactory> mockTableClientFactory;
         private Mock<ILoraDeviceMethodManager> mockLoraDeviceMethodManager;
@@ -46,10 +47,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
             this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
             this.mockLogger = this.mockRepository.Create<ILogger<LoRaWANDevicesController>>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
+            this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockLoraDeviceMethodManager = this.mockRepository.Create<ILoraDeviceMethodManager>();
-            this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>(); 
+            this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>();
             this.mockCommandsTableClient = this.mockRepository.Create<TableClient>();
 
         }
@@ -59,6 +61,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
             return new LoRaWANDevicesController(
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
+                this.mockDeviceTagService.Object,
                 this.mockDeviceTwinMapper.Object,
                 this.mockTableClientFactory.Object,
                 this.mockLoraDeviceMethodManager.Object,
@@ -105,12 +108,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
                 It.Is<DeviceModelCommand>(x => x.Name == commandId)))
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
 
+            #nullable enable
             this.mockLogger.Setup(c => c.Log(
                 It.Is<LogLevel>(x => x == LogLevel.Information),
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()));                
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
+            #nullable disable
 
             // Act
             var result = await loRaWANDevicesController.ExecuteCommand(deviceId, commandId);
@@ -161,12 +166,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
                 It.Is<DeviceModelCommand>(x => x.Name == commandId)))
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
+            #nullable enable
             this.mockLogger.Setup(c => c.Log(
                 It.Is<LogLevel>(x => x == LogLevel.Error),
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
+            #nullable disable
 
             // Act
             var result = await loRaWANDevicesController.ExecuteCommand(deviceId, commandId);
@@ -221,14 +228,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
             this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceID)))
                 .Returns<string>(x => Task.FromResult(new Twin(x)));
 
-            this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>()))
-                .Returns<Twin>(x => new LoRaDeviceDetails
+            this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
+                .Returns<Twin, IEnumerable<string>>((x, y) => new LoRaDeviceDetails
                 {
                     DeviceID = x.DeviceId,
                     AppEUI = Guid.NewGuid().ToString(),
                     AppKey = Guid.NewGuid().ToString(),
                     SensorDecoder = Guid.NewGuid().ToString(),
                 });
+
+            this.mockDeviceTagService.Setup(c => c.GetAllTagsNames())
+                .Returns(new List<string>());
 
             // Act
             var result = await devicesController.Get(deviceID);

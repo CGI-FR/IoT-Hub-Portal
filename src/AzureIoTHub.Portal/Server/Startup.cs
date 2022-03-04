@@ -107,13 +107,12 @@ namespace AzureIoTHub.Portal.Server
 
             services.AddTransient<IDeviceTwinMapper<DeviceListItem, DeviceDetails>, DeviceTwinMapper>();
             services.AddTransient<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>, LoRaDeviceTwinMapper>();
-
             services.AddTransient<IDeviceModelMapper<DeviceModel, DeviceModel>, DeviceModelMapper>();
             services.AddTransient<IDeviceModelMapper<DeviceModel, LoRaDeviceModel>, LoRaDeviceModelMapper>();
-
             services.AddTransient<IDeviceTagMapper, DeviceTagMapper>();
 
             services.AddTransient<IConfigService, ConfigService>();
+            services.AddTransient<IDeviceTagService, DeviceTagService>();
 
             services.AddMudServices();
 

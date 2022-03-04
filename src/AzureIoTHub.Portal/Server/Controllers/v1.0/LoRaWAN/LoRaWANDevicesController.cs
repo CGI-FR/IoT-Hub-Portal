@@ -34,12 +34,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public LoRaWANDevicesController(
             ILogger<LoRaWANDevicesController> logger,
             IDeviceService devicesService,
+            IDeviceTagService deviceTagService,
             IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper,
             ITableClientFactory tableClientFactory,
             ILoraDeviceMethodManager loraDeviceMethodManager,
             IDeviceModelCommandMapper deviceModelCommandMapper,
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
-            : base(logger, devicesService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
+            : base(logger, devicesService, deviceTagService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
         {
             this.tableClientFactory = tableClientFactory;
             this.loraDeviceMethodManager = loraDeviceMethodManager;

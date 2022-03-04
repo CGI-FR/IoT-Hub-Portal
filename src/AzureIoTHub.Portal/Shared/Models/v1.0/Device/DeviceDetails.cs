@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Shared.Models.V10.Device
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     public class DeviceDetails
@@ -47,13 +48,8 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.Device
         public DateTime StatusUpdatedTime { get; set; }
 
         /// <summary>
-        /// The location code.
+        /// List of custom device tags and their values.
         /// </summary>
-        public string LocationCode { get; set; }
-
-        /// <summary>
-        /// The asset identifier.
-        /// </summary>
-        public string AssetId { get; set; }
+        public Dictionary<string, string> CustomTags { get; set; } = new();
     }
 }

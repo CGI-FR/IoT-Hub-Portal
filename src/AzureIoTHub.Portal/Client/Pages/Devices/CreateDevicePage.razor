@@ -14,7 +14,7 @@
 @inject NavigationManager NavManager
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device</MudText>
-<MudForm Model="@Device" @ref="form">
+<MudForm Model="@Device" @ref="form" Validation="@(standardValidator.ValidateValue)">
     <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
         <MudTabPanel Text="General" Style=@(standardValidator.Validate(Device).IsValid ? "" : "color: red")>
             <MudGrid>
@@ -48,6 +48,7 @@
                                                      Dense="true" Variant="Variant.Outlined"
                                                      SearchFunc="@Search"
                                                      ToStringFunc="@(x => x.Name)"
+                                                     For="@(()=> Model)"
                                                      ResetValueOnEmptyText="true"
                                                      Immediate="true" Clearable="true"
                                                      CoerceText="true" CoerceValue="false" />
@@ -71,12 +72,16 @@
                                                   For="@(()=> Device.DeviceName)"
                                                   Required="true" />
                                 </MudItem>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Device.AssetId" Label="IoT Asset ID" Variant="Variant.Outlined" />
-                                </MudItem>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Device.LocationCode" Label="Location Asset ID" Variant="Variant.Outlined" />
-                                </MudItem>
+
+                                @foreach (DeviceTag tag in TagList)
+                                {
+                                    <MudItem xs="12" md="6">
+                                        <MudTextField @bind-Value="Device.CustomTags[tag.Name]" Label="@tag.Label"
+                                                  Required="@tag.Required"
+                                                  Variant="Variant.Outlined" />
+                                    </MudItem>
+                                }
+
                                 <MudItem xs="12">
                                     <MudText>
                                         <b>Status</b>
@@ -104,7 +109,7 @@
         {
             <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Device as LoRaDeviceDetails).IsValid ? "" : "color: red")>
                 <MudGrid>
-                    <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" OnSaveClick="Save" />
+                    <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" OnSaveClick="Save" />
                 </MudGrid>
             </MudTabPanel>
         }
@@ -131,8 +136,6 @@
 
     private bool IsLoRa => this.Model?.SupportLoRaFeatures ?? false;
 
-    // private bool activateLoRaFeature;
-
     [Parameter]
     public string DeviceID { get; set; }
 
@@ -140,20 +143,26 @@
 
     private IEnumerable<DeviceModel> DeviceModelList { get; set; } = new List<DeviceModel>();
 
+    private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
+    private Dictionary<string, string> TagDict { get; set; } = new Dictionary<string, string>();
+
     private bool displayValidationErrorMessages = false;
 
     protected override async Task OnInitializedAsync()
     {
-        // var activateLoRaFeature;
-        //var result = await Http.GetFromJsonAsync<string>("api/settings/lora");
-        //Boolean.TryParse(result, out var activateLoRaFeature);
-
         // Enable device by default
         Device.IsEnabled = true;
 
         // Gets a list of device model previously registered to Azure to allow autocomplete field in the form
         DeviceModelList = await Http.GetFromJsonAsync<DeviceModel[]>("api/models");
 
+        // Gets the custom tags that can be set when creating a device
+        TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
+        foreach (DeviceTag tag in TagList)
+        {
+            TagDict.Add(tag.Name, "");
+        }
+        Device.CustomTags = TagDict;
     }
 
     /// <summary>
@@ -161,14 +170,24 @@
     /// </summary>
     public async void Save()
     {
+        await form.Validate();
+        bool tagValidationError = CheckTags();
+
         if (!standardValidator.Validate(Device).IsValid
-            || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid))
+            || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid)
+            || tagValidationError)
         {
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
-            var loraValidation = this.loraValidator.Validate(this.Device as LoRaDeviceDetails);
+            // Allows to display ValidationError messages for the MudAutocomplete field.
+            displayValidationErrorMessages = true;
 
-            loraValidation.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
+            //if (IsLoRa)
+            //{
+            //    var loraValidation = this.loraValidator.Validate(this.Device as LoRaDeviceDetails);
+
+            //    loraValidation.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
+            //}
 
             return;
         }
@@ -189,11 +208,18 @@
         NavManager.NavigateTo("devices");
     }
 
-    private void HandleInvalidSubmit(EditContext context)
+    private bool CheckTags()
     {
-        // Invalid submit manually handled
-        // Waiting for MudBlazor MudAutocomplete issue #2674 to be fixed
-        displayValidationErrorMessages = true;
+        bool tagValidationError = false;
+
+        foreach (DeviceTag tag in TagList)
+        {
+            if (tag.Required && string.IsNullOrEmpty(Device.CustomTags[tag.Name]))
+            {
+                tagValidationError = true;
+            }
+        }
+        return tagValidationError;
     }
 
     /// <summary>
@@ -222,8 +248,6 @@
                 {
                     DeviceID = Device.DeviceID,
                     DeviceName = Device.DeviceName,
-                    LocationCode = Device.LocationCode,
-                    AssetId = Device.AssetId,
                     IsEnabled = Device.IsEnabled
                 };
 
@@ -233,23 +257,22 @@
                 .ContinueWith(c =>
                 {
                     device.AppEUI = c.Result.AppEUI;
-                    device.SensorDecoder = c.Result.SensorDecoder;                
+                    device.SensorDecoder = c.Result.SensorDecoder;
                 });
         }
         else
         {
-             Device = new DeviceDetails
-            {
-                DeviceID = Device.DeviceID,
-                DeviceName = Device.DeviceName,
-                LocationCode = Device.LocationCode,
-                AssetId = Device.AssetId,
-                IsEnabled = Device.IsEnabled
-            };
+            Device = new DeviceDetails
+                {
+                    DeviceID = Device.DeviceID,
+                    DeviceName = Device.DeviceName,
+                    IsEnabled = Device.IsEnabled
+                };
         }
 
         Device.ModelId = model?.ModelId;
         Device.ImageUrl = model?.ImageUrl;
+        Device.CustomTags = TagDict;
     }
 }
 

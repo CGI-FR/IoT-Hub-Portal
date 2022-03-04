@@ -5,12 +5,13 @@ namespace AzureIoTHub.Portal.Server.Mappers
 {
     using AzureIoTHub.Portal.Shared.Models.V10.Device;
     using Microsoft.Azure.Devices.Shared;
+    using System.Collections.Generic;
 
     public interface IDeviceTwinMapper<TListItem, TDevice>
         where TListItem: DeviceListItem
         where TDevice: DeviceDetails
     {
-        TDevice CreateDeviceDetails(Twin twin);
+        TDevice CreateDeviceDetails(Twin twin, IEnumerable<string> tags);
 
         TListItem CreateDeviceListItem(Twin twin);
 

@@ -15,7 +15,7 @@
 @inject IDialogService DialogService
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Details</MudText>
-<MudForm Model="@Device" @ref="form">
+<MudForm Model="@Device" @ref="form" Validation="@(standardValidator.ValidateValue)">
     <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
         <MudTabPanel Text="General" Style=@(standardValidator.Validate(Device).IsValid ? "" : "color: red")>
             <MudGrid>
@@ -64,12 +64,16 @@
                                                   For="@(()=> Device.DeviceName)"
                                                   Required="true" />
                                 </MudItem>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Device.AssetId" Label="IoT Asset ID" Variant="Variant.Outlined" />
-                                </MudItem>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Device.LocationCode" Label="Location Asset ID" Variant="Variant.Outlined" />
-                                </MudItem>
+
+                                @foreach (DeviceTag tag in TagList)
+                                {
+                                    <MudItem xs="12" md="6">
+                                        <MudTextField @bind-Value="Device.CustomTags[tag.Name]" Label="@tag.Label"
+                                                  Required="@tag.Required"
+                                                  Variant="Variant.Outlined" />
+                                    </MudItem>
+                                }
+
                                 <MudItem xs="12">
                                     <MudText>
                                         <b>Status</b>
@@ -97,7 +101,7 @@
         {
             <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Device as LoRaDeviceDetails).IsValid ? "" : "color: red")>
                 <MudGrid>
-                    <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" Commands="@Commands" OnSaveClick="Save" />
+                    <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" Commands="@Commands" OnSaveClick="Save" />
                 </MudGrid>
             </MudTabPanel>
         }
@@ -130,6 +134,8 @@
 
     private IEnumerable<DeviceModelCommand> Commands { get; set; }
 
+    private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
+
     protected override async Task OnInitializedAsync()
     {
         if (IsLoRa)
@@ -142,6 +148,7 @@
             Device = await Http.GetFromJsonAsync<DeviceDetails>($"{ApiUrlBase}/{DeviceID}");
         }
 
+        TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
         isLoaded = true;
     }
 
@@ -150,14 +157,22 @@
     /// </summary>
     public async void Save()
     {
+        await form.Validate();
+        bool tagValidationError = CheckTags();
+
         if (!standardValidator.Validate(Device).IsValid
-            || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid))
+            || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid)
+            || tagValidationError)
         {
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
-            var loraValidation = this.loraValidator.Validate(this.Device as LoRaDeviceDetails);
+            //if (IsLoRa)
+            //{
+            //    var loraValidation = this.loraValidator.Validate(this.Device as LoRaDeviceDetails);
 
-            loraValidation.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
+            //    loraValidation.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
+            //}
+
 
             return;
         }
@@ -204,4 +219,17 @@
         DialogService.Show<ConnectionStringDialog>("Device Credentials", parameters);
     }
 
+        private bool CheckTags()
+    {
+        bool tagValidationError = false;
+
+        foreach (DeviceTag tag in TagList)
+        {
+            if (tag.Required && string.IsNullOrEmpty(Device.CustomTags[tag.Name]))
+            {
+                tagValidationError = true;
+            }
+        }
+        return tagValidationError;
+    }
 }
