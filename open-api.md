@@ -104,8 +104,10 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "locationCode": "string",
-  "assetId": "string"
+  "customTags": {
+    "property1": "string",
+    "property2": "string"
+  }
 }
 ```
 
@@ -147,8 +149,10 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "locationCode": "string",
-  "assetId": "string"
+  "customTags": {
+    "property1": "string",
+    "property2": "string"
+  }
 }
 ```
 
@@ -190,7 +194,7 @@ None
 > 200 Response
 
 ```
-{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","locationCode":"string","assetId":"string"}
+{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","customTags":{"property1":"string","property2":"string"}}
 ```
 
 ```json
@@ -202,8 +206,10 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "locationCode": "string",
-  "assetId": "string"
+  "customTags": {
+    "property1": "string",
+    "property2": "string"
+  }
 }
 ```
 
@@ -1371,8 +1377,10 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "locationCode": "string",
-  "assetId": "string",
+  "customTags": {
+    "property1": "string",
+    "property2": "string"
+  },
   "appEUI": "string",
   "appKey": "string",
   "sensorDecoder": "string",
@@ -1418,8 +1426,10 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "locationCode": "string",
-  "assetId": "string",
+  "customTags": {
+    "property1": "string",
+    "property2": "string"
+  },
   "appEUI": "string",
   "appKey": "string",
   "sensorDecoder": "string",
@@ -1465,7 +1475,7 @@ None
 > 200 Response
 
 ```
-{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","locationCode":"string","assetId":"string","appEUI":"string","appKey":"string","sensorDecoder":"string","alreadyLoggedInOnce":true}
+{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","customTags":{"property1":"string","property2":"string"},"appEUI":"string","appKey":"string","sensorDecoder":"string","alreadyLoggedInOnce":true}
 ```
 
 ```json
@@ -1477,8 +1487,10 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "locationCode": "string",
-  "assetId": "string",
+  "customTags": {
+    "property1": "string",
+    "property2": "string"
+  },
   "appEUI": "string",
   "appKey": "string",
   "sensorDecoder": "string",
@@ -2509,9 +2521,9 @@ None
 
 <h1 id="azure-iot-hub-portal-api-portal-settings">Portal Settings</h1>
 
-## POST a set of device tag settings
+## POST Update the Device tags settings
 
-<a id="opIdPOST a set of device tag settings"></a>
+<a id="opIdPOST Update the Device tags settings"></a>
 
 > Code samples
 
@@ -2532,13 +2544,13 @@ None
 ]
 ```
 
-<h3 id="post-a-set-of-device-tag-settings-parameters">Parameters</h3>
+<h3 id="post-update-the-device-tags-settings-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[DeviceTag](#schemadevicetag)|false|List of tags.|
 
-<h3 id="post-a-set-of-device-tag-settings-responses">Responses</h3>
+<h3 id="post-update-the-device-tags-settings-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -2549,9 +2561,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## GET a set of device settings
+## GET Device tags settings
 
-<a id="opIdGET a set of device settings"></a>
+<a id="opIdGET Device tags settings"></a>
 
 > Code samples
 
@@ -2574,13 +2586,13 @@ None
 ]
 ```
 
-<h3 id="get-a-set-of-device-settings-responses">Responses</h3>
+<h3 id="get-device-tags-settings-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
 
-<h3 id="get-a-set-of-device-settings-responseschema">Response Schema</h3>
+<h3 id="get-device-tags-settings-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -2863,8 +2875,10 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "locationCode": "string",
-  "assetId": "string"
+  "customTags": {
+    "property1": "string",
+    "property2": "string"
+  }
 }
 
 ```
@@ -2880,8 +2894,8 @@ None
 |isConnected|boolean|false|none|{true} if this instance is connected; otherwise, {false}.|
 |isEnabled|boolean|false|none|{true} if this instance is enabled; otherwise, {false}.|
 |statusUpdatedTime|string(date-time)|false|none|The status updated time.|
-|locationCode|string¦null|false|none|The location code.|
-|assetId|string¦null|false|none|The asset identifier.|
+|customTags|object¦null|false|none|List of custom device tags and their values.|
+|» **additionalProperties**|string|false|none|none|
 
 <h2 id="tocS_DeviceListItem">DeviceListItem</h2>
 <!-- backwards compatibility -->
@@ -3159,8 +3173,10 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "locationCode": "string",
-  "assetId": "string",
+  "customTags": {
+    "property1": "string",
+    "property2": "string"
+  },
   "appEUI": "string",
   "appKey": "string",
   "sensorDecoder": "string",
@@ -3180,8 +3196,8 @@ None
 |isConnected|boolean|false|none|{true} if this instance is connected; otherwise, {false}.|
 |isEnabled|boolean|false|none|{true} if this instance is enabled; otherwise, {false}.|
 |statusUpdatedTime|string(date-time)|false|none|The status updated time.|
-|locationCode|string¦null|false|none|The location code.|
-|assetId|string¦null|false|none|The asset identifier.|
+|customTags|object¦null|false|none|List of custom device tags and their values.|
+|» **additionalProperties**|string|false|none|none|
 |appEUI|string|true|none|The OTAA App EUI.|
 |appKey|string|true|none|The OTAA App Key.|
 |sensorDecoder|string¦null|false|none|The sensor decoder API Url.|
