@@ -28,7 +28,11 @@
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Symmetric Key</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.SymmetricKey" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" />
+
+                                <div class="d-flex">
+                                    <MudTextField @bind-Value="@Credentials.SymmetricKey" @ref="singleLineReference" T="string"   Variant="Variant.Outlined"  InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.ContentCopy" OnAdornmentClick="@(() => singleLineReference.SelectRangeAsync(0, 50))" />
+                                </div>
+
                             </MudItem>
                         </MudGrid>
                     </MudCardContent>
@@ -46,7 +50,10 @@
     [Parameter] public string deviceId { get; set; }
     private EnrollmentCredentials Credentials;
     private bool loading = true;
-
+    private MudTextField<string> singleLineReference;
+    public string Password { get; set;}
+    InputType PasswordInput = InputType.Password;
+    
     protected override async Task OnInitializedAsync()
     {
         try
@@ -71,6 +78,7 @@
             MudDialog.Close();
         }
     }
+    
 
     void Cancel() => MudDialog.Cancel();
 }
