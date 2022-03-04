@@ -108,12 +108,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
                 It.Is<DeviceModelCommand>(x => x.Name == commandId)))
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
 
+            #nullable enable
             this.mockLogger.Setup(c => c.Log(
                 It.Is<LogLevel>(x => x == LogLevel.Information),
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
+            #nullable disable
 
             // Act
             var result = await loRaWANDevicesController.ExecuteCommand(deviceId, commandId);
@@ -164,12 +166,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
                 It.Is<DeviceModelCommand>(x => x.Name == commandId)))
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
+            #nullable enable
             this.mockLogger.Setup(c => c.Log(
                 It.Is<LogLevel>(x => x == LogLevel.Error),
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
+            #nullable disable
 
             // Act
             var result = await loRaWANDevicesController.ExecuteCommand(deviceId, commandId);

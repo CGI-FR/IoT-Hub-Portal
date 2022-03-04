@@ -182,12 +182,12 @@
             // Allows to display ValidationError messages for the MudAutocomplete field.
             displayValidationErrorMessages = true;
 
-            if (IsLoRa)
-            {
-                var loraValidation = this.loraValidator.Validate(this.Device as LoRaDeviceDetails);
+            //if (IsLoRa)
+            //{
+            //    var loraValidation = this.loraValidator.Validate(this.Device as LoRaDeviceDetails);
 
-                loraValidation.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
-            }
+            //    loraValidation.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
+            //}
 
             return;
         }
@@ -216,7 +216,6 @@
         {
             if (tag.Required && string.IsNullOrEmpty(Device.CustomTags[tag.Name]))
             {
-                Console.WriteLine($"{tag.Name} must have a value!");
                 tagValidationError = true;
             }
         }
@@ -249,8 +248,6 @@
                 {
                     DeviceID = Device.DeviceID,
                     DeviceName = Device.DeviceName,
-                    LocationCode = Device.LocationCode,
-                    AssetId = Device.AssetId,
                     IsEnabled = Device.IsEnabled
                 };
 
@@ -269,8 +266,6 @@
                 {
                     DeviceID = Device.DeviceID,
                     DeviceName = Device.DeviceName,
-                    LocationCode = Device.LocationCode,
-                    AssetId = Device.AssetId,
                     IsEnabled = Device.IsEnabled
                 };
         }

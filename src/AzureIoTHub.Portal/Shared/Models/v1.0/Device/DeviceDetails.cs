@@ -48,16 +48,6 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.Device
         public DateTime StatusUpdatedTime { get; set; }
 
         /// <summary>
-        /// The location code.
-        /// </summary>
-        public string LocationCode { get; set; }
-
-        /// <summary>
-        /// The asset identifier.
-        /// </summary>
-        public string AssetId { get; set; }
-
-        /// <summary>
         /// List of custom device tags and their values.
         /// </summary>
         public Dictionary<string, string> CustomTags { get; set; } = new();

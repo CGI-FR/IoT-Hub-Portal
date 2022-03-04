@@ -187,7 +187,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             Assert.IsAssignableFrom<OkObjectResult>(response.Result);
 
             var okObjectResult = (OkObjectResult)response.Result;
-            Assert.IsNotNull(okObjectResult);  
+            Assert.IsNotNull(okObjectResult);
             Assert.AreEqual(mockRegistrationCredentials, okObjectResult.Value);
 
             this.mockRepository.VerifyAll();
@@ -344,12 +344,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             this.mockDeviceService.Setup(c => c.DeleteDevice(It.Is<string>(x => x == deviceId)))
                 .Returns(Task.CompletedTask);
 
+            #nullable enable
             this.mockLogger.Setup(c => c.Log(
                 It.Is<LogLevel>(x => x == LogLevel.Information),
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
+            #nullable disable
 
             // Act
             var result = await edgeDevicesController.DeleteDeviceAsync(deviceId);
@@ -374,12 +376,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
 
             string deviceId = Guid.NewGuid().ToString();
 
+            #nullable enable
             this.mockLogger.Setup(c => c.Log(
                 It.Is<LogLevel>(x => x == LogLevel.Information),
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
+            #nullable disable
 
             this.mockDeviceService.Setup(c => c.ExecuteC2DMethod(
                 It.Is<string>(x => x == deviceId),

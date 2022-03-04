@@ -50,17 +50,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
 
             twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()] = "000-000-001";
 
-            Dictionary<string, string> customTags = new()
-            {
-                { "assetId", Guid.NewGuid().ToString() },
-                { "locationCode", Guid.NewGuid().ToString() }
-            };
-
-            foreach (KeyValuePair<string, string> customTag in customTags)
-            {
-                twin.Tags[customTag.Key.ToCamelCase()] = customTag.Value;
-            }
-
+            twin.Tags["assetId"] = Guid.NewGuid().ToString();
+            twin.Tags["locationCode"] = Guid.NewGuid().ToString();
+            List<string> tagsNames = new List<string>() { "assetId", "locationCode" };
 
             twin.Properties.Reported["DevAddr"] = Guid.NewGuid().ToString();
 
@@ -69,7 +61,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
                 .Verifiable();
 
             // Act
-            var result = deviceTwinMapper.CreateDeviceDetails(twin,customTags.Keys);
+            var result = deviceTwinMapper.CreateDeviceDetails(twin, tagsNames);
 
             // Assert
             Assert.IsNotNull(result);
@@ -79,10 +71,49 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
 
             Assert.AreEqual(twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()].ToString(), result.ModelId);
 
-            foreach (string tagName in customTags.Keys)
+            foreach (string tagName in tagsNames)
             {
                 Assert.AreEqual(twin.Tags[tagName.ToCamelCase()].ToString(), result.CustomTags[tagName]);
             }
+
+            Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl);
+            Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void CreateDeviceDetails_NullTagList_ExpectedBehavior()
+        {
+            // Arrange
+            var deviceTwinMapper = this.CreateDeviceTwinMapper();
+            Twin twin = new Twin
+            {
+                DeviceId = Guid.NewGuid().ToString()
+            };
+
+            twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()] = "000-000-001";
+
+            List<string> tagsNames = null;
+
+            twin.Properties.Reported["DevAddr"] = Guid.NewGuid().ToString();
+
+            this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
+                .Returns("http://fake.local/000-000-001")
+                .Verifiable();
+
+            // Act
+            var result = deviceTwinMapper.CreateDeviceDetails(twin, tagsNames);
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            Assert.IsFalse(result.IsConnected);
+            Assert.IsFalse(result.IsEnabled);
+
+            Assert.AreEqual(twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()].ToString(), result.ModelId);
+
+            Assert.IsEmpty(result.CustomTags);
 
             Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl);
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
@@ -106,7 +137,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             };
 
             twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()] = "000-000-001";
-            twin.Tags[nameof(DeviceDetails.LocationCode).ToCamelCase()] = Guid.NewGuid().ToString();
 
             // Act
             var result = deviceTwinMapper.CreateDeviceListItem(twin);
@@ -131,22 +161,30 @@ namespace AzureIoTHub.Portal.Server.Tests.Mappers
             Twin twin = new Twin();
             DeviceDetails item = new DeviceDetails
             {
-                LocationCode = Guid.NewGuid().ToString(),
-                AssetId = Guid.NewGuid().ToString(),
-                ModelId = Guid.NewGuid().ToString()
+                ModelId = Guid.NewGuid().ToString(),
+                CustomTags = new()
+                {
+                    { "assetId", Guid.NewGuid().ToString() },
+                    { "locationCode", Guid.NewGuid().ToString() }
+                }
             };
 
-            DeviceHelper.SetTagValue(twin, nameof(item.LocationCode), item.LocationCode);
-            DeviceHelper.SetTagValue(twin, nameof(item.AssetId), item.AssetId);
             DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
+
+            twin.Tags["assetId"] = Guid.NewGuid().ToString();
+            twin.Tags["locationCode"] = Guid.NewGuid().ToString();
+            List<string> tagsNames = new List<string>() { "assetId", "locationCode" };
 
             // Act
             deviceTwinMapper.UpdateTwin(twin, item);
 
             // Assert
-            Assert.AreEqual(item.LocationCode, twin.Tags[nameof(DeviceDetails.LocationCode).ToCamelCase()].ToString());
-            Assert.AreEqual(item.AssetId, twin.Tags[nameof(DeviceDetails.AssetId).ToCamelCase()].ToString());
             Assert.AreEqual(item.ModelId, twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()].ToString());
+
+            foreach (string tagName in tagsNames)
+            {
+                Assert.AreEqual(item.CustomTags[tagName], DeviceHelper.RetrieveTagValue(twin, tagName));
+            }
 
             this.mockRepository.VerifyAll();
         }
