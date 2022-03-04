@@ -17,7 +17,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
 
     [Route("/api/settings/device-tags")]
     [ApiController]
-    
+
     [ApiVersion("1.0")]
     [Produces("application/json")]
     [ApiExplorerSettings(GroupName = "Portal Settings")]
@@ -62,17 +62,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
         {
             var query = this.tableClientFactory
                 .GetDeviceTagSettings()
-                .Query<TableEntity>()
-                .AsPages();
+                .Query<TableEntity>();
 
-            foreach (var page in query)
+            foreach (var item in query)
             {
-                foreach (var item in page.Values)
-                {
-                    await this.tableClientFactory
-                        .GetDeviceTagSettings()
-                        .DeleteEntityAsync(item.PartitionKey, item.RowKey);
-                }
+                await this.tableClientFactory
+                    .GetDeviceTagSettings()
+                    .DeleteEntityAsync(item.PartitionKey, item.RowKey);
             }
 
             foreach (DeviceTag tag in tags)
@@ -94,13 +90,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
         [HttpGet(Name = "GET a set of device settings")]
         public ActionResult<List<DeviceTag>> Get()
         {
-                var query = this.tableClientFactory
-                    .GetDeviceTagSettings()
-                    .Query<TableEntity>();
+            var query = this.tableClientFactory
+                .GetDeviceTagSettings()
+                .Query<TableEntity>();
 
-                var tagList = query.Select(this.deviceTagMapper.GetDeviceTag);
+            var tagList = query.Select(this.deviceTagMapper.GetDeviceTag);
 
-                return this.Ok(tagList.ToList());
+            return this.Ok(tagList.ToList());
         }
 
         /// <summary>

@@ -67,7 +67,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         {
             try
             {
-                var query = this.tableClientFactory
+                var templateQuery = this.tableClientFactory
                             .GetDeviceTemplates()
                             .GetEntity<TableEntity>(LoRaWANDeviceModelsController.DefaultPartitionKey, id);
             }
@@ -83,19 +83,15 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
                 throw;
             }
 
-            var pages = this.tableClientFactory
+            var query = this.tableClientFactory
                                   .GetDeviceCommands()
-                                  .Query<TableEntity>(filter: $"PartitionKey eq '{id}'")
-                                  .AsPages();
+                                  .Query<TableEntity>(filter: $"PartitionKey eq '{id}'");
 
-            foreach (var page in pages)
+            foreach (var item in query)
             {
-                foreach (var item in page.Values)
-                {
-                    await this.tableClientFactory
-                                   .GetDeviceCommands()
-                                   .DeleteEntityAsync(item.PartitionKey, item.RowKey);
-                }
+                await this.tableClientFactory
+                               .GetDeviceCommands()
+                               .DeleteEntityAsync(item.PartitionKey, item.RowKey);
             }
 
             foreach (var command in commands)
@@ -128,7 +124,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         {
             try
             {
-                var query = this.tableClientFactory
+                var templateQuery = this.tableClientFactory
                             .GetDeviceTemplates()
                             .GetEntity<TableEntity>(LoRaWANDeviceModelsController.DefaultPartitionKey, id);
             }
@@ -144,19 +140,19 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
                 throw;
             }
 
-            var pages = this.tableClientFactory
+            var query = this.tableClientFactory
                                   .GetDeviceCommands()
-                                  .Query<TableEntity>(filter: $"PartitionKey  eq '{id}'")
-                                  .AsPages();
+                                  .Query<TableEntity>(filter: $"PartitionKey eq '{id}'");
 
             var commands = new List<DeviceModelCommand>();
 
-            foreach (var page in pages)
+            foreach (var item in query)
             {
-                commands.AddRange(page.Values.Select(this.deviceModelCommandMapper.GetDeviceModelCommand));
+                var command = this.deviceModelCommandMapper.GetDeviceModelCommand(item);
+                commands.Add(command);
             }
 
-            return this.Ok(commands);
+            return this.Ok(commands.ToArray());
         }
     }
 }

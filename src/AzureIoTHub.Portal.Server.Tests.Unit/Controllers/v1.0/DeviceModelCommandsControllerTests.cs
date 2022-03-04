@@ -150,6 +150,52 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public void Get_Should_Return_Device_Model_Commands()
+        {
+            // Arrange
+            var deviceModel = SetupMockDeviceModel();
+            var deviceModelId = deviceModel.RowKey;
+            var deviceModelCommandsController = this.CreateDeviceModelCommandsController();
+            var mockResponse = this.mockRepository.Create<Response>();
+
+            this.mockCommandsTableClient.Setup(c => c.Query<TableEntity>(
+                It.Is<string>(x => x == $"PartitionKey eq '{ deviceModelId }'"),
+                It.IsAny<int?>(),
+                It.IsAny<IEnumerable<string>>(),
+                It.IsAny<CancellationToken>()))
+                .Returns(Pageable<TableEntity>.FromPages(new[]
+                {
+                    Page<TableEntity>.FromValues(new[]
+                    {
+                        new TableEntity(deviceModelId, Guid.NewGuid().ToString())
+                    }, null, mockResponse.Object)
+                }));
+
+            this.mockTableClientFactory.Setup(c => c.GetDeviceCommands())
+                .Returns(mockCommandsTableClient.Object);
+
+            this.mockDeviceModelCommandMapper.Setup(c => c.GetDeviceModelCommand(
+                It.Is<TableEntity>(x => x.PartitionKey == deviceModelId)))
+                .Returns(new DeviceModelCommand {  });
+
+            // Act
+            var response = deviceModelCommandsController.Get(deviceModelId);
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<OkObjectResult>(response.Result);
+            
+            var okResult = (OkObjectResult)response.Result;
+
+            Assert.IsNotNull(okResult);
+            Assert.IsAssignableFrom<DeviceModelCommand[]>(okResult.Value);
+
+            var result = (DeviceModelCommand[])okResult.Value;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Length);
+        }
+
         private TableEntity SetupMockDeviceModel()
         {
             var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
