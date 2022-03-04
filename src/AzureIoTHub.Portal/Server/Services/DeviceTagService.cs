@@ -55,17 +55,13 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             var query = this.tableClientFactory
                         .GetDeviceTagSettings()
-                        .Query<TableEntity>()
-                        .AsPages();
+                        .Query<TableEntity>();
 
-            foreach (var page in query)
+            foreach (var item in query)
             {
-                foreach (var item in page.Values)
-                {
                     await this.tableClientFactory
                         .GetDeviceTagSettings()
                         .DeleteEntityAsync(item.PartitionKey, item.RowKey);
-                }
             }
 
             foreach (DeviceTag tag in tags)
