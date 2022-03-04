@@ -166,12 +166,12 @@
         {
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
-            if (IsLoRa)
-            {
-                var loraValidation = this.loraValidator.Validate(this.Device as LoRaDeviceDetails);
+            //if (IsLoRa)
+            //{
+            //    var loraValidation = this.loraValidator.Validate(this.Device as LoRaDeviceDetails);
 
-                loraValidation.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
-            }
+            //    loraValidation.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
+            //}
 
 
             return;
@@ -227,11 +227,9 @@
         {
             if (tag.Required && string.IsNullOrEmpty(Device.CustomTags[tag.Name]))
             {
-                Console.WriteLine($"{tag.Name} must have a value!");
                 tagValidationError = true;
             }
         }
         return tagValidationError;
     }
-
 }
