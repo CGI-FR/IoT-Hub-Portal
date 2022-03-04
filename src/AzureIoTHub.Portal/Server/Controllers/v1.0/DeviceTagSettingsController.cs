@@ -46,7 +46,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="tags">List of tags.</param>
         /// <returns>The action result.</returns>
-        [HttpPost(Name = "Update the Device tags set")]
+        [HttpPost(Name = "POST Update the Device tags settings")]
         public async Task<IActionResult> Post(List<DeviceTag> tags)
         {
             await this.deviceTagService.UpdateTags(tags);
