@@ -1,8 +1,10 @@
-﻿@using Microsoft.AspNetCore.Authorization
+﻿@using AzureIoTHub.Portal.Client.Services
+@using Microsoft.AspNetCore.Authorization
 @using AzureIoTHub.Portal.Shared.Models.V10
 
 @inject HttpClient Http
 @inject ISnackbar Snackbar
+@inject ClipboardService ClipboardService
 
 <div class="ConnectionString-dialog">
     <MudDialog>
@@ -20,19 +22,15 @@
                         <MudGrid>
                             <MudItem xs="12">
                                 <MudText Style="text-decoration:underline"><b>Service Endpoint</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.ProvisioningEndpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" />
+                                <MudTextField @bind-Value="@Credentials.ProvisioningEndpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.ProvisioningEndpoint))" />
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Device Id</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.RegistrationID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true" />
+                                <MudTextField @bind-Value="@Credentials.RegistrationID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.RegistrationID))" />
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Symmetric Key</b></MudText>
-
-                                <div class="d-flex">
-                                    <MudTextField @bind-Value="@Credentials.SymmetricKey" @ref="singleLineReference" T="string"   Variant="Variant.Outlined"  InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.ContentCopy" OnAdornmentClick="@(() => singleLineReference.SelectRangeAsync(0, 50))" />
-                                </div>
-
+                                <MudTextField @bind-Value="@Credentials.SymmetricKey" Variant="Variant.Text" InputType="InputType.Password" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricKey))" />
                             </MudItem>
                         </MudGrid>
                     </MudCardContent>
@@ -50,10 +48,7 @@
     [Parameter] public string deviceId { get; set; }
     private EnrollmentCredentials Credentials;
     private bool loading = true;
-    private MudTextField<string> singleLineReference;
-    public string Password { get; set;}
-    InputType PasswordInput = InputType.Password;
-    
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -78,7 +73,7 @@
             MudDialog.Close();
         }
     }
-    
+
 
     void Cancel() => MudDialog.Cancel();
 }

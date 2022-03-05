@@ -7,7 +7,7 @@ namespace AzureIoTHub.Portal.Client
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
-
+    using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Shared.Settings;
     using Blazored.Modal;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -36,6 +36,7 @@ namespace AzureIoTHub.Portal.Client
             builder.Services.AddBlazoredModal();
 
             builder.Services.AddMudServices();
+            builder.Services.AddScoped<ClipboardService>();
 
             await ConfigureOidc(builder);
 
