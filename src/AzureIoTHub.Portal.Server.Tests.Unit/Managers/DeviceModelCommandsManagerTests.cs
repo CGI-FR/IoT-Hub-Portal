@@ -12,7 +12,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace AzureIoTHub.Portal.Server.Tests.Managers
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
 {
     [TestFixture]
     public class DeviceModelCommandsManagerTests

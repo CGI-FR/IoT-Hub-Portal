@@ -10,7 +10,7 @@ using System;
 using System.Net.Http;
 using System.Text;
 
-namespace AzureIoTHub.Portal.Server.Tests.Mappers
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 {
     [TestFixture]
     public class ConcentratorTwinMapperTests

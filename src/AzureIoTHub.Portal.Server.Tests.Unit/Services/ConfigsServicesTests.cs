@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AzureIoTHub.Portal.Server.Tests.Services
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 {
     [TestFixture]
     public class ConfigsServicesTests

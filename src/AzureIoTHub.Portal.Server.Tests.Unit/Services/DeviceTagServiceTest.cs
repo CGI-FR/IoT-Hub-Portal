@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AzureIoTHub.Portal.Server.Tests.Services
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 {
     [TestFixture]
     public class DeviceTagServiceTest
