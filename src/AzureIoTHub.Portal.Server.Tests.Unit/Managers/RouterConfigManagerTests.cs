@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AzureIoTHub.Portal.Server.Tests.Managers
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
 {
     [TestFixture]
     public class RouterConfigManagerTests

@@ -5,7 +5,7 @@ using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
 using Moq;
 using NUnit.Framework;
 
-namespace AzureIoTHub.Portal.Server.Tests.Mappers
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 {
     [TestFixture]
     public class DeviceModelCommandMapperTests

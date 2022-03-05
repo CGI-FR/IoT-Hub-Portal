@@ -8,7 +8,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace AzureIoTHub.Portal.Server.Tests.Mappers
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 {
     [TestFixture]
     public class LoRaDeviceTwinMapperTests

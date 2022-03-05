@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AzureIoTHub.Portal.Server.Tests.Mappers
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 {
     [TestFixture]
     public class DeviceTagMapperTests

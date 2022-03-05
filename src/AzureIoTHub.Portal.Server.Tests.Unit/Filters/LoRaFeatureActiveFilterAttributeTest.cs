@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static AzureIoTHub.Portal.Server.Startup;
 
-namespace AzureIoTHub.Portal.Server.Tests.Filters
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Filters
 {
     [TestFixture]
     public class LoRaFeatureActiveFilterAttributeTest

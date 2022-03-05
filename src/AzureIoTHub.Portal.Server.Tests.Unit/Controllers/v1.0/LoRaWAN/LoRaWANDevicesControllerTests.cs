@@ -22,7 +22,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
 {
     [TestFixture]
     public class LoRaWANDevicesControllerTests
