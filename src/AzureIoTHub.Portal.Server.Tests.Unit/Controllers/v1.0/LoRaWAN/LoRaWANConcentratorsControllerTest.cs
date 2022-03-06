@@ -269,8 +269,19 @@ namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10.LoRaWAN
         [Test]
         public async Task DeleteDeviceAsync()
         {
-            await Task.CompletedTask;
-            Assert.Inconclusive();
+            // Arrange
+            var concentratorController = this.CreateLoRaWANConcentratorsController();
+            var deviceId = Guid.NewGuid().ToString();
+
+
+            this.mockDeviceService.Setup(x => x.DeleteDevice(It.Is<string>(c => c == deviceId)))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await concentratorController.Delete(deviceId);
+
+            // Assert
+            this.mockRepository.VerifyAll();
         }
     }
 }
