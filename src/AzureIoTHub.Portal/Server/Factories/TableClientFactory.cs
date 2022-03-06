@@ -37,5 +37,10 @@ namespace AzureIoTHub.Portal.Server.Factories
 
             return tableClient;
         }
+
+        public TableClient GetDeviceTemplateProperties()
+        {
+            return this.CreateClient(ITableClientFactory.DeviceTemplatePropertiesTableName);
+        }
     }
 }
