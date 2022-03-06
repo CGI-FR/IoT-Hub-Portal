@@ -21,7 +21,7 @@ using MudBlazor.Services;
 using NUnit.Framework;
 using RichardSzalay.MockHttp;
 
-namespace AzureIoTHub.Portal.Server.Tests.Pages
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 {
     [TestFixture]
     public class DevicesListPageTests

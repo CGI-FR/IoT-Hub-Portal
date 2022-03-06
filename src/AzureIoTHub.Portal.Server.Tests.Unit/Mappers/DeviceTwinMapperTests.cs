@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
 using AzureIoTHub.Portal.Server.Helpers;
 
-namespace AzureIoTHub.Portal.Server.Tests.Mappers
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 {
     [TestFixture]
     public class DeviceTwinMapperTests

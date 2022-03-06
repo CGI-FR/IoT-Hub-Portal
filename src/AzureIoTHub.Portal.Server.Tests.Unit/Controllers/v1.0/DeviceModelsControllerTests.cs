@@ -23,7 +23,7 @@ using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
 using AzureIoTHub.Portal.Server.Controllers.V10;
 using Microsoft.Azure.Devices.Provisioning.Service;
 
-namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 {
     [TestFixture]
     public class DeviceModelsControllerTests

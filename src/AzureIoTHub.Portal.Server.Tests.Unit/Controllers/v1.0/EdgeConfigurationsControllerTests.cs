@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 {
     [TestFixture]
     public class EdgeConfigurationsControllerTests

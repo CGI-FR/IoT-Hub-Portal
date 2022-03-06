@@ -7,7 +7,7 @@ using NUnit.Framework;
 using System;
 using static AzureIoTHub.Portal.Server.Startup;
 
-namespace AzureIoTHub.Portal.Server.Tests.Controllers.V10
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 {
     [TestFixture]
     public class SettingsControllerTest
