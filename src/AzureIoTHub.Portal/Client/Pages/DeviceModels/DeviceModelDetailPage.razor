@@ -24,114 +24,128 @@
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Model</MudText>
 
-<MudForm Model="@Model" @ref="form" id="form">
-    <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
-        <MudTabPanel Text="General" Style=@(standardValidator.Validate(Model).IsValid ? "" : "color: red") >
-            <MudGrid id="general">
-                <MudItem xs="12" sm="4" md="2">
-                    <MudCard>
-                        <MudCardContent>
-                            <div class="d-flex justify-center mb-4">
-                                <MudAvatar Image="@imageDataUrl" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
-                            </div>
-                        </MudCardContent>
-                        <MudCardActions Class="d-flex justify-center">
-                            @if (imageDataUrl != null)
-                            {
-                                <MudButton OnClick="DeleteAvatar" Color="Color.Error" Disabled="Model.IsBuiltin">Delete Picture</MudButton>
-                            }
-                            else
-                            {
-                                <InputFile id="fileInput" hidden accept=".jpg, .jpeg, .png" OnChange="UploadFiles" />
-                                <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Filled.CloudUpload" Disabled="Model.IsBuiltin">Change Picture</MudButton>
-                            }
-                        </MudCardActions>
-                    </MudCard>
-                </MudItem>
-                <MudItem xs="12" sm="8" md="10">
-                    <MudCard>
-                        <MudCardHeader>
-                            <CardHeaderContent>
-                                <MudText>Device model details</MudText>
-                            </CardHeaderContent>
-                        </MudCardHeader>
-                        <MudCardContent>
-                            <MudGrid>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" Disabled="Model.IsBuiltin" />
-                                </MudItem>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" Disabled="Model.IsBuiltin" />
-                                </MudItem>
-                                <MudItem xs="12">
-                                    <MudText>Properties</MudText>
-                                </MudItem>
-                                <MudItem xs="12">
-                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty()))" StartIcon="@Icons.Filled.Add">Add property</MudButton>
-                                </MudItem>
-                                <MudItem xs="12">
-                                    <MudGrid>
+@if (loading)
+{
+    <MudGrid>
+        <MudItem xs="12">
+            <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+        </MudItem>
+    </MudGrid>
+}
+else
+{
+    <MudForm Model="@Model" @ref="form" id="form">
+        <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
+            <MudTabPanel Text="General" Style=@(standardValidator.Validate(Model).IsValid ? "" : "color: red")>
+                <MudGrid id="general">
+                    <MudItem xs="12" sm="4" md="2">
+                        <MudCard>
+                            <MudCardContent>
+                                <div class="d-flex justify-center mb-4">
+                                    <MudAvatar Image="@imageDataUrl" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                                </div>
+                            </MudCardContent>
+                            <MudCardActions Class="d-flex justify-center">
+                                @if (imageDataUrl != null)
+                                {
+                                    <MudButton OnClick="DeleteAvatar" Color="Color.Error" Disabled="Model.IsBuiltin">Delete Picture</MudButton>
+                                }
+                                else
+                                {
+                                    <InputFile id="fileInput" hidden accept=".jpg, .jpeg, .png" OnChange="UploadFiles" />
+                                    <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Filled.CloudUpload" Disabled="Model.IsBuiltin">Change Picture</MudButton>
+                                }
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                    <MudItem xs="12" sm="8" md="10">
+                        <MudCard>
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText>Device model details</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudGrid>
+                                    <MudItem xs="12" md="6">
+                                        <MudTextField @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" Disabled="Model.IsBuiltin" />
+                                    </MudItem>
+                                    <MudItem xs="12" md="6">
+                                        <MudTextField @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" Disabled="Model.IsBuiltin" />
+                                    </MudItem>
+                                    <MudItem xs="12">
+                                        <MudText>Properties</MudText>
+                                    </MudItem>
+                                    <MudItem xs="12">
+                                        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty()))" StartIcon="@Icons.Filled.Add" id="addPropertyButton">Add property</MudButton>
+                                    </MudItem>
+                                    <MudItem xs="12">
                                         @foreach (var item in this.Properties)
                                         {
-                                            <MudItem md="4" xs="12">
-                                                <MudTextField @bind-Value="@item.DisplayName"
+                                            <MudGrid id="@($"property-{item.Name}")">
+                                                <MudItem md="4" xs="12">
+                                                    <MudTextField id="@nameof(item.DisplayName)"
+                                                            @bind-Value="@item.DisplayName"
                                                           Label="Display name"
                                                           Variant="Variant.Outlined"
                                                           For="@(()=> item.DisplayName)"
                                                           Required="true" />
-                                            </MudItem>
-                                            <MudItem md="4" xs="12">
-                                                <MudTextField @bind-Value="@item.Name"
+                                                </MudItem>
+                                                <MudItem md="4" xs="12">
+                                                    <MudTextField id="@nameof(item.Name)" @bind-Value="@item.Name"
                                                           Label="Name"
                                                           Variant="Variant.Outlined"
                                                           For="@(()=> item.Name)"
                                                           Required="true" />
-                                            </MudItem>
-                                            <MudItem md="2" xs="6">
-                                                <MudSelect @bind-Value="@item.PropertyType"
+                                                </MudItem>
+                                                <MudItem md="2" xs="6">
+                                                    <MudSelect id="@nameof(item.PropertyType)" @bind-Value="@item.PropertyType"
                                                        Label="Type"
                                                        Variant="Variant.Outlined"
                                                        For="@(()=> item.PropertyType)"
                                                        Required="true">
-                                                    @foreach (DevicePropertyType item in Enum.GetValues(typeof(DevicePropertyType)))
-                                                    {
-                                                    <MudSelectItem Value="@((DevicePropertyType) item)">@item</MudSelectItem>
-                                                    }
-                                            </MudSelect>
-                                        </MudItem>
-                                            <MudItem md="1" xs="3">
-                                                <MudSwitch @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
-                                                <MudText Typo="Typo.body2">Writable</MudText>
-                                            </MudItem>
-                                            <MudItem md="1" xs="3">
-                                                <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
-                                            </MudItem>
+                                                        @foreach (DevicePropertyType item in Enum.GetValues(typeof(DevicePropertyType)))
+                                                        {
+                                                            <MudSelectItem Value="@((DevicePropertyType) item)">@item</MudSelectItem>
+                                                        }
+                                                    </MudSelect>
+                                                </MudItem>
+                                                <MudItem md="1" xs="3">
+                                                    <MudSwitch id="@nameof(item.IsWritable)" Label="Writable" @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
+        
+                                                </MudItem>
+                                                <MudItem md="1" xs="3">
+                                                    <MudIconButton id="DeletePropertyButton" Icon="@Icons.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
+                                                </MudItem>
+                                            </MudGrid>
                                         }
-                                    </MudGrid>
-                                </MudItem>
-                            </MudGrid>
-                        </MudCardContent>
-                        <MudCardActions Class="pb-4 pl-4">
-                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save">Save Changes</MudButton>
-                        </MudCardActions>
-                    </MudCard>
-                </MudItem>
-            </MudGrid>
-        </MudTabPanel>
-        @if (IsLoRa)
-        {
-            <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Model as LoRaDeviceModel).IsValid ? "" : "color: red") >
-                <MudGrid id="lorawan">
-                    <EditLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)" Commands="Commands" OnSaveClick="Save" />
+                                    </MudItem>
+                                </MudGrid>
+                            </MudCardContent>
+                            <MudCardActions Class="pb-4 pl-4">
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save">Save Changes</MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
                 </MudGrid>
             </MudTabPanel>
-        }
-    </MudTabs>
-</MudForm>
+            @if (IsLoRa)
+            {
+                <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Model as LoRaDeviceModel).IsValid ? "" : "color: red")>
+                    <MudGrid id="lorawan">
+                        <EditLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)" Commands="Commands" OnSaveClick="Save" />
+                    </MudGrid>
+                </MudTabPanel>
+            }
+        </MudTabs>
+    </MudForm>
+}
 
 @code {
     [Parameter]
     public string ModelID { get; set; }
+
+    private bool loading = true;
 
     private MudForm form;
 
@@ -205,6 +219,8 @@
         imageDataUrl = await httpClient.GetStringAsync($"{ApiUrlBase}/avatar");
 
         this.Properties.AddRange(await httpClient.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"{ApiUrlBase}/properties"));
+
+        this.loading = false;
     }
 
     private void DeleteAvatar()

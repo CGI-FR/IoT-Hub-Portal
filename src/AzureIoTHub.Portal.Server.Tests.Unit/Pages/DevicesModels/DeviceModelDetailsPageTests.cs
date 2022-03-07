@@ -11,6 +11,7 @@ using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
 using AzureIoTHub.Portal.Shared.Models.V10;
 using AzureIoTHub.Portal.Shared.Models.V10.Device;
 using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
 using Bunit;
 using Bunit.TestDoubles;
 using FluentAssertions.Extensions;
@@ -39,7 +40,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
         private string apiSettingsBaseUrl = "/api/settings/lora";
 
-        private string apiBaseUrl =>  $"/api/models/{mockModelId}";
+        private string apiBaseUrl => $"/api/models/{mockModelId}";
+        private string lorawanApiBaseUrl => $"/api/lorawan/models/{mockModelId}";
 
         [SetUp]
         public void SetUp()
@@ -71,13 +73,57 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
+        public void When_Present_Model_Details_Should_Display_Properties()
+        {
+            // Arrange
+            var properties = Enumerable.Range(0, 10)
+                .Select(x => new DeviceProperty
+                {
+                    DisplayName = Guid.NewGuid().ToString(),
+                    IsWritable = true,
+                    Name = Guid.NewGuid().ToString(),
+                    PropertyType = Shared.Models.DevicePropertyType.Double
+                }).ToArray();
+
+            this.mockHttpClient.When(apiBaseUrl)
+                                .RespondJson(new DeviceModel
+                                {
+                                    ModelId = this.mockModelId
+                                });
+
+            this.mockHttpClient.When($"{apiBaseUrl}/avatar")
+                                .RespondText($"http://fake.local/{this.mockModelId}");
+
+            this.mockHttpClient.When($"{apiBaseUrl}/properties")
+                    .RespondJson(properties);
+
+            // Act
+            var cut = RenderComponent<DeviceModelDetailPage>
+                    (ComponentParameter.CreateParameter(nameof(DeviceModelDetailPage.ModelID), mockModelId));
+
+            cut.WaitForElement("#form", 1.Seconds());
+
+            // Assert
+            foreach(var item in properties)
+            {
+                var propertyCssSelector = $"#property-{item.Name}";
+
+                cut.Find(propertyCssSelector);
+                Assert.AreEqual(item.DisplayName, cut.Find($"{propertyCssSelector} #{nameof(item.DisplayName)}").Attributes["value"].Value);
+                Assert.AreEqual(item.Name, cut.Find($"{propertyCssSelector} #{nameof(item.Name)}").Attributes["value"].Value);
+                Assert.AreEqual(item.PropertyType.ToString(), cut.Find($"{propertyCssSelector} #{nameof(item.PropertyType)}").Attributes["value"].Value);
+                Assert.AreEqual(item.IsWritable.ToString().ToLower(), cut.Find($"{propertyCssSelector} #{nameof(item.IsWritable)}").Attributes["aria-checked"].Value);
+            }
+        }
+
+        [Test]
         public void When_Lora_Feature_Is_Disabled_Model_Details_Should_Not_Display_LoRaWAN_Tab()
         {
             // Arrange
             this.mockHttpClient.When(apiBaseUrl)
                                 .RespondJson(new DeviceModel
                                 {
-                                    ModelId= this.mockModelId
+                                    ModelId = this.mockModelId
                                 });
 
             this.mockHttpClient.When($"{apiBaseUrl}/avatar")
@@ -102,17 +148,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         public void When_Lora_Feature_Is_Enabled_Model_Details_Should_Display_LoRaWAN_Tab()
         {
             // Arrange
-            this.mockHttpClient.When(apiBaseUrl)
+            this.mockHttpClient.When(lorawanApiBaseUrl)
                                 .RespondJson(new DeviceModel
                                 {
                                     ModelId = this.mockModelId,
                                 });
 
-            this.mockHttpClient.When($"{apiBaseUrl}/avatar")
+            this.mockHttpClient.When($"{lorawanApiBaseUrl}/avatar")
                                 .RespondText($"http://fake.local/{this.mockModelId}");
 
-            this.mockHttpClient.When($"{apiBaseUrl}/properties")
+            this.mockHttpClient.When($"{lorawanApiBaseUrl}/properties")
                     .RespondJson(new DeviceProperty[0]);
+
+            this.mockHttpClient.When($"{lorawanApiBaseUrl}/commands")
+                    .RespondJson(new DeviceModelCommand[0]);
 
             // Act
             var cut = RenderComponent<DeviceModelDetailPage>
