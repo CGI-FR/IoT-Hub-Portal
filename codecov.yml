@@ -3,6 +3,6 @@ coverage:
     project:
       default:
         target: auto  # auto compares coverage to the previous base commit
-  ignore: 
-     - "**/Startup.cs"
-     - "**/Program.cs"
+ignore: 
+   - "**/Startup.cs"
+   - "**/Program.cs"
