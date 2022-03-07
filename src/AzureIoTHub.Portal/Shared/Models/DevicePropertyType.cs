@@ -3,10 +3,13 @@
 
 namespace AzureIoTHub.Portal.Shared.Models
 {
+    using System.Text.Json.Serialization;
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DevicePropertyType
     {
         Boolean,
-        Double, 
+        Double,
         Float,
         Integer,
         Long,

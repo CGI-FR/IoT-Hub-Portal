@@ -72,10 +72,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             var items = this.tableClientFactory
                             .GetDeviceTemplateProperties()
                             .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{id}'");
-            
+
             var result = new List<DeviceProperty>();
 
-            await foreach(var item in items)
+            await foreach (var item in items)
             {
                 result.Add(this.mapper.Map<DeviceProperty>(item));
             }
@@ -97,6 +97,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             if (!(await DeviceModelExists(id)))
             {
                 return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             var table = this.tableClientFactory

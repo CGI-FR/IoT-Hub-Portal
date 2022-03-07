@@ -142,11 +142,7 @@ namespace AzureIoTHub.Portal.Server
                 client.BaseAddress = new Uri(configuration.LoRaRegionRouterConfigUrl);
             }).AddPolicyHandler(transientHttpErrorPolicy);
 
-            services.AddControllers()
-                .AddJsonOptions(opts =>
-                {
-                    opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
+            services.AddControllers();
 
             services.AddEndpointsApiExplorer();
 
