@@ -24,10 +24,10 @@
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Model</MudText>
 
-<MudForm Model="@Model" @ref="form">
+<MudForm Model="@Model" @ref="form" id="form">
     <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
-        <MudTabPanel Text="General" Style=@(standardValidator.Validate(Model).IsValid ? "" : "color: red")>
-            <MudGrid>
+        <MudTabPanel Text="General" Style=@(standardValidator.Validate(Model).IsValid ? "" : "color: red") >
+            <MudGrid id="general">
                 <MudItem xs="12" sm="4" md="2">
                     <MudCard>
                         <MudCardContent>
@@ -120,8 +120,8 @@
         </MudTabPanel>
         @if (IsLoRa)
         {
-            <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Model as LoRaDeviceModel).IsValid ? "" : "color: red")>
-                <MudGrid>
+            <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Model as LoRaDeviceModel).IsValid ? "" : "color: red") >
+                <MudGrid id="lorawan">
                     <EditLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)" Commands="Commands" OnSaveClick="Save" />
                 </MudGrid>
             </MudTabPanel>
@@ -234,7 +234,7 @@
 
     private async Task Save()
     {
-        if (!standardValidator.Validate(Model).IsValid 
+        if (!standardValidator.Validate(Model).IsValid
             || !propertiesValidator.Validate(Properties).IsValid
             || (IsLoRa && !this.loraValidator.Validate(this.Model as LoRaDeviceModel).IsValid))
         {
