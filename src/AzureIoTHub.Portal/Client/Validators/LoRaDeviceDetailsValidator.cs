@@ -16,11 +16,11 @@ namespace AzureIoTHub.Portal.Client.Validators
         {
             RuleFor(x => x.AppEUI)
                 .NotEmpty()
-                .When(x => x.IsOTTAsetting);
+                .When(x => x.IsOTAAsetting);
 
             RuleFor(x => x.AppKey)
                 .NotEmpty()
-                .When(x => x.IsOTTAsetting);
+                .When(x => x.IsOTAAsetting);
 
             RuleFor(x => x.ModelId)
                 .NotEmpty();
