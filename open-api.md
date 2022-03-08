@@ -371,9 +371,9 @@ Status Code **200**
 |»» version|string¦null|false|none|The module configuration version.|
 |»» status|string¦null|false|none|The module status.|
 |»» environmentVariables|object¦null|false|none|The module environment variables.|
-|»»» **additionalProperties**|string|false|none|none|
+|»»» **additionalProperties**|string¦null|false|none|none|
 |»» moduleIdentityTwinSettings|object¦null|false|none|The module identity twin settings.|
-|»»» **additionalProperties**|string|false|none|none|
+|»»» **additionalProperties**|string¦null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -941,9 +941,9 @@ Status Code **200**
 |» loraRegion|string|true|none|The lora region.|
 |» deviceType|string¦null|false|none|The type of the device.|
 |» clientCertificateThumbprint|string¦null|false|none|The client certificate thumbprint.|
-|» isConnected|boolean|false|none|{true} if this instance is connected; otherwise, {false}.|
-|» isEnabled|boolean|false|none|{true} if this instance is enabled; otherwise, {false}.|
-|» alreadyLoggedInOnce|boolean|false|none|{true} if [already logged in once]; otherwise, {false}.|
+|» isConnected|boolean|false|none|`true` if this instance is connected; otherwise, `false`.|
+|» isEnabled|boolean|false|none|`true` if this instance is enabled; otherwise, `false`.|
+|» alreadyLoggedInOnce|boolean|false|none|`true` if [already logged in once]; otherwise, `false`.|
 |» routerConfig|[RouterConfig](#schemarouterconfig)|false|none|none|
 |»» netID|[integer]¦null|false|none|The network identifier.|
 |»» joinEui|[array]¦null|false|none|The join eui.|
@@ -959,9 +959,9 @@ Status Code **200**
 |»»»» if|integer(int32)|false|none|The interface.|
 |»»»» bandwidth|integer(int32)|false|none|The bandwidth.|
 |»»»» spread_factor|integer(int32)|false|none|The spread factor.|
-|»» nocca|boolean|false|none|{true} if nocca; otherwise, {false}.|
-|»» nodc|boolean|false|none|{true} if nodc; otherwise, {false}.|
-|»» nodwell|boolean|false|none|{true} if nodwell; otherwise, {false}.|
+|»» nocca|boolean|false|none|`true` if nocca; otherwise, `false`.|
+|»» nodc|boolean|false|none|`true` if nodc; otherwise, `false`.|
+|»» nodwell|boolean|false|none|`true` if nodwell; otherwise, `false`.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1837,7 +1837,7 @@ None
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|Success|None|
+|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|No Content|None|
 |400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ProblemDetails](#schemaproblemdetails)|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
 
@@ -1975,7 +1975,7 @@ None
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|Success|None|
+|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|No Content|None|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
 
 <aside class="warning">
@@ -2373,7 +2373,7 @@ None
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|Success|None|
+|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|No Content|None|
 |400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ProblemDetails](#schemaproblemdetails)|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
 
@@ -2511,7 +2511,139 @@ None
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|Success|None|
+|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|No Content|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## GET Device model properties
+
+<a id="opIdGET Device model properties"></a>
+
+> Code samples
+
+`GET /api/models/{id}/properties`
+
+*Gets the device model properties.*
+
+<h3 id="get-device-model-properties-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The device model properties|
+
+> Example responses
+
+> 200 Response
+
+```
+[{"name":"string","displayName":"string","isWritable":true,"propertyType":"Boolean"}]
+```
+
+```json
+[
+  {
+    "name": "string",
+    "displayName": "string",
+    "isWritable": true,
+    "propertyType": "Boolean"
+  }
+]
+```
+
+<h3 id="get-device-model-properties-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
+
+<h3 id="get-device-model-properties-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[DeviceProperty](#schemadeviceproperty)]|false|none|none|
+|» name|string|true|none|The property name|
+|» displayName|string|true|none|The property display name|
+|» isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
+|» propertyType|string|true|none|The device property type|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|propertyType|Boolean|
+|propertyType|Double|
+|propertyType|Float|
+|propertyType|Integer|
+|propertyType|Long|
+|propertyType|String|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## POST Device model properties
+
+<a id="opIdPOST Device model properties"></a>
+
+> Code samples
+
+`POST /api/models/{id}/properties`
+
+*Sets the device model properties.*
+
+> Body parameter
+
+```json
+[
+  {
+    "name": "string",
+    "displayName": "string",
+    "isWritable": true,
+    "propertyType": "Boolean"
+  }
+]
+```
+
+<h3 id="post-device-model-properties-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The device model properties|
+|body|body|[DeviceProperty](#schemadeviceproperty)|false|The model properties|
+
+> Example responses
+
+> 404 Response
+
+```
+{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
+```
+
+```json
+{
+  "type": "string",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "instance": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+<h3 id="post-device-model-properties-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
 
 <aside class="warning">
@@ -2780,9 +2912,9 @@ None
 |loraRegion|string|true|none|The lora region.|
 |deviceType|string¦null|false|none|The type of the device.|
 |clientCertificateThumbprint|string¦null|false|none|The client certificate thumbprint.|
-|isConnected|boolean|false|none|{true} if this instance is connected; otherwise, {false}.|
-|isEnabled|boolean|false|none|{true} if this instance is enabled; otherwise, {false}.|
-|alreadyLoggedInOnce|boolean|false|none|{true} if [already logged in once]; otherwise, {false}.|
+|isConnected|boolean|false|none|`true` if this instance is connected; otherwise, `false`.|
+|isEnabled|boolean|false|none|`true` if this instance is enabled; otherwise, `false`.|
+|alreadyLoggedInOnce|boolean|false|none|`true` if [already logged in once]; otherwise, `false`.|
 |routerConfig|[RouterConfig](#schemarouterconfig)|false|none|none|
 
 <h2 id="tocS_ConfigItem">ConfigItem</h2>
@@ -2891,11 +3023,11 @@ None
 |deviceName|string|true|none|The name of the device.|
 |modelId|string|true|none|The model identifier.|
 |imageUrl|string¦null|false|none|The device model image Url.|
-|isConnected|boolean|false|none|{true} if this instance is connected; otherwise, {false}.|
-|isEnabled|boolean|false|none|{true} if this instance is enabled; otherwise, {false}.|
+|isConnected|boolean|false|none|`true` if this instance is connected; otherwise, `false`.|
+|isEnabled|boolean|false|none|`true` if this instance is enabled; otherwise, `false`.|
 |statusUpdatedTime|string(date-time)|false|none|The status updated time.|
 |customTags|object¦null|false|none|List of custom device tags and their values.|
-|» **additionalProperties**|string|false|none|none|
+|» **additionalProperties**|string¦null|false|none|none|
 
 <h2 id="tocS_DeviceListItem">DeviceListItem</h2>
 <!-- backwards compatibility -->
@@ -2984,6 +3116,43 @@ None
 |frame|string|true|none|The command frame in hexa.|
 |port|integer(int32)|true|none|The LoRa WAN port.|
 |isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
+
+<h2 id="tocS_DeviceProperty">DeviceProperty</h2>
+<!-- backwards compatibility -->
+<a id="schemadeviceproperty"></a>
+<a id="schema_DeviceProperty"></a>
+<a id="tocSdeviceproperty"></a>
+<a id="tocsdeviceproperty"></a>
+
+```json
+{
+  "name": "string",
+  "displayName": "string",
+  "isWritable": true,
+  "propertyType": "Boolean"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|The property name|
+|displayName|string|true|none|The property display name|
+|isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
+|propertyType|string|true|none|The device property type|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|propertyType|Boolean|
+|propertyType|Double|
+|propertyType|Float|
+|propertyType|Integer|
+|propertyType|Long|
+|propertyType|String|
 
 <h2 id="tocS_DeviceTag">DeviceTag</h2>
 <!-- backwards compatibility -->
@@ -3153,9 +3322,9 @@ None
 |version|string¦null|false|none|The module configuration version.|
 |status|string¦null|false|none|The module status.|
 |environmentVariables|object¦null|false|none|The module environment variables.|
-|» **additionalProperties**|string|false|none|none|
+|» **additionalProperties**|string¦null|false|none|none|
 |moduleIdentityTwinSettings|object¦null|false|none|The module identity twin settings.|
-|» **additionalProperties**|string|false|none|none|
+|» **additionalProperties**|string¦null|false|none|none|
 
 <h2 id="tocS_LoRaDeviceDetails">LoRaDeviceDetails</h2>
 <!-- backwards compatibility -->
@@ -3193,11 +3362,11 @@ None
 |deviceName|string|true|none|The name of the device.|
 |modelId|string|true|none|The model identifier.|
 |imageUrl|string¦null|false|none|The device model image Url.|
-|isConnected|boolean|false|none|{true} if this instance is connected; otherwise, {false}.|
-|isEnabled|boolean|false|none|{true} if this instance is enabled; otherwise, {false}.|
+|isConnected|boolean|false|none|`true` if this instance is connected; otherwise, `false`.|
+|isEnabled|boolean|false|none|`true` if this instance is enabled; otherwise, `false`.|
 |statusUpdatedTime|string(date-time)|false|none|The status updated time.|
 |customTags|object¦null|false|none|List of custom device tags and their values.|
-|» **additionalProperties**|string|false|none|none|
+|» **additionalProperties**|string¦null|false|none|none|
 |appEUI|string|true|none|The OTAA App EUI.|
 |appKey|string|true|none|The OTAA App Key.|
 |sensorDecoder|string¦null|false|none|The sensor decoder API Url.|
@@ -3334,7 +3503,7 @@ None
 |dRs|[array]¦null|false|none|The DRs.|
 |sx1301_conf|[object]¦null|false|none|The SX1301 conf.|
 |» **additionalProperties**|[Channel](#schemachannel)|false|none|none|
-|nocca|boolean|false|none|{true} if nocca; otherwise, {false}.|
-|nodc|boolean|false|none|{true} if nodc; otherwise, {false}.|
-|nodwell|boolean|false|none|{true} if nodwell; otherwise, {false}.|
+|nocca|boolean|false|none|`true` if nocca; otherwise, `false`.|
+|nodc|boolean|false|none|`true` if nodc; otherwise, `false`.|
+|nodwell|boolean|false|none|`true` if nodwell; otherwise, `false`.|
 
