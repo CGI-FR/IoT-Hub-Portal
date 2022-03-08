@@ -104,6 +104,11 @@
                     <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" Commands="@Commands" OnSaveClick="Save" />
                 </MudGrid>
             </MudTabPanel>
+            <MudTabPanel Text="Optionnal Properties" >
+                <MudGrid>
+                    <LoraDeviceOptionalProperties LoRaDevice="@(Device as LoRaDeviceDetails)" OnSaveClick="Save"/>
+                </MudGrid>
+            </MudTabPanel>
         }
     </MudTabs>
 </MudForm>

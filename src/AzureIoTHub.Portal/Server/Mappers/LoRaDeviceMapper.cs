@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using System;
     using System.Collections.Generic;
     using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Shared.Models.V10.Device;
     using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
     using Microsoft.Azure.Devices;
@@ -52,7 +53,19 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 NwkSKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.NwkSKey)),
                 LocationCode = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LocationCode)),
                 AssetId = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.AssetId)),
-                IsOTTAsetting = bool.Parse(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.IsOTTAsetting)) ?? "True"),
+                IsOTAAsetting = bool.Parse(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.IsOTAAsetting)) ?? "True"),
+                Deduplication = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.Deduplication)),
+                PreferredWindow = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.PreferredWindow)), out int result) ? result : null,
+                Supports32BitFCnt = bool.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.Supports32BitFCnt)), out bool boolResult) ? boolResult : null,
+                ABPRelaxMode = bool.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.ABPRelaxMode)), out boolResult) ? boolResult : null,
+                KeepAliveTimeout = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.KeepAliveTimeout)), out result) ? result : null,
+                Downlink = bool.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.Downlink)), out boolResult) ? boolResult : null,
+                FCntDownStart = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.FCntDownStart)), out result) ? result : null,
+                FCntResetCounter = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.FCntResetCounter)), out result) ? result : null,
+                FCntUpStart = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.FCntUpStart)), out result) ? result : null,
+                RX1DROffset = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.RX1DROffset)), out result) ? result : null,
+                RX2DataRate = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.RX2DataRate)), out result) ? result : null,
+                RXDelay = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.RXDelay)), out result) ? result : null,
                 CustomTags = customTags
             };
         }
@@ -78,11 +91,10 @@ namespace AzureIoTHub.Portal.Server.Mappers
             Helpers.DeviceHelper.SetTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures), "true");
 
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
-            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.IsOTTAsetting), item.IsOTTAsetting.ToString());
-            // Helpers.DeviceHelper.SetTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures), true.ToString());
+            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.IsOTAAsetting), item.IsOTAAsetting.ToString());
 
             // Update the twin properties
-            if (item.IsOTTAsetting)
+            if (item.IsOTAAsetting)
             {
                 Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppEUI), item.AppEUI);
                 Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppKey), item.AppKey);
@@ -96,6 +108,19 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
             Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.GatewayID), item.GatewayID);
             Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.SensorDecoder), item.SensorDecoder);
+
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.Supports32BitFCnt), item.Supports32BitFCnt);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.RXDelay), item.RXDelay);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.RX2DataRate), item.RX2DataRate);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.RX1DROffset), item.RX1DROffset);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.ABPRelaxMode), item.ABPRelaxMode);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.KeepAliveTimeout), item.KeepAliveTimeout);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.FCntDownStart), item.FCntDownStart);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.FCntResetCounter), item.FCntResetCounter);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.FCntUpStart), item.FCntUpStart);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.Deduplication), item.Deduplication);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.Downlink), item.Downlink);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.PreferredWindow), item.PreferredWindow);
 
             if (item.CustomTags != null)
             {

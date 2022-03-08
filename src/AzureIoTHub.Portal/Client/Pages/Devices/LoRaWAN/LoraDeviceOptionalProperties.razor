@@ -1,0 +1,77 @@
+﻿@using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice
+
+<MudItem xs="12">
+    <MudCard>
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText>LoRaWAN properties</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudSwitch T=bool? @bind-Checked="@LoRaDevice.Downlink" For="@(() => LoRaDevice.Downlink)" Label="Enable/disable downstream messages" Color="Color.Primary"  ></MudSwitch>
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudNumericField T="int?" @bind-Value="@LoRaDevice.PreferredWindow" For="@(() => LoRaDevice.PreferredWindow)" Min="1" Max="2" Label="Preferred receive window"></MudNumericField>
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudSelect T=string @bind-Value="@LoRaDevice.Deduplication" For="@(() => LoRaDevice.Deduplication)" AnchorOrigin="Origin.BottomCenter" Label="Message Deduplication">
+                        <MudSelectItem Value="@("Mark")"></MudSelectItem>
+                        <MudSelectItem Value="@("Drop")"></MudSelectItem>
+                        <MudSelectItem Value="@("None")"></MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField T="int?" @bind-Value="@LoRaDevice.RX1DROffset" For="@(() => LoRaDevice.RX1DROffset)" Label="RX1 Datarate Offset" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField T=int? @bind-Value="@LoRaDevice.RX2DataRate" For="@(() => LoRaDevice.RX2DataRate)" Label="RX2 Datarate" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudNumericField T="int?" @bind-Value="@LoRaDevice.RXDelay" For="@(() => LoRaDevice.RXDelay)" Min=1 Label="RX Delay"></MudNumericField>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudSwitch T="bool?" @bind-Checked="@LoRaDevice.ABPRelaxMode" For="@(() => LoRaDevice.ABPRelaxMode)" Label="Disable ABP relax mode" Color="Color.Primary" ></MudSwitch>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudSwitch T="bool?" @bind-Checked="@LoRaDevice.Supports32BitFCnt" For="@(() => LoRaDevice.Supports32BitFCnt)" Label="32bit counter support" Color="Color.Primary" ></MudSwitch>
+                </MudItem>
+
+                <MudItem xs="12" md="4">
+                    <MudNumericField T="int?" @bind-Value="@LoRaDevice.FCntUpStart" For="@(() => LoRaDevice.FCntUpStart)" Min=1 Label="Specify frame counter up start value"></MudNumericField>
+                </MudItem>
+
+                <MudItem xs="12" md="4">
+                    <MudNumericField @bind-Value="@LoRaDevice.FCntDownStart" For="@(() => LoRaDevice.FCntDownStart)" Min=1 Label="Specify frame counter down start value"></MudNumericField>
+                </MudItem>
+
+                <MudItem xs="12" md="4">
+                    <MudNumericField T="int?" @bind-Value="@LoRaDevice.FCntResetCounter" For="@(() => LoRaDevice.FCntResetCounter)" Min=1 Label="Reset counter"></MudNumericField>
+                </MudItem>
+
+                <MudItem xs="12" md="4">
+                    <MudNumericField T="int?" @bind-Value="@LoRaDevice.KeepAliveTimeout" For="@(() => LoRaDevice.KeepAliveTimeout)" Min=1 Label="Device Connection Timeout"></MudNumericField>
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+        <MudCardActions Class="pb-4 pl-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="OnSaveClick">Save Changes</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudItem>
+
+@code {
+    [Parameter]
+    public LoRaDeviceDetails LoRaDevice { get; set; }
+
+    [Parameter]
+    public EventCallback OnSaveClick { get; set; }
+}
