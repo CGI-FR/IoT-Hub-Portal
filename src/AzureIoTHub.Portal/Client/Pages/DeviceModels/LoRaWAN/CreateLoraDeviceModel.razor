@@ -35,13 +35,19 @@
                         </HeaderContent>
                         <RowTemplate Context="CommandContext">
                             <MudTd DataLabel="Name" Style="word-break: break-all;">
-                                <MudTextField @bind-Value="@CommandContext.Name" Label="Name" For="@(() => CommandContext.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                <MudForm @ref="CommandValidation[0]" Model="CommandContext">
+                                    <MudTextField @bind-Value="@CommandContext.Name" Label="Name" For="@(() => CommandContext.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                </MudForm>
                             </MudTd>
                             <MudTd DataLabel="Frame" Style="word-break: break-all; ">
-                                <MudTextField @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                <MudForm @ref="CommandValidation[1]" Model="CommandContext">
+                                    <MudTextField @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                </MudForm>
                             </MudTd>
                             <MudTd DataLabel="Port" Style="text-align: center;">
-                                <MudNumericField @bind-Value="@CommandContext.Port" Label="Port" For="@(() => CommandContext.Port)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudNumericField>
+                                <MudForm @ref="CommandValidation[2]" Model="CommandContext">
+                                    <MudNumericField @bind-Value="@CommandContext.Port" Label="Port" For="@(() => CommandContext.Port)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudNumericField>
+                                </MudForm>
                             </MudTd>
                             <MudTd DataLabel="Delete" Style="text-align: center">
                                 <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteCommand(CommandContext))"></MudIconButton>
@@ -66,7 +72,10 @@
 
     [Parameter]
     public IList<DeviceModelCommand> Commands { get; set; }
-    
+
+    [Parameter]
+    public IList<MudForm> CommandValidation{ get; set; }
+
     [Parameter]
     public EventCallback OnSaveClick { get; set; }
 
