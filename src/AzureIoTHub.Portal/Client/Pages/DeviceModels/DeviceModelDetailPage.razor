@@ -68,10 +68,10 @@ else
                             <MudCardContent>
                                 <MudGrid>
                                     <MudItem xs="12" md="6">
-                                        <MudTextField @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" Disabled="Model.IsBuiltin" />
+                                        <MudTextField id="@nameof(Model.Name)" @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" Disabled="Model.IsBuiltin" />
                                     </MudItem>
                                     <MudItem xs="12" md="6">
-                                        <MudTextField @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" Disabled="Model.IsBuiltin" />
+                                        <MudTextField  id="@nameof(Model.Description)" @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" Disabled="Model.IsBuiltin" />
                                     </MudItem>
                                     <MudItem xs="12">
                                         <MudText>Properties</MudText>

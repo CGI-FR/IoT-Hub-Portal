@@ -23,7 +23,7 @@
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Model</MudText>
 
-<MudForm Model="@Model" @ref="form">
+<MudForm Model="@Model" @ref="form" id="form">
     <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6" @ref="tabs">
         <MudTabPanel Text="General" Style=@(standardValidator.Validate(Model).IsValid ? "" : "color: red")>
             <MudGrid>
@@ -57,10 +57,10 @@
                         <MudCardContent>
                             <MudGrid>
                                 <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
+                                    <MudTextField id="@nameof(Model.Name)"  @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
                                 </MudItem>
                                 <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
+                                    <MudTextField id="@nameof(Model.Description)" @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
                                 </MudItem>
                                 @if (activateLoRaFeature)
                                 {
@@ -68,7 +68,7 @@
                                         <MudText>
                                             <b>LoRa Device</b>
                                         </MudText>
-                                        <MudSwitch @bind-Checked="@IsLoRa" Color="Color.Secondary">
+                                        <MudSwitch @bind-Checked="@IsLoRa" Color="Color.Secondary" id="@nameof(Model.SupportLoRaFeatures)">
                                             @if (IsLoRa)
                                             {
                                             <MudText Typo="Typo.body2">The device <b>is</b> a LoRa Device.</MudText>
@@ -84,52 +84,54 @@
                                     <MudText>Properties</MudText>
                                 </MudItem>
                                 <MudItem xs="12">
-                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty()))" StartIcon="@Icons.Filled.Add">Add property</MudButton>
+                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty()))" StartIcon="@Icons.Filled.Add" id="addPropertyButton">Add property</MudButton>
                                 </MudItem>
                                 <MudItem xs="12">
-                                    <MudGrid>
                                         @foreach (var item in this.Properties)
                                         {
-                                            <MudItem md="4" xs="12">
-                                                <MudTextField @bind-Value="@item.DisplayName"
+                                            <MudGrid id="@($"property-{item.Name}")">
+                                                <MudItem md="4" xs="12">
+                                                    <MudTextField id="@nameof(item.DisplayName)"
+                                                          @bind-Value="@item.DisplayName"
                                                           Label="Display name"
                                                           Variant="Variant.Outlined"
                                                           For="@(()=> item.DisplayName)"
                                                           Required="true" />
-                                            </MudItem>
-                                            <MudItem md="4" xs="12">
-                                                <MudTextField @bind-Value="@item.Name"
+                                                </MudItem>
+                                                <MudItem md="4" xs="12">
+                                                    <MudTextField id="@nameof(item.Name)" @bind-Value="@item.Name"
                                                           Label="Name"
                                                           Variant="Variant.Outlined"
                                                           For="@(()=> item.Name)"
                                                           Required="true" />
-                                            </MudItem>
-                                            <MudItem md="2" xs="6">
-                                                <MudSelect @bind-Value="@item.PropertyType"
+                                                </MudItem>
+                                                <MudItem md="2" xs="6">
+                                                    <MudSelect id="@nameof(item.PropertyType)"
+                                                       @bind-Value="@item.PropertyType"
                                                        Label="Type"
                                                        Variant="Variant.Outlined"
                                                        For="@(()=> item.PropertyType)"
                                                        Required="true">
-                                                    @foreach (DevicePropertyType item in Enum.GetValues(typeof(DevicePropertyType)))
-                                                    {
-                                                    <MudSelectItem Value="@((DevicePropertyType) item)">@item</MudSelectItem>
-                                                    }
+                                                        @foreach (DevicePropertyType item in Enum.GetValues(typeof(DevicePropertyType)))
+                                                        {
+                                                    <MudSelectItem Value="@item">@item</MudSelectItem>
+                                                        }
                                             </MudSelect>
                                         </MudItem>
-                                            <MudItem md="1" xs="3">
-                                                <MudSwitch @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
-                                                <MudText Typo="Typo.body2">Writable</MudText>
-                                            </MudItem>
-                                            <MudItem md="1" xs="3">
-                                                <MudIconButton Icon="@Icons.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
-                                            </MudItem>
-                                        }
+                                        <MudItem md="1" xs="3">
+                                            <MudSwitch id="@nameof(item.IsWritable)" Label="Writable" @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
+
+                                        </MudItem>
+                                        <MudItem md="1" xs="3">
+                                            <MudIconButton id="DeletePropertyButton" Icon="@Icons.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
+                                        </MudItem>
                                     </MudGrid>
-                                </MudItem>
+                                        }
+                                    </MudItem>
                             </MudGrid>
                         </MudCardContent>
                         <MudCardActions Class="pb-4 pl-4">
-                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save">Save Changes</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save" id="SaveButton">Save Changes</MudButton>
                         </MudCardActions>
                     </MudCard>
                 </MudItem>
@@ -250,7 +252,6 @@
 
     private async Task Save()
     {
-        
         // Displays validation error message for each field
         await form.Validate();
         
