@@ -85,7 +85,7 @@ else
                                             <MudGrid id="@($"property-{item.Name}")">
                                                 <MudItem md="4" xs="12">
                                                     <MudTextField id="@nameof(item.DisplayName)"
-                                                            @bind-Value="@item.DisplayName"
+                                                          @bind-Value="@item.DisplayName"
                                                           Label="Display name"
                                                           Variant="Variant.Outlined"
                                                           For="@(()=> item.DisplayName)"
@@ -99,31 +99,32 @@ else
                                                           Required="true" />
                                                 </MudItem>
                                                 <MudItem md="2" xs="6">
-                                                    <MudSelect id="@nameof(item.PropertyType)" @bind-Value="@item.PropertyType"
+                                                    <MudSelect id="@nameof(item.PropertyType)"
+                                                       @bind-Value="@item.PropertyType"
                                                        Label="Type"
                                                        Variant="Variant.Outlined"
                                                        For="@(()=> item.PropertyType)"
                                                        Required="true">
                                                         @foreach (DevicePropertyType item in Enum.GetValues(typeof(DevicePropertyType)))
                                                         {
-                                                            <MudSelectItem Value="@((DevicePropertyType) item)">@item</MudSelectItem>
+                                                    <MudSelectItem Value="@item">@item</MudSelectItem>
                                                         }
-                                                    </MudSelect>
-                                                </MudItem>
-                                                <MudItem md="1" xs="3">
-                                                    <MudSwitch id="@nameof(item.IsWritable)" Label="Writable" @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
-        
-                                                </MudItem>
-                                                <MudItem md="1" xs="3">
-                                                    <MudIconButton id="DeletePropertyButton" Icon="@Icons.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
-                                                </MudItem>
-                                            </MudGrid>
+                                            </MudSelect>
+                                        </MudItem>
+                                        <MudItem md="1" xs="3">
+                                            <MudSwitch id="@nameof(item.IsWritable)" Label="Writable" @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
+
+                                        </MudItem>
+                                        <MudItem md="1" xs="3">
+                                            <MudIconButton id="DeletePropertyButton" Icon="@Icons.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
+                                        </MudItem>
+                                    </MudGrid>
                                         }
                                     </MudItem>
                                 </MudGrid>
                             </MudCardContent>
                             <MudCardActions Class="pb-4 pl-4">
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save">Save Changes</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save" id="SaveButton">Save Changes</MudButton>
                             </MudCardActions>
                         </MudCard>
                     </MudItem>
@@ -154,7 +155,7 @@ else
     private LoRaDeviceModelValidator loraValidator = new LoRaDeviceModelValidator();
     private DevicePropertyValidator propertiesValidator = new DevicePropertyValidator();
 
-    private List<DeviceModelCommand> Commands { get; set; }
+    private List<DeviceModelCommand> Commands { get; set; } = new List<DeviceModelCommand>();
     private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
 
     [Parameter]
@@ -206,14 +207,12 @@ else
     {
         if (IsLoRa)
         {
-            Model = await httpClient.GetFromJsonAsync<LoRaDeviceModel>($"{ApiUrlBase}");
-            Commands = new List<DeviceModelCommand>(
-                        await httpClient.GetFromJsonAsync<DeviceModelCommand[]>($"{ApiUrlBase}/commands")
-                    );
+            this.Model = await httpClient.GetFromJsonAsync<LoRaDeviceModel>($"{ApiUrlBase}");
+            this.Commands.AddRange(await httpClient.GetFromJsonAsync<DeviceModelCommand[]>($"{ApiUrlBase}/commands"));
         }
         else
         {
-            Model = await httpClient.GetFromJsonAsync<DeviceModel>($"{ApiUrlBase}");
+            this.Model = await httpClient.GetFromJsonAsync<DeviceModel>($"{ApiUrlBase}");
         }
 
         imageDataUrl = await httpClient.GetStringAsync($"{ApiUrlBase}/avatar");

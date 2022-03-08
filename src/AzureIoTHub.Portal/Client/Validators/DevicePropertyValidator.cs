@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Client.Validators
         private class DevicePropertyComparer : IEqualityComparer<DeviceProperty>
         {
             public bool Equals(DeviceProperty x, DeviceProperty y) => x?.Name == y?.Name;
-            public int GetHashCode(DeviceProperty obj) => obj.Name.GetHashCode();
+            public int GetHashCode(DeviceProperty obj) => obj.Name?.GetHashCode() ?? 0;
         }
 
         public DevicePropertyValidator()

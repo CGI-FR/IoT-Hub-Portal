@@ -73,5 +73,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 
             return request;
         }
+
+        public static IMockedRequest AddRequestExpectation(this IMockedRequest request, MockHttpMessageHandler mockHttpClient)
+        {
+            mockHttpClient.AddRequestExpectation(request);
+
+            return request;
+        }
     }
 }
