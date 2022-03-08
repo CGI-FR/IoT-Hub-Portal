@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Client
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
+    using System.Text.Json;
     using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Shared.Settings;
     using Blazored.Modal;
@@ -22,7 +23,8 @@ namespace AzureIoTHub.Portal.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddHttpClient("api", client =>
+            builder.Services
+                .AddHttpClient("api", client =>
             {
                 client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
                 client.DefaultRequestHeaders.Add("X-Version", "1.0");

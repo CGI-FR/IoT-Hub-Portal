@@ -34,12 +34,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 
             return request;
         }
+
         public static MockedRequest RespondJsonAsync<T>(this MockedRequest request, Task<T> content)
         {
             request.Respond(req =>
             {
                 var response = new HttpResponseMessage(HttpStatusCode.OK);
                 response.Content = new StringContent(JsonSerializer.Serialize(content));
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                return response;
+            });
+
+            return request;
+        }
+
+        public static MockedRequest RespondText(this MockedRequest request, string content)
+        {
+            request.Respond(req =>
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.OK);
+                response.Content = new StringContent(content);
                 response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 return response;
             });
@@ -56,6 +70,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
                 response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 return response;
             });
+
+            return request;
+        }
+
+        public static IMockedRequest AddRequestExpectation(this IMockedRequest request, MockHttpMessageHandler mockHttpClient)
+        {
+            mockHttpClient.AddRequestExpectation(request);
 
             return request;
         }

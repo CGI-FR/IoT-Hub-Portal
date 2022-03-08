@@ -4,9 +4,13 @@
 namespace AzureIoTHub.Portal.Server
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Net;
+    using System.Text.Json.Serialization;
     using System.Threading.Tasks;
+    using AutoMapper;
+    using Azure;
     using Azure.Storage.Blobs;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Identity;
@@ -31,6 +35,7 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.Extensions.Primitives;
     using Microsoft.OpenApi.Models;
     using MudBlazor.Services;
+    using Newtonsoft.Json.Converters;
     using Polly;
     using Polly.Extensions.Http;
 
@@ -184,6 +189,7 @@ namespace AzureIoTHub.Portal.Server
                 opts.AddSecurityRequirement(securityRequirements);
 
                 opts.OrderActionsBy(api => api.RelativePath);
+                opts.UseInlineDefinitionsForEnums();
             });
 
             services.AddApiVersioning(o =>
@@ -195,6 +201,16 @@ namespace AzureIoTHub.Portal.Server
                     new QueryStringApiVersionReader("api-version"),
                     new HeaderApiVersionReader("X-Version"));
             });
+
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.CreateMap(typeof(AsyncPageable<>), typeof(List<>));
+
+                mc.AddProfile(new DevicePropertyProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
