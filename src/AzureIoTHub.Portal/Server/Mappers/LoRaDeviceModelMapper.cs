@@ -5,7 +5,9 @@ namespace AzureIoTHub.Portal.Server.Mappers
 {
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
     using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
     using System.Collections.Generic;
 
@@ -45,7 +47,19 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 AppEUI = entity[nameof(LoRaDeviceModel.AppEUI)]?.ToString(),
                 SensorDecoder = entity[nameof(LoRaDeviceModel.SensorDecoder)]?.ToString(),
                 SupportLoRaFeatures = true,
-                IsOTAAsetting = bool.Parse(entity[nameof(LoRaDeviceModel.IsOTAAsetting)]?.ToString() ?? "true")
+                IsOTAAsetting = bool.Parse(entity[nameof(LoRaDeviceModel.IsOTAAsetting)]?.ToString() ?? "true"),
+                PreferredWindow = int.TryParse(entity[nameof(LoRaDeviceBase.PreferredWindow)]?.ToString(), out int intResult) ? intResult : null,
+                Supports32BitFCnt = bool.TryParse(entity[nameof(LoRaDeviceBase.Supports32BitFCnt)]?.ToString(), out bool boolResult) ? boolResult : null,
+                ABPRelaxMode = bool.TryParse(entity[nameof(LoRaDeviceBase.ABPRelaxMode)]?.ToString(), out boolResult) ? boolResult : null,
+                KeepAliveTimeout = int.TryParse(entity[nameof(LoRaDeviceBase.KeepAliveTimeout)]?.ToString(), out intResult) ? intResult : null,
+                Deduplication = entity[nameof(LoRaDeviceBase.Deduplication)]?.ToString(),
+                Downlink = bool.TryParse(entity[nameof(LoRaDeviceBase.Downlink)]?.ToString(), out boolResult) ? boolResult : null,
+                FCntDownStart = int.TryParse(entity[nameof(LoRaDeviceBase.FCntDownStart)]?.ToString(), out intResult) ? intResult : null,
+                FCntResetCounter = int.TryParse(entity[nameof(LoRaDeviceBase.FCntResetCounter)]?.ToString(), out intResult) ? intResult : null,
+                FCntUpStart = int.TryParse(entity[nameof(LoRaDeviceBase.FCntUpStart)]?.ToString(), out intResult) ? intResult : null,
+                RX1DROffset = int.TryParse(entity[nameof(LoRaDeviceBase.RX1DROffset)]?.ToString(), out intResult) ? intResult : null,
+                RX2DataRate = int.TryParse(entity[nameof(LoRaDeviceBase.RX2DataRate)]?.ToString(), out intResult) ? intResult : null,
+                RXDelay = int.TryParse(entity[nameof(LoRaDeviceBase.RXDelay)]?.ToString(), out intResult) ? intResult : null
             };
         }
 
@@ -57,21 +71,34 @@ namespace AzureIoTHub.Portal.Server.Mappers
             entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)] = model.SupportLoRaFeatures;
             entity[nameof(LoRaDeviceModel.IsOTAAsetting)] = model.IsOTAAsetting;
 
-            if (model.IsOTAAsetting)
-            {
-                entity[nameof(LoRaDeviceModel.AppEUI)] = model.AppEUI;
-            }
-
-            entity[nameof(LoRaDeviceModel.SensorDecoder)] = model.SensorDecoder;
-
             var desiredProperties = new Dictionary<string, object>();
 
             if (model.IsOTAAsetting)
             {
-                desiredProperties.Add($"properties.desired.{nameof(LoRaDeviceModel.AppEUI)}", model.AppEUI);
+                desiredProperties = this.AddOptionnalProperties(entity, nameof(LoRaDeviceModel.AppEUI), model.AppEUI, desiredProperties);
             }
 
-            desiredProperties.Add($"properties.desired.{nameof(LoRaDeviceModel.SensorDecoder)}", model.SensorDecoder);
+            desiredProperties = this.AddOptionnalProperties(entity, nameof(LoRaDeviceModel.SensorDecoder), model.SensorDecoder, desiredProperties);
+            desiredProperties = this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Supports32BitFCnt), model.Supports32BitFCnt, desiredProperties);
+            desiredProperties = this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.ABPRelaxMode), model.ABPRelaxMode, desiredProperties);
+            desiredProperties = this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.KeepAliveTimeout), model.KeepAliveTimeout, desiredProperties);
+            desiredProperties = this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.PreferredWindow), model.PreferredWindow, desiredProperties);
+            desiredProperties = this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Downlink), model.Downlink, desiredProperties);
+            desiredProperties = this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Deduplication), model.Deduplication, desiredProperties);
+            desiredProperties = this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntDownStart), model.FCntDownStart, desiredProperties);
+            desiredProperties = this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntResetCounter), model.FCntResetCounter, desiredProperties);
+            desiredProperties = this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntUpStart), model.FCntUpStart, desiredProperties);
+            desiredProperties = this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.RX1DROffset), model.RX1DROffset, desiredProperties);
+            desiredProperties = this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.RX2DataRate), model.RX2DataRate, desiredProperties);
+            desiredProperties = this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.RXDelay), model.RXDelay, desiredProperties);
+
+            return desiredProperties;
+        }
+
+        private Dictionary<string, object> AddOptionnalProperties(TableEntity entity, string propertyName, object propertyValue, Dictionary<string, object> desiredProperties)
+        {
+            entity[propertyName] = propertyValue;
+            desiredProperties.Add($"properties.desired.{propertyName}", propertyValue);
 
             return desiredProperties;
         }

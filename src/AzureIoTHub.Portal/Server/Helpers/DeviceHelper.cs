@@ -74,7 +74,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
                 twin.Properties.Desired[propertyName] : null;
         }
 
-        public static void SetDesiredProperty(Twin twin, string tagName, string value)
+        public static void SetDesiredProperty(Twin twin, string tagName, object value)
         {
             twin.Properties.Desired[tagName] = value;
         }
