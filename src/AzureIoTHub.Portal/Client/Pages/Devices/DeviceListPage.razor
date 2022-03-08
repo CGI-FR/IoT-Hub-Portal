@@ -16,41 +16,50 @@
         <MudExpansionPanels>
             <MudExpansionPanel Text="Search panel">
                 <MudGrid>
-                    <MudItem xs="12" md="6">
+                    <MudItem xs="12" md="12">
                         <MudTextField @bind-Value="searchID" Placeholder="DeviceID / DeviceName" id="searchID"></MudTextField>
                     </MudItem>
-                    <MudItem xs="12" md="6">
-                        @*<MudTextField @bind-Value="searchName" Placeholder="Name"></MudTextField>*@
-                    </MudItem>
-                    <MudItem sm="12" md="6">
-                        <MudText>Status</MudText>
-                        <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline" id="searchStatus">
-                            <MudItem md="4" sm="12">
-                                <MudRadio Option="@("true")" Color="Color.Primary" id="searchStatusEnabled">Enabled</MudRadio>
-                            </MudItem>
-                            <MudItem md="4" sm="12">
-                                <MudRadio Option="@("false")" Color="Color.Primary" id="searchDisabled">Disabled</MudRadio>
-                            </MudItem>
-                            <MudItem md="4" sm="12">
-                                <MudRadio Option="@("")" Color="Color.Secondary" id="searchStatusAll">All</MudRadio>
-                            </MudItem>
-                        </MudRadioGroup>
 
-                    </MudItem>
-                    <MudItem xs="12" md="6">
-                        <MudText>Connection state</MudText>
-                        <MudRadioGroup @bind-SelectedOption="@searchState" Style="display:flex;align-items:baseline" >
-                            <MudItem md="4" sm="12">
-                                <MudRadio Option="@("true")" Color="Color.Primary" id="searchStateConnected">Connected</MudRadio>
+                    @foreach (DeviceTag tag in TagList)
+                    {
+                        if (tag.Searchable)
+                        {
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="searchTags[tag.Name]" Placeholder="@tag.Label"></MudTextField>
                             </MudItem>
-                            <MudItem md="4" sm="12">
-                                <MudRadio Option="@("false")" Color="Color.Primary" id="searchStateDisconnected">Disconnected</MudRadio>
-                            </MudItem>
-                            <MudItem md="4" sm="12">
-                                <MudRadio Option="@("")" Color="Color.Secondary" id="searchStateAll">All</MudRadio>
-                            </MudItem>
-                        </MudRadioGroup>
-                    </MudItem>
+                        }
+                    }
+                    <MudGrid>
+                        <MudItem sm="12" md="6">
+                            <MudText>Status</MudText>
+                            <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline" id="searchStatus">
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option="@("true")" Color="Color.Primary" id="searchStatusEnabled">Enabled</MudRadio>
+                                </MudItem>
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option="@("false")" Color="Color.Primary" id="searchDisabled">Disabled</MudRadio>
+                                </MudItem>
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option="@("")" Color="Color.Secondary" id="searchStatusAll">All</MudRadio>
+                                </MudItem>
+                            </MudRadioGroup>
+
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudText>Connection state</MudText>
+                            <MudRadioGroup @bind-SelectedOption="@searchState" Style="display:flex;align-items:baseline">
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option="@("true")" Color="Color.Primary" id="searchStateConnected">Connected</MudRadio>
+                                </MudItem>
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option="@("false")" Color="Color.Primary" id="searchStateDisconnected">Disconnected</MudRadio>
+                                </MudItem>
+                                <MudItem md="4" sm="12">
+                                    <MudRadio Option="@("")" Color="Color.Secondary" id="searchStateAll">All</MudRadio>
+                                </MudItem>
+                            </MudRadioGroup>
+                        </MudItem>
+                    </MudGrid>
 
                     <MudItem xs="12">
                         <MudButton Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;" id="searchButton">Search</MudButton>
@@ -72,9 +81,9 @@
     else
     {
         <MudItem xs="12">
-            <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true 
-                    ro
-                    Filter="new Func<DeviceListItem, bool>(FilterFunc)">
+            <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true
+                  ro
+                  Filter="new Func<DeviceListItem, bool>(FilterFunc)">
                 <ColGroup>
                     <col style="width: 5%;" />
                     <col style="width: 40%;" />
@@ -106,7 +115,7 @@
                     <MudTd DataLabel="Device" Style="word-break: break-all;">
                         <a class="detail-link" href="@($"devices/{@context.DeviceID}{((@context.SupportLoRaFeatures && isLoraEnable) ? "?isLora=true": "")}")">
                             @(string.IsNullOrEmpty(context.DeviceName) ? context.DeviceID : context.DeviceName)
-                            </a>
+                        </a>
                     </MudTd>
 
                     <MudTd DataLabel="Status" Style="text-align: center">
@@ -139,12 +148,12 @@
                 <MudTd DataLabel="Delete" Style="text-align: center">
                     <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDevice(context))"></MudIconButton>
                 </MudTd>
-                </RowTemplate>
-                <PagerContent>
-                    <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
-                </PagerContent>
-            </MudTable>
-        </MudItem>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+            </PagerContent>
+        </MudTable>
+    </MudItem>
     }
 
     <MudItem xs="12">
@@ -158,7 +167,11 @@
     private string searchID = "";
     private string searchStatus = "";
     private string searchState = "";
+    private Dictionary<string, string> searchTags = new();
+
     private bool isLoraEnable;
+
+    private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
 
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
 
@@ -166,6 +179,14 @@
     {
         isLoraEnable = await this.Http.GetFromJsonAsync<bool>("api/settings/lora");
         await LoadDevices();
+
+        // Gets the custom tags that can be searched via the panel
+        TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
+        foreach (DeviceTag tag in TagList)
+        {
+            if (tag.Searchable)
+                searchTags.Add(tag.Name, "");
+        }
     }
 
     private void AddDevice()
@@ -198,6 +219,7 @@
         searchID = "";
         searchStatus = "";
         searchState = "";
+        searchTags = searchTags.ToDictionary(tag => tag.Key, tag => "");
     }
 
     /// <summary>
@@ -232,8 +254,16 @@
         bool flagStatus = checkFlag(item.IsEnabled.ToString(), searchStatus);
         bool flagState = checkFlag(item.IsConnected.ToString(), searchState);
 
+        // Checks the different customized flags
+        List<bool> flagTags = new();
+        foreach (KeyValuePair<string, string> tag in searchTags)
+        {
+            flagTags.Add(checkFlag(item.CustomTags[tag.Key], tag.Value));
+        }
+        bool flagTag = !flagTags.Contains(false);
+
         // Current row is shown only if all the flags are true
-        if ((flagID || flagName) && flagStatus && flagState)
+        if ((flagID || flagName) && flagStatus && flagState && flagTag)
             return true;
 
         return false;

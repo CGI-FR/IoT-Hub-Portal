@@ -139,7 +139,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()] = "000-000-001";
 
             // Act
-            var result = deviceTwinMapper.CreateDeviceListItem(twin);
+            var result = deviceTwinMapper.CreateDeviceListItem(twin,null);
 
             // Assert
             Assert.IsNotNull(result);
