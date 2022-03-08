@@ -91,7 +91,12 @@
         {
             <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Model as LoRaDeviceModel).IsValid ? "" : "color: red")>
                 <MudGrid>
-                    <CreateLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)" Commands="Commands" OnSaveClick="Save" />
+                    <CreateLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)" 
+                    Commands="Commands" 
+                    OnSaveClick="Save"
+                    CommandValidation="@CommandValidation"
+                    />
+
                 </MudGrid>
             </MudTabPanel>
         }
@@ -105,6 +110,7 @@
     private DeviceModelValidator standardValidator = new DeviceModelValidator();
     private LoRaDeviceModelValidator loraValidator = new LoRaDeviceModelValidator();
     private List<DeviceModelCommand> Commands { get; set; }
+    private List<MudForm> CommandValidation { get; set; }
 
     private bool IsLoRa
     {
@@ -135,6 +141,12 @@
     {
         Model = new LoRaDeviceModel(Model);
         Commands = new List<DeviceModelCommand>();
+        CommandValidation = new List<MudForm>()
+        {
+            new MudForm(),
+            new MudForm(),
+            new MudForm()
+        };
     }
 
     private void SetStandardDeviceModel()
@@ -188,8 +200,40 @@
 
     private async Task Save()
     {
+        
+        // Displays validation error message for each field
+        await form.Validate();
+        
+        // Used to check commands
+        bool duplicated = false;
+        bool cmdValidationError = false;
+
+        if (IsLoRa)
+        {
+            // Check duplicates in command name
+            var query = Commands.GroupBy(x => x.Name)
+                        .Where(x => x.Count() > 1)
+                        .Select(x => x.Key)
+                        .ToList();
+            foreach(var item in query)
+            {
+                Snackbar.Add($"The command '{item}' appears more than once!", Severity.Warning);
+                duplicated = true;
+            }
+
+            // Check validation error in commands
+            foreach(var field in CommandValidation)
+            {
+                await field.Validate();
+                if (!field.IsValid)
+                    cmdValidationError = true;
+            }
+        }
+        
         if (!standardValidator.Validate(Model).IsValid
-            || (IsLoRa && !this.loraValidator.Validate(this.Model as LoRaDeviceModel).IsValid))
+            || (IsLoRa && (!this.loraValidator.Validate(this.Model as LoRaDeviceModel).IsValid ||
+                           duplicated ||
+                           cmdValidationError)))
         {
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
             return;
