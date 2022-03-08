@@ -1275,7 +1275,7 @@
         ],
         "responses": {
           "204": {
-            "description": "Success"
+            "description": "No Content"
           },
           "400": {
             "description": "Bad Request",
@@ -1480,7 +1480,7 @@
         ],
         "responses": {
           "204": {
-            "description": "Success"
+            "description": "No Content"
           },
           "404": {
             "description": "Not Found",
@@ -1902,7 +1902,7 @@
         ],
         "responses": {
           "204": {
-            "description": "Success"
+            "description": "No Content"
           },
           "400": {
             "description": "Bad Request",
@@ -2107,6 +2107,149 @@
         ],
         "responses": {
           "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{id}/properties": {
+      "get": {
+        "tags": [
+          "Device Models"
+        ],
+        "summary": "Gets the device model properties.",
+        "operationId": "GET Device model properties",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The device model properties",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceProperty"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceProperty"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceProperty"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Device Models"
+        ],
+        "summary": "Sets the device model properties.",
+        "operationId": "POST Device model properties",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The device model properties",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The model properties",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceProperty"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceProperty"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DeviceProperty"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
             "description": "Success"
           },
           "404": {
@@ -2319,15 +2462,15 @@
           },
           "isConnected": {
             "type": "boolean",
-            "description": "{true} if this instance is connected; otherwise, {false}."
+            "description": "`true` if this instance is connected; otherwise, `false`."
           },
           "isEnabled": {
             "type": "boolean",
-            "description": "{true} if this instance is enabled; otherwise, {false}."
+            "description": "`true` if this instance is enabled; otherwise, `false`."
           },
           "alreadyLoggedInOnce": {
             "type": "boolean",
-            "description": "{true} if [already logged in once]; otherwise, {false}."
+            "description": "`true` if [already logged in once]; otherwise, `false`."
           },
           "routerConfig": {
             "$ref": "#/components/schemas/RouterConfig"
@@ -2439,11 +2582,11 @@
           },
           "isConnected": {
             "type": "boolean",
-            "description": "{true} if this instance is connected; otherwise, {false}."
+            "description": "`true` if this instance is connected; otherwise, `false`."
           },
           "isEnabled": {
             "type": "boolean",
-            "description": "{true} if this instance is enabled; otherwise, {false}."
+            "description": "`true` if this instance is enabled; otherwise, `false`."
           },
           "statusUpdatedTime": {
             "type": "string",
@@ -2453,7 +2596,8 @@
           "customTags": {
             "type": "object",
             "additionalProperties": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "description": "List of custom device tags and their values.",
             "nullable": true
@@ -2561,6 +2705,42 @@
           "isBuiltin": {
             "type": "boolean",
             "description": "A value indicating whether this instance is builtin."
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeviceProperty": {
+        "required": [
+          "displayName",
+          "isWritable",
+          "name",
+          "propertyType"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The property name"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "The property display name"
+          },
+          "isWritable": {
+            "type": "boolean",
+            "description": "Indicates whether the property is writable from the portal\r\n> Note: if writable, the property is set to the desired properties of the device twin\r\n>       otherwise, the property is read from the reported properties."
+          },
+          "propertyType": {
+            "enum": [
+              "Boolean",
+              "Double",
+              "Float",
+              "Integer",
+              "Long",
+              "String"
+            ],
+            "type": "string",
+            "description": "The device property type"
           }
         },
         "additionalProperties": false
@@ -2729,7 +2909,8 @@
           "environmentVariables": {
             "type": "object",
             "additionalProperties": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "description": "The module environment variables.",
             "nullable": true
@@ -2737,7 +2918,8 @@
           "moduleIdentityTwinSettings": {
             "type": "object",
             "additionalProperties": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "description": "The module identity twin settings.",
             "nullable": true
@@ -2774,11 +2956,11 @@
           },
           "isConnected": {
             "type": "boolean",
-            "description": "{true} if this instance is connected; otherwise, {false}."
+            "description": "`true` if this instance is connected; otherwise, `false`."
           },
           "isEnabled": {
             "type": "boolean",
-            "description": "{true} if this instance is enabled; otherwise, {false}."
+            "description": "`true` if this instance is enabled; otherwise, `false`."
           },
           "statusUpdatedTime": {
             "type": "string",
@@ -2788,7 +2970,8 @@
           "customTags": {
             "type": "object",
             "additionalProperties": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "description": "List of custom device tags and their values.",
             "nullable": true
@@ -2953,15 +3136,15 @@
           },
           "nocca": {
             "type": "boolean",
-            "description": "{true} if nocca; otherwise, {false}."
+            "description": "`true` if nocca; otherwise, `false`."
           },
           "nodc": {
             "type": "boolean",
-            "description": "{true} if nodc; otherwise, {false}."
+            "description": "`true` if nodc; otherwise, `false`."
           },
           "nodwell": {
             "type": "boolean",
-            "description": "{true} if nodwell; otherwise, {false}."
+            "description": "`true` if nodwell; otherwise, `false`."
           }
         },
         "additionalProperties": false
