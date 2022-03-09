@@ -56,7 +56,7 @@ namespace AzureIoTHub.Portal.Server.Services
             var tagNameList = this.tableClientFactory
                 .GetDeviceTagSettings()
                 .Query<TableEntity>()
-                .Where(c => this.deviceTagMapper.GetDeviceTag(c).Searchable == true)
+                .Where(c => this.deviceTagMapper.GetDeviceTag(c).Searchable)
                 .Select(c => this.deviceTagMapper.GetDeviceTag(c).Name);
 
             return tagNameList.ToList();

@@ -33,9 +33,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         private FakeNavigationManager mockNavigationManager;
         private MockHttpMessageHandler mockHttpClient;
 
-        private string apiBaseUrl = "/api/Devices";
-        private string apiSettingsBaseUrl = "/api/settings/lora";
-        private string apiTagsBaseUrl = "/api/settings/device-tags";
+        private readonly string apiBaseUrl = "/api/Devices";
+        private readonly string apiSettingsBaseUrl = "/api/settings/lora";
+        private readonly string apiTagsBaseUrl = "/api/settings/device-tags";
 
         [SetUp]
         public void SetUp()
