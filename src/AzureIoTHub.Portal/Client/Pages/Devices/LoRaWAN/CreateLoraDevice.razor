@@ -1,6 +1,7 @@
 ﻿@using AzureIoTHub.Portal.Client.Validators
 @using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice
 @using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel
+@using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel
 
 <MudItem xs="12">
     <MudCard>
@@ -11,23 +12,26 @@
         </MudCardHeader>
         <MudCardContent>
             <MudGrid>
-                <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="@LoRaDevice.AppEUI"
+                @if (loraModel.UseOTAA)
+                {
+                        <MudItem xs="12" md="6">
+                            <MudTextField @bind-Value="@LoRaDevice.AppEUI"
                                   Label="OTAA AppEUI"
                                   Variant="Variant.Outlined"
                                   For="@(()=> LoRaDevice.AppEUI)"
                                   ReadOnly="true"
                                   Required="true"
                                   HelperText="OTAA AppEUI is automatically set from the selected model" />
-                </MudItem>
-                <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="@LoRaDevice.AppKey"
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="@LoRaDevice.AppKey"
                                   Label="OTAA AppKey"
                                   Validation="@(LoraValidator.ValidateValue)"
                                   For="@(() => LoRaDevice.AppKey)"
                                   Required="true"
                                   Variant="Variant.Outlined" />
-                </MudItem>
+                    </MudItem>
+                }
                 <MudItem xs="12">
                     <MudTextField @bind-Value="@LoRaDevice.SensorDecoder" Label="Sensor Decoder URL" For="@(() => LoRaDevice.SensorDecoder)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                 </MudItem>
@@ -45,6 +49,9 @@
 
     [Parameter]
     public LoRaDeviceDetailsValidator LoraValidator { get; set; }
+
+    [Parameter]
+    public LoRaDeviceModel loraModel { get; set; }
 
     [Parameter]
     public EventCallback OnSaveClick { get; set; }

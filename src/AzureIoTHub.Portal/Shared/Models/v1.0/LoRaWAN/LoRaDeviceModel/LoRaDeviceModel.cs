@@ -3,22 +3,13 @@
 
 namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel
 {
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-    public class LoRaDeviceModel : DeviceModel.DeviceModel
+    public class LoRaDeviceModel : LoRaDeviceModelBase
     {
-        /// <summary>
-        /// The device OTAA Application eui.
-        /// </summary>
-        [Required(ErrorMessage = "The OTAA App EUI is required.")]
-        public string AppEUI { get; set; }
-
-        /// <summary>
-        /// The sensor decoder Url.
-        /// </summary>
-        public string SensorDecoder { get; set; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="LoRaDeviceModel"/> class.
         /// </summary>
@@ -30,6 +21,7 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel
             this.Description = from.Description;
             this.IsBuiltin = from.IsBuiltin;
             this.ImageUrl = from.ImageUrl;
+            this.UseOTAA = true;
         }
 
         /// <summary>

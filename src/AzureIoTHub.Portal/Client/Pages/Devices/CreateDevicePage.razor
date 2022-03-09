@@ -109,7 +109,7 @@
         {
             <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Device as LoRaDeviceDetails).IsValid ? "" : "color: red")>
                 <MudGrid>
-                    <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" OnSaveClick="Save" />
+                    <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" loraModel="@(loRaDeviceModel)" LoraValidator="@(loraValidator)" OnSaveClick="Save" />
                 </MudGrid>
             </MudTabPanel>
         }
@@ -133,6 +133,7 @@
             ChangeModel(value);
         }
     }
+    private LoRaDeviceModel loRaDeviceModel { get; set; }
 
     private bool IsLoRa => this.Model?.SupportLoRaFeatures ?? false;
 
@@ -258,6 +259,7 @@
                 {
                     device.AppEUI = c.Result.AppEUI;
                     device.SensorDecoder = c.Result.SensorDecoder;
+                    loRaDeviceModel = c.Result;
                 });
         }
         else

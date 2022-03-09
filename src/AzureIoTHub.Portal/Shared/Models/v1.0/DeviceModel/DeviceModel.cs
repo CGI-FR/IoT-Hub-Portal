@@ -4,7 +4,7 @@
 namespace AzureIoTHub.Portal.Shared.Models.V10.DeviceModel
 {
     using System.ComponentModel.DataAnnotations;
-    
+
     public class DeviceModel
     {
         /// <summary>
