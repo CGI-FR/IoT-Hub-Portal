@@ -40,7 +40,7 @@ Available APIs for managing devices from Azure IoT Hub.
 > 200 Response
 
 ```
-[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z"}]
+[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","customTags":{"property1":"string","property2":"string"}}]
 ```
 
 ```json
@@ -52,7 +52,11 @@ Available APIs for managing devices from Azure IoT Hub.
     "isConnected": true,
     "isEnabled": true,
     "supportLoRaFeatures": true,
-    "statusUpdatedTime": "2019-08-24T14:15:22Z"
+    "statusUpdatedTime": "2019-08-24T14:15:22Z",
+    "customTags": {
+      "property1": "string",
+      "property2": "string"
+    }
   }
 ]
 ```
@@ -77,6 +81,8 @@ Status Code **200**
 |» isEnabled|boolean|false|none|A value indicating whether the device is enabled on the platform.|
 |» supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
 |» statusUpdatedTime|string(date-time)|false|none|The device last status updated time.|
+|» customTags|object¦null|false|none|none|
+|»» **additionalProperties**|string¦null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1313,7 +1319,7 @@ None
 > 200 Response
 
 ```
-[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z"}]
+[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","customTags":{"property1":"string","property2":"string"}}]
 ```
 
 ```json
@@ -1325,7 +1331,11 @@ None
     "isConnected": true,
     "isEnabled": true,
     "supportLoRaFeatures": true,
-    "statusUpdatedTime": "2019-08-24T14:15:22Z"
+    "statusUpdatedTime": "2019-08-24T14:15:22Z",
+    "customTags": {
+      "property1": "string",
+      "property2": "string"
+    }
   }
 ]
 ```
@@ -1350,6 +1360,8 @@ Status Code **200**
 |» isEnabled|boolean|false|none|A value indicating whether the device is enabled on the platform.|
 |» supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
 |» statusUpdatedTime|string(date-time)|false|none|The device last status updated time.|
+|» customTags|object¦null|false|none|none|
+|»» **additionalProperties**|string¦null|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -3044,7 +3056,11 @@ None
   "isConnected": true,
   "isEnabled": true,
   "supportLoRaFeatures": true,
-  "statusUpdatedTime": "2019-08-24T14:15:22Z"
+  "statusUpdatedTime": "2019-08-24T14:15:22Z",
+  "customTags": {
+    "property1": "string",
+    "property2": "string"
+  }
 }
 
 ```
@@ -3060,6 +3076,8 @@ None
 |isEnabled|boolean|false|none|A value indicating whether the device is enabled on the platform.|
 |supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
 |statusUpdatedTime|string(date-time)|false|none|The device last status updated time.|
+|customTags|object¦null|false|none|none|
+|» **additionalProperties**|string¦null|false|none|none|
 
 <h2 id="tocS_DeviceModel">DeviceModel</h2>
 <!-- backwards compatibility -->
