@@ -1,21 +1,24 @@
-﻿using AzureIoTHub.Portal.Server.Controllers.V10;
-using AzureIoTHub.Portal.Server.Managers;
-using AzureIoTHub.Portal.Server.Services;
-using AzureIoTHub.Portal.Shared.Models.V10;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Devices;
-using Microsoft.Azure.Devices.Common.Exceptions;
-using Microsoft.Azure.Devices.Shared;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Server.Controllers.V10;
+    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.V10;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Common.Exceptions;
+    using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class EdgeDevicesControllerTests
     {
@@ -50,19 +53,19 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task Get_All_Devices_Should_Return_List_Of_Edge_Devices()
+        public async Task GetAllDevicesShouldReturnListOfEdgeDevices()
         {
             // Arrange
             var twin = new Twin("aaa");
             twin.Tags["purpose"] = "test";
 
-            this.mockDeviceService.Setup(x => x.GetAllEdgeDevice())
+            _ = this.mockDeviceService.Setup(x => x.GetAllEdgeDevice())
                 .ReturnsAsync(new[]
                 {
                     twin
                 });
 
-            this.mockDeviceService.Setup(x => x.GetDeviceTwin(It.Is<string>(c => c == twin.DeviceId)))
+            _ = this.mockDeviceService.Setup(x => x.GetDeviceTwin(It.Is<string>(c => c == twin.DeviceId)))
                 .ReturnsAsync(twin);
 
             var edgeDevicesController = this.CreateEdgeDevicesController();
@@ -92,20 +95,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task When_Specifying_Id_Get_Should_Return_The_Edge_Device()
+        public async Task WhenSpecifyingIdGetShouldReturnTheEdgeDevice()
         {
             // Arrange
             var edgeDevicesController = this.CreateEdgeDevicesController();
-            string deviceId = Guid.NewGuid().ToString();
+            var deviceId = Guid.NewGuid().ToString();
 
             var twin = new Twin(deviceId);
             twin.Tags["purpose"] = "bbb";
             twin.Tags["env"] = "fake";
 
-            this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceId)))
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceId)))
                 .ReturnsAsync(twin);
 
-            this.mockDeviceService.Setup(c => c.GetDeviceTwinWithModule(It.Is<string>(x => x == deviceId)))
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwinWithModule(It.Is<string>(x => x == deviceId)))
                 .ReturnsAsync(twin);
 
             var edgeHubTwin = new Twin("edgeHub");
@@ -115,10 +118,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             };
 
             var mockQuery = this.mockRepository.Create<IQuery>();
-            mockQuery.Setup(c => c.GetNextAsTwinAsync())
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync())
                 .ReturnsAsync(new[] { edgeHubTwin });
 
-            this.mockRegistryManager.Setup(c => c.CreateQuery(
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
                 It.Is<string>(x => x == $"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{deviceId}']"),
                 It.Is<int>(x => x == 1)))
                 .Returns(mockQuery.Object);
@@ -140,13 +143,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task When_Not_Found_Should_Return_Not_Found()
+        public async Task WhenNotFoundShouldReturnNotFound()
         {
             // Arrange
             var edgeDevicesController = this.CreateEdgeDevicesController();
-            string deviceId = Guid.NewGuid().ToString();
+            var deviceId = Guid.NewGuid().ToString();
 
-            this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceId)))
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceId)))
                 .Throws(new DeviceNotFoundException(deviceId));
 
             // Act
@@ -160,7 +163,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task GetEnrollmentCredentials_Should_Return_Enrollment_Credentials()
+        public async Task GetEnrollmentCredentialsShouldReturnEnrollmentCredentials()
         {
             // Arrange
             var edgeDevicesController = this.CreateEdgeDevicesController();
@@ -173,10 +176,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var mockTwin = new Twin("aaa");
             mockTwin.Tags["purpose"] = "bbb";
 
-            this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", "bbb"))
+            _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", "bbb"))
                 .ReturnsAsync(mockRegistrationCredentials);
 
-            this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
                 .ReturnsAsync(mockTwin);
 
             // Act
@@ -194,12 +197,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task When_Device_Not_Exist_GetEnrollmentCredentials_Should_Return_NotFound()
+        public async Task WhenDeviceNotExistGetEnrollmentCredentialsShouldReturnNotFound()
         {
             // Arrange
             var devicesController = this.CreateEdgeDevicesController();
 
-            this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
                 .ReturnsAsync((Twin)null);
 
             // Act
@@ -213,7 +216,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task CreateGatewayAsync_StateUnderTest_ExpectedBehavior()
+        public async Task CreateGatewayAsyncStateUnderTestExpectedBehavior()
         {
             // Arrange
             var edgeDevicesController = this.CreateEdgeDevicesController();
@@ -227,14 +230,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 IsSuccessful = true
             };
 
-            this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(
+            _ = this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(
                 It.Is<string>(x => x == gateway.DeviceId),
                 It.Is<bool>(x => x),
                 It.Is<Twin>(x => x.DeviceId == gateway.DeviceId),
                 It.Is<DeviceStatus>(x => x == DeviceStatus.Enabled)))
                 .ReturnsAsync(mockResult);
 
-            this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             // Act
             var result = await edgeDevicesController.CreateGatewayAsync(gateway);
@@ -251,7 +254,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task When_Device_Already_Exists_Post_Should_Return_Bad_Request()
+        public async Task WhenDeviceAlreadyExistsPostShouldReturnBadRequest()
         {
             // Arrange
             var edgeDevicesController = this.CreateEdgeDevicesController();
@@ -261,14 +264,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 Type = "lora"
             };
 
-            this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(
+            _ = this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(
                 It.Is<string>(x => x == gateway.DeviceId),
                 It.Is<bool>(x => x),
                 It.Is<Twin>(x => x.DeviceId == gateway.DeviceId),
                 It.Is<DeviceStatus>(x => x == DeviceStatus.Enabled)))
                 .Throws(new DeviceAlreadyExistsException(gateway.DeviceId));
 
-            this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             // Act
             var result = await edgeDevicesController.CreateGatewayAsync(gateway);
@@ -279,7 +282,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task UpdateDeviceAsync_StateUnderTest_ExpectedBehavior()
+        public async Task UpdateDeviceAsyncStateUnderTestExpectedBehavior()
         {
             // Arrange
             var edgeDevicesController = this.CreateEdgeDevicesController();
@@ -299,25 +302,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var mockTwin = new Twin(gateway.DeviceId);
             mockTwin.Tags["env"] = "dev";
 
-            this.mockDeviceService.Setup(c => c.GetDevice(It.Is<string>(x => x == gateway.DeviceId)))
+            _ = this.mockDeviceService.Setup(c => c.GetDevice(It.Is<string>(x => x == gateway.DeviceId)))
                 .ReturnsAsync(new Device(gateway.DeviceId)
                 {
                     Status = DeviceStatus.Disabled
                 });
 
-            this.mockDeviceService.Setup(c => c.UpdateDevice(It.Is<Device>(x => x.Id == gateway.DeviceId && x.Status == DeviceStatus.Enabled)))
+            _ = this.mockDeviceService.Setup(c => c.UpdateDevice(It.Is<Device>(x => x.Id == gateway.DeviceId && x.Status == DeviceStatus.Enabled)))
                 .ReturnsAsync(new Device(gateway.DeviceId)
                 {
                     Status = DeviceStatus.Enabled
                 });
 
-            this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == gateway.DeviceId)))
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == gateway.DeviceId)))
                 .ReturnsAsync(mockTwin);
 
-            this.mockDeviceService.Setup(c => c.UpdateDeviceTwin(It.Is<string>(x => x == gateway.DeviceId), It.Is<Twin>(x => x == mockTwin)))
+            _ = this.mockDeviceService.Setup(c => c.UpdateDeviceTwin(It.Is<string>(x => x == gateway.DeviceId), It.Is<Twin>(x => x == mockTwin)))
                 .ReturnsAsync(mockTwin);
 
-            this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             // Act
             var result = await edgeDevicesController.UpdateDeviceAsync(gateway);
@@ -335,23 +338,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task DeleteDeviceAsync_StateUnderTest_ExpectedBehavior()
+        public async Task DeleteDeviceAsyncStateUnderTestExpectedBehavior()
         {
             // Arrange
             var edgeDevicesController = this.CreateEdgeDevicesController();
-            string deviceId = Guid.NewGuid().ToString();
+            var deviceId = Guid.NewGuid().ToString();
 
-            this.mockDeviceService.Setup(c => c.DeleteDevice(It.Is<string>(x => x == deviceId)))
+            _ = this.mockDeviceService.Setup(c => c.DeleteDevice(It.Is<string>(x => x == deviceId)))
                 .Returns(Task.CompletedTask);
 
-            #nullable enable
-            this.mockLogger.Setup(c => c.Log(
+
+            _ = this.mockLogger.Setup(c => c.Log(
                 It.Is<LogLevel>(x => x == LogLevel.Information),
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
-            #nullable disable
+
 
             // Act
             var result = await edgeDevicesController.DeleteDeviceAsync(deviceId);
@@ -363,29 +366,28 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             this.mockRepository.VerifyAll();
         }
 
-        [TestCase("RestartModule", "{\"id\":\"aaa\",\"schemaVersion\":null}")]
-        [TestCase("GetModuleLogs", "{\"schemaVersion\":null,\"items\":[{\"id\":\"aaa\",\"filter\":{\"tail\":10}}],\"encoding\":\"none\",\"contentType\":\"json\"}")]
-        public async Task ExecuteMethod_Should_Execute_C2D_Method(string methodName, string expected)
+        [TestCase("RestartModule", /*lang=json,strict*/ "{\"id\":\"aaa\",\"schemaVersion\":null}")]
+        [TestCase("GetModuleLogs", /*lang=json,strict*/ "{\"schemaVersion\":null,\"items\":[{\"id\":\"aaa\",\"filter\":{\"tail\":10}}],\"encoding\":\"none\",\"contentType\":\"json\"}")]
+        public async Task ExecuteMethodShouldExecuteC2DMethod(string methodName, string expected)
         {
             // Arrange
             var edgeDevicesController = this.CreateEdgeDevicesController();
-            IoTEdgeModule module = new IoTEdgeModule
+            var module = new IoTEdgeModule
             {
                 ModuleName = "aaa",
             };
 
-            string deviceId = Guid.NewGuid().ToString();
+            var deviceId = Guid.NewGuid().ToString();
 
-            #nullable enable
-            this.mockLogger.Setup(c => c.Log(
+
+            _ = this.mockLogger.Setup(c => c.Log(
                 It.Is<LogLevel>(x => x == LogLevel.Information),
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
-            #nullable disable
 
-            this.mockDeviceService.Setup(c => c.ExecuteC2DMethod(
+            _ = this.mockDeviceService.Setup(c => c.ExecuteC2DMethod(
                 It.Is<string>(x => x == deviceId),
                 It.Is<CloudToDeviceMethod>(x =>
                     x.MethodName == methodName

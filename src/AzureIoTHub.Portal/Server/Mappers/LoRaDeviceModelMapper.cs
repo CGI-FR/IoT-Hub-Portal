@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Mappers
@@ -47,8 +47,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 SensorDecoder = entity[nameof(LoRaDeviceModel.SensorDecoder)]?.ToString(),
                 SupportLoRaFeatures = true,
                 UseOTAA = bool.Parse(entity[nameof(LoRaDeviceModel.UseOTAA)]?.ToString() ?? "true"),
-                PreferredWindow = int.TryParse(entity[nameof(LoRaDeviceBase.PreferredWindow)]?.ToString(), out int intResult) ? intResult : null,
-                Supports32BitFCnt = bool.TryParse(entity[nameof(LoRaDeviceBase.Supports32BitFCnt)]?.ToString(), out bool boolResult) ? boolResult : null,
+                PreferredWindow = int.TryParse(entity[nameof(LoRaDeviceBase.PreferredWindow)]?.ToString(), out var intResult) ? intResult : null,
+                Supports32BitFCnt = bool.TryParse(entity[nameof(LoRaDeviceBase.Supports32BitFCnt)]?.ToString(), out var boolResult) ? boolResult : null,
                 ABPRelaxMode = bool.TryParse(entity[nameof(LoRaDeviceBase.ABPRelaxMode)]?.ToString(), out boolResult) ? boolResult : null,
                 KeepAliveTimeout = int.TryParse(entity[nameof(LoRaDeviceBase.KeepAliveTimeout)]?.ToString(), out intResult) ? intResult : null,
                 Deduplication = entity[nameof(LoRaDeviceBase.Deduplication)]?.ToString(),
@@ -74,27 +74,27 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
             if (model.UseOTAA)
             {
-                this.AddOptionnalProperties(entity, nameof(LoRaDeviceModel.AppEUI), model.AppEUI, desiredProperties);
+                AddOptionnalProperties(entity, nameof(LoRaDeviceModel.AppEUI), model.AppEUI, desiredProperties);
             }
 
-            this.AddOptionnalProperties(entity, nameof(LoRaDeviceModel.SensorDecoder), model.SensorDecoder, desiredProperties);
-            this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Supports32BitFCnt), model.Supports32BitFCnt, desiredProperties);
-            this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.ABPRelaxMode), model.ABPRelaxMode, desiredProperties);
-            this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.KeepAliveTimeout), model.KeepAliveTimeout, desiredProperties);
-            this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.PreferredWindow), model.PreferredWindow, desiredProperties);
-            this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Downlink), model.Downlink, desiredProperties);
-            this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Deduplication), model.Deduplication, desiredProperties);
-            this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntDownStart), model.FCntDownStart, desiredProperties);
-            this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntResetCounter), model.FCntResetCounter, desiredProperties);
-            this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntUpStart), model.FCntUpStart, desiredProperties);
-            this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.RX1DROffset), model.RX1DROffset, desiredProperties);
-            this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.RX2DataRate), model.RX2DataRate, desiredProperties);
-            this.AddOptionnalProperties(entity, nameof(LoRaDeviceBase.RXDelay), model.RXDelay, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceModel.SensorDecoder), model.SensorDecoder, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Supports32BitFCnt), model.Supports32BitFCnt, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.ABPRelaxMode), model.ABPRelaxMode, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.KeepAliveTimeout), model.KeepAliveTimeout, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.PreferredWindow), model.PreferredWindow, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Downlink), model.Downlink, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Deduplication), model.Deduplication, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntDownStart), model.FCntDownStart, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntResetCounter), model.FCntResetCounter, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntUpStart), model.FCntUpStart, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.RX1DROffset), model.RX1DROffset, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.RX2DataRate), model.RX2DataRate, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.RXDelay), model.RXDelay, desiredProperties);
 
             return desiredProperties;
         }
 
-        private void AddOptionnalProperties(TableEntity entity, string propertyName, object propertyValue, Dictionary<string, object> desiredProperties)
+        private static void AddOptionnalProperties(TableEntity entity, string propertyName, object propertyValue, Dictionary<string, object> desiredProperties)
         {
             entity[propertyName] = propertyValue;
             desiredProperties.Add($"properties.desired.{propertyName}", propertyValue);

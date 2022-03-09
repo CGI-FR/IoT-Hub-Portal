@@ -23,22 +23,21 @@ namespace AzureIoTHub.Portal.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services
-                .AddHttpClient("api", client =>
-            {
-                client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
-                client.DefaultRequestHeaders.Add("X-Version", "1.0");
-            })
+            _ = builder.Services.AddHttpClient("api", client =>
+              {
+                  client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+                  client.DefaultRequestHeaders.Add("X-Version", "1.0");
+              })
                 /*.AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>()*/;
 
-            builder.Services.AddFileReaderService(o => o.UseWasmSharedBuffer = true);
+            _ = builder.Services.AddFileReaderService(o => o.UseWasmSharedBuffer = true);
 
             // Supply HttpClient instances that include access tokens when making requests to the server project
-            builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
-            builder.Services.AddBlazoredModal();
+            _ = builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
+            _ = builder.Services.AddBlazoredModal();
 
-            builder.Services.AddMudServices();
-            builder.Services.AddScoped<ClipboardService>();
+            _ = builder.Services.AddMudServices();
+            _ = builder.Services.AddScoped<ClipboardService>();
 
             await ConfigureOidc(builder);
 
@@ -47,22 +46,20 @@ namespace AzureIoTHub.Portal.Client
 
         private static async Task ConfigureOidc(WebAssemblyHostBuilder builder)
         {
-            using (var httpClient = new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
+            using var httpClient = new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
+            var settings = await httpClient.GetFromJsonAsync<OIDCSettings>("api/settings/oidc");
+
+            _ = builder.Services.AddOidcAuthentication(options =>
             {
-                var settings = await httpClient.GetFromJsonAsync<OIDCSettings>("api/settings/oidc");
+                options.ProviderOptions.Authority = settings.Authority;
+                options.ProviderOptions.MetadataUrl = settings.MetadataUrl;
+                options.ProviderOptions.ClientId = settings.ClientId;
 
-                builder.Services.AddOidcAuthentication(options =>
-                {
-                    options.ProviderOptions.Authority = settings.Authority;
-                    options.ProviderOptions.MetadataUrl = settings.MetadataUrl;
-                    options.ProviderOptions.ClientId = settings.ClientId;
+                options.ProviderOptions.DefaultScopes.Clear();
+                options.ProviderOptions.DefaultScopes.Add($"profile openid {settings.Scope}");
 
-                    options.ProviderOptions.DefaultScopes.Clear();
-                    options.ProviderOptions.DefaultScopes.Add($"profile openid {settings.Scope}");
-
-                    options.ProviderOptions.ResponseType = "id_token";
-                });
-            }
+                options.ProviderOptions.ResponseType = "id_token";
+            });
         }
     }
 }

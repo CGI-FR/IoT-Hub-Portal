@@ -1,9 +1,10 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator
 {
     using System.Collections.Generic;
+    using Newtonsoft.Json;
 
     public class RouterConfig
     {
@@ -30,7 +31,8 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator
         /// <summary>
         /// The frequency range.
         /// </summary>
-        public List<int> Freq_range { get; set; }
+        [JsonProperty("Freq_range")]
+        public List<int> FreqRange { get; set; }
 
         /// <summary>
         /// The DRs.
@@ -40,7 +42,8 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator
         /// <summary>
         /// The SX1301 conf.
         /// </summary>
-        public List<Dictionary<string, Channel>> Sx1301_conf { get; set; }
+        [JsonProperty("Sx1301_conf")]
+        public List<Dictionary<string, Channel>> Sx1301Conf { get; set; }
 
         /// <summary>
         ///   <c>true</c> if nocca; otherwise, <c>false</c>.
@@ -64,11 +67,11 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator
         {
             this.Region = string.Empty;
             this.Hwspec = string.Empty;
-            this.Freq_range = new List<int>();
+            this.FreqRange = new List<int>();
             this.NetID = new List<int>();
             this.JoinEui = new List<List<string>>();
             this.DRs = new List<List<int>>();
-            this.Sx1301_conf = new List<Dictionary<string, Channel>>();
+            this.Sx1301Conf = new List<Dictionary<string, Channel>>();
         }
     }
 }

@@ -1,45 +1,42 @@
-﻿using AzureIoTHub.Portal.Client.Pages.DeviceModels;
-using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
-using AzureIoTHub.Portal.Shared.Models;
-using AzureIoTHub.Portal.Shared.Models.V10;
-using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
-using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
-using Bunit;
-using Bunit.TestDoubles;
-using FluentAssertions.Extensions;
-using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using MudBlazor;
-using MudBlazor.Interop;
-using MudBlazor.Services;
-using NUnit.Framework;
-using RichardSzalay.MockHttp;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Threading;
-using System.Threading.Tasks;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Net.Http.Json;
+    using AzureIoTHub.Portal.Client.Pages.DeviceModels;
+    using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
+    using AzureIoTHub.Portal.Shared.Models;
+    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+    using Bunit;
+    using Bunit.TestDoubles;
+    using Microsoft.AspNetCore.Components;
+    using Microsoft.Extensions.DependencyInjection;
+    using Moq;
+    using MudBlazor;
+    using MudBlazor.Interop;
+    using MudBlazor.Services;
+    using NUnit.Framework;
+    using RichardSzalay.MockHttp;
+
     [TestFixture]
-    public class CreateDeviceModelPageTests
+    public class CreateDeviceModelPageTests : IDisposable
     {
         private Bunit.TestContext testContext;
-        private string mockModelId = Guid.NewGuid().ToString();
+        private readonly string mockModelId = Guid.NewGuid().ToString();
 
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
         private FakeNavigationManager mockNavigationManager;
         private MockHttpMessageHandler mockHttpClient;
 
-        private string apiSettingsLora = "/api/settings/lora";
-        private string apiBaseUrl => $"/api/models";
-        private string lorawanApiBaseUrl => $"/api/lorawan/models";
+        private static readonly string ApiSettingsLora = "/api/settings/lora";
+        private static string apiBaseUrl => $"/api/models";
 
         [SetUp]
         public void SetUp()
@@ -51,15 +48,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             this.mockHttpClient = testContext.Services
                                             .AddMockHttpClient();
 
-            testContext.Services.AddSingleton(this.mockDialogService.Object);
+            _ = testContext.Services.AddSingleton(this.mockDialogService.Object);
 
-            testContext.Services.AddMudServices();
+            _ = testContext.Services.AddMudServices();
 
-            testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
-            testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            testContext.JSInterop.SetupVoid("Blazor._internal.InputFile.init", _ => true);
-            testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
-            testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
+            _ = testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
+            _ = testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
+            _ = testContext.JSInterop.SetupVoid("Blazor._internal.InputFile.init", _ => true);
+            _ = testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
+            _ = testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
 
             mockNavigationManager = testContext.Services.GetRequiredService<FakeNavigationManager>();
 
@@ -73,7 +70,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public void Click_On_Save_Should_Post_Device_Model_Data()
+        public void ClickOnSaveShouldPostDeviceModelData()
         {
             // Arrange
             var modelName = Guid.NewGuid().ToString();
@@ -88,10 +85,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                     PropertyType = DevicePropertyType.Double
                 }).ToArray();
 
-            this.mockHttpClient.When(this.apiSettingsLora)
+            _ = this.mockHttpClient.When(ApiSettingsLora)
                 .RespondJson(false);
 
-            this.mockHttpClient.When(HttpMethod.Post, $"{apiBaseUrl}")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{apiBaseUrl}")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<JsonContent>(m.Content);
@@ -109,7 +106,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 })
                 .RespondText(string.Empty);
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Post, $"{apiBaseUrl}/properties")
                 .With(m =>
                 {
@@ -119,7 +116,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                     Assert.IsAssignableFrom<List<DeviceProperty>>(jsonContent.Value);
                     var properties = jsonContent.Value as IEnumerable<DeviceProperty>;
 
-                    Assert.AreEqual(expectedProperties.Count(), properties.Count());
+                    Assert.AreEqual(expectedProperties.Length, properties.Count());
 
                     foreach (var expectedProperty in expectedProperties)
                     {
@@ -142,26 +139,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             cut.Find($"#{nameof(DeviceModel.Description)}").Change(description);
 
             saveButton.Click();
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/device-models"));
+            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
             // Assert            
             this.mockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         [Test]
-        public void Click_On_Add_Property_Should_Add_NewProperty()
+        public void ClickOnAddPropertyShouldAddNewProperty()
         {
             // Arrange
             var propertyName = Guid.NewGuid().ToString();
             var displayName = Guid.NewGuid().ToString();
 
-            this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl}")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl}")
                 .RespondText(string.Empty);
 
-            this.mockHttpClient.When(this.apiSettingsLora)
+            _ = this.mockHttpClient.When(ApiSettingsLora)
                 .RespondJson(false);
 
-            this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl}/properties")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl}/properties")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<JsonContent>(m.Content);
@@ -203,26 +200,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             cut.Find($"{propertyCssSelector} #{nameof(DeviceProperty.IsWritable)}").Change(true);
 
             saveButton.Click();
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/device-models"));
+            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
             // Assert
             this.mockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         [Test]
-        public void Click_On_Remove_Property_Should_Remove_The_Property()
+        public void ClickOnRemovePropertyShouldRemoveTheProperty()
         {
             // Arrange
             var propertyName = Guid.NewGuid().ToString();
             var displayName = Guid.NewGuid().ToString();
 
-            this.mockHttpClient.When(this.apiSettingsLora)
+            _ = this.mockHttpClient.When(ApiSettingsLora)
                 .RespondJson(false);
 
-            this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl}")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl}")
                 .RespondText(string.Empty);
 
-            this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl}/properties")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl}/properties")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<JsonContent>(m.Content);
@@ -253,60 +250,61 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             removePropertyButton.Click();
 
             saveButton.Click();
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/device-models"));
+            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
             // Assert
             this.mockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         [Test]
-        public void When_Lora_Feature_Is_Disabled_Model_Details_Should_Not_Display_LoRaWAN_Switch()
+        public void WhenLoraFeatureIsDisabledModelDetailsShouldNotDisplayLoRaWANSwitch()
         {
             // Arrange
-            this.mockHttpClient.When(this.apiSettingsLora)
+            _ = this.mockHttpClient.When(ApiSettingsLora)
                 .RespondJson(false);
 
             // Act
             var cut = RenderComponent<CreateDeviceModelPage>();
-            cut.WaitForElement("#form");
+            _ = cut.WaitForElement("#form");
 
 
             // Assert
-            Assert.AreEqual(0, cut.FindAll("#SupportLoRaFeatures").Count());
+            Assert.AreEqual(0, cut.FindAll("#SupportLoRaFeatures").Count);
             this.mockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         [Test]
-        public void When_Lora_Feature_Is_Enabled_Model_Details_Should_Display_LoRaWAN_Switch()
+        public void WhenLoraFeatureIsEnabledModelDetailsShouldDisplayLoRaWANSwitch()
         {
             // Arrange
-            this.mockHttpClient.When(this.apiSettingsLora)
+            _ = this.mockHttpClient.When(ApiSettingsLora)
                 .RespondJson(true);
 
             // Act
             var cut = RenderComponent<CreateDeviceModelPage>();
-            cut.WaitForElement("#form");
-            cut.WaitForElement("#SupportLoRaFeatures");
+            _ = cut.WaitForElement("#form");
+            _ = cut.WaitForElement("#SupportLoRaFeatures");
 
             // Assert
             this.mockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         [Test]
-        public void When_Lora_Feature_Is_Enabled_Model_Details_Should_Display_LoRaWAN_Tab()
+        public void WhenLoraFeatureIsEnabledModelDetailsShouldDisplayLoRaWANTab()
         {
             // Arrange
-            this.mockHttpClient.When(this.apiSettingsLora)
+            _ = this.mockHttpClient.When(ApiSettingsLora)
                 .RespondJson(true);
 
             var cut = RenderComponent<CreateDeviceModelPage>();
-            cut.WaitForElement("#form");
+            _ = cut.WaitForElement("#form");
 
             // Act
             cut.WaitForElement("#SupportLoRaFeatures")
                 .Change(true);
 
-            cut.WaitForState(() => cut.FindAll(".mud-tabs .mud-tab").Count() == 2);
+            cut.WaitForState(() => cut.FindAll(".mud-tabs .mud-tab").Count == 2);
+
             // Assert
             var tabs = cut.FindAll(".mud-tabs .mud-tab");
             Assert.AreEqual(2, tabs.Count);
@@ -314,6 +312,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             Assert.AreEqual("LoRaWAN", tabs[1].TextContent);
 
             this.mockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
     }
 }

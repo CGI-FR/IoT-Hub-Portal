@@ -51,9 +51,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <returns>An array representing the device models.</returns>
         [HttpGet(Name = "GET LoRaWAN device model list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public override ActionResult<IEnumerable<DeviceModel>> Get()
+        public override ActionResult<IEnumerable<DeviceModel>> GetItems()
         {
-            return base.Get();
+            return base.GetItems();
         }
 
         /// <summary>
@@ -64,9 +64,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [HttpGet("{id}", Name = "GET LoRaWAN device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override ActionResult<LoRaDeviceModel> Get(string id)
+        public override ActionResult<LoRaDeviceModel> GetItem(string id)
         {
-            return base.Get(id);
+            return base.GetItem(id);
         }
 
         /// <summary>

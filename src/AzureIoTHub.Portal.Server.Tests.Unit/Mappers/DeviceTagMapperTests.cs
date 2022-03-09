@@ -1,40 +1,40 @@
-﻿using Azure.Data.Tables;
-using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Shared.Models.V10.Device;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 {
+    using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class DeviceTagMapperTests
     {
         private MockRepository mockRepository;
-        
+
         [SetUp]
         public void SetUp()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
         }
 
-        private DeviceTagMapper CreateDeviceTagMapper()
+        private static DeviceTagMapper CreateDeviceTagMapper()
         {
             return new DeviceTagMapper();
         }
-        
+
         [Test]
-        public void GetDeviceTag_StateUnderTest_ExpectedBehavior()
+        public void GetDeviceTagStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceTagMapper = this.CreateDeviceTagMapper();
-            var entity = new TableEntity();
+            var deviceTagMapper = CreateDeviceTagMapper();
+            var entity = new TableEntity
+            {
+                RowKey = "ExpectedRowKey"
+            };
 
-            entity.RowKey = "ExpectedRowKey";
             entity["Label"] = "ExpectedLabel";
             entity["Required"] = false;
             entity["Searchable"] = false;
@@ -51,10 +51,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         }
 
         [Test]
-        public void UpdateTableEntity_StateUnderTest_ExpectedBehavior()
+        public void UpdateTableEntityStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceTagMapper = this.CreateDeviceTagMapper();
+            var deviceTagMapper = CreateDeviceTagMapper();
             var entity = new TableEntity();
 
             var element = new DeviceTag

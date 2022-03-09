@@ -59,10 +59,10 @@ namespace AzureIoTHub.Portal.Server.Managers
                     throw;
                 }
 
-                string enrollmentGroupPrimaryKey = GenerateKey();
-                string enrollmentGroupSecondaryKey = GenerateKey();
+                var enrollmentGroupPrimaryKey = GenerateKey();
+                var enrollmentGroupSecondaryKey = GenerateKey();
 
-                SymmetricKeyAttestation attestation = new SymmetricKeyAttestation(enrollmentGroupPrimaryKey, enrollmentGroupSecondaryKey);
+                var attestation = new SymmetricKeyAttestation(enrollmentGroupPrimaryKey, enrollmentGroupSecondaryKey);
 
                 enrollmentGroup = new EnrollmentGroup(enrollmentGroupName, attestation)
                 {
@@ -103,7 +103,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             {
                 if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    await this.CreateEnrollmentGroupAsync(deviceType);
+                    _ = await this.CreateEnrollmentGroupAsync(deviceType);
                     attestation = await this.GetAttestation(deviceType);
                 }
                 else
@@ -112,7 +112,7 @@ namespace AzureIoTHub.Portal.Server.Managers
                 }
             }
 
-            var symmetricKey = DeviceHelper.RetrieveSymmetricKey(deviceId, this.CheckAttestation(attestation));
+            var symmetricKey = DeviceHelper.RetrieveSymmetricKey(deviceId, CheckAttestation(attestation));
 
             return new EnrollmentCredentials
             {
@@ -122,11 +122,9 @@ namespace AzureIoTHub.Portal.Server.Managers
             };
         }
 
-        private SymmetricKeyAttestation CheckAttestation(Attestation attestation)
+        private static SymmetricKeyAttestation CheckAttestation(Attestation attestation)
         {
-            var symmetricKeyAttestation = attestation as SymmetricKeyAttestation;
-
-            if (symmetricKeyAttestation == null)
+            if (attestation is not SymmetricKeyAttestation symmetricKeyAttestation)
             {
                 throw new InvalidOperationException($"Cannot get symmetric key for {attestation.GetType()}.");
             }

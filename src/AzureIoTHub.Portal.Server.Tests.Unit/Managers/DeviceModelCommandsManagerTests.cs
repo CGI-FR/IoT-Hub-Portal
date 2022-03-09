@@ -1,19 +1,20 @@
-﻿using Azure;
-using Azure.Data.Tables;
-using AzureIoTHub.Portal.Server.Factories;
-using AzureIoTHub.Portal.Server.Managers;
-using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Shared.Models.V10;
-using AzureIoTHub.Portal.Shared.Models.V10.Device;
-using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
-using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
-using Moq;
-using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
 {
+    using System.Collections.Generic;
+    using System.Threading;
+    using Azure;
+    using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class DeviceModelCommandsManagerTests
     {
@@ -32,43 +33,43 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         private DeviceModelCommandsManager CreateManager()
         {
             return new DeviceModelCommandsManager(
-                this.mockTableClientFactory.Object, 
+                this.mockTableClientFactory.Object,
                 new DeviceModelCommandMapper());
         }
 
         [Test]
-        public void RetrieveCommands_StateUnderTest_ExpectedBehavior()
+        public void RetrieveCommandsStateUnderTestExpectedBehavior()
         {
             // Arrange
             var manager = this.CreateManager();
-            string deviceModel = "aaa";
-            bool resultReturned = false;
+            var deviceModel = "aaa";
+            var resultReturned = false;
 
             var entityMock = new TableEntity(deviceModel, "bbbb");
-            entityMock.TryAdd(nameof(Command.Frame), "ADETRDTHDFG");
+            _ = entityMock.TryAdd(nameof(Command.Frame), "ADETRDTHDFG");
 
             var mockTable = this.mockRepository.Create<TableClient>();
             var mockTableResponse = this.mockRepository.Create<Pageable<TableEntity>>();
             var mockEnumerator = this.mockRepository.Create<IEnumerator<TableEntity>>();
-            mockEnumerator.Setup(x => x.Dispose()).Callback(() => { });
-            mockEnumerator.Setup(x => x.MoveNext()).Returns(() =>
+            _ = mockEnumerator.Setup(x => x.Dispose()).Callback(() => { });
+            _ = mockEnumerator.Setup(x => x.MoveNext()).Returns(() =>
             {
                 resultReturned = !resultReturned;
                 return resultReturned;
             });
 
-            mockEnumerator.Setup(x => x.Current).Returns(entityMock);
+            _ = mockEnumerator.Setup(x => x.Current).Returns(entityMock);
 
-            mockTableResponse.Setup(x => x.GetEnumerator())
+            _ = mockTableResponse.Setup(x => x.GetEnumerator())
                 .Returns(mockEnumerator.Object);
 
-            mockTable.Setup(x => x.Query<TableEntity>(It.Is<string>(x => x.StartsWith($"PartitionKey  eq '{deviceModel}'")),
+            _ = mockTable.Setup(x => x.Query<TableEntity>(It.Is<string>(x => x.StartsWith($"PartitionKey  eq '{deviceModel}'")),
                                                         It.IsAny<int?>(),
                                                         It.IsAny<IEnumerable<string>>(),
                                                         It.IsAny<CancellationToken>()))
                 .Returns(mockTableResponse.Object);
 
-            this.mockTableClientFactory.Setup(x => x.GetDeviceCommands())
+            _ = this.mockTableClientFactory.Setup(x => x.GetDeviceCommands())
                 .Returns(mockTable.Object);
 
             // Act
@@ -84,39 +85,39 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         }
 
         [Test]
-        public void RetrieveDeviceModelCommands_StateUnderTest_ExpectedBehavior()
+        public void RetrieveDeviceModelCommandsStateUnderTestExpectedBehavior()
         {
             // Arrange
             var manager = this.CreateManager();
-            string deviceModel = "aaa";
-            bool resultReturned = false;
+            var deviceModel = "aaa";
+            var resultReturned = false;
 
             var entityMock = new TableEntity(deviceModel, "bbbb");
-            entityMock.TryAdd(nameof(DeviceModelCommand.Frame), "ADETRDTHDFG");
-            entityMock.TryAdd(nameof(DeviceModelCommand.Port), 125);
+            _ = entityMock.TryAdd(nameof(DeviceModelCommand.Frame), "ADETRDTHDFG");
+            _ = entityMock.TryAdd(nameof(DeviceModelCommand.Port), 125);
 
             var mockTable = this.mockRepository.Create<TableClient>();
             var mockTableResponse = this.mockRepository.Create<Pageable<TableEntity>>();
             var mockEnumerator = this.mockRepository.Create<IEnumerator<TableEntity>>();
-            mockEnumerator.Setup(x => x.Dispose()).Callback(() => { });
-            mockEnumerator.Setup(x => x.MoveNext()).Returns(() =>
+            _ = mockEnumerator.Setup(x => x.Dispose()).Callback(() => { });
+            _ = mockEnumerator.Setup(x => x.MoveNext()).Returns(() =>
             {
                 resultReturned = !resultReturned;
                 return resultReturned;
             });
 
-            mockEnumerator.Setup(x => x.Current).Returns(entityMock);
+            _ = mockEnumerator.Setup(x => x.Current).Returns(entityMock);
 
-            mockTableResponse.Setup(x => x.GetEnumerator())
+            _ = mockTableResponse.Setup(x => x.GetEnumerator())
                 .Returns(mockEnumerator.Object);
 
-            mockTable.Setup(x => x.Query<TableEntity>(It.Is<string>(x => x.StartsWith($"PartitionKey  eq '{deviceModel}'")),
+            _ = mockTable.Setup(x => x.Query<TableEntity>(It.Is<string>(x => x.StartsWith($"PartitionKey  eq '{deviceModel}'")),
                                                         It.IsAny<int?>(),
                                                         It.IsAny<IEnumerable<string>>(),
                                                         It.IsAny<CancellationToken>()))
                 .Returns(mockTableResponse.Object);
 
-            this.mockTableClientFactory.Setup(x => x.GetDeviceCommands())
+            _ = this.mockTableClientFactory.Setup(x => x.GetDeviceCommands())
                 .Returns(mockTable.Object);
 
             // Act

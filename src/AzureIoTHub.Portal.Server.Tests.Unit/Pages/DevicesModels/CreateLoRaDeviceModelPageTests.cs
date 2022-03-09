@@ -1,36 +1,31 @@
-﻿using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
-using Bunit;
-using Bunit.TestDoubles;
-using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using MudBlazor;
-using MudBlazor.Interop;
-using MudBlazor.Services;
-using NUnit.Framework;
-using RichardSzalay.MockHttp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
 {
+    using System;
+    using System.Collections.Generic;
+    using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
+    using Bunit;
+    using Bunit.TestDoubles;
+    using Microsoft.Extensions.DependencyInjection;
+    using Moq;
+    using MudBlazor;
+    using MudBlazor.Interop;
+    using MudBlazor.Services;
+    using NUnit.Framework;
+    using RichardSzalay.MockHttp;
+
     [TestFixture]
-    public class CreateLoRaDeviceModelPageTests
+    public class CreateLoRaDeviceModelPageTests : IDisposable
     {
         private Bunit.TestContext testContext;
-        private string mockModelId = Guid.NewGuid().ToString();
+        private readonly string mockModelId = Guid.NewGuid().ToString();
 
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
         private FakeNavigationManager mockNavigationManager;
         private MockHttpMessageHandler mockHttpClient;
-
-        private string apiSettingsLora = "/api/settings/lora";
-        private string apiBaseUrl => $"/api/models";
-        private string lorawanApiBaseUrl => $"/api/lorawan/models";
 
         [SetUp]
         public void SetUp()
@@ -42,31 +37,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             this.mockHttpClient = testContext.Services
                                             .AddMockHttpClient();
 
-            testContext.Services.AddSingleton(this.mockDialogService.Object);
+            _ = testContext.Services.AddSingleton(this.mockDialogService.Object);
 
-            testContext.Services.AddMudServices();
+            _ = testContext.Services.AddMudServices();
 
-            testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
-            testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            testContext.JSInterop.SetupVoid("Blazor._internal.InputFile.init", _ => true);
-            testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
-            testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
+            _ = testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
+            _ = testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
+            _ = testContext.JSInterop.SetupVoid("Blazor._internal.InputFile.init", _ => true);
+            _ = testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
+            _ = testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
 
             mockNavigationManager = testContext.Services.GetRequiredService<FakeNavigationManager>();
 
             this.mockHttpClient.AutoFlush = true;
         }
 
-        private IRenderedComponent<TComponent> RenderComponent<TComponent>(params ComponentParameter[] parameters)
-         where TComponent : IComponent
-        {
-            return this.testContext.RenderComponent<TComponent>(parameters);
-        }
 
-        [Test]
-        public void Click_On_Add_Command_Should_Add_New_Command()
+        public void Dispose()
         {
-
+            GC.SuppressFinalize(this);
         }
     }
 }

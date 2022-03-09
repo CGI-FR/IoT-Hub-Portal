@@ -1,7 +1,150 @@
-﻿[*.cs]
+﻿# http://editorconfig.org/
 
-# Default severity for all analyzer diagnostics
-dotnet_analyzer_diagnostic.severity = suggestion
+root = true
 
-# CS0649: Field 'CreateDeviceModelPage.form' is never assigned to, and will always have its default value null
-dotnet_diagnostic.CS0649.severity = suggestion
+[*]
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.cs]
+dotnet_naming_rule.private_constants_rule.severity = warning
+dotnet_naming_rule.private_constants_rule.style = upper_camel_case_style
+dotnet_naming_rule.private_constants_rule.symbols = private_constants_symbols
+dotnet_naming_rule.private_instance_fields_rule.severity = warning
+dotnet_naming_rule.private_instance_fields_rule.style = lower_camel_case_style
+dotnet_naming_rule.private_instance_fields_rule.symbols = private_instance_fields_symbols
+dotnet_naming_rule.private_static_fields_rule.severity = warning
+dotnet_naming_rule.private_static_fields_rule.style = lower_camel_case_style
+dotnet_naming_rule.private_static_fields_rule.symbols = private_static_fields_symbols
+dotnet_naming_rule.private_static_readonly_rule.severity = warning
+dotnet_naming_rule.private_static_readonly_rule.style = upper_camel_case_style
+dotnet_naming_rule.private_static_readonly_rule.symbols = private_static_readonly_symbols
+dotnet_naming_style.lower_camel_case_style.capitalization = camel_case
+dotnet_naming_style.upper_camel_case_style.capitalization = pascal_case
+dotnet_naming_symbols.private_constants_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_constants_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_constants_symbols.required_modifiers = const
+dotnet_naming_symbols.private_instance_fields_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_instance_fields_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_static_fields_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_fields_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_static_fields_symbols.required_modifiers = static
+dotnet_naming_symbols.private_static_readonly_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_readonly_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_static_readonly_symbols.required_modifiers = static,readonly
+
+[*.md]
+charset = utf-8
+
+[*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj}]
+charset = utf-8
+indent_size = 2
+
+[*.{sln}]
+charset = utf-8
+indent_style = tab
+
+[*.{json,yml}]
+charset = utf-8
+indent_size = 2
+
+[*.{cs,tt}]
+charset = utf-8
+indent_size = 4
+dotnet_sort_system_directives_first = true
+
+dotnet_analyzer_diagnostic.severity = error
+dotnet_code_quality.severity = error
+
+# Prefer "var" everywhere
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
+csharp_prefer_braces = when_multiline:suggestion
+
+csharp_indent_case_contents_when_block = false
+
+# CA2007: Consider calling ConfigureAwait on the awaited task
+dotnet_diagnostic.CA2007.severity = none
+
+# IDE0065: Misplaced using directive
+# Prefer using directives to be placed inside the namespace
+csharp_using_directive_placement = inside_namespace
+
+# IDE0011: Add braces
+csharp_prefer_braces = when_multiline
+
+# Use new(...)
+dotnet_diagnostic.IDE0090.severity=silent
+
+# Namespace does not match folder structure
+dotnet_diagnostic.IDE0130.severity=suggestion
+
+# Use block statement for method body
+dotnet_diagnostic.IDE0022.severity=suggestion
+
+# Simplify if statement
+dotnet_diagnostic.IDE0046.severity=suggestion
+
+# CA1721: Property names should not match get methods
+dotnet_diagnostic.CA1721.severity = suggestion
+
+# IDE0045: Use conditional if statements
+dotnet_diagnostic.IDE0045.severity=suggestion
+
+# IDE0024: Use expression body for operators
+csharp_style_expression_bodied_operators = true
+
+# CA2225: Operator overloads have named alternates
+dotnet_diagnostic.CA2225.severity=suggestion
+
+# IDE0021: Expression-bodied constructors
+dotnet_diagnostic.IDE0021.severity=suggestion
+
+# IDE0061: Use block body for local functions
+dotnet_diagnostic.IDE0061.severity=suggestion
+
+# IDE0052: Unused private member
+dotnet_diagnostic.IDE0052.severity=suggestion
+
+# This or Me qualifier
+dotnet_style_qualification_for_field=true
+dotnet_style_qualification_for_property=false
+dotnet_style_qualification_for_method=false
+dotnet_style_qualification_for_event=false
+
+# CA1814: Prefer jagged arrays over multidimensional arrays
+dotnet_diagnostic.CA1814.severity=suggestion
+dotnet_diagnostic.IDE0047.severity=suggestion
+
+# These rules cannot be enforced during build time and are hence set to suggestion.
+# https://github.com/dotnet/roslyn/blob/9f87b444da9c48a4d492b19f8337339056bf2b95/src/Analyzers/Core/Analyzers/EnforceOnBuildValues.cs#L95
+# https://github.com/dotnet/roslyn/issues/53215
+dotnet_diagnostic.IDE0001.severity=suggestion
+dotnet_diagnostic.IDE0002.severity=suggestion
+dotnet_diagnostic.IDE0003.severity=suggestion
+dotnet_diagnostic.IDE0006.severity=suggestion
+dotnet_diagnostic.IDE0009.severity=suggestion
+dotnet_diagnostic.IDE0035.severity=suggestion
+dotnet_diagnostic.IDE0049.severity=suggestion
+dotnet_diagnostic.IDE0079.severity=suggestion
+dotnet_diagnostic.IDE1001.severity=suggestion
+dotnet_diagnostic.IDE1002.severity=suggestion
+dotnet_diagnostic.IDE1003.severity=suggestion
+dotnet_diagnostic.IDE1004.severity=suggestion
+dotnet_diagnostic.IDE1007.severity=suggestion
+dotnet_diagnostic.IDE1008.severity=suggestion
+
+ # Enforce file header
+dotnet_diagnostic.IDE0073.severity = error
+file_header_template = Copyright (c) CGI France. All rights reserved.\nLicensed under the MIT license. See LICENSE file in the project root for full license information.
+
+# LoggerMessage.Define for high-performance logging
+dotnet_diagnostic.CA1848.severity = suggestion
+dotnet_diagnostic.CA2254.severity = suggestion
+
+# Extract strings to resource table (the solution will not be localized).
+dotnet_diagnostic.CA1303.severity = none
+
+dotnet_code_quality.CA1716.analyzed_symbol_kinds = NamedType, Method, Property, Event

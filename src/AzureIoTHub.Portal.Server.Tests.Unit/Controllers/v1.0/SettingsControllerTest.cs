@@ -1,14 +1,17 @@
-﻿using AzureIoTHub.Portal.Server.Controllers.V10;
-using AzureIoTHub.Portal.Server.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Moq;
-using NUnit.Framework;
-using System;
-using static AzureIoTHub.Portal.Server.Startup;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 {
+    using System;
+    using AzureIoTHub.Portal.Server.Controllers.V10;
+    using AzureIoTHub.Portal.Server.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Options;
+    using Moq;
+    using NUnit.Framework;
+    using static AzureIoTHub.Portal.Server.Startup;
+
     [TestFixture]
     public class SettingsControllerTest
     {
@@ -32,7 +35,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public void GetOIDCSettings_Should_return_value()
+        public void GetOIDCSettingsShouldReturnValue()
         {
             // Arrange
             var clientApiIndentityOptions = new ClientApiIndentityOptions
@@ -43,7 +46,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 Scope = Guid.NewGuid().ToString(),
             };
 
-            this.mockConfiguration
+            _ = this.mockConfiguration
                 .SetupGet(c => c.Value)
                 .Returns(value: clientApiIndentityOptions);
 
@@ -63,16 +66,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             this.mockRepository.VerifyAll();
         }
-        
+
         [Test]
-        public void GetLoRaActivationSetting_Should_return_true_to_string()
+        public void GetLoRaActivationSettingShouldReturnTrueToString()
         {
             // Arrange
-            bool loraFeatureStatus = true;
+            var loraFeatureStatus = true;
 
-            this.mockConfiguration.SetupGet(c => c.Value).Returns(value: null);
+            _ = this.mockConfiguration.SetupGet(c => c.Value).Returns(value: null);
 
-            this.mockConfigHandler
+            _ = this.mockConfigHandler
                 .SetupGet(c => c.IsLoRaEnabled)
                 .Returns(loraFeatureStatus);
 

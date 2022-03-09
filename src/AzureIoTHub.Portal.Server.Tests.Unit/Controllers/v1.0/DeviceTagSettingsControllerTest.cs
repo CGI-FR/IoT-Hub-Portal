@@ -1,24 +1,19 @@
-﻿using Azure;
-using Azure.Data.Tables;
-using AzureIoTHub.Portal.Server.Controllers.V10;
-using AzureIoTHub.Portal.Server.Factories;
-using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Server.Services;
-using AzureIoTHub.Portal.Shared.Models.V10.Device;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Server.Controllers.V10;
+    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class DeviceTagSettingsControllerTest
     {
@@ -53,12 +48,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task Post_Should_Create_New_Entity()
+        public async Task PostShouldCreateNewEntity()
         {
             // Arrange
             var deviceTagSettingsController = this.CreateDeviceTagSettingsController();
 
-            DeviceTag tag = new DeviceTag
+            var tag = new DeviceTag
             {
                 Name = "testName",
                 Label = "testLabel",
@@ -66,7 +61,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 Searchable = true
             };
 
-            this.mockDeviceTagService.Setup(c => c.UpdateTags(It.IsAny<List<DeviceTag>>()))
+            _ = this.mockDeviceTagService.Setup(c => c.UpdateTags(It.IsAny<List<DeviceTag>>()))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -80,12 +75,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public void Get_Should_Return_A_List()
+        public void GetShouldReturnAList()
         {
             // Arrange
             var deviceTagSettingsController = this.CreateDeviceTagSettingsController();
 
-            mockDeviceTagService.Setup(x => x.GetAllTags()).Returns(new DeviceTag[10].ToList());
+            _ = mockDeviceTagService.Setup(x => x.GetAllTags()).Returns(new DeviceTag[10].ToList());
 
             // Act
             var response = deviceTagSettingsController.Get();
