@@ -2421,7 +2421,7 @@
             "description": "The bandwidth.",
             "format": "int32"
           },
-          "spread_factor": {
+          "spreadFactor": {
             "type": "integer",
             "description": "The spread factor.",
             "format": "int32"
@@ -3304,7 +3304,7 @@
             "description": "The hardware specifications.",
             "nullable": true
           },
-          "freq_range": {
+          "freqRange": {
             "type": "array",
             "items": {
               "type": "integer",
@@ -3325,7 +3325,7 @@
             "description": "The DRs.",
             "nullable": true
           },
-          "sx1301_conf": {
+          "sx1301Conf": {
             "type": "array",
             "items": {
               "type": "object",

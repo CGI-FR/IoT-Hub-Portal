@@ -868,7 +868,7 @@ None
 > 200 Response
 
 ```
-[{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientCertificateThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"netID":[0],"joinEui":[["string"]],"region":"string","hwspec":"string","freq_range":[0],"dRs":[[0]],"sx1301_conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0}}],"nocca":true,"nodc":true,"nodwell":true}}]
+[{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientCertificateThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"netID":[0],"joinEui":[["string"]],"region":"string","hwspec":"string","freqRange":[0],"dRs":[[0]],"sx1301Conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spreadFactor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spreadFactor":0}}],"nocca":true,"nodc":true,"nodwell":true}}]
 ```
 
 ```json
@@ -893,7 +893,7 @@ None
       ],
       "region": "string",
       "hwspec": "string",
-      "freq_range": [
+      "freqRange": [
         0
       ],
       "dRs": [
@@ -901,7 +901,7 @@ None
           0
         ]
       ],
-      "sx1301_conf": [
+      "sx1301Conf": [
         {
           "property1": {
             "enable": true,
@@ -909,7 +909,7 @@ None
             "radio": 0,
             "if": 0,
             "bandwidth": 0,
-            "spread_factor": 0
+            "spreadFactor": 0
           },
           "property2": {
             "enable": true,
@@ -917,7 +917,7 @@ None
             "radio": 0,
             "if": 0,
             "bandwidth": 0,
-            "spread_factor": 0
+            "spreadFactor": 0
           }
         }
       ],
@@ -955,16 +955,16 @@ Status Code **200**
 |»» joinEui|[array]¦null|false|none|The join eui.|
 |»» region|string¦null|false|none|The region.|
 |»» hwspec|string¦null|false|none|The hardware specifications.|
-|»» freq_range|[integer]¦null|false|none|The frequency range.|
+|»» freqRange|[integer]¦null|false|none|The frequency range.|
 |»» dRs|[array]¦null|false|none|The DRs.|
-|»» sx1301_conf|[object]¦null|false|none|The SX1301 conf.|
+|»» sx1301Conf|[object]¦null|false|none|The SX1301 conf.|
 |»»» **additionalProperties**|[Channel](#schemachannel)|false|none|none|
 |»»»» enable|boolean¦null|false|none|A value indicating whether the channel is enabled.|
 |»»»» freq|integer(int32)|false|none|The frequency.|
 |»»»» radio|integer(int32)|false|none|The radio.|
 |»»»» if|integer(int32)|false|none|The interface.|
 |»»»» bandwidth|integer(int32)|false|none|The bandwidth.|
-|»»»» spread_factor|integer(int32)|false|none|The spread factor.|
+|»»»» spreadFactor|integer(int32)|false|none|The spread factor.|
 |»» nocca|boolean|false|none|`true` if nocca; otherwise, `false`.|
 |»» nodc|boolean|false|none|`true` if nodc; otherwise, `false`.|
 |»» nodwell|boolean|false|none|`true` if nodwell; otherwise, `false`.|
@@ -1007,7 +1007,7 @@ None
     ],
     "region": "string",
     "hwspec": "string",
-    "freq_range": [
+    "freqRange": [
       0
     ],
     "dRs": [
@@ -1015,7 +1015,7 @@ None
         0
       ]
     ],
-    "sx1301_conf": [
+    "sx1301Conf": [
       {
         "property1": {
           "enable": true,
@@ -1023,7 +1023,7 @@ None
           "radio": 0,
           "if": 0,
           "bandwidth": 0,
-          "spread_factor": 0
+          "spreadFactor": 0
         },
         "property2": {
           "enable": true,
@@ -1031,7 +1031,7 @@ None
           "radio": 0,
           "if": 0,
           "bandwidth": 0,
-          "spread_factor": 0
+          "spreadFactor": 0
         }
       }
     ],
@@ -1113,7 +1113,7 @@ None
     ],
     "region": "string",
     "hwspec": "string",
-    "freq_range": [
+    "freqRange": [
       0
     ],
     "dRs": [
@@ -1121,7 +1121,7 @@ None
         0
       ]
     ],
-    "sx1301_conf": [
+    "sx1301Conf": [
       {
         "property1": {
           "enable": true,
@@ -1129,7 +1129,7 @@ None
           "radio": 0,
           "if": 0,
           "bandwidth": 0,
-          "spread_factor": 0
+          "spreadFactor": 0
         },
         "property2": {
           "enable": true,
@@ -1137,7 +1137,7 @@ None
           "radio": 0,
           "if": 0,
           "bandwidth": 0,
-          "spread_factor": 0
+          "spreadFactor": 0
         }
       }
     ],
@@ -1207,7 +1207,7 @@ None
 > 200 Response
 
 ```
-{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientCertificateThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"netID":[0],"joinEui":[["string"]],"region":"string","hwspec":"string","freq_range":[0],"dRs":[[0]],"sx1301_conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0}}],"nocca":true,"nodc":true,"nodwell":true}}
+{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientCertificateThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"netID":[0],"joinEui":[["string"]],"region":"string","hwspec":"string","freqRange":[0],"dRs":[[0]],"sx1301Conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spreadFactor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spreadFactor":0}}],"nocca":true,"nodc":true,"nodwell":true}}
 ```
 
 ```json
@@ -1231,7 +1231,7 @@ None
     ],
     "region": "string",
     "hwspec": "string",
-    "freq_range": [
+    "freqRange": [
       0
     ],
     "dRs": [
@@ -1239,7 +1239,7 @@ None
         0
       ]
     ],
-    "sx1301_conf": [
+    "sx1301Conf": [
       {
         "property1": {
           "enable": true,
@@ -1247,7 +1247,7 @@ None
           "radio": 0,
           "if": 0,
           "bandwidth": 0,
-          "spread_factor": 0
+          "spreadFactor": 0
         },
         "property2": {
           "enable": true,
@@ -1255,7 +1255,7 @@ None
           "radio": 0,
           "if": 0,
           "bandwidth": 0,
-          "spread_factor": 0
+          "spreadFactor": 0
         }
       }
     ],
@@ -2943,7 +2943,7 @@ None
   "radio": 0,
   "if": 0,
   "bandwidth": 0,
-  "spread_factor": 0
+  "spreadFactor": 0
 }
 
 ```
@@ -2957,7 +2957,7 @@ None
 |radio|integer(int32)|false|none|The radio.|
 |if|integer(int32)|false|none|The interface.|
 |bandwidth|integer(int32)|false|none|The bandwidth.|
-|spread_factor|integer(int32)|false|none|The spread factor.|
+|spreadFactor|integer(int32)|false|none|The spread factor.|
 
 <h2 id="tocS_Concentrator">Concentrator</h2>
 <!-- backwards compatibility -->
@@ -2987,7 +2987,7 @@ None
     ],
     "region": "string",
     "hwspec": "string",
-    "freq_range": [
+    "freqRange": [
       0
     ],
     "dRs": [
@@ -2995,7 +2995,7 @@ None
         0
       ]
     ],
-    "sx1301_conf": [
+    "sx1301Conf": [
       {
         "property1": {
           "enable": true,
@@ -3003,7 +3003,7 @@ None
           "radio": 0,
           "if": 0,
           "bandwidth": 0,
-          "spread_factor": 0
+          "spreadFactor": 0
         },
         "property2": {
           "enable": true,
@@ -3011,7 +3011,7 @@ None
           "radio": 0,
           "if": 0,
           "bandwidth": 0,
-          "spread_factor": 0
+          "spreadFactor": 0
         }
       }
     ],
@@ -3654,7 +3654,7 @@ None
   ],
   "region": "string",
   "hwspec": "string",
-  "freq_range": [
+  "freqRange": [
     0
   ],
   "dRs": [
@@ -3662,7 +3662,7 @@ None
       0
     ]
   ],
-  "sx1301_conf": [
+  "sx1301Conf": [
     {
       "property1": {
         "enable": true,
@@ -3670,7 +3670,7 @@ None
         "radio": 0,
         "if": 0,
         "bandwidth": 0,
-        "spread_factor": 0
+        "spreadFactor": 0
       },
       "property2": {
         "enable": true,
@@ -3678,7 +3678,7 @@ None
         "radio": 0,
         "if": 0,
         "bandwidth": 0,
-        "spread_factor": 0
+        "spreadFactor": 0
       }
     }
   ],
@@ -3697,9 +3697,9 @@ None
 |joinEui|[array]¦null|false|none|The join eui.|
 |region|string¦null|false|none|The region.|
 |hwspec|string¦null|false|none|The hardware specifications.|
-|freq_range|[integer]¦null|false|none|The frequency range.|
+|freqRange|[integer]¦null|false|none|The frequency range.|
 |dRs|[array]¦null|false|none|The DRs.|
-|sx1301_conf|[object]¦null|false|none|The SX1301 conf.|
+|sx1301Conf|[object]¦null|false|none|The SX1301 conf.|
 |» **additionalProperties**|[Channel](#schemachannel)|false|none|none|
 |nocca|boolean|false|none|`true` if nocca; otherwise, `false`.|
 |nodc|boolean|false|none|`true` if nodc; otherwise, `false`.|
