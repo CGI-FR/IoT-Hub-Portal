@@ -121,7 +121,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
                 SensorDecoder = Guid.NewGuid().ToString(),
                 IsBuiltin = isBuiltin,
                 SupportLoRaFeatures = supportLora,
-                IsOTAAsetting = true
+                UseOTAA = true
             };
 
             // Act

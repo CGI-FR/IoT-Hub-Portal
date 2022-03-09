@@ -296,7 +296,7 @@
         {
             var loraDeviceModel = Model as LoRaDeviceModel;
 
-            if (!loraDeviceModel.IsOTAAsetting)
+            if (!loraDeviceModel.UseOTAA)
             {
                 loraDeviceModel.AppEUI = null;
             }
