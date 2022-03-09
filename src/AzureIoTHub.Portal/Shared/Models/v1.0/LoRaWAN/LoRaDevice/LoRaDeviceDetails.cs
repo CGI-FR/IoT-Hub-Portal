@@ -35,5 +35,39 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice
         /// A value indicating whether the device has already joined the platform.
         /// </summary>
         public bool AlreadyLoggedInOnce { get; set; }
+
+        /// <summary>
+        /// The Device Current Datarate,
+        /// This value will be only reported if you are using Adaptive Data Rate.
+        /// </summary>
+        public string DataRate { get; set; }
+
+        /// <summary>
+        /// The Device Current Transmit Power,
+        /// This value will be only reported if you are using Adaptive Data Rate.
+        /// </summary>
+        public string TxPower { get; set; }
+
+        /// <summary>
+        /// The Device Current repetition when transmitting.
+        /// E.g. if set to two, the device will transmit twice his upstream messages.
+        /// This value will be only reported if you are using Adaptive Data Rate.
+        /// </summary>
+        public string NbRep { get; set; }
+
+        /// <summary>
+        /// The Device Current Rx2Datarate.
+        /// </summary>
+        public string ReportedRX2DataRate { get; set; }
+
+        /// <summary>
+        /// The Device Current RX1DROffset.
+        /// </summary>
+        public string ReportedRX1DROffset { get; set; }
+
+        /// <summary>
+        /// The Device Current RXDelay.
+        /// </summary>
+        public string ReportedRXDelay { get; set; }
     }
 }

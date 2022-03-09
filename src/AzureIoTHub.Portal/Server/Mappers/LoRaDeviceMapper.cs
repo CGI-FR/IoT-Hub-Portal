@@ -51,8 +51,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 DevAddr = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.DevAddr)),
                 AppSKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppSKey)),
                 NwkSKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.NwkSKey)),
-                LocationCode = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.LocationCode)),
-                AssetId = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.AssetId)),
                 IsOTAAsetting = bool.Parse(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.IsOTAAsetting)) ?? "True"),
                 Deduplication = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.Deduplication)),
                 PreferredWindow = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.PreferredWindow)), out int result) ? result : null,
@@ -66,7 +64,13 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 RX1DROffset = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.RX1DROffset)), out result) ? result : null,
                 RX2DataRate = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.RX2DataRate)), out result) ? result : null,
                 RXDelay = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.RXDelay)), out result) ? result : null,
-                CustomTags = customTags
+                CustomTags = customTags,
+                DataRate = Helpers.DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.DataRate)),
+                TxPower = Helpers.DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.TxPower)),
+                NbRep = Helpers.DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.NbRep)),
+                ReportedRX1DROffset = Helpers.DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRX1DROffset)),
+                ReportedRX2DataRate = Helpers.DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRX2DataRate)),
+                ReportedRXDelay = Helpers.DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.ReportedRXDelay))
             };
         }
 
