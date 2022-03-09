@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
@@ -37,8 +37,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
             IDeviceModelImageManager deviceModelImageManager,
             IDeviceModelMapper<DeviceModel, LoRaDeviceModel> deviceModelMapper,
             IDeviceService devicesService,
-            ITableClientFactory tableClientFactory, 
-            IDeviceProvisioningServiceManager deviceProvisioningServiceManager, 
+            ITableClientFactory tableClientFactory,
+            IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             IConfigService configService)
             : base(log, deviceModelImageManager, deviceModelMapper, devicesService, tableClientFactory, deviceProvisioningServiceManager, configService,
                   $"{nameof(DeviceModel.SupportLoRaFeatures)} eq true")
