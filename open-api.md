@@ -1393,10 +1393,33 @@ None
     "property1": "string",
     "property2": "string"
   },
+  "useOTAA": true,
   "appEUI": "string",
-  "appKey": "string",
   "sensorDecoder": "string",
-  "alreadyLoggedInOnce": true
+  "gatewayID": "string",
+  "downlink": true,
+  "preferredWindow": 0,
+  "deduplication": "string",
+  "rX1DROffset": 0,
+  "rX2DataRate": 0,
+  "rxDelay": 0,
+  "abpRelaxMode": true,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
+  "supports32BitFCnt": true,
+  "fCntResetCounter": 0,
+  "keepAliveTimeout": 0,
+  "appKey": "string",
+  "appSKey": "string",
+  "nwkSKey": "string",
+  "devAddr": "string",
+  "alreadyLoggedInOnce": true,
+  "dataRate": "string",
+  "txPower": "string",
+  "nbRep": "string",
+  "reportedRX2DataRate": "string",
+  "reportedRX1DROffset": "string",
+  "reportedRXDelay": "string"
 }
 ```
 
@@ -1442,10 +1465,33 @@ None
     "property1": "string",
     "property2": "string"
   },
+  "useOTAA": true,
   "appEUI": "string",
-  "appKey": "string",
   "sensorDecoder": "string",
-  "alreadyLoggedInOnce": true
+  "gatewayID": "string",
+  "downlink": true,
+  "preferredWindow": 0,
+  "deduplication": "string",
+  "rX1DROffset": 0,
+  "rX2DataRate": 0,
+  "rxDelay": 0,
+  "abpRelaxMode": true,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
+  "supports32BitFCnt": true,
+  "fCntResetCounter": 0,
+  "keepAliveTimeout": 0,
+  "appKey": "string",
+  "appSKey": "string",
+  "nwkSKey": "string",
+  "devAddr": "string",
+  "alreadyLoggedInOnce": true,
+  "dataRate": "string",
+  "txPower": "string",
+  "nbRep": "string",
+  "reportedRX2DataRate": "string",
+  "reportedRX1DROffset": "string",
+  "reportedRXDelay": "string"
 }
 ```
 
@@ -1487,7 +1533,7 @@ None
 > 200 Response
 
 ```
-{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","customTags":{"property1":"string","property2":"string"},"appEUI":"string","appKey":"string","sensorDecoder":"string","alreadyLoggedInOnce":true}
+{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","customTags":{"property1":"string","property2":"string"},"useOTAA":true,"appEUI":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":0,"deduplication":"string","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"supports32BitFCnt":true,"fCntResetCounter":0,"keepAliveTimeout":0,"appKey":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string"}
 ```
 
 ```json
@@ -1503,10 +1549,33 @@ None
     "property1": "string",
     "property2": "string"
   },
+  "useOTAA": true,
   "appEUI": "string",
-  "appKey": "string",
   "sensorDecoder": "string",
-  "alreadyLoggedInOnce": true
+  "gatewayID": "string",
+  "downlink": true,
+  "preferredWindow": 0,
+  "deduplication": "string",
+  "rX1DROffset": 0,
+  "rX2DataRate": 0,
+  "rxDelay": 0,
+  "abpRelaxMode": true,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
+  "supports32BitFCnt": true,
+  "fCntResetCounter": 0,
+  "keepAliveTimeout": 0,
+  "appKey": "string",
+  "appSKey": "string",
+  "nwkSKey": "string",
+  "devAddr": "string",
+  "alreadyLoggedInOnce": true,
+  "dataRate": "string",
+  "txPower": "string",
+  "nbRep": "string",
+  "reportedRX2DataRate": "string",
+  "reportedRX1DROffset": "string",
+  "reportedRXDelay": "string"
 }
 ```
 
@@ -1652,8 +1721,21 @@ None
   "description": "string",
   "isBuiltin": true,
   "supportLoRaFeatures": true,
+  "useOTAA": true,
   "appEUI": "string",
-  "sensorDecoder": "string"
+  "sensorDecoder": "string",
+  "downlink": true,
+  "preferredWindow": 0,
+  "deduplication": "string",
+  "rX1DROffset": 0,
+  "rX2DataRate": 0,
+  "rxDelay": 0,
+  "abpRelaxMode": true,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
+  "supports32BitFCnt": true,
+  "fCntResetCounter": 0,
+  "keepAliveTimeout": 0
 }
 ```
 
@@ -1716,7 +1798,7 @@ None
 > 200 Response
 
 ```
-{"modelId":"string","imageUrl":"string","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true,"appEUI":"string","sensorDecoder":"string"}
+{"modelId":"string","imageUrl":"string","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true,"useOTAA":true,"appEUI":"string","sensorDecoder":"string","downlink":true,"preferredWindow":0,"deduplication":"string","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"supports32BitFCnt":true,"fCntResetCounter":0,"keepAliveTimeout":0}
 ```
 
 ```json
@@ -1727,8 +1809,21 @@ None
   "description": "string",
   "isBuiltin": true,
   "supportLoRaFeatures": true,
+  "useOTAA": true,
   "appEUI": "string",
-  "sensorDecoder": "string"
+  "sensorDecoder": "string",
+  "downlink": true,
+  "preferredWindow": 0,
+  "deduplication": "string",
+  "rX1DROffset": 0,
+  "rX2DataRate": 0,
+  "rxDelay": 0,
+  "abpRelaxMode": true,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
+  "supports32BitFCnt": true,
+  "fCntResetCounter": 0,
+  "keepAliveTimeout": 0
 }
 ```
 
@@ -1764,8 +1859,21 @@ None
   "description": "string",
   "isBuiltin": true,
   "supportLoRaFeatures": true,
+  "useOTAA": true,
   "appEUI": "string",
-  "sensorDecoder": "string"
+  "sensorDecoder": "string",
+  "downlink": true,
+  "preferredWindow": 0,
+  "deduplication": "string",
+  "rX1DROffset": 0,
+  "rX2DataRate": 0,
+  "rxDelay": 0,
+  "abpRelaxMode": true,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
+  "supports32BitFCnt": true,
+  "fCntResetCounter": 0,
+  "keepAliveTimeout": 0
 }
 ```
 
@@ -3364,10 +3472,33 @@ None
     "property1": "string",
     "property2": "string"
   },
+  "useOTAA": true,
   "appEUI": "string",
-  "appKey": "string",
   "sensorDecoder": "string",
-  "alreadyLoggedInOnce": true
+  "gatewayID": "string",
+  "downlink": true,
+  "preferredWindow": 0,
+  "deduplication": "string",
+  "rX1DROffset": 0,
+  "rX2DataRate": 0,
+  "rxDelay": 0,
+  "abpRelaxMode": true,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
+  "supports32BitFCnt": true,
+  "fCntResetCounter": 0,
+  "keepAliveTimeout": 0,
+  "appKey": "string",
+  "appSKey": "string",
+  "nwkSKey": "string",
+  "devAddr": "string",
+  "alreadyLoggedInOnce": true,
+  "dataRate": "string",
+  "txPower": "string",
+  "nbRep": "string",
+  "reportedRX2DataRate": "string",
+  "reportedRX1DROffset": "string",
+  "reportedRXDelay": "string"
 }
 
 ```
@@ -3385,10 +3516,33 @@ None
 |statusUpdatedTime|string(date-time)|false|none|The status updated time.|
 |customTags|object¦null|false|none|List of custom device tags and their values.|
 |» **additionalProperties**|string¦null|false|none|none|
-|appEUI|string|true|none|The OTAA App EUI.|
-|appKey|string|true|none|The OTAA App Key.|
+|useOTAA|boolean|false|none|The status of OTAA setting.|
+|appEUI|string¦null|false|none|The device OTAA Application eui.|
 |sensorDecoder|string¦null|false|none|The sensor decoder API Url.|
+|gatewayID|string¦null|false|none|The GatewayID of the device.|
+|downlink|boolean¦null|false|none|Allows disabling the downstream (cloud to device) for a device.<br>By default downstream messages are enabled.|
+|preferredWindow|integer(int32)¦null|false|none|Allows setting the device preferred receive window (RX1 or RX2).<br>The default preferred receive window is 1.|
+|deduplication|string¦null|false|none|Allows controlling the handling of duplicate messages received by multiple gateways.<br>The default is None.|
+|rX1DROffset|integer(int32)¦null|false|none|Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.<br>Valid for OTAA devices.<br>If an invalid value is provided the network server will use default value 0.|
+|rX2DataRate|integer(int32)¦null|false|none|Allows setting a custom Datarate for second receive windows.<br>Valid for OTAA devices.<br>If an invalid value is provided the network server will use default value 0 (DR0).|
+|rxDelay|integer(int32)¦null|false|none|Allows setting a custom wait time between receiving and transmission as specified in the specification.|
+|abpRelaxMode|boolean¦null|false|none|Allows to disable the relax mode when using ABP.<br>By default relaxed mode is enabled.|
+|fCntUpStart|integer(int32)¦null|false|none|Allows to explicitly specify a frame counter up start value.<br>If the device joins, this value will be used to validate the first frame and initialize the server state for the device.|
+|fCntDownStart|integer(int32)¦null|false|none|Allows to explicitly specify a frame counter down start value.|
+|supports32BitFCnt|boolean¦null|false|none|Allow the usage of 32bit counters on your device.|
+|fCntResetCounter|integer(int32)¦null|false|none|Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.|
+|keepAliveTimeout|integer(int32)¦null|false|none|Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.<br>The default is none, which causes the connection to not be dropped.|
+|appKey|string¦null|false|none|The OTAA App Key.|
+|appSKey|string¦null|false|none|The APB AppSKey.|
+|nwkSKey|string¦null|false|none|The APB NwkSKey.|
+|devAddr|string¦null|false|none|Unique identifier that allows<br>the device to be recognized.|
 |alreadyLoggedInOnce|boolean|false|none|A value indicating whether the device has already joined the platform.|
+|dataRate|string¦null|false|none|The Device Current Datarate,<br>This value will be only reported if you are using Adaptive Data Rate.|
+|txPower|string¦null|false|none|The Device Current Transmit Power,<br>This value will be only reported if you are using Adaptive Data Rate.|
+|nbRep|string¦null|false|none|The Device Current repetition when transmitting.<br>E.g. if set to two, the device will transmit twice his upstream messages.<br>This value will be only reported if you are using Adaptive Data Rate.|
+|reportedRX2DataRate|string¦null|false|none|The Device Current Rx2Datarate.|
+|reportedRX1DROffset|string¦null|false|none|The Device Current RX1DROffset.|
+|reportedRXDelay|string¦null|false|none|The Device Current RXDelay.|
 
 <h2 id="tocS_LoRaDeviceModel">LoRaDeviceModel</h2>
 <!-- backwards compatibility -->
@@ -3405,8 +3559,21 @@ None
   "description": "string",
   "isBuiltin": true,
   "supportLoRaFeatures": true,
+  "useOTAA": true,
   "appEUI": "string",
-  "sensorDecoder": "string"
+  "sensorDecoder": "string",
+  "downlink": true,
+  "preferredWindow": 0,
+  "deduplication": "string",
+  "rX1DROffset": 0,
+  "rX2DataRate": 0,
+  "rxDelay": 0,
+  "abpRelaxMode": true,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
+  "supports32BitFCnt": true,
+  "fCntResetCounter": 0,
+  "keepAliveTimeout": 0
 }
 
 ```
@@ -3421,8 +3588,21 @@ None
 |description|string¦null|false|none|The device model description.|
 |isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
 |supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
-|appEUI|string|true|none|The device OTAA Application eui.|
-|sensorDecoder|string¦null|false|none|The sensor decoder Url.|
+|useOTAA|boolean|false|none|The status of OTAA setting.|
+|appEUI|string¦null|false|none|The device OTAA Application eui.|
+|sensorDecoder|string¦null|false|none|The sensor decoder API Url.|
+|downlink|boolean¦null|false|none|Allows disabling the downstream (cloud to device) for a device.<br>By default downstream messages are enabled.|
+|preferredWindow|integer(int32)¦null|false|none|Allows setting the device preferred receive window (RX1 or RX2).<br>The default preferred receive window is 1.|
+|deduplication|string¦null|false|none|Allows controlling the handling of duplicate messages received by multiple gateways.<br>The default is None.|
+|rX1DROffset|integer(int32)¦null|false|none|Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.<br>Valid for OTAA devices.<br>If an invalid value is provided the network server will use default value 0.|
+|rX2DataRate|integer(int32)¦null|false|none|Allows setting a custom Datarate for second receive windows.<br>Valid for OTAA devices.<br>If an invalid value is provided the network server will use default value 0 (DR0).|
+|rxDelay|integer(int32)¦null|false|none|Allows setting a custom wait time between receiving and transmission as specified in the specification.|
+|abpRelaxMode|boolean¦null|false|none|Allows to disable the relax mode when using ABP.<br>By default relaxed mode is enabled.|
+|fCntUpStart|integer(int32)¦null|false|none|Allows to explicitly specify a frame counter up start value.<br>If the device joins, this value will be used to validate the first frame and initialize the server state for the device.|
+|fCntDownStart|integer(int32)¦null|false|none|Allows to explicitly specify a frame counter down start value.|
+|supports32BitFCnt|boolean¦null|false|none|Allow the usage of 32bit counters on your device.|
+|fCntResetCounter|integer(int32)¦null|false|none|Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.|
+|keepAliveTimeout|integer(int32)¦null|false|none|Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.<br>The default is none, which causes the connection to not be dropped.|
 
 <h2 id="tocS_ProblemDetails">ProblemDetails</h2>
 <!-- backwards compatibility -->
