@@ -16,7 +16,7 @@
     <PackageReference Include="Azure.Data.Tables" Version="12.4.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
     <PackageReference Include="Microsoft.Azure.Devices" Version="1.37.0" />
     <PackageReference Include="Microsoft.Azure.Devices.Provisioning.Service" Version="1.18.1" />
@@ -38,7 +38,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" NoWarn="NU1605" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.2" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.3" NoWarn="NU1605" />
     <PackageReference Include="Microsoft.Identity.Web" Version="1.23.0" />
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.23.0" />
   </ItemGroup>
