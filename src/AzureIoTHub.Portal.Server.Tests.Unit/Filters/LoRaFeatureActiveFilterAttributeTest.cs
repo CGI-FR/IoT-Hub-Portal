@@ -1,22 +1,20 @@
-﻿using AzureIoTHub.Portal.Server.Filters;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static AzureIoTHub.Portal.Server.Startup;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Filters
 {
+    using System;
+    using System.Collections.Generic;
+    using AzureIoTHub.Portal.Server.Filters;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Abstractions;
+    using Microsoft.AspNetCore.Mvc.Filters;
+    using Microsoft.AspNetCore.Routing;
+    using Moq;
+    using NUnit.Framework;
+    using static AzureIoTHub.Portal.Server.Startup;
+
     [TestFixture]
     public class LoRaFeatureActiveFilterAttributeTest
     {
@@ -32,25 +30,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Filters
             this.mockConfigHandler = this.mockRepository.Create<ConfigHandler>();
         }
 
-        private LoRaFeatureActiveFilterAttribute CreateAttributeFilter()
+        private static LoRaFeatureActiveFilterAttribute CreateAttributeFilter()
         {
             return new LoRaFeatureActiveFilterAttribute();
         }
 
         [Test]
-        public void When_LoRa_Is_Disabled_Should_Return_Http_400()
+        public void WhenLoRaIsDisabledShouldReturnHttp400()
         {
             // Arrange
-            this.mockConfigHandler
+            _ = this.mockConfigHandler
                 .SetupGet(c => c.IsLoRaEnabled)
                 .Returns(false);
 
             var serviceProviderMock = new Mock<IServiceProvider>();
-            serviceProviderMock.Setup(provider => provider.GetService(typeof(ConfigHandler)))
+            _ = serviceProviderMock.Setup(provider => provider.GetService(typeof(ConfigHandler)))
                 .Returns(this.mockConfigHandler.Object);
 
             var httpContextMock = new Mock<HttpContext>();
-            httpContextMock.SetupGet(context => context.RequestServices)
+            _ = httpContextMock.SetupGet(context => context.RequestServices)
                 .Returns(serviceProviderMock.Object);
 
             var actionContext = new ActionContext(
@@ -64,7 +62,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Filters
                 new Dictionary<string, object>(),
                 Mock.Of<Controller>());
 
-            var actionFilter = this.CreateAttributeFilter();
+            var actionFilter = CreateAttributeFilter();
 
             // Act
             actionFilter.OnActionExecuting(actionExecutingContext);
@@ -75,19 +73,19 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Filters
         }
 
         [Test]
-        public void When_LoRa_Is_Enabled_Should_Return_Null()
+        public void WhenLoRaIsEnabledShouldReturnNull()
         {
             // Arrange
-            this.mockConfigHandler
+            _ = this.mockConfigHandler
                 .SetupGet(c => c.IsLoRaEnabled)
                 .Returns(true);
 
             var serviceProviderMock = new Mock<IServiceProvider>();
-            serviceProviderMock.Setup(provider => provider.GetService(typeof(ConfigHandler)))
+            _ = serviceProviderMock.Setup(provider => provider.GetService(typeof(ConfigHandler)))
                 .Returns(this.mockConfigHandler.Object);
 
             var httpContextMock = new Mock<HttpContext>();
-            httpContextMock.SetupGet(context => context.RequestServices)
+            _ = httpContextMock.SetupGet(context => context.RequestServices)
                 .Returns(serviceProviderMock.Object);
 
             var actionContext = new ActionContext(
@@ -101,7 +99,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Filters
                 new Dictionary<string, object>(),
                 Mock.Of<Controller>());
 
-            var actionFilter = this.CreateAttributeFilter();
+            var actionFilter = CreateAttributeFilter();
 
             // Act
             actionFilter.OnActionExecuting(actionExecutingContext);

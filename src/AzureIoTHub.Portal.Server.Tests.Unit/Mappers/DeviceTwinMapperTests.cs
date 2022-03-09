@@ -1,18 +1,20 @@
-﻿using AzureIoTHub.Portal.Server.Factories;
-using AzureIoTHub.Portal.Server.Managers;
-using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Shared.Models.V10.Device;
-using AzureIoTHub.Portal.Server.Extensions;
-using Microsoft.Azure.Devices.Shared;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
-using AzureIoTHub.Portal.Server.Helpers;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 {
+    using System;
+    using System.Collections.Generic;
+    using AzureIoTHub.Portal.Server.Extensions;
+    using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Helpers;
+    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using Microsoft.Azure.Devices.Shared;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class DeviceTwinMapperTests
     {
@@ -39,11 +41,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         }
 
         [Test]
-        public void CreateDeviceDetails_StateUnderTest_ExpectedBehavior()
+        public void CreateDeviceDetailsStateUnderTestExpectedBehavior()
         {
             // Arrange
             var deviceTwinMapper = this.CreateDeviceTwinMapper();
-            Twin twin = new Twin
+            var twin = new Twin
             {
                 DeviceId = Guid.NewGuid().ToString()
             };
@@ -52,7 +54,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
             twin.Tags["assetId"] = Guid.NewGuid().ToString();
             twin.Tags["locationCode"] = Guid.NewGuid().ToString();
-            List<string> tagsNames = new List<string>() { "assetId", "locationCode" };
+            var tagsNames = new List<string>() { "assetId", "locationCode" };
 
             twin.Properties.Reported["DevAddr"] = Guid.NewGuid().ToString();
 
@@ -71,7 +73,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
             Assert.AreEqual(twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()].ToString(), result.ModelId);
 
-            foreach (string tagName in tagsNames)
+            foreach (var tagName in tagsNames)
             {
                 Assert.AreEqual(twin.Tags[tagName.ToCamelCase()].ToString(), result.CustomTags[tagName]);
             }
@@ -83,11 +85,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         }
 
         [Test]
-        public void CreateDeviceDetails_NullTagList_ExpectedBehavior()
+        public void CreateDeviceDetailsNullTagListExpectedBehavior()
         {
             // Arrange
             var deviceTwinMapper = this.CreateDeviceTwinMapper();
-            Twin twin = new Twin
+            var twin = new Twin
             {
                 DeviceId = Guid.NewGuid().ToString()
             };
@@ -122,7 +124,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         }
 
         [Test]
-        public void CreateDeviceListItem_StateUnderTest_ExpectedBehavior()
+        public void CreateDeviceListItemStateUnderTestExpectedBehavior()
         {
             // Arrange
             var deviceTwinMapper = this.CreateDeviceTwinMapper();
@@ -131,7 +133,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
                 .Returns("http://fake.local/000-000-001")
                 .Verifiable();
 
-            Twin twin = new Twin
+            var twin = new Twin
             {
                 DeviceId = Guid.NewGuid().ToString()
             };
@@ -154,12 +156,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         }
 
         [Test]
-        public void UpdateTwin_StateUnderTest_ExpectedBehavior()
+        public void UpdateTwinStateUnderTestExpectedBehavior()
         {
             // Arrange
             var deviceTwinMapper = this.CreateDeviceTwinMapper();
-            Twin twin = new Twin();
-            DeviceDetails item = new DeviceDetails
+            var twin = new Twin();
+            var item = new DeviceDetails
             {
                 ModelId = Guid.NewGuid().ToString(),
                 CustomTags = new()
@@ -173,7 +175,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
             twin.Tags["assetId"] = Guid.NewGuid().ToString();
             twin.Tags["locationCode"] = Guid.NewGuid().ToString();
-            List<string> tagsNames = new List<string>() { "assetId", "locationCode" };
+            var tagsNames = new List<string>() { "assetId", "locationCode" };
 
             // Act
             deviceTwinMapper.UpdateTwin(twin, item);
@@ -181,7 +183,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             // Assert
             Assert.AreEqual(item.ModelId, twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()].ToString());
 
-            foreach (string tagName in tagsNames)
+            foreach (var tagName in tagsNames)
             {
                 Assert.AreEqual(item.CustomTags[tagName], DeviceHelper.RetrieveTagValue(twin, tagName));
             }

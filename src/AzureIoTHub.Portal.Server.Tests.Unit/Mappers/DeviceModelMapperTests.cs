@@ -1,16 +1,16 @@
-﻿using Azure.Data.Tables;
-using AzureIoTHub.Portal.Server.Managers;
-using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Shared.Models.V10;
-using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
-using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 {
+    using System;
+    using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class DeviceModelMapperTests
     {
@@ -35,13 +35,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         }
 
         [Test]
-        public void CreateDeviceModel_StateUnderTest_ExpectedBehavior()
+        public void CreateDeviceModelStateUnderTestExpectedBehavior()
         {
             // Arrange
             var deviceModelMapper = this.CreateDeviceModelMapper();
-            var entity = new TableEntity();
-
-            entity.RowKey = "000-000-001";
+            var entity = new TableEntity
+            {
+                RowKey = "000-000-001"
+            };
             entity["Name"] = "DeviceModelName";
             entity["Description"] = "aaa";
             entity["AppEUI"] = "AppEUI";
@@ -63,13 +64,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         }
 
         [Test]
-        public void CreateDeviceModelListItem_StateUnderTest_ExpectedBehavior()
+        public void CreateDeviceModelListItemStateUnderTestExpectedBehavior()
         {
             // Arrange
             var deviceModelMapper = this.CreateDeviceModelMapper();
-            var entity = new TableEntity();
-
-            entity.RowKey = "000-000-001";
+            var entity = new TableEntity
+            {
+                RowKey = "000-000-001"
+            };
             entity["Name"] = "DeviceModelName";
             entity["Description"] = "aaa";
             entity["AppEUI"] = "AppEUI";
@@ -91,19 +93,19 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         }
 
         [Test]
-        public void UpdateTableEntity_StateUnderTest_ExpectedBehavior()
+        public void UpdateTableEntityStateUnderTestExpectedBehavior()
         {
             // Arrange
             var deviceModelMapper = this.CreateDeviceModelMapper();
-            TableEntity entity = new TableEntity();
-            DeviceModel model = new DeviceModel
+            var entity = new TableEntity();
+            var model = new DeviceModel
             {
                 Name = "DeviceModelName",
                 Description = "Description"
             };
 
             // Act
-            deviceModelMapper.UpdateTableEntity(
+            _ = deviceModelMapper.UpdateTableEntity(
                 entity,
                 model);
 

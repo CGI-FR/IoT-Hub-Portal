@@ -3,6 +3,8 @@
 
 namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator
 {
+    using Newtonsoft.Json;
+
     public class Channel
     {
         /// <summary>
@@ -33,6 +35,7 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator
         /// <summary>
         /// The spread factor.
         /// </summary>
-        public int Spread_factor { get; set; }
+        [JsonProperty("Spread_factor")]
+        public int SpreadFactor { get; set; }
     }
 }

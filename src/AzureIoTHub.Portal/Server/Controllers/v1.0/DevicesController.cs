@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
@@ -27,7 +27,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper,
             ITableClientFactory tableClientFactory)
-            : base (logger, devicesService, deviceTagService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
+            : base(logger, devicesService, deviceTagService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
         {
 
         }
@@ -37,9 +37,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GET Device list")]
-        public override Task<IEnumerable<DeviceListItem>> Get()
+        public override Task<IEnumerable<DeviceListItem>> GetItems()
         {
-            return base.Get();
+            return base.GetItems();
         }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceID">The device identifier.</param>
         /// <returns></returns>
         [HttpGet("{deviceID}", Name = "GET Device details")]
-        public override Task<DeviceDetails> Get(string deviceID)
+        public override Task<DeviceDetails> GetItem(string deviceID)
         {
-            return base.Get(deviceID);
+            return base.GetItem(deviceID);
         }
 
         /// <summary>

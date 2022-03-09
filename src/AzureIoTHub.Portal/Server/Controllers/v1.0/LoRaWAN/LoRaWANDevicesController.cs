@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
@@ -14,10 +14,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
     using System.Threading.Tasks;
 
     [ApiController]
@@ -52,9 +50,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GET LoRaWAN device list")]
-        public override Task<IEnumerable<DeviceListItem>> Get()
+        public override Task<IEnumerable<DeviceListItem>> GetItems()
         {
-            return base.Get();
+            return base.GetItems();
         }
 
         /// <summary>
@@ -63,9 +61,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceID">The device identifier.</param>
         /// <returns></returns>
         [HttpGet("{deviceID}", Name = "GET LoRaWAN device details")]
-        public override Task<LoRaDeviceDetails> Get(string deviceID)
+        public override Task<LoRaDeviceDetails> GetItem(string deviceID)
         {
-            return base.Get(deviceID);
+            return base.GetItem(deviceID);
         }
 
         /// <summary>
@@ -122,12 +120,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             if (!result.IsSuccessStatusCode)
             {
-                this.logger.LogError($"{deviceId} - Execute command on device failed \n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}");
+                this.Logger.LogError($"{deviceId} - Execute command on device failed \n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}");
 
                 return this.BadRequest("Something went wrong when executing the command.");
             }
 
-            this.logger.LogInformation($"{deviceId} - Execute command: \n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}");
+            this.Logger.LogInformation($"{deviceId} - Execute command: \n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}");
 
             return this.Ok();
         }

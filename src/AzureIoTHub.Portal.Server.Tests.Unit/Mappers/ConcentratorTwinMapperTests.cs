@@ -1,19 +1,22 @@
-﻿using AzureIoTHub.Portal.Server.Extensions;
-using AzureIoTHub.Portal.Server.Helpers;
-using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator;
-using Microsoft.Azure.Devices.Shared;
-using Microsoft.Extensions.Configuration;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Net.Http;
-using System.Text;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 {
+    using AzureIoTHub.Portal.Server.Extensions;
+    using AzureIoTHub.Portal.Server.Helpers;
+    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator;
+    using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Extensions.Configuration;
+    using Moq;
+    using NUnit.Framework;
+    using System;
+    using System.Net.Http;
+    using System.Text;
+
     [TestFixture]
-    public class ConcentratorTwinMapperTests
+    public class ConcentratorTwinMapperTests : IDisposable
     {
         private MockRepository mockRepository;
 
@@ -31,17 +34,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             this.mockHttpClient = new HttpClient(this.httpMessageHandlerMock.Object);
         }
 
-        private ConcentratorTwinMapper CreateConcentratorTwinMapper()
+        private static ConcentratorTwinMapper CreateConcentratorTwinMapper()
         {
             return new ConcentratorTwinMapper();
         }
 
         [Test]
-        public void CreateDeviceDetails_StateUnderTest_ExpectedBehavior()
+        public void CreateDeviceDetailsStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var concentratorTwinMapper = this.CreateConcentratorTwinMapper();
-            Twin twin = new Twin
+            var concentratorTwinMapper = CreateConcentratorTwinMapper();
+            var twin = new Twin
             {
                 DeviceId = Guid.NewGuid().ToString()
             };
@@ -74,14 +77,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         }
 
         [Test]
-        public void UpdateTwin_StateUnderTest_ExpectedBehavior()
+        public void UpdateTwinStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var concentratorTwinMapper = this.CreateConcentratorTwinMapper();
+            var concentratorTwinMapper = CreateConcentratorTwinMapper();
 
-            Twin twin = new Twin();
+            var twin = new Twin();
 
-            Concentrator item = new Concentrator
+            var item = new Concentrator
             {
                 LoraRegion = Guid.NewGuid().ToString(),
                 DeviceName = Guid.NewGuid().ToString(),
@@ -102,7 +105,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             //     .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.RequestUri.LocalPath.Equals($"/{item.LoraRegion}.json", StringComparison.OrdinalIgnoreCase)), ItExpr.IsAny<CancellationToken>())
             //     .ReturnsAsync((HttpRequestMessage req, CancellationToken token) => deviceResponseMock)
             //     .Verifiable();
-            
+
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
             DeviceHelper.SetTagValue(twin, nameof(item.LoraRegion), item.LoraRegion);
@@ -120,6 +123,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             Assert.AreEqual(item.ClientCertificateThumbprint, twin.Properties.Desired[nameof(Concentrator.ClientCertificateThumbprint)].ToString());
 
             this.mockRepository.VerifyAll();
+        }
+
+        public void Dispose()
+        {
+            this.mockHttpClient?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

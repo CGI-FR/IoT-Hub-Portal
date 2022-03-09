@@ -46,9 +46,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <returns>An array representing the device models.</returns>
         [HttpGet(Name = "GET Device model list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public override ActionResult<IEnumerable<DeviceModel>> Get()
+        public override ActionResult<IEnumerable<DeviceModel>> GetItems()
         {
-            return base.Get();
+            return base.GetItems();
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpGet("{id}", Name = "GET Device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override ActionResult<DeviceModel> Get(string id)
+        public override ActionResult<DeviceModel> GetItem(string id)
         {
-            return base.Get(id);
+            return base.GetItem(id);
         }
 
         /// <summary>

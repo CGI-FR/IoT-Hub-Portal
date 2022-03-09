@@ -1,16 +1,19 @@
-﻿using AzureIoTHub.Portal.Server.Controllers.V10;
-using AzureIoTHub.Portal.Server.Services;
-using Microsoft.Azure.Devices;
-using Moq;
-using Newtonsoft.Json.Linq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 {
+    using AzureIoTHub.Portal.Server.Controllers.V10;
+    using AzureIoTHub.Portal.Server.Services;
+    using Microsoft.Azure.Devices;
+    using Moq;
+    using Newtonsoft.Json.Linq;
+    using NUnit.Framework;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     [TestFixture]
     public class EdgeConfigurationsControllerTests
     {
@@ -33,13 +36,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task Get_AllConfiguration_Should_Return_Config_ListItems()
+        public async Task GetAllConfigurationShouldReturnConfigListItems()
         {
             // Arrange
             var expected = GetModuleConfiguration(3).ToArray();
 
             var edgeConfigurationsController = this.CreateEdgeConfigurationsController();
-            this.mockConfigsServices.Setup(c => c.GetIoTEdgeConfigurations())
+            _ = this.mockConfigsServices.Setup(c => c.GetIoTEdgeConfigurations())
                 .ReturnsAsync(expected);
 
             // Act
@@ -47,9 +50,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(expected.Count(), result.Count());
+            Assert.AreEqual(expected.Length, result.Count());
 
-            for (int i = 0; i < expected.Count(); i++)
+            for (var i = 0; i < expected.Length; i++)
             {
                 var expectedItem = expected.ElementAt(i);
                 var resultItem = result.ElementAt(i);
@@ -63,21 +66,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 Assert.AreEqual(expectedItem.SystemMetrics.Results["reportedSuccessfulCount"], resultItem.MetricsSuccess);
                 Assert.AreEqual(expectedItem.SystemMetrics.Results["reportedFailedCount"], resultItem.MetricsFailure);
 
-                Assert.AreEqual(1, resultItem.Modules.Count());
-
+                Assert.AreEqual(1, resultItem.Modules.Count);
             }
 
             this.mockRepository.VerifyAll();
         }
 
         [Test]
-        public async Task Get_Configuration_Should_Return_The_Configuration()
+        public async Task GetConfigurationShouldReturnTheConfiguration()
         {
             // Arrange
             var expected = GetModuleConfiguration(1).Single();
 
             var edgeConfigurationsController = this.CreateEdgeConfigurationsController();
-            this.mockConfigsServices.Setup(c => c.GetConfigItem(expected.Id))
+            _ = this.mockConfigsServices.Setup(c => c.GetConfigItem(expected.Id))
                 .ReturnsAsync(expected);
 
             // Act
@@ -94,12 +96,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             Assert.AreEqual(expected.SystemMetrics.Results["reportedSuccessfulCount"], result.MetricsSuccess);
             Assert.AreEqual(expected.SystemMetrics.Results["reportedFailedCount"], result.MetricsFailure);
 
-            Assert.AreEqual(4, result.Modules.Count());
+            Assert.AreEqual(4, result.Modules.Count);
 
             var firstModule = result.Modules.First();
             Assert.IsNotNull(firstModule);
 
-            Assert.AreEqual(4, firstModule.EnvironmentVariables.Count());
+            Assert.AreEqual(4, firstModule.EnvironmentVariables.Count);
             Assert.AreEqual("LoRaWanNetworkSrvModule", firstModule.ModuleName);
             Assert.AreEqual("running", firstModule.Status);
             Assert.AreEqual("loraedge/lorawannetworksrvmodule:2.0.0", firstModule.Version);
@@ -107,19 +109,19 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             this.mockRepository.VerifyAll();
         }
 
-        private IEnumerable<Configuration> GetModuleConfiguration(int count)
+        private static IEnumerable<Configuration> GetModuleConfiguration(int count)
         {
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 var configuration = new Configuration(Guid.NewGuid().ToString())
                 {
                     Content = new ConfigurationContent(),
                 };
 
-                configuration.SystemMetrics.Results.TryAdd("targetedCount", Random.Shared.Next());
-                configuration.SystemMetrics.Results.TryAdd("appliedCount", Random.Shared.Next());
-                configuration.SystemMetrics.Results.TryAdd("reportedSuccessfulCount", Random.Shared.Next());
-                configuration.SystemMetrics.Results.TryAdd("reportedFailedCount", Random.Shared.Next());
+                _ = configuration.SystemMetrics.Results.TryAdd("targetedCount", Random.Shared.Next());
+                _ = configuration.SystemMetrics.Results.TryAdd("appliedCount", Random.Shared.Next());
+                _ = configuration.SystemMetrics.Results.TryAdd("reportedSuccessfulCount", Random.Shared.Next());
+                _ = configuration.SystemMetrics.Results.TryAdd("reportedFailedCount", Random.Shared.Next());
 
                 configuration.Priority = Random.Shared.Next();
                 configuration.TargetCondition = Guid.NewGuid().ToString();

@@ -1,32 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using AzureIoTHub.Portal.Client.Pages.DeviceModels;
-using AzureIoTHub.Portal.Client.Pages.Devices;
-using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
-using AzureIoTHub.Portal.Shared.Models.V10.Device;
-using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
-using Bunit;
-using Bunit.TestDoubles;
-using FluentAssertions.Extensions;
-using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using Moq.Protected;
-using MudBlazor;
-using MudBlazor.Interop;
-using MudBlazor.Services;
-using NUnit.Framework;
-using RichardSzalay.MockHttp;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 {
+    using System;
+    using System.Net.Http;
+    using AzureIoTHub.Portal.Client.Pages.DeviceModels;
+    using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
+    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+    using Bunit;
+    using Bunit.TestDoubles;
+    using Microsoft.AspNetCore.Components;
+    using Microsoft.Extensions.DependencyInjection;
+    using Moq;
+    using MudBlazor;
+    using MudBlazor.Interop;
+    using MudBlazor.Services;
+    using NUnit.Framework;
+    using RichardSzalay.MockHttp;
+
     [TestFixture]
-    public class DeviceModelListPageTests
+    public class DeviceModelListPageTests : IDisposable
     {
         private Bunit.TestContext testContext;
 
@@ -35,8 +29,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         private FakeNavigationManager mockNavigationManager;
         private MockHttpMessageHandler mockHttpClient;
 
-        private string apiBaseUrl = "/api/models";
-        private string apiSettingsBaseUrl = "/api/settings/lora";
+        private readonly string apiBaseUrl = "/api/models";
+        private readonly string apiSettingsBaseUrl = "/api/settings/lora";
 
         [SetUp]
         public void SetUp()
@@ -48,13 +42,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             this.mockHttpClient = testContext.Services.AddMockHttpClient();
 
-            testContext.Services.AddSingleton(this.mockDialogService.Object);
+            _ = testContext.Services.AddSingleton(this.mockDialogService.Object);
 
-            testContext.Services.AddMudServices();
+            _ = testContext.Services.AddMudServices();
 
-            testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
-            testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
+            _ = testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
+            _ = testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
+            _ = testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
 
             mockNavigationManager = testContext.Services.GetRequiredService<FakeNavigationManager>();
         }
@@ -66,12 +60,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public void When_Lora_Feature_enable_device_detail_link_Should_contain_lora()
+        public void WhenLoraFeatureEnableDeviceDetailLinkShouldContainLora()
         {
             // Arrange
-            string deviceId = Guid.NewGuid().ToString();
+            var deviceId = Guid.NewGuid().ToString();
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiBaseUrl)
                 .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
@@ -94,12 +88,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public void When_Lora_Feature_disable_device_detail_link_Should_not_contain_lora()
+        public void WhenLoraFeatureDisableDeviceDetailLinkShouldNotContainLora()
         {
             // Arrange
-            string deviceId = Guid.NewGuid().ToString();
+            var deviceId = Guid.NewGuid().ToString();
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiBaseUrl)
                 .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
@@ -119,6 +113,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             {
                 Assert.AreEqual($"device-models/{deviceId}", item.GetAttribute("href"));
             }
+        }
+
+        public void Dispose()
+        {
+            this.mockHttpClient?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

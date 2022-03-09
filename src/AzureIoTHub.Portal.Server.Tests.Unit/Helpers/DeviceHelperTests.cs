@@ -1,24 +1,23 @@
-﻿using AzureIoTHub.Portal.Server.Helpers;
-using Microsoft.Azure.Devices.Provisioning.Service;
-using Microsoft.Azure.Devices.Shared;
-using Moq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 {
+    using AzureIoTHub.Portal.Server.Helpers;
+    using Microsoft.Azure.Devices.Provisioning.Service;
+    using Microsoft.Azure.Devices.Shared;
+    using Newtonsoft.Json;
+    using NUnit.Framework;
+
     [TestFixture]
     public class DeviceHelperTests
     {
         [Test]
-        public void RetrieveSymmetricKey_Should_Return_Derived_Key()
+        public void RetrieveSymmetricKeyShouldReturnDerivedKey()
         {
             // Arrange
-            string deviceId = "sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6";
-            SymmetricKeyAttestation attestation =
+            var deviceId = "sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6";
+            var attestation =
                 new SymmetricKeyAttestation("8isrFI1sGsIlvvFSSFRiMfCNzv21fjbE/+ah/lSh3lF8e2YG1Te7w1KpZhJFFXJrqYKi9yegxkqIChbqOS9Egw==",
                                             "8isrFI1sGsIlvvFSSFRiMfCNzv21fjbE/+ah/lSh3lF8e2YG1Te7w1KpZhJFFXJrqYKi9yegxkqIChbqOS9Egw==");
             var expected = "Jsm0lyGpjaVYVP2g3FnmnmG9dI/9qU24wNoykUmermc=";
@@ -32,10 +31,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 
         [TestCase("myTagName")]
         [TestCase("MyTagName")]
-        public void RetrieveTagValue_Should_Find_CamelCased_Tag(string searchedTagName)
+        public void RetrieveTagValueShouldFindCamelCasedTag(string searchedTagName)
         {
             // Arrange
-            Twin item = new Twin();
+            var item = new Twin();
             item.Tags["myTagName"] = "bbb";
 
             // Act
@@ -48,10 +47,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test()]
-        public void When_Not_Present_RetrieveTagValue_Should_Return_Null()
+        public void WhenNotPresentRetrieveTagValueShouldReturnNull()
         {
             // Arrange
-            Twin item = new Twin();
+            var item = new Twin();
             item.Tags["myTagName"] = "bbb";
 
             // Act
@@ -65,12 +64,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 
         [TestCase("myTagName")]
         [TestCase("MyTagName")]
-        public void SetTagValue_ShouldRegister_Tag_With_CamelCase(string registeredTagName)
+        public void SetTagValueShouldRegisterTagWithCamelCase(string registeredTagName)
         {
             // Arrange
-            Twin item = new Twin();
-            string expectedTagName = "myTagName";
-            string value = string.Empty;
+            var item = new Twin();
+            var expectedTagName = "myTagName";
+            var value = string.Empty;
 
             // Act
             DeviceHelper.SetTagValue(item, registeredTagName, value);
@@ -80,12 +79,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
-        public void RetrieveDesiredPropertyValue_Should_Return_Desired_Property()
+        public void RetrieveDesiredPropertyValueShouldReturnDesiredProperty()
         {
             // Arrange
-            Twin twin = new Twin();
+            var twin = new Twin();
 
-            string propertyName = "propName";
+            var propertyName = "propName";
             twin.Properties.Desired[propertyName] = "bbb";
 
             // Act
@@ -96,12 +95,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
-        public void When_Property_Not_Exist_RetrieveDesiredPropertyValue_Should_Return_Null()
+        public void WhenPropertyNotExistRetrieveDesiredPropertyValueShouldReturnNull()
         {
             // Arrange
-            Twin twin = new Twin();
+            var twin = new Twin();
 
-            string propertyName = "propName";
+            var propertyName = "propName";
 
             // Act
             var result = DeviceHelper.RetrieveDesiredPropertyValue(twin, propertyName);
@@ -111,12 +110,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
-        public void RetrieveReportedPropertyValue_Should_Return_Reported_Property()
+        public void RetrieveReportedPropertyValueShouldReturnReportedProperty()
         {
             // Arrange
-            Twin twin = new Twin();
+            var twin = new Twin();
 
-            string propertyName = "propName";
+            var propertyName = "propName";
             twin.Properties.Reported[propertyName] = "bbb";
 
             // Act
@@ -127,12 +126,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
-        public void When_Property_Not_Exist_RetrieveReportedPropertyValue_Should_Return_Null()
+        public void WhenPropertyNotExistRetrieveReportedPropertyValueShouldReturnNull()
         {
             // Arrange
-            Twin twin = new Twin();
+            var twin = new Twin();
 
-            string propertyName = "propName";
+            var propertyName = "propName";
 
             // Act
             var result = DeviceHelper.RetrieveReportedPropertyValue(twin, propertyName);
@@ -142,10 +141,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
-        public void RetrieveConnectedDeviceCount_Should_Return_Client_Array_Count_From_Reported_Property()
+        public void RetrieveConnectedDeviceCountShouldReturnClientArrayCountFromReportedProperty()
         {
             // Arrange
-            Twin twin = new Twin();
+            var twin = new Twin();
             twin.Properties.Reported["clients"] = new object[12];
 
             // Act
@@ -156,10 +155,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
-        public void When_Property_Not_Exist_RetrieveConnectedDeviceCount_Should_Return_0()
+        public void WhenPropertyNotExistRetrieveConnectedDeviceCountShouldReturn0()
         {
             // Arrange
-            Twin twin = new Twin();
+            var twin = new Twin();
 
             // Act
             var result = DeviceHelper.RetrieveConnectedDeviceCount(twin);
@@ -170,11 +169,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 
 
         [Test]
-        public void RetrieveNbModuleCount_Should_Return_Module_Array_Count_From_Desired_Property()
+        public void RetrieveNbModuleCountShouldReturnModuleArrayCountFromDesiredProperty()
         {
             // Arrange
             var deviceId = "aaa";
-            Twin twin = new Twin(deviceId);
+            var twin = new Twin(deviceId);
             twin.Properties.Desired["modules"] = new object[12];
 
             // Act
@@ -185,11 +184,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
-        public void When_Twin_Is_Different_Device_Id_RetrieveNbModuleCount_Should_Return_0()
+        public void WhenTwinIsDifferentDeviceIdRetrieveNbModuleCountShouldReturn0()
         {
             // Arrange
             var deviceId = "aaa";
-            Twin twin = new Twin();
+            var twin = new Twin();
             twin.Properties.Desired["modules"] = new object[12];
 
             // Act
@@ -200,11 +199,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
-        public void When_Property_Not_Exist_RetrieveNbModuleCount_Should_Return_0()
+        public void WhenPropertyNotExistRetrieveNbModuleCountShouldReturn0()
         {
             // Arrange
             var deviceId = "aaa";
-            Twin twin = new Twin(deviceId);
+            var twin = new Twin(deviceId);
 
             // Act
             var result = DeviceHelper.RetrieveNbModuleCount(twin, deviceId);
@@ -215,15 +214,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 
         [TestCase("unknown")]
         [TestCase("running")]
-        public void RetrieveRuntimeResponse_Should_Return_Edge_Agent_System_Module_Runtime_Status(string runtimeStatus)
+        public void RetrieveRuntimeResponseShouldReturnEdgeAgentSystemModuleRuntimeStatus(string runtimeStatus)
         {
             // Arrange
-            Twin twin = new Twin();
+            var twin = new Twin();
             twin.Properties.Reported["systemModules"] = new
             {
                 edgeAgent = new
                 {
-                    runtimeStatus = runtimeStatus
+                    runtimeStatus
                 }
             };
 
@@ -237,10 +236,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
-        public void When_SystemModules_Not_Exist_RetrieveRuntimeResponse_Should_Return_Empty_String()
+        public void WhenSystemModulesNotExistRetrieveRuntimeResponseShouldReturnEmptyString()
         {
             // Arrange
-            Twin twin = new Twin();
+            var twin = new Twin();
 
             // Act
             var result = DeviceHelper.RetrieveRuntimeResponse(twin, "aaa");
@@ -250,10 +249,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
-        public void When_EdgeAgent_Not_Exist_RetrieveRuntimeResponse_Should_Return_Empty_String()
+        public void WhenEdgeAgentNotExistRetrieveRuntimeResponseShouldReturnEmptyString()
         {
             // Arrange
-            Twin twin = new Twin();
+            var twin = new Twin();
             twin.Properties.Reported["systemModules"] = new
             {
             };
@@ -265,10 +264,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
-        public void When_RuntimeStatus_Not_Exist_RetrieveRuntimeResponse_Should_Return_Empty_String()
+        public void WhenRuntimeStatusNotExistRetrieveRuntimeResponseShouldReturnEmptyString()
         {
             // Arrange
-            Twin twin = new Twin();
+            var twin = new Twin();
             twin.Properties.Reported["systemModules"] = new
             {
                 edgeAgent = new
@@ -284,7 +283,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
-        public void RetrieveModuleList_Should_Return_Module_List()
+        public void RetrieveModuleListShouldReturnModuleList()
         {
             // Arrange
             var modulesJson = JsonConvert.SerializeObject(new
@@ -319,7 +318,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
-        public void When_Property_Not_Exist_RetrieveModuleList_Should_Return_Empty_List()
+        public void WhenPropertyNotExistRetrieveModuleListShouldReturnEmptyList()
         {
             // Arrange
             var moduleCount = 0;

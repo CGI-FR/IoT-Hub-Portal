@@ -1,17 +1,20 @@
-﻿using AzureIoTHub.Portal.Server.Managers;
-using Moq;
-using Moq.Protected;
-using NUnit.Framework;
-using System;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
 {
+    using AzureIoTHub.Portal.Server.Managers;
+    using Moq;
+    using Moq.Protected;
+    using NUnit.Framework;
+    using System;
+    using System.Net.Http;
+    using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     [TestFixture]
-    public class RouterConfigManagerTests
+    public class RouterConfigManagerTests : IDisposable
     {
         private MockRepository mockRepository;
 
@@ -36,7 +39,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         }
 
         [Test]
-        public async Task GetRouterConfig_StateUnderTest_ExpectedBehavior()
+        public async Task GetRouterConfigStateUnderTestExpectedBehavior()
         {
             // Arrange
             var routerConfig = CreateManager();
@@ -57,6 +60,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
 
             // Assert
             Assert.IsNotNull(result);
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
     }
 }

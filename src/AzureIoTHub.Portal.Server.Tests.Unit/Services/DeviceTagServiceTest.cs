@@ -1,21 +1,23 @@
-﻿using Azure;
-using Azure.Data.Tables;
-using AzureIoTHub.Portal.Server.Factories;
-using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Server.Services;
-using AzureIoTHub.Portal.Shared.Models.V10.Device;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Azure;
+    using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using Moq;
+    using NUnit.Framework;
+
+
     [TestFixture]
     public class DeviceTagServiceTest
     {
@@ -41,11 +43,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public async Task Update_Should_Create_New_Entity()
+        public async Task UpdateShouldCreateNewEntity()
         {
             var deviceTagService = this.CreateDeviceTagService();
 
-            DeviceTag tag = new DeviceTag
+            var tag = new DeviceTag
             {
                 Name = "testName",
                 Label = "testLabel",
@@ -55,16 +57,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             var mockResponse = this.mockRepository.Create<Response>();
 
-            this.mockDeviceTagMapper.Setup(c => c.UpdateTableEntity(
+            _ = this.mockDeviceTagMapper.Setup(c => c.UpdateTableEntity(
                It.Is<TableEntity>(x => x.RowKey == tag.Name && x.PartitionKey == DeviceTagService.DefaultPartitionKey),
                It.Is<DeviceTag>(x => x == tag)));
 
-            this.mockDeviceTagTableClient.Setup(c => c.AddEntityAsync(
+            _ = this.mockDeviceTagTableClient.Setup(c => c.AddEntityAsync(
                 It.Is<TableEntity>(x => x.PartitionKey == DeviceTagService.DefaultPartitionKey && x.RowKey == tag.Name),
                 It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mockResponse.Object);
 
-            this.mockDeviceTagTableClient.Setup(c => c.Query<TableEntity>(
+            _ = this.mockDeviceTagTableClient.Setup(c => c.Query<TableEntity>(
                 It.Is<string>(x => true),
                 It.IsAny<int?>(),
                 It.IsAny<IEnumerable<string>>(),
@@ -76,14 +78,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                     }, null, mockResponse.Object)
                 }));
 
-            this.mockDeviceTagTableClient.Setup(c => c.DeleteEntityAsync(
+            _ = this.mockDeviceTagTableClient.Setup(c => c.DeleteEntityAsync(
                 It.Is<string>(x => true),
                 It.IsAny<string>(),
                 It.IsAny<ETag>(),
                 It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mockResponse.Object);
 
-            this.mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
                 .Returns(mockDeviceTagTableClient.Object);
 
             // Act
@@ -102,7 +104,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public void GetAllTags_Should_Return_A_List()
+        public void GetAllTagsShouldReturnAList()
         {
             // Arrange
             var deviceTagService = this.CreateDeviceTagService();
@@ -110,24 +112,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             var mockTableResponse = this.mockRepository.Create<Pageable<TableEntity>>();
             var mockEnumerator = this.mockRepository.Create<IEnumerator<TableEntity>>();
-            mockEnumerator.Setup(x => x.Dispose()).Callback(() => { });
-            mockEnumerator.Setup(x => x.MoveNext()).Returns(() =>
+            _ = mockEnumerator.Setup(x => x.Dispose()).Callback(() => { });
+            _ = mockEnumerator.Setup(x => x.MoveNext()).Returns(() =>
             {
                 return returnedIndex-- > 0;
             });
 
-            mockEnumerator.Setup(x => x.Current)
+            _ = mockEnumerator.Setup(x => x.Current)
                 .Returns(new TableEntity(DeviceTagService.DefaultPartitionKey, "test"));
 
-            mockTableResponse.Setup(x => x.GetEnumerator()).Returns(mockEnumerator.Object);
+            _ = mockTableResponse.Setup(x => x.GetEnumerator()).Returns(mockEnumerator.Object);
 
-            mockDeviceTagTableClient.Setup(c => c.Query<TableEntity>(It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+            _ = mockDeviceTagTableClient.Setup(c => c.Query<TableEntity>(It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
                 .Returns(mockTableResponse.Object);
 
-            mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
+            _ = mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
                 .Returns(mockDeviceTagTableClient.Object);
 
-            mockDeviceTagMapper.Setup(c => c.GetDeviceTag(It.IsAny<TableEntity>()))
+            _ = mockDeviceTagMapper.Setup(c => c.GetDeviceTag(It.IsAny<TableEntity>()))
                 .Returns((TableEntity entity) => new DeviceTag
                 {
                     Name = Guid.NewGuid().ToString(),
@@ -148,7 +150,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public void GetAllTagsNames_Should_Return_A_List()
+        public void GetAllTagsNamesShouldReturnAList()
         {
             // Arrange
             var deviceTagService = this.CreateDeviceTagService();
@@ -156,24 +158,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             var mockTableResponse = this.mockRepository.Create<Pageable<TableEntity>>();
             var mockEnumerator = this.mockRepository.Create<IEnumerator<TableEntity>>();
-            mockEnumerator.Setup(x => x.Dispose()).Callback(() => { });
-            mockEnumerator.Setup(x => x.MoveNext()).Returns(() =>
+            _ = mockEnumerator.Setup(x => x.Dispose()).Callback(() => { });
+            _ = mockEnumerator.Setup(x => x.MoveNext()).Returns(() =>
             {
                 return returnedIndex-- > 0;
             });
 
-            mockEnumerator.Setup(x => x.Current)
+            _ = mockEnumerator.Setup(x => x.Current)
                 .Returns(new TableEntity(DeviceTagService.DefaultPartitionKey, "test"));
 
-            mockTableResponse.Setup(x => x.GetEnumerator()).Returns(mockEnumerator.Object);
+            _ = mockTableResponse.Setup(x => x.GetEnumerator()).Returns(mockEnumerator.Object);
 
-            mockDeviceTagTableClient.Setup(c => c.Query<TableEntity>(It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+            _ = mockDeviceTagTableClient.Setup(c => c.Query<TableEntity>(It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
                 .Returns(mockTableResponse.Object);
 
-            mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
+            _ = mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
                 .Returns(mockDeviceTagTableClient.Object);
 
-            mockDeviceTagMapper.Setup(c => c.GetDeviceTag(It.IsAny<TableEntity>()))
+            _ = mockDeviceTagMapper.Setup(c => c.GetDeviceTag(It.IsAny<TableEntity>()))
                 .Returns((TableEntity entity) => new DeviceTag
                 {
                     Name = Guid.NewGuid().ToString(),

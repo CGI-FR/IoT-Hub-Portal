@@ -1,8 +1,9 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Mappers
 {
+    using System.Globalization;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
 
@@ -19,7 +20,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             {
                 Name = entity.RowKey,
                 Frame = entity[nameof(DeviceModelCommand.Frame)].ToString(),
-                Port = int.Parse(entity[nameof(DeviceModelCommand.Port)].ToString()),
+                Port = int.Parse(entity[nameof(DeviceModelCommand.Port)].ToString(), CultureInfo.InvariantCulture),
                 IsBuiltin = bool.Parse(entity[nameof(DeviceModelCommand.IsBuiltin)]?.ToString() ?? "false"),
             };
         }

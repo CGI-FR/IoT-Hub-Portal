@@ -1,27 +1,30 @@
-﻿using Azure;
-using Azure.Data.Tables;
-using AzureIoTHub.Portal.Server.Controllers.V10;
-using AzureIoTHub.Portal.Server.Factories;
-using AzureIoTHub.Portal.Server.Managers;
-using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Server.Services;
-using AzureIoTHub.Portal.Shared.Models.V10;
-using AzureIoTHub.Portal.Shared.Models.V10.Device;
-using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Devices;
-using Microsoft.Azure.Devices.Shared;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Azure;
+    using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Server.Controllers.V10;
+    using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class DevicesControllerTests
     {
@@ -59,31 +62,31 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task GetList_StateUnderTest_ExpectedBehavior()
+        public async Task GetListStateUnderTestExpectedBehavior()
         {
             // Arrange
             var devicesController = this.CreateDevicesController();
-            int count = 100;
-            TwinCollection twinCollection = new TwinCollection();
+            var count = 100;
+            var twinCollection = new TwinCollection();
             twinCollection["deviceType"] = "test";
 
-            this.mockDeviceService.Setup(c => c.GetAllDevice(
+            _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
                     It.Is<string>(x => string.IsNullOrEmpty(x)),
                     It.Is<string>(x => x == "LoRa Concentrator")))
                 .ReturnsAsync(Enumerable.Range(0, 100).Select(x => new Twin
                 {
-                    DeviceId = x.ToString(),
+                    DeviceId = FormattableString.Invariant($"{x}"),
                     Tags = twinCollection
                 }));
 
-            this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceListItem(It.IsAny<Twin>()))
+            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceListItem(It.IsAny<Twin>()))
                 .Returns<Twin>(x => new DeviceListItem
                 {
                     DeviceID = x.DeviceId
                 });
 
             // Act
-            var result = await devicesController.Get();
+            var result = await devicesController.GetItems();
 
             // Assert
             Assert.IsNotNull(result);
@@ -92,26 +95,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task GetItem_StateUnderTest_ExpectedBehavior()
+        public async Task GetItemStateUnderTestExpectedBehavior()
         {
             // Arrange
             var devicesController = this.CreateDevicesController();
-            string deviceID = "aaa";
+            var deviceID = "aaa";
 
-            this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceID)))
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceID)))
                 .Returns<string>(x => Task.FromResult(new Twin(x)));
 
-            this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
+            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
                 .Returns<Twin, IEnumerable<string>>((x, y) => new DeviceDetails
                 {
                     DeviceID = x.DeviceId
                 });
 
-            this.mockDeviceTagService.Setup(c => c.GetAllTagsNames())
+            _ = this.mockDeviceTagService.Setup(c => c.GetAllTagsNames())
                 .Returns(new List<string>());
 
             // Act
-            var result = await devicesController.Get(deviceID);
+            var result = await devicesController.GetItem(deviceID);
 
             // Assert
             Assert.IsNotNull(result);
@@ -120,21 +123,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task CreateDeviceAsync_StateUnderTest_ExpectedBehavior()
+        public async Task CreateDeviceAsyncStateUnderTestExpectedBehavior()
         {
             // Arrange
             var devicesController = this.CreateDevicesController();
-            DeviceDetails device = new DeviceDetails
+            var device = new DeviceDetails
             {
                 DeviceID = "aaa",
             };
 
             Twin twin = null;
 
-            this.mockDeviceTwinMapper.Setup(c => c.UpdateTwin(It.Is<Twin>(x => x.DeviceId == device.DeviceID), It.Is<DeviceDetails>(x => x == device)))
+            _ = this.mockDeviceTwinMapper.Setup(c => c.UpdateTwin(It.Is<Twin>(x => x.DeviceId == device.DeviceID), It.Is<DeviceDetails>(x => x == device)))
                 .Callback<Twin, DeviceDetails>((t, d) => twin = t);
 
-            this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(It.Is<string>(x => x == device.DeviceID), It.Is<bool>(x => !x), It.Is<Twin>(x => x == twin), It.Is<DeviceStatus>(x => x == (device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled))))
+            _ = this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(It.Is<string>(x => x == device.DeviceID), It.Is<bool>(x => !x), It.Is<Twin>(x => x == twin), It.Is<DeviceStatus>(x => x == (device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled))))
                 .ReturnsAsync(new BulkRegistryOperationResult { IsSuccessful = true });
 
             // Act
@@ -147,11 +150,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task CreateDeviceAsync_ModelNotValid_ShouldReturnBadRequest()
+        public async Task CreateDeviceAsyncModelNotValidShouldReturnBadRequest()
         {
             // Arrange
             var devicesController = this.CreateDevicesController();
-            DeviceDetails device = new DeviceDetails
+            var device = new DeviceDetails
             {
                 DeviceID = "aaa",
             };
@@ -168,27 +171,27 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task UpdateDeviceAsync_StateUnderTest_ExpectedBehavior()
+        public async Task UpdateDeviceAsyncStateUnderTestExpectedBehavior()
         {
             // Arrange
             var devicesController = this.CreateDevicesController();
-            DeviceDetails device = new DeviceDetails
+            var device = new DeviceDetails
             {
                 DeviceID = "aaa"
             };
-            Device item = new Device(device.DeviceID);
-            Twin twin = new Twin(device.DeviceID);
+            var item = new Device(device.DeviceID);
+            var twin = new Twin(device.DeviceID);
 
-            this.mockDeviceService.Setup(c => c.GetDevice(It.Is<string>(x => x == device.DeviceID)))
+            _ = this.mockDeviceService.Setup(c => c.GetDevice(It.Is<string>(x => x == device.DeviceID)))
                 .ReturnsAsync(item);
-            this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == device.DeviceID)))
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == device.DeviceID)))
                 .ReturnsAsync(twin);
-            this.mockDeviceService.Setup(c => c.UpdateDevice(It.Is<Device>(x => x.Id == item.Id)))
+            _ = this.mockDeviceService.Setup(c => c.UpdateDevice(It.Is<Device>(x => x.Id == item.Id)))
                 .ReturnsAsync(item);
-            this.mockDeviceService.Setup(c => c.UpdateDeviceTwin(It.Is<string>(x => x == device.DeviceID), It.Is<Twin>(x => x.DeviceId == device.DeviceID)))
+            _ = this.mockDeviceService.Setup(c => c.UpdateDeviceTwin(It.Is<string>(x => x == device.DeviceID), It.Is<Twin>(x => x.DeviceId == device.DeviceID)))
                 .ReturnsAsync(twin);
 
-            this.mockDeviceTwinMapper.Setup(x => x.UpdateTwin(It.Is<Twin>(x => x == twin), It.Is<DeviceDetails>(x => x == device)));
+            _ = this.mockDeviceTwinMapper.Setup(x => x.UpdateTwin(It.Is<Twin>(x => x == twin), It.Is<DeviceDetails>(x => x == device)));
 
             // Act
             var result = await devicesController.UpdateDeviceAsync(device);
@@ -200,11 +203,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task UpdateDeviceAsync_ModelNotValid_ShouldReturnBadRequest()
+        public async Task UpdateDeviceAsyncModelNotValidShouldReturnBadRequest()
         {
             // Arrange
             var devicesController = this.CreateDevicesController();
-            DeviceDetails device = new DeviceDetails
+            var device = new DeviceDetails
             {
                 DeviceID = "aaa"
             };
@@ -221,13 +224,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task Delete_StateUnderTest_ExpectedBehavior()
+        public async Task DeleteStateUnderTestExpectedBehavior()
         {
             // Arrange
             var devicesController = this.CreateDevicesController();
-            string deviceID = "aaa";
+            var deviceID = "aaa";
 
-            this.mockDeviceService.Setup(c => c.DeleteDevice(It.Is<string>(x => x == deviceID)))
+            _ = this.mockDeviceService.Setup(c => c.DeleteDevice(It.Is<string>(x => x == deviceID)))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -240,7 +243,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task GetEnrollmentCredentials_Should_Return_Enrollment_Credentials()
+        public async Task GetEnrollmentCredentialsShouldReturnEnrollmentCredentials()
         {
             // Arrange
             var devicesController = this.CreateDevicesController();
@@ -254,27 +257,29 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             mockTwin.Tags["modelId"] = "bbb";
 
             var mockTableClient = this.mockRepository.Create<TableClient>();
-            var mockDeviceModelEntity = new TableEntity();
-            mockDeviceModelEntity[nameof(DeviceModel.Name)] = "ccc";
+            var mockDeviceModelEntity = new TableEntity
+            {
+                [nameof(DeviceModel.Name)] = "ccc"
+            };
             var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
 
-            mockResponse.SetupGet(c => c.Value)
+            _ = mockResponse.SetupGet(c => c.Value)
                 .Returns(mockDeviceModelEntity);
 
-            mockTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
+            _ = mockTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
                 It.Is<string>(x => x == "0"),
                 It.Is<string>(x => x == "bbb"),
                 It.IsAny<IEnumerable<string>>(),
                 It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mockResponse.Object);
 
-            this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", "ccc"))
+            _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", "ccc"))
                 .ReturnsAsync(mockRegistrationCredentials);
 
-            this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
                 .ReturnsAsync(mockTwin);
 
-            this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
                 .Returns(mockTableClient.Object);
 
             // Act
@@ -292,14 +297,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task When_DeviceType_Property_Not_Exist_GetEnrollmentCredentials_Should_Return_BadRequest()
+        public async Task WhenDeviceTypePropertyNotExistGetEnrollmentCredentialsShouldReturnBadRequest()
         {
             // Arrange
             var devicesController = this.CreateDevicesController();
 
             var mockTwin = new Twin("aaa");
 
-            this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
                 .ReturnsAsync(mockTwin);
 
             // Act
@@ -313,13 +318,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task When_Device_Not_Exist_GetEnrollmentCredentials_Should_Return_NotFound()
+        public async Task WhenDeviceNotExistGetEnrollmentCredentialsShouldReturnNotFound()
         {
             // Arrange
             var devicesController = this.CreateDevicesController();
 
-
-            this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
                 .ReturnsAsync((Twin)null);
 
             // Act

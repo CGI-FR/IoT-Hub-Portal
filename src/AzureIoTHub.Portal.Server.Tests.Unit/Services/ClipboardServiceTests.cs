@@ -1,13 +1,16 @@
-﻿using AzureIoTHub.Portal.Client.Services;
-using Microsoft.JSInterop;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Linq;
-using Microsoft.JSInterop.Infrastructure;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 {
+    using System;
+    using System.Linq;
+    using AzureIoTHub.Portal.Client.Services;
+    using Microsoft.JSInterop;
+    using Microsoft.JSInterop.Infrastructure;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class ClipboardServiceTests
     {
@@ -30,11 +33,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public void WriteTextAsync_StateUnderTest_ExpectedBehavior()
+        public void WriteTextAsyncStateUnderTestExpectedBehavior()
         {
             // Arrange
             var service = this.CreateService();
-            string text = Guid.NewGuid().ToString();
+            var text = Guid.NewGuid().ToString();
 
             // Act
             var result = service.WriteTextAsync(text);

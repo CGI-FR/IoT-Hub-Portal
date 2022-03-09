@@ -1,13 +1,16 @@
-﻿using Azure.Data.Tables;
-using AzureIoTHub.Portal.Server.Managers;
-using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
-using Moq;
-using NUnit.Framework;
-using System;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 {
+    using System;
+    using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class LoRaDeviceModelMapperTests
     {
@@ -36,14 +39,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         [TestCase(true, false)]
         [TestCase(true, true)]
         [TestCase(false, true)]
-        public void CreateDeviceModelListItem_StateUnderTest_ExpectedBehavior(bool isBuiltin, bool supportLora)
+        public void CreateDeviceModelListItemStateUnderTestExpectedBehavior(bool isBuiltin, bool supportLora)
         {
             // Arrange
             var loRaDeviceModelMapper = this.CreateLoRaDeviceModelMapper();
-            TableEntity entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             var expectedModelImageUri = $"https://fake.local/{entity.RowKey}";
 
-            this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == entity.RowKey)))
+            _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == entity.RowKey)))
                 .Returns(expectedModelImageUri);
 
             entity[nameof(LoRaDeviceModel.IsBuiltin)] = isBuiltin;
@@ -69,14 +72,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         [TestCase(true, false)]
         [TestCase(true, true)]
         [TestCase(false, true)]
-        public void CreateDeviceModel_StateUnderTest_ExpectedBehavior(bool isBuiltin, bool supportLora)
+        public void CreateDeviceModelStateUnderTestExpectedBehavior(bool isBuiltin, bool supportLora)
         {
             // Arrange
             var loRaDeviceModelMapper = this.CreateLoRaDeviceModelMapper();
-            TableEntity entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             var expectedModelImageUri = $"https://fake.local/{entity.RowKey}";
 
-            this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == entity.RowKey)))
+            _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == entity.RowKey)))
                 .Returns(expectedModelImageUri);
 
             entity[nameof(LoRaDeviceModel.IsBuiltin)] = isBuiltin;
@@ -106,12 +109,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         [TestCase(true, false)]
         [TestCase(true, true)]
         [TestCase(false, true)]
-        public void UpdateTableEntity_StateUnderTest_ExpectedBehavior(bool isBuiltin, bool supportLora)
+        public void UpdateTableEntityStateUnderTestExpectedBehavior(bool isBuiltin, bool supportLora)
         {
             // Arrange
             var loRaDeviceModelMapper = this.CreateLoRaDeviceModelMapper();
-            TableEntity entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            LoRaDeviceModel model = new LoRaDeviceModel
+            var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            var model = new LoRaDeviceModel
             {
                 ModelId = entity.RowKey,
                 Name = Guid.NewGuid().ToString(),
@@ -124,7 +127,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             };
 
             // Act
-            loRaDeviceModelMapper.UpdateTableEntity(
+            _ = loRaDeviceModelMapper.UpdateTableEntity(
                 entity,
                 model);
 

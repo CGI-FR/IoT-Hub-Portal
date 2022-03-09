@@ -1,15 +1,18 @@
-﻿using AzureIoTHub.Portal.Server.Services;
-using Microsoft.Azure.Devices;
-using Microsoft.Azure.Devices.Shared;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 {
+    using System;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Server.Services;
+    using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Shared;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class DeviceServiceTests
     {
@@ -35,7 +38,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public async Task GetAllEdgeDevice_StateUnderTest_ExpectedBehavior()
+        public async Task GetAllEdgeDeviceStateUnderTestExpectedBehavior()
         {
             // Arrange
             var service = this.CreateService();
@@ -43,16 +46,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             var resultReturned = false;
 
-            mockQuery.SetupGet(c => c.HasMoreResults)
+            _ = mockQuery.SetupGet(c => c.HasMoreResults)
                 .Returns(!resultReturned);
 
-            mockQuery.Setup(c => c.GetNextAsTwinAsync())
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync())
                 .ReturnsAsync(new Twin[]
                 {
                     new Twin(Guid.NewGuid().ToString())
                 });
 
-            this.mockRegistryManager.Setup(c => c.CreateQuery(
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
                 It.Is<string>(x => x == "SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' GROUP BY deviceId"),
                 It.Is<int>(x => x == 10)))
                 .Returns(mockQuery.Object);
@@ -67,7 +70,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public async Task GetAllDevice_StateUnderTest_ExpectedBehavior()
+        public async Task GetAllDeviceStateUnderTestExpectedBehavior()
         {
             // Arrange
             var service = this.CreateService();
@@ -75,16 +78,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             var resultReturned = false;
 
-            mockQuery.SetupGet(c => c.HasMoreResults)
+            _ = mockQuery.SetupGet(c => c.HasMoreResults)
                 .Returns(!resultReturned);
 
-            mockQuery.Setup(c => c.GetNextAsTwinAsync())
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync())
                 .ReturnsAsync(new Twin[]
                 {
                     new Twin(Guid.NewGuid().ToString())
                 });
 
-            this.mockRegistryManager.Setup(c => c.CreateQuery(
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
                 It.Is<string>(x => x == "SELECT * FROM devices WHERE devices.capabilities.iotEdge = false")))
                 .Returns(mockQuery.Object);
 
@@ -98,14 +101,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public async Task GetDevice_StateUnderTest_ExpectedBehavior()
+        public async Task GetDeviceStateUnderTestExpectedBehavior()
         {
             // Arrange
             var service = this.CreateService();
-            string deviceId = Guid.NewGuid().ToString();
+            var deviceId = Guid.NewGuid().ToString();
             var expected = new Device();
 
-            this.mockRegistryManager.Setup(c => c.GetDeviceAsync(It.Is<string>(x => x == deviceId)))
+            _ = this.mockRegistryManager.Setup(c => c.GetDeviceAsync(It.Is<string>(x => x == deviceId)))
                 .ReturnsAsync(expected);
 
             // Act
@@ -118,14 +121,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public async Task GetDeviceTwin_StateUnderTest_ExpectedBehavior()
+        public async Task GetDeviceTwinStateUnderTestExpectedBehavior()
         {
             // Arrange
             var service = this.CreateService();
-            string deviceId = Guid.NewGuid().ToString();
+            var deviceId = Guid.NewGuid().ToString();
             var expected = new Twin();
 
-            this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == deviceId)))
+            _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == deviceId)))
                 .ReturnsAsync(expected);
 
             // Act
@@ -138,25 +141,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public async Task GetDeviceTwinWithModule_StateUnderTest_ExpectedBehavior()
+        public async Task GetDeviceTwinWithModuleStateUnderTestExpectedBehavior()
         {
             // Arrange
             var service = this.CreateService();
-            string deviceId = Guid.NewGuid().ToString();
+            var deviceId = Guid.NewGuid().ToString();
 
             var mockQuery = this.mockRepository.Create<IQuery>();
             var resultReturned = false;
 
-            mockQuery.SetupGet(c => c.HasMoreResults)
+            _ = mockQuery.SetupGet(c => c.HasMoreResults)
                 .Returns(!resultReturned);
 
-            mockQuery.Setup(c => c.GetNextAsTwinAsync())
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync())
                 .ReturnsAsync(new Twin[]
                 {
                     new Twin(Guid.NewGuid().ToString())
                 });
 
-            this.mockRegistryManager.Setup(c => c.CreateQuery(
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
                 It.Is<string>(x => x == $"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']")))
                 .Returns(mockQuery.Object);
 
@@ -173,14 +176,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         [TestCase(true, DeviceStatus.Enabled)]
         [TestCase(false, DeviceStatus.Disabled)]
         [TestCase(true, DeviceStatus.Disabled)]
-        public async Task CreateDeviceWithTwin_StateUnderTest_ExpectedBehavior(bool isEdge, DeviceStatus isEnabled)
+        public async Task CreateDeviceWithTwinStateUnderTestExpectedBehavior(bool isEdge, DeviceStatus isEnabled)
         {
             // Arrange
             var service = this.CreateService();
-            string deviceId = Guid.NewGuid().ToString();
-            Twin twin = new Twin();
+            var deviceId = Guid.NewGuid().ToString();
+            var twin = new Twin();
 
-            this.mockRegistryManager
+            _ = this.mockRegistryManager
                 .Setup(c => c.AddDeviceWithTwinAsync(It.Is<Device>(x => x.Id == deviceId
                                                                     && x.Capabilities.IotEdge == isEdge
                                                                     && x.Status == isEnabled),
@@ -204,13 +207,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public async Task DeleteDevice_StateUnderTest_ExpectedBehavior()
+        public async Task DeleteDeviceStateUnderTestExpectedBehavior()
         {
             // Arrange
             var service = this.CreateService();
-            string deviceId = Guid.NewGuid().ToString();
+            var deviceId = Guid.NewGuid().ToString();
 
-            this.mockRegistryManager.Setup(c => c.RemoveDeviceAsync(It.Is<string>(x => x == deviceId)))
+            _ = this.mockRegistryManager.Setup(c => c.RemoveDeviceAsync(It.Is<string>(x => x == deviceId)))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -221,13 +224,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public async Task UpdateDevice_StateUnderTest_ExpectedBehavior()
+        public async Task UpdateDeviceStateUnderTestExpectedBehavior()
         {
             // Arrange
             var service = this.CreateService();
             var device = new Device();
 
-            this.mockRegistryManager.Setup(c => c.UpdateDeviceAsync(It.Is<Device>(x => x == device)))
+            _ = this.mockRegistryManager.Setup(c => c.UpdateDeviceAsync(It.Is<Device>(x => x == device)))
                 .ReturnsAsync(new Device());
 
             // Act
@@ -240,7 +243,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public async Task UpdateDeviceTwin_StateUnderTest_ExpectedBehavior()
+        public async Task UpdateDeviceTwinStateUnderTestExpectedBehavior()
         {
             // Arrange
             var service = this.CreateService();
@@ -251,9 +254,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 ETag = Guid.NewGuid().ToString(),
             };
 
-            this.mockRegistryManager.Setup(c => c.UpdateTwinAsync(
-                It.Is<string>(x => x == deviceId), 
-                It.Is<Twin>(x => x == twin), 
+            _ = this.mockRegistryManager.Setup(c => c.UpdateTwinAsync(
+                It.Is<string>(x => x == deviceId),
+                It.Is<Twin>(x => x == twin),
                 It.Is<string>(x => x == twin.ETag)))
                 .ReturnsAsync(new Twin());
 
@@ -267,18 +270,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public async Task ExecuteC2DMethod_StateUnderTest_ExpectedBehavior()
+        public async Task ExecuteC2DMethodStateUnderTestExpectedBehavior()
         {
             // Arrange
             var service = this.CreateService();
             var deviceId = Guid.NewGuid().ToString();
 
-            CloudToDeviceMethod method = new CloudToDeviceMethod(Guid.NewGuid().ToString());
+            var method = new CloudToDeviceMethod(Guid.NewGuid().ToString());
 
-            this.mockServiceClient.Setup(c => c.InvokeDeviceMethodAsync(
+            _ = this.mockServiceClient.Setup(c => c.InvokeDeviceMethodAsync(
                 It.Is<string>(x => x == deviceId),
                 It.Is<string>(x => x == "$edgeAgent"),
-                It.Is<CloudToDeviceMethod>(x => x == method), 
+                It.Is<CloudToDeviceMethod>(x => x == method),
                 It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CloudToDeviceMethodResult
                 {
