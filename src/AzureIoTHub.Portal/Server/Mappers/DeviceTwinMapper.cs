@@ -44,8 +44,17 @@ namespace AzureIoTHub.Portal.Server.Mappers
             };
         }
 
-        public DeviceListItem CreateDeviceListItem(Twin twin)
+        public DeviceListItem CreateDeviceListItem(Twin twin, IEnumerable<string> tags)
         {
+            Dictionary<string, string> customTags = new Dictionary<string, string>();
+            if(tags != null)
+            {
+                foreach(string tag in tags)
+                {
+                    customTags.Add(tag, Helpers.DeviceHelper.RetrieveTagValue(twin, tag));
+                }
+            }
+            
             return new DeviceListItem
             {
                 DeviceID = twin.DeviceId,
@@ -54,7 +63,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 StatusUpdatedTime = twin.StatusUpdatedTime.GetValueOrDefault(DateTime.MinValue),
                 DeviceName = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.DeviceName)),
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))),
-                SupportLoRaFeatures = bool.Parse(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ?? "false")
+                SupportLoRaFeatures = bool.Parse(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ?? "false"),
+                CustomTags = customTags
             };
         }
 

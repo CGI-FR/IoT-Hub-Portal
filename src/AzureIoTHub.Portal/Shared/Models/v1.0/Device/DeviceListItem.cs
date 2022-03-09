@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Shared.Models.V10.Device
 {
     using System;
+    using System.Collections.Generic;
 
     public class DeviceListItem
     {
@@ -41,5 +42,7 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.Device
         /// The device last status updated time.
         /// </summary>
         public DateTime StatusUpdatedTime { get; set; }
+
+        public Dictionary<string, string> CustomTags { get; set; } = new();
     }
 }
