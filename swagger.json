@@ -2639,6 +2639,14 @@
             "type": "string",
             "description": "The device last status updated time.",
             "format": "date-time"
+          },
+          "customTags": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "nullable": true
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
