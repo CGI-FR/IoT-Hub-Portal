@@ -14,7 +14,7 @@
         </MudCardHeader>
         <MudCardContent>
             <MudGrid>
-                @if (LoRaDevice.IsOTAAsetting)
+                @if (LoRaDevice.UseOTAA)
                 {
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="@LoRaDevice.AppEUI" Label="OTAA App EUI" For="@(() => LoRaDevice.AppEUI)" ReadOnly="true" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>

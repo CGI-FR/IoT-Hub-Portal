@@ -21,7 +21,7 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel
             this.Description = from.Description;
             this.IsBuiltin = from.IsBuiltin;
             this.ImageUrl = from.ImageUrl;
-            this.IsOTAAsetting = true;
+            this.UseOTAA = true;
         }
 
         /// <summary>
