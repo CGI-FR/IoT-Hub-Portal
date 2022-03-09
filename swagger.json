@@ -2937,8 +2937,6 @@
       },
       "LoRaDeviceDetails": {
         "required": [
-          "appEUI",
-          "appKey",
           "deviceID",
           "deviceName",
           "modelId"
@@ -2984,29 +2982,152 @@
             "description": "List of custom device tags and their values.",
             "nullable": true
           },
+          "useOTAA": {
+            "type": "boolean",
+            "description": "The status of OTAA setting."
+          },
           "appEUI": {
             "type": "string",
-            "description": "The OTAA App EUI."
-          },
-          "appKey": {
-            "type": "string",
-            "description": "The OTAA App Key."
+            "description": "The device OTAA Application eui.",
+            "nullable": true
           },
           "sensorDecoder": {
             "type": "string",
             "description": "The sensor decoder API Url.",
             "nullable": true
           },
+          "gatewayID": {
+            "type": "string",
+            "description": "The GatewayID of the device.",
+            "nullable": true
+          },
+          "downlink": {
+            "type": "boolean",
+            "description": "Allows disabling the downstream (cloud to device) for a device.\r\nBy default downstream messages are enabled.",
+            "nullable": true
+          },
+          "preferredWindow": {
+            "type": "integer",
+            "description": "Allows setting the device preferred receive window (RX1 or RX2).\r\nThe default preferred receive window is 1.",
+            "format": "int32",
+            "nullable": true
+          },
+          "deduplication": {
+            "type": "string",
+            "description": "Allows controlling the handling of duplicate messages received by multiple gateways.\r\nThe default is None.",
+            "nullable": true
+          },
+          "rX1DROffset": {
+            "type": "integer",
+            "description": "Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0.",
+            "format": "int32",
+            "nullable": true
+          },
+          "rX2DataRate": {
+            "type": "integer",
+            "description": "Allows setting a custom Datarate for second receive windows.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0 (DR0).",
+            "format": "int32",
+            "nullable": true
+          },
+          "rxDelay": {
+            "type": "integer",
+            "description": "Allows setting a custom wait time between receiving and transmission as specified in the specification.",
+            "format": "int32",
+            "nullable": true
+          },
+          "abpRelaxMode": {
+            "type": "boolean",
+            "description": "Allows to disable the relax mode when using ABP.\r\nBy default relaxed mode is enabled.",
+            "nullable": true
+          },
+          "fCntUpStart": {
+            "type": "integer",
+            "description": "Allows to explicitly specify a frame counter up start value.\r\nIf the device joins, this value will be used to validate the first frame and initialize the server state for the device.",
+            "format": "int32",
+            "nullable": true
+          },
+          "fCntDownStart": {
+            "type": "integer",
+            "description": "Allows to explicitly specify a frame counter down start value.",
+            "format": "int32",
+            "nullable": true
+          },
+          "supports32BitFCnt": {
+            "type": "boolean",
+            "description": "Allow the usage of 32bit counters on your device.",
+            "nullable": true
+          },
+          "fCntResetCounter": {
+            "type": "integer",
+            "description": "Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.",
+            "format": "int32",
+            "nullable": true
+          },
+          "keepAliveTimeout": {
+            "type": "integer",
+            "description": "Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.\r\nThe default is none, which causes the connection to not be dropped.",
+            "format": "int32",
+            "nullable": true
+          },
+          "appKey": {
+            "type": "string",
+            "description": "The OTAA App Key.",
+            "nullable": true
+          },
+          "appSKey": {
+            "type": "string",
+            "description": "The APB AppSKey.",
+            "nullable": true
+          },
+          "nwkSKey": {
+            "type": "string",
+            "description": "The APB NwkSKey.",
+            "nullable": true
+          },
+          "devAddr": {
+            "type": "string",
+            "description": "Unique identifier that allows\r\nthe device to be recognized.",
+            "nullable": true
+          },
           "alreadyLoggedInOnce": {
             "type": "boolean",
             "description": "A value indicating whether the device has already joined the platform."
+          },
+          "dataRate": {
+            "type": "string",
+            "description": "The Device Current Datarate,\r\nThis value will be only reported if you are using Adaptive Data Rate.",
+            "nullable": true
+          },
+          "txPower": {
+            "type": "string",
+            "description": "The Device Current Transmit Power,\r\nThis value will be only reported if you are using Adaptive Data Rate.",
+            "nullable": true
+          },
+          "nbRep": {
+            "type": "string",
+            "description": "The Device Current repetition when transmitting.\r\nE.g. if set to two, the device will transmit twice his upstream messages.\r\nThis value will be only reported if you are using Adaptive Data Rate.",
+            "nullable": true
+          },
+          "reportedRX2DataRate": {
+            "type": "string",
+            "description": "The Device Current Rx2Datarate.",
+            "nullable": true
+          },
+          "reportedRX1DROffset": {
+            "type": "string",
+            "description": "The Device Current RX1DROffset.",
+            "nullable": true
+          },
+          "reportedRXDelay": {
+            "type": "string",
+            "description": "The Device Current RXDelay.",
+            "nullable": true
           }
         },
         "additionalProperties": false
       },
       "LoRaDeviceModel": {
         "required": [
-          "appEUI",
           "name"
         ],
         "type": "object",
@@ -3038,13 +3159,86 @@
             "type": "boolean",
             "description": "A value indicating whether the LoRa features is supported on this model."
           },
+          "useOTAA": {
+            "type": "boolean",
+            "description": "The status of OTAA setting."
+          },
           "appEUI": {
             "type": "string",
-            "description": "The device OTAA Application eui."
+            "description": "The device OTAA Application eui.",
+            "nullable": true
           },
           "sensorDecoder": {
             "type": "string",
-            "description": "The sensor decoder Url.",
+            "description": "The sensor decoder API Url.",
+            "nullable": true
+          },
+          "downlink": {
+            "type": "boolean",
+            "description": "Allows disabling the downstream (cloud to device) for a device.\r\nBy default downstream messages are enabled.",
+            "nullable": true
+          },
+          "preferredWindow": {
+            "type": "integer",
+            "description": "Allows setting the device preferred receive window (RX1 or RX2).\r\nThe default preferred receive window is 1.",
+            "format": "int32",
+            "nullable": true
+          },
+          "deduplication": {
+            "type": "string",
+            "description": "Allows controlling the handling of duplicate messages received by multiple gateways.\r\nThe default is None.",
+            "nullable": true
+          },
+          "rX1DROffset": {
+            "type": "integer",
+            "description": "Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0.",
+            "format": "int32",
+            "nullable": true
+          },
+          "rX2DataRate": {
+            "type": "integer",
+            "description": "Allows setting a custom Datarate for second receive windows.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0 (DR0).",
+            "format": "int32",
+            "nullable": true
+          },
+          "rxDelay": {
+            "type": "integer",
+            "description": "Allows setting a custom wait time between receiving and transmission as specified in the specification.",
+            "format": "int32",
+            "nullable": true
+          },
+          "abpRelaxMode": {
+            "type": "boolean",
+            "description": "Allows to disable the relax mode when using ABP.\r\nBy default relaxed mode is enabled.",
+            "nullable": true
+          },
+          "fCntUpStart": {
+            "type": "integer",
+            "description": "Allows to explicitly specify a frame counter up start value.\r\nIf the device joins, this value will be used to validate the first frame and initialize the server state for the device.",
+            "format": "int32",
+            "nullable": true
+          },
+          "fCntDownStart": {
+            "type": "integer",
+            "description": "Allows to explicitly specify a frame counter down start value.",
+            "format": "int32",
+            "nullable": true
+          },
+          "supports32BitFCnt": {
+            "type": "boolean",
+            "description": "Allow the usage of 32bit counters on your device.",
+            "nullable": true
+          },
+          "fCntResetCounter": {
+            "type": "integer",
+            "description": "Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.",
+            "format": "int32",
+            "nullable": true
+          },
+          "keepAliveTimeout": {
+            "type": "integer",
+            "description": "Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.\r\nThe default is none, which causes the connection to not be dropped.",
+            "format": "int32",
             "nullable": true
           }
         },
