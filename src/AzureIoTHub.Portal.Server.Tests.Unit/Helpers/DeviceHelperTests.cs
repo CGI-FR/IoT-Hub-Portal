@@ -96,6 +96,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
+        public void SetDesiredProperty_Should_Return_twin_with_new_value()
+        {
+            // Arrange
+            Twin item = new Twin();
+            string expectedTagName = "myTagName";
+            string value = string.Empty;
+
+            // Act
+            DeviceHelper.SetDesiredProperty(item, expectedTagName, value);
+
+            // Assert
+            Assert.IsTrue(item.Properties.Desired.Contains(expectedTagName));
+        }
+
+        [Test]
         public void When_Property_Not_Exist_RetrieveDesiredPropertyValue_Should_Return_Null()
         {
             // Arrange

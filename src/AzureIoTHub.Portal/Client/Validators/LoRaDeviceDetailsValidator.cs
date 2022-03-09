@@ -15,10 +15,12 @@ namespace AzureIoTHub.Portal.Client.Validators
         public LoRaDeviceDetailsValidator()
         {
             RuleFor(x => x.AppEUI)
-                .NotEmpty();
+                .NotEmpty()
+                .When(x => x.UseOTAA);
 
             RuleFor(x => x.AppKey)
-                .NotEmpty();
+                .NotEmpty()
+                .When(x => x.UseOTAA);
 
             RuleFor(x => x.ModelId)
                 .NotEmpty();

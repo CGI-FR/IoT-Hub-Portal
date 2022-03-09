@@ -9,12 +9,80 @@
         </MudCardHeader>
         <MudCardContent>
             <MudGrid>
-                <MudItem xs="12">
-                    <MudTextField @bind-Value="@LoRaDeviceModel.AppEUI" Label="OTAA AppEUI" For="@(() => LoRaDeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                <MudItem xs="12" md="6">
+                    <MudSwitch @bind-Checked="@LoRaDeviceModel.UseOTAA">@(LoRaDeviceModel.UseOTAA ? "OTAA setting enable" : "APB setting enable")</MudSwitch>
                 </MudItem>
+                @if (LoRaDeviceModel.UseOTAA)
+                {
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="@LoRaDeviceModel.AppEUI" Label="OTAA AppEUI" For="@(() => LoRaDeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                        </MudItem>
+                }
                 <MudItem xs="12">
                     <MudTextField @bind-Value="@LoRaDeviceModel.SensorDecoder" Label="Sensor Decoder URL" For="@(() => LoRaDeviceModel.SensorDecoder)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                 </MudItem>
+
+            <MudCard Outlined="true" Style="margin:3px;">
+                <MudCardContent>
+                    <MudGrid>
+                        <MudText>LoRa properties</MudText>
+
+                        <MudItem xs="12" md="6">
+                            <MudSwitch T=bool? @bind-Checked="@LoRaDeviceModel.Downlink" For="@(() => LoRaDeviceModel.Downlink)" Label="Enable/disable downstream messages" Color="Color.Primary"  ></MudSwitch>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudNumericField T="int?" @bind-Value="@LoRaDeviceModel.PreferredWindow" For="@(() => LoRaDeviceModel.PreferredWindow)" Min="1" Max="2" Label="Preferred receive window"></MudNumericField>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudSelect T=string @bind-Value="@LoRaDeviceModel.Deduplication" For="@(() => LoRaDeviceModel.Deduplication)" AnchorOrigin="Origin.BottomCenter" Label="Message Deduplication">
+                                <MudSelectItem Value="@("Mark")"></MudSelectItem>
+                                <MudSelectItem Value="@("Drop")"></MudSelectItem>
+                                <MudSelectItem Value="@("None")"></MudSelectItem>
+                            </MudSelect>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudTextField T="int?" @bind-Value="@LoRaDeviceModel.RX1DROffset" For="@(() => LoRaDeviceModel.RX1DROffset)" Label="RX1 Datarate Offset" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudTextField T=int? @bind-Value="@LoRaDeviceModel.RX2DataRate" For="@(() => LoRaDeviceModel.RX2DataRate)" Label="RX2 Datarate" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudNumericField T="int?" @bind-Value="@LoRaDeviceModel.RXDelay" For="@(() => LoRaDeviceModel.RXDelay)" Min=1 Label="RX Delay"></MudNumericField>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudSwitch T="bool?" @bind-Checked="@LoRaDeviceModel.ABPRelaxMode" For="@(() => LoRaDeviceModel.ABPRelaxMode)" Label="Disable ABP relax mode" Color="Color.Primary" ></MudSwitch>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudSwitch T="bool?" @bind-Checked="@LoRaDeviceModel.Supports32BitFCnt" For="@(() => LoRaDeviceModel.Supports32BitFCnt)" Label="32bit counter support" Color="Color.Primary" ></MudSwitch>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudNumericField T="int?" @bind-Value="@LoRaDeviceModel.FCntUpStart" For="@(() => LoRaDeviceModel.FCntUpStart)" Min=1 Label="Specify frame counter up start value"></MudNumericField>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudNumericField @bind-Value="@LoRaDeviceModel.FCntDownStart" For="@(() => LoRaDeviceModel.FCntDownStart)" Min=1 Label="Specify frame counter down start value"></MudNumericField>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudNumericField T="int?" @bind-Value="@LoRaDeviceModel.FCntResetCounter" For="@(() => LoRaDeviceModel.FCntResetCounter)" Min=1 Label="Reset counter"></MudNumericField>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudNumericField T="int?" @bind-Value="@LoRaDeviceModel.KeepAliveTimeout" For="@(() => LoRaDeviceModel.KeepAliveTimeout)" Min=1 Label="Device Connection Timeout"></MudNumericField>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+            </MudCard>
+
+            </MudGrid>
                 <MudItem xs="12">
                     <MudTable Items="@Commands" Dense=true Hover=true Bordered=true Striped=true>
                         <ToolBarContent>
@@ -58,7 +126,7 @@
                         </FooterContent>
                     </MudTable>
                 </MudItem>
-            </MudGrid>
+
         </MudCardContent>
         <MudCardActions Class="pb-4 pl-4">
             <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="OnSaveClick">Save Changes</MudButton>
@@ -78,6 +146,8 @@
 
     [Parameter]
     public EventCallback OnSaveClick { get; set; }
+
+    private bool loraProperty { get; set; }
 
     private DeviceModelCommand DeviceModelCommand { get; set; } = new DeviceModelCommand();
 

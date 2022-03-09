@@ -74,6 +74,24 @@ namespace AzureIoTHub.Portal.Server.Helpers
                 twin.Properties.Desired[propertyName] : null;
         }
 
+        /// <summary>
+        /// Set the deisred property value.
+        /// </summary>
+        /// <param name="twin">Device twin.</param>
+        /// <param name="propertyName">Property to set.</param>
+        /// <param name="value">Property value.</param>
+        public static void SetDesiredProperty(Twin twin, string propertyName, object value)
+        {
+            twin.Properties.Desired[propertyName] = value;
+        }
+
+        /// <summary>
+        /// Checks if the specific property exists within the device twin,
+        /// Returns the corresponding value if so, else returns null.
+        /// </summary>
+        /// <param name="twin">Device twin.</param>
+        /// <param name="propertyName">Property to retrieve.</param>
+        /// <returns>Corresponding property value, or null if it doesn't exist.</returns>
         public static string RetrieveReportedPropertyValue(Twin twin, string propertyName)
         {
             return twin.Properties.Reported.Contains(propertyName) ?
