@@ -203,11 +203,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                     Tags = twinCollection
                 }));
 
-            this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceListItem(It.IsAny<Twin>()))
-                .Returns<Twin>(x => new DeviceListItem
+            this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceListItem(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
+                .Returns<Twin,IEnumerable<string>>((x,y) => new DeviceListItem
                 {
                     DeviceID = x.DeviceId
                 });
+
+            this.mockDeviceTagService.Setup(c => c.GetAllSearchableTagsNames())
+                .Returns(new List<string>());
 
             // Act
             var result = await devicesController.Get();

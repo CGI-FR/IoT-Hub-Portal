@@ -137,7 +137,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
                 .Returns(expectedModelImageUri);
 
             // Act
-            var result = loRaDeviceTwinMapper.CreateDeviceListItem(twin);
+            var result = loRaDeviceTwinMapper.CreateDeviceListItem(twin,null);
 
             // Assert
             Assert.IsNotNull(result);
