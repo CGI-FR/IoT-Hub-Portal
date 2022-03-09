@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Client.Validators
             RuleFor(x => x.AppEUI)
                 .NotEmpty()
                 .Length(1, 100)
-                .When(x => x.IsOTAAsetting);
+                .When(x => x.UseOTAA);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 DevAddr = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.DevAddr)),
                 AppSKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppSKey)),
                 NwkSKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.NwkSKey)),
-                IsOTAAsetting = bool.Parse(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.IsOTAAsetting)) ?? "True"),
+                UseOTAA = bool.Parse(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.UseOTAA)) ?? "True"),
                 Deduplication = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.Deduplication)),
                 PreferredWindow = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.PreferredWindow)), out int result) ? result : null,
                 Supports32BitFCnt = bool.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.Supports32BitFCnt)), out bool boolResult) ? boolResult : null,
@@ -105,10 +105,10 @@ namespace AzureIoTHub.Portal.Server.Mappers
             Helpers.DeviceHelper.SetTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures), "true");
 
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
-            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.IsOTAAsetting), item.IsOTAAsetting.ToString());
+            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.UseOTAA), item.UseOTAA.ToString());
 
             // Update the twin properties
-            if (item.IsOTAAsetting)
+            if (item.UseOTAA)
             {
                 Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppEUI), item.AppEUI);
                 Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppKey), item.AppKey);

@@ -7,7 +7,10 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
 
     public class LoRaDeviceBase : DeviceDetails
     {
-        public bool IsOTAAsetting { get; set; }
+        /// <summary>
+        /// The status of OTAA setting.
+        /// </summary>
+        public bool UseOTAA { get; set; }
 
         /// <summary>
         /// The device OTAA Application eui.

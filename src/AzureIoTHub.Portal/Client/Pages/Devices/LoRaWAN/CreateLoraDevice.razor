@@ -12,7 +12,7 @@
         </MudCardHeader>
         <MudCardContent>
             <MudGrid>
-                @if (loraModel.IsOTAAsetting)
+                @if (loraModel.UseOTAA)
                 {
                         <MudItem xs="12" md="6">
                             <MudTextField @bind-Value="@LoRaDevice.AppEUI"

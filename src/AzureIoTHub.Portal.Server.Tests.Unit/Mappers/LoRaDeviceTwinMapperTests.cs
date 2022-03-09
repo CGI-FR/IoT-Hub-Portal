@@ -180,7 +180,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
                     { "assetId", Guid.NewGuid().ToString() },
                     { "locationCode", Guid.NewGuid().ToString() }
                 },
-                IsOTAAsetting = true,
+                UseOTAA = true,
         };
 
             // Act

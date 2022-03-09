@@ -10,9 +10,9 @@
         <MudCardContent>
             <MudGrid>
                 <MudItem xs="12" md="6">
-                    <MudText >@(LoRaDeviceModel.IsOTAAsetting ? "OTAA setting enable" : "APB setting enable")</MudText>
+                    <MudText >@(LoRaDeviceModel.UseOTAA ? "OTAA setting enable" : "APB setting enable")</MudText>
                 </MudItem>
-               @if (LoRaDeviceModel.IsOTAAsetting)
+               @if (LoRaDeviceModel.UseOTAA)
                {
                    <MudItem xs="12">
                         <MudTextField @bind-Value="@LoRaDeviceModel.AppEUI" Label="OTAA AppEUI" For="@(() => LoRaDeviceModel.AppEUI)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" Disabled="LoRaDeviceModel.IsBuiltin"></MudTextField>
