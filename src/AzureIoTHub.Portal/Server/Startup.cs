@@ -38,6 +38,7 @@ namespace AzureIoTHub.Portal.Server
     using Newtonsoft.Json.Converters;
     using Polly;
     using Polly.Extensions.Http;
+    using Prometheus;
 
     public class Startup
     {
@@ -235,6 +236,8 @@ namespace AzureIoTHub.Portal.Server
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseMetricServer();
 
             app.UseAuthentication();
             app.UseAuthorization();
