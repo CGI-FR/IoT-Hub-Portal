@@ -2224,6 +2224,138 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
+## GET LoRaWAN Device model properties
+
+<a id="opIdGET LoRaWAN Device model properties"></a>
+
+> Code samples
+
+`GET /api/lorawan/models/{id}/properties`
+
+*Gets the device model properties.*
+
+<h3 id="get-lorawan-device-model-properties-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The device model properties|
+
+> Example responses
+
+> 200 Response
+
+```
+[{"name":"string","displayName":"string","isWritable":true,"propertyType":"Boolean"}]
+```
+
+```json
+[
+  {
+    "name": "string",
+    "displayName": "string",
+    "isWritable": true,
+    "propertyType": "Boolean"
+  }
+]
+```
+
+<h3 id="get-lorawan-device-model-properties-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
+
+<h3 id="get-lorawan-device-model-properties-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[DeviceProperty](#schemadeviceproperty)]|false|none|none|
+|» name|string|true|none|The property name|
+|» displayName|string|true|none|The property display name|
+|» isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
+|» propertyType|string|true|none|The device property type|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|propertyType|Boolean|
+|propertyType|Double|
+|propertyType|Float|
+|propertyType|Integer|
+|propertyType|Long|
+|propertyType|String|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## POST LoRaWAN Device model properties
+
+<a id="opIdPOST LoRaWAN Device model properties"></a>
+
+> Code samples
+
+`POST /api/lorawan/models/{id}/properties`
+
+*Sets the device model properties.*
+
+> Body parameter
+
+```json
+[
+  {
+    "name": "string",
+    "displayName": "string",
+    "isWritable": true,
+    "propertyType": "Boolean"
+  }
+]
+```
+
+<h3 id="post-lorawan-device-model-properties-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The device model properties|
+|body|body|[DeviceProperty](#schemadeviceproperty)|false|The model properties|
+
+> Example responses
+
+> 404 Response
+
+```
+{"type":"string","title":"string","status":0,"detail":"string","instance":"string","property1":null,"property2":null}
+```
+
+```json
+{
+  "type": "string",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "instance": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+<h3 id="post-lorawan-device-model-properties-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ProblemDetails](#schemaproblemdetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
 <h1 id="azure-iot-hub-portal-api-device-models">Device Models</h1>
 
 ## GET Device model list
