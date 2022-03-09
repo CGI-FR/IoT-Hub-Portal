@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
@@ -29,13 +29,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="tableClientFactory">The table client factory.</param>
         /// <param name="deviceProvisioningServiceManager">The device provisioning service manager.</param>
         /// <param name="configService">The configuration service.</param>
-        public DeviceModelsController(ILogger<DeviceModelsControllerBase<DeviceModel, DeviceModel>> log, 
-            IDeviceModelImageManager deviceModelImageManager, 
-            IDeviceModelMapper<DeviceModel, DeviceModel> deviceModelMapper, 
-            IDeviceService devicesService, 
+        public DeviceModelsController(ILogger<DeviceModelsControllerBase<DeviceModel, DeviceModel>> log,
+            IDeviceModelImageManager deviceModelImageManager,
+            IDeviceModelMapper<DeviceModel, DeviceModel> deviceModelMapper,
+            IDeviceService devicesService,
             ITableClientFactory tableClientFactory,
-            IDeviceProvisioningServiceManager deviceProvisioningServiceManager, 
-            IConfigService configService) 
+            IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
+            IConfigService configService)
             : base(log, deviceModelImageManager, deviceModelMapper, devicesService, tableClientFactory, deviceProvisioningServiceManager, configService, $"")
         {
         }

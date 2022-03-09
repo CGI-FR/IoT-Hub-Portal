@@ -1,10 +1,9 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
@@ -89,14 +88,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 
             foreach (var item in query)
             {
-                await this.tableClientFactory
+                _ = await this.tableClientFactory
                                .GetDeviceCommands()
                                .DeleteEntityAsync(item.PartitionKey, item.RowKey);
             }
 
             foreach (var command in commands)
             {
-                TableEntity entity = new TableEntity()
+                var entity = new TableEntity()
                 {
                     PartitionKey = id,
                     RowKey = command.Name
@@ -104,7 +103,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 
                 this.deviceModelCommandMapper.UpdateTableEntity(entity, command);
 
-                await this.tableClientFactory
+                _ = await this.tableClientFactory
                         .GetDeviceCommands()
                         .AddEntityAsync(entity);
             }

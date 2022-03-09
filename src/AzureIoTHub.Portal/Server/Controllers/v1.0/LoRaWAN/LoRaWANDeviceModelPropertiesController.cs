@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Threading.Tasks;
     using AutoMapper;
     using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Shared.Models.V10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -14,18 +15,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/models/{id}/properties")]
-    [ApiExplorerSettings(GroupName = "Device Models")]
-    public class DeviceModelPropertiesController : DeviceModelPropertiesControllerBase
+    [Route("api/lorawan/models/{id}/properties")]
+    [ApiExplorerSettings(GroupName = "LoRa WAN")]
+    [LoRaFeatureActiveFilter]
+    public class LoRaWANDeviceModelPropertiesController : DeviceModelPropertiesControllerBase
     {
+
         /// <summary>
         /// Initializes a new instance of the Device model properties controller class.
         /// </summary>
         /// <param name="log">The logger.</param>
         /// <param name="mapper">The mapper.</param>
         /// <param name="tableClientFactory">the table client factory.</param>
-        public DeviceModelPropertiesController(
-            ILogger<DeviceModelPropertiesController> log,
+        public LoRaWANDeviceModelPropertiesController(
+            ILogger<LoRaWANDeviceModelPropertiesController> log,
             IMapper mapper,
             ITableClientFactory tableClientFactory)
             : base(log, mapper, tableClientFactory)
@@ -38,7 +41,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The device model properties</param>
         /// <returns></returns>
-        [HttpGet(Name = "GET Device model properties")]
+        [HttpGet(Name = "GET LoRaWAN Device model properties")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DeviceProperty>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public override async Task<ActionResult<IEnumerable<DeviceProperty>>> GetProperties(string id)
@@ -52,7 +55,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="id">The device model properties</param>
         /// <param name="properties">The model properties</param>
         /// <returns></returns>
-        [HttpPost(Name = "POST Device model properties")]
+        [HttpPost(Name = "POST LoRaWAN Device model properties")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public override async Task<ActionResult> SetProperties(string id, IEnumerable<DeviceProperty> properties)
