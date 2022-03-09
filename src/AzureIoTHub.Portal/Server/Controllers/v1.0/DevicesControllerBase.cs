@@ -56,8 +56,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public virtual async Task<IEnumerable<TListItem>> Get()
         {
             var items = await this.devicesService.GetAllDevice(excludeDeviceType: "LoRa Concentrator");
+            var tagList = this.deviceTagService.GetAllSearchableTagsNames();
 
-            return items.Select(this.deviceTwinMapper.CreateDeviceListItem);
+            return items.Select(c => this.deviceTwinMapper.CreateDeviceListItem(c,tagList));
         }
 
         /// <summary>
