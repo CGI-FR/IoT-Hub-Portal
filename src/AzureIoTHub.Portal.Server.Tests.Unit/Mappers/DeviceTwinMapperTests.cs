@@ -138,8 +138,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
             twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()] = "000-000-001";
 
+            twin.Tags["assetId"] = Guid.NewGuid().ToString();
+            twin.Tags["locationCode"] = Guid.NewGuid().ToString();
+            List<string> tagsNames = new List<string>() { "assetId", "locationCode" };
+
             // Act
-            var result = deviceTwinMapper.CreateDeviceListItem(twin,null);
+            var result = deviceTwinMapper.CreateDeviceListItem(twin, tagsNames);
 
             // Assert
             Assert.IsNotNull(result);
@@ -148,6 +152,50 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             Assert.IsFalse(result.IsConnected);
             Assert.IsFalse(result.IsEnabled);
 
+            foreach (string tagName in tagsNames)
+            {
+                Assert.AreEqual(twin.Tags[tagName.ToCamelCase()].ToString(), result.CustomTags[tagName]);
+            }
+
+            Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        public void CreateDeviceListItem_NullTagList_ExpectedBehavior()
+        {
+            // Arrange
+            var deviceTwinMapper = this.CreateDeviceTwinMapper();
+            
+            Twin twin = new Twin
+            {
+                DeviceId = Guid.NewGuid().ToString()
+            };
+
+            twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()] = "000-000-001";
+
+            List<string> tagsNames = null;
+
+            twin.Properties.Reported["DevAddr"] = Guid.NewGuid().ToString();
+
+            this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
+                .Returns("http://fake.local/000-000-001")
+                .Verifiable();
+
+            // Act
+            var result = deviceTwinMapper.CreateDeviceDetails(twin, tagsNames);
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            Assert.IsFalse(result.IsConnected);
+            Assert.IsFalse(result.IsEnabled);
+
+            Assert.AreEqual(twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()].ToString(), result.ModelId);
+
+            Assert.IsEmpty(result.CustomTags);
+
+            Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl);
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
 
             this.mockRepository.VerifyAll();

@@ -35,6 +35,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
         private string apiBaseUrl = "/api/Devices";
         private string apiSettingsBaseUrl = "/api/settings/lora";
+        private string apiTagsBaseUrl = "/api/settings/device-tags";
 
         [SetUp]
         public void SetUp()
@@ -133,6 +134,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Get, apiSettingsBaseUrl)
                 .RespondJson(true);
 
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiTagsBaseUrl)
+                .RespondJson(new object[0]);
+
             var cut = RenderComponent<DeviceListPage>();
 
             cut.Find("#searchID").NodeValue = Guid.NewGuid().ToString();
@@ -166,6 +171,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Get, apiSettingsBaseUrl)
                 .RespondJson(true);
 
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiTagsBaseUrl)
+                .RespondJson(new object[0]);
+
             var cut = RenderComponent<DeviceListPage>();
             await Task.Delay(100);
 
@@ -190,6 +199,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             this.mockHttpClient
                 .When(HttpMethod.Get, apiSettingsBaseUrl)
                 .RespondJson(true);
+
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiTagsBaseUrl)
+                .RespondJson(new object[0]);
 
             var cut = RenderComponent<DeviceListPage>();
             cut.WaitForAssertion(() => cut.Find($"#tableRefreshButton"), 1.Seconds());
@@ -222,6 +235,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                     .When(HttpMethod.Get, apiSettingsBaseUrl)
                     .RespondJson(false);
 
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiTagsBaseUrl)
+                .RespondJson(new object[0]);
+
             var cut = RenderComponent<DeviceListPage>();
             _ = cut.WaitForElements(".detail-link");
 
@@ -249,6 +266,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient
                     .When(HttpMethod.Get, apiSettingsBaseUrl)
                     .RespondJson(true);
+
+            this.mockHttpClient
+                .When(HttpMethod.Get, apiTagsBaseUrl)
+                .RespondJson(new object[0]);
 
             var cut = RenderComponent<DeviceListPage>();
             _ = cut.WaitForElements(".detail-link");
