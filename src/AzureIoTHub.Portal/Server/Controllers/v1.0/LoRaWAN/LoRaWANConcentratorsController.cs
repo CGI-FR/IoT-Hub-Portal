@@ -128,7 +128,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 
                 this.concentratorTwinMapper.UpdateTwin(newTwin, device);
 
-                DeviceStatus status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+                var status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
                 var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceId, false, newTwin, status);
 
@@ -141,7 +141,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
             }
             catch (InvalidOperationException e)
             {
-                this.logger?.LogError("{a0} - Create device failed \n {a1}", device.DeviceId, e.Message);
+                this.logger?.LogError($"Create device failed for {device.DeviceId} \n {e.Message}");
                 return this.BadRequest(e.Message);
             }
         }
@@ -162,13 +162,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
             }
 
             // Device status (enabled/disabled) has to be dealt with afterwards
-            Device currentDevice = await this.devicesService.GetDevice(device.DeviceId);
+            var currentDevice = await this.devicesService.GetDevice(device.DeviceId);
             currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
             _ = await this.devicesService.UpdateDevice(currentDevice);
 
             // Get the current twin from the hub, based on the device ID
-            Twin currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceId);
+            var currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceId);
             device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
 
             // Update the twin properties

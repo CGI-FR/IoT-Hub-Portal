@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
@@ -103,7 +103,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the device models.
         /// </summary>
         /// <returns>The list of device models.</returns>
-        public virtual ActionResult<IEnumerable<TListItemModel>> Get()
+        public virtual ActionResult<IEnumerable<TListItemModel>> GetItems()
         {
             // PartitionKey 0 contains all device models
             var entities = this.tableClientFactory
@@ -121,7 +121,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The model identifier.</param>
         /// <returns>The corresponding model.</returns>
-        public virtual ActionResult<TModel> Get(string id)
+        public virtual ActionResult<TModel> GetItem(string id)
         {
             try
             {
@@ -258,7 +258,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 }
             }
 
-            TableEntity entity = new TableEntity()
+            var entity = new TableEntity()
             {
                 PartitionKey = DefaultPartitionKey,
                 RowKey = string.IsNullOrEmpty(deviceModel.ModelId) ? Guid.NewGuid().ToString() : deviceModel.ModelId
@@ -371,13 +371,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             var desiredProperties = this.deviceModelMapper.UpdateTableEntity(entity, deviceModelObject);
 
-            await this.tableClientFactory
+            _ = await this.tableClientFactory
                 .GetDeviceTemplates()
                 .UpsertEntityAsync(entity);
 
             var deviceModelTwin = new TwinCollection();
 
-            await this.deviceProvisioningServiceManager.CreateEnrollmentGroupFormModelAsync(deviceModelObject.ModelId, deviceModelObject.Name, deviceModelTwin);
+            _ = await this.deviceProvisioningServiceManager.CreateEnrollmentGroupFormModelAsync(deviceModelObject.ModelId, deviceModelObject.Name, deviceModelTwin);
 
             await this.configService.RolloutDeviceConfiguration(deviceModelObject.ModelId, deviceModelObject.Name, desiredProperties);
         }

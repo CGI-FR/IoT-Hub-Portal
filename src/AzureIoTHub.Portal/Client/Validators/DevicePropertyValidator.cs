@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Client.Validators
@@ -18,20 +18,20 @@ namespace AzureIoTHub.Portal.Client.Validators
 
         public DevicePropertyValidator()
         {
-            RuleForEach(x => x)
+            _ = RuleForEach(x => x)
                 .NotNull();
 
-            RuleFor(x => x)
+            _ = RuleFor(x => x)
                 .Must(x => x.Distinct(new DevicePropertyComparer()).Count() == x.Count())
                 .WithMessage("Properties should have unique name.");
 
-            RuleForEach(x => x)
+            _ = RuleForEach(x => x)
                 .ChildRules(c =>
                 {
-                    c.RuleFor(c => c.DisplayName).NotNull();
-                    c.RuleFor(c => c.Name).NotNull();
-                    c.RuleFor(c => c.PropertyType).NotNull();
-                    c.RuleFor(c => c.IsWritable).NotNull();
+                    _ = c.RuleFor(c => c.DisplayName).NotNull();
+                    _ = c.RuleFor(c => c.Name).NotNull();
+                    _ = c.RuleFor(c => c.PropertyType).NotNull();
+                    _ = c.RuleFor(c => c.IsWritable).NotNull();
                 });
         }
     }

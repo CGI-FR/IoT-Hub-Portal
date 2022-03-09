@@ -1,17 +1,20 @@
-﻿using AzureIoTHub.Portal.Server.Managers;
-using AzureIoTHub.Portal.Server.Wrappers;
-using Microsoft.Azure.Devices.Provisioning.Service;
-using Microsoft.Azure.Devices.Shared;
-using Microsoft.Extensions.Configuration;
-using Moq;
-using NUnit.Framework;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using static AzureIoTHub.Portal.Server.Startup;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
 {
+    using System.Net;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Server.Wrappers;
+    using Microsoft.Azure.Devices.Provisioning.Service;
+    using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Extensions.Configuration;
+    using Moq;
+    using NUnit.Framework;
+    using static AzureIoTHub.Portal.Server.Startup;
+
     [TestFixture]
     public class DeviceProvisioningServiceManagerTests
     {
@@ -41,17 +44,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
-        public async Task CreateEnrollmentGroupAsync_Should_Create_A_New_Enrollment_Group(string deviceType, string enrollmentGroupName)
+        public async Task CreateEnrollmentGroupAsyncShouldCreateANewEnrollmentGroup(string deviceType, string enrollmentGroupName)
         {
             // Arrange
             var manager = this.CreateManager();
             EnrollmentGroup enrollmentGroup = null;
 
-            this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
+            _ = this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
                 .Throws(new HttpRequestException(null, null, HttpStatusCode.NotFound));
 
-            this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
-                It.Is<EnrollmentGroup>(x => x.EnrollmentGroupId == enrollmentGroupName && x.Attestation is SymmetricKeyAttestation)))
+            _ = this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
+                 It.Is<EnrollmentGroup>(x => x.EnrollmentGroupId == enrollmentGroupName && x.Attestation is SymmetricKeyAttestation)))
                 .ReturnsAsync((EnrollmentGroup e) =>
                 {
                     enrollmentGroup = e;
@@ -75,15 +78,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
-        public async Task When_EnrollmentGroup_Already_Exist_CreateEnrollmentGroupAsync_Should_Update_Enrollment_Group(string deviceType, string enrollmentGroupName)
+        public async Task WhenEnrollmentGroupAlreadyExistCreateEnrollmentGroupAsyncShouldUpdateEnrollmentGroup(string deviceType, string enrollmentGroupName)
         {
             // Arrange
             var manager = this.CreateManager();
             EnrollmentGroup enrollmentGroup = null;
             var attestation = new SymmetricKeyAttestation("aaa", "bbb");
 
-            this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
-                .ReturnsAsync(new EnrollmentGroup (enrollmentGroupName, attestation)
+            _ = this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
+                .ReturnsAsync(new EnrollmentGroup(enrollmentGroupName, attestation)
                 {
                     Capabilities = new DeviceCapabilities
                     {
@@ -91,7 +94,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
                     }
                 });
 
-            this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
+            _ = this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
                 It.Is<EnrollmentGroup>(x => x.EnrollmentGroupId == enrollmentGroupName && x.Attestation is SymmetricKeyAttestation)))
                 .ReturnsAsync((EnrollmentGroup e) =>
                 {
@@ -118,18 +121,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
-        public async Task CreateEnrollmentGroupFormModelAsync_Should_Create_A_New_Enrollment_Group(string modelName, string enrollmentGroupName)
+        public async Task CreateEnrollmentGroupFormModelAsyncShouldCreateANewEnrollmentGroup(string modelName, string enrollmentGroupName)
         {
             // Arrange
             var manager = this.CreateManager();
-            string modelId = "bbb";
-            TwinCollection desiredProperties = new TwinCollection();
+            var modelId = "bbb";
+            var desiredProperties = new TwinCollection();
             EnrollmentGroup enrollmentGroup = null;
 
-            this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
+            _ = this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
                 .Throws(new HttpRequestException(null, null, HttpStatusCode.NotFound));
 
-            this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
+            _ = this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
                 It.Is<EnrollmentGroup>(x =>
                 x.EnrollmentGroupId == enrollmentGroupName &&
                 x.Attestation is SymmetricKeyAttestation)))
@@ -160,17 +163,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
-        public async Task When_EnrollmentGroup_Exist_CreateEnrollmentGroupFormModelAsync_Should_Update(string modelName, string enrollmentGroupName)
+        public async Task WhenEnrollmentGroupExistCreateEnrollmentGroupFormModelAsyncShouldUpdate(string modelName, string enrollmentGroupName)
         {
             // Arrange
             var manager = this.CreateManager();
-            string modelId = "bbb";
-            TwinCollection desiredProperties = new TwinCollection();
+            var modelId = "bbb";
+            var desiredProperties = new TwinCollection();
             EnrollmentGroup enrollmentGroup = null;
 
             var attestation = new SymmetricKeyAttestation("aaa", "bbb");
 
-            this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
+            _ = this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
                 .ReturnsAsync(new EnrollmentGroup(enrollmentGroupName, attestation)
                 {
                     Capabilities = new DeviceCapabilities
@@ -179,7 +182,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
                     }
                 });
 
-            this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
+            _ = this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
                 It.Is<EnrollmentGroup>(x =>
                 x.EnrollmentGroupId == enrollmentGroupName &&
                 x.Attestation is SymmetricKeyAttestation)))
@@ -212,17 +215,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
-        public async Task GetAttestation_Should_Return_DPS_Attestation(string modelName, string enrollmentGroupName)
+        public async Task GetAttestationShouldReturnDPSAttestation(string modelName, string enrollmentGroupName)
         {
             // Arrange
             var manager = this.CreateManager();
 
             var mockAttestationMehanism = this.mockRepository.Create<IAttestationMechanism>();
 
-            mockAttestationMehanism.Setup(c => c.GetAttestation())
+            _ = mockAttestationMehanism.Setup(c => c.GetAttestation())
                 .Returns(new SymmetricKeyAttestation("", ""));
 
-            this.mockProvisioningServiceClient
+            _ = this.mockProvisioningServiceClient
                 .Setup(c => c.GetEnrollmentGroupAttestationAsync(It.Is<string>(x => x == enrollmentGroupName)))
                 .ReturnsAsync(mockAttestationMehanism.Object);
 
@@ -237,21 +240,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
-        public async Task GetEnrollmentCredentialsAsync_Should_Get_DPS_Attestation(string modelName, string enrollmentGroupName)
+        public async Task GetEnrollmentCredentialsAsyncShouldGetDPSAttestation(string modelName, string enrollmentGroupName)
         {
             // Arrange
             var manager = this.CreateManager();
 
             var mockAttestationMehanism = this.mockRepository.Create<IAttestationMechanism>();
 
-            mockAttestationMehanism.Setup(c => c.GetAttestation())
+            _ = mockAttestationMehanism.Setup(c => c.GetAttestation())
                 .Returns(new SymmetricKeyAttestation("8isrFI1sGsIlvvFSSFRiMfCNzv21fjbE/+ah/lSh3lF8e2YG1Te7w1KpZhJFFXJrqYKi9yegxkqIChbqOS9Egw==", "8isrFI1sGsIlvvFSSFRiMfCNzv21fjbE/+ah/lSh3lF8e2YG1Te7w1KpZhJFFXJrqYKi9yegxkqIChbqOS9Egw=="));
 
-            this.mockProvisioningServiceClient
+            _ = this.mockProvisioningServiceClient
                 .Setup(c => c.GetEnrollmentGroupAttestationAsync(It.Is<string>(x => x == enrollmentGroupName)))
                 .ReturnsAsync(mockAttestationMehanism.Object);
 
-            this.mockConfigHandler.SetupGet(c => c.DPSEndpoint)
+            _ = this.mockConfigHandler.SetupGet(c => c.DPSEndpoint)
                 .Returns("FakeEndpoint");
 
             // Act
@@ -270,7 +273,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
-        public async Task When_Enrollment_Goups_Not_Exist_GetEnrollmentCredentialsAsync_Should_CreateNew_One(string modelName, string enrollmentGroupName)
+        public async Task WhenEnrollmentGoupsNotExistGetEnrollmentCredentialsAsyncShouldCreateNewOne(string modelName, string enrollmentGroupName)
         {
             // Arrange
             var manager = this.CreateManager();
@@ -278,25 +281,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
 
             var mockAttestationMehanism = this.mockRepository.Create<IAttestationMechanism>();
 
-            mockAttestationMehanism.Setup(c => c.GetAttestation())
+            _ = mockAttestationMehanism.Setup(c => c.GetAttestation())
                 .Returns(new SymmetricKeyAttestation("8isrFI1sGsIlvvFSSFRiMfCNzv21fjbE/+ah/lSh3lF8e2YG1Te7w1KpZhJFFXJrqYKi9yegxkqIChbqOS9Egw==", "8isrFI1sGsIlvvFSSFRiMfCNzv21fjbE/+ah/lSh3lF8e2YG1Te7w1KpZhJFFXJrqYKi9yegxkqIChbqOS9Egw=="));
 
-            this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
+            _ = this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
                 .Throws(new HttpRequestException(null, null, HttpStatusCode.NotFound));
 
-            this.mockProvisioningServiceClient
+            _ = this.mockProvisioningServiceClient
                 .Setup(c => c.GetEnrollmentGroupAttestationAsync(It.Is<string>(x => x == enrollmentGroupName)))
                 .Throws(new HttpRequestException(null, null, HttpStatusCode.NotFound));
 
-            this.mockConfigHandler.SetupGet(c => c.DPSEndpoint)
+            _ = this.mockConfigHandler.SetupGet(c => c.DPSEndpoint)
                 .Returns("FakeEndpoint");
 
-            this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
+            _ = this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
                 It.Is<EnrollmentGroup>(x => x.EnrollmentGroupId == enrollmentGroupName && x.Attestation is SymmetricKeyAttestation)))
                 .Callback(() =>
                 {
                     // When the enrollment group is created, the DPS can return the attestation.
-                    this.mockProvisioningServiceClient
+                    _ = this.mockProvisioningServiceClient
                          .Setup(c => c.GetEnrollmentGroupAttestationAsync(It.Is<string>(x => x == enrollmentGroupName)))
                          .ReturnsAsync(mockAttestationMehanism.Object);
                 })

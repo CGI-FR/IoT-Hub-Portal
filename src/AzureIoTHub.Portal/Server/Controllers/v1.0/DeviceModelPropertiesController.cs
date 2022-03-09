@@ -1,10 +1,9 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
     using Azure;
@@ -112,14 +111,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             await foreach (var item in items)
             {
-                await table.DeleteEntityAsync(id, item.RowKey);
+                _ = await table.DeleteEntityAsync(id, item.RowKey);
             }
 
             foreach (var item in properties)
             {
                 var entity = this.mapper.Map<DeviceModelProperty>(item, opts => opts.Items[nameof(DeviceModelProperty.PartitionKey)] = id);
 
-                await table.AddEntityAsync(entity);
+                _ = await table.AddEntityAsync(entity);
             }
 
             return this.Ok();

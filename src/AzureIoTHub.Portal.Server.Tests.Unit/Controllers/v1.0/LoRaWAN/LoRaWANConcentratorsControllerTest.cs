@@ -1,32 +1,25 @@
-﻿using Azure;
-using Azure.Data.Tables;
-using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
-using AzureIoTHub.Portal.Server.Factories;
-using AzureIoTHub.Portal.Server.Managers;
-using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Server.Services;
-using AzureIoTHub.Portal.Shared.Models.V10.Device;
-using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator;
-using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
-using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Devices;
-using Microsoft.Azure.Devices.Shared;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using static AzureIoTHub.Portal.Server.Startup;
+﻿// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
+    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using NUnit.Framework;
+    using static AzureIoTHub.Portal.Server.Startup;
+
     [TestFixture]
     public class LoRaWANConcentratorsControllerTest
     {
@@ -59,24 +52,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         }
 
         [Test]
-        public async Task GetAllDeviceConcentrator_With_deviceType_Should_return_not_empty_list()
+        public async Task GetAllDeviceConcentratorWithDeviceTypeShouldReturnNotEmptyList()
         {
             // Arrange
             var concentratorsController = CreateLoRaWANConcentratorsController();
-            int count = 100;
-            TwinCollection twinCollection = new TwinCollection();
+            var count = 100;
+            var twinCollection = new TwinCollection();
             twinCollection["deviceType"] = "LoRa Concentrator";
 
-            this.mockDeviceService.Setup(c => c.GetAllDevice(
+            _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
                     It.Is<string>(x => x == "LoRa Concentrator"),
                     It.Is<string>(x => string.IsNullOrEmpty(x))))
                 .ReturnsAsync(Enumerable.Range(0, 100).Select(x => new Twin
                 {
-                    DeviceId = x.ToString(),
+                    DeviceId = FormattableString.Invariant($"{x}"),
                     Tags = twinCollection
                 }));
 
-            this.mockConcentratorTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>()))
+            _ = this.mockConcentratorTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>()))
                 .Returns<Twin>(x => new Concentrator
                 {
                     DeviceId = x.DeviceId
@@ -102,17 +95,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         }
 
         [Test]
-        public async Task GetAllDeviceConcentrator_With_no_deviceType_Should_return_empty_list()
+        public async Task GetAllDeviceConcentratorWithNoDeviceTypeShouldReturnEmptyList()
         {
             // Arrange
             var concentratorsController = CreateLoRaWANConcentratorsController();
 
-            this.mockDeviceService.Setup(c => c.GetAllDevice(
+            _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
                     It.Is<string>(x => x == "LoRa Concentrator"),
                     It.Is<string>(x => string.IsNullOrEmpty(x))))
                 .ReturnsAsync(Enumerable.Range(0, 0).Select(x => new Twin
                 {
-                    DeviceId = x.ToString()
+                    DeviceId = FormattableString.Invariant($"{x}")
                 }));
 
             // Act
@@ -133,7 +126,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         }
 
         [Test]
-        public async Task GetDeviceConcentrator_With_Valid_Argument_Should_Return_Concentrator()
+        public async Task GetDeviceConcentratorWithValidArgumentShouldReturnConcentrator()
         {
             // Arrange
             var twin = new Twin("aaa");
@@ -144,10 +137,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                 DeviceType = "LoRa Concentrator"
             };
 
-            this.mockDeviceService.Setup(x => x.GetDeviceTwin(It.Is<string>(c => c == twin.DeviceId)))
+            _ = this.mockDeviceService.Setup(x => x.GetDeviceTwin(It.Is<string>(c => c == twin.DeviceId)))
                 .ReturnsAsync(twin);
 
-            this.mockConcentratorTwinMapper.Setup(x => x.CreateDeviceDetails(It.Is<Twin>(c => c.DeviceId == twin.DeviceId)))
+            _ = this.mockConcentratorTwinMapper.Setup(x => x.CreateDeviceDetails(It.Is<Twin>(c => c.DeviceId == twin.DeviceId)))
                 .Returns(concentrator);
 
             var concentratorController = this.CreateLoRaWANConcentratorsController();
@@ -173,7 +166,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         }
 
         [Test]
-        public async Task CreateDeviceAsync_With_Valid_Argument_Should_Return_OkResult()
+        public async Task CreateDeviceAsyncWithValidArgumentShouldReturnOkResult()
         {
             // Arrange
             var concentratorController = this.CreateLoRaWANConcentratorsController();
@@ -195,18 +188,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                 DeviceId = concentrator.DeviceId,
             };
 
-            this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(
+            _ = this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(
                 It.Is<string>(x => x == twin.DeviceId),
                 It.Is<bool>(x => !x),
                 It.Is<Twin>(x => x.DeviceId == twin.DeviceId),
                 It.Is<DeviceStatus>(x => x == DeviceStatus.Enabled)))
                 .ReturnsAsync(mockResult);
 
-            this.mockRouterConfigManager.Setup(x => x.GetRouterConfig(It.Is<string>(c => c == concentrator.LoraRegion)))
+            _ = this.mockRouterConfigManager.Setup(x => x.GetRouterConfig(It.Is<string>(c => c == concentrator.LoraRegion)))
                 .ReturnsAsync(routerConfig);
 
-            this.mockConcentratorTwinMapper.Setup(x => x.UpdateTwin(It.Is<Twin>(c => c.DeviceId == twin.DeviceId), It.Is<Concentrator>(c => c.DeviceId == concentrator.DeviceId)));
-            this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+            _ = this.mockConcentratorTwinMapper.Setup(x => x.UpdateTwin(It.Is<Twin>(c => c.DeviceId == twin.DeviceId), It.Is<Concentrator>(c => c.DeviceId == concentrator.DeviceId)));
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             // Act
             var result = await concentratorController.CreateDeviceAsync(concentrator);
@@ -223,7 +216,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         }
 
         [Test]
-        public async Task UpdateDeviceAsync_With_Valid_Argument_Should_Return_OkResult()
+        public async Task UpdateDeviceAsyncWithValidArgumentShouldReturnOkResult()
         {
             // Arrange
             var concentratorController = this.CreateLoRaWANConcentratorsController();
@@ -242,17 +235,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
 
             var device = new Device(concentrator.DeviceId);
 
-            this.mockRouterConfigManager.Setup(x => x.GetRouterConfig(It.Is<string>(c => c == concentrator.LoraRegion)))
+            _ = this.mockRouterConfigManager.Setup(x => x.GetRouterConfig(It.Is<string>(c => c == concentrator.LoraRegion)))
                 .ReturnsAsync(concentrator.RouterConfig);
-            this.mockConcentratorTwinMapper.Setup(x => x.UpdateTwin(It.Is<Twin>(c => c.DeviceId == twin.DeviceId), It.Is<Concentrator>(c => c.DeviceId == concentrator.DeviceId)));
+            _ = this.mockConcentratorTwinMapper.Setup(x => x.UpdateTwin(It.Is<Twin>(c => c.DeviceId == twin.DeviceId), It.Is<Concentrator>(c => c.DeviceId == concentrator.DeviceId)));
 
-            this.mockDeviceService.Setup(x => x.GetDevice(It.Is<string>(c => c == concentrator.DeviceId)))
+            _ = this.mockDeviceService.Setup(x => x.GetDevice(It.Is<string>(c => c == concentrator.DeviceId)))
                 .ReturnsAsync(device);
-            this.mockDeviceService.Setup(x => x.UpdateDevice(It.Is<Device>(c => c.Id == concentrator.DeviceId)))
+            _ = this.mockDeviceService.Setup(x => x.UpdateDevice(It.Is<Device>(c => c.Id == concentrator.DeviceId)))
                 .ReturnsAsync(device);
-            this.mockDeviceService.Setup(x => x.GetDeviceTwin(It.Is<string>(c => c == concentrator.DeviceId)))
+            _ = this.mockDeviceService.Setup(x => x.GetDeviceTwin(It.Is<string>(c => c == concentrator.DeviceId)))
                 .ReturnsAsync(twin);
-            this.mockDeviceService.Setup(x => x.UpdateDeviceTwin(It.Is<string>(c => c == concentrator.DeviceId), It.Is<Twin>(c => c.DeviceId == concentrator.DeviceId)))
+            _ = this.mockDeviceService.Setup(x => x.UpdateDeviceTwin(It.Is<string>(c => c == concentrator.DeviceId), It.Is<Twin>(c => c.DeviceId == concentrator.DeviceId)))
                 .ReturnsAsync(twin);
 
             // Act
@@ -274,11 +267,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             var deviceId = Guid.NewGuid().ToString();
 
 
-            this.mockDeviceService.Setup(x => x.DeleteDevice(It.Is<string>(c => c == deviceId)))
+            _ = this.mockDeviceService.Setup(x => x.DeleteDevice(It.Is<string>(c => c == deviceId)))
                 .Returns(Task.CompletedTask);
 
             // Act
-            await concentratorController.Delete(deviceId);
+            _ = await concentratorController.Delete(deviceId);
 
             // Assert
             this.mockRepository.VerifyAll();

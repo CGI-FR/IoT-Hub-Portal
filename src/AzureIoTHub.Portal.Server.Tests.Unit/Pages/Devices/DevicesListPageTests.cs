@@ -1,30 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using AzureIoTHub.Portal.Client.Pages.Devices;
-using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
-using AzureIoTHub.Portal.Shared.Models.V10.Device;
-using Bunit;
-using Bunit.TestDoubles;
-using FluentAssertions.Extensions;
-using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using Moq.Protected;
-using MudBlazor;
-using MudBlazor.Interop;
-using MudBlazor.Services;
-using NUnit.Framework;
-using RichardSzalay.MockHttp;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 {
+    using System;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Client.Pages.Devices;
+    using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
+    using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using Bunit;
+    using Bunit.TestDoubles;
+    using FluentAssertions.Extensions;
+    using Microsoft.AspNetCore.Components;
+    using Microsoft.Extensions.DependencyInjection;
+    using Moq;
+    using MudBlazor;
+    using MudBlazor.Interop;
+    using MudBlazor.Services;
+    using NUnit.Framework;
+    using RichardSzalay.MockHttp;
+
+
     [TestFixture]
-    public class DevicesListPageTests
+    public class DevicesListPageTests : IDisposable
     {
         private Bunit.TestContext testContext;
 
@@ -47,13 +46,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             this.mockHttpClient = testContext.Services.AddMockHttpClient();
 
-            testContext.Services.AddSingleton(this.mockDialogService.Object);
+            _ = testContext.Services.AddSingleton(this.mockDialogService.Object);
 
-            testContext.Services.AddMudServices();
+            _ = testContext.Services.AddMudServices();
 
-            testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
-            testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
+            _ = testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
+            _ = testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
+            _ = testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
 
             mockNavigationManager = testContext.Services.GetRequiredService<FakeNavigationManager>();
         }
@@ -70,11 +69,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             // Arrange
             using var deviceResponseMock = new HttpResponseMessage();
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiBaseUrl)
-                .RespondJson(new object[0]);
+                .RespondJson(Array.Empty<object>());
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiSettingsBaseUrl)
                 .RespondJson(true);
 
@@ -94,21 +93,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public void When_Devices_Not_Loaded_DeviceListPage_Should_Render_ProgressBar()
+        public void WhenDevicesNotLoadedDeviceListPageShouldRenderProgressBar()
         {
             // Arrange
             var task = Task.Factory.StartNew(() =>
             {
                 while (true) { }
 
-                return new object[0];
+                return Array.Empty<object>();
             });
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiBaseUrl)
                 .RespondJsonAsync(task);
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiSettingsBaseUrl)
                 .RespondJson(true);
 
@@ -123,20 +122,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public async Task When_ResetFilterButton_Click_Should_Clear_Filters()
+        public async Task WhenResetFilterButtonClickShouldClearFilters()
         {
             // Arrange
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiBaseUrl)
-                .RespondJson(new object[0]);
+                .RespondJson(Array.Empty<object>());
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiSettingsBaseUrl)
                 .RespondJson(true);
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiTagsBaseUrl)
-                .RespondJson(new object[0]);
+                .RespondJson(Array.Empty<object>());
 
             var cut = RenderComponent<DeviceListPage>();
 
@@ -160,20 +159,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
         [TestCase("newDeviceButton")]
         [TestCase("tableAddItemButton")]
-        public async Task When_AddNewDevice_Click_Should_Navigate_To_New_Device_Page(string buttonName)
+        public async Task WhenAddNewDeviceClickShouldNavigateToNewDevicePage(string buttonName)
         {
             // Arrange
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiBaseUrl)
-                .RespondJson(new object[0]);
+                .RespondJson(Array.Empty<object>());
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiSettingsBaseUrl)
                 .RespondJson(true);
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiTagsBaseUrl)
-                .RespondJson(new object[0]);
+                .RespondJson(Array.Empty<object>());
 
             var cut = RenderComponent<DeviceListPage>();
             await Task.Delay(100);
@@ -189,26 +188,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public async Task When_Refresh_Click_Should_Reload_From_Api()
+        public async Task WhenRefreshClickShouldReloadFromApi()
         {
             // Arrange
             var apiCall = this.mockHttpClient
                 .When(HttpMethod.Get, apiBaseUrl)
-                .RespondJson(new object[0]);
+                .RespondJson(Array.Empty<object>());
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiSettingsBaseUrl)
                 .RespondJson(true);
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiTagsBaseUrl)
-                .RespondJson(new object[0]);
+                .RespondJson(Array.Empty<object>());
 
             var cut = RenderComponent<DeviceListPage>();
             cut.WaitForAssertion(() => cut.Find($"#tableRefreshButton"), 1.Seconds());
 
             // Act
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 cut.Find($"#tableRefreshButton")
                         .Click();
@@ -222,12 +221,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public void When_Lora_Feature_disable_device_detail_link_Should_not_contain_lora()
+        public void WhenLoraFeatureDisableDeviceDetailLinkShouldNotContainLora()
         {
             // Arrange
-            string deviceId = Guid.NewGuid().ToString();
+            var deviceId = Guid.NewGuid().ToString();
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiBaseUrl)
                 .RespondJson(new DeviceListItem[] { new DeviceListItem { DeviceID = deviceId } });
 
@@ -235,9 +234,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                     .When(HttpMethod.Get, apiSettingsBaseUrl)
                     .RespondJson(false);
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiTagsBaseUrl)
-                .RespondJson(new object[0]);
+                .RespondJson(Array.Empty<object>());
 
             var cut = RenderComponent<DeviceListPage>();
             _ = cut.WaitForElements(".detail-link");
@@ -254,12 +253,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public void When_Lora_Feature_enable_device_detail_link_Should_contain_lora()
+        public void WhenLoraFeatureEnableDeviceDetailLinkShouldContainLora()
         {
             // Arrange
-            string deviceId = Guid.NewGuid().ToString();
+            var deviceId = Guid.NewGuid().ToString();
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiBaseUrl)
                 .RespondJson(new DeviceListItem[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } });
 
@@ -267,9 +266,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                     .When(HttpMethod.Get, apiSettingsBaseUrl)
                     .RespondJson(true);
 
-            this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, apiTagsBaseUrl)
-                .RespondJson(new object[0]);
+                .RespondJson(Array.Empty<object>());
 
             var cut = RenderComponent<DeviceListPage>();
             _ = cut.WaitForElements(".detail-link");
@@ -283,6 +282,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             {
                 Assert.AreEqual($"devices/{deviceId}?isLora=true", item.GetAttribute("href"));
             }
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
     }
 }

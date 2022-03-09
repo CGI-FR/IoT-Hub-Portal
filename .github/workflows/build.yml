@@ -59,7 +59,9 @@ jobs:
     - name: Upload to Codecov test reports
       uses: codecov/codecov-action@v2
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         directory: src/AzureIoTHub.Portal.Server.Tests.Unit/TestResults
+        verbose: true # optional (default = false)
 
   add-openapi-docs: 
     name: Import OpenAPI to documentation

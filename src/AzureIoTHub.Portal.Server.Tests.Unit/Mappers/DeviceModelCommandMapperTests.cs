@@ -1,12 +1,14 @@
-﻿using Azure.Data.Tables;
-using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Shared.Models.V10;
-using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
-using Moq;
-using NUnit.Framework;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 {
+    using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class DeviceModelCommandMapperTests
     {
@@ -18,19 +20,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             this.mockRepository = new MockRepository(MockBehavior.Strict);
         }
 
-        private DeviceModelCommandMapper CreateDeviceModelCommandMapper()
+        private static DeviceModelCommandMapper CreateDeviceModelCommandMapper()
         {
             return new DeviceModelCommandMapper();
         }
 
         [Test]
-        public void GetDeviceModelCommand_StateUnderTest_ExpectedBehavior()
+        public void GetDeviceModelCommandStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceModelCommandMapper = this.CreateDeviceModelCommandMapper();
-            var entity = new TableEntity();
+            var deviceModelCommandMapper = CreateDeviceModelCommandMapper();
+            var entity = new TableEntity
+            {
+                RowKey = "000-000-001"
+            };
 
-            entity.RowKey = "000-000-001";
             entity["Frame"] = "ExpectedFrame";
             entity["Port"] = 10;
 
@@ -45,10 +49,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         }
 
         [Test]
-        public void UpdateTableEntity_StateUnderTest_ExpectedBehavior()
+        public void UpdateTableEntityStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceModelCommandMapper = this.CreateDeviceModelCommandMapper();
+            var deviceModelCommandMapper = CreateDeviceModelCommandMapper();
             var entity = new TableEntity();
 
             var element = new DeviceModelCommand

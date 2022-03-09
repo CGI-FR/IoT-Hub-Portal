@@ -58,7 +58,7 @@ namespace AzureIoTHub.Portal.Server
         {
             var configuration = ConfigHandler.Create(this.HostEnvironment, this.Configuration);
 
-            services.Configure<ClientApiIndentityOptions>(opts =>
+            _ = services.Configure<ClientApiIndentityOptions>(opts =>
             {
                 opts.MetadataUrl = new Uri(configuration.OIDCMetadataUrl).ToString();
                 opts.ClientId = configuration.OIDCClientId;
@@ -82,55 +82,55 @@ namespace AzureIoTHub.Portal.Server
             });
             */
 
-            services.AddSingleton(configuration);
+            _ = services.AddSingleton(configuration);
 
-            services.AddRazorPages();
+            _ = services.AddRazorPages();
 
-            services.AddScoped(t =>
+            _ = services.AddScoped(t =>
             {
                 return RegistryManager.CreateFromConnectionString(configuration.IoTHubConnectionString);
             });
 
-            services.AddScoped(t =>
+            _ = services.AddScoped(t =>
             {
                 return ServiceClient.CreateFromConnectionString(configuration.IoTHubConnectionString);
             });
 
-            services.AddScoped(t =>
+            _ = services.AddScoped(t =>
             {
                 return ProvisioningServiceClient.CreateFromConnectionString(configuration.DPSConnectionString);
             });
 
-            services.AddTransient<IProvisioningServiceClient, ProvisioningServiceClientWrapper>();
-            services.AddTransient(sp => new BlobServiceClient(configuration.StorageAccountConnectionString));
-            services.AddTransient<ITableClientFactory>(sp => new TableClientFactory(configuration.StorageAccountConnectionString));
-            services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
-            services.AddTransient<IDeviceService, DeviceService>();
-            services.AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>();
-            services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
-            services.AddTransient<IDeviceModelCommandsManager, DeviceModelCommandsManager>();
-            services.AddTransient<IDeviceProvisioningServiceManager, DeviceProvisioningServiceManager>();
+            _ = services.AddTransient<IProvisioningServiceClient, ProvisioningServiceClientWrapper>();
+            _ = services.AddTransient(sp => new BlobServiceClient(configuration.StorageAccountConnectionString));
+            _ = services.AddTransient<ITableClientFactory>(sp => new TableClientFactory(configuration.StorageAccountConnectionString));
+            _ = services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
+            _ = services.AddTransient<IDeviceService, DeviceService>();
+            _ = services.AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>();
+            _ = services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
+            _ = services.AddTransient<IDeviceModelCommandsManager, DeviceModelCommandsManager>();
+            _ = services.AddTransient<IDeviceProvisioningServiceManager, DeviceProvisioningServiceManager>();
 
-            services.AddTransient<IDeviceTwinMapper<DeviceListItem, DeviceDetails>, DeviceTwinMapper>();
-            services.AddTransient<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>, LoRaDeviceTwinMapper>();
-            services.AddTransient<IDeviceModelMapper<DeviceModel, DeviceModel>, DeviceModelMapper>();
-            services.AddTransient<IDeviceModelMapper<DeviceModel, LoRaDeviceModel>, LoRaDeviceModelMapper>();
-            services.AddTransient<IDeviceTagMapper, DeviceTagMapper>();
+            _ = services.AddTransient<IDeviceTwinMapper<DeviceListItem, DeviceDetails>, DeviceTwinMapper>();
+            _ = services.AddTransient<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>, LoRaDeviceTwinMapper>();
+            _ = services.AddTransient<IDeviceModelMapper<DeviceModel, DeviceModel>, DeviceModelMapper>();
+            _ = services.AddTransient<IDeviceModelMapper<DeviceModel, LoRaDeviceModel>, LoRaDeviceModelMapper>();
+            _ = services.AddTransient<IDeviceTagMapper, DeviceTagMapper>();
 
-            services.AddTransient<IConfigService, ConfigService>();
-            services.AddTransient<IDeviceTagService, DeviceTagService>();
+            _ = services.AddTransient<IConfigService, ConfigService>();
+            _ = services.AddTransient<IDeviceTagService, DeviceTagService>();
 
-            services.AddMudServices();
+            _ = services.AddMudServices();
 
             var transientHttpErrorPolicy = HttpPolicyExtensions
                                     .HandleTransientHttpError()
                                     .OrResult(c => c.StatusCode == HttpStatusCode.NotFound)
                                     .WaitAndRetryAsync(3, attempt => TimeSpan.FromMilliseconds(100));
 
-            services.AddHttpClient("RestClient")
+            _ = services.AddHttpClient("RestClient")
                 .AddPolicyHandler(transientHttpErrorPolicy);
 
-            services.AddHttpClient<ILoraDeviceMethodManager, LoraDeviceMethodManager>(client =>
+            _ = services.AddHttpClient<ILoraDeviceMethodManager, LoraDeviceMethodManager>(client =>
             {
                 client.BaseAddress = new Uri(configuration.LoRaKeyManagementUrl);
                 client.DefaultRequestHeaders.Add("x-functions-key", configuration.LoRaKeyManagementCode);
@@ -138,62 +138,62 @@ namespace AzureIoTHub.Portal.Server
             })
                 .AddPolicyHandler(transientHttpErrorPolicy);
 
-            services.AddHttpClient<IRouterConfigManager, RouterConfigManager>(client =>
+            _ = services.AddHttpClient<IRouterConfigManager, RouterConfigManager>(client =>
             {
                 client.BaseAddress = new Uri(configuration.LoRaRegionRouterConfigUrl);
             }).AddPolicyHandler(transientHttpErrorPolicy);
 
-            services.AddControllers();
+            _ = services.AddControllers();
 
-            services.AddEndpointsApiExplorer();
+            _ = services.AddEndpointsApiExplorer();
 
-            services.AddApplicationInsightsTelemetry();
+            _ = services.AddApplicationInsightsTelemetry();
 
-            services.AddSwaggerGen(opts =>
-            {
-                opts.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "1.0",
-                    Title = "Azure IoT Hub Portal API",
-                    Description = "Available APIs for managing devices from Azure IoT Hub."
-                });
+            _ = services.AddSwaggerGen(opts =>
+              {
+                  opts.SwaggerDoc("v1", new OpenApiInfo
+                  {
+                      Version = "1.0",
+                      Title = "Azure IoT Hub Portal API",
+                      Description = "Available APIs for managing devices from Azure IoT Hub."
+                  });
 
-                // using System.Reflection;
-                opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"AzureIoTHub.Portal.Server.xml"));
-                opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"AzureIoTHub.Portal.Shared.xml"));
+                  // using System.Reflection;
+                  opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"AzureIoTHub.Portal.Server.xml"));
+                  opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"AzureIoTHub.Portal.Shared.xml"));
 
-                opts.TagActionsBy(api => new[] { api.GroupName });
-                opts.DocInclusionPredicate((name, api) => true);
+                  opts.TagActionsBy(api => new[] { api.GroupName });
+                  opts.DocInclusionPredicate((name, api) => true);
 
-                opts.DescribeAllParametersInCamelCase();
+                  opts.DescribeAllParametersInCamelCase();
 
-                OpenApiSecurityScheme securityDefinition = new OpenApiSecurityScheme()
-                {
-                    Name = "Bearer",
-                    BearerFormat = "JWT",
-                    Scheme = "bearer",
-                    Description =
-@"
+                  var securityDefinition = new OpenApiSecurityScheme()
+                  {
+                      Name = "Bearer",
+                      BearerFormat = "JWT",
+                      Scheme = "bearer",
+                      Description =
+  @"
     Specify the authorization token got from your IDP as a header.
     > Ex: ``Authorization: Bearer * ***``",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                };
+                      In = ParameterLocation.Header,
+                      Type = SecuritySchemeType.Http,
+                  };
 
-                OpenApiSecurityRequirement securityRequirements = new OpenApiSecurityRequirement()
-                {
-                    { securityDefinition, new string[] { } },
-                };
+                  var securityRequirements = new OpenApiSecurityRequirement()
+                  {
+                    { securityDefinition, Array.Empty<string>() },
+                  };
 
-                opts.AddSecurityDefinition("Bearer", securityDefinition);
+                  opts.AddSecurityDefinition("Bearer", securityDefinition);
 
-                opts.AddSecurityRequirement(securityRequirements);
+                  opts.AddSecurityRequirement(securityRequirements);
 
-                opts.OrderActionsBy(api => api.RelativePath);
-                opts.UseInlineDefinitionsForEnums();
-            });
+                  opts.OrderActionsBy(api => api.RelativePath);
+                  opts.UseInlineDefinitionsForEnums();
+              });
 
-            services.AddApiVersioning(o =>
+            _ = services.AddApiVersioning(o =>
             {
                 o.AssumeDefaultVersionWhenUnspecified = true;
                 o.DefaultApiVersion = new ApiVersion(1, 0);
@@ -219,40 +219,39 @@ namespace AzureIoTHub.Portal.Server
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseWebAssemblyDebugging();
-                app.UseSwagger();
-                app.UseSwaggerUI();
+
+                _ = app.UseDeveloperExceptionPage();
+                _ = app.UseSwagger();
+                _ = app.UseSwaggerUI();
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                _ = app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                _ = app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseBlazorFrameworkFiles();
-            app.UseStaticFiles();
+            _ = app.UseHttpsRedirection();
+            _ = app.UseBlazorFrameworkFiles();
+            _ = app.UseStaticFiles();
 
-            app.UseRouting();
-
-            app.UseMetricServer();
+            _ = app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            _ = app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
-                endpoints.MapControllers();
+                _ = endpoints.MapRazorPages();
+                _ = endpoints.MapControllers();
                 // endpoints.MapFallbackToFile("index.html");
 
                 // Prevent the user from getting HTML when the controller can't be found.
-                endpoints.Map("api/{**slug}", this.HandleApiFallback);
+                _ = endpoints.Map("api/{**slug}", this.HandleApiFallback);
 
                 // If this is a request for a web page, just do the normal out-of-the-box behaviour.
-                endpoints.MapFallbackToFile("{**slug}", "index.html", new StaticFileOptions
+                _ = endpoints.MapFallbackToFile("{**slug}", "index.html", new StaticFileOptions
                 {
                     OnPrepareResponse = ctx => ctx.Context.Response.Headers.Add("Cache-Control", new StringValues("no-cache"))
                 });

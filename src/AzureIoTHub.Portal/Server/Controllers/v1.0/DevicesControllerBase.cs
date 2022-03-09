@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
@@ -26,12 +26,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         where TListItem : DeviceListItem
         where TModel : DeviceDetails
     {
-        protected readonly ILogger logger;
         private readonly IDeviceService devicesService;
         private readonly IDeviceTagService deviceTagService;
         private readonly IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper;
         private readonly ITableClientFactory tableClientFactory;
         private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
+
+        protected ILogger Logger { get; private set; }
 
         public DevicesControllerBase(
             ILogger logger,
@@ -41,7 +42,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             ITableClientFactory tableClientFactory)
         {
-            this.logger = logger;
+            this.Logger = logger;
             this.devicesService = devicesService;
             this.deviceTagService = deviceTagService;
             this.deviceTwinMapper = deviceTwinMapper;
@@ -52,8 +53,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the device list.
         /// </summary>
-        /// <returns></returns>
-        public virtual async Task<IEnumerable<TListItem>> Get()
+        public virtual async Task<IEnumerable<TListItem>> GetItems()
         {
             var items = await this.devicesService.GetAllDevice(excludeDeviceType: "LoRa Concentrator");
             var tagList = this.deviceTagService.GetAllSearchableTagsNames();
@@ -65,20 +65,18 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the specified device.
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
-        /// <returns></returns>
-        public virtual async Task<TModel> Get(string deviceID)
+        public virtual async Task<TModel> GetItem(string deviceID)
         {
             var item = await this.devicesService.GetDeviceTwin(deviceID);
             var tagList = this.deviceTagService.GetAllTagsNames();
 
-            return this.deviceTwinMapper.CreateDeviceDetails(item,tagList);
+            return this.deviceTwinMapper.CreateDeviceDetails(item, tagList);
         }
 
         /// <summary>
         /// Creates the device.
         /// </summary>
         /// <param name="device">The device.</param>
-        /// <returns></returns>
         public virtual async Task<IActionResult> CreateDeviceAsync(TModel device)
         {
             try
@@ -96,7 +94,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
                 this.deviceTwinMapper.UpdateTwin(newTwin, device);
 
-                DeviceStatus status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+                var status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
                 var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin, status);
 
@@ -104,12 +102,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             }
             catch (DeviceAlreadyExistsException e)
             {
-                this.logger?.LogError($"{device.DeviceID} - Create device failed", e);
+                this.Logger?.LogError($"Create device failed -{device.DeviceID}", e);
                 return this.BadRequest(e.Message);
             }
             catch (InvalidOperationException e)
             {
-                this.logger?.LogError("{a0} - Create device failed \n {a1}", device.DeviceID, e.Message);
+                this.Logger?.LogError($"Create device failed - {device.DeviceID} -\n{e.Message}");
                 return this.BadRequest(e.Message);
             }
         }
@@ -118,7 +116,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Updates the device.
         /// </summary>
         /// <param name="device">The device.</param>
-        /// <returns></returns>
         public virtual async Task<IActionResult> UpdateDeviceAsync(TModel device)
         {
             if (!this.ModelState.IsValid)
@@ -127,13 +124,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             }
 
             // Device status (enabled/disabled) has to be dealt with afterwards
-            Device currentDevice = await this.devicesService.GetDevice(device.DeviceID);
+            var currentDevice = await this.devicesService.GetDevice(device.DeviceID);
             currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
             _ = await this.devicesService.UpdateDevice(currentDevice);
 
             // Get the current twin from the hub, based on the device ID
-            Twin currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceID);
+            var currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceID);
 
             // Update the twin properties
             this.deviceTwinMapper.UpdateTwin(currentTwin, device);
@@ -143,12 +140,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             return this.Ok();
         }
 
-
         /// <summary>
         /// Deletes the specified device.
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
-        /// <returns></returns>
         public virtual async Task<IActionResult> Delete(string deviceID)
         {
             await this.devicesService.DeleteDevice(deviceID);
@@ -160,7 +155,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Returns the device enrollment credentials.
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
-        /// <returns></returns>
         public virtual async Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
         {
             var item = await this.devicesService.GetDeviceTwin(deviceID);
