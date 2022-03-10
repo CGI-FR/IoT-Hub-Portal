@@ -1,13 +1,16 @@
-﻿using Azure.Data.Tables;
-using AzureIoTHub.Portal.Server.Factories;
-using AzureIoTHub.Portal.Server.Mappers;
-using AzureIoTHub.Portal.Shared.Models.V10.Device;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Services
 {
+    using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     public class DeviceTagService : IDeviceTagService
     {
         /// <summary>
@@ -70,14 +73,14 @@ namespace AzureIoTHub.Portal.Server.Services
 
             foreach (var item in query)
             {
-                    await this.tableClientFactory
-                        .GetDeviceTagSettings()
-                        .DeleteEntityAsync(item.PartitionKey, item.RowKey);
+                _ = await this.tableClientFactory
+                    .GetDeviceTagSettings()
+                    .DeleteEntityAsync(item.PartitionKey, item.RowKey);
             }
 
-            foreach (DeviceTag tag in tags)
+            foreach (var tag in tags)
             {
-                TableEntity entity = new TableEntity()
+                var entity = new TableEntity()
                 {
                     PartitionKey = DefaultPartitionKey,
                     RowKey = tag.Name
@@ -95,7 +98,7 @@ namespace AzureIoTHub.Portal.Server.Services
         private async Task SaveEntity(TableEntity entity, DeviceTag tag)
         {
             this.deviceTagMapper.UpdateTableEntity(entity, tag);
-            await this.tableClientFactory
+            _ = await this.tableClientFactory
                 .GetDeviceTagSettings()
                 .AddEntityAsync(entity);
         }

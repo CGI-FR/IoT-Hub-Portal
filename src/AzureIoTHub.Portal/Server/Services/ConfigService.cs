@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Services
@@ -62,7 +62,7 @@ namespace AzureIoTHub.Portal.Server.Services
             newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'";
             newConfiguration.Content.DeviceContent = desiredProperties;
 
-            await this.registryManager.AddConfigurationAsync(newConfiguration);
+            _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }
     }
 }
