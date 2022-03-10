@@ -1,8 +1,9 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
+    using System.Reflection;
     using AzureIoTHub.Portal.Server.Identity;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
@@ -62,6 +63,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public IActionResult GetLoRaActivationSetting()
         {
             return this.Ok(this.configHandler.IsLoRaEnabled);
+        }
+
+        /// <summary>
+        /// Get the portal version.
+        /// </summary>
+        /// <returns>The server version.</returns>
+        /// <response code="200">The server version.</response>
+        /// <response code="500">Internal server error.</response>
+        [HttpGet("version", Name = "GET Portal Version")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetVersion()
+        {
+            return this.Ok(Assembly.GetExecutingAssembly().GetName().Version.ToString());
         }
     }
 }
