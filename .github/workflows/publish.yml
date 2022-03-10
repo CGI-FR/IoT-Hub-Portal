@@ -63,5 +63,7 @@ jobs:
           context: src/
           # Push is a shorthand for --output=type=registry
           push: true
+          build-args: | 
+            BUILD_VERSION=${{ steps.meta.outputs.tags[0] }}
           tags: 
             ${{ steps.meta.outputs.tags }}

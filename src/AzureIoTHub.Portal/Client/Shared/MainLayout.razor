@@ -47,7 +47,7 @@
 
     <MudAppBar id="footer" Elevation="1" Style="top: auto; bottom: 0;" Dense="true">
         <MudGrid Justify="Justify.Center">
-            <MudText Style="font-size:small">© 2021 Copyright:&nbsp; CGI France</MudText>
+            <MudText Style="font-size:small">© 2021 Copyright:&nbsp; CGI France&nbsp;-&nbsp;@version</MudText>
         </MudGrid>
     </MudAppBar>
 </MudLayout>
@@ -55,10 +55,12 @@
 @code {
     public bool _drawerOpen = true;
     public bool activateLoRaFeature;
+    private string version;
 
     protected async override void OnInitialized()
     {
         activateLoRaFeature = await this.httpClient.GetFromJsonAsync<bool>("api/settings/lora");
+        version = await this.httpClient.GetFromJsonAsync<string>("api/settings/version");
     }
 
     void DrawerToggle()
