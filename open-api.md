@@ -3037,6 +3037,28 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
+## GET Portal Version
+
+<a id="opIdGET Portal Version"></a>
+
+> Code samples
+
+`GET /api/settings/version`
+
+*Get the portal version.*
+
+<h3 id="get-portal-version-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The server version.|None|
+|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal server error.|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
 # Schemas
 
 <h2 id="tocS_C2Dresult">C2Dresult</h2>

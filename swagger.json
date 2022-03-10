@@ -2516,6 +2516,23 @@
           }
         }
       }
+    },
+    "/api/settings/version": {
+      "get": {
+        "tags": [
+          "Portal Settings"
+        ],
+        "summary": "Get the portal version.",
+        "operationId": "GET Portal Version",
+        "responses": {
+          "200": {
+            "description": "The server version."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
     }
   },
   "components": {
