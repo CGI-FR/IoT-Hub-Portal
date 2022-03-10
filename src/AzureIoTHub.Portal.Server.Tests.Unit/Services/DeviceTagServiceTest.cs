@@ -194,5 +194,60 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             this.mockRepository.VerifyAll();
         }
+
+        [Test]
+        public void GetAllSearchableTagsNamesShouldReturnAList()
+        {
+            // Arrange
+            var deviceTagService = this.CreateDeviceTagService();
+            var boolList = new List<bool>() { true, false, true };
+            var returnedIndex = boolList.Count;
+
+            var mockTableResponse = this.mockRepository.Create<Pageable<TableEntity>>();
+            var mockEnumerator = this.mockRepository.Create<IEnumerator<TableEntity>>();
+            _ = mockEnumerator.Setup(x => x.Dispose()).Callback(() => { });
+            _ = mockEnumerator.Setup(x => x.MoveNext()).Returns(() =>
+            {
+                return returnedIndex-- > 0;
+            });
+
+            _ = mockEnumerator.Setup(x => x.Current)
+                .Returns(() =>
+                {
+                    var result = new TableEntity(DeviceTagService.DefaultPartitionKey, "test")
+                    {
+                        [nameof(DeviceTag.Searchable)] = boolList[returnedIndex],
+                    };
+
+                    return result;
+                });
+
+            _ = mockTableResponse.Setup(x => x.GetEnumerator()).Returns(mockEnumerator.Object);
+
+            _ = mockDeviceTagTableClient.Setup(c => c.Query<TableEntity>(It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+                .Returns(mockTableResponse.Object);
+
+            _ = mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
+                .Returns(mockDeviceTagTableClient.Object);
+
+            _ = mockDeviceTagMapper.Setup(c => c.GetDeviceTag(It.IsAny<TableEntity>()))
+                .Returns((TableEntity entity) => new DeviceTag
+                {
+                    Name = Guid.NewGuid().ToString(),
+                    Label = "test",
+                    Required = true,
+                    Searchable = bool.Parse(entity[nameof(DeviceTag.Searchable)].ToString())
+                });
+
+            // Act
+            var result = deviceTagService.GetAllSearchableTagsNames();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count());
+            Assert.IsAssignableFrom<string>(result.First());
+
+            this.mockRepository.VerifyAll();
+        }
     }
 }

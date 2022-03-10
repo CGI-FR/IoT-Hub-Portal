@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Services
@@ -28,7 +28,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>IEnumerable twin.</returns>
         public async Task<IEnumerable<Twin>> GetAllEdgeDevice()
         {
-            IQuery queryEdgeDevice = this.registryManager.CreateQuery("SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' GROUP BY deviceId", 10);
+            var queryEdgeDevice = this.registryManager.CreateQuery("SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' GROUP BY deviceId", 10);
 
             while (queryEdgeDevice.HasMoreResults)
             {
@@ -97,11 +97,11 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>Twin of the device.</returns>
         public async Task<Twin> GetDeviceTwinWithModule(string deviceId)
         {
-            IQuery devicesWithModules = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']");
+            var devicesWithModules = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']");
 
             while (devicesWithModules.HasMoreResults)
             {
-                IEnumerable<Twin> devicesTwins = await devicesWithModules.GetNextAsTwinAsync();
+                var devicesTwins = await devicesWithModules.GetNextAsTwinAsync();
 
                 return devicesTwins.ElementAt(0);
             }
