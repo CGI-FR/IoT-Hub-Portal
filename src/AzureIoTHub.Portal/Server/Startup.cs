@@ -7,7 +7,6 @@ namespace AzureIoTHub.Portal.Server
     using System.Collections.Generic;
     using System.IO;
     using System.Net;
-    using System.Text.Json.Serialization;
     using System.Threading.Tasks;
     using AutoMapper;
     using Azure;
@@ -35,7 +34,6 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.Extensions.Primitives;
     using Microsoft.OpenApi.Models;
     using MudBlazor.Services;
-    using Newtonsoft.Json.Converters;
     using Polly;
     using Polly.Extensions.Http;
     using Prometheus;
@@ -205,13 +203,13 @@ namespace AzureIoTHub.Portal.Server
 
             var mapperConfig = new MapperConfiguration(mc =>
             {
-                mc.CreateMap(typeof(AsyncPageable<>), typeof(List<>));
+                _ = mc.CreateMap(typeof(AsyncPageable<>), typeof(List<>));
 
                 mc.AddProfile(new DevicePropertyProfile());
             });
 
-            IMapper mapper = mapperConfig.CreateMapper();
-            services.AddSingleton(mapper);
+            var mapper = mapperConfig.CreateMapper();
+            _ = services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -238,8 +236,9 @@ namespace AzureIoTHub.Portal.Server
 
             _ = app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            _ = app.UseAuthentication();
+            _ = app.UseAuthorization();
+            _ = app.UseMetricServer();
 
             _ = app.UseEndpoints(endpoints =>
             {
