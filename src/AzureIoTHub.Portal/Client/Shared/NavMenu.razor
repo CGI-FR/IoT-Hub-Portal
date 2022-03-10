@@ -1,11 +1,20 @@
 ﻿@using AzureIoTHub.Portal.Shared.Security;
 @using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager navigationManager
 
 <AuthorizeView>
     <Authorized>
         <MudNavMenu>
             <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Devices</MudText>
-            <MudNavLink Href="/devices">List</MudNavLink>
+            <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
+                <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary"/><MudNavLink Href="/devices">Device List</MudNavLink>                 
+                <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary"/><MudIconButton OnClick="AddDevice" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small"/>
+            </MudPaper>
+
+            <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
+                <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary"/><MudNavLink Href="/device-models">Device Models</MudNavLink>
+                <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary"/><MudIconButton OnClick="AddDeviceModel" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small"/>
+            </MudPaper>
 
             <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">IoT Edge</MudText>
 
@@ -17,10 +26,7 @@
                 <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">LoRaWAN Management</MudText>
                 <MudNavLink Href="/lorawan/concentrators">Concentrators</MudNavLink>
             }
-            
-            <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Device Models</MudText>
-            <MudNavLink Href="/device-models">List</MudNavLink>
-
+                                    
             <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Settings</MudText>
             <MudNavLink Href="/settings/device-tag">Device Tags</MudNavLink>
 
@@ -31,4 +37,8 @@
 @code {
     [Parameter]
     public bool activateLoRaFeature { get; set; }
+
+    private void AddDevice() => navigationManager.NavigateTo("devices/new");
+    private void AddDeviceModel() => navigationManager.NavigateTo("/device-models/new");
+    
 }
