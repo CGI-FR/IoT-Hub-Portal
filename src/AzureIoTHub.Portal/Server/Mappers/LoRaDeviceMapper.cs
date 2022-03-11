@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Mappers
@@ -25,10 +25,10 @@ namespace AzureIoTHub.Portal.Server.Mappers
         {
             var modelId = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.ModelId));
 
-            Dictionary<string, string> customTags = new Dictionary<string, string>();
-            if(tags != null)
+            var customTags = new Dictionary<string, string>();
+            if (tags != null)
             {
-                foreach (string tag in tags)
+                foreach (var tag in tags)
                 {
                     customTags.Add(tag, Helpers.DeviceHelper.RetrieveTagValue(twin, tag));
                 }
@@ -64,7 +64,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 RX1DROffset = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.RX1DROffset)), out result) ? result : null,
                 RX2DataRate = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.RX2DataRate)), out result) ? result : null,
                 RXDelay = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.RXDelay)), out result) ? result : null,
-                CustomTags = customTags,
+                Tags = customTags,
                 DataRate = Helpers.DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.DataRate)),
                 TxPower = Helpers.DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.TxPower)),
                 NbRep = Helpers.DeviceHelper.RetrieveReportedPropertyValue(twin, nameof(LoRaDeviceDetails.NbRep)),
@@ -76,10 +76,10 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
         public DeviceListItem CreateDeviceListItem(Twin twin, IEnumerable<string> tags)
         {
-            Dictionary<string, string> customTags = new Dictionary<string, string>();
+            var customTags = new Dictionary<string, string>();
             if (tags != null)
             {
-                foreach (string tag in tags)
+                foreach (var tag in tags)
                 {
                     customTags.Add(tag, Helpers.DeviceHelper.RetrieveTagValue(twin, tag));
                 }
@@ -94,7 +94,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime.GetValueOrDefault(DateTime.MinValue),
                 SupportLoRaFeatures = bool.Parse(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ?? "false"),
-                CustomTags = customTags
+                Tags = customTags
             };
         }
 
@@ -136,9 +136,9 @@ namespace AzureIoTHub.Portal.Server.Mappers
             Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.Downlink), item.Downlink);
             Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.PreferredWindow), item.PreferredWindow);
 
-            if (item.CustomTags != null)
+            if (item.Tags != null)
             {
-                foreach (KeyValuePair<string, string> customTag in item.CustomTags)
+                foreach (var customTag in item.Tags)
                 {
                     Helpers.DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
                 }

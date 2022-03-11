@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Shared.Models.V10.Device
@@ -50,6 +50,6 @@ namespace AzureIoTHub.Portal.Shared.Models.V10.Device
         /// <summary>
         /// List of custom device tags and their values.
         /// </summary>
-        public Dictionary<string, string> CustomTags { get; set; } = new();
+        public Dictionary<string, string> Tags { get; set; } = new();
     }
 }

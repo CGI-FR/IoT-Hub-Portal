@@ -258,7 +258,7 @@
         List<bool> flagTags = new();
         foreach (KeyValuePair<string, string> tag in searchTags)
         {
-            flagTags.Add(checkFlag(item.CustomTags[tag.Key], tag.Value));
+            flagTags.Add(checkFlag(item.Tags[tag.Key], tag.Value));
         }
         bool flagTag = !flagTags.Contains(false);
 
