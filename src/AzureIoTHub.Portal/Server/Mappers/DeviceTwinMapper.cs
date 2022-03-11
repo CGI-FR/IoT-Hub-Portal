@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Mappers
@@ -22,10 +22,10 @@ namespace AzureIoTHub.Portal.Server.Mappers
         public DeviceDetails CreateDeviceDetails(Twin twin, IEnumerable<string> tags)
         {
             var modelId = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId));
-            Dictionary<string, string> customTags = new Dictionary<string, string>();
-            if(tags != null)
+            var customTags = new Dictionary<string, string>();
+            if (tags != null)
             {
-                foreach(string tag in tags)
+                foreach (var tag in tags)
                 {
                     customTags.Add(tag, Helpers.DeviceHelper.RetrieveTagValue(twin, tag));
                 }
@@ -46,15 +46,15 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
         public DeviceListItem CreateDeviceListItem(Twin twin, IEnumerable<string> tags)
         {
-            Dictionary<string, string> customTags = new Dictionary<string, string>();
-            if(tags != null)
+            var customTags = new Dictionary<string, string>();
+            if (tags != null)
             {
-                foreach(string tag in tags)
+                foreach (var tag in tags)
                 {
                     customTags.Add(tag, Helpers.DeviceHelper.RetrieveTagValue(twin, tag));
                 }
             }
-            
+
             return new DeviceListItem
             {
                 DeviceID = twin.DeviceId,
@@ -76,7 +76,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
             if(item.Tags != null)
             {
-                foreach(KeyValuePair<string,string> customTag in item.Tags)
+                foreach (var customTag in item.Tags)
                 {
                     Helpers.DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
                 }

@@ -186,7 +186,7 @@
 
     private async Task ExecuteMethod(DeviceModelCommand method)
     {
-        var result = await Http.PostAsJsonAsync($"api/lorawan/devices/{LoRaDevice.ModelId}/{LoRaDevice.DeviceID}/_command/{method.Name}", method);
+        var result = await Http.PostAsJsonAsync($"api/lorawan/devices/{LoRaDevice.DeviceID}/_command/{method.Name}", method);
 
         if (result.IsSuccessStatusCode)
         {

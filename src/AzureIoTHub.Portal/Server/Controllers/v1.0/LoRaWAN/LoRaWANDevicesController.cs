@@ -28,6 +28,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         private readonly ITableClientFactory tableClientFactory;
         private readonly ILoraDeviceMethodManager loraDeviceMethodManager;
         private readonly IDeviceModelCommandMapper deviceModelCommandMapper;
+        private readonly IDeviceService deviceService;
+        private readonly IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper;
 
         public LoRaWANDevicesController(
             ILogger<LoRaWANDevicesController> logger,
@@ -43,6 +45,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             this.tableClientFactory = tableClientFactory;
             this.loraDeviceMethodManager = loraDeviceMethodManager;
             this.deviceModelCommandMapper = deviceModelCommandMapper;
+            this.deviceService = devicesService;
+            this.deviceTwinMapper = deviceTwinMapper;
         }
 
         /// <summary>
@@ -102,14 +106,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Executes the command on the device..
         /// </summary>
-        /// <param name="modelId">The model identifier.</param>
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="commandId">The command identifier.</param>
         /// <returns></returns>
         /// <exception cref="System.FormatException">Incorrect port or invalid DevEui Format.</exception>
-        [HttpPost("{modelId}/{deviceId}/_command/{commandId}", Name = "POST Execute LoRaWAN command")]
-        public async Task<IActionResult> ExecuteCommand(string modelId, string deviceId, string commandId)
+        [HttpPost("{deviceId}/_command/{commandId}", Name = "POST Execute LoRaWAN command")]
+        public async Task<IActionResult> ExecuteCommand(string deviceId, string commandId)
         {
+
+            var twin = await deviceService.GetDeviceTwin(deviceId);
+            var modelId = deviceTwinMapper.CreateDeviceDetails(twin, null).ModelId;
+
             var commandEntity = this.tableClientFactory
                    .GetDeviceCommands()
                    .Query<TableEntity>(filter: $"RowKey eq '{commandId}' and PartitionKey eq '{modelId}'")
