@@ -121,11 +121,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
-        public async Task CreateEnrollmentGroupFormModelAsyncShouldCreateANewEnrollmentGroup(string modelName, string enrollmentGroupName)
+        public async Task CreateEnrollmentGroupFromModelAsyncShouldCreateANewEnrollmentGroup(string modelId, string enrollmentGroupName)
         {
             // Arrange
             var manager = this.CreateManager();
-            var modelId = "bbb";
+            var modelName = "bbb";
             var desiredProperties = new TwinCollection();
             EnrollmentGroup enrollmentGroup = null;
 
@@ -163,11 +163,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
-        public async Task WhenEnrollmentGroupExistCreateEnrollmentGroupFormModelAsyncShouldUpdate(string modelName, string enrollmentGroupName)
+        public async Task WhenEnrollmentGroupExistCreateEnrollmentGroupFromModelAsyncShouldUpdate(string modelId, string enrollmentGroupName)
         {
             // Arrange
             var manager = this.CreateManager();
-            var modelId = "bbb";
+            var modelName = "bbb";
             var desiredProperties = new TwinCollection();
             EnrollmentGroup enrollmentGroup = null;
 

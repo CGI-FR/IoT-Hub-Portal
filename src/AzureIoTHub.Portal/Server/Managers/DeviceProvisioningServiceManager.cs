@@ -40,7 +40,7 @@ namespace AzureIoTHub.Portal.Server.Managers
                 tags: new TwinCollection($"{{ \"modelId\":\"{modelId}\" }}"),
                 desiredProperties: new TwinCollection());
 
-            return await this.CreateNewEnrollmentGroup(modelName, false, twinState);
+            return await this.CreateNewEnrollmentGroup(modelId, false, twinState);
         }
 
         private async Task<EnrollmentGroup> CreateNewEnrollmentGroup(string name, bool iotEdge, TwinState initialTwinState)
