@@ -75,7 +75,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
             foreach (var tagName in tagsNames)
             {
-                Assert.AreEqual(twin.Tags[tagName.ToCamelCase()].ToString(), result.CustomTags[tagName]);
+                Assert.AreEqual(twin.Tags[tagName.ToCamelCase()].ToString(), result.Tags[tagName]);
             }
 
             Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl);
@@ -115,7 +115,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
             Assert.AreEqual(twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()].ToString(), result.ModelId);
 
-            Assert.IsEmpty(result.CustomTags);
+            Assert.IsEmpty(result.Tags);
 
             Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl);
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
@@ -156,7 +156,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
             foreach (var tagName in tagsNames)
             {
-                Assert.AreEqual(twin.Tags[tagName.ToCamelCase()].ToString(), result.CustomTags[tagName]);
+                Assert.AreEqual(twin.Tags[tagName.ToCamelCase()].ToString(), result.Tags[tagName]);
             }
 
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
@@ -195,7 +195,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
             Assert.AreEqual(twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()].ToString(), result.ModelId);
 
-            Assert.IsEmpty(result.CustomTags);
+            Assert.IsEmpty(result.Tags);
 
             Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl);
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
@@ -212,7 +212,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             var item = new DeviceDetails
             {
                 ModelId = Guid.NewGuid().ToString(),
-                CustomTags = new()
+                Tags = new()
                 {
                     { "assetId", Guid.NewGuid().ToString() },
                     { "locationCode", Guid.NewGuid().ToString() }
@@ -233,7 +233,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
             foreach (var tagName in tagsNames)
             {
-                Assert.AreEqual(item.CustomTags[tagName], DeviceHelper.RetrieveTagValue(twin, tagName));
+                Assert.AreEqual(item.Tags[tagName], DeviceHelper.RetrieveTagValue(twin, tagName));
             }
 
             this.mockRepository.VerifyAll();

@@ -76,7 +76,7 @@
                                 @foreach (DeviceTag tag in TagList)
                                 {
                                     <MudItem xs="12" md="6">
-                                        <MudTextField @bind-Value="Device.CustomTags[tag.Name]" Label="@tag.Label"
+                                        <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
                                                   Required="@tag.Required"
                                                   Variant="Variant.Outlined" />
                                     </MudItem>
@@ -163,7 +163,7 @@
         {
             TagDict.Add(tag.Name, "");
         }
-        Device.CustomTags = TagDict;
+        Device.Tags = TagDict;
     }
 
     /// <summary>
@@ -215,7 +215,7 @@
 
         foreach (DeviceTag tag in TagList)
         {
-            if (tag.Required && string.IsNullOrEmpty(Device.CustomTags[tag.Name]))
+            if (tag.Required && string.IsNullOrEmpty(Device.Tags[tag.Name]))
             {
                 tagValidationError = true;
             }
@@ -274,7 +274,7 @@
 
         Device.ModelId = model?.ModelId;
         Device.ImageUrl = model?.ImageUrl;
-        Device.CustomTags = TagDict;
+        Device.Tags = TagDict;
     }
 }
 

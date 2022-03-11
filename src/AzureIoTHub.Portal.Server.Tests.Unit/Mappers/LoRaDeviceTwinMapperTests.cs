@@ -69,7 +69,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
             foreach (var tagName in tagsNames)
             {
-                Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, tagName), result.CustomTags[tagName]);
+                Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, tagName), result.Tags[tagName]);
             }
 
             Assert.AreEqual(expectedModelImageUri, result.ImageUrl);
@@ -112,7 +112,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             Assert.AreEqual(modelId, result.ModelId);
             Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
 
-            Assert.IsEmpty(result.CustomTags);
+            Assert.IsEmpty(result.Tags);
 
             Assert.AreEqual(expectedModelImageUri, result.ImageUrl);
 
@@ -176,8 +176,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             Assert.IsNotNull(result);
             Assert.AreEqual(twin.DeviceId, result.DeviceID);
             Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
-            Assert.IsNotNull(result.CustomTags);
-            Assert.AreEqual(result.CustomTags.Count, tags.Count);
+            Assert.IsNotNull(result.Tags);
+            Assert.AreEqual(result.Tags.Count, tags.Count);
 
             Assert.AreEqual(expectedModelImageUri, result.ImageUrl);
 
@@ -210,7 +210,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
                 AppEUI = Guid.NewGuid().ToString(),
                 AppKey = Guid.NewGuid().ToString(),
                 SensorDecoder = Guid.NewGuid().ToString(),
-                CustomTags = new()
+                Tags = new()
                 {
                     { "assetId", Guid.NewGuid().ToString() },
                     { "locationCode", Guid.NewGuid().ToString() }
@@ -228,7 +228,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
             foreach (var tagName in tagsNames)
             {
-                Assert.AreEqual(item.CustomTags[tagName], DeviceHelper.RetrieveTagValue(twin, tagName));
+                Assert.AreEqual(item.Tags[tagName], DeviceHelper.RetrieveTagValue(twin, tagName));
             }
 
             Assert.AreEqual(item.AppEUI, twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)].ToString());
@@ -268,7 +268,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
                 DevAddr = Guid.NewGuid().ToString(),
                 GatewayID = Guid.NewGuid().ToString(),
                 SensorDecoder = Guid.NewGuid().ToString(),
-                CustomTags = new()
+                Tags = new()
                 {
                     { "assetId", Guid.NewGuid().ToString() },
                     { "locationCode", Guid.NewGuid().ToString() }
@@ -286,7 +286,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
             foreach (var tagName in tagsNames)
             {
-                Assert.AreEqual(item.CustomTags[tagName], DeviceHelper.RetrieveTagValue(twin, tagName));
+                Assert.AreEqual(item.Tags[tagName], DeviceHelper.RetrieveTagValue(twin, tagName));
             }
 
             Assert.AreEqual(item.NwkSKey, twin.Properties.Desired[nameof(LoRaDeviceDetails.NwkSKey)].ToString());

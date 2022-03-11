@@ -40,7 +40,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime.GetValueOrDefault(DateTime.MinValue),
-                CustomTags = customTags
+                Tags = customTags
             };
         }
 
@@ -64,7 +64,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 DeviceName = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.DeviceName)),
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))),
                 SupportLoRaFeatures = bool.Parse(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ?? "false"),
-                CustomTags = customTags
+                Tags = customTags
             };
         }
 
@@ -74,9 +74,9 @@ namespace AzureIoTHub.Portal.Server.Mappers
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
 
-            if(item.CustomTags != null)
+            if(item.Tags != null)
             {
-                foreach(KeyValuePair<string,string> customTag in item.CustomTags)
+                foreach(KeyValuePair<string,string> customTag in item.Tags)
                 {
                     Helpers.DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
                 }
