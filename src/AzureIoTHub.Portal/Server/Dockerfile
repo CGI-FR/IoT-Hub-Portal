@@ -33,6 +33,9 @@ FROM builder AS publish
 RUN dotnet publish "AzureIoTHub.Portal.Server.csproj" -c Release -o /app/publish
 
 FROM base AS final
+
+HEALTHCHECK CMD curl --fail http://localhost/healthz || exit
+
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "AzureIoTHub.Portal.Server.dll"]

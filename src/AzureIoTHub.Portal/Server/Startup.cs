@@ -210,6 +210,8 @@ namespace AzureIoTHub.Portal.Server
 
             var mapper = mapperConfig.CreateMapper();
             _ = services.AddSingleton(mapper);
+
+            _ = services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -254,6 +256,8 @@ namespace AzureIoTHub.Portal.Server
                 {
                     OnPrepareResponse = ctx => ctx.Context.Response.Headers.Add("Cache-Control", new StringValues("no-cache"))
                 });
+
+                _ = endpoints.MapHealthChecks("/healthz");
             });
 
             await app.ApplicationServices.GetService<IDeviceModelImageManager>().InitializeDefaultImageBlob();
