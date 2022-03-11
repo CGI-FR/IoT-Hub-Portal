@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
@@ -77,12 +77,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         {
             // Arrange
             var loRaWANDevicesController = this.CreateLoRaWANDevicesController();
+            var modelId = Guid.NewGuid().ToString();
             var deviceId = Guid.NewGuid().ToString();
             var commandId = Guid.NewGuid().ToString();
 
             var mockResponse = this.mockRepository.Create<Response>();
             _ = this.mockDeviceModelCommandMapper
-                .Setup(c => c.GetDeviceModelCommand(It.Is<TableEntity>(x => x.RowKey == commandId)))
+                .Setup(c => c.GetDeviceModelCommand(It.Is<TableEntity>(x => x.RowKey == commandId && x.PartitionKey == modelId)))
                 .Returns(new DeviceModelCommand
                 {
                     Name = commandId,
@@ -91,7 +92,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                 });
 
             _ = this.mockCommandsTableClient.Setup(c => c.Query<TableEntity>(
-                    It.Is<string>(x => x == $"RowKey eq '{ commandId }'"),
+                    It.Is<string>(x => x == $"RowKey eq '{commandId}' and PartitionKey eq '{modelId}'"),
                     It.IsAny<int?>(),
                     It.IsAny<IEnumerable<string>>(),
                     It.IsAny<CancellationToken>()))
@@ -99,7 +100,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                     {
                                     Page<TableEntity>.FromValues(new[]
                                     {
-                                        new TableEntity(Guid.NewGuid().ToString(), commandId)
+                                        new TableEntity(modelId, commandId)
                                     }, null, mockResponse.Object)
                     }));
 
@@ -119,7 +120,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
 
             // Act
-            var result = await loRaWANDevicesController.ExecuteCommand(deviceId, commandId);
+            var result = await loRaWANDevicesController.ExecuteCommand(modelId, deviceId, commandId);
 
             // Assert
             Assert.IsNotNull(result);
@@ -133,12 +134,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         {
             // Arrange
             var loRaWANDevicesController = this.CreateLoRaWANDevicesController();
+            var modelId = Guid.NewGuid().ToString();
             var deviceId = Guid.NewGuid().ToString();
             var commandId = Guid.NewGuid().ToString();
 
             var mockResponse = this.mockRepository.Create<Response>();
             _ = this.mockDeviceModelCommandMapper
-                .Setup(c => c.GetDeviceModelCommand(It.Is<TableEntity>(x => x.RowKey == commandId)))
+                .Setup(c => c.GetDeviceModelCommand(It.Is<TableEntity>(x => x.RowKey == commandId && x.PartitionKey == modelId)))
                 .Returns(new DeviceModelCommand
                 {
                     Name = commandId,
@@ -147,7 +149,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                 });
 
             _ = this.mockCommandsTableClient.Setup(c => c.Query<TableEntity>(
-                    It.Is<string>(x => x == $"RowKey eq '{ commandId }'"),
+                    It.Is<string>(x => x == $"RowKey eq '{commandId}' and PartitionKey eq '{modelId}'"),
                     It.IsAny<int?>(),
                     It.IsAny<IEnumerable<string>>(),
                     It.IsAny<CancellationToken>()))
@@ -155,7 +157,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                     {
                                     Page<TableEntity>.FromValues(new[]
                                     {
-                                        new TableEntity(Guid.NewGuid().ToString(), commandId)
+                                        new TableEntity(modelId, commandId)
                                     }, null, mockResponse.Object)
                     }));
 
@@ -175,7 +177,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
 
             // Act
-            var result = await loRaWANDevicesController.ExecuteCommand(deviceId, commandId);
+            var result = await loRaWANDevicesController.ExecuteCommand(modelId, deviceId, commandId);
 
             // Assert
             Assert.IsNotNull(result);
