@@ -2483,23 +2483,6 @@
         }
       }
     },
-    "/api/settings/lora": {
-      "get": {
-        "tags": [
-          "Portal Settings"
-        ],
-        "summary": "Get the a boolean for LoRa feature enable on the portal or not.",
-        "operationId": "GET LoRa settings",
-        "responses": {
-          "200": {
-            "description": "Returns the LoRa support setting."
-          },
-          "500": {
-            "description": "Internal server error."
-          }
-        }
-      }
-    },
     "/api/settings/oidc": {
       "get": {
         "tags": [
@@ -2517,19 +2500,26 @@
         }
       }
     },
-    "/api/settings/version": {
+    "/api/settings/portal": {
       "get": {
         "tags": [
           "Portal Settings"
         ],
-        "summary": "Get the portal version.",
-        "operationId": "GET Portal Version",
+        "summary": "Get the portal settings.",
+        "operationId": "GET Portal settings",
         "responses": {
           "200": {
-            "description": "The server version."
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalSettings"
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error."
+            "description": "Server Error"
           }
         }
       }
@@ -3400,6 +3390,26 @@
             "type": "integer",
             "description": "Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.\r\nThe default is none, which causes the connection to not be dropped.",
             "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PortalSettings": {
+        "type": "object",
+        "properties": {
+          "isLoRaSupported": {
+            "type": "boolean",
+            "description": "A value indicating whether the LoRa features are acticated."
+          },
+          "version": {
+            "type": "string",
+            "description": "The portal version.",
+            "nullable": true
+          },
+          "portalName": {
+            "type": "string",
+            "description": "The poral name.",
             "nullable": true
           }
         },
