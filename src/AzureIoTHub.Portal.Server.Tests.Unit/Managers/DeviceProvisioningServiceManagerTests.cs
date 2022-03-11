@@ -143,7 +143,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
                 });
 
             // Act
-            var result = await manager.CreateEnrollmentGroupFormModelAsync(
+            var result = await manager.CreateEnrollmentGroupFromModelAsync(
                 modelId,
                 modelName,
                 desiredProperties);
@@ -193,7 +193,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
                 });
 
             // Act
-            var result = await manager.CreateEnrollmentGroupFormModelAsync(
+            var result = await manager.CreateEnrollmentGroupFromModelAsync(
                 modelId,
                 modelName,
                 desiredProperties);

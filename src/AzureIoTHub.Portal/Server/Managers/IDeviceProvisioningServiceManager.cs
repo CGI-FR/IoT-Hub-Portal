@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Managers
@@ -31,7 +31,7 @@ namespace AzureIoTHub.Portal.Server.Managers
         /// <param name="modelName">The model name.</param>
         /// <param name="desiredProperties">The desired properties</param>
         /// <returns></returns>
-        Task<EnrollmentGroup> CreateEnrollmentGroupFormModelAsync(string modelId, string modelName, TwinCollection desiredProperties);
+        Task<EnrollmentGroup> CreateEnrollmentGroupFromModelAsync(string modelId, string modelName, TwinCollection desiredProperties);
 
         /// <summary>
         /// Returns the device enrollment credentials.

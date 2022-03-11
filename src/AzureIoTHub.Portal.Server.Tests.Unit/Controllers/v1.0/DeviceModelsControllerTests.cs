@@ -345,7 +345,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                     It.IsAny<DeviceModel>()))
                 .Returns(new Dictionary<string, object>());
 
-            _ = this.mockDeviceProvisioningServiceManager.Setup(c => c.CreateEnrollmentGroupFormModelAsync(
+            _ = this.mockDeviceProvisioningServiceManager.Setup(c => c.CreateEnrollmentGroupFromModelAsync(
                 It.IsAny<string>(),
                 It.Is<string>(x => x == requestModel.Name),
                 It.IsAny<TwinCollection>()))
@@ -400,7 +400,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
                 .Returns(mockDeviceTemplatesTableClient.Object);
 
-            _ = this.mockDeviceProvisioningServiceManager.Setup(c => c.CreateEnrollmentGroupFormModelAsync(
+            _ = this.mockDeviceProvisioningServiceManager.Setup(c => c.CreateEnrollmentGroupFromModelAsync(
                 It.IsAny<string>(),
                 It.Is<string>(x => x == requestModel.Name),
                 It.IsAny<TwinCollection>()))
@@ -476,7 +476,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
                     .Returns(mockDeviceTemplatesTableClient.Object);
 
-            _ = this.mockDeviceProvisioningServiceManager.Setup(c => c.CreateEnrollmentGroupFormModelAsync(
+            _ = this.mockDeviceProvisioningServiceManager.Setup(c => c.CreateEnrollmentGroupFromModelAsync(
                 It.IsAny<string>(),
                 It.Is<string>(x => x == requestModel.Name),
                 It.IsAny<TwinCollection>()))
