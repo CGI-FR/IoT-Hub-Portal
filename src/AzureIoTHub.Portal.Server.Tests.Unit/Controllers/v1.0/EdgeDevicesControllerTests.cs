@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
@@ -57,7 +57,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         {
             // Arrange
             var twin = new Twin("aaa");
-            twin.Tags["purpose"] = "test";
+            twin.Tags["type"] = "test";
 
             _ = this.mockDeviceService.Setup(x => x.GetAllEdgeDevice())
                 .ReturnsAsync(new[]
@@ -102,7 +102,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var deviceId = Guid.NewGuid().ToString();
 
             var twin = new Twin(deviceId);
-            twin.Tags["purpose"] = "bbb";
+            twin.Tags[nameof(IoTEdgeDevice.Type)] = "bbb";
             twin.Tags["env"] = "fake";
 
             _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceId)))
@@ -174,7 +174,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             };
 
             var mockTwin = new Twin("aaa");
-            mockTwin.Tags["purpose"] = "bbb";
+            mockTwin.Tags["type"] = "bbb";
 
             _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", "bbb"))
                 .ReturnsAsync(mockRegistrationCredentials);
