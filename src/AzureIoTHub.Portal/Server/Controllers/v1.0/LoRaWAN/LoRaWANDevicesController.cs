@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Filters;
-    using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
@@ -30,6 +29,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         private readonly ILoraDeviceMethodManager loraDeviceMethodManager;
         private readonly IDeviceModelCommandMapper deviceModelCommandMapper;
         private readonly IDeviceService deviceService;
+        private readonly IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper;
 
         public LoRaWANDevicesController(
             ILogger<LoRaWANDevicesController> logger,
@@ -46,6 +46,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             this.loraDeviceMethodManager = loraDeviceMethodManager;
             this.deviceModelCommandMapper = deviceModelCommandMapper;
             this.deviceService = devicesService;
+            this.deviceTwinMapper = deviceTwinMapper;
         }
 
         /// <summary>
@@ -114,7 +115,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
 
             var twin = await deviceService.GetDeviceTwin(deviceId);
-            var modelId = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId));
+            var modelId = deviceTwinMapper.CreateDeviceDetails(twin, null).ModelId;
 
             var commandEntity = this.tableClientFactory
                    .GetDeviceCommands()

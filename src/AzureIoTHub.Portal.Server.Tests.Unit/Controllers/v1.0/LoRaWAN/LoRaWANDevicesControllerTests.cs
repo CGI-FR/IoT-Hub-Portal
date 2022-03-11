@@ -119,8 +119,22 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
 
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceId)))
+                    .ReturnsAsync(new Twin()
+                    {
+                        DeviceId = deviceId,
+                        ModelId = modelId,
+                    });
+
+            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
+                    .Returns<Twin, IEnumerable<string>>((x, y) => new LoRaDeviceDetails
+                    {
+                        DeviceID = deviceId,
+                        ModelId = modelId,
+                    });
+
             // Act
-            var result = await loRaWANDevicesController.ExecuteCommand(modelId, deviceId, commandId);
+            var result = await loRaWANDevicesController.ExecuteCommand(deviceId, commandId);
 
             // Assert
             Assert.IsNotNull(result);
@@ -176,8 +190,22 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
 
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceId)))
+                .ReturnsAsync(new Twin()
+                {
+                    DeviceId = deviceId,
+                    ModelId = modelId,
+                });
+
+            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
+                .Returns<Twin, IEnumerable<string>>((x, y) => new LoRaDeviceDetails
+                {
+                    DeviceID = deviceId,
+                    ModelId = modelId,
+                });
+
             // Act
-            var result = await loRaWANDevicesController.ExecuteCommand(modelId, deviceId, commandId);
+            var result = await loRaWANDevicesController.ExecuteCommand(deviceId, commandId);
 
             // Assert
             Assert.IsNotNull(result);
