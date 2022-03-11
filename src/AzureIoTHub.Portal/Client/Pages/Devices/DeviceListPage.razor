@@ -1,4 +1,5 @@
 ﻿@page "/devices"
+@using AzureIoTHub.Portal.Shared.Models.V10
 @using AzureIoTHub.Portal.Shared.Models.V10.Device
 @using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel
 @using Microsoft.AspNetCore.Authorization
@@ -8,6 +9,7 @@
 @inject HttpClient Http
 @inject IDialogService DialogService
 @inject NavigationManager navigationManager
+@inject PortalSettings Portal
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device List</MudText>
 
@@ -113,7 +115,7 @@
                         <img height="25" src="@context.ImageUrl" />
                     </MudTd>
                     <MudTd DataLabel="Device" Style="word-break: break-all;">
-                        <a class="detail-link" href="@($"devices/{@context.DeviceID}{((@context.SupportLoRaFeatures && isLoraEnable) ? "?isLora=true": "")}")">
+                        <a class="detail-link" href="@($"devices/{@context.DeviceID}{((@context.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true": "")}")">
                             @(string.IsNullOrEmpty(context.DeviceName) ? context.DeviceID : context.DeviceName)
                         </a>
                     </MudTd>
@@ -141,7 +143,7 @@
                 </MudTd>
                 <MudTd DataLabel="LSU" Style="text-align: center">@context.StatusUpdatedTime</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
-                    <a class="detail-link" href="@($"devices/{@context.DeviceID}{((@context.SupportLoRaFeatures && isLoraEnable) ? "?isLora=true": "")}")">
+                    <a class="detail-link" href="@($"devices/{@context.DeviceID}{((@context.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true": "")}")">
                         <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" />
                     </a>
                 </MudTd>
@@ -169,15 +171,12 @@
     private string searchState = "";
     private Dictionary<string, string> searchTags = new();
 
-    private bool isLoraEnable;
-
     private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
 
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
 
     protected override async Task OnInitializedAsync()
     {
-        isLoraEnable = await this.Http.GetFromJsonAsync<bool>("api/settings/lora");
         await LoadDevices();
 
         // Gets the custom tags that can be searched via the panel

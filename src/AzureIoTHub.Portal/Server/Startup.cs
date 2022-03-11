@@ -271,6 +271,7 @@ namespace AzureIoTHub.Portal.Server
 
         public abstract class ConfigHandler
         {
+            protected const string PortalNameKey = "SiteName";
             protected const string IoTHubConnectionStringKey = "IoTHub:ConnectionString";
             protected const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
             protected const string DPSServiceEndpointKey = "IoTDPS:ServiceEndpoint";
@@ -330,6 +331,8 @@ namespace AzureIoTHub.Portal.Server
             internal abstract string LoRaKeyManagementCode { get; }
 
             internal abstract string LoRaRegionRouterConfigUrl { get; }
+
+            internal abstract string PortalName { get; }
         }
 
         internal class ProductionConfigHandler : ConfigHandler
@@ -340,6 +343,8 @@ namespace AzureIoTHub.Portal.Server
             {
                 this.config = config;
             }
+
+            internal override string PortalName => this.config[PortalNameKey];
 
             internal override string IoTHubConnectionString => this.config.GetConnectionString(IoTHubConnectionStringKey);
 
@@ -380,6 +385,8 @@ namespace AzureIoTHub.Portal.Server
             {
                 this.config = config;
             }
+
+            internal override string PortalName => this.config[PortalNameKey];
 
             internal override string IoTHubConnectionString => this.config[IoTHubConnectionStringKey];
 

@@ -1,11 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
+@using AzureIoTHub.Portal.Shared.Models.V10
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @inject SignOutSessionStateManager SignOutManager
 @inject NavigationManager Navigation
 @inject HttpClient httpClient
+@inject PortalSettings Portal
 
 <MudThemeProvider Theme="currentTheme" />
 <MudDialogProvider />
@@ -15,7 +17,14 @@
 
     <MudAppBar Elevation="25">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudText Typo="Typo.h5">Azure IoT Hub Portal</MudText>
+        @if (string.IsNullOrEmpty(Portal.PortalName))
+        {
+            <MudText Typo="Typo.h5">Azure IoT Hub Portal</MudText>
+        }
+        else
+        {
+            <MudText Typo="Typo.h5">@Portal.PortalName</MudText>
+        }
         <MudSpacer />
         <AuthorizeView>
             <Authorized>
@@ -36,7 +45,7 @@
     </MudAppBar>
 
     <MudDrawer @bind-Open="_drawerOpen" Elevation="25" ClipMode="DrawerClipMode.Always">
-        <NavMenu activateLoRaFeature="@activateLoRaFeature" />
+        <NavMenu />
     </MudDrawer>
 
     <MudMainContent>
@@ -47,21 +56,13 @@
 
     <MudAppBar id="footer" Elevation="1" Style="top: auto; bottom: 0;" Dense="true">
         <MudGrid Justify="Justify.Center">
-            <MudText Style="font-size:small">© 2021 Copyright:&nbsp; CGI France&nbsp;-&nbsp;@version</MudText>
+            <MudText Style="font-size:small">© 2021 Copyright:&nbsp; CGI France&nbsp;-&nbsp;@Portal.Version</MudText>
         </MudGrid>
     </MudAppBar>
 </MudLayout>
 
 @code {
     public bool _drawerOpen = true;
-    public bool activateLoRaFeature;
-    private string version;
-
-    protected async override void OnInitialized()
-    {
-        activateLoRaFeature = await this.httpClient.GetFromJsonAsync<bool>("api/settings/lora");
-        version = await this.httpClient.GetFromJsonAsync<string>("api/settings/version");
-    }
 
     void DrawerToggle()
     {

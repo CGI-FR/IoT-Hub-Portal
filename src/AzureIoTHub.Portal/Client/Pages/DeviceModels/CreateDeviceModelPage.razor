@@ -18,6 +18,7 @@
 @attribute [Authorize]
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
+@inject PortalSettings Portal
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
@@ -62,7 +63,7 @@
                                 <MudItem xs="12" md="6">
                                     <MudTextField id="@nameof(Model.Description)" @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
                                 </MudItem>
-                                @if (activateLoRaFeature)
+                                @if (Portal.IsLoRaSupported)
                                 {
                                     <MudItem xs="12">
                                         <MudText>
@@ -180,13 +181,6 @@
 
             SetStandardDeviceModel();
         }
-    }
-
-    private bool activateLoRaFeature;
-
-    protected override async Task OnInitializedAsync()
-    {
-        this.activateLoRaFeature = await httpClient.GetFromJsonAsync<bool>("api/settings/lora");
     }
 
     private void SetLoRaDeviceModel()
