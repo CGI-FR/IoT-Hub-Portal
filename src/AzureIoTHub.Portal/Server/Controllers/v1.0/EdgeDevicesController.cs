@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
@@ -162,7 +162,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 return this.NotFound($"IoT Edge {deviceId} doesn' exist.");
             }
 
-            var deviceType = DeviceHelper.RetrieveTagValue(deviceTwin, "purpose");
+            var deviceType = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.Type));
 
             var credentials = await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceId, deviceType);
 
@@ -183,7 +183,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 var deviceTwin = new Twin(gateway.DeviceId);
 
                 deviceTwin.Tags["env"] = gateway.Environment;
-                deviceTwin.Tags[nameof(IoTEdgeDevice.Type)] = gateway.Type;
+                deviceTwin.Tags["type"] = gateway.Type;
 
                 var result = await this.devicesService.CreateDeviceWithTwin(gateway.DeviceId, true, deviceTwin, DeviceStatus.Enabled);
                 this.logger.LogInformation($"Created edge device {gateway.DeviceId}");
