@@ -183,7 +183,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 var deviceTwin = new Twin(gateway.DeviceId);
 
                 deviceTwin.Tags["env"] = gateway.Environment;
-                deviceTwin.Tags[nameof(IoTEdgeDevice.Type)] = gateway.Type;
+                deviceTwin.Tags["type"] = gateway.Type;
 
                 var result = await this.devicesService.CreateDeviceWithTwin(gateway.DeviceId, true, deviceTwin, DeviceStatus.Enabled);
                 this.logger.LogInformation($"Created edge device {gateway.DeviceId}");
