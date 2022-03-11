@@ -2753,7 +2753,7 @@
             "description": "The status updated time.",
             "format": "date-time"
           },
-          "customTags": {
+          "tags": {
             "type": "object",
             "additionalProperties": {
               "type": "string",
@@ -2800,12 +2800,13 @@
             "description": "The device last status updated time.",
             "format": "date-time"
           },
-          "customTags": {
+          "tags": {
             "type": "object",
             "additionalProperties": {
               "type": "string",
               "nullable": true
             },
+            "description": "A list of searchable tags and their values.",
             "nullable": true
           }
         },
@@ -3133,7 +3134,7 @@
             "description": "The status updated time.",
             "format": "date-time"
           },
-          "customTags": {
+          "tags": {
             "type": "object",
             "additionalProperties": {
               "type": "string",

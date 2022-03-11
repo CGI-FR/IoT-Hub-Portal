@@ -40,7 +40,7 @@ Available APIs for managing devices from Azure IoT Hub.
 > 200 Response
 
 ```
-[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","customTags":{"property1":"string","property2":"string"}}]
+[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"}}]
 ```
 
 ```json
@@ -53,7 +53,7 @@ Available APIs for managing devices from Azure IoT Hub.
     "isEnabled": true,
     "supportLoRaFeatures": true,
     "statusUpdatedTime": "2019-08-24T14:15:22Z",
-    "customTags": {
+    "tags": {
       "property1": "string",
       "property2": "string"
     }
@@ -81,7 +81,7 @@ Status Code **200**
 |» isEnabled|boolean|false|none|A value indicating whether the device is enabled on the platform.|
 |» supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
 |» statusUpdatedTime|string(date-time)|false|none|The device last status updated time.|
-|» customTags|object¦null|false|none|none|
+|» tags|object¦null|false|none|A list of searchable tags and their values.|
 |»» **additionalProperties**|string¦null|false|none|none|
 
 <aside class="warning">
@@ -110,7 +110,7 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "customTags": {
+  "tags": {
     "property1": "string",
     "property2": "string"
   }
@@ -155,7 +155,7 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "customTags": {
+  "tags": {
     "property1": "string",
     "property2": "string"
   }
@@ -200,7 +200,7 @@ None
 > 200 Response
 
 ```
-{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","customTags":{"property1":"string","property2":"string"}}
+{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"}}
 ```
 
 ```json
@@ -212,7 +212,7 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "customTags": {
+  "tags": {
     "property1": "string",
     "property2": "string"
   }
@@ -1319,7 +1319,7 @@ None
 > 200 Response
 
 ```
-[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","customTags":{"property1":"string","property2":"string"}}]
+[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"}}]
 ```
 
 ```json
@@ -1332,7 +1332,7 @@ None
     "isEnabled": true,
     "supportLoRaFeatures": true,
     "statusUpdatedTime": "2019-08-24T14:15:22Z",
-    "customTags": {
+    "tags": {
       "property1": "string",
       "property2": "string"
     }
@@ -1360,7 +1360,7 @@ Status Code **200**
 |» isEnabled|boolean|false|none|A value indicating whether the device is enabled on the platform.|
 |» supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
 |» statusUpdatedTime|string(date-time)|false|none|The device last status updated time.|
-|» customTags|object¦null|false|none|none|
+|» tags|object¦null|false|none|A list of searchable tags and their values.|
 |»» **additionalProperties**|string¦null|false|none|none|
 
 <aside class="warning">
@@ -1389,7 +1389,7 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "customTags": {
+  "tags": {
     "property1": "string",
     "property2": "string"
   },
@@ -1461,7 +1461,7 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "customTags": {
+  "tags": {
     "property1": "string",
     "property2": "string"
   },
@@ -1533,7 +1533,7 @@ None
 > 200 Response
 
 ```
-{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","customTags":{"property1":"string","property2":"string"},"useOTAA":true,"appEUI":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":0,"deduplication":"string","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"supports32BitFCnt":true,"fCntResetCounter":0,"keepAliveTimeout":0,"appKey":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string"}
+{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"useOTAA":true,"appEUI":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":0,"deduplication":"string","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"supports32BitFCnt":true,"fCntResetCounter":0,"keepAliveTimeout":0,"appKey":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string"}
 ```
 
 ```json
@@ -1545,7 +1545,7 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "customTags": {
+  "tags": {
     "property1": "string",
     "property2": "string"
   },
@@ -3281,7 +3281,7 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "customTags": {
+  "tags": {
     "property1": "string",
     "property2": "string"
   }
@@ -3300,7 +3300,7 @@ None
 |isConnected|boolean|false|none|`true` if this instance is connected; otherwise, `false`.|
 |isEnabled|boolean|false|none|`true` if this instance is enabled; otherwise, `false`.|
 |statusUpdatedTime|string(date-time)|false|none|The status updated time.|
-|customTags|object¦null|false|none|List of custom device tags and their values.|
+|tags|object¦null|false|none|List of custom device tags and their values.|
 |» **additionalProperties**|string¦null|false|none|none|
 
 <h2 id="tocS_DeviceListItem">DeviceListItem</h2>
@@ -3319,7 +3319,7 @@ None
   "isEnabled": true,
   "supportLoRaFeatures": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "customTags": {
+  "tags": {
     "property1": "string",
     "property2": "string"
   }
@@ -3338,7 +3338,7 @@ None
 |isEnabled|boolean|false|none|A value indicating whether the device is enabled on the platform.|
 |supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
 |statusUpdatedTime|string(date-time)|false|none|The device last status updated time.|
-|customTags|object¦null|false|none|none|
+|tags|object¦null|false|none|A list of searchable tags and their values.|
 |» **additionalProperties**|string¦null|false|none|none|
 
 <h2 id="tocS_DeviceModel">DeviceModel</h2>
@@ -3622,7 +3622,7 @@ None
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "customTags": {
+  "tags": {
     "property1": "string",
     "property2": "string"
   },
@@ -3668,7 +3668,7 @@ None
 |isConnected|boolean|false|none|`true` if this instance is connected; otherwise, `false`.|
 |isEnabled|boolean|false|none|`true` if this instance is enabled; otherwise, `false`.|
 |statusUpdatedTime|string(date-time)|false|none|The status updated time.|
-|customTags|object¦null|false|none|List of custom device tags and their values.|
+|tags|object¦null|false|none|List of custom device tags and their values.|
 |» **additionalProperties**|string¦null|false|none|none|
 |useOTAA|boolean|false|none|The status of OTAA setting.|
 |appEUI|string¦null|false|none|The device OTAA Application eui.|
