@@ -987,7 +987,7 @@
         }
       }
     },
-    "/api/lorawan/devices/{deviceId}/_command/{commandId}": {
+    "/api/lorawan/devices/{modelId}/{deviceId}/_command/{commandId}": {
       "post": {
         "tags": [
           "LoRa WAN"
@@ -995,6 +995,15 @@
         "summary": "Executes the command on the device..",
         "operationId": "POST Execute LoRaWAN command",
         "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "description": "The model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "deviceId",
             "in": "path",

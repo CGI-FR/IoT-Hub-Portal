@@ -1623,7 +1623,7 @@ None
 
 > Code samples
 
-`POST /api/lorawan/devices/{deviceId}/_command/{commandId}`
+`POST /api/lorawan/devices/{modelId}/{deviceId}/_command/{commandId}`
 
 *Executes the command on the device..*
 
@@ -1631,6 +1631,7 @@ None
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|modelId|path|string|true|The model identifier.|
 |deviceId|path|string|true|The device identifier.|
 |commandId|path|string|true|The command identifier.|
 
