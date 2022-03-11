@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.Reflection;
     using AzureIoTHub.Portal.Server.Identity;
+    using AzureIoTHub.Portal.Shared.Models.V10;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -52,31 +53,19 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         }
 
         /// <summary>
-        /// Get the a boolean for LoRa feature enable on the portal or not.
+        /// Get the portal settings.
         /// </summary>
-        /// <returns>The LoRa support setting.</returns>
-        /// <response code="200">Returns the LoRa support setting.</response>
-        /// <response code="500">Internal server error.</response>
-        [HttpGet("lora", Name = "GET LoRa settings")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("portal", Name = "GET Portal settings")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PortalSettings))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetLoRaActivationSetting()
+        public IActionResult GetPortalSetting()
         {
-            return this.Ok(this.configHandler.IsLoRaEnabled);
-        }
-
-        /// <summary>
-        /// Get the portal version.
-        /// </summary>
-        /// <returns>The server version.</returns>
-        /// <response code="200">The server version.</response>
-        /// <response code="500">Internal server error.</response>
-        [HttpGet("version", Name = "GET Portal Version")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetVersion()
-        {
-            return this.Ok(Assembly.GetExecutingAssembly().GetName().Version.ToString());
+            return this.Ok(new PortalSettings
+            {
+                IsLoRaSupported = this.configHandler.IsLoRaEnabled,
+                PortalName = this.configHandler.PortalName,
+                Version = Assembly.GetExecutingAssembly().GetName().Version.ToString()
+            });
         }
     }
 }

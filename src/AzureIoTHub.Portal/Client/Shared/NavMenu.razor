@@ -1,6 +1,8 @@
 ﻿@using AzureIoTHub.Portal.Shared.Security;
 @using Microsoft.AspNetCore.Components.Authorization
+@using AzureIoTHub.Portal.Shared.Models.V10
 @inject NavigationManager navigationManager
+@inject PortalSettings Portal
 
 <AuthorizeView>
     <Authorized>
@@ -21,7 +23,7 @@
             <MudNavLink Href="/edge/devices">Devices</MudNavLink>
             <MudNavLink Href="/edge/configurations">Configuration</MudNavLink>
 
-            @if (activateLoRaFeature)
+            @if (Portal.IsLoRaSupported)
             {
                 <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">LoRaWAN Management</MudText>
                 <MudNavLink Href="/lorawan/concentrators">Concentrators</MudNavLink>
@@ -35,10 +37,6 @@
 </AuthorizeView>
 
 @code {
-    [Parameter]
-    public bool activateLoRaFeature { get; set; }
-
     private void AddDevice() => navigationManager.NavigateTo("devices/new");
     private void AddDeviceModel() => navigationManager.NavigateTo("/device-models/new");
-    
 }

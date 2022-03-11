@@ -7,7 +7,6 @@ namespace AzureIoTHub.Portal.Client
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
-    using System.Text.Json;
     using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Shared.Settings;
     using Blazored.Modal;
@@ -15,6 +14,7 @@ namespace AzureIoTHub.Portal.Client
     using Microsoft.Extensions.DependencyInjection;
     using MudBlazor.Services;
     using Tewr.Blazor.FileReader;
+    using AzureIoTHub.Portal.Shared.Models.V10;
 
     public class Program
     {
@@ -40,6 +40,7 @@ namespace AzureIoTHub.Portal.Client
             _ = builder.Services.AddScoped<ClipboardService>();
 
             await ConfigureOidc(builder);
+            await ConfigurePortalSettings(builder);
 
             await builder.Build().RunAsync();
         }
@@ -60,6 +61,14 @@ namespace AzureIoTHub.Portal.Client
 
                 options.ProviderOptions.ResponseType = "id_token";
             });
+        }
+
+        private static async Task ConfigurePortalSettings(WebAssemblyHostBuilder builder)
+        {
+            using var httpClient = new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
+            var settings = await httpClient.GetFromJsonAsync<PortalSettings>("api/settings/portal");
+
+            _ = builder.Services.AddSingleton(settings);
         }
     }
 }

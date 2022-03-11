@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using System;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Identity;
+    using AzureIoTHub.Portal.Shared.Models.V10;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
     using Moq;
@@ -79,10 +80,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 .SetupGet(c => c.IsLoRaEnabled)
                 .Returns(loraFeatureStatus);
 
+            _ = this.mockConfigHandler
+                .SetupGet(c => c.PortalName)
+                .Returns(string.Empty);
+
             var controller = this.CreateController();
 
             // Act
-            var response = controller.GetLoRaActivationSetting();
+            var response = controller.GetPortalSetting();
 
             // Assert
             Assert.IsNotNull(response);
@@ -91,7 +96,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             Assert.AreEqual(200, okObjectResult.StatusCode);
             Assert.IsNotNull(okObjectResult.Value);
-            Assert.AreEqual(loraFeatureStatus, okObjectResult.Value);
+            Assert.IsAssignableFrom<PortalSettings>(okObjectResult.Value);
+            var okSettings = okObjectResult.Value as PortalSettings;
+
+            Assert.AreEqual(loraFeatureStatus, okSettings.IsLoRaSupported);
 
             this.mockRepository.VerifyAll();
         }
