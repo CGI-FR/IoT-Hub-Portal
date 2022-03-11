@@ -2993,28 +2993,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## GET LoRa settings
-
-<a id="opIdGET LoRa settings"></a>
-
-> Code samples
-
-`GET /api/settings/lora`
-
-*Get the a boolean for LoRa feature enable on the portal or not.*
-
-<h3 id="get-lora-settings-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Returns the LoRa support setting.|None|
-|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal server error.|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-None
-</aside>
-
 ## GET Open ID settings
 
 <a id="opIdGET Open ID settings"></a>
@@ -3037,22 +3015,34 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## GET Portal Version
+## GET Portal settings
 
-<a id="opIdGET Portal Version"></a>
+<a id="opIdGET Portal settings"></a>
 
 > Code samples
 
-`GET /api/settings/version`
+`GET /api/settings/portal`
 
-*Get the portal version.*
+*Get the portal settings.*
 
-<h3 id="get-portal-version-responses">Responses</h3>
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "isLoRaSupported": true,
+  "version": "string",
+  "portalName": "string"
+}
+```
+
+<h3 id="get-portal-settings-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The server version.|None|
-|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal server error.|None|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[PortalSettings](#schemaportalsettings)|
+|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Server Error|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -3757,6 +3747,30 @@ None
 |supports32BitFCnt|boolean¦null|false|none|Allow the usage of 32bit counters on your device.|
 |fCntResetCounter|integer(int32)¦null|false|none|Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.|
 |keepAliveTimeout|integer(int32)¦null|false|none|Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.<br>The default is none, which causes the connection to not be dropped.|
+
+<h2 id="tocS_PortalSettings">PortalSettings</h2>
+<!-- backwards compatibility -->
+<a id="schemaportalsettings"></a>
+<a id="schema_PortalSettings"></a>
+<a id="tocSportalsettings"></a>
+<a id="tocsportalsettings"></a>
+
+```json
+{
+  "isLoRaSupported": true,
+  "version": "string",
+  "portalName": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|isLoRaSupported|boolean|false|none|A value indicating whether the LoRa features are acticated.|
+|version|string¦null|false|none|The portal version.|
+|portalName|string¦null|false|none|The poral name.|
 
 <h2 id="tocS_ProblemDetails">ProblemDetails</h2>
 <!-- backwards compatibility -->
