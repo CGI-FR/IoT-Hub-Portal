@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Managers
@@ -34,13 +34,13 @@ namespace AzureIoTHub.Portal.Server.Managers
             return await this.CreateNewEnrollmentGroup(deviceType, true, twinState);
         }
 
-        public async Task<EnrollmentGroup> CreateEnrollmentGroupFormModelAsync(string modelId, string modelName, TwinCollection desiredProperties)
+        public async Task<EnrollmentGroup> CreateEnrollmentGroupFromModelAsync(string modelId, string modelName, TwinCollection desiredProperties)
         {
             var twinState = new TwinState(
                 tags: new TwinCollection($"{{ \"modelId\":\"{modelId}\" }}"),
                 desiredProperties: new TwinCollection());
 
-            return await this.CreateNewEnrollmentGroup(modelName, false, twinState);
+            return await this.CreateNewEnrollmentGroup(modelId, false, twinState);
         }
 
         private async Task<EnrollmentGroup> CreateNewEnrollmentGroup(string name, bool iotEdge, TwinState initialTwinState)
