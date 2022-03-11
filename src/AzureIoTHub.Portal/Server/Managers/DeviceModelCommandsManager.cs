@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Managers
@@ -40,7 +40,7 @@ namespace AzureIoTHub.Portal.Server.Managers
                     .GetDeviceCommands()
                     .Query<TableEntity>(filter: $"PartitionKey  eq '{deviceModel}'");
 
-            foreach (TableEntity qEntity in queryResultsFilter)
+            foreach (var qEntity in queryResultsFilter)
             {
                 commands.Add(
                     new Command()

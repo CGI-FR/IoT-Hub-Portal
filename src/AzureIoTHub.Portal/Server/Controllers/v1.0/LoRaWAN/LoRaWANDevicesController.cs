@@ -102,16 +102,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Executes the command on the device..
         /// </summary>
+        /// <param name="modelId">The model identifier.</param>
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="commandId">The command identifier.</param>
         /// <returns></returns>
         /// <exception cref="System.FormatException">Incorrect port or invalid DevEui Format.</exception>
-        [HttpPost("{deviceId}/_command/{commandId}", Name = "POST Execute LoRaWAN command")]
-        public async Task<IActionResult> ExecuteCommand(string deviceId, string commandId)
+        [HttpPost("{modelId}/{deviceId}/_command/{commandId}", Name = "POST Execute LoRaWAN command")]
+        public async Task<IActionResult> ExecuteCommand(string modelId, string deviceId, string commandId)
         {
             var commandEntity = this.tableClientFactory
                    .GetDeviceCommands()
-                   .Query<TableEntity>(filter: $"RowKey eq '{commandId}'")
+                   .Query<TableEntity>(filter: $"RowKey eq '{commandId}' and PartitionKey eq '{modelId}'")
                    .Single();
 
             var deviceModelCommand = this.deviceModelCommandMapper.GetDeviceModelCommand(commandEntity);
