@@ -3,7 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Managers
 {
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.Concentrator;
     using System.Threading.Tasks;
 
     public interface IRouterConfigManager

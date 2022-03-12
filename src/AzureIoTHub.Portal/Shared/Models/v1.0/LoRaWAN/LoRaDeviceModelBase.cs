@@ -1,17 +1,18 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
 {
-    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+    using System.ComponentModel.DataAnnotations;
+    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
 
     public class LoRaDeviceModelBase : DeviceModel
     {
+        /// <summary>
+        /// The LoRa device class.
+        /// </summary>
+        public ClassType ClassType { get; set; }
+
         /// <summary>
         /// The status of OTAA setting.
         /// </summary>
@@ -38,13 +39,13 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
         /// Allows setting the device preferred receive window (RX1 or RX2).
         /// The default preferred receive window is 1.
         /// </summary>
-        public int? PreferredWindow { get; set; }
+        public int PreferredWindow { get; set; }
 
         /// <summary>
         /// Allows controlling the handling of duplicate messages received by multiple gateways.
         /// The default is None.
         /// </summary>
-        public string Deduplication { get; set; }
+        public DeduplicationMode Deduplication { get; set; }
 
         /// <summary>
         /// Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.
@@ -75,22 +76,25 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
         /// Allows to explicitly specify a frame counter up start value.
         /// If the device joins, this value will be used to validate the first frame and initialize the server state for the device.
         /// </summary>
+        [Range(0, 4294967295)]
         public int? FCntUpStart { get; set; }
 
         /// <summary>
         /// Allows to explicitly specify a frame counter down start value.
         /// </summary>
+        [Range(0, 4294967295)]
         public int? FCntDownStart { get; set; }
+
+        /// <summary>
+        /// Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.
+        /// </summary>
+        [Range(0, 4294967295)]
+        public int? FCntResetCounter { get; set; }
 
         /// <summary>
         /// Allow the usage of 32bit counters on your device.
         /// </summary>
         public bool? Supports32BitFCnt { get; set; }
-
-        /// <summary>
-        /// Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.
-        /// </summary>
-        public int? FCntResetCounter { get; set; }
 
         /// <summary>
         /// Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.
@@ -100,9 +104,10 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
 
         public LoRaDeviceModelBase()
         {
+            this.ClassType = ClassType.A;
             this.Downlink = true;
             this.PreferredWindow = 1;
-            this.Deduplication = "None";
+            this.Deduplication = DeduplicationMode.None;
             this.ABPRelaxMode = true;
         }
     }

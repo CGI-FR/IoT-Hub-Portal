@@ -11,7 +11,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.Concentrator;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.Concentrator;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;

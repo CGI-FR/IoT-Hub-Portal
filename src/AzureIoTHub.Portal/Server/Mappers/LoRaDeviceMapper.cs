@@ -7,8 +7,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using System.Collections.Generic;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Shared.Models.V10.Device;
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
+    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
 
@@ -52,9 +52,9 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 AppSKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppSKey)),
                 NwkSKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.NwkSKey)),
                 UseOTAA = bool.Parse(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.UseOTAA)) ?? "True"),
-                Deduplication = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.Deduplication)),
-                PreferredWindow = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.PreferredWindow)), out int result) ? result : null,
-                Supports32BitFCnt = bool.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.Supports32BitFCnt)), out bool boolResult) ? boolResult : null,
+                Deduplication = Enum.TryParse<DeduplicationMode>(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.Deduplication)), out var deduplication) ? deduplication : DeduplicationMode.None,
+                PreferredWindow = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.PreferredWindow)), out var result) ? result : null,
+                Supports32BitFCnt = bool.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.Supports32BitFCnt)), out var boolResult) ? boolResult : null,
                 ABPRelaxMode = bool.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.ABPRelaxMode)), out boolResult) ? boolResult : null,
                 KeepAliveTimeout = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.KeepAliveTimeout)), out result) ? result : null,
                 Downlink = bool.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.Downlink)), out boolResult) ? boolResult : null,

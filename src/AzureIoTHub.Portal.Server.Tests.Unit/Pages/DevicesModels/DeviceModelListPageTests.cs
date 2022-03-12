@@ -7,10 +7,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System.Net.Http;
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
-    using AzureIoTHub.Portal.Shared.Models.V10;
-    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
     using Bunit;
-    using Bunit.TestDoubles;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;

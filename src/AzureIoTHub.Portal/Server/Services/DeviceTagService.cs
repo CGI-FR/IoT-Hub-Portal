@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using AzureIoTHub.Portal.Shared.Models.v10.Device;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;

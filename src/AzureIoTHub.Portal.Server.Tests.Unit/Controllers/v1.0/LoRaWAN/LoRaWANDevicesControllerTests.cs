@@ -10,9 +10,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.V10.Device;
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
@@ -233,12 +233,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                 }));
 
             _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceListItem(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
-                .Returns<Twin,IEnumerable<string>>((x,y) => new DeviceListItem
+                .Returns<Twin, IEnumerable<string>>((x, y) => new DeviceListItem
                 {
                     DeviceID = x.DeviceId
                 });
 
-            this.mockDeviceTagService.Setup(c => c.GetAllSearchableTagsNames())
+            _ = this.mockDeviceTagService.Setup(c => c.GetAllSearchableTagsNames())
                 .Returns(new List<string>());
 
             // Act

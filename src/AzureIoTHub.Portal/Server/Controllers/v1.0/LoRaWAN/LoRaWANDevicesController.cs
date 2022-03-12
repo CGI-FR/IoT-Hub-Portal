@@ -9,9 +9,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.V10;
-    using AzureIoTHub.Portal.Shared.Models.V10.Device;
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using System.Collections.Generic;

@@ -6,9 +6,10 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
     using System.Collections.Generic;
+    using System;
 
     public class LoRaDeviceModelMapper : IDeviceModelMapper<DeviceModel, LoRaDeviceModel>
     {
@@ -47,11 +48,11 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 SensorDecoder = entity[nameof(LoRaDeviceModel.SensorDecoder)]?.ToString(),
                 SupportLoRaFeatures = true,
                 UseOTAA = bool.Parse(entity[nameof(LoRaDeviceModel.UseOTAA)]?.ToString() ?? "true"),
-                PreferredWindow = int.TryParse(entity[nameof(LoRaDeviceBase.PreferredWindow)]?.ToString(), out var intResult) ? intResult : null,
+                PreferredWindow = int.TryParse(entity[nameof(LoRaDeviceBase.PreferredWindow)]?.ToString(), out var intResult) ? intResult : 1,
                 Supports32BitFCnt = bool.TryParse(entity[nameof(LoRaDeviceBase.Supports32BitFCnt)]?.ToString(), out var boolResult) ? boolResult : null,
                 ABPRelaxMode = bool.TryParse(entity[nameof(LoRaDeviceBase.ABPRelaxMode)]?.ToString(), out boolResult) ? boolResult : null,
                 KeepAliveTimeout = int.TryParse(entity[nameof(LoRaDeviceBase.KeepAliveTimeout)]?.ToString(), out intResult) ? intResult : null,
-                Deduplication = entity[nameof(LoRaDeviceBase.Deduplication)]?.ToString(),
+                Deduplication = Enum.TryParse<DeduplicationMode>(entity[nameof(LoRaDeviceBase.Deduplication)]?.ToString(), out var deduplication) ? deduplication : DeduplicationMode.None,
                 Downlink = bool.TryParse(entity[nameof(LoRaDeviceBase.Downlink)]?.ToString(), out boolResult) ? boolResult : null,
                 FCntDownStart = int.TryParse(entity[nameof(LoRaDeviceBase.FCntDownStart)]?.ToString(), out intResult) ? intResult : null,
                 FCntResetCounter = int.TryParse(entity[nameof(LoRaDeviceBase.FCntResetCounter)]?.ToString(), out intResult) ? intResult : null,
@@ -83,7 +84,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             AddOptionnalProperties(entity, nameof(LoRaDeviceBase.KeepAliveTimeout), model.KeepAliveTimeout, desiredProperties);
             AddOptionnalProperties(entity, nameof(LoRaDeviceBase.PreferredWindow), model.PreferredWindow, desiredProperties);
             AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Downlink), model.Downlink, desiredProperties);
-            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Deduplication), model.Deduplication, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Deduplication), model.Deduplication.ToString(), desiredProperties);
             AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntDownStart), model.FCntDownStart, desiredProperties);
             AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntResetCounter), model.FCntResetCounter, desiredProperties);
             AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntUpStart), model.FCntUpStart, desiredProperties);

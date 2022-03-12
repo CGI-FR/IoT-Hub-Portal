@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using AzureIoTHub.Portal.Shared.Models.v10.Device;
     using Moq;
     using NUnit.Framework;
 

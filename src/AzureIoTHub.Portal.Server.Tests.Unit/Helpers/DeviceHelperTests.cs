@@ -241,10 +241,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
                 }
             };
 
-            string deviceId = null;
-
             // Act
-            var result = DeviceHelper.RetrieveRuntimeResponse(twin, deviceId);
+            var result = DeviceHelper.RetrieveRuntimeResponse(twin);
 
             // Assert
             Assert.AreEqual(runtimeStatus, result);
@@ -257,7 +255,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
             var twin = new Twin();
 
             // Act
-            var result = DeviceHelper.RetrieveRuntimeResponse(twin, "aaa");
+            var result = DeviceHelper.RetrieveRuntimeResponse(twin);
 
             // Assert
             Assert.IsEmpty(result);
@@ -272,7 +270,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
             {
             };
             // Act
-            var result = DeviceHelper.RetrieveRuntimeResponse(twin, "aaa");
+            var result = DeviceHelper.RetrieveRuntimeResponse(twin);
 
             // Assert
             Assert.IsEmpty(result);
@@ -291,7 +289,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
             };
 
             // Act
-            var result = DeviceHelper.RetrieveRuntimeResponse(twin, "aaa");
+            var result = DeviceHelper.RetrieveRuntimeResponse(twin);
 
             // Assert
             Assert.IsEmpty(result);

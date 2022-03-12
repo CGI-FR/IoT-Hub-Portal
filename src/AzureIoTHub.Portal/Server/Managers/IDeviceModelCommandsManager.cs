@@ -4,8 +4,8 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using System.Collections.Generic;
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
 
     public interface IDeviceModelCommandsManager
     {

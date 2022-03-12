@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
     using Microsoft.Azure.Devices.Shared;
     using Moq;
     using NUnit.Framework;

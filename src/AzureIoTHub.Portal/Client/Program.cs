@@ -14,7 +14,7 @@ namespace AzureIoTHub.Portal.Client
     using Microsoft.Extensions.DependencyInjection;
     using MudBlazor.Services;
     using Tewr.Blazor.FileReader;
-    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     public class Program
     {

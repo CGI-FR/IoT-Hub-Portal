@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Entities;
     using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;

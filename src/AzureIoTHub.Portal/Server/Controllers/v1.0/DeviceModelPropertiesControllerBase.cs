@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Entities;
     using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;

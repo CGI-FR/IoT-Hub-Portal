@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
@@ -9,10 +9,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Azure.Devices;
     using Newtonsoft.Json.Linq;
 
     [ApiController]
@@ -43,7 +42,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             var results = new List<ConfigListItem>();
 
             // Azure Configurations may have different types: "Configuration", "Deployment" or "LayeredDeployment"
-            foreach (Configuration config in configList)
+            foreach (var config in configList)
             {
                 var moduleList = new List<IoTEdgeModule>();
 
@@ -55,7 +54,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                         ModuleName = x.Key
                     }));
 
-                    ConfigListItem result = ConfigHelper.CreateConfigListItem(config, moduleList);
+                    var result = ConfigHelper.CreateConfigListItem(config, moduleList);
                     results.Add(result);
                 }
             }
@@ -69,7 +68,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="configurationID">The configuration identifier.</param>
         /// <returns></returns>
         /// <exception cref="System.InvalidOperationException">Could not parse properties.desired.</exception>
-        [HttpGet("{configurationID}", Name ="GET IoT Edge configuration")]
+        [HttpGet("{configurationID}", Name = "GET IoT Edge configuration")]
         public async Task<ConfigListItem> Get(string configurationID)
         {
             var config = await this.configService.GetConfigItem(configurationID);
@@ -77,40 +76,37 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             // Details of every modules are stored within the EdgeAgent module data
             if (config.Content.ModulesContent != null
-                && config.Content.ModulesContent.TryGetValue("$edgeAgent", out IDictionary<string, object> edgeAgentModule)
-                && edgeAgentModule.TryGetValue("properties.desired", out object edgeAgentDesiredProperties))
+                && config.Content.ModulesContent.TryGetValue("$edgeAgent", out var edgeAgentModule)
+                && edgeAgentModule.TryGetValue("properties.desired", out var edgeAgentDesiredProperties))
             {
                 // Converts the object to a JObject to access its properties more easily
-                JObject modObject = edgeAgentDesiredProperties as JObject;
-
-                if (modObject == null)
+                if (edgeAgentDesiredProperties is not JObject modObject)
                 {
                     throw new InvalidOperationException("Could not parse properties.desired.");
                 }
 
                 // Adds regular modules to the list of modules
-                if (modObject.TryGetValue("modules", out JToken modules))
+                if (modObject.TryGetValue("modules", out var modules))
                 {
                     foreach (var m in modules.Values<JProperty>())
                     {
-                        IoTEdgeModule newModule = ConfigHelper.CreateGatewayModule(config, m);
+                        var newModule = ConfigHelper.CreateGatewayModule(config, m);
                         moduleList.Add(newModule);
                     }
                 }
 
                 // Adds system modules to the list of modules
-                if (modObject.TryGetValue("systemModules", out JToken systemModulesToken))
+                if (modObject.TryGetValue("systemModules", out var systemModulesToken))
                 {
                     foreach (var sm in systemModulesToken.Values<JProperty>())
                     {
-                        IoTEdgeModule newModule = ConfigHelper.CreateGatewayModule(config, sm);
+                        var newModule = ConfigHelper.CreateGatewayModule(config, sm);
                         moduleList.Add(newModule);
                     }
                 }
             }
 
-            ConfigListItem result = ConfigHelper.CreateConfigListItem(config, moduleList);
-            return result;
+            return ConfigHelper.CreateConfigListItem(config, moduleList);
         }
     }
 }

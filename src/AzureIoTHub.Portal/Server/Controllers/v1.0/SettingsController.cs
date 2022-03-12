@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.Reflection;
     using AzureIoTHub.Portal.Server.Identity;
-    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;

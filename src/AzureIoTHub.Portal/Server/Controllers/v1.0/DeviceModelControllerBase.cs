@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices.Shared;

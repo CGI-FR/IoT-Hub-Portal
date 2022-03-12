@@ -1,11 +1,11 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Helpers
 {
     using System;
     using System.Collections.Generic;
-    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.Azure.Devices;
     using Newtonsoft.Json.Linq;
 
@@ -20,7 +20,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns>Corresponding metric value, or 0 if it doesn't exist.</returns>
         public static long RetrieveMetricValue(Configuration item, string metricName)
         {
-            if (item.SystemMetrics.Results.TryGetValue(metricName, out long result))
+            if (item.SystemMetrics.Results.TryGetValue(metricName, out var result))
             {
                 return result;
             }
@@ -79,7 +79,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
             var twinSettings = new Dictionary<string, string>();
 
             if (config.Content.ModulesContent != null
-                && config.Content.ModulesContent.TryGetValue(module.Path, out IDictionary<string, object> modulesContent))
+                && config.Content.ModulesContent.TryGetValue(module.Path, out var modulesContent))
             {
                 foreach (var setting in modulesContent)
                 {
@@ -99,15 +99,13 @@ namespace AzureIoTHub.Portal.Server.Helpers
         {
             var envVariables = new Dictionary<string, string>();
 
-            var moduleProperties = module.Value as JObject;
-
-            if (moduleProperties == null)
+            if (module.Value is not JObject moduleProperties)
             {
                 throw new InvalidOperationException($"Unable to parse {module.Name} module properties.");
             }
 
             // Only exists if the module contains environment variables
-            if (moduleProperties.TryGetValue("env", out JToken environmentVariables))
+            if (moduleProperties.TryGetValue("env", out var environmentVariables))
             {
                 foreach (JProperty val in environmentVariables)
                 {

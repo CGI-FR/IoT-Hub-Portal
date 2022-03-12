@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using System;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Identity;
-    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
     using Moq;

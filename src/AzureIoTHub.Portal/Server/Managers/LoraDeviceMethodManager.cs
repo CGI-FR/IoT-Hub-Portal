@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Managers
@@ -9,7 +9,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Net.Http.Json;
     using System.Text;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
 
     public class LoraDeviceMethodManager : ILoraDeviceMethodManager
     {
@@ -22,7 +22,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         public async Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommand command)
         {
-            JsonContent commandContent = JsonContent.Create(new
+            var commandContent = JsonContent.Create(new
             {
                 rawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(command.Frame)),
                 fport = command.Port
