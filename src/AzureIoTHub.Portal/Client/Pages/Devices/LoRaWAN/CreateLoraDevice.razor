@@ -14,8 +14,8 @@
             <MudGrid>
                 @if (loraModel.UseOTAA)
                 {
-                        <MudItem xs="12" md="6">
-                            <MudTextField @bind-Value="@LoRaDevice.AppEUI"
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="@LoRaDevice.AppEUI"
                                   Label="OTAA AppEUI"
                                   Variant="Variant.Outlined"
                                   For="@(()=> LoRaDevice.AppEUI)"
@@ -32,9 +32,18 @@
                                   Variant="Variant.Outlined" />
                     </MudItem>
                 }
-                <MudItem xs="12">
-                    <MudTextField @bind-Value="@LoRaDevice.SensorDecoder" Label="Sensor Decoder URL" For="@(() => LoRaDevice.SensorDecoder)" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
-                </MudItem>
+                else
+                {
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="@LoRaDevice.AppSKey" Label="APB App SKey" For="@(() => LoRaDevice.AppSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="@LoRaDevice.NwkSKey" Label="APB Nwk SKey" For="@(() => LoRaDevice.NwkSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="@LoRaDevice.DevAddr" Label="DevAddr" For="@(() => LoRaDevice.DevAddr)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                    </MudItem>
+                }
             </MudGrid>
         </MudCardContent>
         <MudCardActions Class="pb-4 pl-4">
