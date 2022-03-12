@@ -31,6 +31,15 @@
     <UpToDateCheckInput Include="wwwroot/scss/**/*.scss" Set="Css" />
     <UpToDateCheckBuilt Include="wwwroot/css/*.css" Set="Css" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Remove="Pages\LoRaWAN\DeviceModels\**" />
+    <Content Remove="Pages\LoRaWAN\DeviceModels\**" />
+    <EmbeddedResource Remove="Pages\LoRaWAN\DeviceModels\**" />
+    <None Remove="Pages\LoRaWAN\DeviceModels\**" />
+    <UpToDateCheckBuilt Remove="Pages\LoRaWAN\DeviceModels\**" />
+    <UpToDateCheckInput Remove="Pages\LoRaWAN\DeviceModels\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
@@ -39,7 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\LoRaWAN\DeviceModels\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>

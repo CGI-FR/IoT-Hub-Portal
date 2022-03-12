@@ -58,7 +58,7 @@
                         <MudCardContent>
                             <MudGrid>
                                 <MudItem xs="12" md="6">
-                                    <MudTextField id="@nameof(Model.Name)"  @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
+                                    <MudTextField id="@nameof(Model.Name)" @bind-Value="@Model.Name" For="@(() => Model.Name)" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" />
                                 </MudItem>
                                 <MudItem xs="12" md="6">
                                     <MudTextField id="@nameof(Model.Description)" @bind-Value="@Model.Description" For="@(() => Model.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
@@ -81,13 +81,15 @@
                                     </MudSwitch>
                                 </MudItem>
                                 }
-                                <MudItem xs="12">
-                                    <MudText>Properties</MudText>
-                                </MudItem>
-                                <MudItem xs="12">
-                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty()))" StartIcon="@Icons.Filled.Add" id="addPropertyButton">Add property</MudButton>
-                                </MudItem>
-                                <MudItem xs="12">
+                                @if (!IsLoRa)
+                                {
+                                    <MudItem xs="12">
+                                        <MudText>Properties</MudText>
+                                    </MudItem>
+                                    <MudItem xs="12">
+                                        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty()))" StartIcon="@Icons.Filled.Add" id="addPropertyButton">Add property</MudButton>
+                                    </MudItem>
+                                    <MudItem xs="12">
                                         @foreach (var item in this.Properties)
                                         {
                                             <MudGrid id="@($"property-{item.Name}")">
@@ -129,6 +131,7 @@
                                     </MudGrid>
                                         }
                                     </MudItem>
+                                }
                             </MudGrid>
                         </MudCardContent>
                         <MudCardActions Class="pb-4 pl-4">
@@ -142,11 +145,10 @@
         {
             <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Model as LoRaDeviceModel).IsValid ? "" : "color: red")>
                 <MudGrid>
-                    <CreateLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)" 
-                    Commands="Commands" 
-                    OnSaveClick="Save"
-                    CommandValidation="@CommandValidation"
-                    />
+                    <CreateLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)"
+                                       Commands="Commands"
+                                       OnSaveClick="Save"
+                                       CommandValidation="@CommandValidation" />
 
                 </MudGrid>
             </MudTabPanel>
@@ -248,7 +250,7 @@
     {
         // Displays validation error message for each field
         await form.Validate();
-        
+
         // Used to check commands
         bool duplicated = false;
         bool cmdValidationError = false;
@@ -260,21 +262,21 @@
                         .Where(x => x.Count() > 1)
                         .Select(x => x.Key)
                         .ToList();
-            foreach(var item in query)
+            foreach (var item in query)
             {
                 Snackbar.Add($"The command '{item}' appears more than once!", Severity.Warning);
                 duplicated = true;
             }
 
             // Check validation error in commands
-            foreach(var field in CommandValidation)
+            foreach (var field in CommandValidation)
             {
                 await field.Validate();
                 if (!field.IsValid)
                     cmdValidationError = true;
             }
         }
-        
+
         if (!standardValidator.Validate(Model).IsValid
             || (IsLoRa && (!this.loraValidator.Validate(this.Model as LoRaDeviceModel).IsValid ||
                            duplicated ||
@@ -306,6 +308,10 @@
         else
         {
             result = await httpClient.PostAsJsonAsync(ApiUrlBase, Model);
+
+            result.EnsureSuccessStatusCode();
+
+            result = await httpClient.PostAsJsonAsync($"{ApiUrlBase}/{Model.ModelId}/properties", Properties);
         }
 
         result.EnsureSuccessStatusCode();
@@ -314,10 +320,6 @@
         {
             var response = await httpClient.PostAsync($"{ApiUrlBase}/{Model.ModelId}/avatar", content);
         }
-
-        result.EnsureSuccessStatusCode();
-
-        result = await httpClient.PostAsJsonAsync($"{ApiUrlBase}/{Model.ModelId}/properties", Properties);
 
         Snackbar.Add("Device model successfully created.", Severity.Success);
 
