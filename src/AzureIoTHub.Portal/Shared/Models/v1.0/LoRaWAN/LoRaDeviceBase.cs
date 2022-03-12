@@ -1,12 +1,18 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
 {
-    using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using System.ComponentModel.DataAnnotations;
+    using AzureIoTHub.Portal.Shared.Models.v10.Device;
 
     public class LoRaDeviceBase : DeviceDetails
     {
+        /// <summary>
+        /// The LoRa device class.
+        /// </summary>
+        public ClassType ClassType { get; set; }
+
         /// <summary>
         /// The status of OTAA setting.
         /// </summary>
@@ -44,7 +50,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
         /// Allows controlling the handling of duplicate messages received by multiple gateways.
         /// The default is None.
         /// </summary>
-        public string Deduplication { get; set; }
+        public DeduplicationMode Deduplication { get; set; }
 
         /// <summary>
         /// Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.
@@ -75,11 +81,13 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
         /// Allows to explicitly specify a frame counter up start value.
         /// If the device joins, this value will be used to validate the first frame and initialize the server state for the device.
         /// </summary>
+        [Range(0, 4294967295)]
         public int? FCntUpStart { get; set; }
 
         /// <summary>
         /// Allows to explicitly specify a frame counter down start value.
         /// </summary>
+        [Range(0, 4294967295)]
         public int? FCntDownStart { get; set; }
 
         /// <summary>
@@ -90,6 +98,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
         /// <summary>
         /// Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.
         /// </summary>
+        [Range(0, 4294967295)]
         public int? FCntResetCounter { get; set; }
 
         /// <summary>
@@ -102,7 +111,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
         {
             this.Downlink = true;
             this.PreferredWindow = 1;
-            this.Deduplication = "None";
+            this.Deduplication = DeduplicationMode.None;
             this.ABPRelaxMode = true;
         }
     }

@@ -1,9 +1,9 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Client.Validators
 {
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
     using FluentValidation;
     using System;
     using System.Collections.Generic;
@@ -14,15 +14,15 @@ namespace AzureIoTHub.Portal.Client.Validators
     {
         public LoRaDeviceDetailsValidator()
         {
-            RuleFor(x => x.AppEUI)
+            _ = RuleFor(x => x.AppEUI)
                 .NotEmpty()
                 .When(x => x.UseOTAA);
 
-            RuleFor(x => x.AppKey)
+            _ = RuleFor(x => x.AppKey)
                 .NotEmpty()
                 .When(x => x.UseOTAA);
 
-            RuleFor(x => x.ModelId)
+            _ = RuleFor(x => x.ModelId)
                 .NotEmpty();
         }
 

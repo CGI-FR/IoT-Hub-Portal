@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using System;
     using System.Collections.Generic;
     using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using AzureIoTHub.Portal.Shared.Models.v10.Device;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
 
@@ -74,12 +74,14 @@ namespace AzureIoTHub.Portal.Server.Mappers
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
 
-            if(item.Tags != null)
+            if (item.Tags == null)
             {
-                foreach (var customTag in item.Tags)
-                {
-                    Helpers.DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
-                }
+                return;
+            }
+
+            foreach (var customTag in item.Tags)
+            {
+                Helpers.DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
             }
         }
     }

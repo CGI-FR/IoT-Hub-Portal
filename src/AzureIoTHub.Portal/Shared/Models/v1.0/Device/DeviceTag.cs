@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 
-namespace AzureIoTHub.Portal.Shared.Models.V10.Device
+namespace AzureIoTHub.Portal.Shared.Models.v10.Device
 {
     using System.ComponentModel.DataAnnotations;
 

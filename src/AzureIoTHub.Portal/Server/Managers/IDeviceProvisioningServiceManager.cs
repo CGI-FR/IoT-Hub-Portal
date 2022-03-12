@@ -4,7 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
 

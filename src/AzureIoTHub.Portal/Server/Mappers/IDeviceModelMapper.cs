@@ -4,7 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
     using System.Collections.Generic;
 
     public interface IDeviceModelMapper<TListItem, TModel>

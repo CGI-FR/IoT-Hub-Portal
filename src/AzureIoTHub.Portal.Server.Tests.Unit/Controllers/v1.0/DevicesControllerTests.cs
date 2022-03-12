@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
@@ -15,9 +15,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.V10;
-    using AzureIoTHub.Portal.Shared.Models.V10.Device;
-    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
@@ -79,13 +79,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                     Tags = twinCollection
                 }));
 
-            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceListItem(It.IsAny<Twin>(),It.IsAny<IEnumerable<string>>()))
-                .Returns<Twin,IEnumerable<string>>((x,y) => new DeviceListItem
+            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceListItem(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
+                .Returns<Twin, IEnumerable<string>>((x, y) => new DeviceListItem
                 {
                     DeviceID = x.DeviceId
                 });
 
-            this.mockDeviceTagService.Setup(c => c.GetAllSearchableTagsNames())
+            _ = this.mockDeviceTagService.Setup(c => c.GetAllSearchableTagsNames())
                 .Returns(new List<string>());
 
             // Act

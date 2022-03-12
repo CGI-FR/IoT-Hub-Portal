@@ -11,8 +11,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using AzureIoTHub.Portal.Shared.Models;
-    using AzureIoTHub.Portal.Shared.Models.V10;
-    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
     using Bunit;
     using Bunit.TestDoubles;
     using Microsoft.AspNetCore.Components;

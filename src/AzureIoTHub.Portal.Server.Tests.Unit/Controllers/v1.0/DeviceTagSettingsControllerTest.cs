@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using AzureIoTHub.Portal.Shared.Models.v10.Device;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Moq;

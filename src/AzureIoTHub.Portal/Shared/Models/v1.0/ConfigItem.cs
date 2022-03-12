@@ -1,11 +1,12 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.ComponentModel.DataAnnotations;
 
-namespace AzureIoTHub.Portal.Shared.Models.V10
+namespace AzureIoTHub.Portal.Shared.Models.v10
 {
+    using System;
+    using System.ComponentModel.DataAnnotations;
+
     public class ConfigItem
     {
         /// <summary>

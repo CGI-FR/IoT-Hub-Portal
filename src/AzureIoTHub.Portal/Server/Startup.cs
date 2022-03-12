@@ -17,10 +17,10 @@ namespace AzureIoTHub.Portal.Server
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Server.Wrappers;
-    using AzureIoTHub.Portal.Shared.Models.V10.Device;
-    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDevice;
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;

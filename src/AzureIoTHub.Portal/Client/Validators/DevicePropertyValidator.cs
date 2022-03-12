@@ -3,7 +3,7 @@
 
 namespace AzureIoTHub.Portal.Client.Validators
 {
-    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using FluentValidation;
     using System.Collections.Generic;
     using System.Linq;

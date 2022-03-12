@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
@@ -133,7 +133,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                     NbDevices = await this.RetrieveNbConnectedDevice(deviceTwin.DeviceId),
                     // récupération des informations sur le modules de la gateways²
                     NbModules = DeviceHelper.RetrieveNbModuleCount(deviceWithModules, deviceId),
-                    RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceWithModules, deviceId),
+                    RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceWithModules),
                     Modules = DeviceHelper.RetrieveModuleList(deviceWithModules),
                     // recup du dernier deployment
                     LastDeployment = await this.RetrieveLastConfiguration(deviceWithModules)

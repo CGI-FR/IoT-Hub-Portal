@@ -6,9 +6,10 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
     using System.Text.Json.Serialization;
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum ClassType
+    public enum DeduplicationMode
     {
-        A,
-        C
+        None,
+        Drop,
+        Mark
     }
 }

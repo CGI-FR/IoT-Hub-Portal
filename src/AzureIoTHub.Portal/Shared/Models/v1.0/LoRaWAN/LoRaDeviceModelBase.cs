@@ -4,7 +4,7 @@
 namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
 {
     using System.ComponentModel.DataAnnotations;
-    using AzureIoTHub.Portal.Shared.Models.V10.DeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
 
     public class LoRaDeviceModelBase : DeviceModel
     {
@@ -39,13 +39,13 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
         /// Allows setting the device preferred receive window (RX1 or RX2).
         /// The default preferred receive window is 1.
         /// </summary>
-        public int? PreferredWindow { get; set; }
+        public int PreferredWindow { get; set; }
 
         /// <summary>
         /// Allows controlling the handling of duplicate messages received by multiple gateways.
         /// The default is None.
         /// </summary>
-        public string Deduplication { get; set; }
+        public DeduplicationMode Deduplication { get; set; }
 
         /// <summary>
         /// Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.
@@ -107,7 +107,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
             this.ClassType = ClassType.A;
             this.Downlink = true;
             this.PreferredWindow = 1;
-            this.Deduplication = "None";
+            this.Deduplication = DeduplicationMode.None;
             this.ABPRelaxMode = true;
         }
     }

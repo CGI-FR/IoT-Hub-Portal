@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
 {
     using System.Globalization;
     using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Shared.Models.V10.LoRaWAN.LoRaDeviceModel;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
 
     public class DeviceModelCommandMapper : IDeviceModelCommandMapper
     {

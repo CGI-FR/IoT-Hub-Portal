@@ -8,8 +8,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.Devices;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
-    using AzureIoTHub.Portal.Shared.Models.V10;
-    using AzureIoTHub.Portal.Shared.Models.V10.Device;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10.Device;
     using Bunit;
     using Bunit.TestDoubles;
     using FluentAssertions.Extensions;

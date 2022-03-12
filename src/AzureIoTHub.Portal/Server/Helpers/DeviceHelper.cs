@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Helpers
@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
     using System.Security.Cryptography;
     using System.Text;
     using AzureIoTHub.Portal.Server.Extensions;
-    using AzureIoTHub.Portal.Shared.Models.V10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Newtonsoft.Json.Linq;
@@ -130,13 +130,13 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <param name="twin">the twin of the device we want.</param>
         /// <param name="deviceId">the device id we get.</param>
         /// <returns>string.</returns>
-        public static string RetrieveRuntimeResponse(Twin twin, string deviceId)
+        public static string RetrieveRuntimeResponse(Twin twin)
         {
             var reportedProperties = JObject.Parse(twin.Properties.Reported.ToJson());
 
-            if (reportedProperties.TryGetValue("systemModules", out JToken systemModules)
-                && systemModules.Value<JObject>().TryGetValue("edgeAgent", out JToken edgeAgentModule)
-                && edgeAgentModule.Value<JObject>().TryGetValue("runtimeStatus", out JToken runtimeStatus))
+            if (reportedProperties.TryGetValue("systemModules", out var systemModules)
+                && systemModules.Value<JObject>().TryGetValue("edgeAgent", out var edgeAgentModule)
+                && edgeAgentModule.Value<JObject>().TryGetValue("runtimeStatus", out var runtimeStatus))
             {
                 return runtimeStatus.Value<string>();
             }
@@ -154,7 +154,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
             var list = new List<IoTEdgeModule>();
             var reportedProperties = JObject.Parse(twin.Properties.Reported.ToJson());
 
-            if (!reportedProperties.TryGetValue("modules", out JToken modules))
+            if (!reportedProperties.TryGetValue("modules", out var modules))
             {
                 return list;
             }
@@ -168,12 +168,12 @@ namespace AzureIoTHub.Portal.Server.Helpers
                     ModuleName = property.Key
                 };
 
-                if (propertyObject.TryGetValue("status", out JToken status))
+                if (propertyObject.TryGetValue("status", out var status))
                 {
                     module.Status = status.Value<string>();
                 }
 
-                if (propertyObject.TryGetValue("version", out JToken version))
+                if (propertyObject.TryGetValue("version", out var version))
                 {
                     module.Status = version.Value<string>();
                 }
