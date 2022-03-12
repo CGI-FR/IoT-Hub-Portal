@@ -3133,6 +3133,14 @@
             "description": "List of custom device tags and their values.",
             "nullable": true
           },
+          "classType": {
+            "enum": [
+              "A",
+              "C"
+            ],
+            "type": "string",
+            "description": "The LoRa device class."
+          },
           "useOTAA": {
             "type": "boolean",
             "description": "The status of OTAA setting."
@@ -3164,9 +3172,13 @@
             "nullable": true
           },
           "deduplication": {
+            "enum": [
+              "None",
+              "Drop",
+              "Mark"
+            ],
             "type": "string",
-            "description": "Allows controlling the handling of duplicate messages received by multiple gateways.\r\nThe default is None.",
-            "nullable": true
+            "description": "Allows controlling the handling of duplicate messages received by multiple gateways.\r\nThe default is None."
           },
           "rX1DROffset": {
             "type": "integer",
@@ -3192,12 +3204,16 @@
             "nullable": true
           },
           "fCntUpStart": {
+            "maximum": 4294967295,
+            "minimum": 0,
             "type": "integer",
             "description": "Allows to explicitly specify a frame counter up start value.\r\nIf the device joins, this value will be used to validate the first frame and initialize the server state for the device.",
             "format": "int32",
             "nullable": true
           },
           "fCntDownStart": {
+            "maximum": 4294967295,
+            "minimum": 0,
             "type": "integer",
             "description": "Allows to explicitly specify a frame counter down start value.",
             "format": "int32",
@@ -3209,6 +3225,8 @@
             "nullable": true
           },
           "fCntResetCounter": {
+            "maximum": 4294967295,
+            "minimum": 0,
             "type": "integer",
             "description": "Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.",
             "format": "int32",
@@ -3310,6 +3328,14 @@
             "type": "boolean",
             "description": "A value indicating whether the LoRa features is supported on this model."
           },
+          "classType": {
+            "enum": [
+              "A",
+              "C"
+            ],
+            "type": "string",
+            "description": "The LoRa device class."
+          },
           "useOTAA": {
             "type": "boolean",
             "description": "The status of OTAA setting."
@@ -3332,13 +3358,16 @@
           "preferredWindow": {
             "type": "integer",
             "description": "Allows setting the device preferred receive window (RX1 or RX2).\r\nThe default preferred receive window is 1.",
-            "format": "int32",
-            "nullable": true
+            "format": "int32"
           },
           "deduplication": {
+            "enum": [
+              "None",
+              "Drop",
+              "Mark"
+            ],
             "type": "string",
-            "description": "Allows controlling the handling of duplicate messages received by multiple gateways.\r\nThe default is None.",
-            "nullable": true
+            "description": "Allows controlling the handling of duplicate messages received by multiple gateways.\r\nThe default is None."
           },
           "rX1DROffset": {
             "type": "integer",
@@ -3364,26 +3393,32 @@
             "nullable": true
           },
           "fCntUpStart": {
+            "maximum": 4294967295,
+            "minimum": 0,
             "type": "integer",
             "description": "Allows to explicitly specify a frame counter up start value.\r\nIf the device joins, this value will be used to validate the first frame and initialize the server state for the device.",
             "format": "int32",
             "nullable": true
           },
           "fCntDownStart": {
+            "maximum": 4294967295,
+            "minimum": 0,
             "type": "integer",
             "description": "Allows to explicitly specify a frame counter down start value.",
+            "format": "int32",
+            "nullable": true
+          },
+          "fCntResetCounter": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.",
             "format": "int32",
             "nullable": true
           },
           "supports32BitFCnt": {
             "type": "boolean",
             "description": "Allow the usage of 32bit counters on your device.",
-            "nullable": true
-          },
-          "fCntResetCounter": {
-            "type": "integer",
-            "description": "Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.",
-            "format": "int32",
             "nullable": true
           },
           "keepAliveTimeout": {

@@ -1393,21 +1393,22 @@ None
     "property1": "string",
     "property2": "string"
   },
+  "classType": "A",
   "useOTAA": true,
   "appEUI": "string",
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
   "preferredWindow": 0,
-  "deduplication": "string",
+  "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 0,
-  "fCntDownStart": 0,
+  "fCntUpStart": 4294967295,
+  "fCntDownStart": 4294967295,
   "supports32BitFCnt": true,
-  "fCntResetCounter": 0,
+  "fCntResetCounter": 4294967295,
   "keepAliveTimeout": 0,
   "appKey": "string",
   "appSKey": "string",
@@ -1465,21 +1466,22 @@ None
     "property1": "string",
     "property2": "string"
   },
+  "classType": "A",
   "useOTAA": true,
   "appEUI": "string",
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
   "preferredWindow": 0,
-  "deduplication": "string",
+  "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 0,
-  "fCntDownStart": 0,
+  "fCntUpStart": 4294967295,
+  "fCntDownStart": 4294967295,
   "supports32BitFCnt": true,
-  "fCntResetCounter": 0,
+  "fCntResetCounter": 4294967295,
   "keepAliveTimeout": 0,
   "appKey": "string",
   "appSKey": "string",
@@ -1533,7 +1535,7 @@ None
 > 200 Response
 
 ```
-{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"useOTAA":true,"appEUI":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":0,"deduplication":"string","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"supports32BitFCnt":true,"fCntResetCounter":0,"keepAliveTimeout":0,"appKey":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string"}
+{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":0,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":4294967295,"fCntDownStart":4294967295,"supports32BitFCnt":true,"fCntResetCounter":4294967295,"keepAliveTimeout":0,"appKey":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string"}
 ```
 
 ```json
@@ -1549,21 +1551,22 @@ None
     "property1": "string",
     "property2": "string"
   },
+  "classType": "A",
   "useOTAA": true,
   "appEUI": "string",
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
   "preferredWindow": 0,
-  "deduplication": "string",
+  "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 0,
-  "fCntDownStart": 0,
+  "fCntUpStart": 4294967295,
+  "fCntDownStart": 4294967295,
   "supports32BitFCnt": true,
-  "fCntResetCounter": 0,
+  "fCntResetCounter": 4294967295,
   "keepAliveTimeout": 0,
   "appKey": "string",
   "appSKey": "string",
@@ -1721,20 +1724,21 @@ None
   "description": "string",
   "isBuiltin": true,
   "supportLoRaFeatures": true,
+  "classType": "A",
   "useOTAA": true,
   "appEUI": "string",
   "sensorDecoder": "string",
   "downlink": true,
   "preferredWindow": 0,
-  "deduplication": "string",
+  "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 0,
-  "fCntDownStart": 0,
+  "fCntUpStart": 4294967295,
+  "fCntDownStart": 4294967295,
+  "fCntResetCounter": 4294967295,
   "supports32BitFCnt": true,
-  "fCntResetCounter": 0,
   "keepAliveTimeout": 0
 }
 ```
@@ -1798,7 +1802,7 @@ None
 > 200 Response
 
 ```
-{"modelId":"string","imageUrl":"string","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true,"useOTAA":true,"appEUI":"string","sensorDecoder":"string","downlink":true,"preferredWindow":0,"deduplication":"string","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"supports32BitFCnt":true,"fCntResetCounter":0,"keepAliveTimeout":0}
+{"modelId":"string","imageUrl":"string","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true,"classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","downlink":true,"preferredWindow":0,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":4294967295,"fCntDownStart":4294967295,"fCntResetCounter":4294967295,"supports32BitFCnt":true,"keepAliveTimeout":0}
 ```
 
 ```json
@@ -1809,20 +1813,21 @@ None
   "description": "string",
   "isBuiltin": true,
   "supportLoRaFeatures": true,
+  "classType": "A",
   "useOTAA": true,
   "appEUI": "string",
   "sensorDecoder": "string",
   "downlink": true,
   "preferredWindow": 0,
-  "deduplication": "string",
+  "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 0,
-  "fCntDownStart": 0,
+  "fCntUpStart": 4294967295,
+  "fCntDownStart": 4294967295,
+  "fCntResetCounter": 4294967295,
   "supports32BitFCnt": true,
-  "fCntResetCounter": 0,
   "keepAliveTimeout": 0
 }
 ```
@@ -1859,20 +1864,21 @@ None
   "description": "string",
   "isBuiltin": true,
   "supportLoRaFeatures": true,
+  "classType": "A",
   "useOTAA": true,
   "appEUI": "string",
   "sensorDecoder": "string",
   "downlink": true,
   "preferredWindow": 0,
-  "deduplication": "string",
+  "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 0,
-  "fCntDownStart": 0,
+  "fCntUpStart": 4294967295,
+  "fCntDownStart": 4294967295,
+  "fCntResetCounter": 4294967295,
   "supports32BitFCnt": true,
-  "fCntResetCounter": 0,
   "keepAliveTimeout": 0
 }
 ```
@@ -3616,21 +3622,22 @@ None
     "property1": "string",
     "property2": "string"
   },
+  "classType": "A",
   "useOTAA": true,
   "appEUI": "string",
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
   "preferredWindow": 0,
-  "deduplication": "string",
+  "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 0,
-  "fCntDownStart": 0,
+  "fCntUpStart": 4294967295,
+  "fCntDownStart": 4294967295,
   "supports32BitFCnt": true,
-  "fCntResetCounter": 0,
+  "fCntResetCounter": 4294967295,
   "keepAliveTimeout": 0,
   "appKey": "string",
   "appSKey": "string",
@@ -3660,13 +3667,14 @@ None
 |statusUpdatedTime|string(date-time)|false|none|The status updated time.|
 |tags|object¦null|false|none|List of custom device tags and their values.|
 |» **additionalProperties**|string¦null|false|none|none|
+|classType|string|false|none|The LoRa device class.|
 |useOTAA|boolean|false|none|The status of OTAA setting.|
 |appEUI|string¦null|false|none|The device OTAA Application eui.|
 |sensorDecoder|string¦null|false|none|The sensor decoder API Url.|
 |gatewayID|string¦null|false|none|The GatewayID of the device.|
 |downlink|boolean¦null|false|none|Allows disabling the downstream (cloud to device) for a device.<br>By default downstream messages are enabled.|
 |preferredWindow|integer(int32)¦null|false|none|Allows setting the device preferred receive window (RX1 or RX2).<br>The default preferred receive window is 1.|
-|deduplication|string¦null|false|none|Allows controlling the handling of duplicate messages received by multiple gateways.<br>The default is None.|
+|deduplication|string|false|none|Allows controlling the handling of duplicate messages received by multiple gateways.<br>The default is None.|
 |rX1DROffset|integer(int32)¦null|false|none|Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.<br>Valid for OTAA devices.<br>If an invalid value is provided the network server will use default value 0.|
 |rX2DataRate|integer(int32)¦null|false|none|Allows setting a custom Datarate for second receive windows.<br>Valid for OTAA devices.<br>If an invalid value is provided the network server will use default value 0 (DR0).|
 |rxDelay|integer(int32)¦null|false|none|Allows setting a custom wait time between receiving and transmission as specified in the specification.|
@@ -3688,6 +3696,16 @@ None
 |reportedRX1DROffset|string¦null|false|none|The Device Current RX1DROffset.|
 |reportedRXDelay|string¦null|false|none|The Device Current RXDelay.|
 
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|classType|A|
+|classType|C|
+|deduplication|None|
+|deduplication|Drop|
+|deduplication|Mark|
+
 <h2 id="tocS_LoRaDeviceModel">LoRaDeviceModel</h2>
 <!-- backwards compatibility -->
 <a id="schemaloradevicemodel"></a>
@@ -3703,20 +3721,21 @@ None
   "description": "string",
   "isBuiltin": true,
   "supportLoRaFeatures": true,
+  "classType": "A",
   "useOTAA": true,
   "appEUI": "string",
   "sensorDecoder": "string",
   "downlink": true,
   "preferredWindow": 0,
-  "deduplication": "string",
+  "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 0,
-  "fCntDownStart": 0,
+  "fCntUpStart": 4294967295,
+  "fCntDownStart": 4294967295,
+  "fCntResetCounter": 4294967295,
   "supports32BitFCnt": true,
-  "fCntResetCounter": 0,
   "keepAliveTimeout": 0
 }
 
@@ -3732,21 +3751,32 @@ None
 |description|string¦null|false|none|The device model description.|
 |isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
 |supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
+|classType|string|false|none|The LoRa device class.|
 |useOTAA|boolean|false|none|The status of OTAA setting.|
 |appEUI|string¦null|false|none|The device OTAA Application eui.|
 |sensorDecoder|string¦null|false|none|The sensor decoder API Url.|
 |downlink|boolean¦null|false|none|Allows disabling the downstream (cloud to device) for a device.<br>By default downstream messages are enabled.|
-|preferredWindow|integer(int32)¦null|false|none|Allows setting the device preferred receive window (RX1 or RX2).<br>The default preferred receive window is 1.|
-|deduplication|string¦null|false|none|Allows controlling the handling of duplicate messages received by multiple gateways.<br>The default is None.|
+|preferredWindow|integer(int32)|false|none|Allows setting the device preferred receive window (RX1 or RX2).<br>The default preferred receive window is 1.|
+|deduplication|string|false|none|Allows controlling the handling of duplicate messages received by multiple gateways.<br>The default is None.|
 |rX1DROffset|integer(int32)¦null|false|none|Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.<br>Valid for OTAA devices.<br>If an invalid value is provided the network server will use default value 0.|
 |rX2DataRate|integer(int32)¦null|false|none|Allows setting a custom Datarate for second receive windows.<br>Valid for OTAA devices.<br>If an invalid value is provided the network server will use default value 0 (DR0).|
 |rxDelay|integer(int32)¦null|false|none|Allows setting a custom wait time between receiving and transmission as specified in the specification.|
 |abpRelaxMode|boolean¦null|false|none|Allows to disable the relax mode when using ABP.<br>By default relaxed mode is enabled.|
 |fCntUpStart|integer(int32)¦null|false|none|Allows to explicitly specify a frame counter up start value.<br>If the device joins, this value will be used to validate the first frame and initialize the server state for the device.|
 |fCntDownStart|integer(int32)¦null|false|none|Allows to explicitly specify a frame counter down start value.|
-|supports32BitFCnt|boolean¦null|false|none|Allow the usage of 32bit counters on your device.|
 |fCntResetCounter|integer(int32)¦null|false|none|Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.|
+|supports32BitFCnt|boolean¦null|false|none|Allow the usage of 32bit counters on your device.|
 |keepAliveTimeout|integer(int32)¦null|false|none|Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.<br>The default is none, which causes the connection to not be dropped.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|classType|A|
+|classType|C|
+|deduplication|None|
+|deduplication|Drop|
+|deduplication|Mark|
 
 <h2 id="tocS_PortalSettings">PortalSettings</h2>
 <!-- backwards compatibility -->
