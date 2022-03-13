@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Json;
+    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using AzureIoTHub.Portal.Shared.Models;
@@ -35,6 +36,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         private MockHttpMessageHandler mockHttpClient;
 
         private static string apiBaseUrl => $"/api/models";
+        private static string lorawanApiUrl => $"/api/lorawan/models";
 
         [SetUp]
         public void SetUp()
@@ -281,6 +283,41 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             this.mockHttpClient.VerifyNoOutstandingExpectation();
         }
+
+        [Test]
+        public void WhenLoraDeviceModelDetailsShouldCallLoRaAPIs()
+        {
+            // Arrange
+            _ = testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            var cut = RenderComponent<CreateDeviceModelPage>();
+            _ = cut.WaitForElement("#form");
+
+            cut.Find($"#{nameof(DeviceModel.Name)}").Change(Guid.NewGuid().ToString());
+            cut.Find($"#{nameof(DeviceModel.Description)}").Change(Guid.NewGuid().ToString());
+
+            cut.WaitForElement("#SupportLoRaFeatures")
+                .Change(true);
+
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{lorawanApiUrl}")
+                .RespondText(string.Empty);
+
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ lorawanApiUrl }/*/commands")
+                .RespondText(string.Empty);
+
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ lorawanApiUrl }/*/avatar")
+                .RespondText(string.Empty);
+
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            // Act
+            saveButton.Click();
+            cut.WaitForState(() => testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
+
+            // Assert
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
 
         public void Dispose()
         {
