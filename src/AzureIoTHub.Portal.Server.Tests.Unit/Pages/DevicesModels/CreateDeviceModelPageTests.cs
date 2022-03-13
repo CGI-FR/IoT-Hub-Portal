@@ -101,29 +101,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 })
                 .RespondText(string.Empty);
 
-            _ = this.mockHttpClient
-                .When(HttpMethod.Post, $"{apiBaseUrl}/properties")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
-
-                    Assert.IsAssignableFrom<List<DeviceProperty>>(jsonContent.Value);
-                    var properties = jsonContent.Value as IEnumerable<DeviceProperty>;
-
-                    Assert.AreEqual(expectedProperties.Length, properties.Count());
-
-                    foreach (var expectedProperty in expectedProperties)
-                    {
-                        var property = properties.Single(x => x.Name == expectedProperty.Name);
-
-                        Assert.AreEqual(expectedProperty.Name, property.Name);
-                        Assert.AreEqual(expectedProperty.DisplayName, property.DisplayName);
-                        Assert.AreEqual(expectedProperty.PropertyType, property.PropertyType);
-                    }
-
-                    return true;
-                })
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl }/*/properties")
                 .RespondText(string.Empty);
 
             var cut = RenderComponent<CreateDeviceModelPage>();
@@ -152,7 +130,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl}/properties")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl }/*/properties")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<JsonContent>(m.Content);
@@ -209,10 +187,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl}")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl }")
                 .RespondText(string.Empty);
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl}/properties")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ apiBaseUrl }/*/properties")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<JsonContent>(m.Content);
