@@ -53,18 +53,23 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the device list.
         /// </summary>
-        public virtual async Task<PaginationResult<TListItem>> GetItems(string continuationToken)
+        public virtual async Task<PaginationResult<TListItem>> GetItems(string continuationToken, int pageSize)
         {
-            var result = await this.devicesService.GetAllDevice(continuationToken, excludeDeviceType: "LoRa Concentrator");
+            var result = await this.devicesService.GetAllDevice(
+                continuationToken: continuationToken,
+                pageSize: pageSize,
+                excludeDeviceType: "LoRa Concentrator");
+
             var tagList = this.deviceTagService.GetAllSearchableTagsNames();
 
             return new PaginationResult<TListItem>
             {
-                Items = result.Items.Select(c => this.deviceTwinMapper.CreateDeviceListItem(c, tagList)),
+                Items = result.Items.Select(x => this.deviceTwinMapper.CreateDeviceListItem(x, tagList)),
                 TotalItems = result.TotalItems,
                 NextPage = !string.IsNullOrEmpty(result.NextPage) ? base.Url.ActionLink(nameof(GetItems), values: new
                 {
-                    continuationToken = result.NextPage
+                    continuationToken = result.NextPage,
+                    pageSize
                 }) : null
             };
         }

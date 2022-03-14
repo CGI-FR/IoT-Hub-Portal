@@ -3,23 +3,30 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
+    using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Shared;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Extensions.Logging;
     using Newtonsoft.Json.Linq;
 
     public class DeviceService : IDeviceService
     {
         private readonly RegistryManager registryManager;
         private readonly ServiceClient serviceClient;
+        private readonly ILogger<DeviceService> log;
+
 
         public DeviceService(
+            ILogger<DeviceService> log,
             RegistryManager registryManager,
             ServiceClient serviceClient)
         {
+            this.log = log;
             this.serviceClient = serviceClient;
             this.registryManager = registryManager;
         }
@@ -62,15 +69,13 @@ namespace AzureIoTHub.Portal.Server.Services
             var query = this.registryManager
                     .CreateQuery($"SELECT * FROM devices { filter }", pageSize);
 
+            var stopWatch = Stopwatch.StartNew();
+
             var count = await this.registryManager
                     .CreateQuery($"SELECT COUNT() as totalNumber FROM devices { filter }")
                     .GetNextAsJsonAsync();
 
-            var twins = await query
-                            .GetNextAsTwinAsync(new QueryOptions
-                            {
-                                ContinuationToken = continuationToken
-                            });
+            log.LogDebug($"Count obtained in {stopWatch.Elapsed}");
 
             if (!JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result))
             {
@@ -81,11 +86,21 @@ namespace AzureIoTHub.Portal.Server.Services
                 };
             }
 
+            stopWatch.Restart();
+
+            var response = await query
+                            .GetNextAsTwinAsync(new QueryOptions
+                            {
+                                ContinuationToken = continuationToken
+                            });
+
+            log.LogDebug($"Data obtained in {stopWatch.Elapsed}");
+
             return new PaginationResult<Twin>
             {
-                Items = twins,
+                Items = response,
                 TotalItems = result.Value<int>(),
-                NextPage = twins.ContinuationToken
+                NextPage = response.ContinuationToken
             };
         }
 
