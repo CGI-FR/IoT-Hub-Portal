@@ -3,7 +3,9 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
+    using AzureIoTHub.Portal.Server.Entities;
     using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
@@ -12,6 +14,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     [ApiController]
@@ -20,6 +23,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     [ApiExplorerSettings(GroupName = "IoT Devices")]
     public class DevicesController : DevicesControllerBase<DeviceListItem, DeviceDetails>
     {
+        /// <summary>
+        /// The table client factory.
+        /// </summary>
+        private readonly ITableClientFactory tableClientFactory;
+
+        /// <summary>
+        /// The devices service.
+        /// </summary>
+        private readonly IDeviceService devicesService;
+
         public DevicesController(
             ILogger<DevicesController> logger,
             IDeviceService devicesService,
@@ -29,7 +42,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             ITableClientFactory tableClientFactory)
             : base(logger, devicesService, deviceTagService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
         {
-
+            this.devicesService = devicesService;
+            this.tableClientFactory = tableClientFactory;
         }
 
         /// <summary>
@@ -95,6 +109,103 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public override Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
         {
             return base.GetCredentials(deviceID);
+        }
+
+        /// <summary>
+        /// Gets the device credentials.
+        /// </summary>
+        /// <param name="deviceID">The device identifier.</param>
+        /// <returns></returns>
+        [HttpGet("{deviceID}/properties", Name = "GET Device Properties")]
+        public async Task<ActionResult<IEnumerable<DevicePropertyValue>>> GetProperties(string deviceID)
+        {
+            var device = await this.devicesService.GetDeviceTwin(deviceID);
+
+            if (device == null)
+            {
+                return this.NotFound();
+            }
+
+            var modelId = DeviceHelper.RetrieveTagValue(device, nameof(DeviceDetails.ModelId));
+
+            if (string.IsNullOrEmpty(modelId))
+            {
+                return this.BadRequest("Device has no modelId tag value");
+            }
+
+            var items = this.tableClientFactory
+                            .GetDeviceTemplateProperties()
+                            .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{modelId}'");
+
+            var result = new List<DevicePropertyValue>();
+
+            await foreach (var item in items)
+            {
+                string value = null;
+
+                if (item.IsWritable && device.Properties.Desired.Contains(item.Name))
+                {
+                    value = device.Properties.Desired[item.Name].ToString();
+                }
+                else if (device.Properties.Reported.Contains(item.Name))
+                {
+                    value = device.Properties.Reported[item.Name].ToString();
+                }
+
+                result.Add(new DevicePropertyValue
+                {
+                    DisplayName = item.DisplayName,
+                    IsWritable = item.IsWritable,
+                    Name = item.Name,
+                    PropertyType = item.PropertyType,
+                    Value = value
+                });
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the device credentials.
+        /// </summary>
+        /// <param name="deviceID">The device identifier.</param>
+        /// <returns></returns>
+        [HttpPost("{deviceID}/properties", Name = "POST Device Properties")]
+        public async Task<ActionResult<IEnumerable<DevicePropertyValue>>> SetProperties(string deviceID, IEnumerable<DevicePropertyValue> values)
+        {
+            var device = await this.devicesService.GetDeviceTwin(deviceID);
+
+            if (device == null)
+            {
+                return this.NotFound();
+            }
+
+            var modelId = DeviceHelper.RetrieveTagValue(device, nameof(DeviceDetails.ModelId));
+
+            if (string.IsNullOrEmpty(modelId))
+            {
+                return this.BadRequest("Device has no modelId tag value");
+            }
+
+            var items = this.tableClientFactory
+                .GetDeviceTemplateProperties()
+                .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{modelId}'");
+
+            var result = new List<DevicePropertyValue>();
+
+            await foreach (var item in items)
+            {
+                if (!item.IsWritable)
+                {
+                    continue;
+                }
+
+                device.Properties.Desired[item.Name] = values.FirstOrDefault(x => x.Name == item.Name)?.Value;
+            }
+
+            _ = await this.devicesService.UpdateDeviceTwin(deviceID, device);
+
+            return this.Ok();
         }
     }
 }
