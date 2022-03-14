@@ -79,7 +79,7 @@ else
                                             <MudText>Properties</MudText>
                                         </MudItem>
                                         <MudItem xs="12">
-                                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() {  Order = Properties.Max(x => x.Order) + 1 }))" StartIcon="@Icons.Filled.Add" id="addPropertyButton">Add property</MudButton>
+                                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() {  Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Filled.Add" id="addPropertyButton">Add property</MudButton>
                                         </MudItem>
                                         <MudItem xs="12">
                                             @foreach (var item in this.Properties.OrderBy(x => x.Order))
