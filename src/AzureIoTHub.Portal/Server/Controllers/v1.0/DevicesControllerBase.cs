@@ -4,7 +4,6 @@
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Azure;
@@ -13,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10.Device;
     using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
@@ -53,12 +53,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the device list.
         /// </summary>
-        public virtual async Task<IEnumerable<TListItem>> GetItems()
+        public virtual async Task<PaginationResult<TListItem>> GetItems(string continuationToken)
         {
-            var items = await this.devicesService.GetAllDevice(excludeDeviceType: "LoRa Concentrator");
+            var result = await this.devicesService.GetAllDevice(continuationToken, excludeDeviceType: "LoRa Concentrator");
             var tagList = this.deviceTagService.GetAllSearchableTagsNames();
 
-            return items.Select(c => this.deviceTwinMapper.CreateDeviceListItem(c, tagList));
+            return new PaginationResult<TListItem>
+            {
+                Items = result.Items.Select(c => this.deviceTwinMapper.CreateDeviceListItem(c, tagList)),
+                TotalItems = result.TotalItems,
+                NextPage = !string.IsNullOrEmpty(result.NextPage) ? base.Url.ActionLink(nameof(GetItems), values: new
+                {
+                    continuationToken = result.NextPage
+                }) : null
+            };
         }
 
         /// <summary>

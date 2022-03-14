@@ -6,8 +6,10 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
+    using Newtonsoft.Json.Linq;
 
     public class DeviceService : IDeviceService
     {
@@ -43,29 +45,48 @@ namespace AzureIoTHub.Portal.Server.Services
         /// this function return a list of all device exept edge device.
         /// </summary>
         /// <returns>IEnumerable twin.</returns>
-        public async Task<IEnumerable<Twin>> GetAllDevice(string filterDeviceType = null, string excludeDeviceType = null)
+        public async Task<PaginationResult<Twin>> GetAllDevice(string continuationToken = null, string filterDeviceType = null, string excludeDeviceType = null, int pageSize = 2)
         {
-            var queryString = "SELECT * FROM devices WHERE devices.capabilities.iotEdge = false";
+            var filter = "WHERE devices.capabilities.iotEdge = false";
 
             if (!string.IsNullOrWhiteSpace(filterDeviceType))
             {
-                queryString += $" AND devices.tags.deviceType = '{ filterDeviceType }'";
+                filter += $" AND devices.tags.deviceType = '{ filterDeviceType }'";
             }
 
             if (!string.IsNullOrWhiteSpace(excludeDeviceType))
             {
-                queryString += $" AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != '{ excludeDeviceType }')";
+                filter += $" AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != '{ excludeDeviceType }')";
             }
 
             var query = this.registryManager
-                    .CreateQuery(queryString);
+                    .CreateQuery($"SELECT * FROM devices { filter }", pageSize);
 
-            while (query.HasMoreResults)
+            var count = await this.registryManager
+                    .CreateQuery($"SELECT COUNT() as totalNumber FROM devices { filter }")
+                    .GetNextAsJsonAsync();
+
+            var twins = await query
+                            .GetNextAsTwinAsync(new QueryOptions
+                            {
+                                ContinuationToken = continuationToken
+                            });
+
+            if (!JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result))
             {
-                return await query.GetNextAsTwinAsync();
+                return new PaginationResult<Twin>
+                {
+                    Items = Enumerable.Empty<Twin>(),
+                    TotalItems = result.Value<int>()
+                };
             }
 
-            return Enumerable.Empty<Twin>();
+            return new PaginationResult<Twin>
+            {
+                Items = twins,
+                TotalItems = result.Value<int>(),
+                NextPage = twins.ContinuationToken
+            };
         }
 
         /// <summary>

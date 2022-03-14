@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
@@ -76,9 +76,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
             // Gets all the twins from this devices
             var items = await this.devicesService.GetAllDevice(filterDeviceType: "LoRa Concentrator");
 
-            if (items.Any())
+            if (items.Items.Any())
             {
-                var result = items.Select(this.concentratorTwinMapper.CreateDeviceDetails);
+                var result = items.Items.Select(this.concentratorTwinMapper.CreateDeviceDetails);
 
                 return this.Ok(result);
             }

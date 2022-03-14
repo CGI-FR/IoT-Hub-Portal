@@ -3,20 +3,20 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
+    using System.Linq;
+    using System.Threading.Tasks;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10.Device;
     using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     [ApiController]
     [ApiVersion("1.0")]
@@ -54,9 +54,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GET LoRaWAN device list")]
-        public override Task<IEnumerable<DeviceListItem>> GetItems()
+        public override Task<PaginationResult<DeviceListItem>> GetItems(string continuationToken)
         {
-            return base.GetItems();
+            return base.GetItems(continuationToken);
         }
 
         /// <summary>
