@@ -107,42 +107,38 @@
                                                 break;
                                             case DevicePropertyType.Double:
                                                 <MudItem xs="12" md="4">
-                                                    <MudTextField
-                                                        @bind-Value="item.Value"
-                                                        Label="@item.DisplayName"
-                                                        Variant="Variant.Outlined"
-                                                        Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out var result))
-                                                        Clearable="true" />
+                                                    <MudTextField @bind-Value="item.Value"
+                                                  Label="@item.DisplayName"
+                                                  Variant="Variant.Outlined"
+                                                  Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out var result))
+                                                  Clearable="true" />
                                                 </MudItem>
                                                 break;
                                             case DevicePropertyType.Float:
                                                 <MudItem xs="12" md="4">
-                                                    <MudTextField
-                                                        @bind-Value="item.Value"
-                                                        Label="@item.DisplayName"
-                                                        Variant="Variant.Outlined"
-                                                        Validation=@((string c) =>  string.IsNullOrEmpty(c) || float.TryParse(c, out var result))
-                                                        Clearable="true" />
+                                                    <MudTextField @bind-Value="item.Value"
+                                                  Label="@item.DisplayName"
+                                                  Variant="Variant.Outlined"
+                                                  Validation=@((string c) => string.IsNullOrEmpty(c) || float.TryParse(c, out var result))
+                                                  Clearable="true" />
                                                 </MudItem>
                                                 break;
                                             case DevicePropertyType.Integer:
                                                 <MudItem xs="12" md="4">
-                                                    <MudTextField
-                                                        @bind-Value="item.Value"
-                                                        Label="@item.DisplayName"
-                                                        Variant="Variant.Outlined"
-                                                        Validation=@((string c) =>  string.IsNullOrEmpty(c) || int.TryParse(c, out var result))
-                                                        Clearable="true" />
+                                                    <MudTextField @bind-Value="item.Value"
+                                                  Label="@item.DisplayName"
+                                                  Variant="Variant.Outlined"
+                                                  Validation=@((string c) => string.IsNullOrEmpty(c) || int.TryParse(c, out var result))
+                                                  Clearable="true" />
                                                 </MudItem>
                                                 break;
                                             case DevicePropertyType.Long:
                                                 <MudItem xs="12" md="4">
-                                                    <MudTextField
-                                                        @bind-Value="item.Value"
-                                                        Label="@item.DisplayName"
-                                                        Variant="Variant.Outlined"
-                                                        Validation=@((string c) =>  string.IsNullOrEmpty(c) || long.TryParse(c, out var result))
-                                                        Clearable="true" />
+                                                    <MudTextField @bind-Value="item.Value"
+                                                  Label="@item.DisplayName"
+                                                  Variant="Variant.Outlined"
+                                                  Validation=@((string c) => string.IsNullOrEmpty(c) || long.TryParse(c, out var result))
+                                                  Clearable="true" />
                                                 </MudItem>
                                                 break;
                                             case DevicePropertyType.String:
@@ -214,10 +210,10 @@
         else
         {
             Device = await Http.GetFromJsonAsync<DeviceDetails>($"{ApiUrlBase}/{DeviceID}");
+            Properties = await Http.GetFromJsonAsync<List<DevicePropertyValue>>($"{ApiUrlBase}/{DeviceID}/properties");
         }
 
         TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
-        Properties = await Http.GetFromJsonAsync<List<DevicePropertyValue>>($"{ApiUrlBase}/{DeviceID}/properties");
 
         isLoaded = true;
     }
