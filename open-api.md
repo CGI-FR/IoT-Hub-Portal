@@ -301,6 +301,168 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
+## GET Device Properties
+
+<a id="opIdGET Device Properties"></a>
+
+> Code samples
+
+`GET /api/devices/{deviceID}/properties`
+
+*Gets the device credentials.*
+
+<h3 id="get-device-properties-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceID|path|string|true|The device identifier.|
+
+> Example responses
+
+> 200 Response
+
+```
+[{"name":"string","displayName":"string","isWritable":true,"order":0,"propertyType":"Boolean","value":"string"}]
+```
+
+```json
+[
+  {
+    "name": "string",
+    "displayName": "string",
+    "isWritable": true,
+    "order": 0,
+    "propertyType": "Boolean",
+    "value": "string"
+  }
+]
+```
+
+<h3 id="get-device-properties-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+
+<h3 id="get-device-properties-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[DevicePropertyValue](#schemadevicepropertyvalue)]|false|none|none|
+|» name|string|true|none|The property name|
+|» displayName|string|true|none|The property display name|
+|» isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
+|» order|integer(int32)|true|none|The property display order.|
+|» propertyType|string|true|none|The device property type|
+|» value|string¦null|false|none|The current property value.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|propertyType|Boolean|
+|propertyType|Double|
+|propertyType|Float|
+|propertyType|Integer|
+|propertyType|Long|
+|propertyType|String|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## POST Device Properties
+
+<a id="opIdPOST Device Properties"></a>
+
+> Code samples
+
+`POST /api/devices/{deviceID}/properties`
+
+*Gets the device credentials.*
+
+> Body parameter
+
+```json
+[
+  {
+    "name": "string",
+    "displayName": "string",
+    "isWritable": true,
+    "order": 0,
+    "propertyType": "Boolean",
+    "value": "string"
+  }
+]
+```
+
+<h3 id="post-device-properties-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceID|path|string|true|The device identifier.|
+|body|body|[DevicePropertyValue](#schemadevicepropertyvalue)|false|none|
+
+> Example responses
+
+> 200 Response
+
+```
+[{"name":"string","displayName":"string","isWritable":true,"order":0,"propertyType":"Boolean","value":"string"}]
+```
+
+```json
+[
+  {
+    "name": "string",
+    "displayName": "string",
+    "isWritable": true,
+    "order": 0,
+    "propertyType": "Boolean",
+    "value": "string"
+  }
+]
+```
+
+<h3 id="post-device-properties-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+
+<h3 id="post-device-properties-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[DevicePropertyValue](#schemadevicepropertyvalue)]|false|none|none|
+|» name|string|true|none|The property name|
+|» displayName|string|true|none|The property display name|
+|» isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
+|» order|integer(int32)|true|none|The property display order.|
+|» propertyType|string|true|none|The device property type|
+|» value|string¦null|false|none|The current property value.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|propertyType|Boolean|
+|propertyType|Double|
+|propertyType|Float|
+|propertyType|Integer|
+|propertyType|Long|
+|propertyType|String|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
 <h1 id="azure-iot-hub-portal-api-iot-edge">IoT Edge</h1>
 
 ## GET IoT Edge config list
@@ -2666,7 +2828,7 @@ None
 > 200 Response
 
 ```
-[{"name":"string","displayName":"string","isWritable":true,"propertyType":"Boolean"}]
+[{"name":"string","displayName":"string","isWritable":true,"order":0,"propertyType":"Boolean"}]
 ```
 
 ```json
@@ -2675,6 +2837,7 @@ None
     "name": "string",
     "displayName": "string",
     "isWritable": true,
+    "order": 0,
     "propertyType": "Boolean"
   }
 ]
@@ -2697,6 +2860,7 @@ Status Code **200**
 |» name|string|true|none|The property name|
 |» displayName|string|true|none|The property display name|
 |» isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
+|» order|integer(int32)|true|none|The property display order.|
 |» propertyType|string|true|none|The device property type|
 
 #### Enumerated Values
@@ -2733,6 +2897,7 @@ None
     "name": "string",
     "displayName": "string",
     "isWritable": true,
+    "order": 0,
     "propertyType": "Boolean"
   }
 ]
@@ -3273,6 +3438,7 @@ None
   "name": "string",
   "displayName": "string",
   "isWritable": true,
+  "order": 0,
   "propertyType": "Boolean"
 }
 
@@ -3285,7 +3451,49 @@ None
 |name|string|true|none|The property name|
 |displayName|string|true|none|The property display name|
 |isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
+|order|integer(int32)|true|none|The property display order.|
 |propertyType|string|true|none|The device property type|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|propertyType|Boolean|
+|propertyType|Double|
+|propertyType|Float|
+|propertyType|Integer|
+|propertyType|Long|
+|propertyType|String|
+
+<h2 id="tocS_DevicePropertyValue">DevicePropertyValue</h2>
+<!-- backwards compatibility -->
+<a id="schemadevicepropertyvalue"></a>
+<a id="schema_DevicePropertyValue"></a>
+<a id="tocSdevicepropertyvalue"></a>
+<a id="tocsdevicepropertyvalue"></a>
+
+```json
+{
+  "name": "string",
+  "displayName": "string",
+  "isWritable": true,
+  "order": 0,
+  "propertyType": "Boolean",
+  "value": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|The property name|
+|displayName|string|true|none|The property display name|
+|isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
+|order|integer(int32)|true|none|The property display order.|
+|propertyType|string|true|none|The device property type|
+|value|string¦null|false|none|The current property value.|
 
 #### Enumerated Values
 
