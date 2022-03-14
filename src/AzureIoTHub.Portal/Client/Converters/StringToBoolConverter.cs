@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Client.Converters
 {
-    using System;
     using MudBlazor;
 
     public class StringToBoolConverter : BoolConverter<string>
@@ -14,27 +13,16 @@ namespace AzureIoTHub.Portal.Client.Converters
             GetFunc = OnGet;
         }
 
-        public const string TrueString = "true";
-        public const string FalseString = "false";
-        public const string NullString = null;
-
-        private string OnGet(bool? value) => value == null ? NullString : (value == true ? TrueString : FalseString);
+        private string OnGet(bool? value) => value?.ToString()?.ToLowerInvariant();
 
         private bool? OnSet(string arg)
         {
-            try
+            if (!bool.TryParse(arg, out var value))
             {
-                if (arg == TrueString)
-                    return true;
-                if (arg == FalseString)
-                    return false;
                 return null;
             }
-            catch (FormatException e)
-            {
-                UpdateSetError("Conversion error: " + e.Message);
-                return null;
-            }
+
+            return value;
         }
     }
 }
