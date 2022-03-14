@@ -28,6 +28,12 @@ namespace AzureIoTHub.Portal.Shared.Models.v10
         public bool IsWritable { get; set; }
 
         /// <summary>
+        /// The property display order.
+        /// </summary>
+        [Required(ErrorMessage = "The property should indicate whether it's writable or not.")]
+        public int Order { get; set; }
+
+        /// <summary>
         /// The device property type
         /// </summary>
         [Required(ErrorMessage = "The property should define the expected type.")]

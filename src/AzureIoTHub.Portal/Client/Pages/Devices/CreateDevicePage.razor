@@ -1,6 +1,8 @@
 ﻿@page "/devices/new"
 @using AzureIoTHub.Portal.Client.Pages.Devices.LoRaWAN
 @using AzureIoTHub.Portal.Client.Validators
+@using AzureIoTHub.Portal.Shared.Models
+@using AzureIoTHub.Portal.Shared.Models.v10
 @using AzureIoTHub.Portal.Shared.Models.v10.Device
 @using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel
 @using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice
@@ -43,15 +45,18 @@
                             <MudGrid>
                                 <MudItem xs="12" md="6">
                                     <MudAutocomplete T="DeviceModel"
-                                                     @bind-Value="Model"
-                                                     Label="Model*"
-                                                     Dense="true" Variant="Variant.Outlined"
+                                                     ValueChanged=@ChangeModel
                                                      SearchFunc="@Search"
+                                                     Label="Model*"
+                                                     Dense=true
+                                                     For=@(() => DeviceModel)
+                                                     Variant="Variant.Outlined"
                                                      ToStringFunc="@(x => x.Name)"
-                                                     For="@(()=> Model)"
-                                                     ResetValueOnEmptyText="true"
-                                                     Immediate="true" Clearable="true"
-                                                     CoerceText="true" CoerceValue="false" />
+                                                     ResetValueOnEmptyText=true
+                                                     Immediate=true
+                                                     Clearable=true
+                                                     CoerceText=true
+                                                     CoerceValue=false />
                                     @if (Device.ModelId == null && displayValidationErrorMessages)
                                     {
                                         <p class="validation-error-message">The Model is required.</p>
@@ -72,16 +77,6 @@
                                                   For="@(()=> Device.DeviceName)"
                                                   Required="true" />
                                 </MudItem>
-
-                                @foreach (DeviceTag tag in TagList)
-                                {
-                                    <MudItem xs="12" md="6">
-                                        <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
-                                                  Required="@tag.Required"
-                                                  Variant="Variant.Outlined" />
-                                    </MudItem>
-                                }
-
                                 <MudItem xs="12">
                                     <MudText>
                                         <b>Status</b>
@@ -96,6 +91,76 @@
                                         <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
                                     }
                                 </MudItem>
+
+                                <MudItem xs="12">
+                                    <MudText Typo="Typo.h6" Class="mb-4">Tags</MudText>
+                                </MudItem>
+                                @foreach (DeviceTag tag in TagList)
+                                {
+                                    <MudItem xs="12" md="6">
+                                        <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
+                                                  Required="@tag.Required"
+                                                  Variant="Variant.Outlined" />
+                                    </MudItem>
+                                }
+                                @if (!IsLoRa)
+                                {
+                                    <MudItem xs="12">
+                                        <MudText Typo="Typo.h6" Class="mb-4">Properties</MudText>
+                                    </MudItem>
+                                    @foreach (var item in Properties.OrderBy(c => c.Order))
+                                    {
+                                        switch (item.PropertyType)
+                                        {
+                                            case DevicePropertyType.Boolean:
+                                                <MudItem xs="12" md="4">
+                                                    <MudCheckBox @bind-Checked="item.Value" Label="@item.DisplayName" Color="@Color.Primary" Converter="@(new StringToBoolConverter())" TriState="true" />
+                                                </MudItem>
+                                                break;
+                                            case DevicePropertyType.Double:
+                                                <MudItem xs="12" md="4">
+                                                    <MudTextField @bind-Value="item.Value"
+                                                  Label="@item.DisplayName"
+                                                  Variant="Variant.Outlined"
+                                                  Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out var result))
+                                                  Clearable="true" />
+                                                </MudItem>
+                                                break;
+                                            case DevicePropertyType.Float:
+                                                <MudItem xs="12" md="4">
+                                                    <MudTextField @bind-Value="item.Value"
+                                                  Label="@item.DisplayName"
+                                                  Variant="Variant.Outlined"
+                                                  Validation=@((string c) => string.IsNullOrEmpty(c) || float.TryParse(c, out var result))
+                                                  Clearable="true" />
+                                                </MudItem>
+                                                break;
+                                            case DevicePropertyType.Integer:
+                                                <MudItem xs="12" md="4">
+                                                    <MudTextField @bind-Value="item.Value"
+                                                  Label="@item.DisplayName"
+                                                  Variant="Variant.Outlined"
+                                                  Validation=@((string c) => string.IsNullOrEmpty(c) || int.TryParse(c, out var result))
+                                                  Clearable="true" />
+                                                </MudItem>
+                                                break;
+                                            case DevicePropertyType.Long:
+                                                <MudItem xs="12" md="4">
+                                                    <MudTextField @bind-Value="item.Value"
+                                                  Label="@item.DisplayName"
+                                                  Variant="Variant.Outlined"
+                                                  Validation=@((string c) => string.IsNullOrEmpty(c) || long.TryParse(c, out var result))
+                                                  Clearable="true" />
+                                                </MudItem>
+                                                break;
+                                            case DevicePropertyType.String:
+                                                <MudItem xs="12" md="12">
+                                                    <MudTextField @bind-Value="item.Value" Label="@item.DisplayName" Format="F1" Variant="Variant.Outlined" Clearable="true" />
+                                                </MudItem>
+                                                break;
+                                        }
+                                    }
+                                }
                             </MudGrid>
                         </MudCardContent>
                         <MudCardActions Class="pb-4 pl-4">
@@ -122,20 +187,10 @@
     private string ApiUrlBase => this.IsLoRa ? "/api/lorawan/devices" : "api/devices";
     private DeviceDetailsValidator standardValidator = new DeviceDetailsValidator();
     private LoRaDeviceDetailsValidator loraValidator = new LoRaDeviceDetailsValidator();
-    private DeviceModel Model
-    {
-        get
-        {
-            return DeviceModelList.SingleOrDefault(x => x.ModelId == Device.ModelId);
-        }
-        set
-        {
-            ChangeModel(value);
-        }
-    }
     private LoRaDeviceModel loRaDeviceModel { get; set; }
 
-    private bool IsLoRa => this.Model?.SupportLoRaFeatures ?? false;
+
+    private bool IsLoRa => DeviceModelList.SingleOrDefault(c => c.ModelId == Device.ModelId)?.SupportLoRaFeatures ?? false;
 
     [Parameter]
     public string DeviceID { get; set; }
@@ -143,9 +198,9 @@
     private DeviceDetails Device { get; set; } = new DeviceDetails();
 
     private IEnumerable<DeviceModel> DeviceModelList { get; set; } = new List<DeviceModel>();
-
+    private DeviceModel DeviceModel;
     private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
-    private Dictionary<string, string> TagDict { get; set; } = new Dictionary<string, string>();
+    private List<DevicePropertyValue> Properties = new List<DevicePropertyValue>();
 
     private bool displayValidationErrorMessages = false;
 
@@ -159,11 +214,11 @@
 
         // Gets the custom tags that can be set when creating a device
         TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
+
         foreach (DeviceTag tag in TagList)
         {
-            TagDict.Add(tag.Name, "");
+            Device.Tags.Add(tag.Name, "");
         }
-        Device.Tags = TagDict;
     }
 
     /// <summary>
@@ -183,13 +238,6 @@
             // Allows to display ValidationError messages for the MudAutocomplete field.
             displayValidationErrorMessages = true;
 
-            //if (IsLoRa)
-            //{
-            //    var loraValidation = this.loraValidator.Validate(this.Device as LoRaDeviceDetails);
-
-            //    loraValidation.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
-            //}
-
             return;
         }
 
@@ -199,6 +247,10 @@
             result = await Http.PostAsJsonAsync(ApiUrlBase, Device as LoRaDeviceDetails);
         else
             result = await Http.PostAsJsonAsync(ApiUrlBase, Device);
+
+        result.EnsureSuccessStatusCode();
+
+        await Http.PostAsJsonAsync($"{ApiUrlBase}/{DeviceID}/properties", Properties);
 
         result.EnsureSuccessStatusCode();
 
@@ -241,20 +293,39 @@
                     .Where(x => x.Name.StartsWith(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    private void ChangeModel(DeviceModel model)
+    private async Task ChangeModel(DeviceModel model)
     {
+        Properties.Clear();
+
+        Device = new DeviceDetails
+            {
+                DeviceID = Device.DeviceID,
+                ModelId = model?.ModelId,
+                ImageUrl = model?.ImageUrl,
+                DeviceName = Device.DeviceName,
+                IsEnabled = Device.IsEnabled,
+                Tags = Device.Tags
+            };
+
+        if (model == null)
+        {
+            return;
+        }
+
         if (model?.SupportLoRaFeatures ?? false)
         {
             var device = new LoRaDeviceDetails
                 {
                     DeviceID = Device.DeviceID,
+                    ModelId = model.ModelId,
                     DeviceName = Device.DeviceName,
-                    IsEnabled = Device.IsEnabled
+                    IsEnabled = Device.IsEnabled,
+                    Tags = Device.Tags
                 };
 
             Device = device;
 
-            Http.GetFromJsonAsync<LoRaDeviceModel>($"api/lorawan/models/{model.ModelId}")
+            await Http.GetFromJsonAsync<LoRaDeviceModel>($"api/lorawan/models/{model.ModelId}")
                 .ContinueWith(c =>
                 {
                     device.AppEUI = c.Result.AppEUI;
@@ -264,17 +335,19 @@
         }
         else
         {
-            Device = new DeviceDetails
-                {
-                    DeviceID = Device.DeviceID,
-                    DeviceName = Device.DeviceName,
-                    IsEnabled = Device.IsEnabled
-                };
+            await Http.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"api/models/{model.ModelId}/properties")
+            .ContinueWith(c =>
+            {
+                Properties.AddRange(c.Result.Select(x => new DevicePropertyValue
+                    {
+                        DisplayName = x.DisplayName,
+                        IsWritable = x.IsWritable,
+                        Name = x.Name,
+                        Order = x.Order,
+                        PropertyType = x.PropertyType
+                    }));
+            });
         }
-
-        Device.ModelId = model?.ModelId;
-        Device.ImageUrl = model?.ImageUrl;
-        Device.Tags = TagDict;
     }
 }
 

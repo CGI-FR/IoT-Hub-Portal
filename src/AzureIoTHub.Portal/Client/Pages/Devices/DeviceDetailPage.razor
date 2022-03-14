@@ -1,6 +1,7 @@
 ﻿@page "/devices/{DeviceID}"
 @using AzureIoTHub.Portal.Client.Pages.Devices.LoRaWAN
 @using AzureIoTHub.Portal.Client.Validators
+@using AzureIoTHub.Portal.Shared.Models
 @using AzureIoTHub.Portal.Shared.Models.v10.Device
 @using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel
 @using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice
@@ -57,23 +58,13 @@
                                                   ReadOnly="true"
                                                   HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
                                 </MudItem>
-                                <MudItem xs="12">
+                                <MudItem xs="12" md="6">
                                     <MudTextField @bind-Value="@Device.DeviceName"
                                                   Label="Device name"
                                                   Variant="Variant.Outlined"
                                                   For="@(()=> Device.DeviceName)"
                                                   Required="true" />
                                 </MudItem>
-
-                                @foreach (DeviceTag tag in TagList)
-                                {
-                                    <MudItem xs="12" md="6">
-                                        <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
-                                                  Required="@tag.Required"
-                                                  Variant="Variant.Outlined" />
-                                    </MudItem>
-                                }
-
                                 <MudItem xs="12">
                                     <MudText>
                                         <b>Status</b>
@@ -88,6 +79,81 @@
                                         <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
                                     }
                                 </MudItem>
+                                <MudItem xs="12">
+                                    <MudText Typo="Typo.h6" Class="mb-4">Tags</MudText>
+                                </MudItem>
+                                @foreach (DeviceTag tag in TagList)
+                                {
+                                    <MudItem xs="12" md="6">
+                                        <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
+                                                  Required="@tag.Required"
+                                                  Variant="Variant.Outlined" />
+                                    </MudItem>
+                                }
+
+                                @if (!IsLoRa)
+                                {
+                                    <MudItem xs="12">
+                                        <MudText Typo="Typo.h6" Class="mb-4">Properties</MudText>
+                                    </MudItem>
+                                    @foreach (var item in Properties.OrderBy(c => c.Order))
+                                    {
+                                        switch (item.PropertyType)
+                                        {
+                                            case DevicePropertyType.Boolean:
+                                                <MudItem xs="12" md="4">
+                                                    <MudCheckBox @bind-Checked="item.Value" Label="@item.DisplayName" Color="@Color.Primary" Converter="@(new StringToBoolConverter())" TriState="true" />
+                                                </MudItem>
+                                                break;
+                                            case DevicePropertyType.Double:
+                                                <MudItem xs="12" md="4">
+                                                    <MudTextField
+                                                        @bind-Value="item.Value"
+                                                        Label="@item.DisplayName"
+                                                        Variant="Variant.Outlined"
+                                                        Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out var result))
+                                                        Clearable="true" />
+                                                </MudItem>
+                                                break;
+                                            case DevicePropertyType.Float:
+                                                <MudItem xs="12" md="4">
+                                                    <MudTextField
+                                                        @bind-Value="item.Value"
+                                                        Label="@item.DisplayName"
+                                                        Variant="Variant.Outlined"
+                                                        Validation=@((string c) =>  string.IsNullOrEmpty(c) || float.TryParse(c, out var result))
+                                                        Clearable="true" />
+                                                </MudItem>
+                                                break;
+                                            case DevicePropertyType.Integer:
+                                                <MudItem xs="12" md="4">
+                                                    <MudTextField
+                                                        @bind-Value="item.Value"
+                                                        Label="@item.DisplayName"
+                                                        Variant="Variant.Outlined"
+                                                        Validation=@((string c) =>  string.IsNullOrEmpty(c) || int.TryParse(c, out var result))
+                                                        Clearable="true" />
+                                                </MudItem>
+                                                break;
+                                            case DevicePropertyType.Long:
+                                                <MudItem xs="12" md="4">
+                                                    <MudTextField
+                                                        @bind-Value="item.Value"
+                                                        Label="@item.DisplayName"
+                                                        Variant="Variant.Outlined"
+                                                        Validation=@((string c) =>  string.IsNullOrEmpty(c) || long.TryParse(c, out var result))
+                                                        Clearable="true" />
+                                                </MudItem>
+                                                break;
+                                            case DevicePropertyType.String:
+                                                <MudItem xs="12" md="12">
+                                                    <MudTextField @bind-Value="item.Value" Label="@item.DisplayName" Format="F1" Variant="Variant.Outlined" Clearable="true" />
+                                                </MudItem>
+                                                break;
+                                        }
+
+                                    }
+                                }
                             </MudGrid>
                         </MudCardContent>
                         <MudCardActions Class="pb-4 pl-4">
@@ -130,11 +196,13 @@
 
     private bool isLoaded = false;
 
-    private IEnumerable<DeviceModel> DeviceModelList { get; set; } = new List<DeviceModel>();
+    private IEnumerable<DeviceModel> DeviceModelList { get; set; } = Array.Empty<DeviceModel>();
 
     private IEnumerable<DeviceModelCommand> Commands { get; set; }
 
-    private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
+    private IEnumerable<DeviceTag> TagList { get; set; } = Array.Empty<DeviceTag>();
+
+    private IEnumerable<DevicePropertyValue> Properties = Array.Empty<DevicePropertyValue>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -149,6 +217,8 @@
         }
 
         TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
+        Properties = await Http.GetFromJsonAsync<List<DevicePropertyValue>>($"{ApiUrlBase}/{DeviceID}/properties");
+
         isLoaded = true;
     }
 
@@ -186,6 +256,10 @@
 
         result.EnsureSuccessStatusCode();
 
+        await Http.PostAsJsonAsync($"{ApiUrlBase}/{DeviceID}/properties", Properties);
+
+        result.EnsureSuccessStatusCode();
+
         // Prompts a snack bar to inform the action was successful
         Snackbar.Add($"Device {Device.DeviceID} has been successfully updated!", Severity.Success);
 
@@ -219,7 +293,7 @@
         DialogService.Show<ConnectionStringDialog>("Device Credentials", parameters);
     }
 
-        private bool CheckTags()
+    private bool CheckTags()
     {
         bool tagValidationError = false;
 

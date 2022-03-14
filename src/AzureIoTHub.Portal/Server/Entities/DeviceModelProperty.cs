@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Entities
@@ -23,6 +23,11 @@ namespace AzureIoTHub.Portal.Server.Entities
         /// >       otherwise, the property is read from the reported properties.
         /// </summary>
         public bool IsWritable { get; set; }
+
+        /// <summary>
+        /// The property display order.
+        /// </summary>
+        public int Order { get; set; }
 
         /// <summary>
         /// The device property type

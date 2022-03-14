@@ -8,7 +8,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Json;
-    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using AzureIoTHub.Portal.Shared.Models;
