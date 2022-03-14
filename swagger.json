@@ -217,6 +217,134 @@
         }
       }
     },
+    "/api/devices/{deviceID}/properties": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "summary": "Gets the device credentials.",
+        "operationId": "GET Device Properties",
+        "parameters": [
+          {
+            "name": "deviceID",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevicePropertyValue"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevicePropertyValue"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevicePropertyValue"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "summary": "Gets the device credentials.",
+        "operationId": "POST Device Properties",
+        "parameters": [
+          {
+            "name": "deviceID",
+            "in": "path",
+            "description": "The device identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DevicePropertyValue"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DevicePropertyValue"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DevicePropertyValue"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevicePropertyValue"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevicePropertyValue"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevicePropertyValue"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/edge/configurations": {
       "get": {
         "tags": [
@@ -2730,6 +2858,7 @@
           "displayName",
           "isWritable",
           "name",
+          "order",
           "propertyType"
         ],
         "type": "object",
@@ -2746,6 +2875,11 @@
             "type": "boolean",
             "description": "Indicates whether the property is writable from the portal\r\n> Note: if writable, the property is set to the desired properties of the device twin\r\n>       otherwise, the property is read from the reported properties."
           },
+          "order": {
+            "type": "integer",
+            "description": "The property display order.",
+            "format": "int32"
+          },
           "propertyType": {
             "enum": [
               "Boolean",
@@ -2757,6 +2891,53 @@
             ],
             "type": "string",
             "description": "The device property type"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DevicePropertyValue": {
+        "required": [
+          "displayName",
+          "isWritable",
+          "name",
+          "order",
+          "propertyType"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The property name"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "The property display name"
+          },
+          "isWritable": {
+            "type": "boolean",
+            "description": "Indicates whether the property is writable from the portal\r\n> Note: if writable, the property is set to the desired properties of the device twin\r\n>       otherwise, the property is read from the reported properties."
+          },
+          "order": {
+            "type": "integer",
+            "description": "The property display order.",
+            "format": "int32"
+          },
+          "propertyType": {
+            "enum": [
+              "Boolean",
+              "Double",
+              "Float",
+              "Integer",
+              "Long",
+              "String"
+            ],
+            "type": "string",
+            "description": "The device property type"
+          },
+          "value": {
+            "type": "string",
+            "description": "The current property value.",
+            "nullable": true
           }
         },
         "additionalProperties": false
