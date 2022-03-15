@@ -35,13 +35,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         private readonly IDeviceService devicesService;
 
         public DevicesController(
+            IUrlHelper urlHelper,
             ILogger<DevicesController> logger,
             IDeviceService devicesService,
             IDeviceTagService deviceTagService,
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper,
             ITableClientFactory tableClientFactory)
-            : base(logger, devicesService, deviceTagService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
+            : base(urlHelper, logger, devicesService, deviceTagService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
         {
             this.devicesService = devicesService;
             this.tableClientFactory = tableClientFactory;
@@ -55,11 +56,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public override Task<PaginationResult<DeviceListItem>> GetItems(
             string continuationToken = null,
             string searchText = null,
-            bool? status = null,
-            bool? state = null,
+            bool? searchStatus = null,
+            bool? searchState = null,
             int pageSize = 10)
         {
-            return base.GetItems(continuationToken, searchText, status, state, pageSize);
+            return base.GetItems(continuationToken, searchText, searchStatus, searchState, pageSize);
         }
 
         /// <summary>

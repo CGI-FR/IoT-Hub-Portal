@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
@@ -61,13 +61,22 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             twinCollection["deviceType"] = "LoRa Concentrator";
 
             _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
+                    It.IsAny<string>(),
                     It.Is<string>(x => x == "LoRa Concentrator"),
-                    It.Is<string>(x => string.IsNullOrEmpty(x))))
-                .ReturnsAsync(Enumerable.Range(0, 100).Select(x => new Twin
+                    It.Is<string>(x => string.IsNullOrEmpty(x)),
+                    It.IsAny<string>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<int>()))
+                .ReturnsAsync(new Shared.PaginationResult<Twin>
                 {
-                    DeviceId = FormattableString.Invariant($"{x}"),
-                    Tags = twinCollection
-                }));
+                    Items = Enumerable.Range(0, 100).Select(x => new Twin
+                    {
+                        DeviceId = FormattableString.Invariant($"{x}"),
+                        Tags = twinCollection
+                    })
+                });
 
             _ = this.mockConcentratorTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>()))
                 .Returns<Twin>(x => new Concentrator
@@ -101,12 +110,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             var concentratorsController = CreateLoRaWANConcentratorsController();
 
             _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
+                    It.IsAny<string>(),
                     It.Is<string>(x => x == "LoRa Concentrator"),
-                    It.Is<string>(x => string.IsNullOrEmpty(x))))
-                .ReturnsAsync(Enumerable.Range(0, 0).Select(x => new Twin
+                    It.Is<string>(x => string.IsNullOrEmpty(x)),
+                    It.IsAny<string>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<int>()))
+                .ReturnsAsync(new Shared.PaginationResult<Twin>
                 {
-                    DeviceId = FormattableString.Invariant($"{x}")
-                }));
+                    Items = Enumerable.Range(0, 0).Select(x => new Twin(FormattableString.Invariant($"{x}")))
+                });
 
             // Act
             var response = await concentratorsController.GetAllDeviceConcentrator().ConfigureAwait(false);

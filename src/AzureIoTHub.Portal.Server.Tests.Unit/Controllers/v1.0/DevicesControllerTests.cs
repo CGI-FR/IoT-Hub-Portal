@@ -21,6 +21,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using AzureIoTHub.Portal.Shared.Models.v10.Device;
     using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
@@ -33,6 +34,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         private MockRepository mockRepository;
 
         private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
+        private Mock<IUrlHelper> mockUrlHelper;
         private Mock<ILogger<DevicesController>> mockLogger;
         private Mock<IDeviceService> mockDeviceService;
         private Mock<IDeviceTagService> mockDeviceTagService;
@@ -50,11 +52,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
+            this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
         }
 
         private DevicesController CreateDevicesController()
         {
             return new DevicesController(
+                this.mockUrlHelper.Object,
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
                 this.mockDeviceTagService.Object,
@@ -73,16 +77,27 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             twinCollection["deviceType"] = "test";
 
             _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
+                    It.IsAny<string>(),
                     It.Is<string>(x => string.IsNullOrEmpty(x)),
-                    It.Is<string>(x => x == "LoRa Concentrator")))
-                .ReturnsAsync(Enumerable.Range(0, 100).Select(x => new Twin
+                    It.Is<string>(x => x == "LoRa Concentrator"),
+                    It.IsAny<string>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<int>()))
+                .ReturnsAsync(new Shared.PaginationResult<Twin>
                 {
-                    DeviceId = FormattableString.Invariant($"{x}"),
-                    Tags = twinCollection
-                }));
+                    Items = Enumerable.Range(0, 100).Select(x => new Twin
+                    {
+                        DeviceId = FormattableString.Invariant($"{x}"),
+                        Tags = twinCollection
+                    }),
+                    TotalItems = 1000,
+                    NextPage = Guid.NewGuid().ToString()
+                });
 
-            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceListItem(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
-                .Returns<Twin, IEnumerable<string>>((x, y) => new DeviceListItem
+            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceListItem(It.IsAny<Twin>()))
+                .Returns<Twin>((x) => new DeviceListItem
                 {
                     DeviceID = x.DeviceId
                 });
@@ -90,12 +105,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             _ = this.mockDeviceTagService.Setup(c => c.GetAllSearchableTagsNames())
                 .Returns(new List<string>());
 
+            _ = this.mockUrlHelper.Setup(c => c.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(Guid.NewGuid().ToString());
+
             // Act
             var result = await devicesController.GetItems();
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(count, result.Count());
+            Assert.AreEqual(count, result.Items.Count());
+            Assert.AreEqual(1000, result.TotalItems);
             this.mockRepository.VerifyAll();
         }
 

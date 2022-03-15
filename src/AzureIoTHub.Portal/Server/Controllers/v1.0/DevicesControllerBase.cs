@@ -18,6 +18,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Shared.Models.v10.Device;
     using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
@@ -32,10 +33,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         private readonly IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper;
         private readonly ITableClientFactory tableClientFactory;
         private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
+        private readonly IUrlHelper urlHelper;
 
         protected ILogger Logger { get; private set; }
 
         public DevicesControllerBase(
+            IUrlHelper urlHelper,
             ILogger logger,
             IDeviceService devicesService,
             IDeviceTagService deviceTagService,
@@ -44,6 +47,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             ITableClientFactory tableClientFactory)
         {
             this.Logger = logger;
+            this.urlHelper = urlHelper;
             this.devicesService = devicesService;
             this.deviceTagService = deviceTagService;
             this.deviceTwinMapper = deviceTwinMapper;
@@ -86,13 +90,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             if (!string.IsNullOrEmpty(result.NextPage))
             {
-                nextPage = base.Url.ActionLink(nameof(GetItems), values: new
+                nextPage = this.urlHelper.RouteUrl(new UrlRouteContext
                 {
-                    continuationToken = result.NextPage,
-                    searchText,
-                    searchState,
-                    searchStatus,
-                    pageSize
+                    RouteName = nameof(GetItems),
+                    Values = new
+                    {
+                        continuationToken = result.NextPage,
+                        searchText,
+                        searchState,
+                        searchStatus,
+                        pageSize
+                    }
                 });
 
                 foreach (var tag in searchTags)

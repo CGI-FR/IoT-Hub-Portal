@@ -4,7 +4,6 @@
 namespace AzureIoTHub.Portal.Shared.Models.v10.Device
 {
     using System;
-    using System.Collections.Generic;
 
     public class DeviceListItem
     {

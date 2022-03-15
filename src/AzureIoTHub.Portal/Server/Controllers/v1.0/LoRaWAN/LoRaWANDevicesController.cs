@@ -32,6 +32,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         private readonly IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper;
 
         public LoRaWANDevicesController(
+            IUrlHelper urlHelper,
             ILogger<LoRaWANDevicesController> logger,
             IDeviceService devicesService,
             IDeviceTagService deviceTagService,
@@ -40,7 +41,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             ILoraDeviceMethodManager loraDeviceMethodManager,
             IDeviceModelCommandMapper deviceModelCommandMapper,
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
-            : base(logger, devicesService, deviceTagService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
+            : base(urlHelper, logger, devicesService, deviceTagService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
         {
             this.tableClientFactory = tableClientFactory;
             this.loraDeviceMethodManager = loraDeviceMethodManager;
@@ -57,11 +58,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public override Task<PaginationResult<DeviceListItem>> GetItems(
             string continuationToken = null,
             string searchText = null,
-            bool? status = null,
-            bool? state = null,
+            bool? searchStatus = null,
+            bool? searchState = null,
             int pageSize = 10)
         {
-            return base.GetItems(continuationToken, searchText, status, state, pageSize);
+            return base.GetItems(continuationToken, searchText, searchStatus, searchState, pageSize);
         }
 
         /// <summary>

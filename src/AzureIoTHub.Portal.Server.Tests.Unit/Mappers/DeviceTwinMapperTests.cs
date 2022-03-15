@@ -140,12 +140,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
             twin.Tags[nameof(DeviceDetails.ModelId).ToCamelCase()] = "000-000-001";
 
-            twin.Tags["assetId"] = Guid.NewGuid().ToString();
-            twin.Tags["locationCode"] = Guid.NewGuid().ToString();
-            var tagsNames = new List<string>() { "assetId", "locationCode" };
-
             // Act
-            var result = deviceTwinMapper.CreateDeviceListItem(twin, tagsNames);
+            var result = deviceTwinMapper.CreateDeviceListItem(twin);
 
             // Assert
             Assert.IsNotNull(result);
@@ -153,11 +149,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl);
             Assert.IsFalse(result.IsConnected);
             Assert.IsFalse(result.IsEnabled);
-
-            foreach (var tagName in tagsNames)
-            {
-                Assert.AreEqual(twin.Tags[tagName.ToCamelCase()].ToString(), result.Tags[tagName]);
-            }
 
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
 

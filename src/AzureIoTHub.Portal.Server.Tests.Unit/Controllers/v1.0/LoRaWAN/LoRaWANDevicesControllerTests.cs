@@ -40,6 +40,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         private Mock<ITableClientFactory> mockTableClientFactory;
         private Mock<ILoraDeviceMethodManager> mockLoraDeviceMethodManager;
         private Mock<IDeviceModelCommandMapper> mockDeviceModelCommandMapper;
+        private Mock<IUrlHelper> mockUrlHelper;
         private Mock<TableClient> mockCommandsTableClient;
 
         [SetUp]
@@ -56,12 +57,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             this.mockLoraDeviceMethodManager = this.mockRepository.Create<ILoraDeviceMethodManager>();
             this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>();
             this.mockCommandsTableClient = this.mockRepository.Create<TableClient>();
+            this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
 
         }
 
         private LoRaWANDevicesController CreateLoRaWANDevicesController()
         {
             return new LoRaWANDevicesController(
+                this.mockUrlHelper.Object,
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
                 this.mockDeviceTagService.Object,
@@ -224,16 +227,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             twinCollection["deviceType"] = "test";
 
             _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
+                    It.IsAny<string>(),
                     It.Is<string>(x => string.IsNullOrEmpty(x)),
-                    It.Is<string>(x => x == "LoRa Concentrator")))
-                .ReturnsAsync(Enumerable.Range(0, 100).Select(x => new Twin
+                    It.Is<string>(x => x == "LoRa Concentrator"),
+                    It.IsAny<string>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<int>()))
+                .ReturnsAsync(new Shared.PaginationResult<Twin>
                 {
-                    DeviceId = FormattableString.Invariant($"{x}"),
-                    Tags = twinCollection
-                }));
+                    Items = Enumerable.Range(0, 100).Select(x => new Twin
+                    {
+                        DeviceId = FormattableString.Invariant($"{x}"),
+                        Tags = twinCollection
+                    })
+                });
 
-            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceListItem(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
-                .Returns<Twin, IEnumerable<string>>((x, y) => new DeviceListItem
+            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceListItem(It.IsAny<Twin>()))
+                .Returns<Twin>((x) => new DeviceListItem
                 {
                     DeviceID = x.DeviceId
                 });
@@ -246,7 +258,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(count, result.Count());
+            Assert.AreEqual(count, result.Items.Count());
             this.mockRepository.VerifyAll();
         }
 
