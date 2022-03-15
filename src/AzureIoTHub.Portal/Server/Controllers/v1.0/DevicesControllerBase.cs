@@ -5,7 +5,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
@@ -103,9 +105,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                     }
                 });
 
-                foreach (var tag in searchTags)
+                if (searchTags != null)
                 {
-                    nextPage += $"&tag.{tag.Key}={tag.Value}";
+                    var tagsFilterBuilder = new StringBuilder();
+
+                    foreach (var tag in searchTags)
+                    {
+                        _ = tagsFilterBuilder.Append(CultureInfo.InvariantCulture, $"&tag.{tag.Key}={tag.Value}");
+                    }
                 }
             }
 

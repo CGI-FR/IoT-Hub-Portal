@@ -5,7 +5,9 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Globalization;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Shared;
     using Microsoft.Azure.Devices;
@@ -80,10 +82,14 @@ namespace AzureIoTHub.Portal.Server.Services
 
             if (searchTags != null)
             {
+                var tagsFilterBuilder = new StringBuilder();
+
                 foreach (var item in searchTags)
                 {
-                    filter += $" AND is_defined(tags.{item.Key}) AND STARTSWITH(tags.{item.Key}, '{item.Value}')";
+                    _ = tagsFilterBuilder.Append(CultureInfo.InvariantCulture, $" AND is_defined(tags.{item.Key}) AND STARTSWITH(tags.{item.Key}, '{item.Value}')");
                 }
+
+                filter += tagsFilterBuilder.ToString();
             }
 
             if (searchStatus != null)

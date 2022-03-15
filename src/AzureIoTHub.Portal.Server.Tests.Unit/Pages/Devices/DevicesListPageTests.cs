@@ -91,8 +91,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         public async Task WhenResetFilterButtonClickShouldClearFilters()
         {
             // Arrange
-
-            var apiCall = this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&status=&state=")
                 .RespondJson(new PaginationResult<DeviceListItem>
                 {

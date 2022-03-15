@@ -159,7 +159,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             var loRaDeviceTwinMapper = this.CreateLoRaDeviceTwinMapper();
             var twin = new Twin(Guid.NewGuid().ToString());
             var modelId = Guid.NewGuid().ToString();
-            var tags = new List<string> { "tag0", "tag01" };
 
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.ModelId), modelId);
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.DeviceName), Guid.NewGuid().ToString());
