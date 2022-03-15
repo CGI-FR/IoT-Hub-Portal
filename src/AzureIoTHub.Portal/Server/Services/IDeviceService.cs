@@ -33,6 +33,10 @@ namespace AzureIoTHub.Portal.Server.Services
             string continuationToken = null,
             string filterDeviceType = null,
             string excludeDeviceType = null,
-            int pageSize = 2);
+            string searchText = null,
+            bool? searchStatus = null,
+            bool? searchState = null,
+            Dictionary<string, string> searchTags = null,
+            int pageSize = 10);
     }
 }

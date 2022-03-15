@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Azure;
@@ -53,24 +54,58 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the device list.
         /// </summary>
-        public virtual async Task<PaginationResult<TListItem>> GetItems(string continuationToken, int pageSize)
+        public virtual async Task<PaginationResult<TListItem>> GetItems(
+            string continuationToken = null,
+            string searchText = null,
+            bool? searchStatus = null,
+            bool? searchState = null,
+            int pageSize = 10)
         {
+            var searchTags = new Dictionary<string, string>();
+
+            var searchableTags = deviceTagService.GetAllSearchableTagsNames();
+
+            foreach (var tag in searchableTags)
+            {
+                if (this.Request.Query.TryGetValue($"tag.{tag}", out var searchTag))
+                {
+                    searchTags.Add(tag, searchTag.Single());
+                }
+            }
+
             var result = await this.devicesService.GetAllDevice(
                 continuationToken: continuationToken,
                 pageSize: pageSize,
+                searchStatus: searchStatus,
+                searchText: searchText,
+                searchState: searchState,
+                searchTags: searchTags,
                 excludeDeviceType: "LoRa Concentrator");
 
-            var tagList = this.deviceTagService.GetAllSearchableTagsNames();
+            string nextPage = null;
+
+            if (!string.IsNullOrEmpty(result.NextPage))
+            {
+                nextPage = base.Url.ActionLink(nameof(GetItems), values: new
+                {
+                    continuationToken = result.NextPage,
+                    searchText,
+                    searchState,
+                    searchStatus,
+                    pageSize
+                });
+
+                foreach (var tag in searchTags)
+                {
+                    nextPage += $"&tag.{tag.Key}={tag.Value}";
+                }
+            }
 
             return new PaginationResult<TListItem>
             {
-                Items = result.Items.Select(x => this.deviceTwinMapper.CreateDeviceListItem(x, tagList)),
+                Items = result.Items.Select(x => this.deviceTwinMapper.CreateDeviceListItem(x)),
                 TotalItems = result.TotalItems,
-                NextPage = !string.IsNullOrEmpty(result.NextPage) ? base.Url.ActionLink(nameof(GetItems), values: new
-                {
-                    continuationToken = result.NextPage,
-                    pageSize
-                }) : null
+                NextPage = nextPage
             };
         }
 

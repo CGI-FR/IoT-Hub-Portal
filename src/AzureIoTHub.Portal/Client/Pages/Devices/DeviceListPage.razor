@@ -5,6 +5,7 @@
 @using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Web
 
 @attribute [Authorize]
 @inject HttpClient Http
@@ -64,7 +65,7 @@
                     </MudGrid>
 
                     <MudItem xs="12">
-                        <MudButton Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;" id="searchButton">Search</MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;" id="searchButton" OnClick=@Search>Search</MudButton>
                         <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;" OnClick="Reset" id="resetSearch">Reset</MudButton>
                     </MudItem>
 
@@ -87,7 +88,7 @@
             <ToolBarContent>
                 <MudText Typo="Typo.h6">Devices</MudText>
                 <MudSpacer />
-                <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick=@(() => table.ReloadServerData()) Size="Size.Medium" id="tableRefreshButton" Class="ma-2"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick=@Search Size="Size.Medium" id="tableRefreshButton" Class="ma-2"></MudIconButton>
                 <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="tableAddItemButton" Class="ma-2"></MudIconButton>
             </ToolBarContent>
             <HeaderContent>
@@ -192,7 +193,12 @@
         }
         else
         {
-            var uri = $"api/Devices?pageSize={state.PageSize}";
+            var uri = $"api/devices?pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchID)}&status={searchStatus}&state={searchState}";
+
+            foreach(var searchTag in this.searchTags.Where(c => !string.IsNullOrEmpty(c.Value)))
+            {
+                uri += $"&tag.{searchTag.Key}={searchTag.Value}";
+            }
 
             _ = Pages.TryAdd(state.Page, uri);
 
@@ -223,6 +229,15 @@
         searchStatus = "";
         searchState = "";
         searchTags = searchTags.ToDictionary(tag => tag.Key, tag => "");
+
+        Search();
+    }
+
+    private void Search()
+    {
+        Pages.Clear();
+
+        table.ReloadServerData();
     }
 
     /// <summary>
@@ -240,55 +255,5 @@
         {
             return;
         }
-    }
-
-    /// <summary>
-    /// Filters the list of devices, based on fields set in the search panel
-    /// </summary>
-    /// <param name="item">Device represented in the current row</param>
-    /// <returns>Boolean</returns>
-    private bool FilterFunc(DeviceListItem item)
-    {
-        bool flagID = checkFlag(item.DeviceID, searchID);
-        bool flagName = checkFlag(item.DeviceName, searchID);
-        bool flagStatus = checkFlag(item.IsEnabled.ToString(), searchStatus);
-        bool flagState = checkFlag(item.IsConnected.ToString(), searchState);
-
-        // Checks the different customized flags
-        List<bool> flagTags = new();
-        foreach (KeyValuePair<string, string> tag in searchTags)
-        {
-            flagTags.Add(checkFlag(item.Tags[tag.Key], tag.Value));
-        }
-        bool flagTag = !flagTags.Contains(false);
-
-        // Current row is shown only if all the flags are true
-        if ((flagID || flagName) && flagStatus && flagState && flagTag)
-            return true;
-
-        return false;
-    }
-
-    /// <summary>
-    /// Checks if the specific device value matches the search criteria
-    /// </summary>
-    /// <param name="deviceValue">Device attribute being compared</param>
-    /// <param name="searchString">Field value in the search panel</param>
-    /// <returns>True if it matches of field is empty</returns>
-    private bool checkFlag(string deviceValue, string searchString)
-    {
-        bool flag;
-        try
-        {
-            flag = string.IsNullOrWhiteSpace(searchString) || deviceValue.Contains(searchString, StringComparison.OrdinalIgnoreCase);
-        }
-
-        //May happen if the device attribute is set to null
-        catch (NullReferenceException)
-        {
-            flag = false;
-        }
-
-        return flag;
     }
 }

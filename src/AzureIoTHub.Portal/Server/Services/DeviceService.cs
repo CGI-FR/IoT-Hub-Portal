@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
@@ -52,7 +51,15 @@ namespace AzureIoTHub.Portal.Server.Services
         /// this function return a list of all device exept edge device.
         /// </summary>
         /// <returns>IEnumerable twin.</returns>
-        public async Task<PaginationResult<Twin>> GetAllDevice(string continuationToken = null, string filterDeviceType = null, string excludeDeviceType = null, int pageSize = 2)
+        public async Task<PaginationResult<Twin>> GetAllDevice(
+            string continuationToken = null,
+            string filterDeviceType = null,
+            string excludeDeviceType = null,
+            string searchText = null,
+            bool? searchStatus = null,
+            bool? searchState = null,
+            Dictionary<string, string> searchTags = null,
+            int pageSize = 10)
         {
             var filter = "WHERE devices.capabilities.iotEdge = false";
 
@@ -64,6 +71,29 @@ namespace AzureIoTHub.Portal.Server.Services
             if (!string.IsNullOrWhiteSpace(excludeDeviceType))
             {
                 filter += $" AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != '{ excludeDeviceType }')";
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                filter += $" AND (STARTSWITH(deviceId, '{searchText.ToLowerInvariant()}') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, '{searchText}')))";
+            }
+
+            if (searchTags != null)
+            {
+                foreach (var item in searchTags)
+                {
+                    filter += $" AND is_defined(tags.{item.Key}) AND STARTSWITH(tags.{item.Key}, '{item.Value}')";
+                }
+            }
+
+            if (searchStatus != null)
+            {
+                filter += $" AND status = '{(searchStatus.Value ? "enabled" : "disabled")}'";
+            }
+
+            if (searchState != null)
+            {
+                filter += $" AND connectionState = '{(searchState.Value ? "Connected" : "Disconnected")}'";
             }
 
             var query = this.registryManager

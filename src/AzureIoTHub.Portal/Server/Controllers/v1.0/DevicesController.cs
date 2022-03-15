@@ -52,9 +52,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GET Device list")]
-        public override Task<PaginationResult<DeviceListItem>> GetItems(string continuationToken, int pageSize)
+        public override Task<PaginationResult<DeviceListItem>> GetItems(
+            string continuationToken = null,
+            string searchText = null,
+            bool? status = null,
+            bool? state = null,
+            int pageSize = 10)
         {
-            return base.GetItems(continuationToken, pageSize);
+            return base.GetItems(continuationToken, searchText, status, state, pageSize);
         }
 
         /// <summary>
