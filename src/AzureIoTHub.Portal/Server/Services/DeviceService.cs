@@ -102,8 +102,11 @@ namespace AzureIoTHub.Portal.Server.Services
                 filter += $" AND connectionState = '{(searchState.Value ? "Connected" : "Disconnected")}'";
             }
 
-            var query = this.registryManager
-                    .CreateQuery($"SELECT * FROM devices { filter }", pageSize);
+            var emptyResult = new PaginationResult<Twin>
+            {
+                Items = Enumerable.Empty<Twin>(),
+                TotalItems = 0
+            };
 
             var stopWatch = Stopwatch.StartNew();
 
@@ -115,14 +118,18 @@ namespace AzureIoTHub.Portal.Server.Services
 
             if (!JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result))
             {
-                return new PaginationResult<Twin>
-                {
-                    Items = Enumerable.Empty<Twin>(),
-                    TotalItems = result.Value<int>()
-                };
+                return emptyResult;
+            }
+
+            if (result.Value<int>() == 0)
+            {
+                return emptyResult;
             }
 
             stopWatch.Restart();
+
+            var query = this.registryManager
+                .CreateQuery($"SELECT * FROM devices { filter }", pageSize);
 
             var response = await query
                             .GetNextAsTwinAsync(new QueryOptions
