@@ -64,7 +64,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         private LoRaWANDevicesController CreateLoRaWANDevicesController()
         {
             return new LoRaWANDevicesController(
-                this.mockUrlHelper.Object,
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
                 this.mockDeviceTagService.Object,

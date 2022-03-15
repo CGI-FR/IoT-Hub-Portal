@@ -58,13 +58,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         private DevicesController CreateDevicesController()
         {
             return new DevicesController(
-                this.mockUrlHelper.Object,
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
                 this.mockDeviceTagService.Object,
                 this.mockProvisioningServiceManager.Object,
                 this.mockDeviceTwinMapper.Object,
-                this.mockTableClientFactory.Object);
+                this.mockTableClientFactory.Object)
+            {
+                Url = this.mockUrlHelper.Object
+            };
         }
 
         [Test]

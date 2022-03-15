@@ -35,12 +35,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         private readonly IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper;
         private readonly ITableClientFactory tableClientFactory;
         private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
-        private readonly IUrlHelper urlHelper;
 
         protected ILogger Logger { get; private set; }
 
         public DevicesControllerBase(
-            IUrlHelper urlHelper,
             ILogger logger,
             IDeviceService devicesService,
             IDeviceTagService deviceTagService,
@@ -49,7 +47,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             ITableClientFactory tableClientFactory)
         {
             this.Logger = logger;
-            this.urlHelper = urlHelper;
             this.devicesService = devicesService;
             this.deviceTagService = deviceTagService;
             this.deviceTwinMapper = deviceTwinMapper;
@@ -92,7 +89,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             if (!string.IsNullOrEmpty(result.NextPage))
             {
-                nextPage = this.urlHelper.RouteUrl(new UrlRouteContext
+                nextPage = this.Url.RouteUrl(new UrlRouteContext
                 {
                     RouteName = nameof(GetItems),
                     Values = new
