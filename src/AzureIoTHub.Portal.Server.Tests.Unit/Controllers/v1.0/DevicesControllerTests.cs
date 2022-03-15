@@ -20,11 +20,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10.Device;
     using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Controllers;
     using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.AspNetCore.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Primitives;
     using Moq;
     using NUnit.Framework;
 
@@ -76,17 +80,37 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var devicesController = this.CreateDevicesController();
             var count = 100;
             var twinCollection = new TwinCollection();
+
             twinCollection["deviceType"] = "test";
 
+            var mockTagSearch = new StringValues("test");
+
+            var mockQueryCollection = new QueryCollection(new Dictionary<string, StringValues>()
+            {
+                { "tag.deviceType", mockTagSearch }
+            });
+
+            var mockHttpRequest = this.mockRepository.Create<HttpRequest>();
+            var mockHttpContext = this.mockRepository.Create<HttpContext>();
+
+            _ = mockHttpContext.SetupGet(c => c.Request)
+                .Returns(mockHttpRequest.Object);
+
+            _ = mockHttpRequest.Setup(c => c.Query)
+                .Returns(mockQueryCollection);
+
+            devicesController.ControllerContext = new ControllerContext(
+                new ActionContext(mockHttpContext.Object, new RouteData(), new ControllerActionDescriptor()));
+
             _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
-                    It.IsAny<string>(),
+                    It.Is<string>(x => x == "aaa"),
                     It.Is<string>(x => string.IsNullOrEmpty(x)),
                     It.Is<string>(x => x == "LoRa Concentrator"),
-                    It.IsAny<string>(),
-                    It.IsAny<bool?>(),
-                    It.IsAny<bool?>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<int>()))
+                    It.Is<string>(x => x == "bbb"),
+                    It.Is<bool?>(x => x == true),
+                    It.Is<bool?>(x => x == false),
+                    It.Is<Dictionary<string, string>>(x => x["deviceType"] == "test"),
+                    It.Is<int>(x => x == 2)))
                 .ReturnsAsync(new Shared.PaginationResult<Twin>
                 {
                     Items = Enumerable.Range(0, 100).Select(x => new Twin
@@ -105,13 +129,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 });
 
             _ = this.mockDeviceTagService.Setup(c => c.GetAllSearchableTagsNames())
-                .Returns(new List<string>());
+                .Returns(new string[] { "deviceType" });
 
             _ = this.mockUrlHelper.Setup(c => c.RouteUrl(It.IsAny<UrlRouteContext>()))
                 .Returns(Guid.NewGuid().ToString());
-
             // Act
-            var result = await devicesController.GetItems();
+
+            var result = await devicesController.GetItems(
+                continuationToken: "aaa",
+                searchText: "bbb",
+                searchStatus: true,
+                searchState: false,
+                pageSize: 2);
 
             // Assert
             Assert.IsNotNull(result);
