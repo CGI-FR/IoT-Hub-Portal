@@ -92,7 +92,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         {
             // Arrange
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&status=&state=")
+                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
                 .RespondJson(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
@@ -130,7 +130,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         {
             // Arrange
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&status=&state=")
+                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
                 .RespondJson(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
@@ -159,7 +159,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         {
             // Arrange
             var apiCall = this.mockHttpClient
-                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&status=&state=")
+                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
                 .RespondJson(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
@@ -195,7 +195,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&status=&state=")
+                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
                 .RespondJson(new PaginationResult<DeviceListItem>
                 {
                     Items = new DeviceListItem[] { new DeviceListItem { DeviceID = deviceId } }
@@ -228,7 +228,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&status=&state=")
+                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
                 .RespondJson(new PaginationResult<DeviceListItem>
                 {
                     Items = new DeviceListItem[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
