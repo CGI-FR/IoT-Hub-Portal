@@ -24,7 +24,7 @@
                     <MudCard>
                         <MudCardHeader>
                             <CardHeaderContent>
-                                <MudText Typo="Typo.h5">@Device.DeviceID</MudText>
+                                <MudText Typo="Typo.h5">@(string.IsNullOrEmpty(Device.DeviceName) ? Device.DeviceID : Device.DeviceName)</MudText>
                             </CardHeaderContent>
                             <CardHeaderActions>
                                 @if (isLoaded && (!IsLoRa || !(Device is LoRaDeviceDetails)))
@@ -257,7 +257,7 @@
         result.EnsureSuccessStatusCode();
 
         // Prompts a snack bar to inform the action was successful
-        Snackbar.Add($"Device {Device.DeviceID} has been successfully updated!", Severity.Success);
+        Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!", Severity.Success);
 
         // Go back to the list of devices
         NavManager.NavigateTo("devices");

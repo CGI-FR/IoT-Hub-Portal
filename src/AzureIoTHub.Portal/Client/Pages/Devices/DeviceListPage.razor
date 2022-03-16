@@ -249,11 +249,14 @@
     {
         var parameters = new DialogParameters();
         parameters.Add("deviceID", device.DeviceID);
+        parameters.Add("deviceName", device.DeviceName);
         var result = await DialogService.Show<DeleteDevicePage>("Confirm Deletion", parameters).Result;
 
         if (result.Cancelled)
         {
             return;
         }
+
+        Search();
     }
 }
