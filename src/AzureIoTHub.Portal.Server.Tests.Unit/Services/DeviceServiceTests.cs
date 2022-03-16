@@ -48,28 +48,35 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             var service = this.CreateService();
             var mockQuery = this.mockRepository.Create<IQuery>();
 
-            var resultReturned = false;
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
 
-            _ = mockQuery.SetupGet(c => c.HasMoreResults)
-                .Returns(!resultReturned);
-
-            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync())
-                .ReturnsAsync(new Twin[]
-                {
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ReturnsAsync(new QueryResponse<Twin>(new[]{
                     new Twin(Guid.NewGuid().ToString())
+                    }, string.Empty));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 1}"
                 });
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
-                It.Is<string>(x => x == "SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' GROUP BY deviceId"),
+                It.Is<string>(x => x == "SELECT * FROM devices WHERE devices.capabilities.iotEdge = true"),
                 It.Is<int>(x => x == 10)))
                 .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true")))
+                .Returns(mockCountQuery.Object);
 
             // Act
             var result = await service.GetAllEdgeDevice();
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.Count());
+            Assert.AreEqual(1, result.Items.Count());
             this.mockRepository.VerifyAll();
         }
 

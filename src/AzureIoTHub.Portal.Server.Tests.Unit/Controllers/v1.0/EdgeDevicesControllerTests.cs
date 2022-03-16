@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Managers;
@@ -59,14 +60,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var twin = new Twin("aaa");
             twin.Tags["type"] = "test";
 
-            _ = this.mockDeviceService.Setup(x => x.GetAllEdgeDevice())
-                .ReturnsAsync(new[]
+            _ = this.mockDeviceService.Setup(x => x.GetAllEdgeDevice(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<string>(),
+                    It.IsAny<int>()))
+                .ReturnsAsync(new Shared.PaginationResult<Twin>
                 {
-                    twin
+                    Items = new[] { twin }
                 });
-
-            _ = this.mockDeviceService.Setup(x => x.GetDeviceTwin(It.Is<string>(c => c == twin.DeviceId)))
-                .ReturnsAsync(twin);
 
             var edgeDevicesController = this.CreateEdgeDevicesController();
 
@@ -81,11 +84,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             Assert.IsNotNull(okObjectResult);
             Assert.AreEqual(200, okObjectResult.StatusCode);
             Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<List<IoTEdgeListItem>>(okObjectResult.Value);
-            var gatewayList = okObjectResult.Value as List<IoTEdgeListItem>;
+            Assert.IsAssignableFrom<Shared.PaginationResult<IoTEdgeListItem>>(okObjectResult.Value);
+            var gatewayList = okObjectResult.Value as Shared.PaginationResult<IoTEdgeListItem>;
             Assert.IsNotNull(gatewayList);
-            Assert.AreEqual(1, gatewayList.Count);
-            var gateway = gatewayList[0];
+            Assert.AreEqual(1, gatewayList.Items.Count());
+            var gateway = gatewayList.Items.ElementAt(0);
+
             Assert.IsNotNull(gateway);
             Assert.AreEqual(twin.DeviceId, gateway.DeviceId);
             Assert.AreEqual("test", gateway.Type);
