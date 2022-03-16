@@ -6,9 +6,16 @@
 
 <MudDialog>
     <DialogContent>
-        <p>Delete @DeviceId ?</p>
-        <br />
-        <p><i>Warning : this cannot  be undone.</i></p>
+        <MudGrid>
+            <MudItem xs=12>
+                <MudText>
+                    Delete @DeviceId ?
+                </MudText>
+            </MudItem>
+            <MudItem xs=12>
+                <MudText><i>Warning : this cannot  be undone.</i></MudText>
+            </MudItem>
+        </MudGrid>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>

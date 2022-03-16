@@ -6,9 +6,16 @@
 
 <MudDialog>
     <DialogContent>
-        <p>Delete @deviceID ?</p>
-        <br />
-        <p><i>Warning : this cannot  be undone.</i></p>
+        <MudGrid>
+            <MudItem xs=12>
+                <MudText>
+                    Delete @deviceName ?
+                </MudText>
+            </MudItem>
+            <MudItem xs=12>
+                <MudText><i>Warning : this cannot  be undone.</i></MudText>
+            </MudItem>
+        </MudGrid>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -19,6 +26,7 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string deviceID { get; set; }
+    [Parameter] public string deviceName { get; set; }
 
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
@@ -30,17 +38,17 @@
     private async Task DeleteDevice()
     {
         // var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/delete", device);
-        var response = await Http.DeleteAsync($"api/Devices/{deviceID}");
+        var response = await Http.DeleteAsync($"api/devices/{deviceID}");
 
         // Prompts a snack bar to inform if the action was successful
         // TODO : Deal more effectively with error/success messages
         if (!response.IsSuccessStatusCode)
         {
-            Snackbar.Add($"Oh oh, something went wrong while deleting device {deviceID}... ", Severity.Error);
+            Snackbar.Add($"Oh oh, something went wrong while deleting device {deviceName}... ", Severity.Error);
             return;
         }
 
-        Snackbar.Add($"Device {deviceID} has been successfully deleted!", Severity.Success);
+        Snackbar.Add($"Device {deviceName} has been successfully deleted!", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }
 }
