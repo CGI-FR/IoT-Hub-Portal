@@ -11,7 +11,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
     public interface IDeviceService
     {
-        Task<IEnumerable<Twin>> GetAllEdgeDevice();
+
 
         Task<Device> GetDevice(string deviceId);
 
@@ -37,6 +37,13 @@ namespace AzureIoTHub.Portal.Server.Services
             bool? searchStatus = null,
             bool? searchState = null,
             Dictionary<string, string> searchTags = null,
+            int pageSize = 10);
+
+        Task<PaginationResult<Twin>> GetAllEdgeDevice(
+            string continuationToken = null,
+            string searchText = null,
+            bool? searchStatus = null,
+            string searchType = null,
             int pageSize = 10);
     }
 }

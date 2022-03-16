@@ -36,16 +36,65 @@ namespace AzureIoTHub.Portal.Server.Services
         /// this function return a list of all edge device wthiout tags.
         /// </summary>
         /// <returns>IEnumerable twin.</returns>
-        public async Task<IEnumerable<Twin>> GetAllEdgeDevice()
+        public async Task<PaginationResult<Twin>> GetAllEdgeDevice(
+            string continuationToken = null,
+            string searchText = null,
+            bool? searchStatus = null,
+            string searchType = null,
+            int pageSize = 10)
         {
-            var queryEdgeDevice = this.registryManager.CreateQuery("SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' GROUP BY deviceId", 10);
+            var filter = "WHERE devices.capabilities.iotEdge = true";
 
-            while (queryEdgeDevice.HasMoreResults)
+            if (searchStatus != null)
             {
-                return await queryEdgeDevice.GetNextAsTwinAsync();
+                filter += $" AND status = '{(searchStatus.Value ? "enabled" : "disabled")}'";
             }
 
-            return Enumerable.Empty<Twin>();
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                filter += $" AND (STARTSWITH(deviceId, '{searchText.ToLowerInvariant()}') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, '{searchText}')))";
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchType))
+            {
+                filter += $" AND devices.tags.deviceType = '{ searchType }'";
+            }
+
+            var emptyResult = new PaginationResult<Twin>
+            {
+                Items = Enumerable.Empty<Twin>(),
+                TotalItems = 0
+            };
+
+            var count = await this.registryManager
+                    .CreateQuery($"SELECT COUNT() as totalNumber FROM devices { filter }")
+                    .GetNextAsJsonAsync();
+
+            if (!JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result))
+            {
+                return emptyResult;
+            }
+
+            if (result.Value<int>() == 0)
+            {
+                return emptyResult;
+            }
+
+            var query = this.registryManager
+                .CreateQuery($"SELECT * FROM devices { filter }", pageSize);
+
+            var response = await query
+                            .GetNextAsTwinAsync(new QueryOptions
+                            {
+                                ContinuationToken = continuationToken
+                            });
+
+            return new PaginationResult<Twin>
+            {
+                Items = response,
+                TotalItems = result.Value<int>(),
+                NextPage = response.ContinuationToken
+            };
         }
 
 

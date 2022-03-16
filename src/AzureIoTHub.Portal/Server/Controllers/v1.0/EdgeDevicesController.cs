@@ -10,9 +10,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
@@ -78,33 +80,58 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the IoT Edge device list.
         /// </summary>
         [HttpGet(Name = "GET IoT Edge devices")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<IoTEdgeListItem>))]
-        public async Task<IActionResult> Get()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<IoTEdgeListItem>))]
+        public async Task<IActionResult> Get(
+            string continuationToken = null,
+            string searchText = null,
+            bool? searchStatus = null,
+            string searchType = null,
+            int pageSize = 10)
         {
-            // don't contain tags
-            var edgeDevices = await this.devicesService.GetAllEdgeDevice();
+            var result = await this.devicesService.GetAllEdgeDevice(
+                searchText: searchText,
+                searchStatus: searchStatus,
+                searchType: searchType,
+                pageSize: pageSize,
+                continuationToken: continuationToken);
 
             var newGatewayList = new List<IoTEdgeListItem>();
 
-            foreach (var deviceTwin in edgeDevices)
+            foreach (var deviceTwin in result.Items)
             {
-                var twin = this.devicesService.GetDeviceTwin(deviceTwin.DeviceId).Result;
-
-                if (twin != null)
+                newGatewayList.Add(new IoTEdgeListItem
                 {
-                    var gateway = new IoTEdgeListItem
-                    {
-                        DeviceId = deviceTwin.DeviceId,
-                        Status = twin.Status?.ToString(),
-                        Type = DeviceHelper.RetrieveTagValue(twin, nameof(IoTEdgeDevice.Type)) ?? "Undefined",
-                        NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin)
-                    };
-
-                    newGatewayList.Add(gateway);
-                }
+                    DeviceId = deviceTwin.DeviceId,
+                    Status = deviceTwin.Status?.ToString(),
+                    Type = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.Type)) ?? "Undefined",
+                    NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin)
+                });
             }
 
-            return this.Ok(newGatewayList);
+            var nextPage = string.Empty;
+
+            if (!string.IsNullOrEmpty(result.NextPage))
+            {
+                nextPage = this.Url.RouteUrl(new UrlRouteContext
+                {
+                    RouteName = nameof(Get),
+                    Values = new
+                    {
+                        continuationToken = result.NextPage,
+                        searchText,
+                        searchType,
+                        searchStatus,
+                        pageSize
+                    }
+                });
+            }
+
+            return this.Ok(new PaginationResult<IoTEdgeListItem>
+            {
+                Items = newGatewayList,
+                TotalItems = result.TotalItems,
+                NextPage = nextPage
+            });
         }
 
         /// <summary>
