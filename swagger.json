@@ -13,32 +13,62 @@
         ],
         "summary": "Gets the device list.",
         "operationId": "GET Device list",
+        "parameters": [
+          {
+            "name": "continuationToken",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchText",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchStatus",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "searchState",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DeviceListItem"
-                  }
+                  "$ref": "#/components/schemas/DeviceListItemPaginationResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DeviceListItem"
-                  }
+                  "$ref": "#/components/schemas/DeviceListItemPaginationResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DeviceListItem"
-                  }
+                  "$ref": "#/components/schemas/DeviceListItemPaginationResult"
                 }
               }
             }
@@ -434,32 +464,62 @@
         ],
         "summary": "Gets the IoT Edge device list.",
         "operationId": "GET IoT Edge devices",
+        "parameters": [
+          {
+            "name": "continuationToken",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchText",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchStatus",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "searchType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/IoTEdgeListItem"
-                  }
+                  "$ref": "#/components/schemas/IoTEdgeListItemPaginationResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/IoTEdgeListItem"
-                  }
+                  "$ref": "#/components/schemas/IoTEdgeListItemPaginationResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/IoTEdgeListItem"
-                  }
+                  "$ref": "#/components/schemas/IoTEdgeListItemPaginationResult"
                 }
               }
             }
@@ -750,26 +810,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Concentrator"
-                  }
+                  "$ref": "#/components/schemas/ConcentratorPaginationResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Concentrator"
-                  }
+                  "$ref": "#/components/schemas/ConcentratorPaginationResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Concentrator"
-                  }
+                  "$ref": "#/components/schemas/ConcentratorPaginationResult"
                 }
               }
             }
@@ -953,32 +1004,62 @@
         ],
         "summary": "Gets the device list.",
         "operationId": "GET LoRaWAN device list",
+        "parameters": [
+          {
+            "name": "continuationToken",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchText",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchStatus",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "searchState",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DeviceListItem"
-                  }
+                  "$ref": "#/components/schemas/DeviceListItemPaginationResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DeviceListItem"
-                  }
+                  "$ref": "#/components/schemas/DeviceListItemPaginationResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DeviceListItem"
-                  }
+                  "$ref": "#/components/schemas/DeviceListItemPaginationResult"
                 }
               }
             }
@@ -2613,6 +2694,31 @@
         },
         "additionalProperties": false
       },
+      "ConcentratorPaginationResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Concentrator"
+            },
+            "description": "The current page items.",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "description": "The total number of items.",
+            "format": "int32"
+          },
+          "nextPage": {
+            "type": "string",
+            "description": "The query next page Url.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Class representing the page results."
+      },
       "ConfigItem": {
         "required": [
           "name"
@@ -2774,18 +2880,34 @@
             "type": "string",
             "description": "The device last status updated time.",
             "format": "date-time"
-          },
-          "tags": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string",
-              "nullable": true
-            },
-            "description": "A list of searchable tags and their values.",
-            "nullable": true
           }
         },
         "additionalProperties": false
+      },
+      "DeviceListItemPaginationResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeviceListItem"
+            },
+            "description": "The current page items.",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "description": "The total number of items.",
+            "format": "int32"
+          },
+          "nextPage": {
+            "type": "string",
+            "description": "The query next page Url.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Class representing the page results."
       },
       "DeviceModel": {
         "required": [
@@ -3082,6 +3204,31 @@
           }
         },
         "additionalProperties": false
+      },
+      "IoTEdgeListItemPaginationResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeListItem"
+            },
+            "description": "The current page items.",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "description": "The total number of items.",
+            "format": "int32"
+          },
+          "nextPage": {
+            "type": "string",
+            "description": "The query next page Url.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Class representing the page results."
       },
       "IoTEdgeModule": {
         "required": [

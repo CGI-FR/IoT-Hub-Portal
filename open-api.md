@@ -35,54 +35,47 @@ Available APIs for managing devices from Azure IoT Hub.
 
 *Gets the device list.*
 
+<h3 id="get-device-list-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|continuationToken|query|string|false|none|
+|searchText|query|string|false|none|
+|searchStatus|query|boolean|false|none|
+|searchState|query|boolean|false|none|
+|pageSize|query|integer(int32)|false|none|
+
 > Example responses
 
 > 200 Response
 
 ```
-[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"}}]
+{"items":[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z"}],"totalItems":0,"nextPage":"string"}
 ```
 
 ```json
-[
-  {
-    "deviceID": "string",
-    "deviceName": "string",
-    "imageUrl": "string",
-    "isConnected": true,
-    "isEnabled": true,
-    "supportLoRaFeatures": true,
-    "statusUpdatedTime": "2019-08-24T14:15:22Z",
-    "tags": {
-      "property1": "string",
-      "property2": "string"
+{
+  "items": [
+    {
+      "deviceID": "string",
+      "deviceName": "string",
+      "imageUrl": "string",
+      "isConnected": true,
+      "isEnabled": true,
+      "supportLoRaFeatures": true,
+      "statusUpdatedTime": "2019-08-24T14:15:22Z"
     }
-  }
-]
+  ],
+  "totalItems": 0,
+  "nextPage": "string"
+}
 ```
 
 <h3 id="get-device-list-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
-
-<h3 id="get-device-list-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[DeviceListItem](#schemadevicelistitem)]|false|none|none|
-|» deviceID|string¦null|false|none|The device Identifier.|
-|» deviceName|string¦null|false|none|The device friendly name.|
-|» imageUrl|string¦null|false|none|The device model image Url.|
-|» isConnected|boolean|false|none|A value indicating whether the device is currently connected.|
-|» isEnabled|boolean|false|none|A value indicating whether the device is enabled on the platform.|
-|» supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
-|» statusUpdatedTime|string(date-time)|false|none|The device last status updated time.|
-|» tags|object¦null|false|none|A list of searchable tags and their values.|
-|»» **additionalProperties**|string¦null|false|none|none|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[DeviceListItemPaginationResult](#schemadevicelistitempaginationresult)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -621,42 +614,44 @@ None
 
 *Gets the IoT Edge device list.*
 
+<h3 id="get-iot-edge-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|continuationToken|query|string|false|none|
+|searchText|query|string|false|none|
+|searchStatus|query|boolean|false|none|
+|searchType|query|string|false|none|
+|pageSize|query|integer(int32)|false|none|
+
 > Example responses
 
 > 200 Response
 
 ```
-[{"deviceId":"string","status":"string","type":"string","nbDevices":0}]
+{"items":[{"deviceId":"string","status":"string","type":"string","nbDevices":0}],"totalItems":0,"nextPage":"string"}
 ```
 
 ```json
-[
-  {
-    "deviceId": "string",
-    "status": "string",
-    "type": "string",
-    "nbDevices": 0
-  }
-]
+{
+  "items": [
+    {
+      "deviceId": "string",
+      "status": "string",
+      "type": "string",
+      "nbDevices": 0
+    }
+  ],
+  "totalItems": 0,
+  "nextPage": "string"
+}
 ```
 
 <h3 id="get-iot-edge-devices-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
-
-<h3 id="get-iot-edge-devices-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[IoTEdgeListItem](#schemaiotedgelistitem)]|false|none|none|
-|» deviceId|string|true|none|The device identifier.|
-|» status|string¦null|false|none|The device status.|
-|» type|string¦null|false|none|The device type.|
-|» nbDevices|integer(int32)|false|none|The number of devices connected on the IoT Edge.|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[IoTEdgeListItemPaginationResult](#schemaiotedgelistitempaginationresult)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1030,106 +1025,76 @@ None
 > 200 Response
 
 ```
-[{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientCertificateThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"netID":[0],"joinEui":[["string"]],"region":"string","hwspec":"string","freqRange":[0],"dRs":[[0]],"sx1301Conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spreadFactor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spreadFactor":0}}],"nocca":true,"nodc":true,"nodwell":true}}]
+{"items":[{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientCertificateThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"netID":[0],"joinEui":[["string"]],"region":"string","hwspec":"string","freqRange":[0],"dRs":[[0]],"sx1301Conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spreadFactor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spreadFactor":0}}],"nocca":true,"nodc":true,"nodwell":true}}],"totalItems":0,"nextPage":"string"}
 ```
 
 ```json
-[
-  {
-    "deviceId": "string",
-    "deviceName": "string",
-    "loraRegion": "string",
-    "deviceType": "string",
-    "clientCertificateThumbprint": "string",
-    "isConnected": true,
-    "isEnabled": true,
-    "alreadyLoggedInOnce": true,
-    "routerConfig": {
-      "netID": [
-        0
-      ],
-      "joinEui": [
-        [
-          "string"
-        ]
-      ],
-      "region": "string",
-      "hwspec": "string",
-      "freqRange": [
-        0
-      ],
-      "dRs": [
-        [
+{
+  "items": [
+    {
+      "deviceId": "string",
+      "deviceName": "string",
+      "loraRegion": "string",
+      "deviceType": "string",
+      "clientCertificateThumbprint": "string",
+      "isConnected": true,
+      "isEnabled": true,
+      "alreadyLoggedInOnce": true,
+      "routerConfig": {
+        "netID": [
           0
-        ]
-      ],
-      "sx1301Conf": [
-        {
-          "property1": {
-            "enable": true,
-            "freq": 0,
-            "radio": 0,
-            "if": 0,
-            "bandwidth": 0,
-            "spreadFactor": 0
-          },
-          "property2": {
-            "enable": true,
-            "freq": 0,
-            "radio": 0,
-            "if": 0,
-            "bandwidth": 0,
-            "spreadFactor": 0
+        ],
+        "joinEui": [
+          [
+            "string"
+          ]
+        ],
+        "region": "string",
+        "hwspec": "string",
+        "freqRange": [
+          0
+        ],
+        "dRs": [
+          [
+            0
+          ]
+        ],
+        "sx1301Conf": [
+          {
+            "property1": {
+              "enable": true,
+              "freq": 0,
+              "radio": 0,
+              "if": 0,
+              "bandwidth": 0,
+              "spreadFactor": 0
+            },
+            "property2": {
+              "enable": true,
+              "freq": 0,
+              "radio": 0,
+              "if": 0,
+              "bandwidth": 0,
+              "spreadFactor": 0
+            }
           }
-        }
-      ],
-      "nocca": true,
-      "nodc": true,
-      "nodwell": true
+        ],
+        "nocca": true,
+        "nodc": true,
+        "nodwell": true
+      }
     }
-  }
-]
+  ],
+  "totalItems": 0,
+  "nextPage": "string"
+}
 ```
 
 <h3 id="get-lorawan-concentrator-list-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
-
-<h3 id="get-lorawan-concentrator-list-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[Concentrator](#schemaconcentrator)]|false|none|none|
-|» deviceId|string|true|none|The device identifier.|
-|» deviceName|string|true|none|The name of the device.|
-|» loraRegion|string|true|none|The lora region.|
-|» deviceType|string¦null|false|none|The type of the device.|
-|» clientCertificateThumbprint|string¦null|false|none|The client certificate thumbprint.|
-|» isConnected|boolean|false|none|`true` if this instance is connected; otherwise, `false`.|
-|» isEnabled|boolean|false|none|`true` if this instance is enabled; otherwise, `false`.|
-|» alreadyLoggedInOnce|boolean|false|none|`true` if [already logged in once]; otherwise, `false`.|
-|» routerConfig|[RouterConfig](#schemarouterconfig)|false|none|none|
-|»» netID|[integer]¦null|false|none|The network identifier.|
-|»» joinEui|[array]¦null|false|none|The join eui.|
-|»» region|string¦null|false|none|The region.|
-|»» hwspec|string¦null|false|none|The hardware specifications.|
-|»» freqRange|[integer]¦null|false|none|The frequency range.|
-|»» dRs|[array]¦null|false|none|The DRs.|
-|»» sx1301Conf|[object]¦null|false|none|The SX1301 conf.|
-|»»» **additionalProperties**|[Channel](#schemachannel)|false|none|none|
-|»»»» enable|boolean¦null|false|none|A value indicating whether the channel is enabled.|
-|»»»» freq|integer(int32)|false|none|The frequency.|
-|»»»» radio|integer(int32)|false|none|The radio.|
-|»»»» if|integer(int32)|false|none|The interface.|
-|»»»» bandwidth|integer(int32)|false|none|The bandwidth.|
-|»»»» spreadFactor|integer(int32)|false|none|The spread factor.|
-|»» nocca|boolean|false|none|`true` if nocca; otherwise, `false`.|
-|»» nodc|boolean|false|none|`true` if nodc; otherwise, `false`.|
-|»» nodwell|boolean|false|none|`true` if nodwell; otherwise, `false`.|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ConcentratorPaginationResult](#schemaconcentratorpaginationresult)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1476,54 +1441,47 @@ None
 
 *Gets the device list.*
 
+<h3 id="get-lorawan-device-list-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|continuationToken|query|string|false|none|
+|searchText|query|string|false|none|
+|searchStatus|query|boolean|false|none|
+|searchState|query|boolean|false|none|
+|pageSize|query|integer(int32)|false|none|
+
 > Example responses
 
 > 200 Response
 
 ```
-[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"}}]
+{"items":[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z"}],"totalItems":0,"nextPage":"string"}
 ```
 
 ```json
-[
-  {
-    "deviceID": "string",
-    "deviceName": "string",
-    "imageUrl": "string",
-    "isConnected": true,
-    "isEnabled": true,
-    "supportLoRaFeatures": true,
-    "statusUpdatedTime": "2019-08-24T14:15:22Z",
-    "tags": {
-      "property1": "string",
-      "property2": "string"
+{
+  "items": [
+    {
+      "deviceID": "string",
+      "deviceName": "string",
+      "imageUrl": "string",
+      "isConnected": true,
+      "isEnabled": true,
+      "supportLoRaFeatures": true,
+      "statusUpdatedTime": "2019-08-24T14:15:22Z"
     }
-  }
-]
+  ],
+  "totalItems": 0,
+  "nextPage": "string"
+}
 ```
 
 <h3 id="get-lorawan-device-list-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
-
-<h3 id="get-lorawan-device-list-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[DeviceListItem](#schemadevicelistitem)]|false|none|none|
-|» deviceID|string¦null|false|none|The device Identifier.|
-|» deviceName|string¦null|false|none|The device friendly name.|
-|» imageUrl|string¦null|false|none|The device model image Url.|
-|» isConnected|boolean|false|none|A value indicating whether the device is currently connected.|
-|» isEnabled|boolean|false|none|A value indicating whether the device is enabled on the platform.|
-|» supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
-|» statusUpdatedTime|string(date-time)|false|none|The device last status updated time.|
-|» tags|object¦null|false|none|A list of searchable tags and their values.|
-|»» **additionalProperties**|string¦null|false|none|none|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[DeviceListItemPaginationResult](#schemadevicelistitempaginationresult)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -3220,6 +3178,86 @@ None
 |alreadyLoggedInOnce|boolean|false|none|`true` if [already logged in once]; otherwise, `false`.|
 |routerConfig|[RouterConfig](#schemarouterconfig)|false|none|none|
 
+<h2 id="tocS_ConcentratorPaginationResult">ConcentratorPaginationResult</h2>
+<!-- backwards compatibility -->
+<a id="schemaconcentratorpaginationresult"></a>
+<a id="schema_ConcentratorPaginationResult"></a>
+<a id="tocSconcentratorpaginationresult"></a>
+<a id="tocsconcentratorpaginationresult"></a>
+
+```json
+{
+  "items": [
+    {
+      "deviceId": "string",
+      "deviceName": "string",
+      "loraRegion": "string",
+      "deviceType": "string",
+      "clientCertificateThumbprint": "string",
+      "isConnected": true,
+      "isEnabled": true,
+      "alreadyLoggedInOnce": true,
+      "routerConfig": {
+        "netID": [
+          0
+        ],
+        "joinEui": [
+          [
+            "string"
+          ]
+        ],
+        "region": "string",
+        "hwspec": "string",
+        "freqRange": [
+          0
+        ],
+        "dRs": [
+          [
+            0
+          ]
+        ],
+        "sx1301Conf": [
+          {
+            "property1": {
+              "enable": true,
+              "freq": 0,
+              "radio": 0,
+              "if": 0,
+              "bandwidth": 0,
+              "spreadFactor": 0
+            },
+            "property2": {
+              "enable": true,
+              "freq": 0,
+              "radio": 0,
+              "if": 0,
+              "bandwidth": 0,
+              "spreadFactor": 0
+            }
+          }
+        ],
+        "nocca": true,
+        "nodc": true,
+        "nodwell": true
+      }
+    }
+  ],
+  "totalItems": 0,
+  "nextPage": "string"
+}
+
+```
+
+Class representing the page results.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|items|[[Concentrator](#schemaconcentrator)]¦null|false|none|The current page items.|
+|totalItems|integer(int32)|false|none|The total number of items.|
+|nextPage|string¦null|false|none|The query next page Url.|
+
 <h2 id="tocS_ConfigItem">ConfigItem</h2>
 <!-- backwards compatibility -->
 <a id="schemaconfigitem"></a>
@@ -3347,11 +3385,7 @@ None
   "isConnected": true,
   "isEnabled": true,
   "supportLoRaFeatures": true,
-  "statusUpdatedTime": "2019-08-24T14:15:22Z",
-  "tags": {
-    "property1": "string",
-    "property2": "string"
-  }
+  "statusUpdatedTime": "2019-08-24T14:15:22Z"
 }
 
 ```
@@ -3367,8 +3401,42 @@ None
 |isEnabled|boolean|false|none|A value indicating whether the device is enabled on the platform.|
 |supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
 |statusUpdatedTime|string(date-time)|false|none|The device last status updated time.|
-|tags|object¦null|false|none|A list of searchable tags and their values.|
-|» **additionalProperties**|string¦null|false|none|none|
+
+<h2 id="tocS_DeviceListItemPaginationResult">DeviceListItemPaginationResult</h2>
+<!-- backwards compatibility -->
+<a id="schemadevicelistitempaginationresult"></a>
+<a id="schema_DeviceListItemPaginationResult"></a>
+<a id="tocSdevicelistitempaginationresult"></a>
+<a id="tocsdevicelistitempaginationresult"></a>
+
+```json
+{
+  "items": [
+    {
+      "deviceID": "string",
+      "deviceName": "string",
+      "imageUrl": "string",
+      "isConnected": true,
+      "isEnabled": true,
+      "supportLoRaFeatures": true,
+      "statusUpdatedTime": "2019-08-24T14:15:22Z"
+    }
+  ],
+  "totalItems": 0,
+  "nextPage": "string"
+}
+
+```
+
+Class representing the page results.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|items|[[DeviceListItem](#schemadevicelistitem)]¦null|false|none|The current page items.|
+|totalItems|integer(int32)|false|none|The total number of items.|
+|nextPage|string¦null|false|none|The query next page Url.|
 
 <h2 id="tocS_DeviceModel">DeviceModel</h2>
 <!-- backwards compatibility -->
@@ -3641,6 +3709,39 @@ None
 |status|string¦null|false|none|The device status.|
 |type|string¦null|false|none|The device type.|
 |nbDevices|integer(int32)|false|none|The number of devices connected on the IoT Edge.|
+
+<h2 id="tocS_IoTEdgeListItemPaginationResult">IoTEdgeListItemPaginationResult</h2>
+<!-- backwards compatibility -->
+<a id="schemaiotedgelistitempaginationresult"></a>
+<a id="schema_IoTEdgeListItemPaginationResult"></a>
+<a id="tocSiotedgelistitempaginationresult"></a>
+<a id="tocsiotedgelistitempaginationresult"></a>
+
+```json
+{
+  "items": [
+    {
+      "deviceId": "string",
+      "status": "string",
+      "type": "string",
+      "nbDevices": 0
+    }
+  ],
+  "totalItems": 0,
+  "nextPage": "string"
+}
+
+```
+
+Class representing the page results.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|items|[[IoTEdgeListItem](#schemaiotedgelistitem)]¦null|false|none|The current page items.|
+|totalItems|integer(int32)|false|none|The total number of items.|
+|nextPage|string¦null|false|none|The query next page Url.|
 
 <h2 id="tocS_IoTEdgeModule">IoTEdgeModule</h2>
 <!-- backwards compatibility -->
