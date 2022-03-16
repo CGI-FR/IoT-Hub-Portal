@@ -1,19 +1,20 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared;
     using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.Concentrator;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
@@ -71,21 +72,29 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <returns></returns>
         [HttpGet(Name = "GET LoRaWAN Concentrator list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Concentrator>>> GetAllDeviceConcentrator()
+        public async Task<ActionResult<PaginationResult<Concentrator>>> GetAllDeviceConcentrator()
         {
             // Gets all the twins from this devices
-            var items = await this.devicesService.GetAllDevice(filterDeviceType: "LoRa Concentrator");
+            var result = await this.devicesService.GetAllDevice(filterDeviceType: "LoRa Concentrator");
+            string nextPage = null;
 
-            if (items.Any())
+            if (!string.IsNullOrEmpty(result.NextPage))
             {
-                var result = items.Select(this.concentratorTwinMapper.CreateDeviceDetails);
+                nextPage = this.Url.RouteUrl(new UrlRouteContext
+                {
+                    Values = new
+                    {
+                        continuationToken = result.NextPage
+                    }
+                });
+            }
 
-                return this.Ok(result);
-            }
-            else
+            return this.Ok(new PaginationResult<Concentrator>
             {
-                return this.Ok(items);
-            }
+                Items = result.Items.Select(this.concentratorTwinMapper.CreateDeviceDetails),
+                TotalItems = result.TotalItems,
+                NextPage = null
+            });
         }
 
         /// <summary>

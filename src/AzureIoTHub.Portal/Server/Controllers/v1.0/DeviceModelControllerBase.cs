@@ -335,7 +335,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 throw;
             }
 
-            if (deviceList.Any(x => DeviceHelper.RetrieveTagValue(x, "modelId") == id))
+            if (deviceList.Items.Any(x => DeviceHelper.RetrieveTagValue(x, "modelId") == id))
             {
                 return this.BadRequest("This model is already in use by a device and cannot be deleted.");
             }

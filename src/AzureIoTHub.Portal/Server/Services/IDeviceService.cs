@@ -1,16 +1,17 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
 
     public interface IDeviceService
     {
-        Task<IEnumerable<Twin>> GetAllEdgeDevice();
+
 
         Task<Device> GetDevice(string deviceId);
 
@@ -28,6 +29,21 @@ namespace AzureIoTHub.Portal.Server.Services
 
         Task DeleteDevice(string deviceId);
 
-        Task<IEnumerable<Twin>> GetAllDevice(string filterDeviceType = null, string excludeDeviceType = null);
+        Task<PaginationResult<Twin>> GetAllDevice(
+            string continuationToken = null,
+            string filterDeviceType = null,
+            string excludeDeviceType = null,
+            string searchText = null,
+            bool? searchStatus = null,
+            bool? searchState = null,
+            Dictionary<string, string> searchTags = null,
+            int pageSize = 10);
+
+        Task<PaginationResult<Twin>> GetAllEdgeDevice(
+            string continuationToken = null,
+            string searchText = null,
+            bool? searchStatus = null,
+            string searchType = null,
+            int pageSize = 10);
     }
 }

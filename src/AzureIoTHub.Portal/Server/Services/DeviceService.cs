@@ -4,20 +4,30 @@
 namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Globalization;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json.Linq;
 
     public class DeviceService : IDeviceService
     {
         private readonly RegistryManager registryManager;
         private readonly ServiceClient serviceClient;
+        private readonly ILogger<DeviceService> log;
+
 
         public DeviceService(
+            ILogger<DeviceService> log,
             RegistryManager registryManager,
             ServiceClient serviceClient)
         {
+            this.log = log;
             this.serviceClient = serviceClient;
             this.registryManager = registryManager;
         }
@@ -26,16 +36,65 @@ namespace AzureIoTHub.Portal.Server.Services
         /// this function return a list of all edge device wthiout tags.
         /// </summary>
         /// <returns>IEnumerable twin.</returns>
-        public async Task<IEnumerable<Twin>> GetAllEdgeDevice()
+        public async Task<PaginationResult<Twin>> GetAllEdgeDevice(
+            string continuationToken = null,
+            string searchText = null,
+            bool? searchStatus = null,
+            string searchType = null,
+            int pageSize = 10)
         {
-            var queryEdgeDevice = this.registryManager.CreateQuery("SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' GROUP BY deviceId", 10);
+            var filter = "WHERE devices.capabilities.iotEdge = true";
 
-            while (queryEdgeDevice.HasMoreResults)
+            if (searchStatus != null)
             {
-                return await queryEdgeDevice.GetNextAsTwinAsync();
+                filter += $" AND status = '{(searchStatus.Value ? "enabled" : "disabled")}'";
             }
 
-            return Enumerable.Empty<Twin>();
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                filter += $" AND (STARTSWITH(deviceId, '{searchText.ToLowerInvariant()}') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, '{searchText}')))";
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchType))
+            {
+                filter += $" AND devices.tags.deviceType = '{ searchType }'";
+            }
+
+            var emptyResult = new PaginationResult<Twin>
+            {
+                Items = Enumerable.Empty<Twin>(),
+                TotalItems = 0
+            };
+
+            var count = await this.registryManager
+                    .CreateQuery($"SELECT COUNT() as totalNumber FROM devices { filter }")
+                    .GetNextAsJsonAsync();
+
+            if (!JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result))
+            {
+                return emptyResult;
+            }
+
+            if (result.Value<int>() == 0)
+            {
+                return emptyResult;
+            }
+
+            var query = this.registryManager
+                .CreateQuery($"SELECT * FROM devices { filter }", pageSize);
+
+            var response = await query
+                            .GetNextAsTwinAsync(new QueryOptions
+                            {
+                                ContinuationToken = continuationToken
+                            });
+
+            return new PaginationResult<Twin>
+            {
+                Items = response,
+                TotalItems = result.Value<int>(),
+                NextPage = response.ContinuationToken
+            };
         }
 
 
@@ -43,29 +102,98 @@ namespace AzureIoTHub.Portal.Server.Services
         /// this function return a list of all device exept edge device.
         /// </summary>
         /// <returns>IEnumerable twin.</returns>
-        public async Task<IEnumerable<Twin>> GetAllDevice(string filterDeviceType = null, string excludeDeviceType = null)
+        public async Task<PaginationResult<Twin>> GetAllDevice(
+            string continuationToken = null,
+            string filterDeviceType = null,
+            string excludeDeviceType = null,
+            string searchText = null,
+            bool? searchStatus = null,
+            bool? searchState = null,
+            Dictionary<string, string> searchTags = null,
+            int pageSize = 10)
         {
-            var queryString = "SELECT * FROM devices WHERE devices.capabilities.iotEdge = false";
+            var filter = "WHERE devices.capabilities.iotEdge = false";
 
             if (!string.IsNullOrWhiteSpace(filterDeviceType))
             {
-                queryString += $" AND devices.tags.deviceType = '{ filterDeviceType }'";
+                filter += $" AND devices.tags.deviceType = '{ filterDeviceType }'";
             }
 
             if (!string.IsNullOrWhiteSpace(excludeDeviceType))
             {
-                queryString += $" AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != '{ excludeDeviceType }')";
+                filter += $" AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != '{ excludeDeviceType }')";
             }
+
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                filter += $" AND (STARTSWITH(deviceId, '{searchText.ToLowerInvariant()}') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, '{searchText}')))";
+            }
+
+            if (searchTags != null)
+            {
+                var tagsFilterBuilder = new StringBuilder();
+
+                foreach (var item in searchTags)
+                {
+                    _ = tagsFilterBuilder.Append(CultureInfo.InvariantCulture, $" AND is_defined(tags.{item.Key}) AND STARTSWITH(tags.{item.Key}, '{item.Value}')");
+                }
+
+                filter += tagsFilterBuilder.ToString();
+            }
+
+            if (searchStatus != null)
+            {
+                filter += $" AND status = '{(searchStatus.Value ? "enabled" : "disabled")}'";
+            }
+
+            if (searchState != null)
+            {
+                filter += $" AND connectionState = '{(searchState.Value ? "Connected" : "Disconnected")}'";
+            }
+
+            var emptyResult = new PaginationResult<Twin>
+            {
+                Items = Enumerable.Empty<Twin>(),
+                TotalItems = 0
+            };
+
+            var stopWatch = Stopwatch.StartNew();
+
+            var count = await this.registryManager
+                    .CreateQuery($"SELECT COUNT() as totalNumber FROM devices { filter }")
+                    .GetNextAsJsonAsync();
+
+            log.LogDebug($"Count obtained in {stopWatch.Elapsed}");
+
+            if (!JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result))
+            {
+                return emptyResult;
+            }
+
+            if (result.Value<int>() == 0)
+            {
+                return emptyResult;
+            }
+
+            stopWatch.Restart();
 
             var query = this.registryManager
-                    .CreateQuery(queryString);
+                .CreateQuery($"SELECT * FROM devices { filter }", pageSize);
 
-            while (query.HasMoreResults)
+            var response = await query
+                            .GetNextAsTwinAsync(new QueryOptions
+                            {
+                                ContinuationToken = continuationToken
+                            });
+
+            log.LogDebug($"Data obtained in {stopWatch.Elapsed}");
+
+            return new PaginationResult<Twin>
             {
-                return await query.GetNextAsTwinAsync();
-            }
-
-            return Enumerable.Empty<Twin>();
+                Items = response,
+                TotalItems = result.Value<int>(),
+                NextPage = response.ContinuationToken
+            };
         }
 
         /// <summary>

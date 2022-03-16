@@ -3,6 +3,8 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
@@ -10,8 +12,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
 
     [ApiController]
     [ApiVersion("1.0")]

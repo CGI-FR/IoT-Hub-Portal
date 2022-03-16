@@ -1,9 +1,11 @@
 ﻿@page "/devices"
+@using AzureIoTHub.Portal.Shared
 @using AzureIoTHub.Portal.Shared.Models.v10
 @using AzureIoTHub.Portal.Shared.Models.v10.Device
 @using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Web
 
 @attribute [Authorize]
 @inject HttpClient Http
@@ -21,7 +23,6 @@
                     <MudItem xs="12" md="12">
                         <MudTextField @bind-Value="searchID" Placeholder="DeviceID / DeviceName" id="searchID"></MudTextField>
                     </MudItem>
-
                     @foreach (DeviceTag tag in TagList)
                     {
                         if (tag.Searchable)
@@ -36,13 +37,13 @@
                             <MudText>Status</MudText>
                             <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline" id="searchStatus">
                                 <MudItem md="4" sm="12">
-                                    <MudRadio Option="@("true")" Color="Color.Primary" id="searchStatusEnabled">Enabled</MudRadio>
+                                    <MudRadio Option=@("true") Color="Color.Primary" id="searchStatusEnabled">Enabled</MudRadio>
                                 </MudItem>
                                 <MudItem md="4" sm="12">
-                                    <MudRadio Option="@("false")" Color="Color.Primary" id="searchDisabled">Disabled</MudRadio>
+                                    <MudRadio Option=@("false") Color="Color.Primary" id="searchDisabled">Disabled</MudRadio>
                                 </MudItem>
                                 <MudItem md="4" sm="12">
-                                    <MudRadio Option="@("")" Color="Color.Secondary" id="searchStatusAll">All</MudRadio>
+                                    <MudRadio Option=@("") Color="Color.Secondary" id="searchStatusAll">All</MudRadio>
                                 </MudItem>
                             </MudRadioGroup>
 
@@ -51,20 +52,20 @@
                             <MudText>Connection state</MudText>
                             <MudRadioGroup @bind-SelectedOption="@searchState" Style="display:flex;align-items:baseline">
                                 <MudItem md="4" sm="12">
-                                    <MudRadio Option="@("true")" Color="Color.Primary" id="searchStateConnected">Connected</MudRadio>
+                                    <MudRadio Option=@("true")  Color="Color.Primary" id="searchStateConnected">Connected</MudRadio>
                                 </MudItem>
                                 <MudItem md="4" sm="12">
-                                    <MudRadio Option="@("false")" Color="Color.Primary" id="searchStateDisconnected">Disconnected</MudRadio>
+                                    <MudRadio Option=@("false")  Color="Color.Primary" id="searchStateDisconnected">Disconnected</MudRadio>
                                 </MudItem>
                                 <MudItem md="4" sm="12">
-                                    <MudRadio Option="@("")" Color="Color.Secondary" id="searchStateAll">All</MudRadio>
+                                    <MudRadio Option=@("")  Color="Color.Secondary" id="searchStateAll">All</MudRadio>
                                 </MudItem>
                             </MudRadioGroup>
                         </MudItem>
                     </MudGrid>
 
                     <MudItem xs="12">
-                        <MudButton Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;" id="searchButton">Search</MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;" id="searchButton" OnClick=Search>Search</MudButton>
                         <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;" OnClick="Reset" id="resetSearch">Reset</MudButton>
                     </MudItem>
 
@@ -73,73 +74,62 @@
             </MudExpansionPanel>
         </MudExpansionPanels>
     </MudItem>
+    <MudItem xs="12">
+        <MudTable ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table">
+            <ColGroup>
+                <col style="width: 5%;" />
+                <col style="width: 40%;" />
+                <col style="width: 10%;" />
+                <col style="width: 10%;" />
+                <col style="width: 15%;" />
+                <col style="width: 10%;" />
+                <col style="width: 10%;" />
+            </ColGroup>
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Devices</MudText>
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick=@Search Size="Size.Medium" id="tableRefreshButton" Class="ma-2"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="tableAddItemButton" Class="ma-2"></MudIconButton>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh></MudTh>
+                <MudTh>Device</MudTh>
+                <MudTh Style="text-align: center">Status</MudTh>
+                <MudTh Style="text-align: center">Connection state</MudTh>
+                <MudTh Style="text-align: center">Last status update</MudTh>
+                <MudTh Style="text-align: center">See details</MudTh>
+                <MudTh Style="text-align: center">Delete</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd Style="text-align: center">
+                    <img height="25" src="@context.ImageUrl" />
+                </MudTd>
+                <MudTd DataLabel="Device" Style="word-break: break-all;">
+                    <a class="detail-link" href="@($"devices/{@context.DeviceID}{((@context.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true": "")}")">
+                        @(string.IsNullOrEmpty(context.DeviceName) ? context.DeviceID : context.DeviceName)
+                    </a>
+                </MudTd>
 
-    @if (result == null)
-    {
-        <MudItem id="progress-bar" Class="custom-centered-container">
-            <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
-        </MudItem>
-    }
-    else
-    {
-        <MudItem xs="12">
-            <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true
-                  ro
-                  Filter="new Func<DeviceListItem, bool>(FilterFunc)">
-                <ColGroup>
-                    <col style="width: 5%;" />
-                    <col style="width: 40%;" />
-                    <col style="width: 10%;" />
-                    <col style="width: 10%;" />
-                    <col style="width: 15%;" />
-                    <col style="width: 10%;" />
-                    <col style="width: 10%;" />
-                </ColGroup>
-                <ToolBarContent>
-                    <MudText Typo="Typo.h6">Devices</MudText>
-                    <MudSpacer />
-                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadDevices" id="tableRefreshButton" Class="ma-2"></MudIconButton>
-                    <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="tableAddItemButton" Class="ma-2"></MudIconButton>
-                </ToolBarContent>
-                <HeaderContent>
-                    <MudTh></MudTh>
-                    <MudTh>Device</MudTh>
-                    <MudTh Style="text-align: center">Status</MudTh>
-                    <MudTh Style="text-align: center">Connection state</MudTh>
-                    <MudTh Style="text-align: center">Last status update</MudTh>
-                    <MudTh Style="text-align: center">See details</MudTh>
-                    <MudTh Style="text-align: center">Delete</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd Style="text-align: center">
-                        <img height="25" src="@context.ImageUrl" />
-                    </MudTd>
-                    <MudTd DataLabel="Device" Style="word-break: break-all;">
-                        <a class="detail-link" href="@($"devices/{@context.DeviceID}{((@context.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true": "")}")">
-                            @(string.IsNullOrEmpty(context.DeviceName) ? context.DeviceID : context.DeviceName)
-                        </a>
-                    </MudTd>
-
-                    <MudTd DataLabel="Status" Style="text-align: center">
-                        @if (context.IsEnabled)
-                        {
+                <MudTd DataLabel="Status" Style="text-align: center">
+                    @if (context.IsEnabled)
+                    {
                         <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
-                        }
-                        else
-                        {
+                    }
+                    else
+                    {
                         <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
-                        }
+                    }
                 </MudTd>
 
                 <MudTd DataLabel="Connection" Style="text-align: center">
                     @if (context.IsConnected)
-                        {
+                    {
                         <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
-                        }
-                        else
-                        {
+                    }
+                    else
+                    {
                         <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
-                        }
+                    }
                 </MudTd>
                 <MudTd DataLabel="LSU" Style="text-align: center">@context.StatusUpdatedTime</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
@@ -151,12 +141,17 @@
                     <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDevice(context))"></MudIconButton>
                 </MudTd>
             </RowTemplate>
+            <NoRecordsContent>
+                <MudText>No matching records found</MudText>
+            </NoRecordsContent>
+            <LoadingContent>
+                <MudText>Loading...</MudText>
+            </LoadingContent>
             <PagerContent>
-                <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+                <MudTablePager DisableRowsPerPage=true   />
             </PagerContent>
         </MudTable>
     </MudItem>
-    }
 
     <MudItem xs="12">
         <MudFab OnClick="AddDevice" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Label="Add a new device" id="newDeviceButton"></MudFab>
@@ -165,11 +160,13 @@
 </MudGrid>
 
 @code {
-    private DeviceListItem[] result;
     private string searchID = "";
-    private string searchStatus = "";
-    private string searchState = "";
+    private string searchStatus;
+    private string searchState;
+    private MudTable<DeviceListItem> table;
     private Dictionary<string, string> searchTags = new();
+
+    private Dictionary<int, string> Pages { get; set; } = new();
 
     private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
 
@@ -177,8 +174,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadDevices();
-
         // Gets the custom tags that can be searched via the panel
         TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
         foreach (DeviceTag tag in TagList)
@@ -188,25 +183,40 @@
         }
     }
 
+    private async Task<TableData<DeviceListItem>> LoadItems(TableState state)
+    {
+        PaginationResult<DeviceListItem> result;
+
+        if (Pages.Keys.Contains(state.Page))
+        {
+            result = await Http.GetFromJsonAsync<PaginationResult<DeviceListItem>>(Pages[state.Page]);
+        }
+        else
+        {
+            var uri = $"api/devices?pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchID)}&searchStatus={searchStatus}&searchState={searchState}";
+
+            foreach(var searchTag in this.searchTags.Where(c => !string.IsNullOrEmpty(c.Value)))
+            {
+                uri += $"&tag.{searchTag.Key}={searchTag.Value}";
+            }
+
+            _ = Pages.TryAdd(state.Page, uri);
+
+            result = await Http.GetFromJsonAsync<PaginationResult<DeviceListItem>>(uri);
+        }
+
+        _ = Pages.TryAdd(state.Page + 1, result.NextPage);
+
+        return new TableData<DeviceListItem>
+            {
+                Items = result.Items,
+                TotalItems = result.TotalItems
+            };
+    }
+
     private void AddDevice()
     {
         navigationManager.NavigateTo("devices/new");
-    }
-
-    /// <summary>
-    /// Sends a GET request to the DevicesController, to retrieve all devices from Azure IoT Hub
-    /// </summary>
-    /// <returns></returns>
-    private async Task LoadDevices()
-    {
-        try
-        {
-            result = await Http.GetFromJsonAsync<DeviceListItem[]>("api/Devices");
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
-        }
     }
 
     /// <summary>
@@ -219,6 +229,15 @@
         searchStatus = "";
         searchState = "";
         searchTags = searchTags.ToDictionary(tag => tag.Key, tag => "");
+
+        Search();
+    }
+
+    private void Search()
+    {
+        Pages.Clear();
+
+        table.ReloadServerData();
     }
 
     /// <summary>
@@ -236,58 +255,5 @@
         {
             return;
         }
-
-        // Update the list of devices after the deletion
-        await LoadDevices();
-    }
-
-    /// <summary>
-    /// Filters the list of devices, based on fields set in the search panel
-    /// </summary>
-    /// <param name="item">Device represented in the current row</param>
-    /// <returns>Boolean</returns>
-    private bool FilterFunc(DeviceListItem item)
-    {
-        bool flagID = checkFlag(item.DeviceID, searchID);
-        bool flagName = checkFlag(item.DeviceName, searchID);
-        bool flagStatus = checkFlag(item.IsEnabled.ToString(), searchStatus);
-        bool flagState = checkFlag(item.IsConnected.ToString(), searchState);
-
-        // Checks the different customized flags
-        List<bool> flagTags = new();
-        foreach (KeyValuePair<string, string> tag in searchTags)
-        {
-            flagTags.Add(checkFlag(item.Tags[tag.Key], tag.Value));
-        }
-        bool flagTag = !flagTags.Contains(false);
-
-        // Current row is shown only if all the flags are true
-        if ((flagID || flagName) && flagStatus && flagState && flagTag)
-            return true;
-
-        return false;
-    }
-
-    /// <summary>
-    /// Checks if the specific device value matches the search criteria
-    /// </summary>
-    /// <param name="deviceValue">Device attribute being compared</param>
-    /// <param name="searchString">Field value in the search panel</param>
-    /// <returns>True if it matches of field is empty</returns>
-    private bool checkFlag(string deviceValue, string searchString)
-    {
-        bool flag;
-        try
-        {
-            flag = string.IsNullOrWhiteSpace(searchString) || deviceValue.Contains(searchString, StringComparison.OrdinalIgnoreCase);
-        }
-
-        //May happen if the device attribute is set to null
-        catch (NullReferenceException)
-        {
-            flag = false;
-        }
-
-        return flag;
     }
 }

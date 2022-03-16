@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
     using AzureIoTHub.Portal.Server.Services;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
 
@@ -20,6 +21,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
         private Mock<RegistryManager> mockRegistryManager;
         private Mock<ServiceClient> mockServiceClient;
+        private Mock<ILogger<DeviceService>> mockLogger;
 
         [SetUp]
         public void SetUp()
@@ -28,11 +30,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             this.mockRegistryManager = this.mockRepository.Create<RegistryManager>();
             this.mockServiceClient = this.mockRepository.Create<ServiceClient>();
+            this.mockLogger = this.mockRepository.Create<ILogger<DeviceService>>();
         }
 
         private DeviceService CreateService()
         {
             return new DeviceService(
+                this.mockLogger.Object,
                 this.mockRegistryManager.Object,
                 this.mockServiceClient.Object);
         }
@@ -44,28 +48,35 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             var service = this.CreateService();
             var mockQuery = this.mockRepository.Create<IQuery>();
 
-            var resultReturned = false;
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
 
-            _ = mockQuery.SetupGet(c => c.HasMoreResults)
-                .Returns(!resultReturned);
-
-            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync())
-                .ReturnsAsync(new Twin[]
-                {
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ReturnsAsync(new QueryResponse<Twin>(new[]{
                     new Twin(Guid.NewGuid().ToString())
+                    }, string.Empty));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 1}"
                 });
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
-                It.Is<string>(x => x == "SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' GROUP BY deviceId"),
+                It.Is<string>(x => x == "SELECT * FROM devices WHERE devices.capabilities.iotEdge = true"),
                 It.Is<int>(x => x == 10)))
                 .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true")))
+                .Returns(mockCountQuery.Object);
 
             // Act
             var result = await service.GetAllEdgeDevice();
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.Count());
+            Assert.AreEqual(1, result.Items.Count());
             this.mockRepository.VerifyAll();
         }
 
@@ -75,28 +86,480 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             // Arrange
             var service = this.CreateService();
             var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
 
-            var resultReturned = false;
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
-            _ = mockQuery.SetupGet(c => c.HasMoreResults)
-                .Returns(!resultReturned);
-
-            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync())
-                .ReturnsAsync(new Twin[]
-                {
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ReturnsAsync(new QueryResponse<Twin>(new[]{
                     new Twin(Guid.NewGuid().ToString())
+                    }, string.Empty));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 10}"
                 });
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
-                It.Is<string>(x => x == "SELECT * FROM devices WHERE devices.capabilities.iotEdge = false")))
+                It.Is<string>(x => x == "SELECT * FROM devices WHERE devices.capabilities.iotEdge = false"),
+                It.Is<int>(x => x == 10)))
                 .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false")))
+                .Returns(mockCountQuery.Object);
 
             // Act
             var result = await service.GetAllDevice();
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.Count());
+            Assert.AreEqual(1, result.Items.Count());
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenSpecifyingFilterToDeviceTypeGetAllDeviceShouldQueryToIoTHub()
+        {
+            // Arrange
+            var service = this.CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            var expectedAdditionalFilter = "AND devices.tags.deviceType = 'filteredType'";
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ReturnsAsync(new QueryResponse<Twin>(new[]{
+                    new Twin(Guid.NewGuid().ToString())
+                    }, string.Empty));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 10}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT * FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}"),
+                It.Is<int>(x => x == 10)))
+                .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetAllDevice(filterDeviceType: "filteredType");
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Items.Count());
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenExcludingDeviceTypeGetAllDeviceShouldQueryToIoTHub()
+        {
+            // Arrange
+            var service = this.CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            var expectedAdditionalFilter = "AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != 'filteredType')";
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ReturnsAsync(new QueryResponse<Twin>(new[]{
+                    new Twin(Guid.NewGuid().ToString())
+                    }, string.Empty));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 10}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT * FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}"),
+                It.Is<int>(x => x == 10)))
+                .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetAllDevice(excludeDeviceType: "filteredType");
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Items.Count());
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenSearchingDeviceGetAllDeviceShouldQueryToIoTHub()
+        {
+            // Arrange
+            var service = this.CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            var expectedAdditionalFilter = "AND (STARTSWITH(deviceId, 'test') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, 'test')))";
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ReturnsAsync(new QueryResponse<Twin>(new[]{
+                    new Twin(Guid.NewGuid().ToString())
+                    }, string.Empty));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 10}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT * FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}"),
+                It.Is<int>(x => x == 10)))
+                .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetAllDevice(searchText: "test");
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Items.Count());
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenSearchingContinuationGetAllDeviceShouldQueryToIoTHub()
+        {
+            // Arrange
+            var service = this.CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.Is<QueryOptions>(x => x.ContinuationToken == "test")))
+                .ReturnsAsync(new QueryResponse<Twin>(new[]{
+                    new Twin(Guid.NewGuid().ToString())
+                    }, string.Empty));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 10}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT * FROM devices WHERE devices.capabilities.iotEdge = false"),
+                It.Is<int>(x => x == 10)))
+                .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetAllDevice(continuationToken: "test");
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Items.Count());
+            this.mockRepository.VerifyAll();
+        }
+
+
+        [Test]
+        public async Task WhenSearchingDisabledDeviceGetAllDeviceShouldQueryToIoTHub()
+        {
+            // Arrange
+            var service = this.CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            var expectedAdditionalFilter = "AND status = 'disabled'";
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ReturnsAsync(new QueryResponse<Twin>(new[]{
+                    new Twin(Guid.NewGuid().ToString())
+                    }, string.Empty));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 10}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT * FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}"),
+                It.Is<int>(x => x == 10)))
+                .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetAllDevice(searchStatus: false);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Items.Count());
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenSearchingEnabledDeviceGetAllDeviceShouldQueryToIoTHub()
+        {
+            // Arrange
+            var service = this.CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            var expectedAdditionalFilter = "AND status = 'enabled'";
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ReturnsAsync(new QueryResponse<Twin>(new[]{
+                    new Twin(Guid.NewGuid().ToString())
+                    }, string.Empty));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 10}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT * FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}"),
+                It.Is<int>(x => x == 10)))
+                .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetAllDevice(searchStatus: true);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Items.Count());
+            this.mockRepository.VerifyAll();
+        }
+
+
+        [Test]
+        public async Task WhenSearchingConnectedDeviceGetAllDeviceShouldQueryToIoTHub()
+        {
+            // Arrange
+            var service = this.CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            var expectedAdditionalFilter = "AND connectionState = 'Connected'";
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ReturnsAsync(new QueryResponse<Twin>(new[]{
+                    new Twin(Guid.NewGuid().ToString())
+                    }, string.Empty));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 10}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT * FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}"),
+                It.Is<int>(x => x == 10)))
+                .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetAllDevice(searchState: true);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Items.Count());
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenSearchingDisconnectedDeviceGetAllDeviceShouldQueryToIoTHub()
+        {
+            // Arrange
+            var service = this.CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            var expectedAdditionalFilter = "AND connectionState = 'Disconnected'";
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ReturnsAsync(new QueryResponse<Twin>(new[]{
+                    new Twin(Guid.NewGuid().ToString())
+                    }, string.Empty));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 10}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT * FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}"),
+                It.Is<int>(x => x == 10)))
+                .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetAllDevice(searchState: false);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Items.Count());
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenSearchingTagGetAllDeviceShouldQueryToIoTHub()
+        {
+            // Arrange
+            var service = this.CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            var expectedAdditionalFilter = "AND is_defined(tags.testKey) AND STARTSWITH(tags.testKey, 'testValue')";
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ReturnsAsync(new QueryResponse<Twin>(new[]{
+                    new Twin(Guid.NewGuid().ToString())
+                    }, string.Empty));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 10}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT * FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}"),
+                It.Is<int>(x => x == 10)))
+                .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false {expectedAdditionalFilter}")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetAllDevice(searchTags: new System.Collections.Generic.Dictionary<string, string>
+            {
+                { "testKey", "testValue" }
+            });
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Items.Count());
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenFailedToDeserializeCountShouldReturnEmpty()
+        {
+            // Arrange
+            var service = this.CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ fakeData: 10}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetAllDevice();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Items.Count());
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenCountReturnsZeroMatchingGetAllDevicesShouldReturnEmpty()
+        {
+            // Arrange
+            var service = this.CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 0}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetAllDevice();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Items.Count());
+
             this.mockRepository.VerifyAll();
         }
 

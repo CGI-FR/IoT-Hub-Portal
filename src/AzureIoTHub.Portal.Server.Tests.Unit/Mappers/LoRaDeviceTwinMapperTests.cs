@@ -140,7 +140,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
                 .Returns(expectedModelImageUri);
 
             // Act
-            var result = loRaDeviceTwinMapper.CreateDeviceListItem(twin, null);
+            var result = loRaDeviceTwinMapper.CreateDeviceListItem(twin);
 
             // Assert
             Assert.IsNotNull(result);
@@ -159,7 +159,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             var loRaDeviceTwinMapper = this.CreateLoRaDeviceTwinMapper();
             var twin = new Twin(Guid.NewGuid().ToString());
             var modelId = Guid.NewGuid().ToString();
-            var tags = new List<string> { "tag0", "tag01" };
 
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.ModelId), modelId);
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.DeviceName), Guid.NewGuid().ToString());
@@ -170,14 +169,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
                 .Returns(expectedModelImageUri);
 
             // Act
-            var result = loRaDeviceTwinMapper.CreateDeviceListItem(twin, tags);
+            var result = loRaDeviceTwinMapper.CreateDeviceListItem(twin);
 
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(twin.DeviceId, result.DeviceID);
             Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
-            Assert.IsNotNull(result.Tags);
-            Assert.AreEqual(result.Tags.Count, tags.Count);
+
 
             Assert.AreEqual(expectedModelImageUri, result.ImageUrl);
 

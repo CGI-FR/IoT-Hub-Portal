@@ -20,10 +20,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10.Device;
     using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Controllers;
+    using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.AspNetCore.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Primitives;
     using Moq;
     using NUnit.Framework;
 
@@ -33,6 +38,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         private MockRepository mockRepository;
 
         private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
+        private Mock<IUrlHelper> mockUrlHelper;
         private Mock<ILogger<DevicesController>> mockLogger;
         private Mock<IDeviceService> mockDeviceService;
         private Mock<IDeviceTagService> mockDeviceTagService;
@@ -50,6 +56,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
+            this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
         }
 
         private DevicesController CreateDevicesController()
@@ -60,7 +67,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 this.mockDeviceTagService.Object,
                 this.mockProvisioningServiceManager.Object,
                 this.mockDeviceTwinMapper.Object,
-                this.mockTableClientFactory.Object);
+                this.mockTableClientFactory.Object)
+            {
+                Url = this.mockUrlHelper.Object
+            };
         }
 
         [Test]
@@ -70,32 +80,72 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var devicesController = this.CreateDevicesController();
             var count = 100;
             var twinCollection = new TwinCollection();
+
             twinCollection["deviceType"] = "test";
 
-            _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
-                    It.Is<string>(x => string.IsNullOrEmpty(x)),
-                    It.Is<string>(x => x == "LoRa Concentrator")))
-                .ReturnsAsync(Enumerable.Range(0, 100).Select(x => new Twin
-                {
-                    DeviceId = FormattableString.Invariant($"{x}"),
-                    Tags = twinCollection
-                }));
+            var mockTagSearch = new StringValues("test");
 
-            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceListItem(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
-                .Returns<Twin, IEnumerable<string>>((x, y) => new DeviceListItem
+            var mockQueryCollection = new QueryCollection(new Dictionary<string, StringValues>()
+            {
+                { "tag.deviceType", mockTagSearch }
+            });
+
+            var mockHttpRequest = this.mockRepository.Create<HttpRequest>();
+            var mockHttpContext = this.mockRepository.Create<HttpContext>();
+
+            _ = mockHttpContext.SetupGet(c => c.Request)
+                .Returns(mockHttpRequest.Object);
+
+            _ = mockHttpRequest.Setup(c => c.Query)
+                .Returns(mockQueryCollection);
+
+            devicesController.ControllerContext = new ControllerContext(
+                new ActionContext(mockHttpContext.Object, new RouteData(), new ControllerActionDescriptor()));
+
+            _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
+                    It.Is<string>(x => x == "aaa"),
+                    It.Is<string>(x => string.IsNullOrEmpty(x)),
+                    It.Is<string>(x => x == "LoRa Concentrator"),
+                    It.Is<string>(x => x == "bbb"),
+                    It.Is<bool?>(x => x == true),
+                    It.Is<bool?>(x => x == false),
+                    It.Is<Dictionary<string, string>>(x => x["deviceType"] == "test"),
+                    It.Is<int>(x => x == 2)))
+                .ReturnsAsync(new Shared.PaginationResult<Twin>
+                {
+                    Items = Enumerable.Range(0, 100).Select(x => new Twin
+                    {
+                        DeviceId = FormattableString.Invariant($"{x}"),
+                        Tags = twinCollection
+                    }),
+                    TotalItems = 1000,
+                    NextPage = Guid.NewGuid().ToString()
+                });
+
+            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceListItem(It.IsAny<Twin>()))
+                .Returns<Twin>((x) => new DeviceListItem
                 {
                     DeviceID = x.DeviceId
                 });
 
             _ = this.mockDeviceTagService.Setup(c => c.GetAllSearchableTagsNames())
-                .Returns(new List<string>());
+                .Returns(new string[] { "deviceType" });
 
+            _ = this.mockUrlHelper.Setup(c => c.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(Guid.NewGuid().ToString());
             // Act
-            var result = await devicesController.GetItems();
+
+            var result = await devicesController.GetItems(
+                continuationToken: "aaa",
+                searchText: "bbb",
+                searchStatus: true,
+                searchState: false,
+                pageSize: 2);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(count, result.Count());
+            Assert.AreEqual(count, result.Items.Count());
+            Assert.AreEqual(1000, result.TotalItems);
             this.mockRepository.VerifyAll();
         }
 

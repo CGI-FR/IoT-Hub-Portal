@@ -568,9 +568,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 .ReturnsAsync(mockResponse.Object);
 
             _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
-                    It.Is<string>(x => string.IsNullOrEmpty(x)),
-                    It.Is<string>(x => string.IsNullOrEmpty(x))))
-                .ReturnsAsync(new List<Twin>());
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<int>()))
+                .ReturnsAsync(new Shared.PaginationResult<Twin>
+                {
+                    Items = new List<Twin>()
+                });
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.DeleteDeviceModelImageAsync(It.Is<string>(x => x == id)))
                 .Returns(Task.CompletedTask);

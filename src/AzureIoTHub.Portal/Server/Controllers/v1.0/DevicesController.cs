@@ -3,19 +3,20 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Entities;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10.Device;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     [ApiController]
     [ApiVersion("1.0")]
@@ -51,9 +52,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GET Device list")]
-        public override Task<IEnumerable<DeviceListItem>> GetItems()
+        public override Task<PaginationResult<DeviceListItem>> GetItems(
+            string continuationToken = null,
+            string searchText = null,
+            bool? searchStatus = null,
+            bool? searchState = null,
+            int pageSize = 10)
         {
-            return base.GetItems();
+            return base.GetItems(continuationToken, searchText, searchStatus, searchState, pageSize);
         }
 
         /// <summary>

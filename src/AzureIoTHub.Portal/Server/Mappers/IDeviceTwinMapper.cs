@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     {
         TDevice CreateDeviceDetails(Twin twin, IEnumerable<string> tags);
 
-        TListItem CreateDeviceListItem(Twin twin, IEnumerable<string> tags);
+        TListItem CreateDeviceListItem(Twin twin);
 
         void UpdateTwin(Twin twin, TDevice item);
     }

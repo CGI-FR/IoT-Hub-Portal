@@ -5,7 +5,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
@@ -13,10 +15,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10.Device;
     using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
@@ -53,12 +57,68 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the device list.
         /// </summary>
-        public virtual async Task<IEnumerable<TListItem>> GetItems()
+        public virtual async Task<PaginationResult<TListItem>> GetItems(
+            string continuationToken = null,
+            string searchText = null,
+            bool? searchStatus = null,
+            bool? searchState = null,
+            int pageSize = 10)
         {
-            var items = await this.devicesService.GetAllDevice(excludeDeviceType: "LoRa Concentrator");
-            var tagList = this.deviceTagService.GetAllSearchableTagsNames();
+            var searchTags = new Dictionary<string, string>();
 
-            return items.Select(c => this.deviceTwinMapper.CreateDeviceListItem(c, tagList));
+            var searchableTags = deviceTagService.GetAllSearchableTagsNames();
+
+            foreach (var tag in searchableTags)
+            {
+                if (this.Request.Query.TryGetValue($"tag.{tag}", out var searchTag))
+                {
+                    searchTags.Add(tag, searchTag.Single());
+                }
+            }
+
+            var result = await this.devicesService.GetAllDevice(
+                continuationToken: continuationToken,
+                pageSize: pageSize,
+                searchStatus: searchStatus,
+                searchText: searchText,
+                searchState: searchState,
+                searchTags: searchTags,
+                excludeDeviceType: "LoRa Concentrator");
+
+            string nextPage = null;
+
+            if (!string.IsNullOrEmpty(result.NextPage))
+            {
+                nextPage = this.Url.RouteUrl(new UrlRouteContext
+                {
+                    RouteName = nameof(GetItems),
+                    Values = new
+                    {
+                        continuationToken = result.NextPage,
+                        searchText,
+                        searchState,
+                        searchStatus,
+                        pageSize
+                    }
+                });
+
+                if (searchTags != null)
+                {
+                    var tagsFilterBuilder = new StringBuilder();
+
+                    foreach (var tag in searchTags)
+                    {
+                        _ = tagsFilterBuilder.Append(CultureInfo.InvariantCulture, $"&tag.{tag.Key}={tag.Value}");
+                    }
+                }
+            }
+
+            return new PaginationResult<TListItem>
+            {
+                Items = result.Items.Select(x => this.deviceTwinMapper.CreateDeviceListItem(x)),
+                TotalItems = result.TotalItems,
+                NextPage = nextPage
+            };
         }
 
         /// <summary>
