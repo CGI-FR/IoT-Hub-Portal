@@ -28,6 +28,7 @@ Hi there! Thank you for discovering and submitting an issue!
 ## Context (Environment)
 
 **Portal version**: <!-- ex: 1.0.2 -->
+**LoRaWAN Stack version**: <!-- ex: 2.0.0 -->
 
 ## Logs
 <!-- Please share as many logs as possible. This will help to debug -->
