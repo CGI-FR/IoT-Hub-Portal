@@ -1,8 +1,11 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice
+namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
 {
+    /// <summary>
+    /// LoRAWAN Command
+    /// </summary>
     public class Command
     {
         /// <summary>

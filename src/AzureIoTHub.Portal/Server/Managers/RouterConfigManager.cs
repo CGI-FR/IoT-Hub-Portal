@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Managers
@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.Concentrator;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
     public class RouterConfigManager : IRouterConfigManager
     {
@@ -19,8 +19,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         public async Task<RouterConfig> GetRouterConfig(string loRaRegion)
         {
-            var result = await this.httpClient.GetFromJsonAsync<RouterConfig>($"{loRaRegion}.json");
-            return result;
+            return await this.httpClient.GetFromJsonAsync<RouterConfig>($"{loRaRegion}.json");
         }
     }
 }

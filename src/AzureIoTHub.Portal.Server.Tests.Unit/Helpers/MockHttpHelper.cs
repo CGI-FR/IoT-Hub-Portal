@@ -21,14 +21,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
             var httpClient = mockHttpHandler.ToHttpClient();
             httpClient.BaseAddress = new Uri("http://fake.local");
 
-            _ = services.AddSingleton<HttpClient>(httpClient);
+            _ = services.AddSingleton(httpClient);
 
             return mockHttpHandler;
         }
 
         public static MockedRequest RespondJson<T>(this MockedRequest request, T content)
         {
-            _ = request.Respond(req =>
+            _ = request.Respond(_ =>
               {
                   var response = new HttpResponseMessage(HttpStatusCode.OK)
                   {
@@ -41,9 +41,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
             return request;
         }
 
-        public static MockedRequest RespondJsonAsync<T>(this MockedRequest request, Task<T> content)
+        public static MockedRequest RespondJson<T>(this MockedRequest request, Task<T> content)
         {
-            _ = request.Respond(req =>
+            _ = request.Respond(_ =>
               {
                   var response = new HttpResponseMessage(HttpStatusCode.OK)
                   {
@@ -58,7 +58,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 
         public static MockedRequest RespondText(this MockedRequest request, string content)
         {
-            _ = request.Respond(req =>
+            _ = request.Respond(_ =>
               {
                   var response = new HttpResponseMessage(HttpStatusCode.OK)
                   {
@@ -73,7 +73,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 
         public static MockedRequest RespondJson<T>(this MockedRequest request, Func<T> contentProvider)
         {
-            _ = request.Respond(req =>
+            _ = request.Respond(_ =>
               {
                   var response = new HttpResponseMessage(HttpStatusCode.OK)
                   {
@@ -82,13 +82,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
                   response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                   return response;
               });
-
-            return request;
-        }
-
-        public static IMockedRequest AddRequestExpectation(this IMockedRequest request, MockHttpMessageHandler mockHttpClient)
-        {
-            mockHttpClient.AddRequestExpectation(request);
 
             return request;
         }

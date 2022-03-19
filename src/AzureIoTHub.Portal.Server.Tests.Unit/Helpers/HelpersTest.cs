@@ -1,13 +1,17 @@
-﻿using AzureIoTHub.Portal.Server.Helpers;
-using Microsoft.Azure.Devices.Shared;
-using NUnit.Framework;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 {
-    class HelpersTest
+    using System;
+    using AzureIoTHub.Portal.Server.Helpers;
+    using Microsoft.Azure.Devices.Shared;
+    using NUnit.Framework;
+
+    public class HelpersTest
     {
         [Test]
-        public void RetrieveTagValue_RealTwin_ReturnsExpectedValue()
+        public void RetrieveTagValueRealTwinReturnsExpectedValue()
         {
             // Arrange
             var twin = new Twin();
@@ -20,11 +24,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
             var result = DeviceHelper.RetrieveTagValue(twin, TAG_KEY);
 
             // Assert
-            result.Contains($"{TAG_VALUE}");
+            Assert.IsTrue(result.Contains(TAG_VALUE, StringComparison.OrdinalIgnoreCase));
         }
 
         [Test]
-        public void RetrieveTagValue_EmptyTwin_ReturnsNull()
+        public void RetrieveTagValueEmptyTwinReturnsNull()
         {
             // Arrange
             var twin = new Twin();
@@ -38,7 +42,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         }
 
         [Test]
-        public void RetrieveProperyValue_RealTwin_ReturnsExpectedValue()
+        public void RetrieveProperyValueRealTwinReturnsExpectedValue()
         {
             // Arrange
             var twin = new Twin();
@@ -50,11 +54,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
             var result = DeviceHelper.RetrieveDesiredPropertyValue(twin, PROPERTY_KEY);
 
             // Assert
-            result.Contains($"{PROPERTY_VALUE}");
+            Assert.IsTrue(result.Contains(PROPERTY_VALUE, StringComparison.OrdinalIgnoreCase));
         }
 
         [Test]
-        public void RetrievePropertyValue_EmptyTwin_ReturnsNull()
+        public void RetrievePropertyValueEmptyTwinReturnsNull()
         {
             // Arrange
             var twin = new Twin();

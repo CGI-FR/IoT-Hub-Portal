@@ -1,15 +1,18 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
+namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
 {
     using System.ComponentModel.DataAnnotations;
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Models.v10;
 
+    /// <summary>
+    /// LoRa Device base
+    /// </summary>
     public class LoRaDeviceBase : DeviceDetails
     {
         /// <summary>
-        /// The LoRa device class.
+        /// The LoRa device class type.
         /// </summary>
         public ClassType ClassType { get; set; }
 
@@ -107,12 +110,15 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN
         /// </summary>
         public int? KeepAliveTimeout { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the LoRa Device Base class.
+        /// </summary>
         public LoRaDeviceBase()
         {
-            this.Downlink = true;
-            this.PreferredWindow = 1;
-            this.Deduplication = DeduplicationMode.None;
-            this.ABPRelaxMode = true;
+            Downlink = true;
+            PreferredWindow = 1;
+            Deduplication = DeduplicationMode.None;
+            ABPRelaxMode = true;
         }
     }
 }

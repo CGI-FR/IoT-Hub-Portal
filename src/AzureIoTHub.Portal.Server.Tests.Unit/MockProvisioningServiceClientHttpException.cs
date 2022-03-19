@@ -1,15 +1,25 @@
-﻿using Microsoft.Azure.Devices.Provisioning.Service;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit
 {
-    internal class MockProvisioningServiceClientHttpException : ProvisioningServiceClientHttpException
+    using System.Net;
+    using Microsoft.Azure.Devices.Provisioning.Service;
+
+    internal sealed class MockProvisioningServiceClientHttpException : ProvisioningServiceClientHttpException
     {
         public new HttpStatusCode StatusCode { get; set; }
+
+        public MockProvisioningServiceClientHttpException(string message) : base(message)
+        {
+        }
+
+        public MockProvisioningServiceClientHttpException(string message, System.Exception innerException) : base(message, innerException)
+        {
+        }
+
+        public MockProvisioningServiceClientHttpException()
+        {
+        }
     }
 }

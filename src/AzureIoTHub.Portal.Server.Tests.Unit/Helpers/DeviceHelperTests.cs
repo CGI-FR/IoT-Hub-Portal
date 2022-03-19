@@ -16,11 +16,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         public void RetrieveSymmetricKeyShouldReturnDerivedKey()
         {
             // Arrange
-            var deviceId = "sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6";
+            const string deviceId = "sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6";
             var attestation =
                 new SymmetricKeyAttestation("8isrFI1sGsIlvvFSSFRiMfCNzv21fjbE/+ah/lSh3lF8e2YG1Te7w1KpZhJFFXJrqYKi9yegxkqIChbqOS9Egw==",
                                             "8isrFI1sGsIlvvFSSFRiMfCNzv21fjbE/+ah/lSh3lF8e2YG1Te7w1KpZhJFFXJrqYKi9yegxkqIChbqOS9Egw==");
-            var expected = "Jsm0lyGpjaVYVP2g3FnmnmG9dI/9qU24wNoykUmermc=";
+            const string expected = "Jsm0lyGpjaVYVP2g3FnmnmG9dI/9qU24wNoykUmermc=";
 
             // Act
             var result = DeviceHelper.RetrieveSymmetricKey(deviceId, attestation);
@@ -46,7 +46,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
             Assert.AreEqual("bbb", result);
         }
 
-        [Test()]
+        [Test]
         public void WhenNotPresentRetrieveTagValueShouldReturnNull()
         {
             // Arrange
@@ -68,7 +68,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         {
             // Arrange
             var item = new Twin();
-            var expectedTagName = "myTagName";
+            const string expectedTagName = "myTagName";
             var value = string.Empty;
 
             // Act
@@ -84,7 +84,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
             // Arrange
             var twin = new Twin();
 
-            var propertyName = "propName";
+            const string propertyName = "propName";
             twin.Properties.Desired[propertyName] = "bbb";
 
             // Act
@@ -99,7 +99,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         {
             // Arrange
             var item = new Twin();
-            var expectedTagName = "myTagName";
+            const string expectedTagName = "myTagName";
             var value = string.Empty;
 
             // Act
@@ -115,7 +115,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
             // Arrange
             var twin = new Twin();
 
-            var propertyName = "propName";
+            const string propertyName = "propName";
 
             // Act
             var result = DeviceHelper.RetrieveDesiredPropertyValue(twin, propertyName);
@@ -130,7 +130,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
             // Arrange
             var twin = new Twin();
 
-            var propertyName = "propName";
+            const string propertyName = "propName";
             twin.Properties.Reported[propertyName] = "bbb";
 
             // Act
@@ -146,7 +146,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
             // Arrange
             var twin = new Twin();
 
-            var propertyName = "propName";
+            const string propertyName = "propName";
 
             // Act
             var result = DeviceHelper.RetrieveReportedPropertyValue(twin, propertyName);
@@ -182,12 +182,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
             Assert.AreEqual(0, result);
         }
 
-
         [Test]
         public void RetrieveNbModuleCountShouldReturnModuleArrayCountFromDesiredProperty()
         {
             // Arrange
-            var deviceId = "aaa";
+            const string deviceId = "aaa";
             var twin = new Twin(deviceId);
             twin.Properties.Desired["modules"] = new object[12];
 
@@ -202,7 +201,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         public void WhenTwinIsDifferentDeviceIdRetrieveNbModuleCountShouldReturn0()
         {
             // Arrange
-            var deviceId = "aaa";
+            const string deviceId = "aaa";
             var twin = new Twin();
             twin.Properties.Desired["modules"] = new object[12];
 
@@ -217,7 +216,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         public void WhenPropertyNotExistRetrieveNbModuleCountShouldReturn0()
         {
             // Arrange
-            var deviceId = "aaa";
+            const string deviceId = "aaa";
             var twin = new Twin(deviceId);
 
             // Act
@@ -316,7 +315,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
                 }
             });
 
-            var moduleCount = 2;
+            const int moduleCount = 2;
 
             var twin = new Twin(new TwinProperties
             {
@@ -334,7 +333,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         public void WhenPropertyNotExistRetrieveModuleListShouldReturnEmptyList()
         {
             // Arrange
-            var moduleCount = 0;
+            const int moduleCount = 0;
             var twin = new Twin();
 
             // Act

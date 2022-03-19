@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -36,7 +36,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             ITableClientFactory tableClientFactory,
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             IConfigService configService)
-            : base(log, deviceModelImageManager, deviceModelMapper, devicesService, tableClientFactory, deviceProvisioningServiceManager, configService, $"")
+            : base(log, deviceModelImageManager, deviceModelMapper, devicesService, tableClientFactory, deviceProvisioningServiceManager, configService, "")
         {
         }
 
@@ -59,7 +59,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpGet("{id}", Name = "GET Device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override ActionResult<DeviceModel> GetItem(string id)
+        public override Task<ActionResult<DeviceModel>> GetItem(string id)
         {
             return base.GetItem(id);
         }
@@ -68,11 +68,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the device model avatar.
         /// </summary>
         /// <param name="id">The device model identifier</param>
-        /// <returns></returns>
         [HttpGet("{id}/avatar", Name = "GET Device model avatar URL")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override ActionResult<string> GetAvatar(string id)
+        public override Task<ActionResult<string>> GetAvatar(string id)
         {
             return base.GetAvatar(id);
         }

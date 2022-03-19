@@ -6,9 +6,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System;
     using System.Net.Http;
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
-    using AzureIoTHub.Portal.Shared.Models.v10;
-    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
     using Bunit;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
@@ -22,11 +21,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     [TestFixture]
     public class DeviceModelListPageTests : IDisposable
     {
+#pragma warning disable CA2213 // Disposable fields should be disposed
         private Bunit.TestContext testContext;
+        private MockHttpMessageHandler mockHttpClient;
+#pragma warning restore CA2213 // Disposable fields should be disposed
 
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
-        private MockHttpMessageHandler mockHttpClient;
 
         private readonly string apiBaseUrl = "/api/models";
 
@@ -38,15 +39,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             this.mockRepository = new MockRepository(MockBehavior.Strict);
             this.mockDialogService = this.mockRepository.Create<IDialogService>();
 
-            this.mockHttpClient = testContext.Services.AddMockHttpClient();
+            this.mockHttpClient = this.testContext.Services.AddMockHttpClient();
 
-            _ = testContext.Services.AddSingleton(this.mockDialogService.Object);
+            _ = this.testContext.Services.AddSingleton(this.mockDialogService.Object);
 
-            _ = testContext.Services.AddMudServices();
+            _ = this.testContext.Services.AddMudServices();
 
-            _ = testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
-            _ = testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            _ = testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
+            _ = this.testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
+            _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
+            _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
         }
 
         private IRenderedComponent<TComponent> RenderComponent<TComponent>(params ComponentParameter[] parameters)
@@ -62,10 +63,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, apiBaseUrl)
+                .When(HttpMethod.Get, this.apiBaseUrl)
                 .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
-            _ = testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             var cut = RenderComponent<DeviceModelListPage>();
             _ = cut.WaitForElements(".detail-link");
@@ -88,10 +89,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, apiBaseUrl)
+                .When(HttpMethod.Get, this.apiBaseUrl)
                 .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
-            _ = testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             var cut = RenderComponent<DeviceModelListPage>();
             _ = cut.WaitForElements(".detail-link");
@@ -109,8 +110,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
         public void Dispose()
         {
-            this.mockHttpClient?.Dispose();
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
         }
     }
 }

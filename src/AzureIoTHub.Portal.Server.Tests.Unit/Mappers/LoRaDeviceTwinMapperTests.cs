@@ -3,15 +3,15 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 {
+    using System;
+    using System.Collections.Generic;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.Azure.Devices.Shared;
     using Moq;
     using NUnit.Framework;
-    using System;
-    using System.Collections.Generic;
 
     [TestFixture]
     public class LoRaDeviceTwinMapperTests
@@ -38,7 +38,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void CreateDeviceDetailsStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var loRaDeviceTwinMapper = this.CreateLoRaDeviceTwinMapper();
+            var loRaDeviceTwinMapper = CreateLoRaDeviceTwinMapper();
             var twin = new Twin(Guid.NewGuid().ToString());
             var modelId = Guid.NewGuid().ToString();
 
@@ -53,7 +53,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.SensorDecoder)] = Guid.NewGuid().ToString();
 
-            var expectedModelImageUri = $"https://fake.local/{modelId}";
+            var expectedModelImageUri = new Uri($"https://fake.local/{modelId}");
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == modelId)))
                 .Returns(expectedModelImageUri);
@@ -85,7 +85,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void CreateDeviceDetailsNullTagListExpectedBehavior()
         {
             // Arrange
-            var loRaDeviceTwinMapper = this.CreateLoRaDeviceTwinMapper();
+            var loRaDeviceTwinMapper = CreateLoRaDeviceTwinMapper();
             var twin = new Twin(Guid.NewGuid().ToString());
             var modelId = Guid.NewGuid().ToString();
 
@@ -98,7 +98,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)] = Guid.NewGuid().ToString();
             twin.Properties.Desired[nameof(LoRaDeviceDetails.SensorDecoder)] = Guid.NewGuid().ToString();
 
-            var expectedModelImageUri = $"https://fake.local/{modelId}";
+            var expectedModelImageUri = new Uri($"https://fake.local/{modelId}");
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == modelId)))
                 .Returns(expectedModelImageUri);
@@ -127,14 +127,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void CreateDeviceListItemStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var loRaDeviceTwinMapper = this.CreateLoRaDeviceTwinMapper();
+            var loRaDeviceTwinMapper = CreateLoRaDeviceTwinMapper();
             var twin = new Twin(Guid.NewGuid().ToString());
             var modelId = Guid.NewGuid().ToString();
 
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.ModelId), modelId);
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.DeviceName), Guid.NewGuid().ToString());
 
-            var expectedModelImageUri = $"https://fake.local/{modelId}";
+            var expectedModelImageUri = new Uri($"https://fake.local/{modelId}");
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == modelId)))
                 .Returns(expectedModelImageUri);
@@ -156,14 +156,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void CreateDeviceListItemWithTagsExpectedBehavior()
         {
             // Arrange
-            var loRaDeviceTwinMapper = this.CreateLoRaDeviceTwinMapper();
+            var loRaDeviceTwinMapper = CreateLoRaDeviceTwinMapper();
             var twin = new Twin(Guid.NewGuid().ToString());
             var modelId = Guid.NewGuid().ToString();
 
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.ModelId), modelId);
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.DeviceName), Guid.NewGuid().ToString());
 
-            var expectedModelImageUri = $"https://fake.local/{modelId}";
+            var expectedModelImageUri = new Uri($"https://fake.local/{modelId}");
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == modelId)))
                 .Returns(expectedModelImageUri);
@@ -176,7 +176,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             Assert.AreEqual(twin.DeviceId, result.DeviceID);
             Assert.AreEqual(DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)), result.DeviceName);
 
-
             Assert.AreEqual(expectedModelImageUri, result.ImageUrl);
 
             this.mockRepository.VerifyAll();
@@ -186,7 +185,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void UpdateTwinStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var loRaDeviceTwinMapper = this.CreateLoRaDeviceTwinMapper();
+            var loRaDeviceTwinMapper = CreateLoRaDeviceTwinMapper();
             var twin = new Twin(Guid.NewGuid().ToString());
 
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.ModelId), Guid.NewGuid().ToString());
@@ -208,13 +207,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
                 AppEUI = Guid.NewGuid().ToString(),
                 AppKey = Guid.NewGuid().ToString(),
                 SensorDecoder = Guid.NewGuid().ToString(),
-                Tags = new()
-                {
-                    { "assetId", Guid.NewGuid().ToString() },
-                    { "locationCode", Guid.NewGuid().ToString() }
-                },
                 UseOTAA = true,
             };
+
+            item.Tags.Add("assetId", Guid.NewGuid().ToString());
+            item.Tags.Add("locationCode", Guid.NewGuid().ToString());
 
             // Act
             loRaDeviceTwinMapper.UpdateTwin(twin, item);
@@ -240,7 +237,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void UpdateTwinUseOTAAIsFalseExpectedBehavior()
         {
             // Arrange
-            var loRaDeviceTwinMapper = this.CreateLoRaDeviceTwinMapper();
+            var loRaDeviceTwinMapper = CreateLoRaDeviceTwinMapper();
             var twin = new Twin(Guid.NewGuid().ToString());
 
             DeviceHelper.SetTagValue(twin, nameof(LoRaDeviceDetails.ModelId), Guid.NewGuid().ToString());
@@ -266,13 +263,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
                 DevAddr = Guid.NewGuid().ToString(),
                 GatewayID = Guid.NewGuid().ToString(),
                 SensorDecoder = Guid.NewGuid().ToString(),
-                Tags = new()
-                {
-                    { "assetId", Guid.NewGuid().ToString() },
-                    { "locationCode", Guid.NewGuid().ToString() }
-                },
                 UseOTAA = false,
             };
+
+            item.Tags.Add("assetId", Guid.NewGuid().ToString());
+            item.Tags.Add("locationCode", Guid.NewGuid().ToString());
 
             // Act
             loRaDeviceTwinMapper.UpdateTwin(twin, item);

@@ -13,7 +13,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Filters
     using Microsoft.AspNetCore.Routing;
     using Moq;
     using NUnit.Framework;
-    using static AzureIoTHub.Portal.Server.Startup;
 
     [TestFixture]
     public class LoRaFeatureActiveFilterAttributeTest

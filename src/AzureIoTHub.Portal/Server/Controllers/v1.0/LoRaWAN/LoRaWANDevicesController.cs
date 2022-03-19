@@ -6,15 +6,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Linq;
     using System.Threading.Tasks;
     using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared;
-    using AzureIoTHub.Portal.Shared.Models.v10;
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
 
@@ -52,7 +50,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the device list.
         /// </summary>
-        /// <returns></returns>
+        /// <param name="continuationToken"></param>
+        /// <param name="searchText"></param>
+        /// <param name="searchStatus"></param>
+        /// <param name="searchState"></param>
+        /// <param name="pageSize"></param>
         [HttpGet(Name = "GET LoRaWAN device list")]
         public override Task<PaginationResult<DeviceListItem>> GetItems(
             string continuationToken = null,
@@ -68,7 +70,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the specified device.
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
-        /// <returns></returns>
         [HttpGet("{deviceID}", Name = "GET LoRaWAN device details")]
         public override Task<LoRaDeviceDetails> GetItem(string deviceID)
         {
@@ -79,7 +80,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Creates the device.
         /// </summary>
         /// <param name="device">The device.</param>
-        /// <returns></returns>
         [HttpPost(Name = "POST Create LoRaWAN device")]
         public override Task<IActionResult> CreateDeviceAsync(LoRaDeviceDetails device)
         {
@@ -90,7 +90,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Updates the device.
         /// </summary>
         /// <param name="device">The device.</param>
-        /// <returns></returns>
         [HttpPut(Name = "PUT Update LoRaWAN device")]
         public override Task<IActionResult> UpdateDeviceAsync(LoRaDeviceDetails device)
         {
@@ -101,7 +100,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Deletes the specified device.
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
-        /// <returns></returns>
         [HttpDelete("{deviceID}", Name = "DELETE Remove LoRaWAN device")]
         public override Task<IActionResult> Delete(string deviceID)
         {
@@ -113,14 +111,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="commandId">The command identifier.</param>
-        /// <returns></returns>
         /// <exception cref="System.FormatException">Incorrect port or invalid DevEui Format.</exception>
         [HttpPost("{deviceId}/_command/{commandId}", Name = "POST Execute LoRaWAN command")]
         public async Task<IActionResult> ExecuteCommand(string deviceId, string commandId)
         {
-
-            var twin = await deviceService.GetDeviceTwin(deviceId);
-            var modelId = deviceTwinMapper.CreateDeviceDetails(twin, null).ModelId;
+            var twin = await this.deviceService.GetDeviceTwin(deviceId);
+            var modelId = this.deviceTwinMapper.CreateDeviceDetails(twin, null).ModelId;
 
             var commandEntity = this.tableClientFactory
                    .GetDeviceCommands()
@@ -133,20 +129,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             if (!result.IsSuccessStatusCode)
             {
-                this.Logger.LogError($"{deviceId} - Execute command on device failed \n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}");
+                Logger.LogError($"{deviceId} - Execute command on device failed \n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}");
 
-                return this.BadRequest("Something went wrong when executing the command.");
+                return BadRequest("Something went wrong when executing the command.");
             }
 
-            this.Logger.LogInformation($"{deviceId} - Execute command: \n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}");
+            Logger.LogInformation($"{deviceId} - Execute command: \n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}");
 
-            return this.Ok();
+            return Ok();
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
         public override Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
         {
-            return Task.FromResult<ActionResult<EnrollmentCredentials>>(this.NotFound());
+            return Task.FromResult<ActionResult<EnrollmentCredentials>>(NotFound());
         }
     }
 }

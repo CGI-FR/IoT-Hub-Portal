@@ -36,16 +36,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public void WriteTextAsyncStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var text = Guid.NewGuid().ToString();
 
             // Act
-            var result = service.WriteTextAsync(text);
+            _ = service.WriteTextAsync(text);
 
             // Assert
             this.mockJSRuntime.Verify(c => c.InvokeAsync<IJSVoidResult>(
                     It.Is<string>(x => x == "navigator.clipboard.writeText"),
-                    It.Is<object?[]>(x => x.Single().ToString() == text)), Times.Once);
+                    It.Is<object[]>(x => x.Single().ToString() == text)), Times.Once);
 
             this.mockRepository.VerifyAll();
         }

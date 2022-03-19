@@ -45,7 +45,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task GetAllEdgeDeviceStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var mockQuery = this.mockRepository.Create<IQuery>();
 
             var mockCountQuery = this.mockRepository.Create<IQuery>();
@@ -84,7 +84,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task GetAllDeviceStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var mockQuery = this.mockRepository.Create<IQuery>();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
@@ -124,11 +124,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task WhenSpecifyingFilterToDeviceTypeGetAllDeviceShouldQueryToIoTHub()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var mockQuery = this.mockRepository.Create<IQuery>();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
-            var expectedAdditionalFilter = "AND devices.tags.deviceType = 'filteredType'";
+            const string expectedAdditionalFilter = "AND devices.tags.deviceType = 'filteredType'";
 
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
@@ -166,11 +166,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task WhenExcludingDeviceTypeGetAllDeviceShouldQueryToIoTHub()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var mockQuery = this.mockRepository.Create<IQuery>();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
-            var expectedAdditionalFilter = "AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != 'filteredType')";
+            const string expectedAdditionalFilter = "AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != 'filteredType')";
 
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
@@ -208,11 +208,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task WhenSearchingDeviceGetAllDeviceShouldQueryToIoTHub()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var mockQuery = this.mockRepository.Create<IQuery>();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
-            var expectedAdditionalFilter = "AND (STARTSWITH(deviceId, 'test') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, 'test')))";
+            const string expectedAdditionalFilter = "AND (STARTSWITH(deviceId, 'test') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, 'test')))";
 
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
@@ -250,7 +250,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task WhenSearchingContinuationGetAllDeviceShouldQueryToIoTHub()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var mockQuery = this.mockRepository.Create<IQuery>();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
@@ -269,12 +269,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 });
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
-                It.Is<string>(x => x == $"SELECT * FROM devices WHERE devices.capabilities.iotEdge = false"),
+                It.Is<string>(x => x == "SELECT * FROM devices WHERE devices.capabilities.iotEdge = false"),
                 It.Is<int>(x => x == 10)))
                 .Returns(mockQuery.Object);
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
-                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false")))
+                It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false")))
                 .Returns(mockCountQuery.Object);
 
             // Act
@@ -286,16 +286,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             this.mockRepository.VerifyAll();
         }
 
-
         [Test]
         public async Task WhenSearchingDisabledDeviceGetAllDeviceShouldQueryToIoTHub()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var mockQuery = this.mockRepository.Create<IQuery>();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
-            var expectedAdditionalFilter = "AND status = 'disabled'";
+            const string expectedAdditionalFilter = "AND status = 'disabled'";
 
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
@@ -333,11 +332,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task WhenSearchingEnabledDeviceGetAllDeviceShouldQueryToIoTHub()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var mockQuery = this.mockRepository.Create<IQuery>();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
-            var expectedAdditionalFilter = "AND status = 'enabled'";
+            const string expectedAdditionalFilter = "AND status = 'enabled'";
 
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
@@ -371,16 +370,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             this.mockRepository.VerifyAll();
         }
 
-
         [Test]
         public async Task WhenSearchingConnectedDeviceGetAllDeviceShouldQueryToIoTHub()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var mockQuery = this.mockRepository.Create<IQuery>();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
-            var expectedAdditionalFilter = "AND connectionState = 'Connected'";
+            const string expectedAdditionalFilter = "AND connectionState = 'Connected'";
 
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
@@ -418,11 +416,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task WhenSearchingDisconnectedDeviceGetAllDeviceShouldQueryToIoTHub()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var mockQuery = this.mockRepository.Create<IQuery>();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
-            var expectedAdditionalFilter = "AND connectionState = 'Disconnected'";
+            const string expectedAdditionalFilter = "AND connectionState = 'Disconnected'";
 
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
@@ -460,11 +458,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task WhenSearchingTagGetAllDeviceShouldQueryToIoTHub()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var mockQuery = this.mockRepository.Create<IQuery>();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
-            var expectedAdditionalFilter = "AND is_defined(tags.testKey) AND STARTSWITH(tags.testKey, 'testValue')";
+            const string expectedAdditionalFilter = "AND is_defined(tags.testKey) AND STARTSWITH(tags.testKey, 'testValue')";
 
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
@@ -505,8 +503,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task WhenFailedToDeserializeCountShouldReturnEmpty()
         {
             // Arrange
-            var service = this.CreateService();
-            var mockQuery = this.mockRepository.Create<IQuery>();
+            var service = CreateService();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
@@ -519,7 +516,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 });
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
-                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false")))
+                It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false")))
                 .Returns(mockCountQuery.Object);
 
             // Act
@@ -536,8 +533,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task WhenCountReturnsZeroMatchingGetAllDevicesShouldReturnEmpty()
         {
             // Arrange
-            var service = this.CreateService();
-            var mockQuery = this.mockRepository.Create<IQuery>();
+            var service = CreateService();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
@@ -550,7 +546,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 });
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
-                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false")))
+                It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false")))
                 .Returns(mockCountQuery.Object);
 
             // Act
@@ -567,7 +563,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task GetDeviceStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var deviceId = Guid.NewGuid().ToString();
             var expected = new Device();
 
@@ -587,7 +583,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task GetDeviceTwinStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var deviceId = Guid.NewGuid().ToString();
             var expected = new Twin();
 
@@ -607,11 +603,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task GetDeviceTwinWithModuleStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var deviceId = Guid.NewGuid().ToString();
 
             var mockQuery = this.mockRepository.Create<IQuery>();
-            var resultReturned = false;
+            const bool resultReturned = false;
 
             _ = mockQuery.SetupGet(c => c.HasMoreResults)
                 .Returns(!resultReturned);
@@ -642,7 +638,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task CreateDeviceWithTwinStateUnderTestExpectedBehavior(bool isEdge, DeviceStatus isEnabled)
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var deviceId = Guid.NewGuid().ToString();
             var twin = new Twin();
 
@@ -673,7 +669,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task DeleteDeviceStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockRegistryManager.Setup(c => c.RemoveDeviceAsync(It.Is<string>(x => x == deviceId)))
@@ -690,7 +686,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task UpdateDeviceStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var device = new Device();
 
             _ = this.mockRegistryManager.Setup(c => c.UpdateDeviceAsync(It.Is<Device>(x => x == device)))
@@ -709,7 +705,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task UpdateDeviceTwinStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var deviceId = Guid.NewGuid().ToString();
 
             var twin = new Twin()
@@ -736,7 +732,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task ExecuteC2DMethodStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var service = this.CreateService();
+            var service = CreateService();
             var deviceId = Guid.NewGuid().ToString();
 
             var method = new CloudToDeviceMethod(Guid.NewGuid().ToString());

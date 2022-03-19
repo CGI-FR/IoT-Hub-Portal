@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Hosting;
 
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -15,9 +15,6 @@ namespace AzureIoTHub.Portal.Server
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    _ = webBuilder.UseStartup<Startup>();
-                });
+                .ConfigureWebHostDefaults(webBuilder => _ = webBuilder.UseStartup<Startup>());
     }
 }

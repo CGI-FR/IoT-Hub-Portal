@@ -4,12 +4,12 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
     public class DeviceModelCommandsManager : IDeviceModelCommandsManager
     {
@@ -27,13 +27,13 @@ namespace AzureIoTHub.Portal.Server.Managers
         /// </summary>
         /// <param name="deviceModel"> the model type of the device.</param>
         /// <returns>Corresponding list of commands or an empty list if it doesn't have any command.</returns>
-        public List<Command> RetrieveCommands(string deviceModel)
+        public ReadOnlyCollection<Command> RetrieveCommands(string deviceModel)
         {
             var commands = new List<Command>();
 
             if (deviceModel == null)
             {
-                return commands;
+                return commands.AsReadOnly();
             }
 
             var queryResultsFilter = this.tableClientFactory
@@ -50,16 +50,16 @@ namespace AzureIoTHub.Portal.Server.Managers
                     });
             }
 
-            return commands;
+            return commands.AsReadOnly();
         }
 
-        public List<DeviceModelCommand> RetrieveDeviceModelCommands(string deviceModel)
+        public ReadOnlyCollection<DeviceModelCommand> RetrieveDeviceModelCommands(string deviceModel)
         {
             var commands = new List<DeviceModelCommand>();
 
             if (deviceModel == null)
             {
-                return commands;
+                return commands.AsReadOnly();
             }
 
             var queryResultsFilter = this.tableClientFactory
@@ -68,7 +68,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             commands.AddRange(queryResultsFilter.Select(this.deviceModelCommandMapper.GetDeviceModelCommand));
 
-            return commands;
+            return commands.AsReadOnly();
         }
     }
 }

@@ -4,7 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Mappers
 {
     using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Models.v10;
 
     public interface IDeviceTagMapper
     {

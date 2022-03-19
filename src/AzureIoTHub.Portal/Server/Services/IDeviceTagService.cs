@@ -3,7 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Models.v10;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -15,6 +15,6 @@ namespace AzureIoTHub.Portal.Server.Services
 
         IEnumerable<string> GetAllSearchableTagsNames();
 
-        Task UpdateTags(List<DeviceTag> tags);
+        Task UpdateTags(IEnumerable<DeviceTag> tags);
     }
 }

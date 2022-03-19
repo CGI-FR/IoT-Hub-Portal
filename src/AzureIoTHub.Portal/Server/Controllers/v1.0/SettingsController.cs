@@ -3,14 +3,14 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
+    using System;
     using System.Reflection;
     using AzureIoTHub.Portal.Server.Identity;
-    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
-    using static AzureIoTHub.Portal.Server.Startup;
 
     [ApiController]
     [AllowAnonymous]
@@ -34,6 +34,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="configHandler">The configHandler.</param>
         public SettingsController(IOptions<ClientApiIndentityOptions> configuration, ConfigHandler configHandler)
         {
+            ArgumentNullException.ThrowIfNull(configuration, nameof(configuration));
+            ArgumentNullException.ThrowIfNull(configHandler, nameof(configHandler));
+
             this.configuration = configuration.Value;
             this.configHandler = configHandler;
         }
@@ -49,7 +52,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetOIDCSettings()
         {
-            return this.Ok(this.configuration);
+            return Ok(this.configuration);
         }
 
         /// <summary>
@@ -60,7 +63,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetPortalSetting()
         {
-            return this.Ok(new PortalSettings
+            return Ok(new PortalSettings
             {
                 IsLoRaSupported = this.configHandler.IsLoRaEnabled,
                 PortalName = this.configHandler.PortalName,

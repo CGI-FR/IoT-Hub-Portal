@@ -16,9 +16,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
     [TestFixture]
     public class RouterConfigManagerTests : IDisposable
     {
+#pragma warning disable CA2213 // Disposable fields should be disposed
+        private HttpClient mockHttpClient;
+#pragma warning restore CA2213 // Disposable fields should be disposed
         private MockRepository mockRepository;
 
-        private HttpClient mockHttpClient;
         private Mock<HttpMessageHandler> httpMessageHandlerMock;
 
         [SetUp]
@@ -52,7 +54,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             this.httpMessageHandlerMock
                 .Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.RequestUri.LocalPath.Equals($"/{loraRegion}.json", StringComparison.OrdinalIgnoreCase)), ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync((HttpRequestMessage req, CancellationToken token) => deviceResponseMock)
+                .ReturnsAsync((HttpRequestMessage _, CancellationToken _) => deviceResponseMock)
                 .Verifiable();
 
             // Act
@@ -64,7 +66,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
 
         public void Dispose()
         {
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
         }
     }
 }

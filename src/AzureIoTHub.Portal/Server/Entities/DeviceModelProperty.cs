@@ -3,7 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Entities
 {
-    using AzureIoTHub.Portal.Shared.Models;
+    using AzureIoTHub.Portal.Models;
 
     public class DeviceModelProperty : EntityBase
     {

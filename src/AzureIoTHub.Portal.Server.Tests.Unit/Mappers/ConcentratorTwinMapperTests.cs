@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
     using AzureIoTHub.Portal.Server.Extensions;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.Concentrator;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
     using Moq;
@@ -20,7 +20,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
     {
         private MockRepository mockRepository;
 
+#pragma warning disable CA2213 // Disposable fields should be disposed
         private HttpClient mockHttpClient;
+#pragma warning restore CA2213 // Disposable fields should be disposed
+
         private Mock<IConfiguration> mockConfiguration;
         private Mock<HttpMessageHandler> httpMessageHandlerMock;
 
@@ -127,8 +130,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
         public void Dispose()
         {
-            this.mockHttpClient?.Dispose();
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
         }
     }
 }

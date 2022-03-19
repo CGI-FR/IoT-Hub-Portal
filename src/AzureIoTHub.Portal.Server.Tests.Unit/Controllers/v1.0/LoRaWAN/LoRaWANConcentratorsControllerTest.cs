@@ -7,12 +7,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.Concentrator;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
@@ -20,7 +19,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
-    using static AzureIoTHub.Portal.Server.Startup;
 
     [TestFixture]
     public class LoRaWANConcentratorsControllerTest
@@ -55,7 +53,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                 this.mockConcentratorTwinMapper.Object)
             {
                 Url = this.mockUrlHelper.Object
-            }; ;
+            };
         }
 
         [Test]
@@ -63,7 +61,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         {
             // Arrange
             var concentratorsController = CreateLoRaWANConcentratorsController();
-            var count = 100;
+            const int count = 100;
             var twinCollection = new TwinCollection();
             twinCollection["deviceType"] = "LoRa Concentrator";
 
@@ -76,7 +74,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                     It.IsAny<bool?>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<int>()))
-                .ReturnsAsync(new Shared.PaginationResult<Twin>
+                .ReturnsAsync(new PaginationResult<Twin>
                 {
                     Items = Enumerable.Range(0, 100).Select(x => new Twin
                     {
@@ -129,7 +127,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                     It.IsAny<bool?>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<int>()))
-                .ReturnsAsync(new Shared.PaginationResult<Twin>
+                .ReturnsAsync(new PaginationResult<Twin>
                 {
                     Items = Enumerable.Range(0, 0).Select(x => new Twin(FormattableString.Invariant($"{x}")))
                 });
@@ -169,7 +167,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             _ = this.mockConcentratorTwinMapper.Setup(x => x.CreateDeviceDetails(It.Is<Twin>(c => c.DeviceId == twin.DeviceId)))
                 .Returns(concentrator);
 
-            var concentratorController = this.CreateLoRaWANConcentratorsController();
+            var concentratorController = CreateLoRaWANConcentratorsController();
 
             // Act
             var response = await concentratorController.GetDeviceConcentrator(twin.DeviceId);
@@ -195,7 +193,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         public async Task CreateDeviceAsyncWithValidArgumentShouldReturnOkResult()
         {
             // Arrange
-            var concentratorController = this.CreateLoRaWANConcentratorsController();
+            var concentratorController = CreateLoRaWANConcentratorsController();
             var concentrator = new Concentrator
             {
                 DeviceId = "4512457896451156",
@@ -245,7 +243,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         public async Task UpdateDeviceAsyncWithValidArgumentShouldReturnOkResult()
         {
             // Arrange
-            var concentratorController = this.CreateLoRaWANConcentratorsController();
+            var concentratorController = CreateLoRaWANConcentratorsController();
             var concentrator = new Concentrator
             {
                 DeviceId = "4512457896451156",
@@ -289,9 +287,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         public async Task DeleteDeviceAsync()
         {
             // Arrange
-            var concentratorController = this.CreateLoRaWANConcentratorsController();
+            var concentratorController = CreateLoRaWANConcentratorsController();
             var deviceId = Guid.NewGuid().ToString();
-
 
             _ = this.mockDeviceService.Setup(x => x.DeleteDevice(It.Is<string>(c => c == deviceId)))
                 .Returns(Task.CompletedTask);

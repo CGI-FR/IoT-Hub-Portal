@@ -3,13 +3,13 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Globalization;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Shared;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
@@ -20,7 +20,6 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly RegistryManager registryManager;
         private readonly ServiceClient serviceClient;
         private readonly ILogger<DeviceService> log;
-
 
         public DeviceService(
             ILogger<DeviceService> log,
@@ -35,6 +34,11 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <summary>
         /// this function return a list of all edge device wthiout tags.
         /// </summary>
+        /// <param name="continuationToken"></param>
+        /// <param name="searchText"></param>
+        /// <param name="searchStatus"></param>
+        /// <param name="searchType"></param>
+        /// <param name="pageSize"></param>
         /// <returns>IEnumerable twin.</returns>
         public async Task<PaginationResult<Twin>> GetAllEdgeDevice(
             string continuationToken = null,
@@ -52,7 +56,9 @@ namespace AzureIoTHub.Portal.Server.Services
 
             if (!string.IsNullOrWhiteSpace(searchText))
             {
+#pragma warning disable CA1308 // Normalize strings to uppercase
                 filter += $" AND (STARTSWITH(deviceId, '{searchText.ToLowerInvariant()}') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, '{searchText}')))";
+#pragma warning restore CA1308 // Normalize strings to uppercase
             }
 
             if (!string.IsNullOrWhiteSpace(searchType))
@@ -97,10 +103,17 @@ namespace AzureIoTHub.Portal.Server.Services
             };
         }
 
-
         /// <summary>
         /// this function return a list of all device exept edge device.
         /// </summary>
+        /// <param name="continuationToken"></param>
+        /// <param name="filterDeviceType"></param>
+        /// <param name="excludeDeviceType"></param>
+        /// <param name="searchText"></param>
+        /// <param name="searchStatus"></param>
+        /// <param name="searchState"></param>
+        /// <param name="searchTags"></param>
+        /// <param name="pageSize"></param>
         /// <returns>IEnumerable twin.</returns>
         public async Task<PaginationResult<Twin>> GetAllDevice(
             string continuationToken = null,
@@ -126,7 +139,9 @@ namespace AzureIoTHub.Portal.Server.Services
 
             if (!string.IsNullOrWhiteSpace(searchText))
             {
+#pragma warning disable CA1308 // Normalize strings to uppercase
                 filter += $" AND (STARTSWITH(deviceId, '{searchText.ToLowerInvariant()}') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, '{searchText}')))";
+#pragma warning restore CA1308 // Normalize strings to uppercase
             }
 
             if (searchTags != null)
@@ -163,7 +178,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     .CreateQuery($"SELECT COUNT() as totalNumber FROM devices { filter }")
                     .GetNextAsJsonAsync();
 
-            log.LogDebug($"Count obtained in {stopWatch.Elapsed}");
+            this.log.LogDebug($"Count obtained in {stopWatch.Elapsed}");
 
             if (!JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result))
             {
@@ -186,7 +201,7 @@ namespace AzureIoTHub.Portal.Server.Services
                                 ContinuationToken = continuationToken
                             });
 
-            log.LogDebug($"Data obtained in {stopWatch.Elapsed}");
+            this.log.LogDebug($"Data obtained in {stopWatch.Elapsed}");
 
             return new PaginationResult<Twin>
             {
@@ -283,6 +298,8 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>the updated twin.</returns>
         public async Task<Twin> UpdateDeviceTwin(string deviceId, Twin twin)
         {
+            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+
             return await this.registryManager.UpdateTwinAsync(deviceId, twin, twin.ETag);
         }
 
@@ -296,6 +313,5 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             return await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
         }
-
     }
 }

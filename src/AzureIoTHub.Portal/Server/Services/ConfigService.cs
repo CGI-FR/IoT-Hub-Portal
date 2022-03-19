@@ -23,14 +23,14 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
-            return configurations.Where(c => c.Content.ModulesContent.Any());
+            return configurations.Where(c => c.Content.ModulesContent.Count > 0);
         }
 
         public async Task<IEnumerable<Configuration>> GetDevicesConfigurations()
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
-            return configurations.Where(c => !c.Content.ModulesContent.Any());
+            return configurations.Where(c => c.Content.ModulesContent.Count == 0);
         }
 
         public Task<Configuration> GetConfigItem(string id)
@@ -42,9 +42,11 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
-            var configurationNamePrefix = modelName.Trim()
+#pragma warning disable CA1308 // Normalize strings to uppercase
+            var configurationNamePrefix = modelName?.Trim()
                                                 .ToLowerInvariant()
-                                                .Replace(" ", "-");
+                                                .Replace(" ", "-", StringComparison.OrdinalIgnoreCase);
+#pragma warning restore CA1308 // Normalize strings to uppercase
 
             foreach (var item in configurations)
             {

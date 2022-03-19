@@ -3,12 +3,12 @@
 
 namespace AzureIoTHub.Portal.Client.Validators
 {
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
-    using FluentValidation;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using FluentValidation;
 
     public class LoRaDeviceDetailsValidator : AbstractValidator<LoRaDeviceDetails>
     {
@@ -33,6 +33,5 @@ namespace AzureIoTHub.Portal.Client.Validators
                 return Array.Empty<string>();
             return result.Errors.Select(e => e.ErrorMessage);
         };
-
     }
 }

@@ -13,7 +13,9 @@ namespace AzureIoTHub.Portal.Client.Converters
             GetFunc = OnGet;
         }
 
+#pragma warning disable CA1308 // Normalize strings to uppercase
         private string OnGet(bool? value) => value?.ToString()?.ToLowerInvariant();
+#pragma warning restore CA1308 // Normalize strings to uppercase
 
         private bool? OnSet(string arg)
         {

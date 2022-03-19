@@ -1,8 +1,9 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Managers
 {
+    using System;
     using System.IO;
     using System.Net.Http;
     using System.Reflection;
@@ -26,8 +27,8 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             var blobClient = this.blobService.GetBlobContainerClient(ImageContainerName);
 
-            blobClient.SetAccessPolicy(PublicAccessType.Blob);
-            blobClient.CreateIfNotExists();
+            _ = blobClient.SetAccessPolicy(PublicAccessType.Blob);
+            _ = blobClient.CreateIfNotExists();
         }
 
         public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, Stream stream)
@@ -51,10 +52,10 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             this.logger.LogInformation($"Deleting from Blob storage :\n\t {blobClient.Uri}\n");
 
-            await blobClient.DeleteIfExistsAsync();
+            _ = await blobClient.DeleteIfExistsAsync();
         }
 
-        public string ComputeImageUri(string deviceModelId)
+        public Uri ComputeImageUri(string deviceModelId)
         {
             var imageName = string.IsNullOrWhiteSpace(deviceModelId) ? DefaultImageName : deviceModelId;
 
@@ -64,8 +65,8 @@ namespace AzureIoTHub.Portal.Server.Managers
             // Checking if the image exists in the blob container
             using (var request = new HttpRequestMessage(HttpMethod.Head, blobClient.Uri.ToString()))
             {
-                using HttpClient client = new HttpClient();
-                HttpResponseMessage response = client.Send(request);
+                using var client = new HttpClient();
+                var response = client.Send(request);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -73,7 +74,7 @@ namespace AzureIoTHub.Portal.Server.Managers
                 }
             }
 
-            return blobClient.Uri.ToString();
+            return blobClient.Uri;
         }
 
         public async Task InitializeDefaultImageBlob()
@@ -87,7 +88,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             using var defaultImageStream = currentAssembly
                                             .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{DefaultImageName}");
 
-            await blobClient.UploadAsync(defaultImageStream, overwrite: true);
+            _ = await blobClient.UploadAsync(defaultImageStream, overwrite: true);
         }
     }
 }

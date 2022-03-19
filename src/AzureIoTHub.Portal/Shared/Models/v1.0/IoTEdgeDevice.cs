@@ -1,11 +1,14 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Shared.Models.v10
+namespace AzureIoTHub.Portal.Models.v10
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
+    /// <summary>
+    /// IoT Edge device.
+    /// </summary>
     public class IoTEdgeDevice
     {
         /// <summary>
@@ -63,7 +66,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v10
         /// <summary>
         /// The IoT Edge modules.
         /// </summary>
-        public List<IoTEdgeModule> Modules { get; set; }
+        public IReadOnlyCollection<IoTEdgeModule> Modules { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IoTEdgeDevice"/> class.

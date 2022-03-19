@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Security.Cryptography;
     using System.Threading.Tasks;
 
     [TestFixture]
@@ -41,7 +42,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             // Arrange
             var expected = GetModuleConfiguration(3).ToArray();
 
-            var edgeConfigurationsController = this.CreateEdgeConfigurationsController();
+            var edgeConfigurationsController = CreateEdgeConfigurationsController();
             _ = this.mockConfigsServices.Setup(c => c.GetIoTEdgeConfigurations())
                 .ReturnsAsync(expected);
 
@@ -54,7 +55,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             for (var i = 0; i < expected.Length; i++)
             {
-                var expectedItem = expected.ElementAt(i);
+                var expectedItem = expected[i];
                 var resultItem = result.ElementAt(i);
 
                 Assert.AreEqual(expectedItem.Id, resultItem.ConfigurationID);
@@ -78,7 +79,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             // Arrange
             var expected = GetModuleConfiguration(1).Single();
 
-            var edgeConfigurationsController = this.CreateEdgeConfigurationsController();
+            var edgeConfigurationsController = CreateEdgeConfigurationsController();
             _ = this.mockConfigsServices.Setup(c => c.GetConfigItem(expected.Id))
                 .ReturnsAsync(expected);
 
@@ -118,12 +119,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                     Content = new ConfigurationContent(),
                 };
 
-                _ = configuration.SystemMetrics.Results.TryAdd("targetedCount", Random.Shared.Next());
-                _ = configuration.SystemMetrics.Results.TryAdd("appliedCount", Random.Shared.Next());
-                _ = configuration.SystemMetrics.Results.TryAdd("reportedSuccessfulCount", Random.Shared.Next());
-                _ = configuration.SystemMetrics.Results.TryAdd("reportedFailedCount", Random.Shared.Next());
+                _ = configuration.SystemMetrics.Results.TryAdd("targetedCount", RandomNumberGenerator.GetInt32(100));
+                _ = configuration.SystemMetrics.Results.TryAdd("appliedCount", RandomNumberGenerator.GetInt32(100));
+                _ = configuration.SystemMetrics.Results.TryAdd("reportedSuccessfulCount", RandomNumberGenerator.GetInt32(100));
+                _ = configuration.SystemMetrics.Results.TryAdd("reportedFailedCount", RandomNumberGenerator.GetInt32(100));
 
-                configuration.Priority = Random.Shared.Next();
+                configuration.Priority = RandomNumberGenerator.GetInt32(100);
                 configuration.TargetCondition = Guid.NewGuid().ToString();
 
                 var edgeAgentModule = new Dictionary<string, object>();

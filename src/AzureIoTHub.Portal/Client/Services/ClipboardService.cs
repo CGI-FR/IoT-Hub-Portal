@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Client.Services
@@ -8,16 +8,16 @@ namespace AzureIoTHub.Portal.Client.Services
 
     public class ClipboardService
     {
-        private readonly IJSRuntime _jsRuntime;
+        private readonly IJSRuntime jsRuntime;
 
         public ClipboardService(IJSRuntime jsRuntime)
         {
-            _jsRuntime = jsRuntime;
+            this.jsRuntime = jsRuntime;
         }
 
         public ValueTask WriteTextAsync(string text)
         {
-            return _jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
+            return this.jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
         }
     }
 }

@@ -1,21 +1,20 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Mappers
 {
+    using System;
     using AzureIoTHub.Portal.Server.Helpers;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.Concentrator;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
 
     public class ConcentratorTwinMapper : IConcentratorTwinMapper
     {
-        public ConcentratorTwinMapper()
-        {
-        }
-
         public Concentrator CreateDeviceDetails(Twin twin)
         {
+            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+
             return new Concentrator
             {
                 DeviceId = twin.DeviceId,
@@ -31,6 +30,9 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
         public void UpdateTwin(Twin twin, Concentrator item)
         {
+            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+            ArgumentNullException.ThrowIfNull(item, nameof(item));
+
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
             DeviceHelper.SetTagValue(twin, nameof(item.LoraRegion), item.LoraRegion);
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);

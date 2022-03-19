@@ -1,4 +1,4 @@
-﻿@using AzureIoTHub.Portal.Shared.Models.v10.Device
+﻿@using AzureIoTHub.Portal.Models.v10
 @inject HttpClient Http
 @inject IJSRuntime JS
 @inject ISnackbar Snackbar
@@ -31,7 +31,7 @@
 
     private async Task DeleteDevice()
     {
-        var result = await Http.DeleteAsync($"api/edge/device/{DeviceId}");
+        var result = await Http.DeleteAsync($"api/edge/devices/{DeviceId}");
 
         if (!result.IsSuccessStatusCode)
         {

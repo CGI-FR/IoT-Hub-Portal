@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Moq;
@@ -18,10 +18,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     public class DeviceTagSettingsControllerTest
     {
         private MockRepository mockRepository;
-
-        //private Mock<IDeviceTagMapper> mockDeviceTagMapper;
-        //private Mock<ITableClientFactory> mockTableClientFactory;
-        //private Mock<TableClient> mockDeviceTagTableClient;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<ILogger<DeviceTagSettingsController>> mockLogger;
 
@@ -40,10 +36,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         private DeviceTagSettingsController CreateDeviceTagSettingsController()
         {
             return new DeviceTagSettingsController(
-                this.mockLogger.Object,
-                //this.mockDeviceTagMapper.Object,
-                //this.mockTableClientFactory.Object,
-                this.mockDeviceTagService.Object
+            this.mockLogger.Object,
+            //this.mockDeviceTagMapper.Object,
+            //this.mockTableClientFactory.Object,
+            this.mockDeviceTagService.Object
            );
         }
 
@@ -51,7 +47,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task PostShouldCreateNewEntity()
         {
             // Arrange
-            var deviceTagSettingsController = this.CreateDeviceTagSettingsController();
+            var deviceTagSettingsController = CreateDeviceTagSettingsController();
 
             var tag = new DeviceTag
             {
@@ -78,9 +74,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public void GetShouldReturnAList()
         {
             // Arrange
-            var deviceTagSettingsController = this.CreateDeviceTagSettingsController();
+            var deviceTagSettingsController = CreateDeviceTagSettingsController();
 
-            _ = mockDeviceTagService.Setup(x => x.GetAllTags()).Returns(new DeviceTag[10].ToList());
+            _ = this.mockDeviceTagService.Setup(x => x.GetAllTags()).Returns(new DeviceTag[10].ToList());
 
             // Act
             var response = deviceTagSettingsController.Get();
@@ -90,11 +86,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             Assert.IsAssignableFrom<OkObjectResult>(response.Result);
             var okResponse = response.Result as OkObjectResult;
 
-            Assert.AreEqual(200, okResponse.StatusCode);
+            Assert.AreEqual(200, okResponse?.StatusCode);
 
-            Assert.IsNotNull(okResponse.Value);
-            var result = okResponse.Value as IEnumerable<DeviceTag>;
-            Assert.AreEqual(10, result.Count());
+            Assert.IsNotNull(okResponse?.Value);
+            var result = okResponse?.Value as IEnumerable<DeviceTag>;
+            Assert.AreEqual(10, result?.Count());
 
             this.mockDeviceTagService.VerifyAll();
             this.mockRepository.VerifyAll();

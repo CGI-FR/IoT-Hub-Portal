@@ -7,7 +7,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
+    using AzureIoTHub.Portal.Models.v10;
     using Moq;
     using NUnit.Framework;
 
@@ -38,7 +38,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void CreateDeviceModelStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceModelMapper = this.CreateDeviceModelMapper();
+            var deviceModelMapper = CreateDeviceModelMapper();
             var entity = new TableEntity
             {
                 RowKey = "000-000-001"
@@ -49,7 +49,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             entity["SensorDecoderURL"] = "SensorDecoderURL";
 
             this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
-                .Returns("http://fake.local/000-000-001")
+                .Returns(new Uri("http://fake.local/000-000-001"))
                 .Verifiable();
 
             // Act
@@ -67,7 +67,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void CreateDeviceModelListItemStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceModelMapper = this.CreateDeviceModelMapper();
+            var deviceModelMapper = CreateDeviceModelMapper();
             var entity = new TableEntity
             {
                 RowKey = "000-000-001"
@@ -78,7 +78,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             entity["SensorDecoderURL"] = "SensorDecoderURL";
 
             this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
-                .Returns("http://fake.local/000-000-001")
+                .Returns(new Uri("http://fake.local/000-000-001"))
                 .Verifiable();
 
             // Act
@@ -96,7 +96,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void UpdateTableEntityStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceModelMapper = this.CreateDeviceModelMapper();
+            var deviceModelMapper = CreateDeviceModelMapper();
             var entity = new TableEntity();
             var model = new DeviceModel
             {
