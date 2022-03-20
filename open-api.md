@@ -50,7 +50,7 @@ Available APIs for managing devices from Azure IoT Hub.
 > 200 Response
 
 ```
-{"items":[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z"}],"totalItems":0,"nextPage":"string"}
+{"items":[{"deviceID":"string","deviceName":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z"}],"totalItems":0,"nextPage":"string"}
 ```
 
 ```json
@@ -59,7 +59,7 @@ Available APIs for managing devices from Azure IoT Hub.
     {
       "deviceID": "string",
       "deviceName": "string",
-      "imageUrl": "string",
+      "imageUrl": "http://example.com",
       "isConnected": true,
       "isEnabled": true,
       "supportLoRaFeatures": true,
@@ -99,7 +99,7 @@ None
   "deviceID": "string",
   "deviceName": "string",
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
@@ -144,7 +144,7 @@ None
   "deviceID": "string",
   "deviceName": "string",
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
@@ -193,7 +193,7 @@ None
 > 200 Response
 
 ```
-{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"}}
+{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"}}
 ```
 
 ```json
@@ -201,7 +201,7 @@ None
   "deviceID": "string",
   "deviceName": "string",
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
@@ -343,7 +343,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[[DevicePropertyValue](#schemadevicepropertyvalue)]|false|none|none|
+|*anonymous*|[[DevicePropertyValue](#schemadevicepropertyvalue)]|false|none|[Device property value.]|
 |» name|string|true|none|The property name|
 |» displayName|string|true|none|The property display name|
 |» isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
@@ -397,7 +397,7 @@ None
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |deviceID|path|string|true|The device identifier.|
-|body|body|[DevicePropertyValue](#schemadevicepropertyvalue)|false|none|
+|body|body|[DevicePropertyValue](#schemadevicepropertyvalue)|false|The properties values.|
 
 > Example responses
 
@@ -432,7 +432,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[[DevicePropertyValue](#schemadevicepropertyvalue)]|false|none|none|
+|*anonymous*|[[DevicePropertyValue](#schemadevicepropertyvalue)]|false|none|[Device property value.]|
 |» name|string|true|none|The property name|
 |» displayName|string|true|none|The property display name|
 |» isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
@@ -456,7 +456,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-<h1 id="azure-iot-hub-portal-api-iot-edge">IoT Edge</h1>
+<h1 id="azure-iot-hub-portal-api-iot-edge-devices">IoT Edge Devices</h1>
 
 ## GET IoT Edge config list
 
@@ -518,7 +518,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[[ConfigListItem](#schemaconfiglistitem)]|false|none|none|
+|*anonymous*|[[ConfigListItem](#schemaconfiglistitem)]|false|none|[IoT Edge configuration list item.]|
 |» configurationID|string¦null|false|none|The IoT Edge configuration identifier.|
 |» conditions|string¦null|false|none|The IoT Edge configuration target conditions.|
 |» metricsTargeted|integer(int64)|false|none|The IoT Edge configuration targeted metrics.|
@@ -531,9 +531,9 @@ Status Code **200**
 |»» moduleName|string|true|none|The module name.|
 |»» version|string¦null|false|none|The module configuration version.|
 |»» status|string¦null|false|none|The module status.|
-|»» environmentVariables|object¦null|false|none|The module environment variables.|
+|»» environmentVariables|object¦null|false|read-only|The module environment variables.|
 |»»» **additionalProperties**|string¦null|false|none|none|
-|»» moduleIdentityTwinSettings|object¦null|false|none|The module identity twin settings.|
+|»» moduleIdentityTwinSettings|object¦null|false|read-only|The module identity twin settings.|
 |»»» **additionalProperties**|string¦null|false|none|none|
 
 <aside class="warning">
@@ -610,7 +610,7 @@ None
 
 > Code samples
 
-`GET /api/edge/device`
+`GET /api/edge/devices`
 
 *Gets the IoT Edge device list.*
 
@@ -664,7 +664,7 @@ None
 
 > Code samples
 
-`POST /api/edge/device`
+`POST /api/edge/devices`
 
 *Creates the IoT Edge device.*
 
@@ -690,15 +690,7 @@ None
     {
       "moduleName": "string",
       "version": "string",
-      "status": "string",
-      "environmentVariables": {
-        "property1": "string",
-        "property2": "string"
-      },
-      "moduleIdentityTwinSettings": {
-        "property1": "string",
-        "property2": "string"
-      }
+      "status": "string"
     }
   ]
 }
@@ -742,76 +734,13 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## PUT Update IoT Edge
-
-<a id="opIdPUT Update IoT Edge"></a>
-
-> Code samples
-
-`PUT /api/edge/device`
-
-*Updates the device.*
-
-> Body parameter
-
-```json
-{
-  "deviceId": "string",
-  "connectionState": "string",
-  "scope": "string",
-  "type": "string",
-  "status": "string",
-  "runtimeResponse": "string",
-  "nbDevices": 0,
-  "nbModules": 0,
-  "environment": "string",
-  "lastDeployment": {
-    "name": "string",
-    "dateCreation": "2019-08-24T14:15:22Z",
-    "status": "string"
-  },
-  "modules": [
-    {
-      "moduleName": "string",
-      "version": "string",
-      "status": "string",
-      "environmentVariables": {
-        "property1": "string",
-        "property2": "string"
-      },
-      "moduleIdentityTwinSettings": {
-        "property1": "string",
-        "property2": "string"
-      }
-    }
-  ]
-}
-```
-
-<h3 id="put-update-iot-edge-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[IoTEdgeDevice](#schemaiotedgedevice)|false|The IoT Edge device.|
-
-<h3 id="put-update-iot-edge-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-None
-</aside>
-
 ## GET IoT Edge device
 
 <a id="opIdGET IoT Edge device"></a>
 
 > Code samples
 
-`GET /api/edge/device/{deviceId}`
+`GET /api/edge/devices/{deviceId}`
 
 *Gets the specified device.*
 
@@ -874,13 +803,69 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
+## PUT Update IoT Edge
+
+<a id="opIdPUT Update IoT Edge"></a>
+
+> Code samples
+
+`PUT /api/edge/devices/{deviceId}`
+
+*Updates the device.*
+
+> Body parameter
+
+```json
+{
+  "deviceId": "string",
+  "connectionState": "string",
+  "scope": "string",
+  "type": "string",
+  "status": "string",
+  "runtimeResponse": "string",
+  "nbDevices": 0,
+  "nbModules": 0,
+  "environment": "string",
+  "lastDeployment": {
+    "name": "string",
+    "dateCreation": "2019-08-24T14:15:22Z",
+    "status": "string"
+  },
+  "modules": [
+    {
+      "moduleName": "string",
+      "version": "string",
+      "status": "string"
+    }
+  ]
+}
+```
+
+<h3 id="put-update-iot-edge-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceId|path|string|true|none|
+|body|body|[IoTEdgeDevice](#schemaiotedgedevice)|false|The IoT Edge device.|
+
+<h3 id="put-update-iot-edge-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
 ## DELETE Remove IoT Edge
 
 <a id="opIdDELETE Remove IoT Edge"></a>
 
 > Code samples
 
-`DELETE /api/edge/device/{deviceId}`
+`DELETE /api/edge/devices/{deviceId}`
 
 *Deletes the device.*
 
@@ -907,7 +892,7 @@ None
 
 > Code samples
 
-`POST /api/edge/device/{deviceId}/{moduleId}/{methodName}`
+`POST /api/edge/devices/{deviceId}/{moduleId}/{methodName}`
 
 *Executes the module method on the IoT Edge device.*
 
@@ -917,15 +902,7 @@ None
 {
   "moduleName": "string",
   "version": "string",
-  "status": "string",
-  "environmentVariables": {
-    "property1": "string",
-    "property2": "string"
-  },
-  "moduleIdentityTwinSettings": {
-    "property1": "string",
-    "property2": "string"
-  }
+  "status": "string"
 }
 ```
 
@@ -970,7 +947,7 @@ None
 
 > Code samples
 
-`GET /api/edge/device/{deviceId}/credentials`
+`GET /api/edge/devices/{deviceId}/credentials`
 
 *Gets the IoT Edge device enrollement credentials.*
 
@@ -1124,44 +1101,8 @@ None
   "isEnabled": true,
   "alreadyLoggedInOnce": true,
   "routerConfig": {
-    "netID": [
-      0
-    ],
-    "joinEui": [
-      [
-        "string"
-      ]
-    ],
     "region": "string",
     "hwspec": "string",
-    "freqRange": [
-      0
-    ],
-    "dRs": [
-      [
-        0
-      ]
-    ],
-    "sx1301Conf": [
-      {
-        "property1": {
-          "enable": true,
-          "freq": 0,
-          "radio": 0,
-          "if": 0,
-          "bandwidth": 0,
-          "spreadFactor": 0
-        },
-        "property2": {
-          "enable": true,
-          "freq": 0,
-          "radio": 0,
-          "if": 0,
-          "bandwidth": 0,
-          "spreadFactor": 0
-        }
-      }
-    ],
     "nocca": true,
     "nodc": true,
     "nodwell": true
@@ -1230,44 +1171,8 @@ None
   "isEnabled": true,
   "alreadyLoggedInOnce": true,
   "routerConfig": {
-    "netID": [
-      0
-    ],
-    "joinEui": [
-      [
-        "string"
-      ]
-    ],
     "region": "string",
     "hwspec": "string",
-    "freqRange": [
-      0
-    ],
-    "dRs": [
-      [
-        0
-      ]
-    ],
-    "sx1301Conf": [
-      {
-        "property1": {
-          "enable": true,
-          "freq": 0,
-          "radio": 0,
-          "if": 0,
-          "bandwidth": 0,
-          "spreadFactor": 0
-        },
-        "property2": {
-          "enable": true,
-          "freq": 0,
-          "radio": 0,
-          "if": 0,
-          "bandwidth": 0,
-          "spreadFactor": 0
-        }
-      }
-    ],
     "nocca": true,
     "nodc": true,
     "nodwell": true
@@ -1456,7 +1361,7 @@ None
 > 200 Response
 
 ```
-{"items":[{"deviceID":"string","deviceName":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z"}],"totalItems":0,"nextPage":"string"}
+{"items":[{"deviceID":"string","deviceName":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"supportLoRaFeatures":true,"statusUpdatedTime":"2019-08-24T14:15:22Z"}],"totalItems":0,"nextPage":"string"}
 ```
 
 ```json
@@ -1465,7 +1370,7 @@ None
     {
       "deviceID": "string",
       "deviceName": "string",
-      "imageUrl": "string",
+      "imageUrl": "http://example.com",
       "isConnected": true,
       "isEnabled": true,
       "supportLoRaFeatures": true,
@@ -1505,7 +1410,7 @@ None
   "deviceID": "string",
   "deviceName": "string",
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
@@ -1578,7 +1483,7 @@ None
   "deviceID": "string",
   "deviceName": "string",
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
@@ -1655,7 +1560,7 @@ None
 > 200 Response
 
 ```
-{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"string","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":0,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":4294967295,"fCntDownStart":4294967295,"supports32BitFCnt":true,"fCntResetCounter":4294967295,"keepAliveTimeout":0,"appKey":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string"}
+{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":0,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":4294967295,"fCntDownStart":4294967295,"supports32BitFCnt":true,"fCntResetCounter":4294967295,"keepAliveTimeout":0,"appKey":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string"}
 ```
 
 ```json
@@ -1663,7 +1568,7 @@ None
   "deviceID": "string",
   "deviceName": "string",
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
@@ -1783,14 +1688,14 @@ None
 > 200 Response
 
 ```
-[{"modelId":"string","imageUrl":"string","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true}]
+[{"modelId":"string","imageUrl":"http://example.com","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true}]
 ```
 
 ```json
 [
   {
     "modelId": "string",
-    "imageUrl": "string",
+    "imageUrl": "http://example.com",
     "name": "string",
     "description": "string",
     "isBuiltin": true,
@@ -1811,9 +1716,9 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[[DeviceModel](#schemadevicemodel)]|false|none|none|
+|*anonymous*|[[DeviceModel](#schemadevicemodel)]|false|none|[Device model.]|
 |» modelId|string¦null|false|none|The device model identifier.|
-|» imageUrl|string¦null|false|none|The device model image Url.|
+|» imageUrl|string(uri)¦null|false|none|The device model image Url.|
 |» name|string|true|none|The device model name.|
 |» description|string¦null|false|none|The device model description.|
 |» isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
@@ -1839,7 +1744,7 @@ None
 ```json
 {
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "name": "string",
   "description": "string",
   "isBuiltin": true,
@@ -1922,13 +1827,13 @@ None
 > 200 Response
 
 ```
-{"modelId":"string","imageUrl":"string","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true,"classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","downlink":true,"preferredWindow":0,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":4294967295,"fCntDownStart":4294967295,"fCntResetCounter":4294967295,"supports32BitFCnt":true,"keepAliveTimeout":0}
+{"modelId":"string","imageUrl":"http://example.com","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true,"classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","downlink":true,"preferredWindow":0,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":4294967295,"fCntDownStart":4294967295,"fCntResetCounter":4294967295,"supports32BitFCnt":true,"keepAliveTimeout":0}
 ```
 
 ```json
 {
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "name": "string",
   "description": "string",
   "isBuiltin": true,
@@ -1979,7 +1884,7 @@ None
 ```json
 {
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "name": "string",
   "description": "string",
   "isBuiltin": true,
@@ -2339,7 +2244,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[[DeviceModelCommand](#schemadevicemodelcommand)]|false|none|none|
+|*anonymous*|[[DeviceModelCommand](#schemadevicemodelcommand)]|false|none|[Device model command.]|
 |» name|string|true|none|The command name.|
 |» frame|string|true|none|The command frame in hexa.|
 |» port|integer(int32)|true|none|The LoRa WAN port.|
@@ -2367,14 +2272,14 @@ None
 > 200 Response
 
 ```
-[{"modelId":"string","imageUrl":"string","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true}]
+[{"modelId":"string","imageUrl":"http://example.com","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true}]
 ```
 
 ```json
 [
   {
     "modelId": "string",
-    "imageUrl": "string",
+    "imageUrl": "http://example.com",
     "name": "string",
     "description": "string",
     "isBuiltin": true,
@@ -2395,9 +2300,9 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[[DeviceModel](#schemadevicemodel)]|false|none|none|
+|*anonymous*|[[DeviceModel](#schemadevicemodel)]|false|none|[Device model.]|
 |» modelId|string¦null|false|none|The device model identifier.|
-|» imageUrl|string¦null|false|none|The device model image Url.|
+|» imageUrl|string(uri)¦null|false|none|The device model image Url.|
 |» name|string|true|none|The device model name.|
 |» description|string¦null|false|none|The device model description.|
 |» isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
@@ -2423,7 +2328,7 @@ None
 ```json
 {
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "name": "string",
   "description": "string",
   "isBuiltin": true,
@@ -2490,13 +2395,13 @@ None
 > 200 Response
 
 ```
-{"modelId":"string","imageUrl":"string","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true}
+{"modelId":"string","imageUrl":"http://example.com","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true}
 ```
 
 ```json
 {
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "name": "string",
   "description": "string",
   "isBuiltin": true,
@@ -2531,7 +2436,7 @@ None
 ```json
 {
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "name": "string",
   "description": "string",
   "isBuiltin": true,
@@ -2814,7 +2719,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[[DeviceProperty](#schemadeviceproperty)]|false|none|none|
+|*anonymous*|[[DeviceProperty](#schemadeviceproperty)]|false|none|[Device property.]|
 |» name|string|true|none|The property name|
 |» displayName|string|true|none|The property display name|
 |» isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
@@ -2979,7 +2884,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[[DeviceTag](#schemadevicetag)]|false|none|none|
+|*anonymous*|[[DeviceTag](#schemadevicetag)]|false|none|[Device tag.]|
 |» name|string|true|none|The registered name in the device twin.|
 |» label|string|true|none|The label shown to the user.|
 |» required|boolean|false|none|Whether the field is required when creating a new device or not.|
@@ -3063,6 +2968,8 @@ None
 
 ```
 
+Cloud to Device message result.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3088,6 +2995,8 @@ None
 }
 
 ```
+
+LoRaWAN Concentrator Channel configuration.
 
 ### Properties
 
@@ -3164,6 +3073,8 @@ None
 
 ```
 
+LoRaWAN Concentrator.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3176,7 +3087,7 @@ None
 |isConnected|boolean|false|none|`true` if this instance is connected; otherwise, `false`.|
 |isEnabled|boolean|false|none|`true` if this instance is enabled; otherwise, `false`.|
 |alreadyLoggedInOnce|boolean|false|none|`true` if [already logged in once]; otherwise, `false`.|
-|routerConfig|[RouterConfig](#schemarouterconfig)|false|none|none|
+|routerConfig|[RouterConfig](#schemarouterconfig)|false|none|Router configuration.|
 
 <h2 id="tocS_ConcentratorPaginationResult">ConcentratorPaginationResult</h2>
 <!-- backwards compatibility -->
@@ -3274,6 +3185,8 @@ Class representing the page results.
 
 ```
 
+IoT Edge configuration
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3318,6 +3231,8 @@ Class representing the page results.
 
 ```
 
+IoT Edge configuration list item.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3344,7 +3259,7 @@ Class representing the page results.
   "deviceID": "string",
   "deviceName": "string",
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
@@ -3356,6 +3271,8 @@ Class representing the page results.
 
 ```
 
+Device details.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3363,7 +3280,7 @@ Class representing the page results.
 |deviceID|string|true|none|The device identifier.|
 |deviceName|string|true|none|The name of the device.|
 |modelId|string|true|none|The model identifier.|
-|imageUrl|string¦null|false|none|The device model image Url.|
+|imageUrl|string(uri)¦null|false|none|The device model image Url.|
 |isConnected|boolean|false|none|`true` if this instance is connected; otherwise, `false`.|
 |isEnabled|boolean|false|none|`true` if this instance is enabled; otherwise, `false`.|
 |statusUpdatedTime|string(date-time)|false|none|The status updated time.|
@@ -3381,7 +3298,7 @@ Class representing the page results.
 {
   "deviceID": "string",
   "deviceName": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "isConnected": true,
   "isEnabled": true,
   "supportLoRaFeatures": true,
@@ -3390,13 +3307,15 @@ Class representing the page results.
 
 ```
 
+Device list item.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |deviceID|string¦null|false|none|The device Identifier.|
 |deviceName|string¦null|false|none|The device friendly name.|
-|imageUrl|string¦null|false|none|The device model image Url.|
+|imageUrl|string(uri)¦null|false|none|The device model image Url.|
 |isConnected|boolean|false|none|A value indicating whether the device is currently connected.|
 |isEnabled|boolean|false|none|A value indicating whether the device is enabled on the platform.|
 |supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
@@ -3415,7 +3334,7 @@ Class representing the page results.
     {
       "deviceID": "string",
       "deviceName": "string",
-      "imageUrl": "string",
+      "imageUrl": "http://example.com",
       "isConnected": true,
       "isEnabled": true,
       "supportLoRaFeatures": true,
@@ -3448,7 +3367,7 @@ Class representing the page results.
 ```json
 {
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "name": "string",
   "description": "string",
   "isBuiltin": true,
@@ -3457,12 +3376,14 @@ Class representing the page results.
 
 ```
 
+Device model.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |modelId|string¦null|false|none|The device model identifier.|
-|imageUrl|string¦null|false|none|The device model image Url.|
+|imageUrl|string(uri)¦null|false|none|The device model image Url.|
 |name|string|true|none|The device model name.|
 |description|string¦null|false|none|The device model description.|
 |isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
@@ -3484,6 +3405,8 @@ Class representing the page results.
 }
 
 ```
+
+Device model command.
 
 ### Properties
 
@@ -3511,6 +3434,8 @@ Class representing the page results.
 }
 
 ```
+
+Device property.
 
 ### Properties
 
@@ -3552,6 +3477,8 @@ Class representing the page results.
 
 ```
 
+Device property value.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3591,6 +3518,8 @@ Class representing the page results.
 
 ```
 
+Device tag.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3617,14 +3546,16 @@ Class representing the page results.
 
 ```
 
+Enrollment credentials.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|registrationID|string¦null|false|none|none|
-|symmetricKey|string¦null|false|none|none|
-|scopeID|string¦null|false|none|none|
-|provisioningEndpoint|string¦null|false|none|none|
+|registrationID|string¦null|false|none|The registration identifier.|
+|symmetricKey|string¦null|false|none|The symmetric key.|
+|scopeID|string¦null|false|none|The scope identifier.|
+|provisioningEndpoint|string¦null|false|none|The provisioning endpoint.|
 
 <h2 id="tocS_IoTEdgeDevice">IoTEdgeDevice</h2>
 <!-- backwards compatibility -->
@@ -3668,6 +3599,8 @@ Class representing the page results.
 
 ```
 
+IoT Edge device.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3681,7 +3614,7 @@ Class representing the page results.
 |nbDevices|integer(int32)|false|none|The number of connected devices on IoT Edge device.|
 |nbModules|integer(int32)|false|none|The number of modules on IoT Edge device.|
 |environment|string¦null|false|none|The IoT Edge environment tag value.|
-|lastDeployment|[ConfigItem](#schemaconfigitem)|false|none|none|
+|lastDeployment|[ConfigItem](#schemaconfigitem)|false|none|IoT Edge configuration|
 |modules|[[IoTEdgeModule](#schemaiotedgemodule)]¦null|false|none|The IoT Edge modules.|
 
 <h2 id="tocS_IoTEdgeListItem">IoTEdgeListItem</h2>
@@ -3700,6 +3633,8 @@ Class representing the page results.
 }
 
 ```
+
+IoT Edge list item.
 
 ### Properties
 
@@ -3767,6 +3702,8 @@ Class representing the page results.
 
 ```
 
+IoT Edge module.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3774,9 +3711,9 @@ Class representing the page results.
 |moduleName|string|true|none|The module name.|
 |version|string¦null|false|none|The module configuration version.|
 |status|string¦null|false|none|The module status.|
-|environmentVariables|object¦null|false|none|The module environment variables.|
+|environmentVariables|object¦null|false|read-only|The module environment variables.|
 |» **additionalProperties**|string¦null|false|none|none|
-|moduleIdentityTwinSettings|object¦null|false|none|The module identity twin settings.|
+|moduleIdentityTwinSettings|object¦null|false|read-only|The module identity twin settings.|
 |» **additionalProperties**|string¦null|false|none|none|
 
 <h2 id="tocS_LoRaDeviceDetails">LoRaDeviceDetails</h2>
@@ -3791,7 +3728,7 @@ Class representing the page results.
   "deviceID": "string",
   "deviceName": "string",
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "isConnected": true,
   "isEnabled": true,
   "statusUpdatedTime": "2019-08-24T14:15:22Z",
@@ -3831,6 +3768,8 @@ Class representing the page results.
 
 ```
 
+LoRa WAN Device details.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
@@ -3838,13 +3777,13 @@ Class representing the page results.
 |deviceID|string|true|none|The device identifier.|
 |deviceName|string|true|none|The name of the device.|
 |modelId|string|true|none|The model identifier.|
-|imageUrl|string¦null|false|none|The device model image Url.|
+|imageUrl|string(uri)¦null|false|none|The device model image Url.|
 |isConnected|boolean|false|none|`true` if this instance is connected; otherwise, `false`.|
 |isEnabled|boolean|false|none|`true` if this instance is enabled; otherwise, `false`.|
 |statusUpdatedTime|string(date-time)|false|none|The status updated time.|
 |tags|object¦null|false|none|List of custom device tags and their values.|
 |» **additionalProperties**|string¦null|false|none|none|
-|classType|string|false|none|The LoRa device class.|
+|classType|string|false|none|The LoRa device class type.|
 |useOTAA|boolean|false|none|The status of OTAA setting.|
 |appEUI|string¦null|false|none|The device OTAA Application eui.|
 |sensorDecoder|string¦null|false|none|The sensor decoder API Url.|
@@ -3893,7 +3832,7 @@ Class representing the page results.
 ```json
 {
   "modelId": "string",
-  "imageUrl": "string",
+  "imageUrl": "http://example.com",
   "name": "string",
   "description": "string",
   "isBuiltin": true,
@@ -3918,12 +3857,14 @@ Class representing the page results.
 
 ```
 
+LoRa Device model.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |modelId|string¦null|false|none|The device model identifier.|
-|imageUrl|string¦null|false|none|The device model image Url.|
+|imageUrl|string(uri)¦null|false|none|The device model image Url.|
 |name|string|true|none|The device model name.|
 |description|string¦null|false|none|The device model description.|
 |isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
@@ -3970,6 +3911,8 @@ Class representing the page results.
 }
 
 ```
+
+Protal Settings.
 
 ### Properties
 
@@ -4064,18 +4007,20 @@ Class representing the page results.
 
 ```
 
+Router configuration.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|netID|[integer]¦null|false|none|The network identifier.|
-|joinEui|[array]¦null|false|none|The join eui.|
+|netID|[integer]¦null|false|read-only|The network identifier.|
+|joinEui|[array]¦null|false|read-only|The join eui.|
 |region|string¦null|false|none|The region.|
 |hwspec|string¦null|false|none|The hardware specifications.|
-|freqRange|[integer]¦null|false|none|The frequency range.|
-|dRs|[array]¦null|false|none|The DRs.|
-|sx1301Conf|[object]¦null|false|none|The SX1301 conf.|
-|» **additionalProperties**|[Channel](#schemachannel)|false|none|none|
+|freqRange|[integer]¦null|false|read-only|The frequency range.|
+|dRs|[array]¦null|false|read-only|The DRs.|
+|sx1301Conf|[object]¦null|false|read-only|The SX1301 conf.|
+|» **additionalProperties**|[Channel](#schemachannel)|false|none|LoRaWAN Concentrator Channel configuration.|
 |nocca|boolean|false|none|`true` if nocca; otherwise, `false`.|
 |nodc|boolean|false|none|`true` if nodc; otherwise, `false`.|
 |nodwell|boolean|false|none|`true` if nodwell; otherwise, `false`.|
