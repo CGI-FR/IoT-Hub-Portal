@@ -11,16 +11,14 @@ namespace AzureIoTHub.Portal.Server
     using AutoMapper;
     using Azure;
     using Azure.Storage.Blobs;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Identity;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Server.Wrappers;
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
-    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -42,23 +40,28 @@ namespace AzureIoTHub.Portal.Server
     {
         public Startup(IWebHostEnvironment environment, IConfiguration configuration)
         {
-            this.HostEnvironment = environment;
-            this.Configuration = configuration;
+            HostEnvironment = environment;
+            Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
         public IWebHostEnvironment HostEnvironment { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            var configuration = ConfigHandler.Create(this.HostEnvironment, this.Configuration);
+            ArgumentNullException.ThrowIfNull(services, nameof(services));
+
+            var configuration = ConfigHandler.Create(HostEnvironment, Configuration);
 
             _ = services.Configure<ClientApiIndentityOptions>(opts =>
             {
-                opts.MetadataUrl = new Uri(configuration.OIDCMetadataUrl).ToString();
+                opts.MetadataUrl = new Uri(configuration.OIDCMetadataUrl);
                 opts.ClientId = configuration.OIDCClientId;
                 opts.Scope = configuration.OIDCScope;
                 opts.Authority = configuration.OIDCAuthority;
@@ -84,24 +87,15 @@ namespace AzureIoTHub.Portal.Server
 
             _ = services.AddRazorPages();
 
-            _ = services.AddScoped(t =>
-            {
-                return RegistryManager.CreateFromConnectionString(configuration.IoTHubConnectionString);
-            });
+            _ = services.AddScoped(_ => RegistryManager.CreateFromConnectionString(configuration.IoTHubConnectionString));
 
-            _ = services.AddScoped(t =>
-            {
-                return ServiceClient.CreateFromConnectionString(configuration.IoTHubConnectionString);
-            });
+            _ = services.AddScoped(_ => ServiceClient.CreateFromConnectionString(configuration.IoTHubConnectionString));
 
-            _ = services.AddScoped(t =>
-            {
-                return ProvisioningServiceClient.CreateFromConnectionString(configuration.DPSConnectionString);
-            });
+            _ = services.AddScoped(_ => ProvisioningServiceClient.CreateFromConnectionString(configuration.DPSConnectionString));
 
             _ = services.AddTransient<IProvisioningServiceClient, ProvisioningServiceClientWrapper>();
-            _ = services.AddTransient(sp => new BlobServiceClient(configuration.StorageAccountConnectionString));
-            _ = services.AddTransient<ITableClientFactory>(sp => new TableClientFactory(configuration.StorageAccountConnectionString));
+            _ = services.AddTransient(_ => new BlobServiceClient(configuration.StorageAccountConnectionString));
+            _ = services.AddTransient<ITableClientFactory>(_ => new TableClientFactory(configuration.StorageAccountConnectionString));
             _ = services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
             _ = services.AddTransient<IDeviceService, DeviceService>();
             _ = services.AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>();
@@ -123,7 +117,7 @@ namespace AzureIoTHub.Portal.Server
             var transientHttpErrorPolicy = HttpPolicyExtensions
                                     .HandleTransientHttpError()
                                     .OrResult(c => c.StatusCode == HttpStatusCode.NotFound)
-                                    .WaitAndRetryAsync(3, attempt => TimeSpan.FromMilliseconds(100));
+                                    .WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(100));
 
             _ = services.AddHttpClient("RestClient")
                 .AddPolicyHandler(transientHttpErrorPolicy);
@@ -136,10 +130,7 @@ namespace AzureIoTHub.Portal.Server
             })
                 .AddPolicyHandler(transientHttpErrorPolicy);
 
-            _ = services.AddHttpClient<IRouterConfigManager, RouterConfigManager>(client =>
-            {
-                client.BaseAddress = new Uri(configuration.LoRaRegionRouterConfigUrl);
-            }).AddPolicyHandler(transientHttpErrorPolicy);
+            _ = services.AddHttpClient<IRouterConfigManager, RouterConfigManager>(client => client.BaseAddress = new Uri(configuration.LoRaRegionRouterConfigUrl)).AddPolicyHandler(transientHttpErrorPolicy);
 
             _ = services.AddControllers();
 
@@ -157,11 +148,11 @@ namespace AzureIoTHub.Portal.Server
                   });
 
                   // using System.Reflection;
-                  opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"AzureIoTHub.Portal.Server.xml"));
-                  opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"AzureIoTHub.Portal.Shared.xml"));
+                  opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "AzureIoTHub.Portal.Server.xml"));
+                  opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "AzureIoTHub.Portal.Shared.xml"));
 
                   opts.TagActionsBy(api => new[] { api.GroupName });
-                  opts.DocInclusionPredicate((name, api) => true);
+                  opts.DocInclusionPredicate((_, _) => true);
 
                   opts.DescribeAllParametersInCamelCase();
 
@@ -214,9 +205,16 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddHealthChecks();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            ArgumentNullException.ThrowIfNull(env, nameof(env));
+            ArgumentNullException.ThrowIfNull(app, nameof(app));
+
             if (env.IsDevelopment())
             {
                 app.UseWebAssemblyDebugging();
@@ -249,7 +247,7 @@ namespace AzureIoTHub.Portal.Server
                 // endpoints.MapFallbackToFile("index.html");
 
                 // Prevent the user from getting HTML when the controller can't be found.
-                _ = endpoints.Map("api/{**slug}", this.HandleApiFallback);
+                _ = endpoints.Map("api/{**slug}", HandleApiFallback);
 
                 // If this is a request for a web page, just do the normal out-of-the-box behaviour.
                 _ = endpoints.MapFallbackToFile("{**slug}", "index.html", new StaticFileOptions
@@ -260,163 +258,15 @@ namespace AzureIoTHub.Portal.Server
                 _ = endpoints.MapHealthChecks("/healthz");
             });
 
-            await app.ApplicationServices.GetService<IDeviceModelImageManager>().InitializeDefaultImageBlob();
+            await app?.ApplicationServices
+                    .GetService<IDeviceModelImageManager>()
+                    .InitializeDefaultImageBlob();
         }
 
         private Task HandleApiFallback(HttpContext context)
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             return Task.CompletedTask;
-        }
-
-        public abstract class ConfigHandler
-        {
-            protected const string PortalNameKey = "SiteName";
-            protected const string IoTHubConnectionStringKey = "IoTHub:ConnectionString";
-            protected const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
-            protected const string DPSServiceEndpointKey = "IoTDPS:ServiceEndpoint";
-
-            protected const string OIDCScopeKey = "OIDC:Scope";
-            protected const string OIDCAuthorityKey = "OIDC:Authority";
-            protected const string OIDCMetadataUrlKey = "OIDC:MetadataUrl";
-            protected const string OIDCClientIdKey = "OIDC:ClientId";
-            protected const string OIDCApiClientIdKey = "OIDC:ApiClientId";
-
-            protected const string IsLoRaFeatureEnabledKey = "LoRaFeature:Enabled";
-
-            protected const string StorageAccountConnectionStringKey = "StorageAccount:ConnectionString";
-            protected const string StorageAccountBlobContainerNameKey = "StorageAccount:BlobContainerName";
-            protected const string StorageAccountBlobContainerPartitionKeyKey = "StorageAccount:BlobContainerPartitionKey";
-
-            protected const string LoRaKeyManagementUrlKey = "LoRaKeyManagement:Url";
-            protected const string LoRaKeyManagementCodeKey = "LoRaKeyManagement:Code";
-            protected const string LoRaRegionRouterConfigUrlKey = "LoRaRegionRouterConfig:Url";
-
-            internal static ConfigHandler Create(IWebHostEnvironment env, IConfiguration config)
-            {
-                if (env.IsProduction())
-                {
-                    return new ProductionConfigHandler(config);
-                }
-
-                return new DevelopmentConfigHandler(config);
-            }
-
-            internal abstract string IoTHubConnectionString { get; }
-
-            internal abstract string DPSConnectionString { get; }
-
-            internal abstract string DPSEndpoint { get; }
-
-            internal abstract string StorageAccountConnectionString { get; }
-
-            internal abstract string OIDCScope { get; }
-
-            internal abstract string OIDCApiClientId { get; }
-
-            internal abstract string OIDCClientId { get; }
-
-            internal abstract string OIDCMetadataUrl { get; }
-
-            internal abstract string OIDCAuthority { get; }
-
-            internal abstract bool IsLoRaEnabled { get; }
-
-            internal abstract string StorageAccountBlobContainerName { get; }
-
-            internal abstract string StorageAccountBlobContainerPartitionKey { get; }
-
-            internal abstract string LoRaKeyManagementUrl { get; }
-
-            internal abstract string LoRaKeyManagementCode { get; }
-
-            internal abstract string LoRaRegionRouterConfigUrl { get; }
-
-            internal abstract string PortalName { get; }
-        }
-
-        internal class ProductionConfigHandler : ConfigHandler
-        {
-            private readonly IConfiguration config;
-
-            internal ProductionConfigHandler(IConfiguration config)
-            {
-                this.config = config;
-            }
-
-            internal override string PortalName => this.config[PortalNameKey];
-
-            internal override string IoTHubConnectionString => this.config.GetConnectionString(IoTHubConnectionStringKey);
-
-            internal override string DPSConnectionString => this.config.GetConnectionString(DPSConnectionStringKey);
-
-            internal override string DPSEndpoint => this.config[DPSServiceEndpointKey];
-
-            internal override string StorageAccountConnectionString => this.config.GetConnectionString(StorageAccountConnectionStringKey);
-
-            internal override string OIDCScope => this.config[OIDCScopeKey];
-
-            internal override string OIDCAuthority => this.config[OIDCAuthorityKey];
-
-            internal override string OIDCMetadataUrl => this.config[OIDCMetadataUrlKey];
-
-            internal override string OIDCClientId => this.config[OIDCClientIdKey];
-
-            internal override string OIDCApiClientId => this.config[OIDCApiClientIdKey];
-
-            internal override bool IsLoRaEnabled => bool.Parse(this.config[IsLoRaFeatureEnabledKey] ?? "true");
-
-            internal override string StorageAccountBlobContainerName => this.config[StorageAccountBlobContainerNameKey];
-
-            internal override string StorageAccountBlobContainerPartitionKey => this.config[StorageAccountBlobContainerPartitionKeyKey];
-
-            internal override string LoRaKeyManagementUrl => this.config[LoRaKeyManagementUrlKey];
-
-            internal override string LoRaKeyManagementCode => this.config.GetConnectionString(LoRaKeyManagementCodeKey);
-
-            internal override string LoRaRegionRouterConfigUrl => this.config[LoRaRegionRouterConfigUrlKey];
-        }
-
-        internal class DevelopmentConfigHandler : ConfigHandler
-        {
-            private readonly IConfiguration config;
-
-            internal DevelopmentConfigHandler(IConfiguration config)
-            {
-                this.config = config;
-            }
-
-            internal override string PortalName => this.config[PortalNameKey];
-
-            internal override string IoTHubConnectionString => this.config[IoTHubConnectionStringKey];
-
-            internal override string DPSConnectionString => this.config[DPSConnectionStringKey];
-
-            internal override string DPSEndpoint => this.config[DPSServiceEndpointKey];
-
-            internal override string StorageAccountConnectionString => this.config[StorageAccountConnectionStringKey];
-
-            internal override string OIDCScope => this.config[OIDCScopeKey];
-
-            internal override string OIDCAuthority => this.config[OIDCAuthorityKey];
-
-            internal override string OIDCMetadataUrl => this.config[OIDCMetadataUrlKey];
-
-            internal override string OIDCClientId => this.config[OIDCClientIdKey];
-
-            internal override string OIDCApiClientId => this.config[OIDCApiClientIdKey];
-
-            internal override bool IsLoRaEnabled => bool.Parse(this.config[IsLoRaFeatureEnabledKey] ?? "true");
-
-            internal override string StorageAccountBlobContainerName => this.config[StorageAccountBlobContainerNameKey];
-
-            internal override string StorageAccountBlobContainerPartitionKey => this.config[StorageAccountBlobContainerPartitionKeyKey];
-
-            internal override string LoRaKeyManagementUrl => this.config[LoRaKeyManagementUrlKey];
-
-            internal override string LoRaKeyManagementCode => this.config[LoRaKeyManagementCodeKey];
-
-            internal override string LoRaRegionRouterConfigUrl => this.config[LoRaRegionRouterConfigUrlKey];
         }
     }
 }

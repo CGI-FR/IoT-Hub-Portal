@@ -10,9 +10,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
@@ -58,7 +57,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>();
             this.mockCommandsTableClient = this.mockRepository.Create<TableClient>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
-
         }
 
         private LoRaWANDevicesController CreateLoRaWANDevicesController()
@@ -78,7 +76,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         public async Task ExecuteCommandStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var loRaWANDevicesController = this.CreateLoRaWANDevicesController();
+            var loRaWANDevicesController = CreateLoRaWANDevicesController();
             var modelId = Guid.NewGuid().ToString();
             var deviceId = Guid.NewGuid().ToString();
             var commandId = Guid.NewGuid().ToString();
@@ -109,17 +107,19 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             _ = this.mockTableClientFactory.Setup(c => c.GetDeviceCommands())
                 .Returns(this.mockCommandsTableClient.Object);
 
+            using var success = new HttpResponseMessage(HttpStatusCode.Accepted);
+
             _ = this.mockLoraDeviceMethodManager.Setup(c => c.ExecuteLoRaDeviceMessage(
                 It.Is<string>(x => x == deviceId),
                 It.Is<DeviceModelCommand>(x => x.Name == commandId)))
-                .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
+                .ReturnsAsync(success);
 
             _ = this.mockLogger.Setup(c => c.Log(
                     It.Is<LogLevel>(x => x == LogLevel.Information),
                     It.IsAny<EventId>(),
                     It.IsAny<It.IsAnyType>(),
                     It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceId)))
                     .ReturnsAsync(new Twin()
@@ -129,7 +129,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                     });
 
             _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
-                    .Returns<Twin, IEnumerable<string>>((x, y) => new LoRaDeviceDetails
+                    .Returns<Twin, IEnumerable<string>>((_, _) => new LoRaDeviceDetails
                     {
                         DeviceID = deviceId,
                         ModelId = modelId,
@@ -149,7 +149,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         public async Task ExecuteCommandFailedShouldReturnHttp400()
         {
             // Arrange
-            var loRaWANDevicesController = this.CreateLoRaWANDevicesController();
+            var loRaWANDevicesController = CreateLoRaWANDevicesController();
             var modelId = Guid.NewGuid().ToString();
             var deviceId = Guid.NewGuid().ToString();
             var commandId = Guid.NewGuid().ToString();
@@ -180,17 +180,19 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             _ = this.mockTableClientFactory.Setup(c => c.GetDeviceCommands())
                 .Returns(this.mockCommandsTableClient.Object);
 
+            using var internalServerError = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+
             _ = this.mockLoraDeviceMethodManager.Setup(c => c.ExecuteLoRaDeviceMessage(
                 It.Is<string>(x => x == deviceId),
                 It.Is<DeviceModelCommand>(x => x.Name == commandId)))
-                .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+                .ReturnsAsync(internalServerError);
 
             _ = this.mockLogger.Setup(c => c.Log(
                 It.Is<LogLevel>(x => x == LogLevel.Error),
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceId)))
                 .ReturnsAsync(new Twin()
@@ -200,7 +202,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                 });
 
             _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
-                .Returns<Twin, IEnumerable<string>>((x, y) => new LoRaDeviceDetails
+                .Returns<Twin, IEnumerable<string>>((_, _) => new LoRaDeviceDetails
                 {
                     DeviceID = deviceId,
                     ModelId = modelId,
@@ -215,13 +217,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             this.mockRepository.VerifyAll();
         }
 
-
         [Test]
         public async Task GetListStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var devicesController = this.CreateLoRaWANDevicesController();
-            var count = 100;
+            var devicesController = CreateLoRaWANDevicesController();
+            const int count = 100;
             var twinCollection = new TwinCollection();
             twinCollection["deviceType"] = "test";
 
@@ -234,7 +235,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                     It.IsAny<bool?>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<int>()))
-                .ReturnsAsync(new Shared.PaginationResult<Twin>
+                .ReturnsAsync(new PaginationResult<Twin>
                 {
                     Items = Enumerable.Range(0, 100).Select(x => new Twin
                     {
@@ -265,14 +266,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         public async Task GetItemStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var devicesController = this.CreateLoRaWANDevicesController();
-            var deviceID = "aaa";
+            var devicesController = CreateLoRaWANDevicesController();
+            const string deviceID = "aaa";
 
             _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceID)))
                 .Returns<string>(x => Task.FromResult(new Twin(x)));
 
             _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
-                .Returns<Twin, IEnumerable<string>>((x, y) => new LoRaDeviceDetails
+                .Returns<Twin, IEnumerable<string>>((x, _) => new LoRaDeviceDetails
                 {
                     DeviceID = x.DeviceId,
                     AppEUI = Guid.NewGuid().ToString(),
@@ -296,7 +297,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         public async Task CreateDeviceAsyncStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var devicesController = this.CreateLoRaWANDevicesController();
+            var devicesController = CreateLoRaWANDevicesController();
             var device = new LoRaDeviceDetails
             {
                 DeviceID = "aaa",
@@ -305,7 +306,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             Twin twin = null;
 
             _ = this.mockDeviceTwinMapper.Setup(c => c.UpdateTwin(It.Is<Twin>(x => x.DeviceId == device.DeviceID), It.Is<LoRaDeviceDetails>(x => x == device)))
-                .Callback<Twin, LoRaDeviceDetails>((t, d) => twin = t);
+                .Callback<Twin, LoRaDeviceDetails>((t, _) => twin = t);
 
             _ = this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(It.Is<string>(x => x == device.DeviceID), It.Is<bool>(x => !x), It.Is<Twin>(x => x == twin), It.Is<DeviceStatus>(x => x == (device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled))))
                 .ReturnsAsync(new BulkRegistryOperationResult { IsSuccessful = true });
@@ -323,12 +324,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         public async Task CreateDeviceAsyncModelNotValidShouldReturnBadRequest()
         {
             // Arrange
-            var devicesController = this.CreateLoRaWANDevicesController();
+            var devicesController = CreateLoRaWANDevicesController();
             var device = new LoRaDeviceDetails
             {
                 DeviceID = "aaa",
             };
-
 
             devicesController.ModelState.AddModelError("Key", "Device model is invalid");
 
@@ -345,7 +345,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         public async Task UpdateDeviceAsyncStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var devicesController = this.CreateLoRaWANDevicesController();
+            var devicesController = CreateLoRaWANDevicesController();
             var device = new LoRaDeviceDetails
             {
                 DeviceID = "aaa"
@@ -378,7 +378,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         public async Task UpdateDeviceAsyncModelNotValidShouldReturnBadRequest()
         {
             // Arrange
-            var devicesController = this.CreateLoRaWANDevicesController();
+            var devicesController = CreateLoRaWANDevicesController();
             var device = new LoRaDeviceDetails
             {
                 DeviceID = "aaa"
@@ -399,8 +399,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         public async Task DeleteStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var devicesController = this.CreateLoRaWANDevicesController();
-            var deviceID = "aaa";
+            var devicesController = CreateLoRaWANDevicesController();
+            const string deviceID = "aaa";
 
             _ = this.mockDeviceService.Setup(c => c.DeleteDevice(It.Is<string>(x => x == deviceID)))
                 .Returns(Task.CompletedTask);
@@ -418,8 +418,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         public async Task GetEnrollmentCredentialsShouldAlwaysReturn404()
         {
             // Arrange
-            var devicesController = this.CreateLoRaWANDevicesController();
-            var deviceID = "aaa";
+            var devicesController = CreateLoRaWANDevicesController();
+            const string deviceID = "aaa";
 
             // Act
             var response = await devicesController.GetCredentials(deviceID);

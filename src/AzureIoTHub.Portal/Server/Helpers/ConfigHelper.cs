@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
 {
     using System;
     using System.Collections.Generic;
-    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices;
     using Newtonsoft.Json.Linq;
 
@@ -20,6 +20,8 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns>Corresponding metric value, or 0 if it doesn't exist.</returns>
         public static long RetrieveMetricValue(Configuration item, string metricName)
         {
+            ArgumentNullException.ThrowIfNull(item, nameof(item));
+
             if (item.SystemMetrics.Results.TryGetValue(metricName, out var result))
             {
                 return result;
@@ -34,8 +36,11 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <param name="config">Configuration object from Azure IoT Hub.</param>
         /// <param name="moduleList">List of modules related to this configuration.</param>
         /// <returns>A configuration converted to a ConfigListItem.</returns>
-        public static ConfigListItem CreateConfigListItem(Configuration config, List<IoTEdgeModule> moduleList)
+        public static ConfigListItem CreateConfigListItem(Configuration config, IReadOnlyCollection<IoTEdgeModule> moduleList)
         {
+            ArgumentNullException.ThrowIfNull(config, nameof(config));
+            ArgumentNullException.ThrowIfNull(moduleList, nameof(moduleList));
+
             return new ConfigListItem
             {
                 ConfigurationID = config.Id,
@@ -58,14 +63,27 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// <returns>A module with all its details as a GatewayModule object.</returns>
         public static IoTEdgeModule CreateGatewayModule(Configuration config, JProperty module)
         {
-            return new IoTEdgeModule
+            ArgumentNullException.ThrowIfNull(config, nameof(config));
+            ArgumentNullException.ThrowIfNull(module, nameof(module));
+
+            var result = new IoTEdgeModule
             {
                 ModuleName = module.Name,
                 Version = module.Value["settings"]["image"]?.Value<string>(),
                 Status = module.Value["status"]?.Value<string>(),
-                EnvironmentVariables = GetEnvironmentVariables(module),
-                ModuleIdentityTwinSettings = GetModuleIdentityTwinSettings(config, module)
             };
+
+            foreach (var item in GetEnvironmentVariables(module))
+            {
+                result.EnvironmentVariables.Add(item.Key, item.Value);
+            }
+
+            foreach (var item in GetModuleIdentityTwinSettings(config, module))
+            {
+                result.ModuleIdentityTwinSettings.Add(item.Key, item.Value);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -95,6 +113,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// </summary>
         /// <param name="module">Dictionnary containing the module's name and its properties.</param>
         /// <returns>A dictionnary containing the environment variables and their corresponding values.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
         private static Dictionary<string, string> GetEnvironmentVariables(JProperty module)
         {
             var envVariables = new Dictionary<string, string>();

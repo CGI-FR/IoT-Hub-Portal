@@ -3,7 +3,7 @@
 
 namespace AzureIoTHub.Portal.Client.Validators
 {
-    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
+    using AzureIoTHub.Portal.Models.v10;
     using FluentValidation;
 
     public class DeviceModelValidator : AbstractValidator<DeviceModel>

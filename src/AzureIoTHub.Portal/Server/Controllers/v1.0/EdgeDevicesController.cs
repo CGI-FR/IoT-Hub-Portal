@@ -7,11 +7,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared;
-    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
@@ -25,8 +24,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/edge/device")]
-    [ApiExplorerSettings(GroupName = "IoT Edge")]
+    [Route("api/edge/devices")]
+    [ApiExplorerSettings(GroupName = "IoT Edge Devices")]
     public class EdgeDevicesController : ControllerBase
     {
         /// <summary>
@@ -57,8 +56,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDevicesController"/> class.
         /// </summary>
-        /// <param name="logger">The logger.</param>
         /// <param name="configuration">The configuration.</param>
+        /// <param name="logger">The logger.</param>
         /// <param name="registryManager">The registry manager.</param>
         /// <param name="service">The service.</param>
         /// <param name="deviceProvisioningServiceManager">The device provisioning service manager.</param>
@@ -79,6 +78,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the IoT Edge device list.
         /// </summary>
+        /// <param name="continuationToken"></param>
+        /// <param name="searchText"></param>
+        /// <param name="searchStatus"></param>
+        /// <param name="searchType"></param>
+        /// <param name="pageSize"></param>
         [HttpGet(Name = "GET IoT Edge devices")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<IoTEdgeListItem>))]
         public async Task<IActionResult> Get(
@@ -89,11 +93,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             int pageSize = 10)
         {
             var result = await this.devicesService.GetAllEdgeDevice(
+                continuationToken: continuationToken,
                 searchText: searchText,
                 searchStatus: searchStatus,
                 searchType: searchType,
-                pageSize: pageSize,
-                continuationToken: continuationToken);
+                pageSize: pageSize);
 
             var newGatewayList = new List<IoTEdgeListItem>();
 
@@ -112,7 +116,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             if (!string.IsNullOrEmpty(result.NextPage))
             {
-                nextPage = this.Url.RouteUrl(new UrlRouteContext
+                nextPage = Url.RouteUrl(new UrlRouteContext
                 {
                     RouteName = nameof(Get),
                     Values = new
@@ -126,7 +130,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 });
             }
 
-            return this.Ok(new PaginationResult<IoTEdgeListItem>
+            return Ok(new PaginationResult<IoTEdgeListItem>
             {
                 Items = newGatewayList,
                 TotalItems = result.TotalItems,
@@ -157,20 +161,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                     Type = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.Type)) ?? "Undefined",
                     Environment = DeviceHelper.RetrieveTagValue(deviceTwin, "env"),
                     // We retrieve the number of connected device
-                    NbDevices = await this.RetrieveNbConnectedDevice(deviceTwin.DeviceId),
+                    NbDevices = await RetrieveNbConnectedDevice(deviceTwin.DeviceId),
                     // récupération des informations sur le modules de la gateways²
                     NbModules = DeviceHelper.RetrieveNbModuleCount(deviceWithModules, deviceId),
                     RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceWithModules),
                     Modules = DeviceHelper.RetrieveModuleList(deviceWithModules),
                     // recup du dernier deployment
-                    LastDeployment = await this.RetrieveLastConfiguration(deviceWithModules)
+                    LastDeployment = await RetrieveLastConfiguration(deviceWithModules)
                 };
 
-                return this.Ok(gateway);
+                return Ok(gateway);
             }
             catch (DeviceNotFoundException e)
             {
-                return this.StatusCode(StatusCodes.Status404NotFound, e.Message);
+                return StatusCode(StatusCodes.Status404NotFound, e.Message);
             }
         }
 
@@ -186,14 +190,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             if (deviceTwin == null)
             {
-                return this.NotFound($"IoT Edge {deviceId} doesn' exist.");
+                return NotFound($"IoT Edge {deviceId} doesn' exist.");
             }
 
             var deviceType = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.Type));
 
             var credentials = await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceId, deviceType);
 
-            return this.Ok(credentials);
+            return Ok(credentials);
         }
 
         /// <summary>
@@ -205,6 +209,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateGatewayAsync(IoTEdgeDevice gateway)
         {
+            ArgumentNullException.ThrowIfNull(gateway, nameof(gateway));
+
             try
             {
                 var deviceTwin = new Twin(gateway.DeviceId);
@@ -215,24 +221,27 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 var result = await this.devicesService.CreateDeviceWithTwin(gateway.DeviceId, true, deviceTwin, DeviceStatus.Enabled);
                 this.logger.LogInformation($"Created edge device {gateway.DeviceId}");
 
-                return this.Ok(result);
+                return Ok(result);
             }
             catch (DeviceAlreadyExistsException e)
             {
                 this.logger.LogInformation(e.Message);
-                return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
         }
 
         /// <summary>
         /// Updates the device.
         /// </summary>
+        /// <param name="deviceId"></param>
         /// <param name="gateway">The IoT Edge device.</param>
-        [HttpPut(Name = "PUT Update IoT Edge")]
+        [HttpPut("{deviceId}", Name = "PUT Update IoT Edge")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateDeviceAsync(IoTEdgeDevice gateway)
+        public async Task<IActionResult> UpdateDeviceAsync(string deviceId, IoTEdgeDevice gateway)
         {
-            var device = await this.devicesService.GetDevice(gateway.DeviceId);
+            ArgumentNullException.ThrowIfNull(gateway, nameof(gateway));
+
+            var device = await this.devicesService.GetDevice(deviceId);
 
             if (Enum.TryParse(gateway.Status, out DeviceStatus status))
             {
@@ -246,7 +255,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             deviceTwin = await this.devicesService.UpdateDeviceTwin(gateway.DeviceId, deviceTwin);
 
             this.logger.LogInformation($"iot hub device was updated  {device.Id}");
-            return this.Ok(deviceTwin);
+            return Ok(deviceTwin);
         }
 
         /// <summary>
@@ -260,7 +269,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             await this.devicesService.DeleteDevice(deviceId);
             this.logger.LogInformation($"iot hub device was delete  {deviceId}");
 
-            return this.Ok($"iot hub device was delete  {deviceId}");
+            return Ok($"iot hub device was delete  {deviceId}");
         }
 
         /// <summary>
@@ -272,6 +281,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpPost("{deviceId}/{moduleId}/{methodName}", Name = "POST Execute module command")]
         public async Task<C2Dresult> ExecuteModuleMethod(IoTEdgeModule module, string deviceId, string methodName)
         {
+            ArgumentNullException.ThrowIfNull(module, nameof(module));
+
             var method = new CloudToDeviceMethod(methodName);
             var payload = string.Empty;
 
@@ -343,7 +354,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             var item = new ConfigItem();
 
-            if (twin.Configurations != null && twin.Configurations.Count > 0)
+            if (twin.Configurations?.Count > 0)
             {
                 foreach (var config in twin.Configurations)
                 {
@@ -352,7 +363,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                     {
                         item.Name = config.Key;
                         item.DateCreation = confObj.CreatedTimeUtc;
-                        item.Status = ConfigurationStatus.Applied.ToString();
+                        item.Status = nameof(ConfigurationStatus.Applied);
                     }
                 }
             }

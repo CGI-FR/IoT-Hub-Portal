@@ -1,10 +1,13 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Shared.Models.v10.Device
+namespace AzureIoTHub.Portal.Models.v10
 {
     using System;
 
+    /// <summary>
+    /// Device list item.
+    /// </summary>
     public class DeviceListItem
     {
         /// <summary>
@@ -20,7 +23,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.Device
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public string ImageUrl { get; set; }
+        public Uri ImageUrl { get; set; }
 
         /// <summary>
         /// A value indicating whether the device is currently connected.

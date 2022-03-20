@@ -1,4 +1,4 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Filters
@@ -7,9 +7,8 @@ namespace AzureIoTHub.Portal.Server.Filters
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc.Filters;
     using Microsoft.Identity.Web.Resource;
-    using static AzureIoTHub.Portal.Server.Startup;
 
-    internal class ApiRequiredScopeFilter : ActionFilterAttribute
+    internal sealed class ApiRequiredScopeFilter : ActionFilterAttribute
     {
         private readonly ConfigHandler configuration;
 

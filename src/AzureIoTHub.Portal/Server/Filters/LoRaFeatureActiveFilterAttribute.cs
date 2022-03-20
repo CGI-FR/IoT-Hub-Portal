@@ -1,21 +1,22 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using static AzureIoTHub.Portal.Server.Startup;
 
 namespace AzureIoTHub.Portal.Server.Filters
 {
-    public class LoRaFeatureActiveFilterAttribute : ActionFilterAttribute
+    using System;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Filters;
+    using Microsoft.Extensions.DependencyInjection;
+
+    public sealed class LoRaFeatureActiveFilterAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
+            ArgumentNullException.ThrowIfNull(context, nameof(context));
+
             var configHandler = context.HttpContext.RequestServices.GetService<ConfigHandler>();
 
-            if (configHandler.IsLoRaEnabled == false)
+            if (!configHandler.IsLoRaEnabled)
             {
                 context.Result = new BadRequestObjectResult(context.ModelState)
                 {

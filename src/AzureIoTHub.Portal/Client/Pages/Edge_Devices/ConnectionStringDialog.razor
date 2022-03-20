@@ -1,6 +1,6 @@
 ﻿@using AzureIoTHub.Portal.Client.Services
 @using Microsoft.AspNetCore.Authorization
-@using AzureIoTHub.Portal.Shared.Models.v10
+@using AzureIoTHub.Portal.Models.v10
 
 @inject HttpClient Http
 @inject ISnackbar Snackbar
@@ -55,7 +55,7 @@
         {
             await base.OnInitializedAsync();
 
-            Credentials = await this.Http.GetFromJsonAsync<EnrollmentCredentials>($"api/edge/device/{deviceId}/credentials");
+            Credentials = await this.Http.GetFromJsonAsync<EnrollmentCredentials>($"api/edge/devices/{deviceId}/credentials");
             loading = false;
 
         }

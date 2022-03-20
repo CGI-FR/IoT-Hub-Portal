@@ -3,17 +3,17 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
 
     [ApiController]
     [ApiVersion("1.0")]
@@ -64,7 +64,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [HttpGet("{id}", Name = "GET LoRaWAN device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override ActionResult<LoRaDeviceModel> GetItem(string id)
+        public override Task<ActionResult<LoRaDeviceModel>> GetItem(string id)
         {
             return base.GetItem(id);
         }
@@ -73,11 +73,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// Gets the device model avatar.
         /// </summary>
         /// <param name="id">The device model identifier</param>
-        /// <returns></returns>
         [HttpGet("{id}/avatar", Name = "GET LoRaWAN device model avatar URL")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override ActionResult<string> GetAvatar(string id)
+        public override Task<ActionResult<string>> GetAvatar(string id)
         {
             return base.GetAvatar(id);
         }

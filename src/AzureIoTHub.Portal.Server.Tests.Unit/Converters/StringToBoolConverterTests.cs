@@ -16,8 +16,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Converters
         public void SetUp()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
-
-
         }
 
         private static StringToBoolConverter CreateStringToBoolConverter()

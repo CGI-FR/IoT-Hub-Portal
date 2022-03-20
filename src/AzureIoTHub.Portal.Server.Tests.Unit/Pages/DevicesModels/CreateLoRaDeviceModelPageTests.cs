@@ -7,7 +7,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
     using System.Collections.Generic;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
-    using Bunit.TestDoubles;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
@@ -19,13 +18,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
     [TestFixture]
     public class CreateLoRaDeviceModelPageTests : IDisposable
     {
+#pragma warning disable CA2213 // Disposable fields should be disposed
         private Bunit.TestContext testContext;
-        private readonly string mockModelId = Guid.NewGuid().ToString();
+        private MockHttpMessageHandler mockHttpClient;
+#pragma warning restore CA2213 // Disposable fields should be disposed
 
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
-        private FakeNavigationManager mockNavigationManager;
-        private MockHttpMessageHandler mockHttpClient;
 
         [SetUp]
         public void SetUp()
@@ -34,28 +33,30 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
 
             this.mockRepository = new MockRepository(MockBehavior.Strict);
             this.mockDialogService = this.mockRepository.Create<IDialogService>();
-            this.mockHttpClient = testContext.Services
+            this.mockHttpClient = this.testContext.Services
                                             .AddMockHttpClient();
 
-            _ = testContext.Services.AddSingleton(this.mockDialogService.Object);
+            _ = this.testContext.Services.AddSingleton(this.mockDialogService.Object);
 
-            _ = testContext.Services.AddMudServices();
+            _ = this.testContext.Services.AddMudServices();
 
-            _ = testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
-            _ = testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            _ = testContext.JSInterop.SetupVoid("Blazor._internal.InputFile.init", _ => true);
-            _ = testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
-            _ = testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
-
-            mockNavigationManager = testContext.Services.GetRequiredService<FakeNavigationManager>();
+            _ = this.testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
+            _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
+            _ = this.testContext.JSInterop.SetupVoid("Blazor._internal.InputFile.init", _ => true);
+            _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
+            _ = this.testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
 
             this.mockHttpClient.AutoFlush = true;
         }
 
-
         public void Dispose()
         {
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
         }
     }
 }

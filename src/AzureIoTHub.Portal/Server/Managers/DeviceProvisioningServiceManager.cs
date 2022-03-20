@@ -9,10 +9,9 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Wrappers;
-    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
-    using static AzureIoTHub.Portal.Server.Startup;
 
     public class DeviceProvisioningServiceManager : IDeviceProvisioningServiceManager
     {
@@ -31,7 +30,7 @@ namespace AzureIoTHub.Portal.Server.Managers
                 tags: new TwinCollection($"{{ \"deviceType\":\"{deviceType}\" }}"),
                 desiredProperties: new TwinCollection());
 
-            return await this.CreateNewEnrollmentGroup(deviceType, true, twinState);
+            return await CreateNewEnrollmentGroup(deviceType, true, twinState);
         }
 
         public async Task<EnrollmentGroup> CreateEnrollmentGroupFromModelAsync(string modelId, string modelName, TwinCollection desiredProperties)
@@ -40,7 +39,7 @@ namespace AzureIoTHub.Portal.Server.Managers
                 tags: new TwinCollection($"{{ \"modelId\":\"{modelId}\" }}"),
                 desiredProperties: new TwinCollection());
 
-            return await this.CreateNewEnrollmentGroup(modelId, false, twinState);
+            return await CreateNewEnrollmentGroup(modelId, false, twinState);
         }
 
         private async Task<EnrollmentGroup> CreateNewEnrollmentGroup(string name, bool iotEdge, TwinState initialTwinState)
@@ -52,13 +51,8 @@ namespace AzureIoTHub.Portal.Server.Managers
             {
                 enrollmentGroup = await this.dps.GetEnrollmentGroupAsync(enrollmentGroupName);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                if (e.StatusCode != System.Net.HttpStatusCode.NotFound)
-                {
-                    throw;
-                }
-
                 var enrollmentGroupPrimaryKey = GenerateKey();
                 var enrollmentGroupSecondaryKey = GenerateKey();
 
@@ -83,7 +77,7 @@ namespace AzureIoTHub.Portal.Server.Managers
         /// <summary>
         /// this function get the attestation mechanism of the DPS.
         /// </summary>
-        /// <returns>AttestationMechanism.</returns>
+        /// <param name="deviceType"></param>
         public async Task<Attestation> GetAttestation(string deviceType)
         {
             var attetationMechanism = await this.dps.GetEnrollmentGroupAttestationAsync(ComputeEnrollmentGroupName(deviceType));
@@ -97,14 +91,14 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             try
             {
-                attestation = await this.GetAttestation(deviceType);
+                attestation = await GetAttestation(deviceType);
             }
             catch (HttpRequestException e)
             {
                 if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    _ = await this.CreateEnrollmentGroupAsync(deviceType);
-                    attestation = await this.GetAttestation(deviceType);
+                    _ = await CreateEnrollmentGroupAsync(deviceType);
+                    attestation = await GetAttestation(deviceType);
                 }
                 else
                 {
@@ -134,7 +128,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         private static string GenerateKey()
         {
-            var length = 48;
+            const int length = 48;
             var rnd = RandomNumberGenerator.GetBytes(length);
 
             return Convert.ToBase64String(rnd);
@@ -147,9 +141,11 @@ namespace AzureIoTHub.Portal.Server.Managers
                 return "default";
             }
 
+#pragma warning disable CA1308 // Normalize strings to uppercase
             return deviceType.Trim()
                 .ToLowerInvariant()
-                .Replace(" ", "-");
+                .Replace(" ", "-", StringComparison.OrdinalIgnoreCase);
+#pragma warning restore CA1308 // Normalize strings to uppercase
         }
     }
 }

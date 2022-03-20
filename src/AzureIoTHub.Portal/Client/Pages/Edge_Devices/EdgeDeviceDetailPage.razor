@@ -1,7 +1,7 @@
 ﻿@page "/edge/devices/{deviceId}"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using AzureIoTHub.Portal.Shared.Models.v10
+@using AzureIoTHub.Portal.Models.v10
 @using System.Net.Http.Json
 
 @attribute [Authorize]
@@ -189,7 +189,7 @@
 
     public async Task LoadDevice()
     {
-        Gateway = await Http.GetFromJsonAsync<IoTEdgeDevice>($"api/edge/device/{deviceId}");
+        Gateway = await Http.GetFromJsonAsync<IoTEdgeDevice>($"api/edge/devices/{deviceId}");
 
         if (Gateway.ConnectionState == "Disconnected")
         {
@@ -201,7 +201,7 @@
     public async Task UpdateDevice()
     {
         processingUpdate = true;
-        var result = await Http.PutAsJsonAsync($"api/edge/device/{Gateway.DeviceId}", Gateway);
+        var result = await Http.PutAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}", Gateway);
 
         if (result.IsSuccessStatusCode)
         {
@@ -213,7 +213,7 @@
 
     public async Task OnMethod(IoTEdgeModule module, string methodName)
     {
-        var result = await Http.PostAsJsonAsync($"api/edge/device/{Gateway.DeviceId}/{module.ModuleName}/{methodName}", module);
+        var result = await Http.PostAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}/{module.ModuleName}/{methodName}", module);
 
         var c2dResult = result.Content.ReadFromJsonAsync<C2Dresult>().Result;
 

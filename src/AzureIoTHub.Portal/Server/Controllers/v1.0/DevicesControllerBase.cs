@@ -11,14 +11,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared;
-    using AzureIoTHub.Portal.Shared.Models.v10;
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
-    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
@@ -36,9 +33,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         private readonly ITableClientFactory tableClientFactory;
         private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
 
-        protected ILogger Logger { get; private set; }
+        protected ILogger Logger { get; }
 
-        public DevicesControllerBase(
+        protected DevicesControllerBase(
             ILogger logger,
             IDeviceService devicesService,
             IDeviceTagService deviceTagService,
@@ -46,7 +43,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             ITableClientFactory tableClientFactory)
         {
-            this.Logger = logger;
+            Logger = logger;
             this.devicesService = devicesService;
             this.deviceTagService = deviceTagService;
             this.deviceTwinMapper = deviceTwinMapper;
@@ -57,6 +54,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the device list.
         /// </summary>
+        /// <param name="continuationToken"></param>
+        /// <param name="searchText"></param>
+        /// <param name="searchStatus"></param>
+        /// <param name="searchState"></param>
+        /// <param name="pageSize"></param>
         public virtual async Task<PaginationResult<TListItem>> GetItems(
             string continuationToken = null,
             string searchText = null,
@@ -66,11 +68,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             var searchTags = new Dictionary<string, string>();
 
-            var searchableTags = deviceTagService.GetAllSearchableTagsNames();
-
-            foreach (var tag in searchableTags)
+            foreach (var tag in this.deviceTagService.GetAllSearchableTagsNames())
             {
-                if (this.Request.Query.TryGetValue($"tag.{tag}", out var searchTag))
+                if (Request.Query.TryGetValue($"tag.{tag}", out var searchTag))
                 {
                     searchTags.Add(tag, searchTag.Single());
                 }
@@ -89,7 +89,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             if (!string.IsNullOrEmpty(result.NextPage))
             {
-                nextPage = this.Url.RouteUrl(new UrlRouteContext
+                nextPage = Url.RouteUrl(new UrlRouteContext
                 {
                     RouteName = nameof(GetItems),
                     Values = new
@@ -102,14 +102,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                     }
                 });
 
-                if (searchTags != null)
-                {
-                    var tagsFilterBuilder = new StringBuilder();
+                var tagsFilterBuilder = new StringBuilder();
 
-                    foreach (var tag in searchTags)
-                    {
-                        _ = tagsFilterBuilder.Append(CultureInfo.InvariantCulture, $"&tag.{tag.Key}={tag.Value}");
-                    }
+                foreach (var tag in searchTags)
+                {
+                    _ = tagsFilterBuilder.Append(CultureInfo.InvariantCulture, $"&tag.{tag.Key}={tag.Value}");
                 }
             }
 
@@ -139,11 +136,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="device">The device.</param>
         public virtual async Task<IActionResult> CreateDeviceAsync(TModel device)
         {
+            ArgumentNullException.ThrowIfNull(device, nameof(device));
+
             try
             {
-                if (!this.ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
-                    return this.BadRequest(this.ModelState);
+                    return BadRequest(ModelState);
                 }
 
                 // Create a new Twin from the form's fields.
@@ -158,17 +157,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
                 var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin, status);
 
-                return this.Ok(result);
+                return Ok(result);
             }
             catch (DeviceAlreadyExistsException e)
             {
-                this.Logger?.LogError($"Create device failed -{device.DeviceID}", e);
-                return this.BadRequest(e.Message);
+                Logger?.LogError($"Create device failed -{device.DeviceID}", e);
+                return BadRequest(e.Message);
             }
             catch (InvalidOperationException e)
             {
-                this.Logger?.LogError($"Create device failed - {device.DeviceID} -\n{e.Message}");
-                return this.BadRequest(e.Message);
+                Logger?.LogError($"Create device failed - {device.DeviceID} -\n{e.Message}");
+                return BadRequest(e.Message);
             }
         }
 
@@ -178,10 +177,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="device">The device.</param>
         public virtual async Task<IActionResult> UpdateDeviceAsync(TModel device)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.BadRequest(this.ModelState);
+                return BadRequest(ModelState);
             }
+
+            ArgumentNullException.ThrowIfNull(device, nameof(device));
 
             // Device status (enabled/disabled) has to be dealt with afterwards
             var currentDevice = await this.devicesService.GetDevice(device.DeviceID);
@@ -197,7 +198,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             _ = await this.devicesService.UpdateDeviceTwin(device.DeviceID, currentTwin);
 
-            return this.Ok();
+            return Ok();
         }
 
         /// <summary>
@@ -208,7 +209,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             await this.devicesService.DeleteDevice(deviceID);
 
-            return this.Ok();
+            return Ok();
         }
 
         /// <summary>
@@ -221,12 +222,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             if (item == null)
             {
-                return this.NotFound("Device doesn't exist.");
+                return NotFound("Device doesn't exist.");
             }
 
             if (!item.Tags.Contains("modelId"))
             {
-                return this.BadRequest($"Cannot find device type from device {deviceID}");
+                return BadRequest($"Cannot find device type from device {deviceID}");
             }
 
             Response<TableEntity> response = await this.tableClientFactory.GetDeviceTemplates()
@@ -236,7 +237,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             var credentials = await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceID, modelEntity[nameof(DeviceModel.Name)].ToString());
 
-            return this.Ok(credentials);
+            return Ok(credentials);
         }
     }
 }

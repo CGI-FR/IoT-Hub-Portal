@@ -16,17 +16,17 @@ namespace AzureIoTHub.Portal.Server.Factories
 
         public TableClient GetDeviceCommands()
         {
-            return this.CreateClient(ITableClientFactory.DeviceCommandTableName);
+            return CreateClient(ITableClientFactory.DeviceCommandTableName);
         }
 
         public TableClient GetDeviceTemplates()
         {
-            return this.CreateClient(ITableClientFactory.DeviceTemplateTableName);
+            return CreateClient(ITableClientFactory.DeviceTemplateTableName);
         }
 
         public TableClient GetDeviceTagSettings()
         {
-            return this.CreateClient(ITableClientFactory.DeviceTagSettingTableName);
+            return CreateClient(ITableClientFactory.DeviceTagSettingTableName);
         }
 
         private TableClient CreateClient(string tableName)
@@ -40,7 +40,7 @@ namespace AzureIoTHub.Portal.Server.Factories
 
         public TableClient GetDeviceTemplateProperties()
         {
-            return this.CreateClient(ITableClientFactory.DeviceTemplatePropertiesTableName);
+            return CreateClient(ITableClientFactory.DeviceTemplatePropertiesTableName);
         }
     }
 }

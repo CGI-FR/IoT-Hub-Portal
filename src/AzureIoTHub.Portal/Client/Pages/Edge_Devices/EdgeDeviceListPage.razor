@@ -1,8 +1,8 @@
 ﻿@page "/edge/devices"
-@using AzureIoTHub.Portal.Shared
+@using AzureIoTHub.Portal
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using AzureIoTHub.Portal.Shared.Models.v10
+@using AzureIoTHub.Portal.Models.v10
 @using System.Net.Http.Json
 @using Blazored.Modal
 @using Blazored.Modal.Services
@@ -141,7 +141,7 @@
         }
         else
         {
-            var uri = $"api/edge/device?pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&searchType={searchModel.Type}";
+            var uri = $"api/edge/devices?pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&searchType={searchModel.Type}";
 
             _ = Pages.TryAdd(state.Page, uri);
 

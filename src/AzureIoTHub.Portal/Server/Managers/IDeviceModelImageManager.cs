@@ -1,8 +1,9 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Managers
 {
+    using System;
     using System.IO;
     using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         Task DeleteDeviceModelImageAsync(string deviceModelId);
 
-        string ComputeImageUri(string deviceModelId);
+        Uri ComputeImageUri(string deviceModelId);
 
         Task InitializeDefaultImageBlob();
     }

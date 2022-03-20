@@ -3,9 +3,10 @@
 
 namespace AzureIoTHub.Portal.Server.Mappers
 {
+    using System;
     using System.Globalization;
     using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
     public class DeviceModelCommandMapper : IDeviceModelCommandMapper
     {
@@ -16,6 +17,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
         /// <returns>The device model comamnd.</returns>
         public DeviceModelCommand GetDeviceModelCommand(TableEntity entity)
         {
+            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
             return new DeviceModelCommand
             {
                 Name = entity.RowKey,
@@ -32,6 +35,9 @@ namespace AzureIoTHub.Portal.Server.Mappers
         /// <param name="element">The element.</param>
         public void UpdateTableEntity(TableEntity commandEntity, DeviceModelCommand element)
         {
+            ArgumentNullException.ThrowIfNull(commandEntity, nameof(commandEntity));
+            ArgumentNullException.ThrowIfNull(element, nameof(element));
+
             commandEntity[nameof(DeviceModelCommand.Frame)] = element.Frame;
             commandEntity[nameof(DeviceModelCommand.Port)] = element.Port;
             commandEntity[nameof(DeviceModelCommand.IsBuiltin)] = element.IsBuiltin;

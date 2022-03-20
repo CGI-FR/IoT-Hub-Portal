@@ -9,7 +9,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json.Linq;
@@ -17,7 +17,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/edge/configurations")]
-    [ApiExplorerSettings(GroupName = "IoT Edge")]
+    [ApiExplorerSettings(GroupName = "IoT Edge Devices")]
     public class EdgeConfigurationsController : ControllerBase
     {
         private readonly IConfigService configService;
@@ -30,7 +30,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the IoT Edge deployment configurations.
         /// </summary>
-        /// <returns></returns>
         [HttpGet(Name = "GET IoT Edge config list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IEnumerable<ConfigListItem>> Get()
@@ -66,7 +65,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the specified configuration.
         /// </summary>
         /// <param name="configurationID">The configuration identifier.</param>
-        /// <returns></returns>
         /// <exception cref="System.InvalidOperationException">Could not parse properties.desired.</exception>
         [HttpGet("{configurationID}", Name = "GET IoT Edge configuration")]
         public async Task<ConfigListItem> Get(string configurationID)

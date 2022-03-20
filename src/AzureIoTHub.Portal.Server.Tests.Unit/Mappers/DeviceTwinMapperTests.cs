@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Shared;
     using Moq;
     using NUnit.Framework;
@@ -44,7 +44,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void CreateDeviceDetailsStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceTwinMapper = this.CreateDeviceTwinMapper();
+            var deviceTwinMapper = CreateDeviceTwinMapper();
             var twin = new Twin
             {
                 DeviceId = Guid.NewGuid().ToString()
@@ -59,7 +59,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             twin.Properties.Reported["DevAddr"] = Guid.NewGuid().ToString();
 
             this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
-                .Returns("http://fake.local/000-000-001")
+                .Returns(new Uri("http://fake.local/000-000-001"))
                 .Verifiable();
 
             // Act
@@ -78,7 +78,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
                 Assert.AreEqual(twin.Tags[tagName.ToCamelCase()].ToString(), result.Tags[tagName]);
             }
 
-            Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl);
+            Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl.ToString());
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
 
             this.mockRepository.VerifyAll();
@@ -88,7 +88,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void CreateDeviceDetailsNullTagListExpectedBehavior()
         {
             // Arrange
-            var deviceTwinMapper = this.CreateDeviceTwinMapper();
+            var deviceTwinMapper = CreateDeviceTwinMapper();
             var twin = new Twin
             {
                 DeviceId = Guid.NewGuid().ToString()
@@ -101,7 +101,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             twin.Properties.Reported["DevAddr"] = Guid.NewGuid().ToString();
 
             this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
-                .Returns("http://fake.local/000-000-001")
+                .Returns(new Uri("http://fake.local/000-000-001"))
                 .Verifiable();
 
             // Act
@@ -117,7 +117,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 
             Assert.IsEmpty(result.Tags);
 
-            Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl);
+            Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl.ToString());
             Assert.AreEqual(DateTime.MinValue, result.StatusUpdatedTime);
 
             this.mockRepository.VerifyAll();
@@ -127,10 +127,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void CreateDeviceListItemStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceTwinMapper = this.CreateDeviceTwinMapper();
+            var deviceTwinMapper = CreateDeviceTwinMapper();
 
             this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
-                .Returns("http://fake.local/000-000-001")
+                .Returns(new Uri("http://fake.local/000-000-001"))
                 .Verifiable();
 
             var twin = new Twin
@@ -146,7 +146,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(twin.DeviceId, result.DeviceID);
-            Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl);
+            Assert.AreEqual("http://fake.local/000-000-001", result.ImageUrl.ToString());
             Assert.IsFalse(result.IsConnected);
             Assert.IsFalse(result.IsEnabled);
 
@@ -158,7 +158,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void CreateDeviceListItemNullTagListExpectedBehavior()
         {
             // Arrange
-            var deviceTwinMapper = this.CreateDeviceTwinMapper();
+            var deviceTwinMapper = CreateDeviceTwinMapper();
 
             var twin = new Twin
             {
@@ -172,7 +172,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             twin.Properties.Reported["DevAddr"] = Guid.NewGuid().ToString();
 
             this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(c => c.Equals("000-000-001", StringComparison.OrdinalIgnoreCase))))
-                .Returns("http://fake.local/000-000-001")
+                .Returns(new Uri("http://fake.local/000-000-001"))
                 .Verifiable();
 
             // Act
@@ -198,17 +198,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void UpdateTwinStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceTwinMapper = this.CreateDeviceTwinMapper();
+            var deviceTwinMapper = CreateDeviceTwinMapper();
             var twin = new Twin();
             var item = new DeviceDetails
             {
-                ModelId = Guid.NewGuid().ToString(),
-                Tags = new()
-                {
-                    { "assetId", Guid.NewGuid().ToString() },
-                    { "locationCode", Guid.NewGuid().ToString() }
-                }
+                ModelId = Guid.NewGuid().ToString()
             };
+
+            item.Tags.Add("assetId", Guid.NewGuid().ToString());
+            item.Tags.Add("locationCode", Guid.NewGuid().ToString());
 
             DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
 

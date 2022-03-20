@@ -7,7 +7,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Threading.Tasks;
     using AutoMapper;
     using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -30,14 +30,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             ITableClientFactory tableClientFactory)
             : base(log, mapper, tableClientFactory)
         {
-
         }
 
         /// <summary>
         /// Gets the device model properties.
         /// </summary>
         /// <param name="id">The device model properties</param>
-        /// <returns></returns>
         [HttpGet(Name = "GET Device model properties")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DeviceProperty>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -51,7 +49,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The device model properties</param>
         /// <param name="properties">The model properties</param>
-        /// <returns></returns>
         [HttpPost(Name = "POST Device model properties")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

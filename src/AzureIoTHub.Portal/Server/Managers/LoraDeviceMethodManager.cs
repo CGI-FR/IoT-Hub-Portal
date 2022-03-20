@@ -9,7 +9,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Net.Http.Json;
     using System.Text;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
     public class LoraDeviceMethodManager : ILoraDeviceMethodManager
     {
@@ -22,7 +22,10 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         public async Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommand command)
         {
-            var commandContent = JsonContent.Create(new
+            ArgumentNullException.ThrowIfNull(deviceId, nameof(deviceId));
+            ArgumentNullException.ThrowIfNull(command, nameof(command));
+
+            using var commandContent = JsonContent.Create(new
             {
                 rawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(command.Frame)),
                 fport = command.Port
@@ -30,7 +33,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             commandContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            return await this.httpClient.PostAsync($"api/cloudtodevicemessage/{deviceId}", commandContent);
+            return await this.httpClient.PostAsync(new Uri($"api/cloudtodevicemessage/{deviceId}"), commandContent);
         }
     }
 }

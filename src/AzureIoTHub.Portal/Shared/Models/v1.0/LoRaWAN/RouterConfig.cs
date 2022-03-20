@@ -1,22 +1,26 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.Concentrator
+namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
 {
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// Router configuration.
+    /// </summary>
     public class RouterConfig
     {
         /// <summary>
         /// The network identifier.
         /// </summary>
-        public List<int> NetID { get; set; }
+        public Collection<int> NetID { get; }
 
         /// <summary>
         /// The join eui.
         /// </summary>
-        public List<List<string>> JoinEui { get; set; }
+        public Collection<Collection<string>> JoinEui { get; }
 
         /// <summary>
         /// The region.
@@ -32,18 +36,18 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.Concentrator
         /// The frequency range.
         /// </summary>
         [JsonProperty("Freq_range")]
-        public List<int> FreqRange { get; set; }
+        public Collection<int> FreqRange { get; }
 
         /// <summary>
         /// The DRs.
         /// </summary>
-        public List<List<int>> DRs { get; set; }
+        public Collection<Collection<int>> DRs { get; }
 
         /// <summary>
         /// The SX1301 conf.
         /// </summary>
         [JsonProperty("Sx1301_conf")]
-        public List<Dictionary<string, Channel>> Sx1301Conf { get; set; }
+        public Collection<Dictionary<string, Channel>> Sx1301Conf { get; }
 
         /// <summary>
         ///   <c>true</c> if nocca; otherwise, <c>false</c>.
@@ -65,13 +69,13 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.Concentrator
         /// </summary>
         public RouterConfig()
         {
-            this.Region = string.Empty;
-            this.Hwspec = string.Empty;
-            this.FreqRange = new List<int>();
-            this.NetID = new List<int>();
-            this.JoinEui = new List<List<string>>();
-            this.DRs = new List<List<int>>();
-            this.Sx1301Conf = new List<Dictionary<string, Channel>>();
+            Region = string.Empty;
+            Hwspec = string.Empty;
+            FreqRange = new Collection<int>();
+            NetID = new Collection<int>();
+            JoinEui = new Collection<Collection<string>>();
+            DRs = new Collection<Collection<int>>();
+            Sx1301Conf = new Collection<Dictionary<string, Channel>>();
         }
     }
 }

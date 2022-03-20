@@ -6,7 +6,8 @@ namespace AzureIoTHub.Portal.Server.Services
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Models.v10;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -65,8 +66,10 @@ namespace AzureIoTHub.Portal.Server.Services
             return tagNameList.ToList();
         }
 
-        public async Task UpdateTags(List<DeviceTag> tags)
+        public async Task UpdateTags(IEnumerable<DeviceTag> tags)
         {
+            ArgumentNullException.ThrowIfNull(tags, nameof(tags));
+
             var query = this.tableClientFactory
                         .GetDeviceTagSettings()
                         .Query<TableEntity>();
@@ -85,7 +88,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     PartitionKey = DefaultPartitionKey,
                     RowKey = tag.Name
                 };
-                await this.SaveEntity(entity, tag);
+                await SaveEntity(entity, tag);
             }
         }
 
@@ -94,7 +97,6 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         /// <param name="entity">The entity</param>
         /// <param name="tag">The device tag</param>
-        /// <returns></returns>
         private async Task SaveEntity(TableEntity entity, DeviceTag tag)
         {
             this.deviceTagMapper.UpdateTableEntity(entity, tag);

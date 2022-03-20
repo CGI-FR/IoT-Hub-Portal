@@ -8,15 +8,15 @@ namespace AzureIoTHub.Portal.Client
     using System.Net.Http.Json;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Services;
-    using AzureIoTHub.Portal.Shared.Settings;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Settings;
     using Blazored.Modal;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.DependencyInjection;
     using MudBlazor.Services;
     using Tewr.Blazor.FileReader;
-    using AzureIoTHub.Portal.Shared.Models.v10;
 
-    public class Program
+    public static class Program
     {
         public static async Task Main(string[] args)
         {
@@ -24,11 +24,12 @@ namespace AzureIoTHub.Portal.Client
             builder.RootComponents.Add<App>("#app");
 
             _ = builder.Services.AddHttpClient("api", client =>
-              {
-                  client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
-                  client.DefaultRequestHeaders.Add("X-Version", "1.0");
-              })
-                /*.AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>()*/;
+            {
+                client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+                client.DefaultRequestHeaders.Add("X-Version", "1.0");
+            });
+
+            /*.AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();*/
 
             _ = builder.Services.AddFileReaderService(o => o.UseWasmSharedBuffer = true);
 
@@ -53,7 +54,7 @@ namespace AzureIoTHub.Portal.Client
             _ = builder.Services.AddOidcAuthentication(options =>
             {
                 options.ProviderOptions.Authority = settings.Authority;
-                options.ProviderOptions.MetadataUrl = settings.MetadataUrl;
+                options.ProviderOptions.MetadataUrl = settings.MetadataUrl.ToString();
                 options.ProviderOptions.ClientId = settings.ClientId;
 
                 options.ProviderOptions.DefaultScopes.Clear();

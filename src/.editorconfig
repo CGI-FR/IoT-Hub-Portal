@@ -1,4 +1,4 @@
-﻿# http://editorconfig.org/
+# http://editorconfig.org/
 
 root = true
 
@@ -6,6 +6,20 @@ root = true
 indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
+dotnet_style_coalesce_expression = true:suggestion
+dotnet_style_null_propagation = true:suggestion
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+dotnet_style_prefer_auto_properties = true:silent
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+tab_width = 4
+indent_size = 4
+end_of_line = crlf
+dotnet_style_qualification_for_field = true:warning
+dotnet_style_qualification_for_property = false:warning
+dotnet_style_qualification_for_method = false:warning
+dotnet_style_qualification_for_event = false:warning
+dotnet_diagnostic.CA1848.severity = silent
+dotnet_style_predefined_type_for_locals_parameters_members = true:silent
 
 [*.cs]
 dotnet_naming_rule.private_constants_rule.severity = warning
@@ -33,6 +47,29 @@ dotnet_naming_symbols.private_static_fields_symbols.required_modifiers = static
 dotnet_naming_symbols.private_static_readonly_symbols.applicable_accessibilities = private
 dotnet_naming_symbols.private_static_readonly_symbols.applicable_kinds = field
 dotnet_naming_symbols.private_static_readonly_symbols.required_modifiers = static,readonly
+csharp_using_directive_placement = inside_namespace:silent
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_prefer_braces = when_multiline:silent
+csharp_style_namespace_declarations = block_scoped:silent
+csharp_style_prefer_method_group_conversion = true:silent
+csharp_style_expression_bodied_methods = false:silent
+csharp_style_expression_bodied_constructors = false:silent
+csharp_style_expression_bodied_operators = true:silent
+csharp_style_expression_bodied_properties = true:silent
+csharp_style_expression_bodied_indexers = true:silent
+csharp_style_expression_bodied_accessors = true:silent
+csharp_style_expression_bodied_lambdas = true:silent
+csharp_style_expression_bodied_local_functions = false:silent
+csharp_indent_labels = one_less_than_current
+csharp_space_around_binary_operators = before_and_after
+dotnet_diagnostic.IDE0055.severity = error
+csharp_style_prefer_local_over_anonymous_function = true:suggestion
+csharp_prefer_static_local_function = true:suggestion
+csharp_style_inlined_variable_declaration = true:suggestion
+csharp_style_deconstructed_variable_declaration = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_space_around_declaration_statements = ignore
+dotnet_diagnostic.IDE0055.severity = warning
 
 [*.md]
 charset = utf-8
@@ -146,5 +183,3 @@ dotnet_diagnostic.CA2254.severity = suggestion
 
 # Extract strings to resource table (the solution will not be localized).
 dotnet_diagnostic.CA1303.severity = none
-
-dotnet_code_quality.CA1716.analyzed_symbol_kinds = NamedType, Method, Property, Event

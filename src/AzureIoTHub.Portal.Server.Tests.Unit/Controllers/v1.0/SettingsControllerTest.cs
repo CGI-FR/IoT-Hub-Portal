@@ -6,12 +6,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using System;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Identity;
-    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
     using Moq;
     using NUnit.Framework;
-    using static AzureIoTHub.Portal.Server.Startup;
 
     [TestFixture]
     public class SettingsControllerTest
@@ -43,7 +42,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             {
                 Authority = Guid.NewGuid().ToString(),
                 ClientId = Guid.NewGuid().ToString(),
-                MetadataUrl = Guid.NewGuid().ToString(),
+                MetadataUrl = new Uri("http://fake.local"),
                 Scope = Guid.NewGuid().ToString(),
             };
 
@@ -72,7 +71,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public void GetLoRaActivationSettingShouldReturnTrueToString()
         {
             // Arrange
-            var loraFeatureStatus = true;
+            const bool loraFeatureStatus = true;
 
             _ = this.mockConfiguration.SetupGet(c => c.Value).Returns(value: null);
 
@@ -84,7 +83,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 .SetupGet(c => c.PortalName)
                 .Returns(string.Empty);
 
-            var controller = this.CreateController();
+            var controller = CreateController();
 
             // Act
             var response = controller.GetPortalSetting();
@@ -99,7 +98,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             Assert.IsAssignableFrom<PortalSettings>(okObjectResult.Value);
             var okSettings = okObjectResult.Value as PortalSettings;
 
-            Assert.AreEqual(loraFeatureStatus, okSettings.IsLoRaSupported);
+            Assert.AreEqual(loraFeatureStatus, okSettings?.IsLoRaSupported);
 
             this.mockRepository.VerifyAll();
         }

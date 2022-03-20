@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
@@ -10,7 +11,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Entities;
     using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -38,7 +39,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="log">The logger.</param>
         /// <param name="mapper">The mapper.</param>
         /// <param name="tableClientFactory">the table client factory.</param>
-        public DeviceModelPropertiesControllerBase(
+        protected DeviceModelPropertiesControllerBase(
             ILogger log,
             IMapper mapper,
             ITableClientFactory tableClientFactory)
@@ -53,7 +54,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the device model properties.
         /// </summary>
         /// <param name="id">The device model properties</param>
-        /// <returns></returns>
         public virtual async Task<ActionResult<IEnumerable<DeviceProperty>>> GetProperties(string id)
         {
             if (!(await DeviceModelExists(id)))
@@ -72,7 +72,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 result.Add(this.mapper.Map<DeviceProperty>(item));
             }
 
-            return this.Ok(result);
+            return Ok(result);
         }
 
         /// <summary>
@@ -80,7 +80,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <param name="id">The device model properties</param>
         /// <param name="properties">The model properties</param>
-        /// <returns></returns>
         public virtual async Task<ActionResult> SetProperties(string id, IEnumerable<DeviceProperty> properties)
         {
             if (!(await DeviceModelExists(id)))
@@ -92,6 +91,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             {
                 return BadRequest(ModelState);
             }
+
+            ArgumentNullException.ThrowIfNull(properties, nameof(properties));
 
             var table = this.tableClientFactory
                          .GetDeviceTemplateProperties();
@@ -111,14 +112,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 _ = await table.AddEntityAsync(entity);
             }
 
-            return this.Ok();
+            return Ok();
         }
 
         private async Task<bool> DeviceModelExists(string id)
         {
             try
             {
-                var entity = await this.tableClientFactory
+                _ = await this.tableClientFactory
                                     .GetDeviceTemplates()
                                     .GetEntityAsync<TableEntity>("0", id);
 

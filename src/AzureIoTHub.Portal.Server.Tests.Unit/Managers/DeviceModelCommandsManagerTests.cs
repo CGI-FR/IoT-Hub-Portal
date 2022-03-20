@@ -10,8 +10,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Moq;
     using NUnit.Framework;
 
@@ -41,8 +40,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         public void RetrieveCommandsStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var manager = this.CreateManager();
-            var deviceModel = "aaa";
+            var manager = CreateManager();
+            const string deviceModel = "aaa";
             var resultReturned = false;
 
             var entityMock = new TableEntity(deviceModel, "bbbb");
@@ -88,8 +87,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         public void RetrieveDeviceModelCommandsStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var manager = this.CreateManager();
-            var deviceModel = "aaa";
+            var manager = CreateManager();
+            const string deviceModel = "aaa";
             var resultReturned = false;
 
             var entityMock = new TableEntity(deviceModel, "bbbb");

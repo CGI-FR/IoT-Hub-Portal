@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
 {
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Models.v10;
     using Moq;
     using NUnit.Framework;
 

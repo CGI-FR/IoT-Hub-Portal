@@ -1,12 +1,13 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -47,10 +48,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="tags">List of tags.</param>
         /// <returns>The action result.</returns>
         [HttpPost(Name = "POST Update the Device tags settings")]
-        public async Task<IActionResult> Post(List<DeviceTag> tags)
+        public async Task<IActionResult> Post(IEnumerable<DeviceTag> tags)
         {
+            ArgumentNullException.ThrowIfNull(tags, nameof(tags));
+
             await this.deviceTagService.UpdateTags(tags);
-            return this.Ok();
+            return Ok();
         }
 
         /// <summary>
@@ -60,7 +63,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpGet(Name = "GET Device tags settings")]
         public ActionResult<List<DeviceTag>> Get()
         {
-            return this.Ok(deviceTagService.GetAllTags());
+            return Ok(this.deviceTagService.GetAllTags());
         }
     }
 }

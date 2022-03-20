@@ -3,8 +3,9 @@
 
 namespace AzureIoTHub.Portal.Client.Validators
 {
-    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Models.v10;
     using FluentValidation;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -13,7 +14,7 @@ namespace AzureIoTHub.Portal.Client.Validators
         private class DevicePropertyComparer : IEqualityComparer<DeviceProperty>
         {
             public bool Equals(DeviceProperty x, DeviceProperty y) => x?.Name == y?.Name;
-            public int GetHashCode(DeviceProperty obj) => obj.Name?.GetHashCode() ?? 0;
+            public int GetHashCode(DeviceProperty obj) => obj.Name?.GetHashCode(StringComparison.OrdinalIgnoreCase) ?? 0;
         }
 
         public DevicePropertyValidator()

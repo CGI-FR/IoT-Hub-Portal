@@ -7,7 +7,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Moq;
     using NUnit.Framework;
 
@@ -42,9 +42,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void CreateDeviceModelListItemStateUnderTestExpectedBehavior(bool isBuiltin, bool supportLora)
         {
             // Arrange
-            var loRaDeviceModelMapper = this.CreateLoRaDeviceModelMapper();
+            var loRaDeviceModelMapper = CreateLoRaDeviceModelMapper();
             var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var expectedModelImageUri = $"https://fake.local/{entity.RowKey}";
+            var expectedModelImageUri = new Uri($"https://fake.local/{entity.RowKey}");
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == entity.RowKey)))
                 .Returns(expectedModelImageUri);
@@ -75,9 +75,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void CreateDeviceModelStateUnderTestExpectedBehavior(bool isBuiltin, bool supportLora)
         {
             // Arrange
-            var loRaDeviceModelMapper = this.CreateLoRaDeviceModelMapper();
+            var loRaDeviceModelMapper = CreateLoRaDeviceModelMapper();
             var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var expectedModelImageUri = $"https://fake.local/{entity.RowKey}";
+            var expectedModelImageUri = new Uri($"https://fake.local/{entity.RowKey}");
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == entity.RowKey)))
                 .Returns(expectedModelImageUri);
@@ -112,7 +112,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         public void UpdateTableEntityStateUnderTestExpectedBehavior(bool isBuiltin, bool supportLora)
         {
             // Arrange
-            var loRaDeviceModelMapper = this.CreateLoRaDeviceModelMapper();
+            var loRaDeviceModelMapper = CreateLoRaDeviceModelMapper();
             var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             var model = new LoRaDeviceModel
             {
@@ -120,7 +120,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
                 Name = Guid.NewGuid().ToString(),
                 AppEUI = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
-                ImageUrl = Guid.NewGuid().ToString(),
+                ImageUrl = new Uri("http://fake.local"),
                 SensorDecoder = Guid.NewGuid().ToString(),
                 IsBuiltin = isBuiltin,
                 SupportLoRaFeatures = supportLora,

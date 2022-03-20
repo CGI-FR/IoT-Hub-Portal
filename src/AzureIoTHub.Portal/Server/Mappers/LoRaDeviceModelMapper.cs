@@ -3,13 +3,12 @@
 
 namespace AzureIoTHub.Portal.Server.Mappers
 {
+    using System;
+    using System.Collections.Generic;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Shared.Models.v10.DeviceModel;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
-    using System.Collections.Generic;
-    using System;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
     public class LoRaDeviceModelMapper : IDeviceModelMapper<DeviceModel, LoRaDeviceModel>
     {
@@ -24,12 +23,14 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
         public DeviceModel CreateDeviceModelListItem(TableEntity entity)
         {
+            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
             return new DeviceModel
             {
                 ModelId = entity.RowKey,
                 IsBuiltin = bool.Parse(entity[nameof(LoRaDeviceModel.IsBuiltin)]?.ToString() ?? "false"),
                 SupportLoRaFeatures = bool.Parse(entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)]?.ToString() ?? "false"),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey).ToString(),
+                ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey),
                 Name = entity[nameof(LoRaDeviceModel.Name)]?.ToString(),
                 Description = entity[nameof(LoRaDeviceModel.Description)]?.ToString(),
             };
@@ -37,11 +38,13 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
         public LoRaDeviceModel CreateDeviceModel(TableEntity entity)
         {
+            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
             return new LoRaDeviceModel
             {
                 ModelId = entity.RowKey,
                 IsBuiltin = bool.Parse(entity[nameof(LoRaDeviceModel.IsBuiltin)]?.ToString() ?? "false"),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey).ToString(),
+                ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey),
                 Name = entity[nameof(LoRaDeviceModel.Name)]?.ToString(),
                 Description = entity[nameof(LoRaDeviceModel.Description)]?.ToString(),
                 AppEUI = entity[nameof(LoRaDeviceModel.AppEUI)]?.ToString(),
@@ -65,6 +68,9 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
         public Dictionary<string, object> UpdateTableEntity(TableEntity entity, LoRaDeviceModel model)
         {
+            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+            ArgumentNullException.ThrowIfNull(model, nameof(model));
+
             entity[nameof(LoRaDeviceModel.Name)] = model.Name;
             entity[nameof(LoRaDeviceModel.Description)] = model.Description;
             entity[nameof(LoRaDeviceModel.IsBuiltin)] = model.IsBuiltin;

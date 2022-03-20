@@ -3,8 +3,9 @@
 
 namespace AzureIoTHub.Portal.Server.Mappers
 {
+    using System;
     using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Models.v10;
 
     public class DeviceTagMapper : IDeviceTagMapper
     {
@@ -15,6 +16,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
         /// <returns>A device tag setting</returns>
         public DeviceTag GetDeviceTag(TableEntity entity)
         {
+            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
             return new DeviceTag
             {
                 Name = entity.RowKey,
@@ -31,6 +34,9 @@ namespace AzureIoTHub.Portal.Server.Mappers
         /// <param name="element">The device tag object.</param>
         public void UpdateTableEntity(TableEntity tagEntity, DeviceTag element)
         {
+            ArgumentNullException.ThrowIfNull(tagEntity, nameof(tagEntity));
+            ArgumentNullException.ThrowIfNull(element, nameof(element));
+
             tagEntity[nameof(DeviceTag.Label)] = element.Label;
             tagEntity[nameof(DeviceTag.Required)] = element.Required;
             tagEntity[nameof(DeviceTag.Searchable)] = element.Searchable;

@@ -5,14 +5,11 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Shared;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
 
     public interface IDeviceService
     {
-
-
         Task<Device> GetDevice(string deviceId);
 
         Task<Twin> GetDeviceTwin(string deviceId);

@@ -13,7 +13,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
     using Microsoft.Extensions.Configuration;
     using Moq;
     using NUnit.Framework;
-    using static AzureIoTHub.Portal.Server.Startup;
 
     [TestFixture]
     public class DeviceProvisioningServiceManagerTests
@@ -31,7 +30,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
 
             this.mockConfiguration = this.mockRepository.Create<IConfiguration>();
             this.mockProvisioningServiceClient = this.mockRepository.Create<IProvisioningServiceClient>();
-            this.mockConfigHandler = this.mockRepository.Create<DevelopmentConfigHandler>(mockConfiguration.Object);
+            this.mockConfigHandler = this.mockRepository.Create<DevelopmentConfigHandler>(this.mockConfiguration.Object);
         }
 
         private DeviceProvisioningServiceManager CreateManager()
@@ -47,7 +46,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         public async Task CreateEnrollmentGroupAsyncShouldCreateANewEnrollmentGroup(string deviceType, string enrollmentGroupName)
         {
             // Arrange
-            var manager = this.CreateManager();
+            var manager = CreateManager();
             EnrollmentGroup enrollmentGroup = null;
 
             _ = this.mockProvisioningServiceClient.Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == enrollmentGroupName)))
@@ -81,7 +80,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         public async Task WhenEnrollmentGroupAlreadyExistCreateEnrollmentGroupAsyncShouldUpdateEnrollmentGroup(string deviceType, string enrollmentGroupName)
         {
             // Arrange
-            var manager = this.CreateManager();
+            var manager = CreateManager();
             EnrollmentGroup enrollmentGroup = null;
             var attestation = new SymmetricKeyAttestation("aaa", "bbb");
 
@@ -124,8 +123,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         public async Task CreateEnrollmentGroupFromModelAsyncShouldCreateANewEnrollmentGroup(string modelId, string enrollmentGroupName)
         {
             // Arrange
-            var manager = this.CreateManager();
-            var modelName = "bbb";
+            var manager = CreateManager();
+            const string modelName = "bbb";
             var desiredProperties = new TwinCollection();
             EnrollmentGroup enrollmentGroup = null;
 
@@ -166,8 +165,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         public async Task WhenEnrollmentGroupExistCreateEnrollmentGroupFromModelAsyncShouldUpdate(string modelId, string enrollmentGroupName)
         {
             // Arrange
-            var manager = this.CreateManager();
-            var modelName = "bbb";
+            var manager = CreateManager();
+            const string modelName = "bbb";
             var desiredProperties = new TwinCollection();
             EnrollmentGroup enrollmentGroup = null;
 
@@ -218,7 +217,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         public async Task GetAttestationShouldReturnDPSAttestation(string modelName, string enrollmentGroupName)
         {
             // Arrange
-            var manager = this.CreateManager();
+            var manager = CreateManager();
 
             var mockAttestationMehanism = this.mockRepository.Create<IAttestationMechanism>();
 
@@ -243,7 +242,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         public async Task GetEnrollmentCredentialsAsyncShouldGetDPSAttestation(string modelName, string enrollmentGroupName)
         {
             // Arrange
-            var manager = this.CreateManager();
+            var manager = CreateManager();
 
             var mockAttestationMehanism = this.mockRepository.Create<IAttestationMechanism>();
 
@@ -276,7 +275,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         public async Task WhenEnrollmentGoupsNotExistGetEnrollmentCredentialsAsyncShouldCreateNewOne(string modelName, string enrollmentGroupName)
         {
             // Arrange
-            var manager = this.CreateManager();
+            var manager = CreateManager();
             EnrollmentGroup enrollmentGroup = null;
 
             var mockAttestationMehanism = this.mockRepository.Create<IAttestationMechanism>();

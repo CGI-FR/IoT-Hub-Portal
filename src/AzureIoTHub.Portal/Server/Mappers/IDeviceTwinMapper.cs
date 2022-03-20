@@ -3,7 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Mappers
 {
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Shared;
     using System.Collections.Generic;
 

@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Azure;
@@ -10,7 +11,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -64,17 +65,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Post(string id, DeviceModelCommand[] commands)
         {
+            ArgumentNullException.ThrowIfNull(id, nameof(id));
+            ArgumentNullException.ThrowIfNull(commands, nameof(commands));
+
             try
             {
-                var templateQuery = this.tableClientFactory
-                            .GetDeviceTemplates()
-                            .GetEntity<TableEntity>(LoRaWANDeviceModelsController.DefaultPartitionKey, id);
+                _ = await this.tableClientFactory
+                             .GetDeviceTemplates()
+                             .GetEntityAsync<TableEntity>(LoRaWANDeviceModelsController.DefaultPartitionKey, id);
             }
             catch (RequestFailedException e)
             {
                 if (e.Status == StatusCodes.Status404NotFound)
                 {
-                    return this.NotFound();
+                    return NotFound();
                 }
 
                 this.log.LogError(e.Message, e);
@@ -108,7 +112,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
                         .AddEntityAsync(entity);
             }
 
-            return this.Ok();
+            return Ok();
         }
 
         /// <summary>
@@ -119,19 +123,19 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [HttpGet(Name = "GET Device model commands")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<DeviceModelCommand[]> Get(string id)
+        public async Task<ActionResult<DeviceModelCommand[]>> Get(string id)
         {
             try
             {
-                var templateQuery = this.tableClientFactory
+                _ = await this.tableClientFactory
                             .GetDeviceTemplates()
-                            .GetEntity<TableEntity>(LoRaWANDeviceModelsController.DefaultPartitionKey, id);
+                            .GetEntityAsync<TableEntity>(LoRaWANDeviceModelsController.DefaultPartitionKey, id);
             }
             catch (RequestFailedException e)
             {
                 if (e.Status == StatusCodes.Status404NotFound)
                 {
-                    return this.NotFound();
+                    return NotFound();
                 }
 
                 this.log.LogError(e.Message, e);
@@ -151,7 +155,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
                 commands.Add(command);
             }
 
-            return this.Ok(commands.ToArray());
+            return Ok(commands.ToArray());
         }
     }
 }

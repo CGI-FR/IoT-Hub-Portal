@@ -1,16 +1,15 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace AzureIoTHub.Portal.Server.Managers
 {
-    using System.Collections.Generic;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDevice;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.LoRaDeviceModel;
+    using System.Collections.ObjectModel;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
     public interface IDeviceModelCommandsManager
     {
-        List<Command> RetrieveCommands(string deviceModel);
+        ReadOnlyCollection<Command> RetrieveCommands(string deviceModel);
 
-        List<DeviceModelCommand> RetrieveDeviceModelCommands(string deviceModel);
+        ReadOnlyCollection<DeviceModelCommand> RetrieveDeviceModelCommands(string deviceModel);
     }
 }

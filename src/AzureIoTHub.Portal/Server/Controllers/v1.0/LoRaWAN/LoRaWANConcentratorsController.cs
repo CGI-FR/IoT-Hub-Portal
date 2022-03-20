@@ -6,12 +6,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared;
-    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN.Concentrator;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
@@ -69,7 +68,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <summary>
         /// Gets all device concentrators.
         /// </summary>
-        /// <returns></returns>
         [HttpGet(Name = "GET LoRaWAN Concentrator list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginationResult<Concentrator>>> GetAllDeviceConcentrator()
@@ -80,7 +78,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 
             if (!string.IsNullOrEmpty(result.NextPage))
             {
-                nextPage = this.Url.RouteUrl(new UrlRouteContext
+                nextPage = Url.RouteUrl(new UrlRouteContext
                 {
                     Values = new
                     {
@@ -89,11 +87,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
                 });
             }
 
-            return this.Ok(new PaginationResult<Concentrator>
+            return Ok(new PaginationResult<Concentrator>
             {
                 Items = result.Items.Select(this.concentratorTwinMapper.CreateDeviceDetails),
                 TotalItems = result.TotalItems,
-                NextPage = null
+                NextPage = nextPage
             });
         }
 
@@ -101,32 +99,32 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// Gets the device concentrator.
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
-        /// <returns></returns>
         [HttpGet("{deviceId}", Name = "GET LoRaWAN Concentrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Concentrator>> GetDeviceConcentrator(string deviceId)
         {
             var item = await this.devicesService.GetDeviceTwin(deviceId);
-            return this.Ok(this.concentratorTwinMapper.CreateDeviceDetails(item));
+            return Ok(this.concentratorTwinMapper.CreateDeviceDetails(item));
         }
 
         /// <summary>
         /// Creates the device.
         /// </summary>
         /// <param name="device">The device.</param>
-        /// <returns></returns>
         [HttpPost(Name = "POST Create LoRaWAN concentrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateDeviceAsync(Concentrator device)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            ArgumentNullException.ThrowIfNull(device, nameof(device));
+
             try
             {
-                if (!this.ModelState.IsValid)
-                {
-                    return this.BadRequest(this.ModelState);
-                }
-
                 // Create a new Twin from the form's fields.
                 var newTwin = new Twin()
                 {
@@ -141,17 +139,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 
                 var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceId, false, newTwin, status);
 
-                return this.Ok(result);
+                return Ok(result);
             }
             catch (DeviceAlreadyExistsException e)
             {
                 this.logger?.LogError($"{device.DeviceId} - Create device failed", e);
-                return this.BadRequest(e.Message);
+                return BadRequest(e.Message);
             }
             catch (InvalidOperationException e)
             {
                 this.logger?.LogError($"Create device failed for {device.DeviceId} \n {e.Message}");
-                return this.BadRequest(e.Message);
+                return BadRequest(e.Message);
             }
         }
 
@@ -159,16 +157,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// Updates the device.
         /// </summary>
         /// <param name="device">The device.</param>
-        /// <returns></returns>
         [HttpPut(Name = "PUT Update LoRaWAN concentrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateDeviceAsync(Concentrator device)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.BadRequest(this.ModelState);
+                return BadRequest(ModelState);
             }
+
+            ArgumentNullException.ThrowIfNull(device, nameof(device));
 
             // Device status (enabled/disabled) has to be dealt with afterwards
             var currentDevice = await this.devicesService.GetDevice(device.DeviceId);
@@ -185,20 +184,19 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 
             _ = await this.devicesService.UpdateDeviceTwin(device.DeviceId, currentTwin);
 
-            return this.Ok("Device updated.");
+            return Ok("Device updated.");
         }
 
         /// <summary>
         /// Deletes the specified device.
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
-        /// <returns></returns>
         [HttpDelete("{deviceId}", Name = "DELETE Remove LoRaWAN concentrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(string deviceId)
         {
             await this.devicesService.DeleteDevice(deviceId);
-            return this.Ok("the device was successfully deleted.");
+            return Ok("the device was successfully deleted.");
         }
     }
 }

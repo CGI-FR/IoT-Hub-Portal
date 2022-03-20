@@ -7,10 +7,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System.Net.Http;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.Devices;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
-    using AzureIoTHub.Portal.Shared;
-    using AzureIoTHub.Portal.Shared.Models.v10;
-    using AzureIoTHub.Portal.Shared.Models.v10.Device;
     using Bunit;
     using Bunit.TestDoubles;
     using FluentAssertions.Extensions;
@@ -23,15 +21,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
 
-
     [TestFixture]
     public class DevicesListPageTests : IDisposable
     {
+#pragma warning disable CA2213 // Disposable fields should be disposed
         private Bunit.TestContext testContext;
+        private MockHttpMessageHandler mockHttpClient;
+#pragma warning restore CA2213 // Disposable fields should be disposed
 
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
-        private MockHttpMessageHandler mockHttpClient;
 
         private readonly string apiBaseUrl = "/api/devices";
         private readonly string apiTagsBaseUrl = "/api/settings/device-tags";
@@ -44,14 +43,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             this.mockRepository = new MockRepository(MockBehavior.Strict);
             this.mockDialogService = this.mockRepository.Create<IDialogService>();
 
-            this.mockHttpClient = testContext.Services.AddMockHttpClient();
+            this.mockHttpClient = this.testContext.Services.AddMockHttpClient();
 
-            _ = testContext.Services.AddSingleton(this.mockDialogService.Object);
-            _ = testContext.Services.AddMudServices();
+            _ = this.testContext.Services.AddSingleton(this.mockDialogService.Object);
+            _ = this.testContext.Services.AddMudServices();
 
-            _ = testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
-            _ = testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            _ = testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
+            _ = this.testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
+            _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
+            _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
         }
 
         private IRenderedComponent<TComponent> RenderComponent<TComponent>(params ComponentParameter[] parameters)
@@ -67,10 +66,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             using var deviceResponseMock = new HttpResponseMessage();
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, apiBaseUrl)
+                .When(HttpMethod.Get, this.apiBaseUrl)
                 .RespondJson(Array.Empty<object>());
 
-            _ = testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             // Act
             var cut = RenderComponent<DeviceListPage>();
@@ -92,16 +91,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         {
             // Arrange
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
+                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
                 .RespondJson(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
                 });
 
-            _ = testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, apiTagsBaseUrl)
+                .When(HttpMethod.Get, this.apiTagsBaseUrl)
                 .RespondJson(Array.Empty<object>());
 
             var cut = RenderComponent<DeviceListPage>();
@@ -126,23 +125,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
         [TestCase("newDeviceButton")]
         [TestCase("tableAddItemButton")]
-        public async Task WhenAddNewDeviceClickShouldNavigateToNewDevicePage(string buttonName)
+        public void WhenAddNewDeviceClickShouldNavigateToNewDevicePage(string buttonName)
         {
             // Arrange
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
+                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
                 .RespondJson(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
                 });
 
-            _ = testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, apiTagsBaseUrl)
+                .When(HttpMethod.Get, this.apiTagsBaseUrl)
                 .RespondJson(Array.Empty<object>());
 
-            var mockNavigationManager = testContext.Services.GetRequiredService<FakeNavigationManager>();
+            var mockNavigationManager = this.testContext.Services.GetRequiredService<FakeNavigationManager>();
 
             var cut = RenderComponent<DeviceListPage>();
 
@@ -159,25 +158,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         {
             // Arrange
             var apiCall = this.mockHttpClient
-                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
+                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
                 .RespondJson(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
                 });
 
-            _ = testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, apiTagsBaseUrl)
+                .When(HttpMethod.Get, this.apiTagsBaseUrl)
                 .RespondJson(Array.Empty<object>());
 
             var cut = RenderComponent<DeviceListPage>();
-            cut.WaitForAssertion(() => cut.Find($"#tableRefreshButton"), 1.Seconds());
+            cut.WaitForAssertion(() => cut.Find("#tableRefreshButton"), 1.Seconds());
 
             // Act
             for (var i = 0; i < 3; i++)
             {
-                cut.Find($"#tableRefreshButton")
+                cut.Find("#tableRefreshButton")
                         .Click();
                 await Task.Delay(100);
             }
@@ -195,16 +194,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
+                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
                 .RespondJson(new PaginationResult<DeviceListItem>
                 {
                     Items = new DeviceListItem[] { new DeviceListItem { DeviceID = deviceId } }
                 });
 
-            _ = testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, apiTagsBaseUrl)
+                .When(HttpMethod.Get, this.apiTagsBaseUrl)
                 .RespondJson(Array.Empty<object>());
 
             var cut = RenderComponent<DeviceListPage>();
@@ -228,16 +227,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"{apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
+                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
                 .RespondJson(new PaginationResult<DeviceListItem>
                 {
                     Items = new DeviceListItem[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
                 });
 
-            _ = testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, apiTagsBaseUrl)
+                .When(HttpMethod.Get, this.apiTagsBaseUrl)
                 .RespondJson(Array.Empty<object>());
 
             var cut = RenderComponent<DeviceListPage>();
@@ -256,7 +255,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
         public void Dispose()
         {
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
         }
     }
 }

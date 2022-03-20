@@ -1,11 +1,14 @@
-﻿// Copyright (c) CGI France. All rights reserved.
+// Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Shared.Models.v10
+namespace AzureIoTHub.Portal.Models.v10
 {
     using System;
     using System.Collections.Generic;
 
+    /// <summary>
+    /// IoT Edge configuration list item.
+    /// </summary>
     public class ConfigListItem
     {
         /// <summary>
@@ -13,7 +16,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v10
         /// </summary>
         public ConfigListItem()
         {
-            this.Modules = new List<IoTEdgeModule>();
+            Modules = new List<IoTEdgeModule>();
         }
 
         /// <summary>
@@ -59,6 +62,6 @@ namespace AzureIoTHub.Portal.Shared.Models.v10
         ///<summary>
         /// The IoT Edge modules configuration.
         /// </summary>
-        public List<IoTEdgeModule> Modules { get; set; }
+        public IReadOnlyCollection<IoTEdgeModule> Modules { get; set; }
     }
 }

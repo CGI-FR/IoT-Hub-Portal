@@ -36,7 +36,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task GetIoTEdgeConfigsShouldReturnModulesConfigurations()
         {
             // Arrange
-            var configsServices = this.CreateConfigsServices();
+            var configsServices = CreateConfigsServices();
             var iotEdgeConfiguration = new Configuration("bbb");
 
             iotEdgeConfiguration.Content.ModulesContent.Add("test", new Dictionary<string, object>());
@@ -62,7 +62,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task GetDevicesConfigsShouldReturnDeviceTwinConfigurations()
         {
             // Arrange
-            var configsServices = this.CreateConfigsServices();
+            var configsServices = CreateConfigsServices();
             var iotEdgeConfiguration = new Configuration("bbb");
 
             iotEdgeConfiguration.Content.ModulesContent.Add("test", new Dictionary<string, object>());
@@ -88,8 +88,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task GetConfigItemStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var configsServices = this.CreateConfigsServices();
-            var id = "aaa";
+            var configsServices = CreateConfigsServices();
+            const string id = "aaa";
             _ = this.mockRegistryManager.Setup(c => c.GetConfigurationAsync(It.Is<string>(x => x == id)))
                 .ReturnsAsync(new Configuration(id));
 
@@ -108,7 +108,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task RolloutDeviceConfigurationStateUnderTestExpectedBehavior(string deviceType, string configurationPrefix)
         {
             // Arrange
-            var configsServices = this.CreateConfigsServices();
+            var configsServices = CreateConfigsServices();
             var desiredProperties = new Dictionary<string, object>
             {
                 { "prop1", "value1" }
@@ -138,7 +138,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             this.mockRepository.VerifyAll();
             this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());
-
         }
 
         [TestCase("aaa", "aaa")]
@@ -147,7 +146,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         public async Task WhenConfigurationExistsRolloutDeviceConfigurationShouldRemoveIt(string deviceType, string configurationPrefix)
         {
             // Arrange
-            var configsServices = this.CreateConfigsServices();
+            var configsServices = CreateConfigsServices();
             var desirectProperties = new Dictionary<string, object>
             {
                 { "prop1", "value1" }

@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Entities;
     using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -41,22 +41,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockDeviceTemplatesTableClient = this.mockRepository.Create<TableClient>();
             this.mockDeviceModelPropertiesTableClient = this.mockRepository.Create<TableClient>();
-
-        }
-
-        private DeviceModelPropertiesController CreateDeviceModelPropertiesController()
-        {
-            return new DeviceModelPropertiesController(
-                this.mockLogger.Object,
-                this.mockMapper.Object,
-                this.mockTableClientFactory.Object);
         }
 
         [Test]
         public async Task GetPropertiesStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceModelPropertiesController = this.CreateDeviceModelPropertiesController();
+            var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
             var entity = SetupMockEntity();
             var mockResponse = this.mockRepository.Create<Response>();
 
@@ -100,7 +91,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             Assert.NotNull(result);
             Assert.AreEqual(1, result.Count);
 
-
             this.mockRepository.VerifyAll();
         }
 
@@ -108,7 +98,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task WhenDeviceModelNotExistsGetPropertiesShouldReturnHttp404()
         {
             // Arrange
-            var deviceModelPropertiesController = this.CreateDeviceModelPropertiesController();
+            var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
             SetupNotFoundEntity();
 
             // Act
@@ -123,7 +113,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task SetPropertiesStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceModelPropertiesController = this.CreateDeviceModelPropertiesController();
+            var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
             var entity = SetupMockEntity();
             var mockResponse = this.mockRepository.Create<Response>();
             var existingProperty = Guid.NewGuid().ToString();
@@ -169,7 +159,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             _ = this.mockMapper.Setup(c => c.Map(
                 It.IsAny<DeviceProperty>(),
                 It.IsAny<Action<IMappingOperationOptions<object, DeviceModelProperty>>>()))
-                .Returns((DeviceProperty x, Action<IMappingOperationOptions<object, DeviceModelProperty>> a) => new DeviceModelProperty
+                .Returns((DeviceProperty x, Action<IMappingOperationOptions<object, DeviceModelProperty>> _) => new DeviceModelProperty
                 {
                     Name = x.Name,
                     PartitionKey = entity.RowKey
@@ -190,7 +180,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task WhenDeviceModelNotExistsSetPropertiesShouldReturnHttp404()
         {
             // Arrange
-            var deviceModelPropertiesController = this.CreateDeviceModelPropertiesController();
+            var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
             SetupNotFoundEntity();
 
             // Act
@@ -215,7 +205,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 .ReturnsAsync(mockResponse.Object);
 
             _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
-                .Returns(mockDeviceTemplatesTableClient.Object);
+                .Returns(this.mockDeviceTemplatesTableClient.Object);
 
             return entity;
         }
@@ -230,7 +220,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 .Throws(new RequestFailedException(StatusCodes.Status404NotFound, "Not Found"));
 
             _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
-                .Returns(mockDeviceTemplatesTableClient.Object);
+                .Returns(this.mockDeviceTemplatesTableClient.Object);
+        }
+
+        private DeviceModelPropertiesController CreateDeviceModelPropertiesController()
+        {
+            return new DeviceModelPropertiesController(
+                this.mockLogger.Object,
+                this.mockMapper.Object,
+                this.mockTableClientFactory.Object);
         }
     }
 }

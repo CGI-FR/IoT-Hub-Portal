@@ -4,7 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
 
@@ -30,7 +30,6 @@ namespace AzureIoTHub.Portal.Server.Managers
         /// <param name="modelId">The model identifier.</param>
         /// <param name="modelName">The model name.</param>
         /// <param name="desiredProperties">The desired properties</param>
-        /// <returns></returns>
         Task<EnrollmentGroup> CreateEnrollmentGroupFromModelAsync(string modelId, string modelName, TwinCollection desiredProperties);
 
         /// <summary>
@@ -38,7 +37,6 @@ namespace AzureIoTHub.Portal.Server.Managers
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="deviceType">The device type.</param>
-        /// <returns></returns>
         Task<EnrollmentCredentials> GetEnrollmentCredentialsAsync(string deviceId, string deviceType);
     }
 }

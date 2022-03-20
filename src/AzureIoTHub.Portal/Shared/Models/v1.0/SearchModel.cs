@@ -1,10 +1,13 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Shared.Models.v10
+namespace AzureIoTHub.Portal.Models.v10
 {
     using System.ComponentModel.DataAnnotations;
 
+    /// <summary>
+    /// Device search model.
+    /// </summary>
     public class SearchModel
     {
         /// <summary>
@@ -31,9 +34,9 @@ namespace AzureIoTHub.Portal.Shared.Models.v10
         /// <param name="type">The device type.</param>
         public SearchModel(string id = null, string status = null, string type = null)
         {
-            this.DeviceId = id;
-            this.Status = status;
-            this.Type = type;
+            DeviceId = id;
+            Status = status;
+            Type = type;
         }
     }
 }
