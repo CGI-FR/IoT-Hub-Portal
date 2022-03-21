@@ -112,7 +112,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             {
                 SymmetricKey = symmetricKey,
                 RegistrationID = deviceId,
-                ProvisioningEndpoint = this.config.DPSEndpoint
+                ProvisioningEndpoint = $"https://{this.config.DPSEndpoint}"
             };
         }
 
