@@ -17,6 +17,7 @@
           {
             "name": "continuationToken",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "string"
             }
@@ -24,6 +25,7 @@
           {
             "name": "searchText",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "string"
             }
@@ -31,6 +33,7 @@
           {
             "name": "searchStatus",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -38,6 +41,7 @@
           {
             "name": "searchState",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -45,6 +49,7 @@
           {
             "name": "pageSize",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -315,6 +320,7 @@
           }
         ],
         "requestBody": {
+          "description": "The properties values.",
           "content": {
             "application/json": {
               "schema": {
@@ -378,7 +384,7 @@
     "/api/edge/configurations": {
       "get": {
         "tags": [
-          "IoT Edge"
+          "IoT Edge Devices"
         ],
         "summary": "Gets the IoT Edge deployment configurations.",
         "operationId": "GET IoT Edge config list",
@@ -418,7 +424,7 @@
     "/api/edge/configurations/{configurationID}": {
       "get": {
         "tags": [
-          "IoT Edge"
+          "IoT Edge Devices"
         ],
         "summary": "Gets the specified configuration.",
         "operationId": "GET IoT Edge configuration",
@@ -457,10 +463,10 @@
         }
       }
     },
-    "/api/edge/device": {
+    "/api/edge/devices": {
       "get": {
         "tags": [
-          "IoT Edge"
+          "IoT Edge Devices"
         ],
         "summary": "Gets the IoT Edge device list.",
         "operationId": "GET IoT Edge devices",
@@ -468,6 +474,7 @@
           {
             "name": "continuationToken",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "string"
             }
@@ -475,6 +482,7 @@
           {
             "name": "searchText",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "string"
             }
@@ -482,6 +490,7 @@
           {
             "name": "searchStatus",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -489,6 +498,7 @@
           {
             "name": "searchType",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "string"
             }
@@ -496,6 +506,7 @@
           {
             "name": "pageSize",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -528,7 +539,7 @@
       },
       "post": {
         "tags": [
-          "IoT Edge"
+          "IoT Edge Devices"
         ],
         "summary": "Creates the IoT Edge device.",
         "operationId": "POST Create IoT Edge",
@@ -577,44 +588,12 @@
             }
           }
         }
-      },
-      "put": {
-        "tags": [
-          "IoT Edge"
-        ],
-        "summary": "Updates the device.",
-        "operationId": "PUT Update IoT Edge",
-        "requestBody": {
-          "description": "The IoT Edge device.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/IoTEdgeDevice"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/IoTEdgeDevice"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/IoTEdgeDevice"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
       }
     },
-    "/api/edge/device/{deviceId}": {
+    "/api/edge/devices/{deviceId}": {
       "get": {
         "tags": [
-          "IoT Edge"
+          "IoT Edge Devices"
         ],
         "summary": "Gets the specified device.",
         "operationId": "GET IoT Edge device",
@@ -652,9 +631,52 @@
           }
         }
       },
+      "put": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "summary": "Updates the device.",
+        "operationId": "PUT Update IoT Edge",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The IoT Edge device.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeDevice"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeDevice"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeDevice"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
       "delete": {
         "tags": [
-          "IoT Edge"
+          "IoT Edge Devices"
         ],
         "summary": "Deletes the device.",
         "operationId": "DELETE Remove IoT Edge",
@@ -676,10 +698,10 @@
         }
       }
     },
-    "/api/edge/device/{deviceId}/{moduleId}/{methodName}": {
+    "/api/edge/devices/{deviceId}/{moduleId}/{methodName}": {
       "post": {
         "tags": [
-          "IoT Edge"
+          "IoT Edge Devices"
         ],
         "summary": "Executes the module method on the IoT Edge device.",
         "operationId": "POST Execute module command",
@@ -755,10 +777,10 @@
         }
       }
     },
-    "/api/edge/device/{deviceId}/credentials": {
+    "/api/edge/devices/{deviceId}/credentials": {
       "get": {
         "tags": [
-          "IoT Edge"
+          "IoT Edge Devices"
         ],
         "summary": "Gets the IoT Edge device enrollement credentials.",
         "operationId": "GET Device enrollment credentials",
@@ -1008,6 +1030,7 @@
           {
             "name": "continuationToken",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "string"
             }
@@ -1015,6 +1038,7 @@
           {
             "name": "searchText",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "string"
             }
@@ -1022,6 +1046,7 @@
           {
             "name": "searchStatus",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -1029,6 +1054,7 @@
           {
             "name": "searchState",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -1036,6 +1062,7 @@
           {
             "name": "pageSize",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -2607,7 +2634,8 @@
             "format": "int32"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Cloud to Device message result."
       },
       "Channel": {
         "type": "object",
@@ -2643,7 +2671,8 @@
             "format": "int32"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "LoRaWAN Concentrator Channel configuration."
       },
       "Concentrator": {
         "required": [
@@ -2692,7 +2721,8 @@
             "$ref": "#/components/schemas/RouterConfig"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "LoRaWAN Concentrator."
       },
       "ConcentratorPaginationResult": {
         "type": "object",
@@ -2740,7 +2770,8 @@
             "nullable": true
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "IoT Edge configuration"
       },
       "ConfigListItem": {
         "type": "object",
@@ -2794,7 +2825,8 @@
             "nullable": true
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "IoT Edge configuration list item."
       },
       "DeviceDetails": {
         "required": [
@@ -2819,6 +2851,7 @@
           "imageUrl": {
             "type": "string",
             "description": "The device model image Url.",
+            "format": "uri",
             "nullable": true
           },
           "isConnected": {
@@ -2844,7 +2877,8 @@
             "nullable": true
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Device details."
       },
       "DeviceListItem": {
         "type": "object",
@@ -2862,6 +2896,7 @@
           "imageUrl": {
             "type": "string",
             "description": "The device model image Url.",
+            "format": "uri",
             "nullable": true
           },
           "isConnected": {
@@ -2882,7 +2917,8 @@
             "format": "date-time"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Device list item."
       },
       "DeviceListItemPaginationResult": {
         "type": "object",
@@ -2923,6 +2959,7 @@
           "imageUrl": {
             "type": "string",
             "description": "The device model image Url.",
+            "format": "uri",
             "nullable": true
           },
           "name": {
@@ -2943,7 +2980,8 @@
             "description": "A value indicating whether the LoRa features is supported on this model."
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Device model."
       },
       "DeviceModelCommand": {
         "required": [
@@ -2973,7 +3011,8 @@
             "description": "A value indicating whether this instance is builtin."
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Device model command."
       },
       "DeviceProperty": {
         "required": [
@@ -3015,7 +3054,8 @@
             "description": "The device property type"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Device property."
       },
       "DevicePropertyValue": {
         "required": [
@@ -3062,7 +3102,8 @@
             "nullable": true
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Device property value."
       },
       "DeviceTag": {
         "required": [
@@ -3089,29 +3130,35 @@
             "description": "Whether the field can be searcheable via the device search panel or not."
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Device tag."
       },
       "EnrollmentCredentials": {
         "type": "object",
         "properties": {
           "registrationID": {
             "type": "string",
+            "description": "The registration identifier.",
             "nullable": true
           },
           "symmetricKey": {
             "type": "string",
+            "description": "The symmetric key.",
             "nullable": true
           },
           "scopeID": {
             "type": "string",
+            "description": "The scope identifier.",
             "nullable": true
           },
           "provisioningEndpoint": {
             "type": "string",
+            "description": "The provisioning endpoint.",
             "nullable": true
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Enrollment credentials."
       },
       "IoTEdgeDevice": {
         "required": [
@@ -3175,7 +3222,8 @@
             "nullable": true
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "IoT Edge device."
       },
       "IoTEdgeListItem": {
         "required": [
@@ -3203,7 +3251,8 @@
             "format": "int32"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "IoT Edge list item."
       },
       "IoTEdgeListItemPaginationResult": {
         "type": "object",
@@ -3257,7 +3306,8 @@
               "nullable": true
             },
             "description": "The module environment variables.",
-            "nullable": true
+            "nullable": true,
+            "readOnly": true
           },
           "moduleIdentityTwinSettings": {
             "type": "object",
@@ -3266,10 +3316,12 @@
               "nullable": true
             },
             "description": "The module identity twin settings.",
-            "nullable": true
+            "nullable": true,
+            "readOnly": true
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "IoT Edge module."
       },
       "LoRaDeviceDetails": {
         "required": [
@@ -3294,6 +3346,7 @@
           "imageUrl": {
             "type": "string",
             "description": "The device model image Url.",
+            "format": "uri",
             "nullable": true
           },
           "isConnected": {
@@ -3324,7 +3377,7 @@
               "C"
             ],
             "type": "string",
-            "description": "The LoRa device class."
+            "description": "The LoRa device class type."
           },
           "useOTAA": {
             "type": "boolean",
@@ -3478,7 +3531,8 @@
             "nullable": true
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "LoRa WAN Device details."
       },
       "LoRaDeviceModel": {
         "required": [
@@ -3494,6 +3548,7 @@
           "imageUrl": {
             "type": "string",
             "description": "The device model image Url.",
+            "format": "uri",
             "nullable": true
           },
           "name": {
@@ -3613,7 +3668,8 @@
             "nullable": true
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "LoRa Device model."
       },
       "PortalSettings": {
         "type": "object",
@@ -3633,7 +3689,8 @@
             "nullable": true
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Protal Settings."
       },
       "ProblemDetails": {
         "type": "object",
@@ -3672,7 +3729,8 @@
               "format": "int32"
             },
             "description": "The network identifier.",
-            "nullable": true
+            "nullable": true,
+            "readOnly": true
           },
           "joinEui": {
             "type": "array",
@@ -3683,7 +3741,8 @@
               }
             },
             "description": "The join eui.",
-            "nullable": true
+            "nullable": true,
+            "readOnly": true
           },
           "region": {
             "type": "string",
@@ -3702,7 +3761,8 @@
               "format": "int32"
             },
             "description": "The frequency range.",
-            "nullable": true
+            "nullable": true,
+            "readOnly": true
           },
           "dRs": {
             "type": "array",
@@ -3714,7 +3774,8 @@
               }
             },
             "description": "The DRs.",
-            "nullable": true
+            "nullable": true,
+            "readOnly": true
           },
           "sx1301Conf": {
             "type": "array",
@@ -3725,7 +3786,8 @@
               }
             },
             "description": "The SX1301 conf.",
-            "nullable": true
+            "nullable": true,
+            "readOnly": true
           },
           "nocca": {
             "type": "boolean",
@@ -3740,7 +3802,8 @@
             "description": "`true` if nodwell; otherwise, `false`."
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Router configuration."
       }
     },
     "securitySchemes": {
