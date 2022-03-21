@@ -15,157 +15,165 @@
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Details</MudText>
 <MudForm Model="@Device" @ref="form" Validation="@(standardValidator.ValidateValue)">
-    <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
-        <MudTabPanel Text="General" Style=@(standardValidator.Validate(Device).IsValid ? "" : "color: red")>
-            <MudGrid>
-                <MudItem xs="12" sm="4" md="3">
-                    <MudCard>
-                        <MudCardHeader>
-                            <CardHeaderContent>
-                                <MudText Typo="Typo.h5">@(string.IsNullOrEmpty(Device.DeviceName) ? Device.DeviceID : Device.DeviceName)</MudText>
-                            </CardHeaderContent>
-                            <CardHeaderActions>
-                                @if (isLoaded && (!IsLoRa || !(Device is LoRaDeviceDetails)))
-                                {
-                                    <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString">Connect</MudButton>
-                                }
-                            </CardHeaderActions>
-                        </MudCardHeader>
-                        <MudCardContent>
-                            <div class="d-flex justify-center mb-4">
-                                <MudAvatar Image="@Device.ImageUrl?.ToString()" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
-                            </div>
-                        </MudCardContent>
-                    </MudCard>
-                </MudItem>
-                <MudItem xs="12" sm="8" md="9">
-                    <MudCard>
-                        <MudCardHeader>
-                            <CardHeaderContent>
-                                <MudText>Device Details</MudText>
-                            </CardHeaderContent>
-                        </MudCardHeader>
-                        <MudCardContent>
-                            <MudGrid>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Device.DeviceID"
-                                                  Label="Device ID"
-                                                  Variant="Variant.Outlined"
-                                                  For="@(()=> Device.DeviceID)"
-                                                  Required="true"
-                                                  ReadOnly="true"
-                                                  HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
-                                </MudItem>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@Device.DeviceName"
-                                                  Label="Device name"
-                                                  Variant="Variant.Outlined"
-                                                  For="@(()=> Device.DeviceName)"
-                                                  Required="true" />
-                                </MudItem>
-                                <MudItem xs="12">
-                                    <MudText>
-                                        <b>Status</b>
-                                    </MudText>
-                                    <MudSwitch @bind-Checked="@Device.IsEnabled" Color="Color.Secondary" />
-                                    @if (Device.IsEnabled)
-                                    {
-                                        <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
-                                    }
-                                    else
-                                    {
-                                        <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
-                                    }
-                                </MudItem>
-                                <MudItem xs="12">
-                                    <MudText Typo="Typo.h6" Class="mb-4">Tags</MudText>
-                                </MudItem>
-                                @foreach (DeviceTag tag in TagList)
-                                {
-                                    <MudItem xs="12" md="6">
-                                        <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
-                                                  Required="@tag.Required"
-                                                  Variant="Variant.Outlined" />
-                                    </MudItem>
-                                }
+    <MudGrid>
+        <MudItem xs="12" sm="4" md="3">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center">@(string.IsNullOrEmpty(Device.DeviceName) ? Device.DeviceID : Device.DeviceName)</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <div class="d-flex justify-center mb-4">
+                        <MudAvatar Image="@Device.ImageUrl?.ToString()" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                    </div>
+                </MudCardContent>
+                <MudCardActions Class="pb-4 pl-4 justify-center">
+               @if (isLoaded && (!IsLoRa || !(Device is LoRaDeviceDetails)))
+                        {
+                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString">Connect</MudButton>
+                        }
+                </MudCardActions>
+            </MudCard>
+            <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice">Delete device</MudButton>
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save">Save Changes</MudButton>
+            </MudItem>
+        </MudItem>
+        <MudItem xs="12" sm="8" md="9">
 
-                                @if (!IsLoRa)
-                                {
-                                    <MudItem xs="12">
-                                        <MudText Typo="Typo.h6" Class="mb-4">Properties</MudText>
-                                    </MudItem>
-                                    @foreach (var item in Properties.OrderBy(c => c.Order))
-                                    {
-                                        switch (item.PropertyType)
+            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
+                <MudTabPanel Text="General" Style=@(standardValidator.Validate(Device).IsValid ? "" : "color: red")>
+                    <MudExpansionPanels MultiExpansion="true">
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
+                                    <MudGrid>
+                                        <MudItem xs="12" md="6">
+                                            <MudTextField @bind-Value="@Device.DeviceID"
+                                                          Label="Device ID"
+                                                          Variant="Variant.Outlined"
+                                                          For="@(()=> Device.DeviceID)"
+                                                          Required="true"
+                                                          ReadOnly="true"
+                                                          HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
+                                        </MudItem>
+                                        <MudItem xs="12" md="6">
+                                            <MudTextField @bind-Value="@Device.DeviceName"
+                                                          Label="Device name"
+                                                          Variant="Variant.Outlined"
+                                                          For="@(()=> Device.DeviceName)"
+                                                          Required="true" />
+                                        </MudItem>
+                                        <MudItem xs="12">
+                                            <MudText>
+                                                <b>Status</b>
+                                            </MudText>
+                                            <MudSwitch @bind-Checked="@Device.IsEnabled" Color="Color.Secondary" />
+                                            @if (Device.IsEnabled)
+                                            {
+                                                <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
+                                            }
+                                            else
+                                            {
+                                                <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
+                                            }
+                                        </MudItem>
+                                    </MudGrid>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Tags">
+                                    <MudGrid>
+                                        @foreach (DeviceTag tag in TagList)
                                         {
-                                            case DevicePropertyType.Boolean:
-                                                <MudItem xs="12" md="4">
-                                                    <MudCheckBox @bind-Checked="item.Value" Label="@item.DisplayName" Color="@Color.Primary" Converter="@(new StringToBoolConverter())" TriState="true" />
-                                                </MudItem>
-                                                break;
-                                            case DevicePropertyType.Double:
-                                                <MudItem xs="12" md="4">
-                                                    <MudTextField @bind-Value="item.Value"
-                                                  Label="@item.DisplayName"
-                                                  Variant="Variant.Outlined"
-                                                  Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out var result))
-                                                  Clearable="true" />
-                                                </MudItem>
-                                                break;
-                                            case DevicePropertyType.Float:
-                                                <MudItem xs="12" md="4">
-                                                    <MudTextField @bind-Value="item.Value"
-                                                  Label="@item.DisplayName"
-                                                  Variant="Variant.Outlined"
-                                                  Validation=@((string c) => string.IsNullOrEmpty(c) || float.TryParse(c, out var result))
-                                                  Clearable="true" />
-                                                </MudItem>
-                                                break;
-                                            case DevicePropertyType.Integer:
-                                                <MudItem xs="12" md="4">
-                                                    <MudTextField @bind-Value="item.Value"
-                                                  Label="@item.DisplayName"
-                                                  Variant="Variant.Outlined"
-                                                  Validation=@((string c) => string.IsNullOrEmpty(c) || int.TryParse(c, out var result))
-                                                  Clearable="true" />
-                                                </MudItem>
-                                                break;
-                                            case DevicePropertyType.Long:
-                                                <MudItem xs="12" md="4">
-                                                    <MudTextField @bind-Value="item.Value"
-                                                  Label="@item.DisplayName"
-                                                  Variant="Variant.Outlined"
-                                                  Validation=@((string c) => string.IsNullOrEmpty(c) || long.TryParse(c, out var result))
-                                                  Clearable="true" />
-                                                </MudItem>
-                                                break;
-                                            case DevicePropertyType.String:
-                                                <MudItem xs="12" md="12">
-                                                    <MudTextField @bind-Value="item.Value" Label="@item.DisplayName" Format="F1" Variant="Variant.Outlined" Clearable="true" />
-                                                </MudItem>
-                                                break;
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
+                                                          Required="@tag.Required"
+                                                          Variant="Variant.Outlined" />
+                                            </MudItem>
                                         }
+                                    </MudGrid>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                        @if (!IsLoRa)
+                        {
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Properties">
+                                        <MudGrid>
+                                            @foreach (var item in Properties.OrderBy(c => c.Order))
+                                            {
+                                                switch (item.PropertyType)
+                                                {
+                                                    case DevicePropertyType.Boolean:
+                                                        <MudItem xs="12" md="4">
+                                                            <MudCheckBox @bind-Checked="item.Value" Label="@item.DisplayName" Color="@Color.Primary" Converter="@(new StringToBoolConverter())" TriState="true" />
+                                                        </MudItem>
+                                                        break;
+                                                    case DevicePropertyType.Double:
+                                                        <MudItem xs="12" md="4">
+                                                            <MudTextField @bind-Value="item.Value"
+                                                          Label="@item.DisplayName"
+                                                          Variant="Variant.Outlined"
+                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out var result))
+                                                          Clearable="true" />
+                                                        </MudItem>
+                                                        break;
+                                                    case DevicePropertyType.Float:
+                                                        <MudItem xs="12" md="4">
+                                                            <MudTextField @bind-Value="item.Value"
+                                                          Label="@item.DisplayName"
+                                                          Variant="Variant.Outlined"
+                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || float.TryParse(c, out var result))
+                                                          Clearable="true" />
+                                                        </MudItem>
+                                                        break;
+                                                    case DevicePropertyType.Integer:
+                                                        <MudItem xs="12" md="4">
+                                                            <MudTextField @bind-Value="item.Value"
+                                                          Label="@item.DisplayName"
+                                                          Variant="Variant.Outlined"
+                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || int.TryParse(c, out var result))
+                                                          Clearable="true" />
+                                                        </MudItem>
+                                                        break;
+                                                    case DevicePropertyType.Long:
+                                                        <MudItem xs="12" md="4">
+                                                            <MudTextField @bind-Value="item.Value"
+                                                          Label="@item.DisplayName"
+                                                          Variant="Variant.Outlined"
+                                                          Validation=@((string c) => string.IsNullOrEmpty(c) || long.TryParse(c, out var result))
+                                                          Clearable="true" />
+                                                        </MudItem>
+                                                        break;
+                                                    case DevicePropertyType.String:
+                                                        <MudItem xs="12" md="12">
+                                                            <MudTextField @bind-Value="item.Value" Label="@item.DisplayName" Format="F1" Variant="Variant.Outlined" Clearable="true" />
+                                                        </MudItem>
+                                                        break;
+                                                }
 
-                                    }
-                                }
+                                            }
+                                        </MudGrid>
+                                    </MudExpansionPanel>
+                                </MudItem>
                             </MudGrid>
-                        </MudCardContent>
-                        <MudCardActions Class="pb-4 pl-4">
-                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save">Save Changes</MudButton>
-                        </MudCardActions>
-                    </MudCard>
-                </MudItem>
-            </MudGrid>
-        </MudTabPanel>
-        @if (IsLoRa && Device != null && Commands != null)
-        {
-            <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Device as LoRaDeviceDetails).IsValid ? "" : "color: red")>
-                <MudGrid>
-                    <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" Commands="@Commands" OnSaveClick="Save" />
-                </MudGrid>
-            </MudTabPanel>
-        }
-    </MudTabs>
+                        }
+                    </MudExpansionPanels>
+                </MudTabPanel>
+                @if (IsLoRa && Device != null && Commands != null)
+                {
+                    <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Device as LoRaDeviceDetails).IsValid ? "" : "color: red")>
+                            <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" Commands="@Commands" />
+                    </MudTabPanel>
+                }
+            </MudTabs>
+        </MudItem>
+    </MudGrid>
 </MudForm>
 @code {
 
@@ -299,5 +307,26 @@
             }
         }
         return tagValidationError;
+    }
+
+    /// <summary>
+    /// Prompts a pop-up windows to confirm the device's deletion.
+    /// </summary>
+    /// <param name="device">Device to delete from the hub</param>
+    /// <returns></returns>
+    private async Task DeleteDevice()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("deviceID", Device.DeviceID);
+        parameters.Add("deviceName", Device.DeviceName);
+        var result = await DialogService.Show<DeleteDevicePage>("Confirm Deletion", parameters).Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+        // Go back to the list of devices
+        NavManager.NavigateTo("devices");
     }
 }
