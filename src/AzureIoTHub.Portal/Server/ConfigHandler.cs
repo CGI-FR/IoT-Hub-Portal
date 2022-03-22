@@ -14,7 +14,7 @@ namespace AzureIoTHub.Portal.Server
         internal const string IoTHubConnectionStringKey = "IoTHub:ConnectionString";
         internal const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
         internal const string DPSServiceEndpointKey = "IoTDPS:ServiceEndpoint";
-        internal const string DPSIDScopeKey = "IoTDPS:DPSIDScope";
+        internal const string DPSIDScopeKey = "IoTDPS:IDScope";
 
         internal const string OIDCScopeKey = "OIDC:Scope";
         internal const string OIDCAuthorityKey = "OIDC:Authority";
