@@ -22,6 +22,8 @@ namespace AzureIoTHub.Portal.Server
 
         internal override string DPSEndpoint => this.config[DPSServiceEndpointKey];
 
+        internal override string DPSScopeID => this.config[DPSIDScopeKey];
+
         internal override string StorageAccountConnectionString => this.config[StorageAccountConnectionStringKey];
 
         internal override string OIDCScope => this.config[OIDCScopeKey];
