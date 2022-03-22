@@ -153,7 +153,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     _ = tagsFilterBuilder.Append(CultureInfo.InvariantCulture, $" AND is_defined(tags.{item.Key}) AND STARTSWITH(tags.{item.Key}, '{item.Value}')");
                 }
 
-                filter += tagsFilterBuilder.ToString();
+                filter += tagsFilterBuilder;
             }
 
             if (searchStatus != null)
