@@ -238,12 +238,12 @@
         {
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
-            //if (IsLoRa)
-            //{
-            //    var loraValidation = this.loraValidator.Validate(this.Device as LoRaDeviceDetails);
+            if (IsLoRa)
+            {
+                var loraValidation = this.loraValidator.Validate(this.Device as LoRaDeviceDetails);
 
-            //    loraValidation.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
-            //}
+                loraValidation.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
+            }
 
 
             return;

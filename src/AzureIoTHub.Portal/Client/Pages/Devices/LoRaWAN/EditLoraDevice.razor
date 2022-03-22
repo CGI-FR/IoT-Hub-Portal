@@ -9,7 +9,7 @@
         <MudItem xs="12">
             <MudExpansionPanel Text="LoRaWAN" IsInitiallyExpanded="true">
                 <MudGrid>
-                    <MudItem xs="12" md="6">
+                    <MudItem xs="12">
                         <MudGrid>
                             @if (LoRaDevice.UseOTAA)
                             {
@@ -22,22 +22,22 @@
                             }
                             else
                             {
-                                <MudItem xs="12" md="6">
+                                <MudItem xs="12" md="4">
                                     <MudTextField @bind-Value="@LoRaDevice.AppSKey" Label="APB App SKey" For="@(() => LoRaDevice.AppSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
                                 </MudItem>
-                                <MudItem xs="12" md="6">
+                                <MudItem xs="12" md="4">
                                     <MudTextField @bind-Value="@LoRaDevice.NwkSKey" Label="APB Nwk SKey" For="@(() => LoRaDevice.NwkSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
                                 </MudItem>
-                                <MudItem xs="12" md="6">
+                                <MudItem xs="12" md="4">
                                     <MudTextField @bind-Value="@LoRaDevice.DevAddr" Label="DevAddr" For="@(() => LoRaDevice.DevAddr)" Variant="Variant.Outlined" Required="true"></MudTextField>
                                 </MudItem>
                             }
                         </MudGrid>
                     </MudItem>
-                    <MudItem md="6" xs="12">
+                    <MudItem xs="12">
                         <MudGrid>
-                            <MudItem xs="12">
-                                <MudGrid>
+@*                            <MudItem xs="12">
+                                <MudGrid>*@
                                     <MudItem md="3" xs="6">
                                         <MudSelect id="@nameof(LoRaDevice.ClassType)"
                                                    Disabled="true"
@@ -65,8 +65,8 @@
                                             }
                                         </MudSelect>
                                     </MudItem>
-                                </MudGrid>
-                            </MudItem>
+@*                                </MudGrid>
+                            </MudItem>*@
                             <MudItem md="6" xs="12">
                                 <MudTextField @bind-Value="@LoRaDevice.GatewayID" Label="Gateway Id" For="@(() => LoRaDevice.GatewayID)" Variant="Variant.Outlined"></MudTextField>
                             </MudItem>
@@ -81,7 +81,7 @@
         <MudItem xs="12">
             <MudExpansionPanel Text="Reported properties">
                 <MudGrid>
-                    <MudItem xs="12" md="6">
+                    <MudItem xs="12">
                         <MudText Typo=Typo.h5 Class="mb-4">Adaptive DataRate</MudText>
                         <MudGrid>
                             <MudItem md="6" xs="12">
@@ -95,7 +95,7 @@
                             </MudItem>
                         </MudGrid>
                     </MudItem>
-                    <MudItem xs="12" md="6">
+                    <MudItem xs="12">
                         <MudText Typo=Typo.h5 Class="mb-4">Receive Windows</MudText>
                         <MudGrid>
                             <MudItem md="6" xs="12">
