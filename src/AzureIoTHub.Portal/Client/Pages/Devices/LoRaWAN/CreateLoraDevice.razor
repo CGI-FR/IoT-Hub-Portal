@@ -25,7 +25,6 @@
                     <MudItem xs="12" md="6">
                         <MudTextField @bind-Value="@LoRaDevice.AppKey"
                                   Label="OTAA AppKey"
-                                  Validation="@(LoraValidator.ValidateValue)"
                                   For="@(() => LoRaDevice.AppKey)"
                                   Required="true"
                                   Variant="Variant.Outlined" />

@@ -50,13 +50,13 @@
                             <MudText>Connection state</MudText>
                             <MudRadioGroup @bind-SelectedOption="@searchState" Style="display:flex;align-items:baseline">
                                 <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("true")  Color="Color.Primary" id="searchStateConnected">Connected</MudRadio>
+                                    <MudRadio Option=@("true") Color="Color.Primary" id="searchStateConnected">Connected</MudRadio>
                                 </MudItem>
                                 <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("false")  Color="Color.Primary" id="searchStateDisconnected">Disconnected</MudRadio>
+                                    <MudRadio Option=@("false") Color="Color.Primary" id="searchStateDisconnected">Disconnected</MudRadio>
                                 </MudItem>
                                 <MudItem md="4" sm="12">
-                                    <MudRadio Option=@("")  Color="Color.Secondary" id="searchStateAll">All</MudRadio>
+                                    <MudRadio Option=@("") Color="Color.Secondary" id="searchStateAll">All</MudRadio>
                                 </MudItem>
                             </MudRadioGroup>
                         </MudItem>
@@ -146,7 +146,7 @@
                 <MudText>Loading...</MudText>
             </LoadingContent>
             <PagerContent>
-                <MudTablePager DisableRowsPerPage=true   />
+                <MudTablePager DisableRowsPerPage=true />
             </PagerContent>
         </MudTable>
     </MudItem>
@@ -193,7 +193,7 @@
         {
             var uri = $"api/devices?pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchID)}&searchStatus={searchStatus}&searchState={searchState}";
 
-            foreach(var searchTag in this.searchTags.Where(c => !string.IsNullOrEmpty(c.Value)))
+            foreach (var searchTag in this.searchTags.Where(c => !string.IsNullOrEmpty(c.Value)))
             {
                 uri += $"&tag.{searchTag.Key}={searchTag.Value}";
             }
