@@ -18,7 +18,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
     using NUnit.Framework;
 
     [TestFixture]
-    public class DeviceTagServiceTest
+    public class DeviceTagServiceTests
     {
         private MockRepository mockRepository;
         private Mock<IDeviceTagMapper> mockDeviceTagMapper;

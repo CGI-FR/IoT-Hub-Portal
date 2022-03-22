@@ -15,31 +15,38 @@ namespace AzureIoTHub.Portal.Client.Validators
         public LoRaDeviceDetailsValidator()
         {
             _ = RuleFor(x => x.ModelId)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("ModelId is required.");
 
             // OTAA Settings
 
             _ = RuleFor(x => x.AppEUI)
                 .NotEmpty()
-                .When(x => x.UseOTAA);
+                .When(x => x.UseOTAA)
+                .WithMessage("AppEUI is required.");
+
 
             _ = RuleFor(x => x.AppKey)
                 .NotEmpty()
-                .When(x => x.UseOTAA);
+                .When(x => x.UseOTAA)
+                .WithMessage("AppKey is required.");
 
             // APB Settings
 
             _ = RuleFor(x => x.AppSKey)
                 .NotEmpty()
-                .When(x => !x.UseOTAA);
+                .When(x => !x.UseOTAA)
+                .WithMessage("AppSKey is required.");
 
             _ = RuleFor(x => x.NwkSKey)
                 .NotEmpty()
-                .When(x => !x.UseOTAA);
+                .When(x => !x.UseOTAA)
+                .WithMessage("NwkSKey is required.");
 
             _ = RuleFor(x => x.DevAddr)
                 .NotEmpty()
-                .When(x => !x.UseOTAA);
+                .When(x => !x.UseOTAA)
+                .WithMessage("DevAddr is required.");
         }
 
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
