@@ -10,26 +10,27 @@ namespace AzureIoTHub.Portal.Server
 
     public abstract class ConfigHandler
     {
-        protected const string PortalNameKey = "SiteName";
-        protected const string IoTHubConnectionStringKey = "IoTHub:ConnectionString";
-        protected const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
-        protected const string DPSServiceEndpointKey = "IoTDPS:ServiceEndpoint";
+        internal const string PortalNameKey = "SiteName";
+        internal const string IoTHubConnectionStringKey = "IoTHub:ConnectionString";
+        internal const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
+        internal const string DPSServiceEndpointKey = "IoTDPS:ServiceEndpoint";
+        internal const string DPSIDScopeKey = "IoTDPS:DPSIDScope";
 
-        protected const string OIDCScopeKey = "OIDC:Scope";
-        protected const string OIDCAuthorityKey = "OIDC:Authority";
-        protected const string OIDCMetadataUrlKey = "OIDC:MetadataUrl";
-        protected const string OIDCClientIdKey = "OIDC:ClientId";
-        protected const string OIDCApiClientIdKey = "OIDC:ApiClientId";
+        internal const string OIDCScopeKey = "OIDC:Scope";
+        internal const string OIDCAuthorityKey = "OIDC:Authority";
+        internal const string OIDCMetadataUrlKey = "OIDC:MetadataUrl";
+        internal const string OIDCClientIdKey = "OIDC:ClientId";
+        internal const string OIDCApiClientIdKey = "OIDC:ApiClientId";
 
-        protected const string IsLoRaFeatureEnabledKey = "LoRaFeature:Enabled";
+        internal const string IsLoRaFeatureEnabledKey = "LoRaFeature:Enabled";
 
-        protected const string StorageAccountConnectionStringKey = "StorageAccount:ConnectionString";
-        protected const string StorageAccountBlobContainerNameKey = "StorageAccount:BlobContainerName";
-        protected const string StorageAccountBlobContainerPartitionKeyKey = "StorageAccount:BlobContainerPartitionKey";
+        internal const string StorageAccountConnectionStringKey = "StorageAccount:ConnectionString";
+        internal const string StorageAccountBlobContainerNameKey = "StorageAccount:BlobContainerName";
+        internal const string StorageAccountBlobContainerPartitionKeyKey = "StorageAccount:BlobContainerPartitionKey";
 
-        protected const string LoRaKeyManagementUrlKey = "LoRaKeyManagement:Url";
-        protected const string LoRaKeyManagementCodeKey = "LoRaKeyManagement:Code";
-        protected const string LoRaRegionRouterConfigUrlKey = "LoRaRegionRouterConfig:Url";
+        internal const string LoRaKeyManagementUrlKey = "LoRaKeyManagement:Url";
+        internal const string LoRaKeyManagementCodeKey = "LoRaKeyManagement:Code";
+        internal const string LoRaRegionRouterConfigUrlKey = "LoRaRegionRouterConfig:Url";
 
         internal static ConfigHandler Create(IWebHostEnvironment env, IConfiguration config)
         {
@@ -49,6 +50,8 @@ namespace AzureIoTHub.Portal.Server
         internal abstract string DPSConnectionString { get; }
 
         internal abstract string DPSEndpoint { get; }
+
+        internal abstract string DPSScopeID { get; }
 
         internal abstract string StorageAccountConnectionString { get; }
 

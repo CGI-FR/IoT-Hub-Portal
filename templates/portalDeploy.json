@@ -169,6 +169,10 @@
               "value": "[concat(variables('dpsName'), '.azure-devices-provisioning.net')]"
             },
             {
+              "name": "IoTDPS__IDScope",
+              "value": "[reference(variables('dpsName')).idScope]"
+            },
+            {
               "name": "LoRaKeyManagement__Url",
               "value": "[concat('https://', variables('functionAppName'), '.azurewebsites.net')]"
             },
