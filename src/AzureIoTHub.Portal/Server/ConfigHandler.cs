@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Server
 
     public abstract class ConfigHandler
     {
-        internal const string PortalNameKey = "SiteName";
+        internal const string PortalNameKey = "PortalName";
         internal const string IoTHubConnectionStringKey = "IoTHub:ConnectionString";
         internal const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
         internal const string DPSServiceEndpointKey = "IoTDPS:ServiceEndpoint";

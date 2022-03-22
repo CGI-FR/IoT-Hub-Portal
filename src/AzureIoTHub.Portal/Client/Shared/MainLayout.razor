@@ -3,6 +3,7 @@
 @using AzureIoTHub.Portal.Models.v10
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.Components.Web.Extensions.Head
 
 @inject SignOutSessionStateManager SignOutManager
 @inject NavigationManager Navigation
@@ -12,19 +13,13 @@
 <MudThemeProvider Theme="currentTheme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
+<Title value="@Portal.PortalName" />
 
 <MudLayout>
 
     <MudAppBar Elevation="25">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        @if (string.IsNullOrEmpty(Portal.PortalName))
-        {
-            <MudText Typo="Typo.h5">Azure IoT Hub Portal</MudText>
-        }
-        else
-        {
-            <MudText Typo="Typo.h5">@Portal.PortalName</MudText>
-        }
+        <MudText Typo="Typo.h5">@Portal.PortalName</MudText>
         <MudSpacer />
         <AuthorizeView>
             <Authorized>
