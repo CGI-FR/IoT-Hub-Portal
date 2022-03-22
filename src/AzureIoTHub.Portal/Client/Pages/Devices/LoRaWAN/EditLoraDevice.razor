@@ -19,7 +19,7 @@
                                         <MudTextField @bind-Value="@LoRaDevice.AppEUI" Label="OTAA App EUI" For="@(() => LoRaDevice.AppEUI)" ReadOnly="true" Variant="Variant.Outlined" Required="true"></MudTextField>
                                     </MudItem>
                                     <MudItem xs="12" md="6">
-                                        <MudTextField @bind-Value="@LoRaDevice.AppKey" Label="OTAA App Key" Validation="@(LoraValidator.ValidateValue)" For="@(() => LoRaDevice.AppKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                        <MudTextField @bind-Value="@LoRaDevice.AppKey" Label="OTAA App Key" For="@(() => LoRaDevice.AppKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
                                     </MudItem>
                                 }
                                 else

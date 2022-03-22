@@ -3,10 +3,10 @@
 
 namespace AzureIoTHub.Portal.Client.Validators
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
+    //using System;
+    //using System.Collections.Generic;
+    //using System.Linq;
+    //using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using FluentValidation;
 
@@ -24,7 +24,6 @@ namespace AzureIoTHub.Portal.Client.Validators
                 .NotEmpty()
                 .When(x => x.UseOTAA)
                 .WithMessage("AppEUI is required.");
-
 
             _ = RuleFor(x => x.AppKey)
                 .NotEmpty()
@@ -48,13 +47,5 @@ namespace AzureIoTHub.Portal.Client.Validators
                 .When(x => !x.UseOTAA)
                 .WithMessage("DevAddr is required.");
         }
-
-        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
-        {
-            var result = await ValidateAsync(ValidationContext<LoRaDeviceDetails>.CreateWithOptions((LoRaDeviceDetails)model, x => x.IncludeProperties(propertyName)));
-            if (result.IsValid)
-                return Array.Empty<string>();
-            return result.Errors.Select(e => e.ErrorMessage);
-        };
     }
 }
