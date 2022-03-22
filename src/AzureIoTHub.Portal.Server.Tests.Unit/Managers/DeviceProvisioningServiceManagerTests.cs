@@ -264,7 +264,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6", result.RegistrationID);
-            Assert.AreEqual("FakeEndpoint", result.ProvisioningEndpoint);
+            Assert.AreEqual("https://FakeEndpoint", result.ProvisioningEndpoint);
             Assert.AreEqual("Jsm0lyGpjaVYVP2g3FnmnmG9dI/9qU24wNoykUmermc=", result.SymmetricKey);
             this.mockRepository.VerifyAll();
         }
@@ -316,7 +316,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6", result.RegistrationID);
-            Assert.AreEqual("FakeEndpoint", result.ProvisioningEndpoint);
+            Assert.AreEqual("https://FakeEndpoint", result.ProvisioningEndpoint);
             Assert.AreEqual("Jsm0lyGpjaVYVP2g3FnmnmG9dI/9qU24wNoykUmermc=", result.SymmetricKey);
 
             this.mockRepository.VerifyAll();

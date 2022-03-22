@@ -22,7 +22,7 @@
                         <MudGrid>
                             <MudItem xs="12">
                                 <MudText Style="text-decoration:underline"><b>Service Endpoint</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.ProvisioningEndpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.ProvisioningEndpoint))" />
+                                <MudTextField @bind-Value="@Credentials.ProvisioningEndpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.ProvisioningEndpoint))"/>
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Device Id</b></MudText>
