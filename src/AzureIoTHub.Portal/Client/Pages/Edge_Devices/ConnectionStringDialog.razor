@@ -30,7 +30,7 @@
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>ScopeId</b></MudText>
-                                <MudTextField @bind-Value="@Credentials.ScopeID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.RegistrationID))" />
+                                <MudTextField @bind-Value="@Credentials.ScopeID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.ScopeID))" />
                             </MudItem>
                             <MudItem Class="mt-0" xs="12">
                                 <MudText Style="text-decoration:underline"><b>Symmetric Key</b></MudText>
