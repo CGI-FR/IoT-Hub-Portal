@@ -15,10 +15,16 @@ namespace AzureIoTHub.Portal.Client.Validators
         public DeviceDetailsValidator()
         {
             _ = RuleFor(x => x.DeviceName)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("DeviceName is required.");
 
             _ = RuleFor(x => x.ModelId)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("ModelId is required.");
+
+            _ = RuleFor(x => x.DeviceID)
+                .NotEmpty()
+                .WithMessage("DeviceID is required.");
         }
 
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>

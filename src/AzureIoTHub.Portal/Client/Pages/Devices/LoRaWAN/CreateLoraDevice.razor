@@ -2,53 +2,50 @@
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 @using AzureIoTHub.Portal.Models.v10
 
-<MudItem xs="12">
-    <MudCard>
-        <MudCardHeader>
-            <CardHeaderContent>
-                <MudText>LoRaWAN</MudText>
-            </CardHeaderContent>
-        </MudCardHeader>
-        <MudCardContent>
-            <MudGrid>
-                @if (loraModel.UseOTAA)
-                {
-                    <MudItem xs="12" md="6">
-                        <MudTextField @bind-Value="@LoRaDevice.AppEUI"
-                                  Label="OTAA AppEUI"
-                                  Variant="Variant.Outlined"
-                                  For="@(()=> LoRaDevice.AppEUI)"
-                                  ReadOnly="true"
-                                  Required="true"
-                                  HelperText="OTAA AppEUI is automatically set from the selected model" />
-                    </MudItem>
-                    <MudItem xs="12" md="6">
-                        <MudTextField @bind-Value="@LoRaDevice.AppKey"
-                                  Label="OTAA AppKey"
-                                  For="@(() => LoRaDevice.AppKey)"
-                                  Required="true"
-                                  Variant="Variant.Outlined" />
-                    </MudItem>
-                }
-                else
-                {
-                    <MudItem xs="12" md="6">
-                        <MudTextField @bind-Value="@LoRaDevice.AppSKey" Label="APB App SKey" For="@(() => LoRaDevice.AppSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
-                    </MudItem>
-                    <MudItem xs="12" md="6">
-                        <MudTextField @bind-Value="@LoRaDevice.NwkSKey" Label="APB Nwk SKey" For="@(() => LoRaDevice.NwkSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
-                    </MudItem>
-                    <MudItem xs="12" md="6">
-                        <MudTextField @bind-Value="@LoRaDevice.DevAddr" Label="DevAddr" For="@(() => LoRaDevice.DevAddr)" Variant="Variant.Outlined" Required="true"></MudTextField>
-                    </MudItem>
-                }
-            </MudGrid>
-        </MudCardContent>
-        <MudCardActions Class="pb-4 pl-4">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="OnSaveClick">Save Changes</MudButton>
-        </MudCardActions>
-    </MudCard>
-</MudItem>
+<MudExpansionPanels MultiExpansion="true">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudExpansionPanel Text="LoRaWAN" IsInitiallyExpanded="true">
+                <TitleContent><MudText Typo="Typo.h6">LoraWAN</MudText></TitleContent>
+                <ChildContent>
+                    <MudGrid>
+                        @if (loraModel.UseOTAA)
+                        {
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@LoRaDevice.AppEUI"
+                                          Label="OTAA AppEUI"
+                                          Variant="Variant.Outlined"
+                                          For="@(()=> LoRaDevice.AppEUI)"
+                                          ReadOnly="true"
+                                          Required="true"
+                                          HelperText="OTAA AppEUI is automatically set from the selected model" />
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@LoRaDevice.AppKey"
+                                          Label="OTAA AppKey"
+                                          For="@(() => LoRaDevice.AppKey)"
+                                          Required="true"
+                                          Variant="Variant.Outlined" />
+                            </MudItem>
+                        }
+                        else
+                        {
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@LoRaDevice.AppSKey" Label="APB App SKey" For="@(() => LoRaDevice.AppSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@LoRaDevice.NwkSKey" Label="APB Nwk SKey" For="@(() => LoRaDevice.NwkSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@LoRaDevice.DevAddr" Label="DevAddr" For="@(() => LoRaDevice.DevAddr)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudItem>
+    </MudGrid>
+</MudExpansionPanels>
 
 @code {
     [Parameter]
@@ -60,6 +57,4 @@
     [Parameter]
     public LoRaDeviceModel loraModel { get; set; }
 
-    [Parameter]
-    public EventCallback OnSaveClick { get; set; }
 }
