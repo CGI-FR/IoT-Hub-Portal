@@ -256,6 +256,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             _ = this.mockConfigHandler.SetupGet(c => c.DPSEndpoint)
                 .Returns("FakeEndpoint");
 
+            _ = this.mockConfigHandler.SetupGet(c => c.DPSScopeID)
+                .Returns("FakeScopeID");
+
             // Act
             var result = await manager.GetEnrollmentCredentialsAsync(
                 "sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6",
@@ -265,6 +268,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             Assert.IsNotNull(result);
             Assert.AreEqual("sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6", result.RegistrationID);
             Assert.AreEqual("https://FakeEndpoint", result.ProvisioningEndpoint);
+            Assert.AreEqual("FakeScopeID", result.ScopeID);
             Assert.AreEqual("Jsm0lyGpjaVYVP2g3FnmnmG9dI/9qU24wNoykUmermc=", result.SymmetricKey);
             this.mockRepository.VerifyAll();
         }
@@ -293,6 +297,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             _ = this.mockConfigHandler.SetupGet(c => c.DPSEndpoint)
                 .Returns("FakeEndpoint");
 
+            _ = this.mockConfigHandler.SetupGet(c => c.DPSScopeID)
+                .Returns("FakeScopeID");
+
             _ = this.mockProvisioningServiceClient.Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(
                 It.Is<EnrollmentGroup>(x => x.EnrollmentGroupId == enrollmentGroupName && x.Attestation is SymmetricKeyAttestation)))
                 .Callback(() =>
@@ -317,6 +324,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             Assert.IsNotNull(result);
             Assert.AreEqual("sn-007-888-abc-mac-a1-b2-c3-d4-e5-f6", result.RegistrationID);
             Assert.AreEqual("https://FakeEndpoint", result.ProvisioningEndpoint);
+            Assert.AreEqual("FakeScopeID", result.ScopeID);
             Assert.AreEqual("Jsm0lyGpjaVYVP2g3FnmnmG9dI/9qU24wNoykUmermc=", result.SymmetricKey);
 
             this.mockRepository.VerifyAll();
