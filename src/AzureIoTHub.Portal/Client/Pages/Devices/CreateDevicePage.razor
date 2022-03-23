@@ -13,7 +13,7 @@
 @inject NavigationManager NavManager
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device</MudText>
-<MudForm Model="@Device" @ref="form" Validation="@(standardValidator.ValidateValue)">
+<MudForm Model="@Device" @ref="form">
     <MudGrid>
         <MudItem xs="12" sm="4" md="3">
             <MudCard>
