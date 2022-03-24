@@ -124,7 +124,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [TestCase("newDeviceButton")]
-        [TestCase("tableAddItemButton")]
         public void WhenAddNewDeviceClickShouldNavigateToNewDevicePage(string buttonName)
         {
             // Arrange
