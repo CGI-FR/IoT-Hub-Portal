@@ -35,5 +35,10 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             return await this.httpClient.PostAsync(new Uri($"api/cloudtodevicemessage/{deviceId}"), commandContent);
         }
+
+        public async Task<HttpResponseMessage> CheckAzureFunctionReturn()
+        {
+            return await this.httpClient.GetAsync("");
+        }
     }
 }
