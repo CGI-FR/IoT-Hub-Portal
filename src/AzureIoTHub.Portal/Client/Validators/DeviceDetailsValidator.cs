@@ -3,10 +3,6 @@
 
 namespace AzureIoTHub.Portal.Client.Validators
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
     using FluentValidation;
 
@@ -15,18 +11,16 @@ namespace AzureIoTHub.Portal.Client.Validators
         public DeviceDetailsValidator()
         {
             _ = RuleFor(x => x.DeviceName)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("DeviceName is required.");
 
             _ = RuleFor(x => x.ModelId)
-                .NotEmpty();
-        }
+                .NotEmpty()
+                .WithMessage("ModelId is required.");
 
-        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
-        {
-            var result = await ValidateAsync(ValidationContext<DeviceDetails>.CreateWithOptions((DeviceDetails)model, x => x.IncludeProperties(propertyName)));
-            if (result.IsValid)
-                return Array.Empty<string>();
-            return result.Errors.Select(e => e.ErrorMessage);
-        };
+            _ = RuleFor(x => x.DeviceID)
+                .NotEmpty()
+                .WithMessage("DeviceID is required.");
+        }
     }
 }
