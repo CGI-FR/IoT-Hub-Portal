@@ -271,6 +271,11 @@ else
             || (IsLoRa && !this.loraValidator.Validate(this.Model as LoRaDeviceModel).IsValid))
         {
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
+
+            propertiesValidator.Validate(Properties).Errors.ForEach(x =>
+                Snackbar.Add(x.ErrorMessage, Severity.Warning)
+            );
+            
             return;
         }
 

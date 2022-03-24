@@ -29,10 +29,18 @@ namespace AzureIoTHub.Portal.Client.Validators
             _ = RuleForEach(x => x)
                 .ChildRules(c =>
                 {
-                    _ = c.RuleFor(c => c.DisplayName).NotNull();
-                    _ = c.RuleFor(c => c.Name).NotNull();
-                    _ = c.RuleFor(c => c.PropertyType).NotNull();
-                    _ = c.RuleFor(c => c.IsWritable).NotNull();
+                    _ = c.RuleFor(c => c.DisplayName)
+                        .NotNull().WithMessage("Property DisplayName is required.")
+                        .NotEmpty().WithMessage("Property DisplayName is required.");
+                    _ = c.RuleFor(c => c.Name)
+                        .NotNull().WithMessage("Property Name is required.")
+                        .NotEmpty().WithMessage("Property Name is required.");
+                    _ = c.RuleFor(c => c.PropertyType)
+                        .NotNull()
+                        .WithMessage("Property PropertyType is required.");
+                    _ = c.RuleFor(c => c.IsWritable)
+                        .NotNull()
+                        .WithMessage("Property IsWritable is required.");
                 });
         }
     }
