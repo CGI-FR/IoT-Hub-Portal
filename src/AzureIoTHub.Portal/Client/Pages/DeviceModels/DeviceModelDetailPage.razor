@@ -61,8 +61,8 @@ else
             <MudItem xs="12" sm="8" md="10">
                 <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
                     <MudTabPanel Text="General" Style=@(standardValidator.Validate(Model).IsValid ? "" : "color: red")>
-                        <MudExpansionPanels MultiExpansion="true">
-                            <MudGrid id="general">
+                        <MudExpansionPanels MultiExpansion="true" id="general">
+                            <MudGrid>
 
                                 <MudItem xs="12">
                                     <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
@@ -151,9 +151,7 @@ else
                     @if (IsLoRa)
                     {
                         <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Model as LoRaDeviceModel).IsValid ? "" : "color: red")>
-                            @*<MudGrid id="lorawan">*@
                             <EditLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)" Commands="Commands" />
-                            @*</MudGrid>*@
                         </MudTabPanel>
                     }
                 </MudTabs>
