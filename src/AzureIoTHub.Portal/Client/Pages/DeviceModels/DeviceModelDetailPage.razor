@@ -132,8 +132,8 @@ else
                                                     </MudSelect>
                                                 </MudItem>
                                                 <MudItem md="1" xs="3">
-                                                        <MudSwitch id="@nameof(item.IsWritable)" @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
-                                                        <MudInputLabel>Writable</MudInputLabel>
+                                                    <MudSwitch id="@nameof(item.IsWritable)" @bind-Checked="@item.IsWritable" Color="Color.Secondary" />
+                                                    <MudInputLabel>Writable</MudInputLabel>
                                                 </MudItem>
                                                 <MudItem md="1" xs="3">
                                                     <MudIconButton id="DeletePropertyButton" Icon="@Icons.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
@@ -151,9 +151,9 @@ else
                     @if (IsLoRa)
                     {
                         <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Model as LoRaDeviceModel).IsValid ? "" : "color: red")>
-                            <MudGrid id="lorawan">
-                                <EditLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)" Commands="Commands" OnSaveClick="Save" />
-                            </MudGrid>
+                            @*<MudGrid id="lorawan">*@
+                            <EditLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)" Commands="Commands" />
+                            @*</MudGrid>*@
                         </MudTabPanel>
                     }
                 </MudTabs>
