@@ -20,7 +20,8 @@ namespace AzureIoTHub.Portal.Client.Validators
         public DevicePropertyValidator()
         {
             _ = RuleForEach(x => x)
-                .NotNull();
+                .NotNull()
+                .WithMessage("Property cannot be null.");
 
             _ = RuleFor(x => x)
                 .Must(x => x.Distinct(new DevicePropertyComparer()).Count() == x.Count())
