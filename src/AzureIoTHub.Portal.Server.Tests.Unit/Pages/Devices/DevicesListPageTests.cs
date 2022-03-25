@@ -123,8 +123,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             this.mockRepository.VerifyAll();
         }
 
-        [TestCase("newDeviceButton")]
-        public void WhenAddNewDeviceClickShouldNavigateToNewDevicePage(string buttonName)
+        [Test]
+        public void WhenAddNewDeviceClickShouldNavigateToNewDevicePage()
         {
             // Arrange
             _ = this.mockHttpClient
@@ -145,7 +145,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var cut = RenderComponent<DeviceListPage>();
 
             // Act
-            cut.WaitForElement($"#{buttonName}").Click();
+            cut.WaitForElement($"#addDeviceButton").Click();
             cut.WaitForAssertion(() => string.Equals("http://localhost/devices/new", mockNavigationManager.Uri, StringComparison.OrdinalIgnoreCase));
 
             // Assert
