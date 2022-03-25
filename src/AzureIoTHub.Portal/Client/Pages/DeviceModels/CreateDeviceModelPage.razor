@@ -21,11 +21,11 @@
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Model</MudText>
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device Model</MudText>
 
 <MudForm Model="@Model" @ref="form" id="form">
     <MudGrid>
-        <MudItem xs="12" sm="4" md="2">
+        <MudItem xs="12" sm="4" md="3">
             <MudCard>
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
@@ -48,7 +48,7 @@
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="SaveButton">Save Changes</MudButton>
             </MudItem>
         </MudItem>
-        <MudItem xs="12" sm="8" md="10">
+        <MudItem xs="12" sm="8" md="9">
             <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
                 <MudTabPanel Text="General" Style=@(standardValidator.Validate(Model).IsValid ? "" : "color: red")>
                     <MudExpansionPanels MultiExpansion="true" id="general">
