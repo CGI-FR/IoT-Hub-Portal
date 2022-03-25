@@ -54,7 +54,8 @@ else
                         }
                     </MudCardActions>
                 </MudCard>
-                <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
+                <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDeviceModel">Delete model</MudButton>
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="SaveButton">Save Changes</MudButton>
                 </MudItem>
             </MudItem>
@@ -308,7 +309,7 @@ else
         {
             Snackbar.Add("Device model successfully updated.", Severity.Success);
 
-            // Go back to the list of devices
+            // Go back to the list of devices models
             NavigationManager.NavigateTo("device-models");
         }
         else if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
@@ -320,5 +321,21 @@ else
         {
             Snackbar.Add("Something unexpected occurred", Severity.Warning);
         }
+    }
+
+    private async Task DeleteDeviceModel()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("deviceModelID", Model.ModelId);
+        parameters.Add("deviceModelName", Model.Name);
+        var result = await DialogService.Show<DeleteDeviceModelPage>("Confirm Deletion", parameters).Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+        // Go back to the list of devices after the deletion
+        NavigationManager.NavigateTo("device-models");
     }
  }
