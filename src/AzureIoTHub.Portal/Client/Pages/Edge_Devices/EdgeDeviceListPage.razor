@@ -67,7 +67,7 @@
                 <MudText Typo="Typo.h6">Gateways</MudText>
                 <MudSpacer />
                 <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="Search" Class="ma-2"></MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="ShowAddDialog" Class="ma-2"></MudIconButton>
+                      <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium"  OnClick="ShowAddDialog" />
             </ToolBarContent>
             <HeaderContent>
                 <MudTh>ID</MudTh>
@@ -111,9 +111,6 @@
                 <MudTablePager /> 
             </PagerContent>
         </MudTable>
-    </MudItem>
-    <MudItem xs="12">
-        <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Label="Add IoT Edge" OnClick="ShowAddDialog" />
     </MudItem>
 </MudGrid>
 
