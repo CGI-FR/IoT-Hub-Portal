@@ -196,7 +196,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
 
                 if (propertyObject.TryGetValue("version", out var version))
                 {
-                    module.Status = version.Value<string>();
+                    module.Version = version.Value<string>();
                 }
 
                 list.Add(module);
