@@ -251,14 +251,6 @@
             // Allows to display ValidationError messages for the MudAutocomplete field.
             displayValidationErrorMessages = true;
 
-            if (IsLoRa)
-            {
-                var test = Device as LoRaDeviceDetails;
-                Console.WriteLine(test.UseOTAA);
-                var loraValidation = this.loraValidator.Validate(this.Device as LoRaDeviceDetails);
-                loraValidation.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
-            }
-
             return;
         }
 

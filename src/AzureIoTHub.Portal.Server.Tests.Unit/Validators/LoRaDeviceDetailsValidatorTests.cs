@@ -12,7 +12,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
     internal class LoRaDeviceDetailsValidatorTests
     {
         [Test]
-        public void ValidateValidOTAAModel()
+        public void ValidateValidOTAADevice()
         {
 
             // Arrange
@@ -34,7 +34,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
         }
 
         [Test]
-        public void ValidateValidAPBModel()
+        public void ValidateValidAPBDevice()
         {
 
             // Arrange

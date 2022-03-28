@@ -11,7 +11,8 @@ namespace AzureIoTHub.Portal.Client.Validators
         public DeviceModelValidator()
         {
             _ = RuleFor(x => x.Name)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Model name is required.");
         }
     }
 }
