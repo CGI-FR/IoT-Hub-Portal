@@ -35,7 +35,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         private Mock<IDialogService> mockDialogService;
 
         private static string ApiBaseUrl => "/api/models";
-        private static string LorawanApiUrl => "/api/lorawan/models";
+        // private static string LorawanApiUrl => "/api/lorawan/models";
 
         [SetUp]
         public void SetUp()
