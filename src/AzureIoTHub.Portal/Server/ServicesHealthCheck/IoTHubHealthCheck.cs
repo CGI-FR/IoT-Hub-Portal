@@ -26,9 +26,15 @@ namespace AzureIoTHub.Portal.Server.ServicesHealthCheck
         {
             try
             {
-                await ExecuteServiceConnectionCheckAsync(cancellationToken);
+                _ = await this.serviceClient.GetServiceStatisticsAsync(cancellationToken);
 
-                await ExecuteRegistryReadCheckAsync();
+                var query = this.registryManager.CreateQuery("SELECT count() FROM devices");
+
+                if (query == null)
+                {
+                    return new HealthCheckResult(context.Registration.FailureStatus, description: "Something went wrong when the registry manager executed the query.");
+                }
+                _ = await query.GetNextAsJsonAsync();
 
                 return HealthCheckResult.Healthy();
             }
@@ -36,22 +42,6 @@ namespace AzureIoTHub.Portal.Server.ServicesHealthCheck
             {
                 return new HealthCheckResult(context.Registration.FailureStatus, exception: ex);
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        private async Task ExecuteServiceConnectionCheckAsync(CancellationToken cancellationToken)
-        {
-            _ = await this.serviceClient.GetServiceStatisticsAsync(cancellationToken);
-        }
-
-        private async Task ExecuteRegistryReadCheckAsync()
-        {
-            var query = this.registryManager.CreateQuery("SELECT count() FROM devices", 1);
-            _ = await query.GetNextAsJsonAsync();
         }
     }
 }

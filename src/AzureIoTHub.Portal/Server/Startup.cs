@@ -206,6 +206,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddHealthChecks()
                 .AddCheck<IoTHubHealthCheck>("iothubHealth")
                 .AddCheck<StorageAccountHealthCheck>("storageAccountHealth")
+                .AddCheck<TableStorageHealthCheck>("tableStorageHealth")
                 .AddCheck<ProvisioningServiceClientHealthCheck>("dpsHealth")
                 .AddCheck<LoRaManagementKeyFacadeHealthCheck>("loraManagementFacadeHealth");
         }

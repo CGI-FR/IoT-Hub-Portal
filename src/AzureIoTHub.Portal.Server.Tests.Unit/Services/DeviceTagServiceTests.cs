@@ -70,7 +70,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 It.IsAny<int?>(),
                 It.IsAny<IEnumerable<string>>(),
                 It.IsAny<CancellationToken>()))
-                .Returns(Pageable<TableEntity>.FromPages(new[]                {
+                .Returns(Pageable<TableEntity>.FromPages(new[] {
                     Page<TableEntity>.FromValues(new[]
                     {
                         new TableEntity(DeviceTagService.DefaultPartitionKey,tag.Name)

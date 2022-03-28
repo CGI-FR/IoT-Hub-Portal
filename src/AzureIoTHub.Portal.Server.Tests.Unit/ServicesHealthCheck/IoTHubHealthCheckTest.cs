@@ -3,6 +3,8 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.ServicesHealthCheck
 {
+    using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.ServicesHealthCheck;
@@ -41,8 +43,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.ServicesHealthCheck
 
             var mockServiceStat = this.mockRepository.Create<ServiceStatistics>();
             var mockQuery = this.mockRepository.Create<IQuery>();
+
             var healthCheckContext = new HealthCheckContext();
-            var token = new CancellationToken();
+            var token = new CancellationToken(canceled:false);
 
             _ = mockQuery.Setup(c => c.GetNextAsJsonAsync())
                 .ReturnsAsync(new string[]
@@ -56,7 +59,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.ServicesHealthCheck
                 .ReturnsAsync(mockServiceStat.Object);
 
             _ = this.mockRegistryManager
-                .Setup(c => c.CreateQuery(It.Is<string>(x => x == "")))
+                .Setup(c => c.CreateQuery(It.Is<string>(x => x == "SELECT count() FROM devices")))
                 .Returns(mockQuery.Object);
 
             // Act
@@ -64,6 +67,87 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.ServicesHealthCheck
 
             // Assert
             Assert.IsNotNull(result);
+            Assert.AreEqual(HealthStatus.Healthy, result.Status);
+        }
+
+        [Test]
+        public async Task CheckHealthAsyncThrowExceptionReturnUnHealthy()
+        {
+            // Arrange
+            var healthService = CreateHealthCheck();
+
+            var mockServiceStat = this.mockRepository.Create<ServiceStatistics>();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+
+            var healthRegistration = new HealthCheckRegistration(Guid.NewGuid().ToString(), healthService, HealthStatus.Unhealthy, new List<string>());
+
+            var healthCheckContext = new HealthCheckContext()
+            {
+                Registration = healthRegistration
+            };
+            var token = new CancellationToken(canceled:false);
+
+            _ = mockQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ $0: 2}"
+                });
+
+            _ = this.mockServiceClient
+                .Setup(c => c.GetServiceStatisticsAsync(It.IsAny<CancellationToken>()))
+                .Throws(exception: new SystemException("test"));
+
+            _ = this.mockRegistryManager
+                .Setup(c => c.CreateQuery(It.Is<string>(x => x == "SELECT count() FROM devices")))
+                .Returns(mockQuery.Object);
+
+            // Act
+            var result = await healthService.CheckHealthAsync(healthCheckContext, token);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(HealthStatus.Unhealthy, result.Status);
+        }
+
+        [Test]
+        public async Task CheckHealthAsyncWithNullQueryReturnUnHealthy()
+        {
+            // Arrange
+            var healthService = CreateHealthCheck();
+
+            var mockServiceStat = this.mockRepository.Create<ServiceStatistics>();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+
+            var healthRegistration = new HealthCheckRegistration(Guid.NewGuid().ToString(), healthService, HealthStatus.Unhealthy, new List<string>());
+
+            var healthCheckContext = new HealthCheckContext()
+            {
+                Registration = healthRegistration
+            };
+            var token = new CancellationToken(canceled:false);
+
+            _ = mockQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ $0: 2}"
+                });
+
+            _ = this.mockServiceClient
+                .Setup(c => c.GetServiceStatisticsAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockServiceStat.Object);
+
+            _ = this.mockRegistryManager
+                .Setup(c => c.CreateQuery(It.Is<string>(x => x == "SELECT count() FROM devices")))
+                .Returns(value: null);
+
+            // Act
+            var result = await healthService.CheckHealthAsync(healthCheckContext, token);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(HealthStatus.Unhealthy, result.Status);
         }
     }
 }

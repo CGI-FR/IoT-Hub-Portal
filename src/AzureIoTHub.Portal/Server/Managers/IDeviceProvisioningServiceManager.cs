@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Managers
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Provisioning.Service;
@@ -38,5 +39,7 @@ namespace AzureIoTHub.Portal.Server.Managers
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="deviceType">The device type.</param>
         Task<EnrollmentCredentials> GetEnrollmentCredentialsAsync(string deviceId, string deviceType);
+
+        Task DeleteEnrollmentGroupAsync(EnrollmentGroup enrollmentGroup, CancellationToken cancellationToken);
     }
 }

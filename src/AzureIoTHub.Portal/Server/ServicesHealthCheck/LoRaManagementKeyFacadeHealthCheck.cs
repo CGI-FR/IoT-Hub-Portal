@@ -22,7 +22,7 @@ namespace AzureIoTHub.Portal.Server.ServicesHealthCheck
         {
             try
             {
-                var result  = await this.loraDeviceMethodManager.CheckAzureFunctionReturn();
+                var result  = await this.loraDeviceMethodManager.CheckAzureFunctionReturn(cancellationToken);
 
                 _ = result.EnsureSuccessStatusCode();
 

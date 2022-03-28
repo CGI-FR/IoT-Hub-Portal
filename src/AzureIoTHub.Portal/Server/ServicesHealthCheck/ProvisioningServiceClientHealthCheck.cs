@@ -7,14 +7,15 @@ namespace AzureIoTHub.Portal.Server.ServicesHealthCheck
     using System.Security.Cryptography;
     using System.Threading;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Server.Wrappers;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
 
     public class ProvisioningServiceClientHealthCheck : IHealthCheck
     {
-        private readonly ProvisioningServiceClient provisioningServiceClient;
+        private readonly IProvisioningServiceClient provisioningServiceClient;
 
-        public ProvisioningServiceClientHealthCheck(ProvisioningServiceClient provisioningServiceClient)
+        public ProvisioningServiceClientHealthCheck(IProvisioningServiceClient provisioningServiceClient)
         {
             this.provisioningServiceClient = provisioningServiceClient;
         }
@@ -27,8 +28,8 @@ namespace AzureIoTHub.Portal.Server.ServicesHealthCheck
                 var attestation = new SymmetricKeyAttestation(GenerateKey(), GenerateKey());
                 var enrollmentGroup = new EnrollmentGroup(enrollemntId, attestation);
 
-                await ExecuteDPSWriteCheckAsync(enrollmentGroup, cancellationToken);
-                await ExecuteDPSReadCheck(enrollmentGroup, cancellationToken);
+                await ExecuteDPSWriteCheckAsync(enrollmentGroup);
+                await ExecuteDPSReadCheck(enrollmentGroup);
 
                 await this.provisioningServiceClient.DeleteEnrollmentGroupAsync(enrollmentGroup, cancellationToken);
 
@@ -40,14 +41,14 @@ namespace AzureIoTHub.Portal.Server.ServicesHealthCheck
             }
         }
 
-        private async Task ExecuteDPSWriteCheckAsync(EnrollmentGroup enrollmentGroup, CancellationToken cancellationToken)
+        private async Task ExecuteDPSWriteCheckAsync(EnrollmentGroup enrollmentGroup)
         {
-            _ = await this.provisioningServiceClient.CreateOrUpdateEnrollmentGroupAsync(enrollmentGroup, cancellationToken);
+            _ = await this.provisioningServiceClient.CreateOrUpdateEnrollmentGroupAsync(enrollmentGroup);
         }
 
-        private async Task ExecuteDPSReadCheck(EnrollmentGroup enrollmentGroup, CancellationToken cancellationToken)
+        private async Task ExecuteDPSReadCheck(EnrollmentGroup enrollmentGroup)
         {
-            _ = await this.provisioningServiceClient.GetEnrollmentGroupAsync(enrollmentGroup.EnrollmentGroupId, cancellationToken);
+            _ = await this.provisioningServiceClient.GetEnrollmentGroupAsync(enrollmentGroup.EnrollmentGroupId);
         }
 
         private static string GenerateKey()

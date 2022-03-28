@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Server.ServicesHealthCheck
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using Azure.Data.Tables;
     using Azure.Storage.Blobs;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
 
@@ -26,10 +25,6 @@ namespace AzureIoTHub.Portal.Server.ServicesHealthCheck
         {
             try
             {
-                await foreach (var page in this.blobServiceClient.GetBlobContainersAsync(cancellationToken: cancellationToken).AsPages(pageSizeHint: 1))
-                {
-                    break;
-                }
 
                 if (this.configHandler.StorageAccountBlobContainerName != null)
                 {
@@ -43,10 +38,6 @@ namespace AzureIoTHub.Portal.Server.ServicesHealthCheck
                     _ = await containerClient.GetPropertiesAsync(cancellationToken: cancellationToken);
                 }
 
-                var tableClient = new TableClient(this.configHandler.StorageAccountConnectionString, "tableHealthCheck");
-
-                await ExecuteTableEntityWriteCheck(tableClient, cancellationToken: cancellationToken);
-
                 return HealthCheckResult.Healthy();
             }
             catch (Exception ex)
@@ -54,21 +45,5 @@ namespace AzureIoTHub.Portal.Server.ServicesHealthCheck
                 return new HealthCheckResult(context.Registration.FailureStatus, exception: ex);
             }
         }
-
-        private async Task ExecuteTableEntityWriteCheck(TableClient tableClient, CancellationToken cancellationToken)
-        {
-            _ = await tableClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-            var partitionKey = "0";
-            var rowKey = "1";
-            var entity = new TableEntity(partitionKey,rowKey)
-            {
-                {"key","value" }
-            };
-
-            _ = await tableClient.AddEntityAsync(entity, cancellationToken: cancellationToken);
-            _ = await tableClient.DeleteEntityAsync(partitionKey, rowKey, cancellationToken: cancellationToken);
-            _ = await tableClient.DeleteAsync(cancellationToken: cancellationToken);
-        }
-
     }
 }

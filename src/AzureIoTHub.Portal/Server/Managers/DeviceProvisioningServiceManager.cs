@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
+    using System.Threading;
 
     public class DeviceProvisioningServiceManager : IDeviceProvisioningServiceManager
     {
@@ -72,6 +73,11 @@ namespace AzureIoTHub.Portal.Server.Managers
             enrollmentGroup.Capabilities.IotEdge = iotEdge;
 
             return await this.dps.CreateOrUpdateEnrollmentGroupAsync(enrollmentGroup);
+        }
+
+        public async Task DeleteEnrollmentGroupAsync(EnrollmentGroup enrollmentGroup, CancellationToken cancellationToken = default)
+        {
+            await this.dps.DeleteEnrollmentGroupAsync(enrollmentGroup, cancellationToken);
         }
 
         /// <summary>
