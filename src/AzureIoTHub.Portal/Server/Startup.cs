@@ -18,6 +18,7 @@ namespace AzureIoTHub.Portal.Server
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Server.ServicesHealthCheck;
     using AzureIoTHub.Portal.Server.Wrappers;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -202,7 +203,12 @@ namespace AzureIoTHub.Portal.Server
             var mapper = mapperConfig.CreateMapper();
             _ = services.AddSingleton(mapper);
 
-            _ = services.AddHealthChecks();
+            _ = services.AddHealthChecks()
+                .AddCheck<IoTHubHealthCheck>("iothubHealth")
+                .AddCheck<StorageAccountHealthCheck>("storageAccountHealth")
+                .AddCheck<TableStorageHealthCheck>("tableStorageHealth")
+                .AddCheck<ProvisioningServiceClientHealthCheck>("dpsHealth")
+                .AddCheck<LoRaManagementKeyFacadeHealthCheck>("loraManagementFacadeHealth");
         }
 
         /// <summary>

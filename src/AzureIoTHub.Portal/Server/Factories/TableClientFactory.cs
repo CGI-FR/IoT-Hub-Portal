@@ -42,5 +42,10 @@ namespace AzureIoTHub.Portal.Server.Factories
         {
             return CreateClient(ITableClientFactory.DeviceTemplatePropertiesTableName);
         }
+
+        public TableClient GetTemplatesHealthCheck()
+        {
+            return CreateClient("tableHealthCheck");
+        }
     }
 }

@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
@@ -34,6 +35,11 @@ namespace AzureIoTHub.Portal.Server.Managers
             commandContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
             return await this.httpClient.PostAsync(new Uri($"api/cloudtodevicemessage/{deviceId}"), commandContent);
+        }
+
+        public async Task<HttpResponseMessage> CheckAzureFunctionReturn(CancellationToken cancellationToken)
+        {
+            return await this.httpClient.GetAsync("", cancellationToken);
         }
     }
 }

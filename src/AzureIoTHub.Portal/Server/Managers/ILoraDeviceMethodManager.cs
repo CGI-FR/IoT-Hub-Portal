@@ -4,11 +4,13 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using System.Net.Http;
+    using System.Threading;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
     public interface ILoraDeviceMethodManager
     {
         Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommand command);
+        Task<HttpResponseMessage> CheckAzureFunctionReturn(CancellationToken cancellationToken);
     }
 }
