@@ -105,7 +105,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
-        public async Task RolloutDeviceConfigurationStateUnderTestExpectedBehavior(string deviceType, string configurationPrefix)
+        public async Task RolloutDeviceConfigurationStateUnderTestExpectedBehavior(string modelId, string configurationPrefix)
         {
             // Arrange
             var configsServices = CreateConfigsServices();
@@ -114,8 +114,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 { "prop1", "value1" }
             };
             Configuration newConfiguration = null;
-            var modelId = Guid.NewGuid().ToString();
-
             _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.IsAny<int>()))
                 .ReturnsAsync(Array.Empty<Configuration>());
 
@@ -124,7 +122,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 .ReturnsAsync((Configuration conf) => conf);
 
             // Act
-            await configsServices.RolloutDeviceConfiguration(modelId, deviceType, desiredProperties);
+            await configsServices.RolloutDeviceConfiguration(modelId, desiredProperties);
 
             // Assert
             Assert.IsNotNull(newConfiguration);
@@ -153,7 +151,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             };
             Configuration newConfiguration;
             var suffix = Guid.NewGuid().ToString();
-            var modelId = Guid.NewGuid().ToString();
 
             _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.IsAny<int>()))
                 .ReturnsAsync(new Configuration[]
@@ -170,7 +167,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 .Returns(Task.CompletedTask);
 
             // Act
-            await configsServices.RolloutDeviceConfiguration(modelId, deviceType, desirectProperties);
+            await configsServices.RolloutDeviceConfiguration(deviceType, desirectProperties);
 
             // Assert
             this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());

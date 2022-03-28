@@ -347,7 +347,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             _ = this.mockConfigService.Setup(c => c.RolloutDeviceConfiguration(
                 It.Is<string>(x => x == requestModel.ModelId),
-                It.Is<string>(x => x == requestModel.Name),
                 It.IsAny<Dictionary<string, object>>()))
                 .Returns(Task.CompletedTask);
 
@@ -402,7 +401,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             _ = this.mockConfigService.Setup(c => c.RolloutDeviceConfiguration(
                 It.Is<string>(x => x == requestModel.ModelId),
-                It.Is<string>(x => x == requestModel.Name),
                 It.IsAny<Dictionary<string, object>>()))
                 .Returns(Task.CompletedTask);
 
@@ -478,7 +476,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             _ = this.mockConfigService.Setup(c => c.RolloutDeviceConfiguration(
                 It.Is<string>(x => x == requestModel.ModelId),
-                It.Is<string>(x => x == requestModel.Name),
                 It.IsAny<Dictionary<string, object>>()))
                 .Returns(Task.CompletedTask);
 

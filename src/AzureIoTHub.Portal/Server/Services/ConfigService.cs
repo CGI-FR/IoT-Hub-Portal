@@ -38,12 +38,12 @@ namespace AzureIoTHub.Portal.Server.Services
             return this.registryManager.GetConfigurationAsync(id);
         }
 
-        public async Task RolloutDeviceConfiguration(string modelId, string modelName, Dictionary<string, object> desiredProperties)
+        public async Task RolloutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
 #pragma warning disable CA1308 // Normalize strings to uppercase
-            var configurationNamePrefix = modelName?.Trim()
+            var configurationNamePrefix = modelId?.Trim()
                                                 .ToLowerInvariant()
                                                 .Replace(" ", "-", StringComparison.OrdinalIgnoreCase);
 #pragma warning restore CA1308 // Normalize strings to uppercase
