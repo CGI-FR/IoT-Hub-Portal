@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Tests.Unit.ServicesHealthCheck
 {
     using System;
+    using System.Collections.Generic;
     using System.Security.Cryptography;
     using System.Threading;
     using System.Threading.Tasks;
@@ -33,13 +34,48 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.ServicesHealthCheck
             return new ProvisioningServiceClientHealthCheck(this.mockDps.Object);
         }
 
+        //[Test]
+        //public async Task CheckHealthAsyncStateUnderTestReturnHealthy()
+        //{
+        //    // Arrange
+        //    var healthService = CreateHealthService();
+
+        //    var healthCheckContext = new HealthCheckContext();
+        //    var token = new CancellationToken(canceled:false);
+
+        //    var attestation = new SymmetricKeyAttestation(GenerateKey(), GenerateKey());
+        //    var enrollmentGroup = new EnrollmentGroup("enrollmentId", attestation);
+
+        //    _ = this.mockDps
+        //        .Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(It.IsAny<EnrollmentGroup>()))
+        //        .ReturnsAsync(enrollmentGroup);
+
+        //    _ = this.mockDps
+        //        .Setup(c => c.GetEnrollmentGroupAsync(It.IsAny<string>()))
+        //        .ReturnsAsync(enrollmentGroup);
+
+        //    _ = this.mockDps
+        //        .Setup(c => c.DeleteEnrollmentGroupAsync(It.IsAny<EnrollmentGroup>(), It.IsAny<CancellationToken>()));
+
+        //    // Act
+        //    var result = await healthService.CheckHealthAsync(healthCheckContext, token);
+
+        //    // Assert
+        //    Assert.IsNotNull(result);
+        //    Assert.AreEqual(HealthStatus.Healthy, result.Status);
+        //}
+
         [Test]
-        public async Task CheckHealthAsyncStateUnderTestReturnHealthy()
+        public async Task CheckHealthAsyncStateUnderTestReturnUnhealthy()
         {
             // Arrange
             var healthService = CreateHealthService();
 
-            var healthCheckContext = new HealthCheckContext();
+            var healthRegistration = new HealthCheckRegistration(Guid.NewGuid().ToString(), healthService, HealthStatus.Unhealthy, new List<string>());
+            var healthCheckContext = new HealthCheckContext()
+            {
+                Registration = healthRegistration
+            };
             var token = new CancellationToken(canceled:false);
 
             var attestation = new SymmetricKeyAttestation(GenerateKey(), GenerateKey());
@@ -47,7 +83,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.ServicesHealthCheck
 
             _ = this.mockDps
                 .Setup(c => c.CreateOrUpdateEnrollmentGroupAsync(It.IsAny<EnrollmentGroup>()))
-                .ReturnsAsync(enrollmentGroup);
+                .Throws(new Exception());
 
             _ = this.mockDps
                 .Setup(c => c.GetEnrollmentGroupAsync(It.IsAny<string>()))
@@ -61,7 +97,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.ServicesHealthCheck
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(HealthStatus.Healthy, result.Status);
+            Assert.AreEqual(HealthStatus.Unhealthy, result.Status);
         }
 
         private static string GenerateKey()
