@@ -217,6 +217,14 @@ else
         {
             Snackbar.Add($"Device {Gateway.DeviceId} has been successfully updated!", Severity.Success);
         }
+        else if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            Snackbar.Add("One or more validation errors occurred", Severity.Error);
+        }
+        else
+        {
+            Snackbar.Add("Something unexpected occurred", Severity.Warning);
+        }
 
         processingUpdate = false;
     }
