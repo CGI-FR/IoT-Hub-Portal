@@ -1,5 +1,6 @@
 ﻿@page "/lorawan/concentrators/{DeviceID}"
 @using System.Text.Json;
+@using AzureIoTHub.Portal.Client.Validators
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
@@ -14,94 +15,102 @@
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">LoRaWAN Concentrator</MudText>
 
-<MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
-    <MudTabPanel Text="General">
-        <MudGrid>
-            <MudItem xs="12" sm="4" md="3">
-                <MudCard>
-                    <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudText Align="Align.Center" Typo="Typo.h5">@concentrator.DeviceId</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderAvatar>
-                            @if (concentrator.IsConnected)
-                            {
-                                <MudTooltip>
-                                    <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
-                                </MudTooltip>
-                            }
-                            else
-                            {
-                                <MudTooltip>
-                                    <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
-                                </MudTooltip>
-                            }
-                        </CardHeaderAvatar>
-                    </MudCardHeader>
-                    <MudCardContent>
-
-                    </MudCardContent>
-                </MudCard>
+<MudForm Model="@concentrator" @ref="form">
+    <MudGrid>
+        <MudItem xs="12" sm="4" md="3">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center">@(string.IsNullOrEmpty(concentrator.DeviceName) ? concentrator.DeviceId : concentrator.DeviceName)</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderAvatar>
+                        @if (concentrator.IsConnected)
+                        {
+                            <MudTooltip>
+                                <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
+                            </MudTooltip>
+                        }
+                        else
+                        {
+                            <MudTooltip>
+                                <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
+                            </MudTooltip>
+                        }
+                    </CardHeaderAvatar>
+                </MudCardHeader>
+            </MudCard>
+            <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice">Delete device</MudButton>
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="SaveDevice">Save Changes</MudButton>
             </MudItem>
-            <MudItem xs="12" sm="8" md="9">
-                <MudCard>
-                    <EditForm Model="@concentrator" OnValidSubmit="SaveDevice">
-                        <DataAnnotationsValidator />
-                        <MudCardHeader>
-                            <CardHeaderContent>
-                                <MudText>Device Details</MudText>
-                            </CardHeaderContent>
-                        </MudCardHeader>
-                        <MudCardContent>
-                            <MudGrid>
-                                <MudItem xs="12">
-                                    <MudTextField @bind-Value="@concentrator.DeviceName" Label="Device name" Variant="Variant.Outlined" Required="true" />
-                                </MudItem>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="@concentrator.ClientCertificateThumbprint" Label="Client Certificate Thumbprint" Variant="Variant.Outlined" />
-                                </MudItem>
-
-                                <MudItem xs="12" md="6">
-                                    <MudSelect T="string" Label="Region" Variant="Variant.Outlined" @bind-Value="@concentrator.LoraRegion" Required="true">
-                                        <MudSelectItem Value="@("EU863")" />
-                                        <MudSelectItem Value="@("US902")" />
-                                        <MudSelectItem Value="@("CN470RP1")" />
-                                        <MudSelectItem Value="@("CN470RP2")" />
-                                    </MudSelect>
-                                </MudItem>
-
-                                <MudItem xs="12">
-                                    <MudText>
-                                        <b>Status</b>
-                                    </MudText>
-                                    <MudSwitch @bind-Checked="@concentrator.IsEnabled" Color="Color.Secondary" />
-                                    @if (concentrator.IsEnabled)
-                                    {
-                                        <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
-                                    }
-                                    else
-                                    {
-                                        <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
-                                    }
-                                </MudItem>
-                            </MudGrid>
-                        </MudCardContent>
-                        <MudCardActions Class="pb-4 pl-4">
-                            <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="DeleteDevice">Delete Device</MudButton>
-                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-4">Save Changes</MudButton>
-                        </MudCardActions>
-                    </EditForm>
-                </MudCard>
-            </MudItem>
-        </MudGrid>
-    </MudTabPanel>
-</MudTabs>
+        </MudItem>
+        <MudItem xs="12" sm="8" md="9">
+            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
+                <MudTabPanel Text="General">
+                    <MudExpansionPanels MultiExpansion="true">
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudGrid>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField @bind-Value="@concentrator.DeviceId"
+                                                              Label="Device ID"
+                                                              Variant="Variant.Outlined"
+                                                              Required="true"
+                                                              ReadOnly="true" />
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField @bind-Value="@concentrator.DeviceName"
+                                                              Label="Device name"
+                                                              Variant="Variant.Outlined"
+                                                              Required="true" />
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField @bind-Value="@concentrator.ClientCertificateThumbprint" Label="Client Certificate Thumbprint" Variant="Variant.Outlined" />
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudSelect T="string" Label="Region" Variant="Variant.Outlined" @bind-Value="@concentrator.LoraRegion" Required="true">
+                                                    <MudSelectItem Value="@("EU863")" />
+                                                    <MudSelectItem Value="@("US902")" />
+                                                    <MudSelectItem Value="@("CN470RP1")" />
+                                                    <MudSelectItem Value="@("CN470RP2")" />
+                                                </MudSelect>
+                                            </MudItem>
+                                            <MudItem xs="12">
+                                                <MudText>
+                                                    <b>Status</b>
+                                                </MudText>
+                                                <MudSwitch @bind-Checked="@concentrator.IsEnabled" Color="Color.Secondary" />
+                                                @if (concentrator.IsEnabled)
+                                                {
+                                                    <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
+                                                }
+                                                else
+                                                {
+                                                    <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
+                                                }
+                                            </MudItem>
+                                        </MudGrid>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                    </MudExpansionPanels>
+                </MudTabPanel>
+            </MudTabs>
+        </MudItem>
+    </MudGrid>
+</MudForm>
 
 @code {
     [Parameter]
     public string DeviceID { get; set; }
 
     private Concentrator concentrator { get; set; } = new Concentrator();
+    private MudForm form;
+    private ConcentratorValidator concentratorValidator = new ConcentratorValidator();
 
     protected override async Task OnInitializedAsync()
     {
@@ -121,23 +130,24 @@
     /// </summary>
     public async void SaveDevice()
     {
+
+        await form.Validate();
+        if (!this.concentratorValidator.Validate(this.concentrator).IsValid)
+        {
+            //string errorMsg = await result.Content.ReadAsStringAsync();
+            Snackbar.Add($"One or more validation errors occurred", Severity.Error);
+            return;
+        }
+
         var result = await Http.PutAsJsonAsync<Concentrator>($"api/lorawan/concentrators", concentrator);
 
-        if (result.IsSuccessStatusCode)
-        {
-            // Prompts a snack bar to inform the action was successful
-            Snackbar.Add($"Device {concentrator.DeviceId} has been successfully updated!", Severity.Success);
+        result.EnsureSuccessStatusCode();
 
-            // Go back to the list of device
-            NavManager.NavigateTo("lorawan/concentrators");
-        }
+        // Prompts a snack bar to inform the action was successful
+        Snackbar.Add($"Device {concentrator.DeviceId} has been successfully updated!", Severity.Success);
 
-        // TODO : Deal more effectively with different error messages
-        else
-        {
-            string errorMsg = await result.Content.ReadAsStringAsync();
-            Snackbar.Add($"Oh oh, something went wrong while updating device {concentrator.DeviceId}... <br> {errorMsg}", Severity.Error);
-        }
+        // Go back to the list of device
+        NavManager.NavigateTo("lorawan/concentrators");
     }
 
     /// <summary>
