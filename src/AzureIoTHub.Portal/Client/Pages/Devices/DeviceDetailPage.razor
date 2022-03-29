@@ -7,6 +7,7 @@
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Client.Pages.DeviceModels
 
 @attribute [Authorize]
 @inject HttpClient Http
@@ -36,6 +37,9 @@
                     }
                 </MudCardActions>
             </MudCard>
+             <MudItem xs="12" md="6">
+                    <MudTextField id="@nameof(DeviceModel.Name)" @bind-Value="@DeviceModel.Name" For="@(() =>DeviceModel.Name)" Label="Model name" Variant="Variant.Text" />
+            </MudItem>
             <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
                 <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice">Delete device</MudButton>
                 <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save">Save Changes</MudButton>
@@ -207,10 +211,10 @@
 
     private DeviceDetails Device { get; set; } = new DeviceDetails();
 
+    private DeviceModel DeviceModel { get;set; } = new DeviceModel();
+
     private bool isLoaded = false;
-
-    private IEnumerable<DeviceModel> DeviceModelList { get; set; } = Array.Empty<DeviceModel>();
-
+    
     private IEnumerable<DeviceModelCommand> Commands { get; set; }
 
     private IEnumerable<DeviceTag> TagList { get; set; } = Array.Empty<DeviceTag>();
@@ -223,11 +227,13 @@
         {
             Device = await Http.GetFromJsonAsync<LoRaDeviceDetails>($"{ApiUrlBase}/{DeviceID}");
             Commands = await Http.GetFromJsonAsync<DeviceModelCommand[]>($"/api/lorawan/models/{Device.ModelId}/commands");
+            DeviceModel = await Http.GetFromJsonAsync<DeviceModel>($"api/lorawan/models/{Device.ModelId}");
         }
         else
         {
             Device = await Http.GetFromJsonAsync<DeviceDetails>($"{ApiUrlBase}/{DeviceID}");
             Properties = await Http.GetFromJsonAsync<List<DevicePropertyValue>>($"{ApiUrlBase}/{DeviceID}/properties");
+            DeviceModel = await Http.GetFromJsonAsync<DeviceModel>($"api/models/{Device.ModelId}");
         }
 
         TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
@@ -279,25 +285,6 @@
         // Go back to the list of devices
         NavManager.NavigateTo("devices");
     }
-
-    /// <summary>
-    /// Allows to autocomplete the Device Model field in the form.
-    /// </summary>
-    /// <param name="value">Text entered in the field</param>
-    /// <returns>Item of the device model list that matches the user's value</returns>
-    private async Task<IEnumerable<DeviceModel>> Search(string value)
-    {
-        // In real life use an asynchronous function for fetching data from an api.
-        await Task.Delay(0);
-
-        // if text is null or empty, show complete list
-        if (string.IsNullOrEmpty(value))
-            return DeviceModelList;
-
-        return DeviceModelList
-                    .Where(x => x.Name.StartsWith(value, StringComparison.InvariantCultureIgnoreCase));
-    }
-
     public void ShowConnectionString()
     {
         var parameters = new DialogParameters();
