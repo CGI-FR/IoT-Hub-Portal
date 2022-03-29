@@ -10,13 +10,14 @@
                         <MudItem xs="12">
                             <MudGrid>
                                 <MudItem md="6" xs="12">
-                                    <MudSwitch id="@nameof(LoRaDeviceModel.UseOTAA)" @bind-Checked="@LoRaDeviceModel.UseOTAA" Color="Color.Primary">@(LoRaDeviceModel.UseOTAA ? "OTAA setting enable" : "APB setting enable")</MudSwitch>
+                                    <MudSwitch id="@nameof(LoRaDeviceModel.UseOTAA)" @bind-Checked="@LoRaDeviceModel.UseOTAA" Color="Color.Primary">@(LoRaDeviceModel.UseOTAA ? "OTAA setting enabled" : "APB setting enabled")</MudSwitch>
                                 </MudItem>
                                 @if (!LoRaDeviceModel.UseOTAA)
                                 {
                                     <MudItem md="6" xs="12">
-                                        <MudSwitch id="@nameof(LoRaDeviceModel.ABPRelaxMode)" @bind-Checked="@LoRaDeviceModel.ABPRelaxMode" For="@(() => LoRaDeviceModel.ABPRelaxMode)" Label="Disable ABP relax mode" Color="Color.Primary"></MudSwitch>
+                                        <MudCheckBox id="@nameof(LoRaDeviceModel.ABPRelaxMode)" @bind-Checked="@LoRaDeviceModel.ABPRelaxMode" For="@(() => LoRaDeviceModel.ABPRelaxMode)" Label="Disable ABP relax mode" Color="Color.Primary"></MudCheckBox>
                                     </MudItem>
+
                                 }
                                 <MudItem md="3" xs="6">
                                     <MudSelect id="@nameof(LoRaDeviceModel.ClassType)"
@@ -100,7 +101,7 @@
                             <MudText Typo=Typo.h5 Class="mb-4">Frame Counters</MudText>
                             <MudGrid>
                                 <MudItem xs="12">
-                                    <MudSwitch id="@nameof(LoRaDeviceModel.Supports32BitFCnt)" @bind-Checked="@LoRaDeviceModel.Supports32BitFCnt" For="@(() => LoRaDeviceModel.Supports32BitFCnt)" Label="32bit counter support" Color="Color.Primary" Variant="Variant.Outlined"></MudSwitch>
+                                    <MudCheckBox id="@nameof(LoRaDeviceModel.Supports32BitFCnt)" @bind-Checked="@LoRaDeviceModel.Supports32BitFCnt" For="@(() => LoRaDeviceModel.Supports32BitFCnt)" Label="32bit counter support" Color="Color.Primary"></MudCheckBox>
                                 </MudItem>
                                 <MudItem xs="12" md="6">
                                     <MudNumericField id="@nameof(LoRaDeviceModel.FCntUpStart)" @bind-Value="@LoRaDeviceModel.FCntUpStart" For="@(() => LoRaDeviceModel.FCntUpStart)" Min=0 Label="Frame counter up start value" Variant="Variant.Outlined"></MudNumericField>

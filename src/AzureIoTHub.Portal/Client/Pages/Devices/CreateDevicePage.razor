@@ -80,15 +80,16 @@
                                                 <MudText>
                                                     <b>Status</b>
                                                 </MudText>
-                                                <MudSwitch @bind-Checked="@Device.IsEnabled" Color="Color.Secondary" />
-                                                @if (Device.IsEnabled)
-                                                {
-                                                    <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
-                                                }
-                                                else
-                                                {
-                                                    <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
-                                                }
+                                                <MudRadioGroup @bind-SelectedOption="@Device.IsEnabled">
+                                                    <MudRadio Option=@(true) Color="Color.Primary">
+                                                        Enabled
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
+                                                    </MudRadio>
+                                                    <MudRadio Option=@(false) Color="Color.Primary">
+                                                        Disabled
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
+                                                    </MudRadio>
+                                                </MudRadioGroup>
                                             </MudItem>
                                         </MudGrid>
                                     </ChildContent>
@@ -98,7 +99,7 @@
                         <MudGrid>
                             <MudItem xs="12">
                                 <MudExpansionPanel Text="Tags">
-                                    <TitleContent><MudText Typo="Typo.h6"  Style=@(CheckTagsError() ? "color: red" : "")>Tags</MudText></TitleContent>
+                                    <TitleContent><MudText Typo="Typo.h6" Style=@(CheckTagsError() ? "color: red" : "")>Tags</MudText></TitleContent>
                                     <ChildContent>
                                         <MudGrid>
                                             @foreach (DeviceTag tag in TagList)
@@ -185,7 +186,7 @@
                 @if (IsLoRa)
                 {
                     <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Device as LoRaDeviceDetails).IsValid ? "" : "color: red")>
-                            <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" loraModel="@(loRaDeviceModel)" LoraValidator="@(loraValidator)" />
+                        <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" loraModel="@(loRaDeviceModel)" LoraValidator="@(loraValidator)" />
                     </MudTabPanel>
                 }
             </MudTabs>

@@ -80,19 +80,19 @@ else
                                                     </MudSelect>
                                                 </MudItem>
                                                 <MudItem xs="12" md="6">
-                                                    <MudText>
-                                                        <b>Status</b>
-                                                    </MudText>
-                                                    <MudSwitch @bind-Checked="Gateway.Status" Color="Color.Secondary" Converter="@(new CustomStringToBoolConverter())">
-                                                        @if (Gateway.Status == "Enabled")
-                                                        {
-                                                        <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
-                                                        }
-                                                        else
-                                                        {
-                                                        <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
-                                                        }
-                                                </MudSwitch>
+                                                <MudText>
+                                                    <b>Status</b>
+                                                </MudText>
+                                                <MudRadioGroup @bind-SelectedOption="@Gateway.Status">
+                                                    <MudRadio Option=@("Enabled") Color="Color.Primary">
+                                                        Enabled
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
+                                                    </MudRadio>
+                                                    <MudRadio Option=@("Disabled") Color="Color.Primary">
+                                                        Disabled
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
+                                                    </MudRadio>
+                                                </MudRadioGroup>
                                             </MudItem>
 
                                             <MudItem xs="12" md="6">
@@ -280,43 +280,5 @@ else
         }
 
         NavigationManager.NavigateTo("/edge/devices");
-    }
-
-    public class CustomStringToBoolConverter : BoolConverter<string>
-    {
-
-        public CustomStringToBoolConverter()
-        {
-            SetFunc = OnSet;
-            GetFunc = OnGet;
-        }
-
-        private string TrueString = "Enabled";
-        private string FalseString = "Disabled";
-
-        private string OnGet(bool? value)
-        {
-            return (value == true) ? TrueString : FalseString;
-        }
-
-        private bool? OnSet(string arg)
-        {
-            if (arg == null)
-                return null;
-            try
-            {
-                if (arg == TrueString)
-                    return true;
-                if (arg == FalseString)
-                    return false;
-                else
-                    return null;
-            }
-            catch (FormatException e)
-            {
-                UpdateSetError("Conversion error: " + e.Message);
-                return null;
-            }
-        }
     }
 }

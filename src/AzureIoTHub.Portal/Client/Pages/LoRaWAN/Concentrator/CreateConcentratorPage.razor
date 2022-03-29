@@ -63,15 +63,16 @@
                                                 <MudText>
                                                     <b>Status</b>
                                                 </MudText>
-                                                <MudSwitch @bind-Checked="@concentrator.IsEnabled" Color="Color.Secondary" />
-                                                @if (concentrator.IsEnabled)
-                                                {
-                                                    <MudText Typo="Typo.body2">The device <b>can</b> connect to the platform.</MudText>
-                                                }
-                                                else
-                                                {
-                                                    <MudText Typo="Typo.body2">The device <b>cannot</b> connect to the platform.</MudText>
-                                                }
+                                                <MudRadioGroup @bind-SelectedOption="@concentrator.IsEnabled">
+                                                    <MudRadio Option=@(true) Color="Color.Primary">
+                                                        Enabled
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
+                                                    </MudRadio>
+                                                    <MudRadio Option=@(false) Color="Color.Primary">
+                                                        Disabled
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
+                                                    </MudRadio>
+                                                </MudRadioGroup>
                                             </MudItem>
                                         </MudGrid>
                                     </ChildContent>
@@ -103,7 +104,7 @@
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
             return;
         }
-        
+
         concentrator.DeviceType = "LoRa Concentrator";
 
         // Sends the device to be added to the controller
