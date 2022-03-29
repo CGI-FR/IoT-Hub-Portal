@@ -1,5 +1,6 @@
 ﻿@page "/lorawan/concentrators/new"
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
+@using AzureIoTHub.Portal.Client.Validators
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
@@ -10,7 +11,7 @@
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">LoRaWAN Concentrator</MudText>
 
-<MudForm Model="@concentrator">
+<MudForm Model="@concentrator" @ref="form">
     <MudGrid>
         <MudItem xs="12" sm="4" md="3">
             <MudCard>
@@ -87,27 +88,33 @@
 
 @code {
     private Concentrator concentrator = new Concentrator();
+    private MudForm form;
+    private ConcentratorValidator concentratorValidator = new ConcentratorValidator();
 
     /// <summary>
     /// Sends a POST request to the ConcentratorsController, to add the new device lora concentrator to the Azure IoT Hub
     /// </summary>
     public async void SaveDevice()
     {
-        concentrator.DeviceType = "LoRa Concentrator";
-        // Sends the device to be added to the controller
-        var response = await Http.PostAsJsonAsync<Concentrator>($"api/lorawan/concentrators", concentrator);
-
-        if (response.IsSuccessStatusCode)
-        {
-            // Prompts a snack bar to inform the action was successful
-            Snackbar.Add($"Device {concentrator.DeviceId} has been successfully created!", Severity.Success);
-
-            NavManager.NavigateTo("lorawan/concentrators");
-        }
-        else
+        await form.Validate();
+        if (!this.concentratorValidator.Validate(this.concentrator).IsValid)
         {
             // string errorMsg = await response.Content.ReadAsStringAsync();
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
+            return;
         }
+        
+        concentrator.DeviceType = "LoRa Concentrator";
+
+        // Sends the device to be added to the controller
+        var response = await Http.PostAsJsonAsync<Concentrator>($"api/lorawan/concentrators", concentrator);
+
+        response.EnsureSuccessStatusCode();
+
+        // Prompts a snack bar to inform the action was successful
+        Snackbar.Add($"Device {concentrator.DeviceId} has been successfully created!", Severity.Success);
+
+        // Go back to the list of concentrator
+        NavManager.NavigateTo("lorawan/concentrators");
     }
 }
