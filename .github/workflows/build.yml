@@ -75,7 +75,7 @@ jobs:
         with: 
           ref: 'docs/main'
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: '14'
         
