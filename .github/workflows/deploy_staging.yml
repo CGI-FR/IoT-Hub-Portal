@@ -48,7 +48,7 @@ jobs:
             ${{ env.registry_name }}/${{ github.repository_owner }}/${{ env.image_name }}
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=sha,enable=true,priority=100,prefix=sha-,suffix=,format=short
+            type=raw,enable=true,priority=200,prefix=,suffix=,value=1.0.0
           flavor: |
             latest=true
 
@@ -60,6 +60,9 @@ jobs:
           context: src/
           # Push is a shorthand for --output=type=registry
           push: true
+          build-args: | 
+            BUILD_VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            GITHUB_RUN_NUMBER=${{ github.run_number }}
           tags: 
             ${{ steps.meta.outputs.tags }}
 

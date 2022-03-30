@@ -65,5 +65,6 @@ jobs:
           push: true
           build-args: | 
             BUILD_VERSION=${{ steps.meta.outputs.tags[0] }}
+            GITHUB_RUN_NUMBER =${ github.run_number }
           tags: 
             ${{ steps.meta.outputs.tags }}
