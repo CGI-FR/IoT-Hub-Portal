@@ -64,6 +64,7 @@ jobs:
           # Push is a shorthand for --output=type=registry
           push: true
           build-args: | 
-            BUILD_VERSION=${{ steps.meta.outputs.tags[0] }}
+            BUILD_VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            GITHUB_RUN_NUMBER=${{ github.run_number }}
           tags: 
             ${{ steps.meta.outputs.tags }}

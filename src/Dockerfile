@@ -1,5 +1,7 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
+
+
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
@@ -16,6 +18,8 @@ RUN  apt-get update; \
 
 FROM build AS builder
 WORKDIR /src
+ARG BUILD_VERSION=1.2.3
+ARG GITHUB_RUN_NUMBER=4
 COPY ["AzureIoTHub.Portal/Server/AzureIoTHub.Portal.Server.csproj", "AzureIoTHub.Portal/Server/"]
 COPY ["AzureIoTHub.Portal/Shared/AzureIoTHub.Portal.Shared.csproj", "AzureIoTHub.Portal/Shared/"]
 COPY ["AzureIoTHub.Portal/Client/AzureIoTHub.Portal.Client.csproj", "AzureIoTHub.Portal/Client/"]
@@ -24,10 +28,10 @@ COPY . .
 WORKDIR "/src/AzureIoTHub.Portal/Client"
 RUN npm run build-css
 WORKDIR "/src/AzureIoTHub.Portal/Server"
-RUN dotnet build "AzureIoTHub.Portal.Server.csproj" -c Release -o /app/build
+RUN dotnet build "AzureIoTHub.Portal.Server.csproj" -c Release -o /app/build -p:Version="${BUILD_VERSION}.${GITHUB_RUN_NUMBER}"
 
 FROM builder AS publish
-RUN dotnet publish "AzureIoTHub.Portal.Server.csproj" -c Release -o /app/publish
+RUN dotnet publish "AzureIoTHub.Portal.Server.csproj" -c Release -o /app/publish  -p:Version="${BUILD_VERSION}.${GITHUB_RUN_NUMBER}"
 
 FROM base AS final
 WORKDIR /app
