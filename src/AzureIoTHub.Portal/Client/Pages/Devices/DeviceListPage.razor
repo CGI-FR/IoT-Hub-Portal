@@ -92,7 +92,7 @@
             <HeaderContent>
                 <MudTh></MudTh>
                 <MudTh>Device</MudTh>
-                <MudTh Style="text-align: center">Status</MudTh>
+                <MudTh Style="text-align: center">Allowed</MudTh>
                 <MudTh Style="text-align: center">Connection state</MudTh>
                 <MudTh Style="text-align: center">Last status update</MudTh>
                 <MudTh Style="text-align: center">See details</MudTh>
@@ -108,14 +108,14 @@
                     </a>
                 </MudTd>
 
-                <MudTd DataLabel="Status" Style="text-align: center">
+                <MudTd DataLabel="Allowed" Style="text-align: center">
                     @if (context.IsEnabled)
                     {
                         <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
                     }
                     else
                     {
-                        <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                        <MudIcon Icon="@Icons.Filled.Error" Color="Color.Default" />
                     }
                 </MudTd>
 
