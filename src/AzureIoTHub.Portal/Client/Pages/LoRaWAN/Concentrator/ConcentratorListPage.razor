@@ -23,8 +23,12 @@
             <ToolBarContent>
                 <MudText Typo="Typo.h6">LoRaWAN Concentrators</MudText>
                 <MudSpacer />
-                <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="Search" Class="ma-2"></MudIconButton>
-                <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" />
+                <MudTooltip Text="Refresh list">
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="Search" Class="ma-2"></MudIconButton>
+                </MudTooltip>
+                <MudTooltip Text="Add LoRaWAN concentrator">
+                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" />
+                </MudTooltip>
             </ToolBarContent>
             <HeaderContent>
                 <MudTh>Device</MudTh>
@@ -40,29 +44,41 @@
                 <MudTd DataLabel="Status" Style="text-align: center">
                     @if (context.IsEnabled)
                     {
-                        <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                        <MudTooltip Text="Concentrator can connect">
+                            <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                        </MudTooltip>
                     }
                     else
                     {
-                        <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                        <MudTooltip Text="Concentrator cannot connect">
+                            <MudIcon Icon="@Icons.Filled.Error" Color="Color.Default" />
+                        </MudTooltip>
                     }
                 </MudTd>
 
                 <MudTd DataLabel="Connection" Style="text-align: center">
                     @if (context.IsConnected)
                     {
-                        <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
+                        <MudTooltip Text="Concentrator is connected">
+                            <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
+                        </MudTooltip>
                     }
                     else
                     {
-                        <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
+                        <MudTooltip Text="Concentrator is not connected">
+                            <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
+                        </MudTooltip>
                     }
                 </MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
-                    <a href="lorawan/concentrators/@context.DeviceId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                    <MudTooltip Text="See concentrator details">
+                        <a href="lorawan/concentrators/@context.DeviceId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                    </MudTooltip>
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
-                    <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDevice(context))"></MudIconButton>
+                    <MudTooltip Text="Delete concentrator">
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDevice(context))"></MudIconButton>
+                    </MudTooltip>
                 </MudTd>
             </RowTemplate>
             <NoRecordsContent>
@@ -76,7 +92,7 @@
             </PagerContent>
         </MudTable>
     </MudItem>
-    
+
 </MudGrid>
 
 @code {

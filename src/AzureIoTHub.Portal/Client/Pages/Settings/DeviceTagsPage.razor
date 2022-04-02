@@ -61,7 +61,9 @@
                 <MudCheckBox @bind-Checked="@TagContexte.Searchable"></MudCheckBox>
             </MudTd>
             <MudTd DataLabel="Delete" Style="text-align: center">
-                <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteTag(TagContexte))"></MudIconButton>
+                <MudTooltip Text="Delete device">
+                    <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteTag(TagContexte))"></MudIconButton>
+                </MudTooltip>
             </MudTd>
         </RowTemplate>
         <FooterContent>

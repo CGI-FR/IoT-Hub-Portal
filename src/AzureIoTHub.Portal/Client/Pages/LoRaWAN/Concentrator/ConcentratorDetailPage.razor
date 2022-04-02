@@ -26,13 +26,13 @@
                     <CardHeaderAvatar>
                         @if (concentrator.IsConnected)
                         {
-                            <MudTooltip>
+                            <MudTooltip Text="Concentrator is connected">
                                 <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
                             </MudTooltip>
                         }
                         else
                         {
-                            <MudTooltip>
+                            <MudTooltip Text="Concentrator is not connected">
                                 <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
                             </MudTooltip>
                         }

@@ -140,8 +140,10 @@
                             <MudTd DataLabel="Name" Style="word-break: break-all;">
                                 @CommandContext.Name
                             </MudTd>
-                            <MudTd Style="text-align: center">
-                                <MudIconButton Title="Execute" Color="Color.Default" Disabled="!LoRaDevice.AlreadyLoggedInOnce" Icon="@Icons.Material.Filled.Send" Size="Size.Medium" OnClick="@(() => ExecuteMethod(CommandContext))"></MudIconButton>
+                            <MudTd Style="text-align: center">                                
+                                <MudTooltip Text="Send command">
+                                    <MudIconButton Title="Execute" Color="Color.Default" Disabled="!LoRaDevice.AlreadyLoggedInOnce" Icon="@Icons.Material.Filled.Send" Size="Size.Medium" OnClick="@(() => ExecuteMethod(CommandContext))"></MudIconButton>
+                                </MudTooltip>
                             </MudTd>
                         </RowTemplate>
                     </MudTable>
