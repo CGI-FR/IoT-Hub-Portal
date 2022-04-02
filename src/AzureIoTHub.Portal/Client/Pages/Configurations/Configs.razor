@@ -7,15 +7,15 @@
 @inject IDialogService DialogService
 
 <MudContainer MaxWidth="MaxWidth.False">
-        @if (result == null)
-        {
-            <MudItem Class="custom-centered-container">
-                <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
-            </MudItem>
-        }
-        else
-        {
-    <MudGrid>
+    @if (result == null)
+    {
+        <MudItem Class="custom-centered-container">
+            <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
+        </MudItem>
+    }
+    else
+    {
+        <MudGrid>
             <MudItem xs="12">
                 <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
                     <ColGroup>
@@ -31,7 +31,9 @@
                     <ToolBarContent>
                         <MudText Typo="Typo.h6">Configurations</MudText>
                         <MudSpacer />
-                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadConfigurations" Class="ma-2"></MudIconButton>
+                        <MudTooltip Text="Refresh list">
+                            <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadConfigurations" Class="ma-2"></MudIconButton>
+                        </MudTooltip>
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh>ID</MudTh>
@@ -60,7 +62,9 @@
                         <MudTd DataLabel="Priority" Style="text-align: center">@context.Priority</MudTd>
                         <MudTd DataLabel="Creation date" Style="text-align: center;">@context.CreationDate</MudTd>
                         <MudTd DataLabel="Details" Style="text-align: center">
-                            <a href="/edge/configurations/@context.ConfigurationID"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                            <MudTooltip Text="See details">
+                                <a href="/edge/configurations/@context.ConfigurationID"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                            </MudTooltip>
                         </MudTd>
                     </RowTemplate>
                     <PagerContent>
@@ -68,8 +72,8 @@
                     </PagerContent>
                 </MudTable>
             </MudItem>
-    </MudGrid>
-        }
+        </MudGrid>
+    }
 </MudContainer>
 
 @code {
