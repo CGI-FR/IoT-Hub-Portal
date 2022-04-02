@@ -21,7 +21,7 @@ The following should be completed before proceeding with the IoT Hub Portal deve
 
 #### Deployed Azure Resources
 
-The template will deploy the Following resources in your Azure subscription:
+The template will deploy the following resources in your Azure subscription:
 
 * IoT Hub
 * Azure Function and Consumption Service Plan
