@@ -1,14 +1,14 @@
 # IoT Hub Portal
 
-This project aims to provide a solution for handling IoT Devices easyly.
-It leverages on Azure IoT Hub for connectivity and device management.
+This project aims to provide a solution for handling IoT Devices easily.
+It relies on Azure IoT Hub for connectivity and device management.
 
 ## Prerequisites
 
 The following should be completed before proceeding with the IoT Hub Portal development or deployment in your environment.
 
 * You must have an Azure subscription. Get an [Azure Free account](https://azure.microsoft.com/en-us/offers/ms-azr-0044p/) to get started.
-* You must have an Identity provider supporting OpenId protocol. 
+* You must have an Identity Provider supporting OpenId protocol. 
     > If you don't have existing Identity Provider, you can follow our dedicated page to setup an Azure AD B2C Tenant with its applications.
     > See [Azure AD B2C applications configuration](./docs/b2c-applications.md) page.
 * Understand how IoTEdge LoraWAN StarterKit work. Have a look at [https://azure.github.io/iotedge-lorawan-starterkit](https://azure.github.io/iotedge-lorawan-starterkit) to get started.
@@ -21,7 +21,7 @@ The following should be completed before proceeding with the IoT Hub Portal deve
 
 #### Deployed Azure Resources
 
-The template will deploy in your Azure subscription the Following resources:
+The template will deploy the following resources in your Azure subscription:
 
 * IoT Hub
 * Azure Function and Consumption Service Plan
@@ -34,20 +34,20 @@ The template will deploy in your Azure subscription the Following resources:
 
 1. Choose a solution prefix for your deployment.
 
-1. Use [Portal AD applications configuration](https://cgi-fr.github.io/IoT-Hub-Portal/docs/b2c-applications.html) page to configure your AD B2C Tenant.
-    > You should have recorded the following information:
+1. Use the [Portal AD applications configuration](https://cgi-fr.github.io/IoT-Hub-Portal/docs/b2c-applications.html) page to configure your AD B2C Tenant.
+    > You should save the following information:
     > * OpenID authority: `<your-openid-authority>`
     > * OpenID metadata URL: `<your-openid-provider-metadata-url>`
     > * Client ID: `<your-client-id>`
     > * API Client ID: `<your-client-id>`
 
-1. Press on the button here below to start your Azure Deployment.
+1. Press on the button below to start your Azure Deployment.
 
     [![Deploy](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Fmain%2Ftemplates%2Fazuredeploy.json)
 
-1. You will get to a page asking you to fill the following fields :
-    * **Resource Group**: A logical "folder" where all the template resource would be put into, just choose a meaningful name. 
-    * **Location**: In which DataCenter the resources should be deployed. Make sure to choose a location where IoT Hub is available
+1. You will get to a page asking you to fill the following fields:
+    * **Resource Group**: A logical "folder" where all the template resource would be put into, just choose a meaningful name.
+    * **Location**: In which data center the resources should be deployed. Make sure to choose a location where IoT Hub is available.
     * **Unique Solution Prefix**: A string that would be used as prefix for all the resources name to ensure their uniqueness.
     * **Open Id Authority**: The OpenID authority used by the portal.
     * **OpenId Metadata URL**: The OpenID metadata URL used by the portal.
