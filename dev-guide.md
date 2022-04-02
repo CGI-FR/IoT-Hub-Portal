@@ -5,16 +5,16 @@
 The code is organized into the following directory structure:
 
 * **src**: Source code
-    * **AzureIoTHub.Portal.Server.Tests**: Unit test project for thePortal
+    * **AzureIoTHub.Portal.Server.Tests**: Unit test project for the Portal
     * **AzureIoTHub.Portal**: The Portal project
-        * **Client**: .NET 6 Blazor Web Assembly project that alow tovisualize the IoT Hub data
-        * **Server**: .NET 6 Web API project that provides the API forthe Portal
+        * **Client**: .NET 6 Blazor Web Assembly project that alow to visualize the IoT Hub data
+        * **Server**: .NET 6 Web API project that provides the API for the Portal
         * **Shared**: Shared code between the Client and Server projects
 * **templates**: contains the templates for the "deploy to Azure" button
 
 ## Overall Architecture
 
-This schema represent the various components and how they interact to have a better understand of the various solution elements.
+This schema represent the various components and how they interact to have a better understanding of the various solution elements.
 
 ![./images/overall-architecture.png](./images/overall-architecture.png)
 
@@ -23,24 +23,24 @@ This schema represent the various components and how they interact to have a bet
 1. The IoT Hub portal uses the Azure IoT Hub REST API to retrieve the data.
 1. The IoT Hub portal uses the Azure Device Provisioning Service to manage IoT Edge devices.
 1. The IoT Hub portal uses the Azure Storage account to store the device models configuration (Images, Commands, etc.).
-1. The IoT Hub portal uses the LoRa Key Management Facade to send the Cloud to Device messages for LoRa devices.
-1. The LoRa Key Management Facade uses the Redis to store its cached data.
-1. The LoRa Key Management Facade uses the Azure IoT Hub REST API to retrieve the LoRa device keys and send the C2D messages.
+1. The IoT Hub portal uses the LoRa Key Management Facade to send Cloud to Device (C2D) messages to LoRa devices.
+1. The LoRa Key Management Facade uses Redis to store its cached data.
+1. The LoRa Key Management Facade uses the Azure IoT Hub REST API to retrieve the LoRa device keys and send C2D messages.
 
-> Note: for more information about the LoRa Key Management Facade, see the [Azure IoT Edge LoRaWAN Starter Kit](https://azure.github.io/iotedge-lorawan-starterkit) page.
+> Note: For more information about the LoRa Key Management Facade, see the [Azure IoT Edge LoRaWAN Starter Kit](https://azure.github.io/iotedge-lorawan-starterkit) page.
 
 ## IoT Hub Portal Configuration
 
 By deploying the IoT Hub Portal, the user can configure the IoT Hub and the LoRaWAN network.
 
-Since the IoT Hub Portal is deployed as a Docker container. The application settings are configurable in the environment variables.
+Since the IoT Hub Portal is deployed as a Docker container, the application settings can be configured with environment variables.
 
 #### Application settings
 
 Here are different settings that the user can configure:
 
 * **OIDC__Authority**: The OpenID Connect issuer.
-* **OIDC__MetadataUrl**: The OpenID Connect metadata URL (aka: .well-known/openid-configuration).
+* **OIDC__MetadataUrl**: The OpenID Connect metadata URL (e.g. `.well-known/openid-configuration`).
 * **OIDC__ClientId**: The OpenID Connect client ID for the Web UI.
 * **OIDC__ApiClientId**: The OpenID Connect client ID for the API.
 * **OIDC__Scope**: The OpenID Connect scope that represents the portal API.
@@ -49,7 +49,7 @@ Here are different settings that the user can configure:
 * **LoRaKeyManagement__Url**: The LoRa Key Management Facade URL.
 * **LoRaRegionRouterConfig__Url**: The LoRa Region Router Config URL.
 
-> Note: ``LoRaRegionRouterConfig__Url`` is the URL of the LoRa Region Router Config file repository. By default you cane use 'https://raw.githubusercontent.com/Azure/iotedge-lorawan-starterkit/dev/Tools/Cli-LoRa-Device-Provisioning/DefaultRouterConfig/' which is where the Azure IoT Edge LoRaWAN project is hosted.
+> Note: `LoRaRegionRouterConfig__Url` is the URL of the LoRa Region Router Config file repository. By default you can use 'https://raw.githubusercontent.com/Azure/iotedge-lorawan-starterkit/dev/Tools/Cli-LoRa-Device-Provisioning/DefaultRouterConfig/' which is where the Azure IoT Edge LoRaWAN project is hosted.
 
 #### Connection strings
 
@@ -60,11 +60,11 @@ Here are different connection strings that the user can configure:
 * **StorageAccount__ConnectionString**: The connection string to the Azure Storage account.
 * **LoRaKeyManagement__Code**: The LoRa Key Management Facade code.
 
-> Note: For a production relase, use might benefits from using the Azure Key Vault to store the connection strings.
+> Note: For a production environment, an Azure Key Vault is advised to store the connection strings.
 
 ## Device tags
 
-The IoT Hub portal uses some tags to configure the devices. The tags are storeed in the Azure IoT Hub by its Device Twin.
+The IoT Hub portal uses some tags to configure the devices. The tags are stored in the Azure IoT Hub in Device Twins.
 
 * **deviceType**: The device type, can be "LoRa Device" or "null".
 > By setting the device type to "LoRa Device", the device will be configured to send LoRaWAN and receive C2D commands.
@@ -72,14 +72,14 @@ The IoT Hub portal uses some tags to configure the devices. The tags are storeed
 
 ## Storage Account
 
-The Storage Account is used to store the device models configuration. You could benefits from using the same Storage Account that is used by the LoRa Key Management Facade.
-This solution will use tables and blob storage to store its data. there is no need to create the tables and containers, the application will do it for you.
+The Storage Account is used to store the device models configuration. You can use the same Storage Account that is used by the LoRa Key Management Facade.
+This solution will use tables and blob storage to store its data. There is no need to create the tables and containers, the application will do it for you.
 
 #### Tables
 
 The application uses the following tables:
 
-* **DeviceTemplates**: The table that contains the device models configuration.
+* **DeviceTemplates**: The table that contains the device model configurations.
 * **DeviceCommands**: The table that contains the device commands linked to the device models.
 
 #### Blob Storage
@@ -92,7 +92,7 @@ The application uses the following blob storage:
 
 This documentation site is build using Github Pages.
 
-```docs/main``` is a detached branch that is locked and only accept PRs. On PR merge, Github Pages will automatically update the documentation website.
+```docs/main``` is a detached branch that is locked and only accepts PRs. On PR merge, Github Pages will automatically update the documentation website.
 
 ## How to update the documentation
 
