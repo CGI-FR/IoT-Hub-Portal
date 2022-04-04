@@ -97,6 +97,37 @@ namespace AzureIoTHub.Portal.Server.Helpers
         }
 
         /// <summary>
+        /// Set the ClientThumbprint Property as an array of string.
+        /// </summary>
+        /// <param name="twin">Device twin.</param>
+        /// <param name="propertyName">Property to set (ClientThumbprint).</param>
+        /// <param name="value">Property value.</param>
+        public static void SetClientThumbprintProperty(Twin twin, string propertyName, string value)
+        {
+            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+
+            var camelCasedPropertyName = propertyName.ToCamelCase();
+            twin.Properties.Desired[camelCasedPropertyName] = new List<string>() { value };
+        }
+
+        /// <summary>
+        /// Checks if the specific property exists within the device twin,
+        /// Returns the corresponding value if so, else returns null.
+        /// </summary>
+        /// <param name="twin">Device twin.</param>
+        /// <param name="propertyName">Property name (ClientThumbprint)</param>
+        /// <returns>Corresponding property value, or null if it doesn't exist.</returns>
+        public static string RetrieveClientThumbprintPropertyValue(Twin twin, string propertyName)
+        {
+            ArgumentNullException.ThrowIfNull(twin, nameof(twin));
+
+            var camelCasedPropertyName = propertyName.ToCamelCase();
+
+            return twin.Properties.Desired.Contains(camelCasedPropertyName) ?
+                twin.Properties.Desired[camelCasedPropertyName][0] : null;
+        }
+
+        /// <summary>
         /// Checks if the specific property exists within the device twin,
         /// Returns the corresponding value if so, else returns null.
         /// </summary>

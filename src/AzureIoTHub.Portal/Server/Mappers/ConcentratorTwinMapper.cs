@@ -23,7 +23,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 DeviceId = twin.DeviceId,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(Concentrator.DeviceName)),
                 LoraRegion = DeviceHelper.RetrieveTagValue(twin, nameof(Concentrator.LoraRegion)),
-                ClientThumbprint = RetrieveClientThumbprintValue(twin),
+                ClientThumbprint = DeviceHelper.RetrieveClientThumbprintPropertyValue(twin, nameof(Concentrator.ClientThumbprint)),
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 AlreadyLoggedInOnce = DeviceHelper.RetrieveReportedPropertyValue(twin, "DevAddr") != null,
