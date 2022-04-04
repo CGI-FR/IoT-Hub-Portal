@@ -37,7 +37,7 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The client certificate thumbprint.
         /// </summary>
-        public string ClientCertificateThumbprint { get; set; }
+        public string ClientThumbprint { get; set; }
 
         /// <summary>
         ///   <c>true</c> if this instance is connected; otherwise, <c>false</c>.
