@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 {
-    using System.Collections.Generic;
     using AzureIoTHub.Portal.Server.Helpers;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
@@ -151,53 +150,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 
             // Act
             var result = DeviceHelper.RetrieveReportedPropertyValue(twin, propertyName);
-
-            // Assert
-            Assert.IsNull(result);
-        }
-
-        [Test]
-        public void SetClientThumbprintPropertyShouldReturnTwinWithNewValue()
-        {
-            // Arrange
-            var item = new Twin();
-            const string expectedPropertyName = "clientThumbprint";
-            var value = "clientThumbprintValue";
-
-            // Act
-            DeviceHelper.SetClientThumbprintProperty(item, expectedPropertyName, value);
-
-            // Assert
-            Assert.IsTrue(item.Properties.Desired.Contains(expectedPropertyName));
-            Assert.AreEqual("clientThumbprintValue", item.Properties.Desired[expectedPropertyName][0].ToString());
-        }
-
-        [Test]
-        public void RetrieveClientThumbprintValueShouldReturnDesiredProperty()
-        {
-            // Arrange
-            var twin = new Twin();
-
-            const string propertyName = "clientThumbprint";
-            twin.Properties.Desired[propertyName] = new List<string>() { "clientThumbprintValue" };
-
-            // Act
-            var result = DeviceHelper.RetrieveClientThumbprintPropertyValue(twin, propertyName);
-
-            // Assert
-            Assert.AreEqual("clientThumbprintValue", result);
-        }
-
-        [Test]
-        public void WhenPropertyNotExistRetrieveClientThumbprintValueShouldReturnNull()
-        {
-            // Arrange
-            var twin = new Twin();
-
-            const string propertyName = "clientThumbprint";
-
-            // Act
-            var result = DeviceHelper.RetrieveClientThumbprintPropertyValue(twin, propertyName);
 
             // Assert
             Assert.IsNull(result);
