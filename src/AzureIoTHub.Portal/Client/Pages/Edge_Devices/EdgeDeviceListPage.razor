@@ -35,13 +35,13 @@
                         <MudText>Status</MudText>
                         <MudRadioGroup @bind-SelectedOption="@searchModel.Status" Style="display:flex;align-items:baseline">
                             <MudItem md="4" sm="12">
-                                <MudRadio Option=@("true")  Color="Color.Primary">Enabled</MudRadio>
+                                <MudRadio Option=@("true") Color="Color.Primary">Enabled</MudRadio>
                             </MudItem>
                             <MudItem md="4" sm="12">
-                                <MudRadio Option=@("false")  Color="Color.Primary">Disabled</MudRadio>
+                                <MudRadio Option=@("false") Color="Color.Primary">Disabled</MudRadio>
                             </MudItem>
                             <MudItem md="4" sm="12">
-                                <MudRadio Option=@("true")  Color="Color.Secondary">All</MudRadio>
+                                <MudRadio Option=@("true") Color="Color.Secondary">All</MudRadio>
                             </MudItem>
                         </MudRadioGroup>
                     </MudItem>
@@ -66,8 +66,12 @@
             <ToolBarContent>
                 <MudText Typo="Typo.h6">Edge Devices</MudText>
                 <MudSpacer />
-                <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="Search" Class="ma-2"></MudIconButton>
-                      <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium"  OnClick="ShowAddDialog" />
+                <MudTooltip Text="Refresh list">
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="Search" Class="ma-2"></MudIconButton>
+                </MudTooltip>
+                <MudTooltip Text="Add device">
+                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="ShowAddDialog" />
+                </MudTooltip>
             </ToolBarContent>
             <HeaderContent>
                 <MudTh>ID</MudTh>
@@ -84,21 +88,31 @@
                 <MudTd DataLabel="Status" Style="text-align: center">
                     @if (context.Status == "Enabled")
                     {
-                        <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                        <MudTooltip Text="Device can connect">
+                            <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                        </MudTooltip>
                     }
                     else
                     {
-                        <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                        <MudTooltip Text="Device cannot connect">
+                            <MudIcon Icon="@Icons.Filled.Error" Color="Color.Default" />
+                        </MudTooltip>
                     }
                 </MudTd>
 
                 <MudTd DataLabel="Type" Style="text-align: center">@context.Type</MudTd>
                 <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
-                    <a href="/edge/devices/@context.DeviceId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                    <a href="/edge/devices/@context.DeviceId">
+                        <MudTooltip Text="See device details">
+                            <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" />
+                        </MudTooltip>
+                    </a>
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
-                    <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => ShowDeleteDialog(context))"></MudIconButton>
+                    <MudTooltip Text="Delete device">
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => ShowDeleteDialog(context))"></MudIconButton>
+                    </MudTooltip>
                 </MudTd>
             </RowTemplate>
             <NoRecordsContent>
@@ -108,7 +122,7 @@
                 <MudText>Loading...</MudText>
             </LoadingContent>
             <PagerContent>
-                <MudTablePager /> 
+                <MudTablePager />
             </PagerContent>
         </MudTable>
     </MudItem>

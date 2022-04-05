@@ -9,13 +9,19 @@
         <MudNavMenu>
             <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Devices</MudText>
             <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
-                <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary"/><MudNavLink Href="/devices">Device List</MudNavLink>                 
-                <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary"/><MudIconButton OnClick="AddDevice" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small"/>
+                <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/devices">Device List</MudNavLink>
+                <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
+                <MudTooltip Text="Add device">
+                    <MudIconButton OnClick="AddDevice" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
+                </MudTooltip>
             </MudPaper>
 
             <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
-                <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary"/><MudNavLink Href="/device-models">Device Models</MudNavLink>
-                <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary"/><MudIconButton OnClick="AddDeviceModel" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small"/>
+                <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/device-models">Device Models</MudNavLink>
+                <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
+                <MudTooltip Text="Add device model">
+                    <MudIconButton OnClick="AddDeviceModel" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
+                </MudTooltip>
             </MudPaper>
 
             <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">IoT Edge</MudText>
@@ -28,7 +34,7 @@
                 <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">LoRaWAN Management</MudText>
                 <MudNavLink Href="/lorawan/concentrators">Concentrators</MudNavLink>
             }
-                                    
+
             <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Settings</MudText>
             <MudNavLink Href="/settings/device-tag">Device Tags</MudNavLink>
 
