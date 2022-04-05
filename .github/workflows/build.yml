@@ -59,7 +59,7 @@ jobs:
           src/AzureIoTHub.Portal.Server.Tests.Unit/TestResults
 
     - name: Upload to Codecov test reports
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         directory: src/AzureIoTHub.Portal.Server.Tests.Unit/TestResults
