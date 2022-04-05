@@ -55,7 +55,14 @@
                                                                  Immediate=true
                                                                  Clearable=true
                                                                  CoerceText=true
-                                                                 CoerceValue=false />
+                                                                 CoerceValue=false >
+                                                    <ItemTemplate>
+                                                       @context.Name
+                                                       <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
+                                                            @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
+                                                       </MudText>
+                                                    </ItemTemplate>
+                                                                 </MudAutocomplete>
                                                 @if (Device.ModelId == null && displayValidationErrorMessages)
                                                 {
                                                     <p class="validation-error-message">The Model is required.</p>
