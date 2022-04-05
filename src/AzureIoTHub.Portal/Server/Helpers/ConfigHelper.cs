@@ -56,6 +56,28 @@ namespace AzureIoTHub.Portal.Server.Helpers
         }
 
         /// <summary>
+        /// Create a ConfigListItem from an Azure Configuration.
+        /// </summary>
+        /// <param name="config">Configuration object from Azure IoT Hub.</param>
+        /// <returns>A configuration converted to a ConfigListItem.</returns>
+        public static ConfigListItem CreateConfigListItem(Configuration config)
+        {
+            ArgumentNullException.ThrowIfNull(config, nameof(config));
+
+            return new ConfigListItem
+            {
+                ConfigurationID = config.Id,
+                Conditions = config.TargetCondition,
+                MetricsTargeted = RetrieveMetricValue(config, "targetedCount"),
+                MetricsApplied = RetrieveMetricValue(config, "appliedCount"),
+                MetricsSuccess = RetrieveMetricValue(config, "reportedSuccessfulCount"),
+                MetricsFailure = RetrieveMetricValue(config, "reportedFailedCount"),
+                Priority = config.Priority,
+                CreationDate = config.CreatedTimeUtc,
+            };
+        }
+
+        /// <summary>
         /// Create a GatewayModule object from an Azure Configuration.
         /// </summary>
         /// <param name="config">Configuration object from Azure IoT Hub.</param>

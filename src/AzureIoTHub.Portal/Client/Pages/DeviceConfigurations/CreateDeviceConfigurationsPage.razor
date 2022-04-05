@@ -1,0 +1,159 @@
+﻿@page "/device_configurations/new"
+@using AzureIoTHub.Portal.Models.v10
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+
+@attribute [Authorize]
+@inject HttpClient HttpClient
+@inject ISnackbar Snackbar
+
+<h3>CreateDeviceConfigurationsPage</h3>
+
+<MudForm Model="deviceConfiguration">
+    <MudCard>
+        <MudCardContent>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="deviceConfiguration.ConfigurationID" Label="Id" Variant="Variant.Outlined" Dense=true Required/>
+            </MudItem>
+                    
+            <MudItem xs="12">
+                <MudSelect @bind-Value="deviceConfiguration.model" Label="Target model" Variant="Variant.Outlined" Dense=true AnchorOrigin="Origin.BottomCenter">
+                    @if (Models != null)
+                    {
+                        @foreach (var item in Models)
+                        {
+                            <MudSelectItem Value="@(item)"> @item.Name</MudSelectItem>
+                        }
+                    }
+                </MudSelect>
+            </MudItem>
+        </MudCardContent>
+    </MudCard>
+
+    <MudExpansionPanels MultiExpansion="true">
+
+        <MudGrid>
+
+            <MudItem xs="12">
+
+                <MudExpansionPanel Text="Target conditions">
+                    <TitleContent><MudText Typo="Typo.h6">Target conditions</MudText></TitleContent>
+                    <ChildContent>
+                        <MudGrid>
+                            <MudItem xs="12" md="9">
+                                <MudTable Items="@Tags" Dense=true Hover=true Bordered=true Striped=true>
+                                    <ColGroup>
+                                        <col style="width: 40%;" />
+                                        <col style="width: 40%;" />
+                                        <col style="width: 10%;" />
+                                    </ColGroup>
+                                    <HeaderContent>
+                                        <MudTh>Name</MudTh>
+                                        <MudTh>Value</MudTh>
+                                        <MudTh Style="text-align: center">Delete</MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate Context="TagContexte">
+                                        <MudTd DataLabel="Name" Style="word-break: break-all;">
+                                            <MudForm Model="TagContexte">
+                                                <MudTextField @bind-Value="@TagContexte.Name" Label="Name"
+                                                    HelperText="Name that will be registered in the device twin" HelperTextOnFocus="true"
+                                                    For="@(() => TagContexte.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                            </MudForm>
+                                        </MudTd>
+                                        <MudTd>
+                                            <MudForm Model="TagContexte">
+                                                <MudTextField @bind-Value="@TagContexte.Label" Label="Label"
+                                                    HelperText="The label shown to the user" HelperTextOnFocus="true"
+                                                    For="@(() => TagContexte.Label)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                            </MudForm>
+                                        </MudTd>
+                                        <MudTd DataLabel="Delete" Style="text-align: center">
+                                            <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteTag(TagContexte))"></MudIconButton>
+                                        </MudTd>
+                                    </RowTemplate>
+                                    <FooterContent>
+                                        <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddTag">Add a new Tag</MudButton>
+                                    </FooterContent>
+                                </MudTable>
+                            </MudItem>
+                        </MudGrid>
+                    </ChildContent>
+                </MudExpansionPanel>
+
+            </MudItem>
+
+        </MudGrid>
+
+        <MudGrid>
+            <MudItem xs="12">
+                <MudExpansionPanel Text="Properties">
+                    <TitleContent><MudText Typo="Typo.h6">Properties</MudText></TitleContent>
+                    <ChildContent>
+                        <MudItem xs="12" md="9">
+
+                            <MudTable Items="@Properties" Dense=true Hover=true Bordered=true Striped=true>
+                                <ColGroup>
+                                    <col style="width: 40%;" />
+                                    <col style="width: 40%;" />
+                                    <col style="width: 10%;" />
+                                 </ColGroup>
+                                 <HeaderContent>
+                                    <MudTh>Name</MudTh>
+                                    <MudTh>Value</MudTh>
+                                    <MudTh Style="text-align: center">Delete</MudTh>
+                                 </HeaderContent>
+                                 <RowTemplate Context="PropertiesContext">
+                                      <MudTd DataLabel="Name" Style="word-break: break-all;">
+                                          @if (Properties.Count > 0)
+                                          {
+                                            <MudForm Model="PropertiesContext">
+                                                <MudTextField @bind-Value="@PropertiesContext.Name" Label="Name"
+                                                    HelperText="Name that will be registered in the device twin" HelperTextOnFocus="true"
+                                                    For="@(() => PropertiesContext.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                            </MudForm>
+                                          }
+                                        </MudTd>
+                                 </RowTemplate>
+                            </MudTable>
+
+                        </MudItem>
+                    </ChildContent>
+                </MudExpansionPanel>
+            </MudItem>
+        </MudGrid>
+    </MudExpansionPanels>
+</MudForm>
+
+
+@code {
+    List<DeviceTag> Tags { get; set; }
+    private List<DeviceModel> Models;
+    private DeviceConfig deviceConfiguration { get; set; } = new DeviceConfig();
+    private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Tags = await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"api/settings/device-tags");
+        Models = await HttpClient.GetFromJsonAsync<List<DeviceModel>>("api/models");
+
+        await LoadProperties();
+    }
+
+    private void AddTag()
+    {
+
+    }
+
+    private async Task LoadProperties()
+    {
+        var list = await HttpClient.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"api/models/{deviceConfiguration.model.ModelId}/properties");
+        this.Properties = list.ToList();
+    }
+
+    private void DeleteTag(DeviceTag item)
+    {
+        Tags.Remove(item);
+    }
+}
