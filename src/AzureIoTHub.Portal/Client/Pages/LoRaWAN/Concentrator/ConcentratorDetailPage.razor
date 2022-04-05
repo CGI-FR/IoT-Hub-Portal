@@ -68,7 +68,10 @@
                                                               Required="true" />
                                             </MudItem>
                                             <MudItem xs="12" md="6">
-                                                <MudTextField @bind-Value="@concentrator.ClientThumbprint" Label="Client Certificate Thumbprint" Variant="Variant.Outlined" />
+                                                <MudTextField For="@(()=> concentrator.ClientThumbprint)"
+                                                              Mask="@maskThumbprint"
+                                                              HelperText="ClientThumbprint must contain 40 hexadecimal characters"
+                                                              @bind-Value="@concentrator.ClientThumbprint" Label="Client Certificate Thumbprint" Variant="Variant.Outlined" />
                                             </MudItem>
                                             <MudItem xs="12" md="6">
                                                 <MudSelect T="string" Label="Region" Variant="Variant.Outlined" @bind-Value="@concentrator.LoraRegion" Required="true">
@@ -113,6 +116,15 @@
     private MudForm form;
     private ConcentratorValidator concentratorValidator = new ConcentratorValidator();
 
+    public PatternMask maskThumbprint = new PatternMask("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
+    {
+            MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
+            CleanDelimiters = false,
+            Transformation = AllUpperCase
+    };
+
+    private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -135,7 +147,6 @@
         await form.Validate();
         if (!this.concentratorValidator.Validate(this.concentrator).IsValid)
         {
-            //string errorMsg = await result.Content.ReadAsStringAsync();
             Snackbar.Add($"One or more validation errors occurred", Severity.Error);
             return;
         }

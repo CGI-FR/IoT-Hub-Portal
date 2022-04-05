@@ -24,6 +24,9 @@ namespace AzureIoTHub.Portal.Client.Validators
                 .NotEmpty().WithMessage("LoraRegion is required.")
                 .NotNull().WithMessage("LoraRegion is required.");
 
+            _ = RuleFor(x => x.ClientThumbprint)
+                .Matches("^([A-F0-9]{2}:){19}[A-F0-9]{2}$")
+                .WithMessage("ClientThumbprint must contain 40 hexadecimal characters.");
         }
     }
 }
