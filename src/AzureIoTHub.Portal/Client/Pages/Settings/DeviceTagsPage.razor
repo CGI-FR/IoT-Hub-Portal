@@ -12,19 +12,14 @@
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device tags setting</MudText>
 
-@if (Tags == null)
-{
-    <MudItem Class="custom-centered-container">
-        <MudProgressCircular Class="custom-centered-item" Color="Color.Default" Indeterminate="true" />
-    </MudItem>
-}
-
 <MudItem xs="12">
-    <MudTable Items="@Tags" Dense=true Hover=true Bordered=true Striped=true>
+    <MudTable Items=@Tags Loading="IsLoading" Dense=true Hover=true Bordered=true Striped=true>
+
         <ToolBarContent>
             <MudText Typo="Typo.h6">Tags</MudText>
             <MudSpacer />
         </ToolBarContent>
+
         <ColGroup>
             <col style="width: 40%;" />
             <col style="width: 40%;" />
@@ -69,24 +64,29 @@
         <FooterContent>
             <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddTag">Add a new Tag</MudButton>
         </FooterContent>
+
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
     </MudTable>
     <MudCardActions Class="pb-4 pl-4">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save">Save Changes</MudButton>
     </MudCardActions>
-
 </MudItem>
-
 @code {
-    List<DeviceTag> Tags { get; set; }
-
+    List<DeviceTag> Tags { get; set; } = new();
     private MudForm FormName { get; set; }
     private MudForm FormLabel { get; set; }
+    private bool IsLoading { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
-        Tags = new List<DeviceTag>(
-            await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags")
-        );
+        Tags.AddRange(await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags"));
+
+        IsLoading = false;
     }
 
     private void AddTag()
