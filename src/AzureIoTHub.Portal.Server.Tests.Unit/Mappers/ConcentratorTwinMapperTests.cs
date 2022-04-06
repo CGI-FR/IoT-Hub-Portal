@@ -81,65 +81,62 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         }
 
         [Test]
-        public void RetrieveClientThumbprintValueStateUnderTestExpectedBehavior()
+        public void CreateDeviceDetailsClientThumbprintNotExistExpectedBehavior()
         {
             // Arrange
             var concentratorTwinMapper = CreateConcentratorTwinMapper();
-            var twin = new Twin();
-            var expected = Guid.NewGuid().ToString();
-            twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()] = new List<string>() { expected };
+            var twin = new Twin
+            {
+                DeviceId = Guid.NewGuid().ToString()
+            };
 
             // Act
-            var result = concentratorTwinMapper.RetrieveClientThumbprintValue(twin);
+            var result = concentratorTwinMapper.CreateDeviceDetails(twin);
 
             // Assert
-            Assert.AreEqual(expected, result);
+            Assert.IsNotNull(result);
+            Assert.IsNull(result.ClientThumbprint);
+            this.mockRepository.VerifyAll();
         }
 
         [Test]
-        public void RetrieveClientThumbprintNotExistShouldReturnNull()
+        public void CreateDeviceDetailsClientThumbprintEmptyArrayExpectedBehavior()
         {
             // Arrange
             var concentratorTwinMapper = CreateConcentratorTwinMapper();
-            var twin = new Twin();
-
-            // Act
-            var result = concentratorTwinMapper.RetrieveClientThumbprintValue(twin);
-
-            // Assert
-            Assert.IsNull(result);
-        }
-
-        [Test]
-        public void RetrieveClientThumbprintEmptyArrayShouldReturnNull()
-        {
-            // Arrange
-            var concentratorTwinMapper = CreateConcentratorTwinMapper();
-            var twin = new Twin();
+            var twin = new Twin
+            {
+                DeviceId = Guid.NewGuid().ToString()
+            };
             twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()] = new List<string>();
 
-
             // Act
-            var result = concentratorTwinMapper.RetrieveClientThumbprintValue(twin);
+            var result = concentratorTwinMapper.CreateDeviceDetails(twin);
 
             // Assert
-            Assert.IsNull(result);
+            Assert.IsNotNull(result);
+            Assert.IsNull(result.ClientThumbprint);
+            this.mockRepository.VerifyAll();
         }
 
         [Test]
-        public void RetrieveClientThumbprintBadFormatShouldReturnNull()
+        public void CreateDeviceDetailsClientThumbprintBadFormatExpectedBehavior()
         {
             // Arrange
             var concentratorTwinMapper = CreateConcentratorTwinMapper();
-            var twin = new Twin();
+            var twin = new Twin
+            {
+                DeviceId = Guid.NewGuid().ToString()
+            };
             twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()] = Guid.NewGuid().ToString();
 
-
             // Act
-            var result = concentratorTwinMapper.RetrieveClientThumbprintValue(twin);
+            var result = concentratorTwinMapper.CreateDeviceDetails(twin);
 
             // Assert
-            Assert.IsNull(result);
+            Assert.IsNotNull(result);
+            Assert.IsNull(result.ClientThumbprint);
+            this.mockRepository.VerifyAll();
         }
 
         [Test]
