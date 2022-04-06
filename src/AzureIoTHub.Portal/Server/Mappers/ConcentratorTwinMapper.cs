@@ -30,28 +30,31 @@ namespace AzureIoTHub.Portal.Server.Mappers
             };
         }
 
-        public string RetrieveClientThumbprintValue(Twin twin)
+        private static string RetrieveClientThumbprintValue(Twin twin)
         {
             var serializedClientThumbprint = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(Concentrator.ClientThumbprint).ToCamelCase());
 
-            try
-            {
-                return JsonConvert.DeserializeObject<string[]>(serializedClientThumbprint)[0];
-            }
-
-            catch (Newtonsoft.Json.JsonReaderException)
-            {
-                // clientThumbprint is not an array in the device twin
-                return null;
-            }
-            catch (System.ArgumentNullException)
+            if (serializedClientThumbprint == null)
             {
                 // clientThumbprint does not exist in the device twin
                 return null;
             }
-            catch (IndexOutOfRangeException)
+
+            try
             {
-                // clientThumbprint array is empty in the device twin
+                var clientThumbprintArray=JsonConvert.DeserializeObject<string[]>(serializedClientThumbprint);
+
+                if (clientThumbprintArray.Length == 0)
+                {
+                    // clientThumbprint array is empty in the device twin
+                    return null;
+                }
+
+                return clientThumbprintArray[0];
+            }
+            catch (Newtonsoft.Json.JsonReaderException)
+            {
+                // clientThumbprint is not an array in the device twin
                 return null;
             }
         }
@@ -65,7 +68,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             DeviceHelper.SetTagValue(twin, nameof(item.LoraRegion), item.LoraRegion);
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
 
-            DeviceHelper.SetDesiredProperty(twin, nameof(item.ClientThumbprint).ToCamelCase(), new string[1] { item.ClientThumbprint });
+            DeviceHelper.SetDesiredProperty(twin, nameof(item.ClientThumbprint).ToCamelCase(), new[] { item.ClientThumbprint });
             DeviceHelper.SetDesiredProperty(twin, nameof(item.RouterConfig).ToCamelCase(), item.RouterConfig);
         }
     }
