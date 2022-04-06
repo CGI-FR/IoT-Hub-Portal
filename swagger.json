@@ -2665,7 +2665,7 @@
             "description": "The bandwidth.",
             "format": "int32"
           },
-          "spreadFactor": {
+          "spread_factor": {
             "type": "integer",
             "description": "The spread factor.",
             "format": "int32"
@@ -3722,17 +3722,16 @@
       "RouterConfig": {
         "type": "object",
         "properties": {
-          "netID": {
+          "NetID": {
             "type": "array",
             "items": {
               "type": "integer",
               "format": "int32"
             },
             "description": "The network identifier.",
-            "nullable": true,
-            "readOnly": true
+            "nullable": true
           },
-          "joinEui": {
+          "JoinEui": {
             "type": "array",
             "items": {
               "type": "array",
@@ -3741,8 +3740,7 @@
               }
             },
             "description": "The join eui.",
-            "nullable": true,
-            "readOnly": true
+            "nullable": true
           },
           "region": {
             "type": "string",
@@ -3754,17 +3752,16 @@
             "description": "The hardware specifications.",
             "nullable": true
           },
-          "freqRange": {
+          "freq_range": {
             "type": "array",
             "items": {
               "type": "integer",
               "format": "int32"
             },
             "description": "The frequency range.",
-            "nullable": true,
-            "readOnly": true
+            "nullable": true
           },
-          "dRs": {
+          "DRs": {
             "type": "array",
             "items": {
               "type": "array",
@@ -3774,10 +3771,9 @@
               }
             },
             "description": "The DRs.",
-            "nullable": true,
-            "readOnly": true
+            "nullable": true
           },
-          "sx1301Conf": {
+          "sx1301_conf": {
             "type": "array",
             "items": {
               "type": "object",
@@ -3786,8 +3782,7 @@
               }
             },
             "description": "The SX1301 conf.",
-            "nullable": true,
-            "readOnly": true
+            "nullable": true
           },
           "nocca": {
             "type": "boolean",

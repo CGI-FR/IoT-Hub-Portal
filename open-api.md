@@ -1002,7 +1002,7 @@ None
 > 200 Response
 
 ```
-{"items":[{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientCertificateThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"netID":[0],"joinEui":[["string"]],"region":"string","hwspec":"string","freqRange":[0],"dRs":[[0]],"sx1301Conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spreadFactor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spreadFactor":0}}],"nocca":true,"nodc":true,"nodwell":true}}],"totalItems":0,"nextPage":"string"}
+{"items":[{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientCertificateThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"NetID":[0],"JoinEui":[["string"]],"region":"string","hwspec":"string","freq_range":[0],"DRs":[[0]],"sx1301_conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0}}],"nocca":true,"nodc":true,"nodwell":true}}],"totalItems":0,"nextPage":"string"}
 ```
 
 ```json
@@ -1018,25 +1018,25 @@ None
       "isEnabled": true,
       "alreadyLoggedInOnce": true,
       "routerConfig": {
-        "netID": [
+        "NetID": [
           0
         ],
-        "joinEui": [
+        "JoinEui": [
           [
             "string"
           ]
         ],
         "region": "string",
         "hwspec": "string",
-        "freqRange": [
+        "freq_range": [
           0
         ],
-        "dRs": [
+        "DRs": [
           [
             0
           ]
         ],
-        "sx1301Conf": [
+        "sx1301_conf": [
           {
             "property1": {
               "enable": true,
@@ -1044,7 +1044,7 @@ None
               "radio": 0,
               "if": 0,
               "bandwidth": 0,
-              "spreadFactor": 0
+              "spread_factor": 0
             },
             "property2": {
               "enable": true,
@@ -1052,7 +1052,7 @@ None
               "radio": 0,
               "if": 0,
               "bandwidth": 0,
-              "spreadFactor": 0
+              "spread_factor": 0
             }
           }
         ],
@@ -1101,8 +1101,44 @@ None
   "isEnabled": true,
   "alreadyLoggedInOnce": true,
   "routerConfig": {
+    "NetID": [
+      0
+    ],
+    "JoinEui": [
+      [
+        "string"
+      ]
+    ],
     "region": "string",
     "hwspec": "string",
+    "freq_range": [
+      0
+    ],
+    "DRs": [
+      [
+        0
+      ]
+    ],
+    "sx1301_conf": [
+      {
+        "property1": {
+          "enable": true,
+          "freq": 0,
+          "radio": 0,
+          "if": 0,
+          "bandwidth": 0,
+          "spread_factor": 0
+        },
+        "property2": {
+          "enable": true,
+          "freq": 0,
+          "radio": 0,
+          "if": 0,
+          "bandwidth": 0,
+          "spread_factor": 0
+        }
+      }
+    ],
     "nocca": true,
     "nodc": true,
     "nodwell": true
@@ -1171,8 +1207,44 @@ None
   "isEnabled": true,
   "alreadyLoggedInOnce": true,
   "routerConfig": {
+    "NetID": [
+      0
+    ],
+    "JoinEui": [
+      [
+        "string"
+      ]
+    ],
     "region": "string",
     "hwspec": "string",
+    "freq_range": [
+      0
+    ],
+    "DRs": [
+      [
+        0
+      ]
+    ],
+    "sx1301_conf": [
+      {
+        "property1": {
+          "enable": true,
+          "freq": 0,
+          "radio": 0,
+          "if": 0,
+          "bandwidth": 0,
+          "spread_factor": 0
+        },
+        "property2": {
+          "enable": true,
+          "freq": 0,
+          "radio": 0,
+          "if": 0,
+          "bandwidth": 0,
+          "spread_factor": 0
+        }
+      }
+    ],
     "nocca": true,
     "nodc": true,
     "nodwell": true
@@ -1239,7 +1311,7 @@ None
 > 200 Response
 
 ```
-{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientCertificateThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"netID":[0],"joinEui":[["string"]],"region":"string","hwspec":"string","freqRange":[0],"dRs":[[0]],"sx1301Conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spreadFactor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spreadFactor":0}}],"nocca":true,"nodc":true,"nodwell":true}}
+{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientCertificateThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"NetID":[0],"JoinEui":[["string"]],"region":"string","hwspec":"string","freq_range":[0],"DRs":[[0]],"sx1301_conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0}}],"nocca":true,"nodc":true,"nodwell":true}}
 ```
 
 ```json
@@ -1253,25 +1325,25 @@ None
   "isEnabled": true,
   "alreadyLoggedInOnce": true,
   "routerConfig": {
-    "netID": [
+    "NetID": [
       0
     ],
-    "joinEui": [
+    "JoinEui": [
       [
         "string"
       ]
     ],
     "region": "string",
     "hwspec": "string",
-    "freqRange": [
+    "freq_range": [
       0
     ],
-    "dRs": [
+    "DRs": [
       [
         0
       ]
     ],
-    "sx1301Conf": [
+    "sx1301_conf": [
       {
         "property1": {
           "enable": true,
@@ -1279,7 +1351,7 @@ None
           "radio": 0,
           "if": 0,
           "bandwidth": 0,
-          "spreadFactor": 0
+          "spread_factor": 0
         },
         "property2": {
           "enable": true,
@@ -1287,7 +1359,7 @@ None
           "radio": 0,
           "if": 0,
           "bandwidth": 0,
-          "spreadFactor": 0
+          "spread_factor": 0
         }
       }
     ],
@@ -2991,7 +3063,7 @@ Cloud to Device message result.
   "radio": 0,
   "if": 0,
   "bandwidth": 0,
-  "spreadFactor": 0
+  "spread_factor": 0
 }
 
 ```
@@ -3007,7 +3079,7 @@ LoRaWAN Concentrator Channel configuration.
 |radio|integer(int32)|false|none|The radio.|
 |if|integer(int32)|false|none|The interface.|
 |bandwidth|integer(int32)|false|none|The bandwidth.|
-|spreadFactor|integer(int32)|false|none|The spread factor.|
+|spread_factor|integer(int32)|false|none|The spread factor.|
 
 <h2 id="tocS_Concentrator">Concentrator</h2>
 <!-- backwards compatibility -->
@@ -3027,25 +3099,25 @@ LoRaWAN Concentrator Channel configuration.
   "isEnabled": true,
   "alreadyLoggedInOnce": true,
   "routerConfig": {
-    "netID": [
+    "NetID": [
       0
     ],
-    "joinEui": [
+    "JoinEui": [
       [
         "string"
       ]
     ],
     "region": "string",
     "hwspec": "string",
-    "freqRange": [
+    "freq_range": [
       0
     ],
-    "dRs": [
+    "DRs": [
       [
         0
       ]
     ],
-    "sx1301Conf": [
+    "sx1301_conf": [
       {
         "property1": {
           "enable": true,
@@ -3053,7 +3125,7 @@ LoRaWAN Concentrator Channel configuration.
           "radio": 0,
           "if": 0,
           "bandwidth": 0,
-          "spreadFactor": 0
+          "spread_factor": 0
         },
         "property2": {
           "enable": true,
@@ -3061,7 +3133,7 @@ LoRaWAN Concentrator Channel configuration.
           "radio": 0,
           "if": 0,
           "bandwidth": 0,
-          "spreadFactor": 0
+          "spread_factor": 0
         }
       }
     ],
@@ -3109,25 +3181,25 @@ LoRaWAN Concentrator.
       "isEnabled": true,
       "alreadyLoggedInOnce": true,
       "routerConfig": {
-        "netID": [
+        "NetID": [
           0
         ],
-        "joinEui": [
+        "JoinEui": [
           [
             "string"
           ]
         ],
         "region": "string",
         "hwspec": "string",
-        "freqRange": [
+        "freq_range": [
           0
         ],
-        "dRs": [
+        "DRs": [
           [
             0
           ]
         ],
-        "sx1301Conf": [
+        "sx1301_conf": [
           {
             "property1": {
               "enable": true,
@@ -3135,7 +3207,7 @@ LoRaWAN Concentrator.
               "radio": 0,
               "if": 0,
               "bandwidth": 0,
-              "spreadFactor": 0
+              "spread_factor": 0
             },
             "property2": {
               "enable": true,
@@ -3143,7 +3215,7 @@ LoRaWAN Concentrator.
               "radio": 0,
               "if": 0,
               "bandwidth": 0,
-              "spreadFactor": 0
+              "spread_factor": 0
             }
           }
         ],
@@ -3962,25 +4034,25 @@ Protal Settings.
 
 ```json
 {
-  "netID": [
+  "NetID": [
     0
   ],
-  "joinEui": [
+  "JoinEui": [
     [
       "string"
     ]
   ],
   "region": "string",
   "hwspec": "string",
-  "freqRange": [
+  "freq_range": [
     0
   ],
-  "dRs": [
+  "DRs": [
     [
       0
     ]
   ],
-  "sx1301Conf": [
+  "sx1301_conf": [
     {
       "property1": {
         "enable": true,
@@ -3988,7 +4060,7 @@ Protal Settings.
         "radio": 0,
         "if": 0,
         "bandwidth": 0,
-        "spreadFactor": 0
+        "spread_factor": 0
       },
       "property2": {
         "enable": true,
@@ -3996,7 +4068,7 @@ Protal Settings.
         "radio": 0,
         "if": 0,
         "bandwidth": 0,
-        "spreadFactor": 0
+        "spread_factor": 0
       }
     }
   ],
@@ -4013,13 +4085,13 @@ Router configuration.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|netID|[integer]¦null|false|read-only|The network identifier.|
-|joinEui|[array]¦null|false|read-only|The join eui.|
+|NetID|[integer]¦null|false|none|The network identifier.|
+|JoinEui|[array]¦null|false|none|The join eui.|
 |region|string¦null|false|none|The region.|
 |hwspec|string¦null|false|none|The hardware specifications.|
-|freqRange|[integer]¦null|false|read-only|The frequency range.|
-|dRs|[array]¦null|false|read-only|The DRs.|
-|sx1301Conf|[object]¦null|false|read-only|The SX1301 conf.|
+|freq_range|[integer]¦null|false|none|The frequency range.|
+|DRs|[array]¦null|false|none|The DRs.|
+|sx1301_conf|[object]¦null|false|none|The SX1301 conf.|
 |» **additionalProperties**|[Channel](#schemachannel)|false|none|LoRaWAN Concentrator Channel configuration.|
 |nocca|boolean|false|none|`true` if nocca; otherwise, `false`.|
 |nodc|boolean|false|none|`true` if nodc; otherwise, `false`.|
