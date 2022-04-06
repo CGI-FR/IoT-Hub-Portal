@@ -9,7 +9,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using Extensions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
-    using AzureIoTHub.Portal.Server.Extensions;
     using Newtonsoft.Json;
 
     public class ConcentratorTwinMapper : IConcentratorTwinMapper
@@ -23,7 +22,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 DeviceId = twin.DeviceId,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(Concentrator.DeviceName)),
                 LoraRegion = DeviceHelper.RetrieveTagValue(twin, nameof(Concentrator.LoraRegion)),
-                ClientThumbprint = DeviceHelper.RetrieveClientThumbprintPropertyValue(twin, nameof(Concentrator.ClientThumbprint)),
+                ClientThumbprint = RetrieveClientThumbprintValue(twin),
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 AlreadyLoggedInOnce = DeviceHelper.RetrieveReportedPropertyValue(twin, "DevAddr") != null,
@@ -65,7 +64,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
             DeviceHelper.SetTagValue(twin, nameof(item.LoraRegion), item.LoraRegion);
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
-            
+
             DeviceHelper.SetDesiredProperty(twin, nameof(item.ClientThumbprint).ToCamelCase(), new string[1] { item.ClientThumbprint });
             DeviceHelper.SetDesiredProperty(twin, nameof(item.RouterConfig).ToCamelCase(), item.RouterConfig);
         }
