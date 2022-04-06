@@ -76,7 +76,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.ServicesHealthCheck
             // Arrange
             var healthService = CreateHealthCheck();
 
-            var mockServiceStat = this.mockRepository.Create<ServiceStatistics>();
             var mockQuery = this.mockRepository.Create<IQuery>();
 
             var healthRegistration = new HealthCheckRegistration(Guid.NewGuid().ToString(), healthService, HealthStatus.Unhealthy, new List<string>());
