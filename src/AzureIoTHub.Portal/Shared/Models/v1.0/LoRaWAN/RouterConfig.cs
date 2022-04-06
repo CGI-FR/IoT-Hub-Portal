@@ -4,7 +4,7 @@
 namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
 {
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
+    using System.Text.Json.Serialization;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -15,67 +15,70 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The network identifier.
         /// </summary>
-        public Collection<int> NetID { get; }
+        [JsonPropertyName("NetID")]
+        [JsonProperty("NetID")]
+        public List<int> NetID { get; set; } = new();
 
         /// <summary>
         /// The join eui.
         /// </summary>
-        public Collection<Collection<string>> JoinEui { get; }
+        [JsonPropertyName("JoinEui")]
+        [JsonProperty("JoinEui")]
+        public List<List<string>> JoinEui { get; set; } = new();
 
         /// <summary>
         /// The region.
         /// </summary>
+        [JsonPropertyName("region")]
+        [JsonProperty("region")]
         public string Region { get; set; }
 
         /// <summary>
         /// The hardware specifications.
         /// </summary>
+        [JsonPropertyName("hwspec")]
+        [JsonProperty("hwspec")]
         public string Hwspec { get; set; }
 
         /// <summary>
         /// The frequency range.
         /// </summary>
-        [JsonProperty("Freq_range")]
-        public Collection<int> FreqRange { get; }
+        [JsonPropertyName("freq_range")]
+        [JsonProperty("freq_range")]
+        public List<int> FreqRange { get; set; } = new();
 
         /// <summary>
         /// The DRs.
         /// </summary>
-        public Collection<Collection<int>> DRs { get; }
+        [JsonPropertyName("DRs")]
+        [JsonProperty("DRs")]
+        public List<List<int>> DRs { get; set; } = new();
 
         /// <summary>
         /// The SX1301 conf.
         /// </summary>
-        [JsonProperty("Sx1301_conf")]
-        public Collection<Dictionary<string, Channel>> Sx1301Conf { get; }
+        [JsonPropertyName("sx1301_conf")]
+        [JsonProperty("sx1301_conf")]
+        public List<Dictionary<string, Channel>> Sx1301Conf { get; set; } = new();
 
         /// <summary>
         ///   <c>true</c> if nocca; otherwise, <c>false</c>.
         /// </summary>
+        [JsonPropertyName("nocca")]
+        [JsonProperty("nocca")]
         public bool Nocca { get; set; }
 
         /// <summary>
         ///   <c>true</c> if nodc; otherwise, <c>false</c>.
         /// </summary>
+        [JsonPropertyName("nodc")]
+        [JsonProperty("nodc")]
         public bool Nodc { get; set; }
-
         /// <summary>
         ///   <c>true</c> if nodwell; otherwise, <c>false</c>.
         /// </summary>
+        [JsonPropertyName("nodwell")]
+        [JsonProperty("nodwell")]
         public bool Nodwell { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RouterConfig"/> class.
-        /// </summary>
-        public RouterConfig()
-        {
-            Region = string.Empty;
-            Hwspec = string.Empty;
-            FreqRange = new Collection<int>();
-            NetID = new Collection<int>();
-            JoinEui = new Collection<Collection<string>>();
-            DRs = new Collection<Collection<int>>();
-            Sx1301Conf = new Collection<Dictionary<string, Channel>>();
-        }
     }
 }

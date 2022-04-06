@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using System;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using Extensions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
 
@@ -38,7 +39,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
 
             twin.Properties.Desired[nameof(item.ClientCertificateThumbprint)] = item.ClientCertificateThumbprint;
-            twin.Properties.Desired[nameof(item.RouterConfig)] = item.RouterConfig;
+
+            DeviceHelper.SetDesiredProperty(twin, nameof(item.RouterConfig).ToCamelCase(), item.RouterConfig);
         }
     }
 }
