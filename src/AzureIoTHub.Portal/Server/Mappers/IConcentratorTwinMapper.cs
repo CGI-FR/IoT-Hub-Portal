@@ -10,6 +10,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
     {
         Concentrator CreateDeviceDetails(Twin twin);
 
+        public string RetrieveClientThumbprintValue(Twin twin);
+
         void UpdateTwin(Twin twin, Concentrator item);
     }
 }

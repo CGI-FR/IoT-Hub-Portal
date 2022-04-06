@@ -52,7 +52,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             }
             catch (IndexOutOfRangeException)
             {
-                // clientThumbprint array is empty
+                // clientThumbprint array is empty in the device twin
                 return null;
             }
         }

@@ -81,6 +81,68 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
         }
 
         [Test]
+        public void RetrieveClientThumbprintValueStateUnderTestExpectedBehavior()
+        {
+            // Arrange
+            var concentratorTwinMapper = CreateConcentratorTwinMapper();
+            var twin = new Twin();
+            var expected = Guid.NewGuid().ToString();
+            twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()] = new List<string>() { expected };
+
+            // Act
+            var result = concentratorTwinMapper.RetrieveClientThumbprintValue(twin);
+
+            // Assert
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void RetrieveClientThumbprintNotExistShouldReturnNull()
+        {
+            // Arrange
+            var concentratorTwinMapper = CreateConcentratorTwinMapper();
+            var twin = new Twin();
+
+            // Act
+            var result = concentratorTwinMapper.RetrieveClientThumbprintValue(twin);
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void RetrieveClientThumbprintEmptyArrayShouldReturnNull()
+        {
+            // Arrange
+            var concentratorTwinMapper = CreateConcentratorTwinMapper();
+            var twin = new Twin();
+            twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()] = new List<string>();
+
+
+            // Act
+            var result = concentratorTwinMapper.RetrieveClientThumbprintValue(twin);
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void RetrieveClientThumbprintBadFormatShouldReturnNull()
+        {
+            // Arrange
+            var concentratorTwinMapper = CreateConcentratorTwinMapper();
+            var twin = new Twin();
+            twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()] = Guid.NewGuid().ToString();
+
+
+            // Act
+            var result = concentratorTwinMapper.RetrieveClientThumbprintValue(twin);
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [Test]
         public void UpdateTwinStateUnderTestExpectedBehavior()
         {
             // Arrange
