@@ -3,10 +3,6 @@
 
 namespace AzureIoTHub.Portal.Client.Validators
 {
-    //using System;
-    //using System.Collections.Generic;
-    //using System.Linq;
-    //using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using FluentValidation;
 

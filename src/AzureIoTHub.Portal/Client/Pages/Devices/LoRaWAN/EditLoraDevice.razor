@@ -13,7 +13,7 @@
                     <MudGrid>
                         <MudItem xs="12">
                             <MudGrid>
-                                @if (LoRaDevice.UseOTAA)
+                                @if (LoRaDeviceModel.UseOTAA)
                                 {
                                     <MudItem xs="12" md="6">
                                         <MudTextField @bind-Value="@LoRaDevice.AppEUI" Label="OTAA App EUI" For="@(() => LoRaDevice.AppEUI)" ReadOnly="true" Variant="Variant.Outlined" Required="true"></MudTextField>
@@ -160,6 +160,9 @@
 
     [Parameter]
     public LoRaDeviceDetailsValidator LoraValidator { get; set; }
+
+    [Parameter]
+    public LoRaDeviceModel LoRaDeviceModel { get; set; }
 
     [Parameter]
     public IEnumerable<DeviceModelCommand> Commands { get; set; }

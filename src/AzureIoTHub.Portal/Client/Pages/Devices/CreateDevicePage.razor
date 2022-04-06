@@ -44,7 +44,7 @@
                                         <MudGrid>
                                             <MudItem xs="12" md="6">
                                                 <MudAutocomplete T="DeviceModel"
-                                                                 ValueChanged=@ChangeModel
+                                                                 @bind-Value="DeviceModel"
                                                                  SearchFunc="@Search"
                                                                  Label="Model*"
                                                                  Dense=true
@@ -219,7 +219,14 @@
     private DeviceDetails Device { get; set; } = new DeviceDetails();
 
     private IEnumerable<DeviceModel> DeviceModelList { get; set; } = new List<DeviceModel>();
-    private DeviceModel DeviceModel = null;
+    private DeviceModel _deviceModel;
+
+    private DeviceModel DeviceModel
+    {
+        get { return _deviceModel; }
+        set { ChangeModel(value); }
+    }
+
     private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
     private List<DevicePropertyValue> Properties = new List<DevicePropertyValue>();
 
@@ -317,6 +324,8 @@
     private async Task ChangeModel(DeviceModel model)
     {
         Properties.Clear();
+
+        _deviceModel = model;
 
         Device = new DeviceDetails
             {
