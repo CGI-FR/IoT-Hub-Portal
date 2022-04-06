@@ -183,7 +183,7 @@
                 @if (IsLoRa && Device != null && Commands != null)
                 {
                     <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Device as LoRaDeviceDetails).IsValid ? "" : "color: red")>
-                        <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" Commands="@Commands" />
+                        <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" LoRaDeviceModel="@(DeviceModel as LoRaDeviceModel)" Commands="@Commands" />
                     </MudTabPanel>
                 }
             </MudTabs>
@@ -227,7 +227,7 @@
         {
             Device = await Http.GetFromJsonAsync<LoRaDeviceDetails>($"{ApiUrlBase}/{DeviceID}");
             Commands = await Http.GetFromJsonAsync<DeviceModelCommand[]>($"/api/lorawan/models/{Device.ModelId}/commands");
-            DeviceModel = await Http.GetFromJsonAsync<DeviceModel>($"api/lorawan/models/{Device.ModelId}");
+            DeviceModel = await Http.GetFromJsonAsync<LoRaDeviceModel>($"api/lorawan/models/{Device.ModelId}");
         }
         else
         {

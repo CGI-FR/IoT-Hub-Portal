@@ -47,12 +47,12 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
                 GatewayID = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.GatewayID)),
                 SensorDecoder = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.SensorDecoder)),
+                UseOTAA = !string.IsNullOrEmpty(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppEUI))),
                 AppEUI = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppEUI)),
                 AppKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppKey)),
                 DevAddr = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.DevAddr)),
                 AppSKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppSKey)),
                 NwkSKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.NwkSKey)),
-                UseOTAA = bool.Parse(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.UseOTAA)) ?? "True"),
                 Deduplication = Enum.TryParse<DeduplicationMode>(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.Deduplication)), out var deduplication) ? deduplication : DeduplicationMode.None,
                 PreferredWindow = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.PreferredWindow)), out var preferedWindow) ? preferedWindow : null,
                 Supports32BitFCnt = bool.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceBase.Supports32BitFCnt)), out var boolResult) ? boolResult : null,
@@ -106,36 +106,32 @@ namespace AzureIoTHub.Portal.Server.Mappers
             Helpers.DeviceHelper.SetTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures), "true");
 
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
-            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.UseOTAA), item.UseOTAA.ToString());
 
-            // Update the twin properties
-            if (item.UseOTAA)
-            {
-                Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppEUI), item.AppEUI);
-                Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppKey), item.AppKey);
-            }
-            else
-            {
-                Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.NwkSKey), item.NwkSKey);
-                Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppSKey), item.AppSKey);
-                Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.DevAddr), item.DevAddr);
-            }
+            // Update OTAA settings
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppEUI), item.AppEUI); // TODO : Remove if provided by the model
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppKey), item.AppKey);
+
+            // Update ABP settings
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.NwkSKey), item.NwkSKey);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppSKey), item.AppSKey);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.DevAddr), item.DevAddr);
 
             Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.GatewayID), item.GatewayID);
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.SensorDecoder), item.SensorDecoder);
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.SensorDecoder), item.SensorDecoder); // TODO : Remove if provided by the model
 
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.Supports32BitFCnt), item.Supports32BitFCnt);
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.RXDelay), item.RXDelay);
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.RX2DataRate), item.RX2DataRate);
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.RX1DROffset), item.RX1DROffset);
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.ABPRelaxMode), item.ABPRelaxMode);
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.KeepAliveTimeout), item.KeepAliveTimeout);
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.FCntDownStart), item.FCntDownStart);
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.FCntResetCounter), item.FCntResetCounter);
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.FCntUpStart), item.FCntUpStart);
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.Deduplication), item.Deduplication);
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.Downlink), item.Downlink);
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.PreferredWindow), item.PreferredWindow);
+            // Updates device properties
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.Supports32BitFCnt), item.Supports32BitFCnt); // TODO : Remove if provided by the model
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.RXDelay), item.RXDelay); // TODO : Remove if provided by the model
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.RX2DataRate), item.RX2DataRate); // TODO : Remove if provided by the model
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.RX1DROffset), item.RX1DROffset); // TODO : Remove if provided by the model
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.ABPRelaxMode), item.ABPRelaxMode); // TODO : Remove if provided by the model
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.KeepAliveTimeout), item.KeepAliveTimeout); // TODO : Remove if provided by the model
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.FCntDownStart), item.FCntDownStart); // TODO : Remove if provided by the model
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.FCntResetCounter), item.FCntResetCounter); // TODO : Remove if provided by the model
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.FCntUpStart), item.FCntUpStart); // TODO : Remove if provided by the model
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.Deduplication), item.Deduplication); // TODO : Remove if provided by the model
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.Downlink), item.Downlink); // TODO : Remove if provided by the model
+            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.PreferredWindow), item.PreferredWindow); // TODO : Remove if provided by the model
 
             if (item.Tags != null)
             {
