@@ -96,7 +96,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.ServicesHealthCheck
 
             var mockTable = this.mockRepository.Create<TableClient>();
 
-            var responseCreateIfNotExist = this.mockRepository.Create<Response<TableItem>>();
             var mockResponse = this.mockRepository.Create<Response>();
 
             _ = this.mockTableClientFactory
