@@ -1002,7 +1002,7 @@ None
 > 200 Response
 
 ```
-{"items":[{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientCertificateThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"NetID":[0],"JoinEui":[["string"]],"region":"string","hwspec":"string","freq_range":[0],"DRs":[[0]],"sx1301_conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0}}],"nocca":true,"nodc":true,"nodwell":true}}],"totalItems":0,"nextPage":"string"}
+{"items":[{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"NetID":[0],"JoinEui":[["string"]],"region":"string","hwspec":"string","freq_range":[0],"DRs":[[0]],"sx1301_conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0}}],"nocca":true,"nodc":true,"nodwell":true}}],"totalItems":0,"nextPage":"string"}
 ```
 
 ```json
@@ -1013,7 +1013,7 @@ None
       "deviceName": "string",
       "loraRegion": "string",
       "deviceType": "string",
-      "clientCertificateThumbprint": "string",
+      "clientThumbprint": "string",
       "isConnected": true,
       "isEnabled": true,
       "alreadyLoggedInOnce": true,
@@ -1096,7 +1096,7 @@ None
   "deviceName": "string",
   "loraRegion": "string",
   "deviceType": "string",
-  "clientCertificateThumbprint": "string",
+  "clientThumbprint": "string",
   "isConnected": true,
   "isEnabled": true,
   "alreadyLoggedInOnce": true,
@@ -1202,7 +1202,7 @@ None
   "deviceName": "string",
   "loraRegion": "string",
   "deviceType": "string",
-  "clientCertificateThumbprint": "string",
+  "clientThumbprint": "string",
   "isConnected": true,
   "isEnabled": true,
   "alreadyLoggedInOnce": true,
@@ -1311,7 +1311,7 @@ None
 > 200 Response
 
 ```
-{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientCertificateThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"NetID":[0],"JoinEui":[["string"]],"region":"string","hwspec":"string","freq_range":[0],"DRs":[[0]],"sx1301_conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0}}],"nocca":true,"nodc":true,"nodwell":true}}
+{"deviceId":"string","deviceName":"string","loraRegion":"string","deviceType":"string","clientThumbprint":"string","isConnected":true,"isEnabled":true,"alreadyLoggedInOnce":true,"routerConfig":{"NetID":[0],"JoinEui":[["string"]],"region":"string","hwspec":"string","freq_range":[0],"DRs":[[0]],"sx1301_conf":[{"property1":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0},"property2":{"enable":true,"freq":0,"radio":0,"if":0,"bandwidth":0,"spread_factor":0}}],"nocca":true,"nodc":true,"nodwell":true}}
 ```
 
 ```json
@@ -1320,7 +1320,7 @@ None
   "deviceName": "string",
   "loraRegion": "string",
   "deviceType": "string",
-  "clientCertificateThumbprint": "string",
+  "clientThumbprint": "string",
   "isConnected": true,
   "isEnabled": true,
   "alreadyLoggedInOnce": true,
@@ -3094,7 +3094,7 @@ LoRaWAN Concentrator Channel configuration.
   "deviceName": "string",
   "loraRegion": "string",
   "deviceType": "string",
-  "clientCertificateThumbprint": "string",
+  "clientThumbprint": "string",
   "isConnected": true,
   "isEnabled": true,
   "alreadyLoggedInOnce": true,
@@ -3155,7 +3155,7 @@ LoRaWAN Concentrator.
 |deviceName|string|true|none|The name of the device.|
 |loraRegion|string|true|none|The lora region.|
 |deviceType|string¦null|false|none|The type of the device.|
-|clientCertificateThumbprint|string¦null|false|none|The client certificate thumbprint.|
+|clientThumbprint|string¦null|false|none|The client certificate thumbprint.|
 |isConnected|boolean|false|none|`true` if this instance is connected; otherwise, `false`.|
 |isEnabled|boolean|false|none|`true` if this instance is enabled; otherwise, `false`.|
 |alreadyLoggedInOnce|boolean|false|none|`true` if [already logged in once]; otherwise, `false`.|
@@ -3176,7 +3176,7 @@ LoRaWAN Concentrator.
       "deviceName": "string",
       "loraRegion": "string",
       "deviceType": "string",
-      "clientCertificateThumbprint": "string",
+      "clientThumbprint": "string",
       "isConnected": true,
       "isEnabled": true,
       "alreadyLoggedInOnce": true,
