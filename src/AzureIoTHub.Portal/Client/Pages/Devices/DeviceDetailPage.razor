@@ -249,19 +249,11 @@
         await form.Validate();
         bool tagValidationError = CheckTagsError();
 
-
-
         if (!standardValidator.Validate(Device).IsValid
             || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid)
             || tagValidationError)
         {
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
-
-            //if (IsLoRa)
-            //{
-            //    var loraValidation = this.loraValidator.Validate(this.Device as LoRaDeviceDetails);
-            //    loraValidation.Errors.ForEach(x => Console.WriteLine(x.ErrorMessage));
-            //}
 
             return;
         }
@@ -269,13 +261,17 @@
         HttpResponseMessage result;
 
         if (IsLoRa)
+        {
             result = await Http.PutAsJsonAsync(ApiUrlBase, Device as LoRaDeviceDetails);
+        }
         else
+        {
             result = await Http.PutAsJsonAsync(ApiUrlBase, Device);
 
-        result.EnsureSuccessStatusCode();
+            result.EnsureSuccessStatusCode();
 
-        await Http.PostAsJsonAsync($"{ApiUrlBase}/{DeviceID}/properties", Properties);
+            result = await Http.PostAsJsonAsync($"{ApiUrlBase}/{DeviceID}/properties", Properties);
+        }
 
         result.EnsureSuccessStatusCode();
 
