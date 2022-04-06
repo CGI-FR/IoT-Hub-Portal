@@ -100,6 +100,28 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
         }
 
         [Test]
+        public void ValidateBadFormatClientThumbprintShouldReturnError()
+        {
+            // Arrange
+            var concentratorValidator = new ConcentratorValidator();
+            var concentrator = new Concentrator()
+            {
+                DeviceId = "0123456789abcdef",
+                DeviceName = Guid.NewGuid().ToString(),
+                LoraRegion = Guid.NewGuid().ToString(),
+                ClientThumbprint = Guid.NewGuid().ToString()
+            };
+
+            // Act
+            var concentratorValidation = concentratorValidator.Validate(concentrator);
+
+            // Assert
+            Assert.IsFalse(concentratorValidation.IsValid);
+            Assert.AreEqual(1, concentratorValidation.Errors.Count);
+            Assert.AreEqual(concentratorValidation.Errors[0].ErrorMessage, $"ClientThumbprint must contain 40 hexadecimal characters.");
+        }
+
+        [Test]
         public void ValidateAllFieldsEmptyShouldReturnError()
         {
             // Arrange

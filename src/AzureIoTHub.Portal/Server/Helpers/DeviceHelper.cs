@@ -16,12 +16,12 @@ namespace AzureIoTHub.Portal.Server.Helpers
     public static class DeviceHelper
     {
         /// <summary>
-        /// This function genefates the symmetricKey of a device
+        /// This function generates the symmetricKey of a device
         /// from its Id.
         /// </summary>
         /// <param name="deviceId">the device id.</param>
         /// <param name="attestation">the enrollment group attestation.</param>
-        /// <returns>string.</returns>
+        /// <returns>The device symmetric key.</returns>
         public static string RetrieveSymmetricKey(string deviceId, SymmetricKeyAttestation attestation)
         {
             ArgumentNullException.ThrowIfNull(attestation, nameof(attestation));
@@ -34,12 +34,12 @@ namespace AzureIoTHub.Portal.Server.Helpers
         }
 
         /// <summary>
-        /// Checks if the specific property exists within the device twin,
+        /// Checks if the specific tag exists within the device twin,
         /// Returns the corresponding value if so, else returns null.
         /// </summary>
         /// <param name="item">the device twin.</param>
         /// <param name="tagName">the tag property.</param>
-        /// <returns>string.</returns>
+        /// <returns>The corresponding tag value, or null if it doesn't exist.</returns>
         public static string RetrieveTagValue(Twin item, string tagName)
         {
             ArgumentNullException.ThrowIfNull(item, nameof(item));
@@ -74,17 +74,17 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// </summary>
         /// <param name="twin">Device twin.</param>
         /// <param name="propertyName">Property to retrieve.</param>
-        /// <returns>Corresponding property value, or null if it doesn't exist.</returns>
+        /// <returns>The corresponding property value, or null if it doesn't exist.</returns>
         public static string RetrieveDesiredPropertyValue(Twin twin, string propertyName)
         {
             ArgumentNullException.ThrowIfNull(twin, nameof(twin));
 
             return twin.Properties.Desired.Contains(propertyName) ?
-                twin.Properties.Desired[propertyName] : null;
+                twin.Properties.Desired[propertyName].ToString() : null;
         }
 
         /// <summary>
-        /// Set the deisred property value.
+        /// Set the desired property value.
         /// </summary>
         /// <param name="twin">Device twin.</param>
         /// <param name="propertyName">Property to set.</param>
@@ -112,7 +112,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
         }
 
         /// <summary>
-        /// this function retreive and return the number of connected
+        /// this function retrieve and return the number of connected
         /// devices.
         /// </summary>
         /// <param name="twin">the twin of the device.</param>

@@ -49,7 +49,10 @@
                                                               Label="Device name" Variant="Variant.Outlined" Required="true" />
                                             </MudItem>
                                             <MudItem xs="12" md="6">
-                                                <MudTextField For="@(()=> concentrator.ClientCertificateThumbprint)" @bind-Value="@concentrator.ClientCertificateThumbprint" Label="Client certificate thumbprint" Variant="Variant.Outlined" />
+                                                <MudTextField For="@(()=> concentrator.ClientThumbprint)"
+                                                              Mask="@maskThumbprint"
+                                                              HelperText="ClientThumbprint must contain 40 hexadecimal characters"
+                                                              @bind-Value="@concentrator.ClientThumbprint" Label="Client Certificate Thumbprint" Variant="Variant.Outlined" />
                                             </MudItem>
                                             <MudItem xs="12" md="6">
                                                 <MudSelect T="string" For="@(()=> concentrator.LoraRegion)" Label="Region" Variant="Variant.Outlined" @bind-Value="@concentrator.LoraRegion" Required="true">
@@ -91,6 +94,15 @@
     private Concentrator concentrator = new Concentrator();
     private MudForm form;
     private ConcentratorValidator concentratorValidator = new ConcentratorValidator();
+
+    public PatternMask maskThumbprint = new PatternMask("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
+    {
+            MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
+            CleanDelimiters = false,
+            Transformation = AllUpperCase
+    };
+
+    private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];
 
     /// <summary>
     /// Sends a POST request to the ConcentratorsController, to add the new device lora concentrator to the Azure IoT Hub
