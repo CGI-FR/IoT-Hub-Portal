@@ -33,6 +33,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
         }
 
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IEnumerable<ConfigListItem>> Get()
         {
@@ -49,6 +50,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task CreateConfig(DeviceConfig deviceConfig)
         {
             var desiredProperties = new Dictionary<string, object>();
@@ -60,7 +62,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
 
             var deviceModelTwin = new TwinCollection();
             _ = this.deviceProvisioningServiceManager.CreateEnrollmentGroupFromModelAsync(deviceConfig.model.ModelId, deviceConfig.model.Name, deviceModelTwin);
-            await this.configService.RolloutDeviceConfiguration(deviceConfig.model.ModelId, desiredProperties, deviceConfig.Tags);
+            await this.configService.RolloutDeviceConfiguration(deviceConfig.ConfigurationID, desiredProperties, deviceConfig.Tags);
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task DeleteConfig(string deviceConfigId)
+        {
+            await this.configService.DeleteConfiguration(deviceConfigId);
         }
     }
 }

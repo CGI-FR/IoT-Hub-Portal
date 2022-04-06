@@ -50,8 +50,14 @@ namespace AzureIoTHub.Portal.Models.v10
 
         public DeviceModel model { get; set; }
 
-        public Dictionary<string, object> Tags { get; set; }
+        public Dictionary<string, string> Tags { get; set; }
 
         public Dictionary<string, object> Properties { get; set; }
+
+        public DeviceConfig()
+        {
+            Tags = new Dictionary<string, string>();
+            Properties = new Dictionary<string, object>();
+        }
     }
 }

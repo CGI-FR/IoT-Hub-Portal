@@ -6,6 +6,7 @@
 @attribute [Authorize]
 @inject HttpClient Http
 @inject IDialogService DialogService
+@inject NavigationManager navigationManager
 
 <h3>DeviceConfigurationListPage</h3>
 <MudGrid>
@@ -37,10 +38,10 @@
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="ID" Style="word-break: break-all;">
-                            <a href="/edge/configurations/@context.ConfigurationID">@context.ConfigurationID</a>
+                            <a href="/device/configurations/@context.ConfigurationID">@context.ConfigurationID</a>
                         </MudTd>
                         <MudTd DataLabel="Conditions" Style="word-break: break-all; ">
-                            <a href="/edge/configurations/@context.ConfigurationID">@context.Conditions</a>
+                            <a href="/device/configurations/@context.ConfigurationID">@context.Conditions</a>
                         </MudTd>
                         <MudTd DataLabel="System Metrics" Style="text-align: center;">
                             @context.MetricsTargeted targeted<br />
@@ -53,7 +54,7 @@
                         <MudTd DataLabel="Priority" Style="text-align: center">@context.Priority</MudTd>
                         <MudTd DataLabel="Creation date" Style="text-align: center;">@context.CreationDate</MudTd>
                         <MudTd DataLabel="Details" Style="text-align: center">
-                            <a href="/edge/configurations/@context.ConfigurationID"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                            <a href="/device/configurations/@context.ConfigurationID"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
                         </MudTd>
             </RowTemplate>
             <NoRecordsContent>
@@ -96,6 +97,7 @@
 
     private void AddDevice()
     {
+        navigationManager.NavigateTo("/device_configurations/new");
     }
 
     private void Search()

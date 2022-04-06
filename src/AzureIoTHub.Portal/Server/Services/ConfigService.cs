@@ -7,7 +7,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Server.Extensions;
     using Microsoft.Azure.Devices;
 
     public class ConfigService : IConfigService
@@ -39,6 +38,11 @@ namespace AzureIoTHub.Portal.Server.Services
             return this.registryManager.GetConfigurationAsync(id);
         }
 
+        public async Task DeleteConfiguration(string configId)
+        {
+            await this.registryManager.RemoveConfigurationAsync(configId);
+        }
+
         public async Task RolloutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
@@ -68,7 +72,7 @@ namespace AzureIoTHub.Portal.Server.Services
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }
 
-        public async Task RolloutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties, Dictionary<string, object> targetTags)
+        public async Task RolloutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties, Dictionary<string, string> targetTags)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
@@ -95,7 +99,7 @@ namespace AzureIoTHub.Portal.Server.Services
             var targetCondition = string.Empty;
             foreach (var item in targetTags)
             {
-                targetCondition = $",tags.{StringExtension.ToCamelCase(nameof(item.Key))} = '{item.Value}'";
+                targetCondition = $" and tags.{item.Key} = '{item.Value}'";
             }
 
             newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'" + targetCondition;

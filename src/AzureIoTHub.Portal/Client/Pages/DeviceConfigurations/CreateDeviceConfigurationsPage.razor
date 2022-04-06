@@ -9,41 +9,41 @@
 @inject HttpClient HttpClient
 @inject ISnackbar Snackbar
 
-<h3>CreateDeviceConfigurationsPage</h3>
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device Configuration</MudText>
 
-<MudForm Model="deviceConfiguration">
-    <MudCard>
-        <MudCardContent>
+<MudForm Model="deviceConfiguration" @ref="form">
+
+    <MudExpansionPanels MultiExpansion="true">
+        <MudGrid>
             <MudItem xs="12">
-                <MudTextField @bind-Value="deviceConfiguration.ConfigurationID" Label="Id" Variant="Variant.Outlined" Dense=true Required/>
+                    <MudTextField @bind-Value="deviceConfiguration.ConfigurationID" Label="Id" Variant="Variant.Outlined" Dense=true Required/>
             </MudItem>
                     
             <MudItem xs="12">
-                <MudSelect @bind-Value="deviceConfiguration.model" Label="Target model" Variant="Variant.Outlined" Dense=true AnchorOrigin="Origin.BottomCenter">
-                    @if (Models != null)
-                    {
-                        @foreach (var item in Models)
+                    <MudSelect
+                    T="DeviceModel"
+                    ValueChanged="@(async (DeviceModel model) => await LoadProperties(model))"
+                    Label="Target model" Variant="Variant.Outlined"
+                    Dense=true AnchorOrigin="Origin.BottomCenter">
+                        @if (Models != null)
                         {
-                            <MudSelectItem Value="@(item)"> @item.Name</MudSelectItem>
+                            @foreach (var item in Models)
+                            {
+                                <MudSelectItem Value="@(item)"> @item.Name</MudSelectItem>
+                            }
                         }
-                    }
-                </MudSelect>
+                    </MudSelect>
             </MudItem>
-        </MudCardContent>
-    </MudCard>
-
-    <MudExpansionPanels MultiExpansion="true">
+        </MudGrid>
 
         <MudGrid>
-
             <MudItem xs="12">
-
                 <MudExpansionPanel Text="Target conditions">
                     <TitleContent><MudText Typo="Typo.h6">Target conditions</MudText></TitleContent>
                     <ChildContent>
                         <MudGrid>
                             <MudItem xs="12" md="9">
-                                <MudTable Items="@Tags" Dense=true Hover=true Bordered=true Striped=true>
+                                <MudTable Items="@TagsValues" Dense=true Hover=true Bordered=true Striped=true>
                                     <ColGroup>
                                         <col style="width: 40%;" />
                                         <col style="width: 40%;" />
@@ -55,18 +55,29 @@
                                         <MudTh Style="text-align: center">Delete</MudTh>
                                     </HeaderContent>
                                     <RowTemplate Context="TagContexte">
+                                        
                                         <MudTd DataLabel="Name" Style="word-break: break-all;">
                                             <MudForm Model="TagContexte">
-                                                <MudTextField @bind-Value="@TagContexte.Name" Label="Name"
+                                                    <MudSelect
+                                                    T="string"
+                                                    Label="Tag Name"
+                                                    Required="true"
+                                                    @bind-Value="@TagContexte.Name"
+                                                    For="@(() => TagContexte.Name)"
                                                     HelperText="Name that will be registered in the device twin" HelperTextOnFocus="true"
-                                                    For="@(() => TagContexte.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                                    Margin="Margin.Dense" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" >
+                                                        @foreach (var item in TagsValues)
+                                                        {
+                                                            <MudSelectItem Value="@(item.Name)" >@item.Name</MudSelectItem>
+                                                        }
+                                                    </MudSelect>
                                             </MudForm>
                                         </MudTd>
                                         <MudTd>
                                             <MudForm Model="TagContexte">
-                                                <MudTextField @bind-Value="@TagContexte.Label" Label="Label"
-                                                    HelperText="The label shown to the user" HelperTextOnFocus="true"
-                                                    For="@(() => TagContexte.Label)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                                <MudTextField @bind-Value="@TagContexte.Value" Label="Value"
+                                                    HelperText="The Value of the tag" HelperTextOnFocus="true"
+                                                    For="@(() => TagContexte.Value)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                                             </MudForm>
                                         </MudTd>
                                         <MudTd DataLabel="Delete" Style="text-align: center">
@@ -81,9 +92,7 @@
                         </MudGrid>
                     </ChildContent>
                 </MudExpansionPanel>
-
             </MudItem>
-
         </MudGrid>
 
         <MudGrid>
@@ -105,17 +114,30 @@
                                     <MudTh Style="text-align: center">Delete</MudTh>
                                  </HeaderContent>
                                  <RowTemplate Context="PropertiesContext">
-                                      <MudTd DataLabel="Name" Style="word-break: break-all;">
-                                          @if (Properties.Count > 0)
-                                          {
-                                            <MudForm Model="PropertiesContext">
+                                     @if (Properties.Count > 0)
+                                     {
+                                        <MudTd DataLabel="Value" Style="word-break: break-all;">
+                                            <MudForm>
                                                 <MudTextField @bind-Value="@PropertiesContext.Name" Label="Name"
-                                                    HelperText="Name that will be registered in the device twin" HelperTextOnFocus="true"
+                                                    HelperText="the value of the property" HelperTextOnFocus="true"
                                                     For="@(() => PropertiesContext.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                                             </MudForm>
-                                          }
                                         </MudTd>
+                                        <MudTd DataLabel="Value" Style="word-break: break-all;">
+                                            <MudForm>
+                                                <MudTextField @bind-Value="@PropertiesContext.Value" Label="Value"
+                                                    HelperText="the value of the property" HelperTextOnFocus="true"
+                                                    For="@(() => PropertiesContext.Value)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                            </MudForm>
+                                        </MudTd>
+                                        <MudTd DataLabel="Delete" Style="text-align: center">
+                                            <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteProperty(PropertiesContext))"></MudIconButton>
+                                        </MudTd>
+                                      }
                                  </RowTemplate>
+                                 <FooterContent>
+                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddProperty">Add a new Property</MudButton>
+                                 </FooterContent>
                             </MudTable>
 
                         </MudItem>
@@ -124,36 +146,99 @@
             </MudItem>
         </MudGrid>
     </MudExpansionPanels>
+
+    <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save">Save Changes</MudButton>
+    </MudItem>
 </MudForm>
 
 
 @code {
-    List<DeviceTag> Tags { get; set; }
+    private MudForm form;
+
+    private List<TagValue> TagsValues = new List<TagValue>();
+    private List<DevicePropertyValue> Properties = new List<DevicePropertyValue>();
+
     private List<DeviceModel> Models;
-    private DeviceConfig deviceConfiguration { get; set; } = new DeviceConfig();
-    private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
+    private DeviceConfig deviceConfiguration = new DeviceConfig();
 
     protected override async Task OnInitializedAsync()
     {
-        Tags = await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"api/settings/device-tags");
+        await LoadTags();
         Models = await HttpClient.GetFromJsonAsync<List<DeviceModel>>("api/models");
 
-        await LoadProperties();
+    }
+
+    private async Task Save()
+    {
+        await form.Validate();
+
+        foreach (var item in TagsValues)
+        {
+            deviceConfiguration.Tags.Add(item.Name, item.Value);
+        }
+
+        foreach (var item in Properties)
+        {
+            deviceConfiguration.Properties.Add(item.Name, item.Value);
+        }
+
+        var result = await HttpClient.PostAsJsonAsync($"api/device/configurations", deviceConfiguration);
+
+        result.EnsureSuccessStatusCode();
+    }
+
+    private async Task LoadTags()
+    {
+        var list = await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"api/settings/device-tags");
+
+        foreach (var item in list)
+        {
+            TagsValues.Add(new TagValue{ Name = item.Name, Value = ""});
+        }
     }
 
     private void AddTag()
     {
+        var last = TagsValues.LastOrDefault();
 
+        if (TagsValues.Count == 0 || (last.Name is not null && last.Value is not null))
+        {
+            TagsValues.Add(new TagValue());
+        }
     }
 
-    private async Task LoadProperties()
+    private void DeleteTag(TagValue item)
     {
-        var list = await HttpClient.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"api/models/{deviceConfiguration.model.ModelId}/properties");
+        TagsValues.Remove(item);
+    }
+
+    private async Task LoadProperties(DeviceModel model)
+    {
+        deviceConfiguration.model = model;
+        var list = await HttpClient.GetFromJsonAsync<IEnumerable<DevicePropertyValue>>($"api/models/{model.ModelId}/properties");
         this.Properties = list.ToList();
     }
 
-    private void DeleteTag(DeviceTag item)
+    private void AddProperty()
     {
-        Tags.Remove(item);
+        var last = Properties.LastOrDefault();
+
+        if (Properties.Count == 0 || (last.Name is not null && last.Value is not null))
+        {
+            Properties.Add(new DevicePropertyValue());
+        }
+    }
+
+    private void DeleteProperty(DevicePropertyValue item)
+    {
+        Properties.Remove(item);
+    }
+
+    private class TagValue
+    {
+        public string Name { get; set; }
+
+        public string Value { get; set; }
     }
 }
