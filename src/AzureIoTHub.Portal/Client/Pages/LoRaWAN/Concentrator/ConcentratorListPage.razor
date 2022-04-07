@@ -12,7 +12,7 @@
 <MudGrid>
 
     <MudItem xs="12">
-        <MudTable ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@loading">
+        <MudTable ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading">
             <ColGroup>
                 <col style="width: 60%;" />
                 <col style="width: 10%;" />
@@ -100,7 +100,7 @@
 
     private Dictionary<int, string> Pages { get; set; } = new();
 
-    private bool loading { get; set; } = true;
+    private bool IsLoading { get; set; } = true;
 
     private async Task<TableData<Concentrator>> LoadItems(TableState state)
     {
@@ -121,7 +121,7 @@
 
         _ = Pages.TryAdd(state.Page + 1, result.NextPage);
 
-        loading = false;
+        IsLoading = false;
 
         return new TableData<Concentrator>
             {
