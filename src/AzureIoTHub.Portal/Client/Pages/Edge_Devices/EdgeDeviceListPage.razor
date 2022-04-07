@@ -54,7 +54,7 @@
         </MudExpansionPanels>
     </MudItem>
     <MudItem xs="12">
-        <MudTable ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table">
+        <MudTable ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading">
             <ColGroup>
                 <col style="width: 40%;" />
                 <col style="width: 10%;" />
@@ -135,6 +135,8 @@
     DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
     private Dictionary<int, string> Pages { get; set; } = new();
 
+    private bool IsLoading { get; set; } = true;
+
     private void Search()
     {
         Pages.Clear();
@@ -160,6 +162,8 @@
         }
 
         _ = Pages.TryAdd(state.Page + 1, result.NextPage);
+
+        IsLoading = false;
 
         return new TableData<IoTEdgeListItem>
             {
