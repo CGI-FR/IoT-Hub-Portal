@@ -25,7 +25,7 @@
     else
     {
         <MudItem xs="12">
-            <MudTable Items="@result" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
+            <MudTable Items="@result" Loading="@IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
                 <ColGroup>
                     <col style="width: 5%;" />
                     <col style="width: 30%;" />
@@ -76,6 +76,12 @@
                 <PagerContent>
                     <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
                 </PagerContent>
+                <NoRecordsContent>
+                    <MudText>No matching records found</MudText>
+                </NoRecordsContent>
+                <LoadingContent>
+                    <MudText>Loading...</MudText>
+                </LoadingContent>
             </MudTable>
         </MudItem>
     }
@@ -83,12 +89,15 @@
 </MudGrid>
 
 @code {
-    private DeviceModel[] result;
+
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
+    private List<DeviceModel> result = new();
+    private bool IsLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadDeviceModels();
+        IsLoading = false;
     }
 
     private void AddDeviceModel()
@@ -104,7 +113,7 @@
     {
         try
         {
-            result = await httpClient.GetFromJsonAsync<DeviceModel[]>("api/models");
+            result = await httpClient.GetFromJsonAsync<List<DeviceModel>>("api/models");
         }
         catch (AccessTokenNotAvailableException exception)
         {
