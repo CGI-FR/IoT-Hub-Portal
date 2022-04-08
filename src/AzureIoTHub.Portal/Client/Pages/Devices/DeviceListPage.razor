@@ -73,7 +73,7 @@
         </MudExpansionPanels>
     </MudItem>
     <MudItem xs="12">
-        <MudTable ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table">
+        <MudTable ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading">
             <ColGroup>
                 <col style="width: 5%;" />
                 <col style="width: 40%;" />
@@ -177,6 +177,8 @@
     private MudTable<DeviceListItem> table;
     private Dictionary<string, string> searchTags = new();
 
+    private bool IsLoading { get; set; } = true;
+
     private Dictionary<int, string> Pages { get; set; } = new();
 
     private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
@@ -217,6 +219,8 @@
         }
 
         _ = Pages.TryAdd(state.Page + 1, result.NextPage);
+
+        IsLoading = false;
 
         return new TableData<DeviceListItem>
             {
