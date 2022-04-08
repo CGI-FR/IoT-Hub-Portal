@@ -10,7 +10,7 @@
                         <MudItem xs="12">
                             <MudGrid>
                                 <MudItem md="6" xs="12">
-                                    <MudSwitch @bind-Checked="@LoRaDeviceModel.UseOTAA" Disabled="true">@(LoRaDeviceModel.UseOTAA ? "OTAA setting enable" : "APB setting enable")</MudSwitch>
+                                    <MudSwitch @bind-Checked="@LoRaDeviceModel.UseOTAA" Disabled="true">@(LoRaDeviceModel.UseOTAA ? "OTAA setting enable" : "ABP setting enable")</MudSwitch>
                                 </MudItem>
                                 @if (!LoRaDeviceModel.UseOTAA)
                                 {

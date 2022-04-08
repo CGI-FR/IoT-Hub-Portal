@@ -26,7 +26,7 @@ namespace AzureIoTHub.Portal.Client.Validators
                 .When(x => x.UseOTAA)
                 .WithMessage("AppKey is required.");
 
-            // APB Settings
+            // ABP Settings
 
             _ = RuleFor(x => x.AppSKey)
                 .NotEmpty()
