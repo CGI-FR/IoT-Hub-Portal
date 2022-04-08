@@ -15,12 +15,12 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         public string AppKey { get; set; }
 
         /// <summary>
-        ///  The APB AppSKey.
+        ///  The ABP AppSKey.
         /// </summary>
         public string AppSKey { get; set; }
 
         /// <summary>
-        ///  The APB NwkSKey.
+        ///  The ABP NwkSKey.
         /// </summary>
         public string NwkSKey { get; set; }
 

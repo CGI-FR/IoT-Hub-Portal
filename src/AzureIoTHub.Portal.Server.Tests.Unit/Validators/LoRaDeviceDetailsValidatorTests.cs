@@ -34,7 +34,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
         }
 
         [Test]
-        public void ValidateValidAPBDevice()
+        public void ValidateValidABPDevice()
         {
 
             // Arrange
@@ -81,7 +81,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
         [TestCase("AppSKey", "", "NwkSKeyValue", "DevAddrValue")]
         [TestCase("NwkSKey", "AppSKeyValue", "", "DevAddrValue")]
         [TestCase("DevAddr", "AppSKeyValue", "NwkSKeyValue", "")]
-        public void ValidateMissingAPBFieldShouldReturnError(
+        public void ValidateMissingABPFieldShouldReturnError(
             string testedValue,
             string AppSkeyValue,
             string NwkSKeyValue,
