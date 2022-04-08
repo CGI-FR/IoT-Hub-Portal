@@ -3484,12 +3484,12 @@
           },
           "appSKey": {
             "type": "string",
-            "description": "The APB AppSKey.",
+            "description": "The ABP AppSKey.",
             "nullable": true
           },
           "nwkSKey": {
             "type": "string",
-            "description": "The APB NwkSKey.",
+            "description": "The ABP NwkSKey.",
             "nullable": true
           },
           "devAddr": {

@@ -3873,8 +3873,8 @@ LoRa WAN Device details.
 |fCntResetCounter|integer(int32)¦null|false|none|Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.|
 |keepAliveTimeout|integer(int32)¦null|false|none|Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.<br>The default is none, which causes the connection to not be dropped.|
 |appKey|string¦null|false|none|The OTAA App Key.|
-|appSKey|string¦null|false|none|The APB AppSKey.|
-|nwkSKey|string¦null|false|none|The APB NwkSKey.|
+|appSKey|string¦null|false|none|The ABP AppSKey.|
+|nwkSKey|string¦null|false|none|The ABP NwkSKey.|
 |devAddr|string¦null|false|none|Unique identifier that allows<br>the device to be recognized.|
 |alreadyLoggedInOnce|boolean|false|none|A value indicating whether the device has already joined the platform.|
 |dataRate|string¦null|false|none|The Device Current Datarate,<br>This value will be only reported if you are using Adaptive Data Rate.|
