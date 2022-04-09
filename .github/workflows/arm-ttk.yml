@@ -1,0 +1,31 @@
+name: Validate ARM templates
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'templates/**'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'templates/**'
+  workflow_dispatch:
+
+jobs:
+  validate_arm_templates:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Checkout Azure/arm-ttk
+        uses: actions/checkout@v3
+        with: 
+          repository: Azure/arm-ttk
+          path: arm-ttk
+      
+      - name: Run arm-ttk
+        shell: pwsh
+        run: |
+          Import-Module ./arm-ttk/arm-ttk/arm-ttk.psd1
+          Test-AzTemplate -TemplatePath ./templates
