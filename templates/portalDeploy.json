@@ -56,7 +56,6 @@
     "deviceImageContainerName": "device-images",
     "iamScopeName": "API.Access",
     "storageAccountId": "[concat(resourceGroup().id, '/providers/', 'Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-    "enrollmentGroupName": "DemoGatewayEnrollmentGroup",
     "appInsightName": "[concat(parameters('uniqueSolutionPrefix'), 'insight')]"
   },
   "resources": [
