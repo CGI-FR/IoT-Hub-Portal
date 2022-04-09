@@ -198,8 +198,8 @@
             },
             {
               "name": "LoRaFeature__Enabled",
-              "value": "[variables('isLoRaFeatureEnabled')]"
-            }
+              "value": "[parameters('isLoRaFeatureEnabled')]"
+            },
             {
               "name": "LoRaRegionRouterConfig__Url",
               "value": "https://raw.githubusercontent.com/Azure/iotedge-lorawan-starterkit/dev/Tools/Cli-LoRa-Device-Provisioning/DefaultRouterConfig/"
