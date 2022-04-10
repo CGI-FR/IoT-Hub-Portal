@@ -34,11 +34,12 @@ namespace AzureIoTHub.Portal.Client
             _ = builder.Services.AddFileReaderService(o => o.UseWasmSharedBuffer = true);
 
             // Supply HttpClient instances that include access tokens when making requests to the server project
-            _ = builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
-            _ = builder.Services.AddBlazoredModal();
+            _ = builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"))
+                .AddScoped<ClipboardService>()
+                .AddScoped<LocalStorageService>();
 
+            _ = builder.Services.AddBlazoredModal();
             _ = builder.Services.AddMudServices();
-            _ = builder.Services.AddScoped<ClipboardService>();
 
             await ConfigureOidc(builder);
             await ConfigurePortalSettings(builder);
