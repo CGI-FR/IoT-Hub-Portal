@@ -63,7 +63,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             if (!string.IsNullOrWhiteSpace(searchType))
             {
-                filter += $" AND devices.tags.deviceType = '{ searchType }'";
+                filter += $" AND devices.tags.type = '{ searchType }'";
             }
 
             var emptyResult = new PaginationResult<Twin>
