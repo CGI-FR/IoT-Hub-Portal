@@ -82,7 +82,7 @@ jobs:
       - name: Install widdershins
         run: npm install -g widdershins
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: swagger-doc
 
