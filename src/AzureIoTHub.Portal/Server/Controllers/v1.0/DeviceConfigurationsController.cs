@@ -45,7 +45,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
 
         [HttpGet("{configurationId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<DeviceConfig> Get(string configurationId)
+        public async Task<ActionResult<DeviceConfig>> Get(string configurationId)
         {
             var configItem = await this.configService.GetConfigItem(configurationId);
 
@@ -54,9 +54,19 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             // Define a regular expression for repeated words.
             var rx = new Regex(@"tags[.](?<tagName>\w*)[ ]?[=][ ]?\'(?<tagValue>[\w-]*)\'", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-            // Find matches.
+            if (string.IsNullOrEmpty(configItem.TargetCondition))
+            {
+                return this.BadRequest("Target condition is null.");
+            }
+
             var matches = rx.Matches(configItem.TargetCondition);
 
+            if (matches.Count == 0)
+            {
+                return this.BadRequest("Target condition is not formed as expected.");
+            }
+
+            // Find matches.
             foreach (Match match in matches)
             {
                 var groups = match.Groups;
@@ -78,7 +88,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
                 _ = deviceConfig.Tags.Remove("modelId");
             }
 
-            return deviceConfig;
+            return this.Ok(deviceConfig);
         }
 
         [HttpPost]
@@ -92,7 +102,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
                 desiredProperties.Add($"properties.desired.{item.Key}", JsonSerializer.Serialize(item.Value));
             }
 
-            await this.configService.RolloutDeviceConfiguration(deviceConfig.model.ModelId, desiredProperties, deviceConfig.ConfigurationID, deviceConfig.Tags);
+            await this.configService.RolloutDeviceConfiguration(deviceConfig.model.ModelId, desiredProperties, deviceConfig.ConfigurationID, deviceConfig.Tags, 100);
         }
 
         [HttpDelete]

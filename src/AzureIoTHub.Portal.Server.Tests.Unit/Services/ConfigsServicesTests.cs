@@ -69,7 +69,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
                 .ReturnsAsync(new[]
                 {
-                    new Configuration("aaa"),
+                    new Configuration("aaa") { Priority = 100 },
                     iotEdgeConfiguration
                 });
 
@@ -105,7 +105,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
-        public async Task RolloutDeviceConfigurationStateUnderTestExpectedBehavior(string modelId, string configurationPrefix)
+        public async Task RolloutDeviceModelConfigurationStateUnderTestExpectedBehavior(string modelId, string configurationPrefix)
         {
             // Arrange
             var configsServices = CreateConfigsServices();
@@ -122,7 +122,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 .ReturnsAsync((Configuration conf) => conf);
 
             // Act
-            await configsServices.RolloutDeviceConfiguration(modelId, desiredProperties);
+            await configsServices.RolloutDeviceModelConfiguration(modelId, desiredProperties);
 
             // Assert
             Assert.IsNotNull(newConfiguration);
@@ -141,7 +141,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
-        public async Task WhenConfigurationExistsRolloutDeviceConfigurationShouldRemoveIt(string deviceType, string configurationPrefix)
+        public async Task WhenConfigurationExistsRolloutDeviceModelConfigurationShouldRemoveIt(string deviceType, string configurationPrefix)
         {
             // Arrange
             var configsServices = CreateConfigsServices();
@@ -167,7 +167,108 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 .Returns(Task.CompletedTask);
 
             // Act
-            await configsServices.RolloutDeviceConfiguration(deviceType, desirectProperties);
+            await configsServices.RolloutDeviceModelConfiguration(deviceType, desirectProperties);
+
+            // Assert
+            this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());
+            this.mockRegistryManager.Verify(c => c.RemoveConfigurationAsync(It.IsAny<string>()), Times.Once());
+        }
+
+        [Test]
+        public async Task DeleteConfigurationShouldDeleteToRegistry()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+
+            var configurationId = Guid.NewGuid().ToString();
+
+            _ = this.mockRegistryManager.Setup(c => c.RemoveConfigurationAsync(It.Is<string>(x => x == configurationId)))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await configsServices.DeleteConfiguration(configurationId);
+
+            // Assert
+            this.mockRegistryManager.Verify(c => c.RemoveConfigurationAsync(It.Is<string>(x => x == configurationId)), Times.Once());
+        }
+
+        [TestCase]
+        public async Task RolloutDeviceConfigurationStateUnderTestExpectedBehavior()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+            var desiredProperties = new Dictionary<string, object>
+            {
+                { "prop1", "value1" }
+            };
+            var targetTags = new Dictionary<string, string>
+            {
+                { "tag1", "tagValue1" }
+            };
+            var configurationName = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
+
+            Configuration newConfiguration = null;
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ReturnsAsync(Array.Empty<Configuration>());
+
+            _ = this.mockRegistryManager.Setup(c => c.AddConfigurationAsync(It.Is<Configuration>(x => x.Id.StartsWith(configurationName))))
+                .Callback((Configuration conf) => newConfiguration = conf)
+                .ReturnsAsync((Configuration conf) => conf);
+
+            // Act
+            await configsServices.RolloutDeviceConfiguration(modelId, desiredProperties, configurationName, targetTags);
+
+            // Assert
+            Assert.IsNotNull(newConfiguration);
+            Assert.IsTrue(newConfiguration.Id.StartsWith(configurationName, StringComparison.OrdinalIgnoreCase));
+            Assert.AreEqual(0, newConfiguration.Content.ModulesContent.Count);
+            Assert.AreEqual(0, newConfiguration.Content.ModuleContent.Count);
+            Assert.AreEqual(1, newConfiguration.Content.DeviceContent.Count);
+            Assert.AreEqual(desiredProperties, newConfiguration.Content.DeviceContent);
+            Assert.AreEqual($"tags.modelId = '{modelId}' and tags.tag1 = 'tagValue1'", newConfiguration.TargetCondition);
+            Assert.AreEqual(0, newConfiguration.Priority);
+
+            this.mockRepository.VerifyAll();
+            this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());
+        }
+
+        [Test]
+        public async Task WhenConfigurationExistsRolloutDeviceConfigurationShouldRemoveIt()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+            var desiredProperties = new Dictionary<string, object>
+            {
+                { "prop1", "value1" }
+            };
+            var targetTags = new Dictionary<string, string>
+            {
+                { "tag1", "tagValue1" }
+            };
+            var configurationName = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
+
+            Configuration newConfiguration;
+            var suffix = Guid.NewGuid().ToString();
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.IsAny<int>()))
+                .ReturnsAsync(new Configuration[]
+                {
+                    new Configuration($"{configurationName}-{suffix}"),
+                    new Configuration($"null-{suffix}")
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.AddConfigurationAsync(It.Is<Configuration>(x => x.Id.StartsWith(configurationName))))
+                .Callback((Configuration conf) => newConfiguration = conf)
+                .ReturnsAsync((Configuration conf) => conf);
+
+            _ = this.mockRegistryManager.Setup(c => c.RemoveConfigurationAsync(It.Is<string>(x => x == $"{configurationName}-{suffix}")))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await configsServices.RolloutDeviceConfiguration(modelId, desiredProperties, configurationName, targetTags);
 
             // Assert
             this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());

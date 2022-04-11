@@ -30,7 +30,9 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
-            return configurations.Where(c => c.Content.ModulesContent.Count == 0);
+            return configurations
+                .Where(c => c.Priority > 0)
+                .Where(c => c.Content.ModulesContent.Count == 0);
         }
 
         public Task<Configuration> GetConfigItem(string id)
@@ -43,7 +45,7 @@ namespace AzureIoTHub.Portal.Server.Services
             await this.registryManager.RemoveConfigurationAsync(configId);
         }
 
-        public async Task RolloutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties)
+        public async Task RolloutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
@@ -72,7 +74,12 @@ namespace AzureIoTHub.Portal.Server.Services
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }
 
-        public async Task RolloutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties, string configurationId, Dictionary<string, string> targetTags)
+        public async Task RolloutDeviceConfiguration(
+            string modelId,
+            Dictionary<string, object> desiredProperties,
+            string configurationId,
+            Dictionary<string, string> targetTags,
+            int priority = 0)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
@@ -104,6 +111,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'" + targetCondition;
             newConfiguration.Content.DeviceContent = desiredProperties;
+            newConfiguration.Priority = priority;
 
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }

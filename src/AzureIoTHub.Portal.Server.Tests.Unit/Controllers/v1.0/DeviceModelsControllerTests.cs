@@ -345,7 +345,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 It.IsAny<TwinCollection>()))
                 .ReturnsAsync(mockEnrollmentGroup.Object);
 
-            _ = this.mockConfigService.Setup(c => c.RolloutDeviceConfiguration(
+            _ = this.mockConfigService.Setup(c => c.RolloutDeviceModelConfiguration(
                 It.Is<string>(x => x == requestModel.ModelId),
                 It.IsAny<Dictionary<string, object>>()))
                 .Returns(Task.CompletedTask);
@@ -399,7 +399,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 It.IsAny<TwinCollection>()))
                 .ReturnsAsync(mockEnrollmentGroup.Object);
 
-            _ = this.mockConfigService.Setup(c => c.RolloutDeviceConfiguration(
+            _ = this.mockConfigService.Setup(c => c.RolloutDeviceModelConfiguration(
                 It.Is<string>(x => x == requestModel.ModelId),
                 It.IsAny<Dictionary<string, object>>()))
                 .Returns(Task.CompletedTask);
@@ -474,7 +474,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 It.IsAny<TwinCollection>()))
                 .ReturnsAsync(mockEnrollmentGroup.Object);
 
-            _ = this.mockConfigService.Setup(c => c.RolloutDeviceConfiguration(
+            _ = this.mockConfigService.Setup(c => c.RolloutDeviceModelConfiguration(
                 It.Is<string>(x => x == requestModel.ModelId),
                 It.IsAny<Dictionary<string, object>>()))
                 .Returns(Task.CompletedTask);
