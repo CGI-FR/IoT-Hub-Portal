@@ -2,6 +2,12 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Location for the resources."
+      }
+    },
     "uniqueSolutionPrefix": {
       "type": "string",
       "metadata": {
@@ -56,8 +62,8 @@
     "deviceImageContainerName": "device-images",
     "iamScopeName": "API.Access",
     "storageAccountId": "[concat(resourceGroup().id, '/providers/', 'Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-    "enrollmentGroupName": "DemoGatewayEnrollmentGroup",
-    "appInsightName": "[concat(parameters('uniqueSolutionPrefix'), 'insight')]"
+    "appInsightName": "[concat(parameters('uniqueSolutionPrefix'), 'insight')]",
+    "functionAppDefaultHost": "[concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/host/default/')]"
   },
   "resources": [
     {
@@ -69,7 +75,7 @@
       "type": "Microsoft.Devices/provisioningServices",
       "apiVersion": "2021-10-15",
       "name": "[variables('dpsName')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "sku": {
         "name": "S1",
         "tier": "Standard",
@@ -79,8 +85,8 @@
         "state": "Active",
         "iotHubs": [
           {
-            "connectionString": "[concat('HostName=', variables('iotHubName'), '.azure-devices.net;SharedAccessKeyName=', variables('iotHubOwnerPolicyName'), ';SharedAccessKey=', listKeys(resourceId('Microsoft.Devices/IotHubs/IotHubKeys', variables('iotHubName'), variables('iotHubOwnerPolicyName')), '2017-01-19').primaryKey)]",
-            "location": "[resourceGroup().location]"
+            "connectionString": "[concat('HostName=', variables('iotHubName'), '.azure-devices.net;SharedAccessKeyName=', variables('iotHubOwnerPolicyName'), ';SharedAccessKey=', listKeys(resourceId('Microsoft.Devices/IotHubs/IotHubKeys', variables('iotHubName'), variables('iotHubOwnerPolicyName')), '2021-07-02').primaryKey)]",
+            "location": "[parameters('location')]"
           }
         ],
         "allocationPolicy": "Hashed"
@@ -90,7 +96,7 @@
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2021-02-01",
       "name": "[variables('servicePlanName')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "sku": {
         "name": "B1",
         "tier": "Basic",
@@ -116,7 +122,7 @@
       "type": "Microsoft.Web/sites",
       "apiVersion": "2021-02-01",
       "name": "[variables('siteName')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Devices/provisioningServices', variables('dpsName'))]",
         "[resourceId('Microsoft.Web/serverfarms', variables('servicePlanName'))]"
@@ -145,7 +151,7 @@
             {
               "name": "IoTHub__ConnectionString",
               "type": "Custom",
-              "connectionString": "[concat('HostName=', variables('iotHubName'), '.azure-devices.net;SharedAccessKeyName=', variables('iotHubOwnerPolicyName'), ';SharedAccessKey=', listKeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', variables('iotHubName'), variables('iotHubOwnerPolicyName')), '2017-01-19').primaryKey)]"
+              "connectionString": "[concat('HostName=', variables('iotHubName'), '.azure-devices.net;SharedAccessKeyName=', variables('iotHubOwnerPolicyName'), ';SharedAccessKey=', listKeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', variables('iotHubName'), variables('iotHubOwnerPolicyName')), '2021-07-02').primaryKey)]"
             },
             {
               "name": "IoTDPS__ConnectionString",
@@ -160,7 +166,7 @@
             {
               "name": "LoRaKeyManagement__Code",
               "type": "Custom",
-              "connectionString": "[listkeys(concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/host/default/'),'2021-02-01').masterKey]"
+              "connectionString": "[listkeys(variables('functionAppDefaultHost'),'2021-02-01').masterKey]"
             }
           ],
           "appSettings": [
@@ -206,7 +212,7 @@
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(resourceId(resourceGroup().name,'Microsoft.Insights/components', variables('appInsightName')), '2015-05-01', 'Full').properties.InstrumentationKey]"
+              "value": "[reference(resourceId('Microsoft.Insights/components', variables('appInsightName')), '2020-02-02', 'Full').properties.InstrumentationKey]"
             }
           ]
         },
