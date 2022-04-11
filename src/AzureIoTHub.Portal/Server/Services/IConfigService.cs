@@ -15,7 +15,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         Task RolloutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties);
 
-        Task RolloutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties, Dictionary<string, string> targetTags);
+        Task RolloutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties, string configurationId, Dictionary<string, string> targetTags);
 
         Task<Configuration> GetConfigItem(string id);
 

@@ -4,14 +4,14 @@
 namespace AzureIoTHub.Portal.Server.Controllers.v10
 {
     using System.Collections.Generic;
+    using System.Text.Json;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
-    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Azure.Devices.Shared;
 
     [ApiController]
     [Route("api/device/configurations")]
@@ -22,15 +22,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
         /// </summary>
         private readonly IConfigService configService;
 
-        /// <summary>
-        /// The device provisioning service manager.
-        /// </summary>
-        private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
-
-        public DeviceConfigurationsController(IConfigService configService, IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
+        public DeviceConfigurationsController(IConfigService configService)
         {
             this.configService = configService;
-            this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
         }
 
         [HttpGet]
@@ -49,6 +43,44 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             return results;
         }
 
+        [HttpGet("{configurationId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<DeviceConfig> Get(string configurationId)
+        {
+            var configItem = await this.configService.GetConfigItem(configurationId);
+
+            var deviceConfig = ConfigHelper.CreateDeviceConfig(configItem);
+
+            // Define a regular expression for repeated words.
+            var rx = new Regex(@"tags[.](?<tagName>\w*)[ ]?[=][ ]?\'(?<tagValue>[\w-]*)\'", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+            // Find matches.
+            var matches = rx.Matches(configItem.TargetCondition);
+
+            foreach (Match match in matches)
+            {
+                var groups = match.Groups;
+
+                deviceConfig.Tags.Add(groups["tagName"].Value, groups["tagValue"].Value);
+            }
+
+            foreach (var item in configItem.Content.DeviceContent)
+            {
+                deviceConfig.Properties.Add(item.Key, item.Value);
+            }
+
+            if (deviceConfig.Tags.ContainsKey("modelId"))
+            {
+                deviceConfig.model = new DeviceModel
+                {
+                    ModelId = deviceConfig.Tags["modelId"]
+                };
+                _ = deviceConfig.Tags.Remove("modelId");
+            }
+
+            return deviceConfig;
+        }
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task CreateConfig(DeviceConfig deviceConfig)
@@ -57,12 +89,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
 
             foreach (var item in deviceConfig.Properties)
             {
-                desiredProperties.Add($"properties.desired.{item.Key}", item.Value);
+                desiredProperties.Add($"properties.desired.{item.Key}", JsonSerializer.Serialize(item.Value));
             }
 
-            var deviceModelTwin = new TwinCollection();
-            _ = this.deviceProvisioningServiceManager.CreateEnrollmentGroupFromModelAsync(deviceConfig.model.ModelId, deviceConfig.model.Name, deviceModelTwin);
-            await this.configService.RolloutDeviceConfiguration(deviceConfig.ConfigurationID, desiredProperties, deviceConfig.Tags);
+            await this.configService.RolloutDeviceConfiguration(deviceConfig.model.ModelId, desiredProperties, deviceConfig.ConfigurationID, deviceConfig.Tags);
         }
 
         [HttpDelete]

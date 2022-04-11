@@ -72,12 +72,12 @@ namespace AzureIoTHub.Portal.Server.Services
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }
 
-        public async Task RolloutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties, Dictionary<string, string> targetTags)
+        public async Task RolloutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties, string configurationId, Dictionary<string, string> targetTags)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
 #pragma warning disable CA1308 // Normalize strings to uppercase
-            var configurationNamePrefix = modelId?.Trim()
+            var configurationNamePrefix = configurationId?.Trim()
                                                 .ToLowerInvariant()
                                                 .Replace(" ", "-", StringComparison.OrdinalIgnoreCase);
 #pragma warning restore CA1308 // Normalize strings to uppercase
@@ -99,7 +99,7 @@ namespace AzureIoTHub.Portal.Server.Services
             var targetCondition = string.Empty;
             foreach (var item in targetTags)
             {
-                targetCondition = $" and tags.{item.Key} = '{item.Value}'";
+                targetCondition += $" and tags.{item.Key} = '{item.Value}'";
             }
 
             newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'" + targetCondition;

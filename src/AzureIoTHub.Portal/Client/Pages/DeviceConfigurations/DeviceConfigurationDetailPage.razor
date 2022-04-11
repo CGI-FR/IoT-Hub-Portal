@@ -1,4 +1,4 @@
-﻿@page "/device_configurations/new"
+﻿@page "/device/configurations/{ConfigId}"
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Models
 @using System.ComponentModel.DataAnnotations
@@ -11,31 +11,25 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager navigationManager
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device Configuration</MudText>
+@if (deviceConfig == null)
+{
 
-<MudForm Model="deviceConfiguration" @ref="form">
+}
+else
+{
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Configuration detail</MudText>
+    
+    <MudForm Model="deviceConfig" @ref="form">
 
     <MudExpansionPanels MultiExpansion="true">
         <MudExpansionPanel Disabled="true" IsInitiallyExpanded="true" HideIcon="true">
             <MudGrid>
                 <MudItem xs="12">
-                        <MudTextField @bind-Value="deviceConfiguration.ConfigurationID" Label="Id" Variant="Variant.Outlined" Dense=true Required/>
+                        <MudTextField @bind-Value="deviceConfig.ConfigurationID" Label="Id" Variant="Variant.Outlined" ReadOnly="true" Required/>
                 </MudItem>
-                        
+
                 <MudItem xs="12">
-                        <MudSelect
-                        T="DeviceModel"
-                        ValueChanged="@(async (DeviceModel model) => await LoadProperties(model))"
-                        Label="Target model" Variant="Variant.Outlined"
-                        Dense=true AnchorOrigin="Origin.BottomCenter">
-                            @if (Models != null)
-                            {
-                                @foreach (var item in Models)
-                                {
-                                    <MudSelectItem Value="@(item)"> @item.Name</MudSelectItem>
-                                }
-                            }
-                        </MudSelect>
+                        <MudTextField @bind-Value="deviceConfig.model.Name" Label="Model" Variant="Variant.Outlined" ReadOnly="true" Required />
                 </MudItem>
             </MudGrid>
         </MudExpansionPanel>
@@ -59,7 +53,7 @@
                                         <MudTh Style="text-align: center">Delete</MudTh>
                                     </HeaderContent>
                                     <RowTemplate Context="TagContexte">
-                                        
+
                                         <MudTd DataLabel="Name" Style="word-break: break-all;">
                                             <MudForm Model="TagContexte">
                                                     <MudSelect
@@ -70,10 +64,10 @@
                                                     For="@(() => TagContexte.Name)"
                                                     HelperText="Name that will be registered in the device twin" HelperTextOnFocus="true"
                                                     Margin="Margin.Dense" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" >
-                                                        @foreach (var item in TagsName)
-                                                        {
-                                                            <MudSelectItem Value="@(item)" >@item</MudSelectItem>
-                                                        }
+                                                    @foreach (var item in TagsName)
+                                                    {
+                                                                    <MudSelectItem Value="@(item)" >@item</MudSelectItem>
+                                                    }
                                                     </MudSelect>
                                             </MudForm>
                                         </MudTd>
@@ -118,76 +112,73 @@
                                     <MudTh Style="text-align: center">Delete</MudTh>
                                  </HeaderContent>
                                  <RowTemplate >
-                                     @if (Properties.Any())
-                                     {
-                                        <MudTd DataLabel="Name" Style="word-break: break-all;">
-                                            <MudForm>
-                                                <MudSelect
+                                    @if (Properties.Any())
+                                    {
+                                                <MudTd DataLabel="Name" Style="word-break: break-all;">
+                                                    <MudForm>
+                                                        <MudSelect
                                                 Label="Name"
                                                 Required="true"
                                                 ValueChanged="@((DevicePropertyValue property) => UpdateProperty(property, context))"
                                                 For="@(() => context)"
                                                 Margin="Margin.Dense" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" >
                                                     @foreach (var item in PropertiesList)
-                                                    {
-                                                        <MudSelectItem Value="@(item)" >@item.Name</MudSelectItem>
-                                                    }
+                                                {
+                                                                <MudSelectItem Value="@(item)" >@item.Name</MudSelectItem>
+                                                }
                                                 </MudSelect>
                                             </MudForm>
                                         </MudTd>
-                                        <MudTd DataLabel="Value" Style="word-break: break-all;">
-                                            <MudForm>
+                                                <MudTd DataLabel="Value" Style="word-break: break-all;">
+                                                    <MudForm>
                                                 @switch (context?.PropertyType)
                                                 {
                                                     case DevicePropertyType.Boolean:
-                                                        <MudCheckBox @bind-Checked="@context.Value" Label="@context.DisplayName" Color="@Color.Primary" Converter="@(new StringToBoolConverter())" TriState="true" />
+                                                                                <MudCheckBox @bind-Checked="@context.Value" Label="@context.DisplayName" Color="@Color.Primary" Converter="@(new StringToBoolConverter())" TriState="true" />
                                                         break;
                                                     case DevicePropertyType.Double:
-                                                        <MudTextField @bind-Value="@context.Value"
+                                                                                <MudTextField @bind-Value="@context.Value"
                                                               Label="@context.DisplayName"
                                                               Variant="Variant.Outlined"
                                                               Validation=@((string c) => string.IsNullOrEmpty(c) || double.TryParse(c, out var result))
                                                               Clearable="true" />
                                                         break;
                                                     case DevicePropertyType.Float:
-                                                        <MudTextField @bind-Value="@context.Value"
+                                                                                <MudTextField @bind-Value="@context.Value"
                                                               Label="@context.DisplayName"
                                                               Variant="Variant.Outlined"
                                                               Validation=@((string c) => string.IsNullOrEmpty(c) || float.TryParse(c, out var result))
                                                               Clearable="true" />
                                                         break;
                                                     case DevicePropertyType.Integer:
-                                                        <MudTextField @bind-Value="@context.Value"
+                                                                                <MudTextField @bind-Value="@context.Value"
                                                               Label="@context.DisplayName"
                                                               Variant="Variant.Outlined"
                                                               Validation=@((string c) => string.IsNullOrEmpty(c) || int.TryParse(c, out var result))
                                                               Clearable="true" />
                                                         break;
                                                     case DevicePropertyType.Long:
-                                                        <MudTextField @bind-Value="@context.Value"
+                                                                                <MudTextField @bind-Value="@context.Value"
                                                               Label="@context.DisplayName"
                                                               Variant="Variant.Outlined"
                                                               Validation=@((string c) => string.IsNullOrEmpty(c) || long.TryParse(c, out var result))
                                                               Clearable="true" />
                                                         break;
                                                     case DevicePropertyType.String:
-                                                        <MudTextField @bind-Value="@context.Value" Label="@context.DisplayName" Format="F1" Variant="Variant.Outlined" Clearable="true" />
+                                                                                <MudTextField @bind-Value="@context.Value" Label="@context.DisplayName" Format="F1" Variant="Variant.Outlined" Clearable="true" />
                                                         break;
                                                     default:
                                                         break;
                                                 }
-                                                @*<MudTextField @bind-Value="@context.Value" Label="Value"
-                                                    HelperText="the value of the property" HelperTextOnFocus="true"
-                                                    For="@(() => context.Value)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>*@
-                                            </MudForm>
-                                        </MudTd>
-                                        <MudTd DataLabel="Delete" Style="text-align: center">
-                                            <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteProperty(context))"></MudIconButton>
-                                        </MudTd>
-                                      }
+                                                    </MudForm>
+                                                </MudTd>
+                                                <MudTd DataLabel="Delete" Style="text-align: center">
+                                                    <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteProperty(context))"></MudIconButton>
+                                                </MudTd>
+                                    }
                                  </RowTemplate>
                                  <FooterContent>
-                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddProperty">Add a new Property</MudButton>
+                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" Disabled="@(cantAddProperty)" OnClick="AddProperty">Add a new Property</MudButton>
                                  </FooterContent>
                             </MudTable>
 
@@ -201,72 +192,35 @@
     <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save">Save Changes</MudButton>
     </MudItem>
-</MudForm>
-
+    </MudForm>
+}
 
 @code {
+    [Parameter]
+    public string ConfigId { get; set; }
+
+    public DeviceConfig deviceConfig { get; set; } = new DeviceConfig();
+
     private MudForm form;
 
+    // List of tags we see
     private List<TagValue> TagsValues;
+    // List of tags in the select
     private List<string> TagsName = new List<string>();
     private bool cantAddTags = false;
 
+    // List of properties we see
     private List<DevicePropertyValue> Properties = new List<DevicePropertyValue>();
+    // List of properties in the select
     private List<DevicePropertyValue> PropertiesList = new List<DevicePropertyValue>();
-
-    private List<DeviceModel> Models;
-    private DeviceConfig deviceConfiguration = new DeviceConfig();
+    private bool cantAddProperty = false;
 
     protected override async Task OnInitializedAsync()
     {
+        deviceConfig = await HttpClient.GetFromJsonAsync<DeviceConfig>($"api/device/configurations/{ConfigId}");
+        deviceConfig.model = await HttpClient.GetFromJsonAsync<DeviceModel>($"api/models/{deviceConfig.model.ModelId}");
         await LoadTags();
-        Models = await HttpClient.GetFromJsonAsync<List<DeviceModel>>("api/models");
-
-    }
-
-    private async Task Save()
-    {
-        await form.Validate();
-
-        foreach (var item in TagsValues)
-        {
-            deviceConfiguration.Tags.Add(item.Name, item.Value);
-        }
-
-        foreach (var item in Properties)
-        {
-            switch (item.PropertyType)
-            {
-                case DevicePropertyType.String:
-                    deviceConfiguration.Properties.Add(item.Name, item.Value);
-                    break;
-                case DevicePropertyType.Boolean:
-                    deviceConfiguration.Properties.Add(item.Name, bool.Parse(item.Value));
-                    break;
-                case DevicePropertyType.Integer:
-                    deviceConfiguration.Properties.Add(item.Name, int.Parse(item.Value));
-                    break;
-                case DevicePropertyType.Long:
-                    deviceConfiguration.Properties.Add(item.Name, long.Parse(item.Value));
-                    break;
-                case DevicePropertyType.Float:
-                    deviceConfiguration.Properties.Add(item.Name, float.Parse(item.Value));
-                    break;
-                case DevicePropertyType.Double:
-                    deviceConfiguration.Properties.Add(item.Name, double.Parse( item.Value));
-                    break;
-            }
-            //deviceConfiguration.Properties.Add(item.Name, item.Value);
-        }
-
-        var result = await HttpClient.PostAsJsonAsync($"api/device/configurations", deviceConfiguration);
-
-        result.EnsureSuccessStatusCode();
-
-        // Prompts a snack bar to inform the action was successful
-        Snackbar.Add($"{deviceConfiguration.ConfigurationID} has been successfully created!", Severity.Success);
-
-        navigationManager.NavigateTo("/device/configurations");
+        await LoadProperties();
     }
 
     private async Task LoadTags()
@@ -279,19 +233,27 @@
         }
 
         TagsValues = new List<TagValue>(TagsName.Count);
+        foreach (var item in deviceConfig.Tags)
+        {
+            TagsValues.Add(new TagValue
+            {
+                Name = item.Key,
+                Value = item.Value
+            });
+        }
     }
 
     private void AddTag()
     {
         var last = TagsValues.LastOrDefault();
 
-        if (( !TagsValues.Any() || (last.Name is not null && last.Value is not null)) && TagsName.Count > 0)
+        if ((!TagsValues.Any() || (last.Name is not null && last.Value is not null)) && TagsName.Count > 0)
         {
             TagsValues.Add(new TagValue
-            {
-                Name = string.Empty,
-                Value = string.Empty
-            });
+                {
+                    Name = string.Empty,
+                    Value = string.Empty
+                });
 
             if (last != null)
             {
@@ -323,12 +285,20 @@
         cantAddTags = false;
     }
 
-    private async Task LoadProperties(DeviceModel model)
+    private async Task LoadProperties()
     {
-        deviceConfiguration.model = model;
-        var list = await HttpClient.GetFromJsonAsync<IEnumerable<DevicePropertyValue>>($"api/models/{model.ModelId}/properties");
+        var list = await HttpClient.GetFromJsonAsync<IEnumerable<DevicePropertyValue>>($"api/models/{deviceConfig.model.ModelId}/properties");
         this.PropertiesList = list.ToList();
-        //this.Properties = PropertiesList;
+
+        Properties.Capacity = list.Count();
+        foreach (var item in deviceConfig.Properties)
+        {
+            Properties.Add(new DevicePropertyValue
+                {
+                    Name = item.Key,
+                    Value = item.Value.ToString()
+                });
+        }
     }
 
     private void AddProperty()
@@ -346,7 +316,7 @@
         if (propertyValueSelect.Name != propertyValue?.Name)
         {
             int index = Properties.IndexOf(propertyValue);
-            if (index!= -1)
+            if (index != -1)
             {
                 Properties[index] = propertyValueSelect;
             }
@@ -356,9 +326,27 @@
 
     private void DeleteProperty(DevicePropertyValue item)
     {
-        //PropertiesList.Add(item);
         Properties.Remove(item);
     }
+
+    private async Task Delete()
+    {
+
+    }
+
+    private async Task Save()
+    {
+
+    }
+
+    private void CanAddProperties()
+    {
+        if (Properties.Count == PropertiesList.Count)
+        {
+            cantAddProperty = true;
+        }
+    }
+
 
     private class TagValue
     {
