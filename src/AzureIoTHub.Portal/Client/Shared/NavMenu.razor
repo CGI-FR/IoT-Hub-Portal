@@ -1,9 +1,10 @@
 ﻿@using AzureIoTHub.Portal.Security;
 @using Microsoft.AspNetCore.Components.Authorization
 @using AzureIoTHub.Portal.Models.v10
+@using Blazored.LocalStorage
 @inject NavigationManager navigationManager
 @inject PortalSettings Portal
-@inject LocalStorageService LocalStorageService
+@inject ILocalStorageService LocalStorageService
 
 <AuthorizeView>
     <Authorized>
@@ -15,7 +16,7 @@
                     <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/devices">Device List</MudNavLink>
                     <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
                     <MudTooltip Text="Add device">
-                        <MudIconButton OnClick="AddDevice" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
+                        <MudIconButton id="addDeviceButton" OnClick="AddDevice" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
                     </MudTooltip>
                 </MudPaper>
 
@@ -23,7 +24,7 @@
                     <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/device-models">Device Models</MudNavLink>
                     <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
                     <MudTooltip Text="Add device model">
-                        <MudIconButton OnClick="AddDeviceModel" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
+                        <MudIconButton id="addDeviceModelButton" OnClick="AddDeviceModel" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
                     </MudTooltip>
                 </MudPaper>
             </MudNavGroup>
@@ -65,7 +66,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        collapsibleNavMenu = await LocalStorageService.GetFromLocalStorage<Dictionary<string, bool>>(collapsibleNavMenuKey)
+        collapsibleNavMenu = await LocalStorageService.GetItemAsync<Dictionary<string, bool>>(collapsibleNavMenuKey)
                              ?? new Dictionary<string, bool>();
     }
 
@@ -80,7 +81,7 @@
             collapsibleNavMenu.Add(key, value);
         }
 
-        await LocalStorageService.SetLocalStorage(collapsibleNavMenuKey, collapsibleNavMenu);
+        await LocalStorageService.SetItemAsync(collapsibleNavMenuKey, collapsibleNavMenu);
     }
 
     private bool GetExpanded(string key)

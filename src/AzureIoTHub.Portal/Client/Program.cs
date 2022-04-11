@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Client
     using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Settings;
+    using Blazored.LocalStorage;
     using Blazored.Modal;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.DependencyInjection;
@@ -35,9 +36,9 @@ namespace AzureIoTHub.Portal.Client
 
             // Supply HttpClient instances that include access tokens when making requests to the server project
             _ = builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"))
-                .AddScoped<ClipboardService>()
-                .AddScoped<LocalStorageService>();
+                .AddScoped<ClipboardService>();
 
+            _ = builder.Services.AddBlazoredLocalStorage();
             _ = builder.Services.AddBlazoredModal();
             _ = builder.Services.AddMudServices();
 
