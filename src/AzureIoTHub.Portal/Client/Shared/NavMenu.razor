@@ -1,43 +1,57 @@
 ﻿@using AzureIoTHub.Portal.Security;
 @using Microsoft.AspNetCore.Components.Authorization
 @using AzureIoTHub.Portal.Models.v10
+@using Blazored.LocalStorage
 @inject NavigationManager navigationManager
 @inject PortalSettings Portal
+@inject ILocalStorageService LocalStorageService
 
 <AuthorizeView>
     <Authorized>
         <MudNavMenu>
-            <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Devices</MudText>
-            <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
-                <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/devices">Device List</MudNavLink>
-                <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
-                <MudTooltip Text="Add device">
-                    <MudIconButton OnClick="AddDevice" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
-                </MudTooltip>
-            </MudPaper>
+            <MudNavGroup Title="Devices" Icon="@Icons.Outlined.Memory"
+                         Expanded="@GetExpanded("Devices")"
+                         ExpandedChanged="@(b => SetExpanded("Devices", b))">
+                <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/devices">Device List</MudNavLink>
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
+                    <MudTooltip Text="Add device">
+                        <MudIconButton id="addDeviceButton" OnClick="AddDevice" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
+                    </MudTooltip>
+                </MudPaper>
 
-            <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
-                <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/device-models">Device Models</MudNavLink>
-                <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
-                <MudTooltip Text="Add device model">
-                    <MudIconButton OnClick="AddDeviceModel" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
-                </MudTooltip>
-            </MudPaper>
+                <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/device-models">Device Models</MudNavLink>
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
+                    <MudTooltip Text="Add device model">
+                        <MudIconButton id="addDeviceModelButton" OnClick="AddDeviceModel" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
+                    </MudTooltip>
+                </MudPaper>
+            </MudNavGroup>
 
-            <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">IoT Edge</MudText>
-
-            <MudNavLink Href="/edge/devices">Devices</MudNavLink>
-            <MudNavLink Href="/edge/configurations">Configuration</MudNavLink>
+            <MudNavGroup Title="IoT Edge" Icon="@Icons.Outlined.DeveloperBoard"
+                         Expanded="@GetExpanded("IoTEdge")"
+                         ExpandedChanged="@(b => SetExpanded("IoTEdge", b))">
+                <MudNavLink Href="/edge/devices">Devices</MudNavLink>
+                <MudNavLink Href="/edge/configurations">Configuration</MudNavLink>
+            </MudNavGroup>
 
             @if (Portal.IsLoRaSupported)
             {
-                <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">LoRaWAN Management</MudText>
-                <MudNavLink Href="/lorawan/concentrators">Concentrators</MudNavLink>
+                <MudNavGroup Title="LoRaWAN" Icon="@Icons.Outlined.WifiTethering"
+                         Expanded="@GetExpanded("LoRaWAN")"
+                         ExpandedChanged="@(b => SetExpanded("LoRaWAN", b))">
+                    <MudNavLink Href="/lorawan/concentrators">
+                        Concentrators
+                    </MudNavLink>
+                </MudNavGroup>
             }
 
-            <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Settings</MudText>
-            <MudNavLink Href="/settings/device-tag">Device Tags</MudNavLink>
-
+            <MudNavGroup Title="Settings" Icon="@Icons.Outlined.Settings"
+                         Expanded="@GetExpanded("Settings")"
+                         ExpandedChanged="@(b => SetExpanded("Settings", b))">
+                <MudNavLink Href="/settings/device-tag">Device Tags</MudNavLink>
+            </MudNavGroup>
         </MudNavMenu>
     </Authorized>
 </AuthorizeView>
@@ -45,4 +59,38 @@
 @code {
     private void AddDevice() => navigationManager.NavigateTo("devices/new");
     private void AddDeviceModel() => navigationManager.NavigateTo("/device-models/new");
+
+    private string collapsibleNavMenuKey = "collapsibleNavMenu";
+
+    private Dictionary<string, bool> collapsibleNavMenu;
+
+    protected override async Task OnInitializedAsync()
+    {
+        collapsibleNavMenu = await LocalStorageService.GetItemAsync<Dictionary<string, bool>>(collapsibleNavMenuKey)
+                             ?? new Dictionary<string, bool>();
+    }
+
+    private async Task SetExpanded(string key, bool value)
+    {
+        if (collapsibleNavMenu.ContainsKey(key))
+        {
+            collapsibleNavMenu[key] = value;
+        }
+        else
+        {
+            collapsibleNavMenu.Add(key, value);
+        }
+
+        await LocalStorageService.SetItemAsync(collapsibleNavMenuKey, collapsibleNavMenu);
+    }
+
+    private bool GetExpanded(string key)
+    {
+        if (collapsibleNavMenu == null)
+        {
+            return true;
+        }
+
+        return !collapsibleNavMenu.TryGetValue(key, out var result) || result;
+    }
 }
