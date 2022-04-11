@@ -63,7 +63,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             if (!string.IsNullOrWhiteSpace(searchType))
             {
-                filter += $" AND devices.tags.deviceType = '{ searchType }'";
+                filter += $" AND devices.tags.type = '{ searchType }'";
             }
 
             var emptyResult = new PaginationResult<Twin>
@@ -129,12 +129,12 @@ namespace AzureIoTHub.Portal.Server.Services
 
             if (!string.IsNullOrWhiteSpace(filterDeviceType))
             {
-                filter += $" AND devices.tags.deviceType = '{ filterDeviceType }'";
+                filter += $" AND devices.tags.type = '{ filterDeviceType }'";
             }
 
             if (!string.IsNullOrWhiteSpace(excludeDeviceType))
             {
-                filter += $" AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != '{ excludeDeviceType }')";
+                filter += $" AND (NOT is_defined(tags.type) OR devices.tags.type != '{ excludeDeviceType }')";
             }
 
             if (!string.IsNullOrWhiteSpace(searchText))
