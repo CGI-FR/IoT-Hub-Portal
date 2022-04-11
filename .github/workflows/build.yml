@@ -40,7 +40,7 @@ jobs:
       working-directory: src/
     
     # Upload swagger docs to GitHub
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: success()
       with:
         name: swagger-doc
@@ -51,7 +51,7 @@ jobs:
       working-directory: src/
 
     # Upload test results as artifact
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: success() || failure()
       with:
         name: test-results
