@@ -70,17 +70,14 @@
                                                     <MudText>
                                                         <b>LoRa Device</b>
                                                     </MudText>
-                                                    <MudSwitch @bind-Checked="@IsLoRa" Color="Color.Secondary" id="@nameof(Model.SupportLoRaFeatures)">
-                                                        @if (IsLoRa)
-                                                        {
-                                                        <MudText Typo="Typo.body2">The device <b>is</b> a LoRa Device.</MudText>
-                                                        }
-                                                        else
-                                                        {
-                                                        <MudText Typo="Typo.body2">The device <b>is not</b> a LoRa Device.</MudText>
-                                                        }
-                                                </MudSwitch>
-                                            </MudItem>
+                                                    
+                                                    <MudSwitch @bind-Checked="@IsLoRa" Color="Color.Secondary" id="@nameof(Model.SupportLoRaFeatures)" Label="Support LoRa"></MudSwitch>
+                                                    @if (IsLoRa)
+                                                    {
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>is</b> a LoRa Device.</MudText>
+                                                    
+                                                    }
+                                                </MudItem>
                                             }
                                         </MudGrid>
                                     </ChildContent>
