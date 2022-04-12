@@ -10,7 +10,8 @@
                         <MudItem xs="12">
                             <MudGrid>
                                 <MudItem md="6" xs="12">
-                                    <MudSwitch id="@nameof(LoRaDeviceModel.UseOTAA)" @bind-Checked="@LoRaDeviceModel.UseOTAA" Color="Color.Primary">@(LoRaDeviceModel.UseOTAA ? "OTAA setting enabled" : "ABP setting enabled")</MudSwitch>
+                                    <MudSwitch id="@nameof(LoRaDeviceModel.UseOTAA)" @bind-Checked="@LoRaDeviceModel.UseOTAA" Color="Color.Primary" Label="Support OTAA/ABP setting"></MudSwitch>
+                                    <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">@(LoRaDeviceModel.UseOTAA ? "OTAA setting" : "ABP setting") <b>is</b> used</MudText>
                                 </MudItem>
                                 @if (!LoRaDeviceModel.UseOTAA)
                                 {
@@ -77,7 +78,12 @@
                             <MudText Typo=Typo.h5 Class="mb-4">Receive Windows</MudText>
                             <MudGrid>
                                 <MudItem xs="12">
-                                    <MudSwitch id="@nameof(LoRaDeviceModel.Downlink)" @bind-Checked="@LoRaDeviceModel.Downlink" For="@(() => LoRaDeviceModel.Downlink)" Label="Enable/disable downstream messages" Color="Color.Primary"></MudSwitch>
+                                    <MudSwitch id="@nameof(LoRaDeviceModel.Downlink)" @bind-Checked="@LoRaDeviceModel.Downlink" For="@(() => LoRaDeviceModel.Downlink)" Label="Support downstream messages" Color="Color.Primary"></MudSwitch>
+                                    @if (LoRaDeviceModel.Downlink.HasValue && LoRaDeviceModel.Downlink.Value)
+                                    {
+                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">Downstream messages <b>is</b> enabled.</MudText>
+                                                    
+                                    }
                                 </MudItem>
                                 @if (LoRaDeviceModel.Downlink.HasValue && LoRaDeviceModel.Downlink.Value)
                                 {
