@@ -224,7 +224,7 @@
     private DeviceModel DeviceModel
     {
         get { return _deviceModel; }
-        set { ChangeModel(value); }
+        set { ChangeModel(value).Wait(); }
     }
 
     private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();

@@ -3,20 +3,36 @@
 
 namespace AzureIoTHub.Portal.Models.v10
 {
+    using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
-    public class DeviceConfig : ConfigListItem
+    public class DeviceConfig
     {
-        public DeviceModel model { get; set; }
+        /// <summary>
+        /// The configuration identifier.
+        /// </summary>
+        public string ConfigurationId { get; set; }
 
-        public Dictionary<string, string> Tags { get; set; }
+        /// <summary>
+        /// The model identifier.
+        /// </summary>
+        public string ModelId { get; set; }
 
-        public Dictionary<string, object> Properties { get; set; }
+        /// <summary>
+        /// The device tags targeted by the configuration.
+        /// </summary>
+        public Dictionary<string, string> Tags { get; set; } = new();
 
-        public DeviceConfig()
-        {
-            Tags = new Dictionary<string, string>();
-            Properties = new Dictionary<string, object>();
-        }
+        /// <summary>
+        /// The configuration properties.
+        /// </summary>
+        public Dictionary<string, string> Properties { get; set; } = new();
+
+        /// <summary>
+        /// The Configuration priority.
+        /// </summary>
+        [Range(0, Int32.MaxValue)]
+        public int Priority { get; set; } = 100;
     }
 }

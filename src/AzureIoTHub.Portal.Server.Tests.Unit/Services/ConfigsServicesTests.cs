@@ -122,7 +122,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 .ReturnsAsync((Configuration conf) => conf);
 
             // Act
-            await configsServices.RolloutDeviceModelConfiguration(modelId, desiredProperties);
+            await configsServices.RollOutDeviceModelConfiguration(modelId, desiredProperties);
 
             // Assert
             Assert.IsNotNull(newConfiguration);
@@ -167,7 +167,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 .Returns(Task.CompletedTask);
 
             // Act
-            await configsServices.RolloutDeviceModelConfiguration(deviceType, desirectProperties);
+            await configsServices.RollOutDeviceModelConfiguration(deviceType, desirectProperties);
 
             // Assert
             this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());
@@ -218,7 +218,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 .ReturnsAsync((Configuration conf) => conf);
 
             // Act
-            await configsServices.RolloutDeviceConfiguration(modelId, desiredProperties, configurationName, targetTags);
+            await configsServices.RollOutDeviceConfiguration(modelId, desiredProperties, configurationName, targetTags);
 
             // Assert
             Assert.IsNotNull(newConfiguration);
@@ -268,7 +268,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 .Returns(Task.CompletedTask);
 
             // Act
-            await configsServices.RolloutDeviceConfiguration(modelId, desiredProperties, configurationName, targetTags);
+            await configsServices.RollOutDeviceConfiguration(modelId, desiredProperties, configurationName, targetTags);
 
             // Assert
             this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());

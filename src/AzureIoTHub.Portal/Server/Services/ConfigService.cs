@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Extensions;
     using Microsoft.Azure.Devices;
 
     public class ConfigService : IConfigService
@@ -45,7 +46,7 @@ namespace AzureIoTHub.Portal.Server.Services
             await this.registryManager.RemoveConfigurationAsync(configId);
         }
 
-        public async Task RolloutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties)
+        public async Task RollOutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
@@ -57,7 +58,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             foreach (var item in configurations)
             {
-                if (!item.Id.StartsWith(configurationNamePrefix, System.StringComparison.OrdinalIgnoreCase))
+                if (!item.Id.StartsWith(configurationNamePrefix, StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
@@ -74,7 +75,7 @@ namespace AzureIoTHub.Portal.Server.Services
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }
 
-        public async Task RolloutDeviceConfiguration(
+        public async Task RollOutDeviceConfiguration(
             string modelId,
             Dictionary<string, object> desiredProperties,
             string configurationId,
@@ -83,15 +84,11 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
-#pragma warning disable CA1308 // Normalize strings to uppercase
-            var configurationNamePrefix = configurationId?.Trim()
-                                                .ToLowerInvariant()
-                                                .Replace(" ", "-", StringComparison.OrdinalIgnoreCase);
-#pragma warning restore CA1308 // Normalize strings to uppercase
+            var configurationNamePrefix = configurationId.Trim().ToLowerInvariant().RemoveDiacritics();
 
             foreach (var item in configurations)
             {
-                if (!item.Id.StartsWith(configurationNamePrefix, System.StringComparison.OrdinalIgnoreCase))
+                if (!item.Id.StartsWith(configurationNamePrefix, StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
@@ -102,6 +99,7 @@ namespace AzureIoTHub.Portal.Server.Services
             var newConfiguration = new Configuration($"{configurationNamePrefix}-{DateTime.UtcNow.Ticks}");
 
             newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
+            newConfiguration.Labels.Add("configuration-id", configurationId);
 
             var targetCondition = string.Empty;
             foreach (var item in targetTags)

@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.Azure.Devices;
     using Models.v10;
     using Moq;
@@ -69,7 +70,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             _ = this.mockConfigService.Setup(c => c.GetConfigItem(configurationId))
                 .ReturnsAsync(new Configuration(configurationId)
                 {
-                    TargetCondition = targetCondition
+                    TargetCondition = targetCondition,
+                    Labels = new AttributeDictionary()
+                    {
+                        new("configuration-id", Guid.NewGuid().ToString())
+                    }
                 });
 
             // Act
@@ -124,17 +129,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             var deviceConfig = new DeviceConfig
             {
-                ConfigurationID = Guid.NewGuid().ToString(),
-                model = new DeviceModel()
-                {
-                    ModelId = Guid.NewGuid().ToString()
-                }
+                ConfigurationId = Guid.NewGuid().ToString(),
+                ModelId = Guid.NewGuid().ToString()
             };
 
             _ = this.mockConfigService.Setup(c =>
-                    c.RolloutDeviceConfiguration(It.Is<string>(x => x == deviceConfig.model.ModelId),
+                    c.RollOutDeviceConfiguration(It.Is<string>(x => x == deviceConfig.ModelId),
                         It.IsAny<Dictionary<string, object>>(),
-                        It.Is<string>(x => x == deviceConfig.ConfigurationID),
+                        It.Is<string>(x => x == deviceConfig.ConfigurationId),
                         It.IsAny<Dictionary<string, string>>(),
                         It.Is<int>(x => x == 100)))
                 .Returns(Task.CompletedTask);

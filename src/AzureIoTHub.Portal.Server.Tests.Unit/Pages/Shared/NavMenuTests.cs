@@ -215,9 +215,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             }
         }
 
-        [TestCase("addDeviceButton", "devices/new")]
+        [TestCase("addDeviceButton", "/devices/new")]
         [TestCase("addDeviceModelButton", "/device-models/new")]
-        [TestCase("addDeviceConfigurationButton", "/device_configurations/new")]
+        [TestCase("addDeviceConfigurationButton", "/device-configurations/new")]
         public void WhenClickToNewButtonShouldNavigate(string buttonName, string path)
         {
             // Arrange
