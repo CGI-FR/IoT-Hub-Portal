@@ -7,7 +7,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using AutoMapper;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Services;
@@ -34,17 +33,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
         /// </summary>
         private readonly ITableClientFactory tableClientFactory;
 
-        /// <summary>
-        /// The mapper.
-        /// </summary>
-        private readonly IMapper mapper;
-
         public DeviceConfigurationsController(IConfigService configService,
-            IMapper mapper,
             ITableClientFactory tableClientFactory)
         {
             this.configService = configService;
-            this.mapper = mapper;
             this.tableClientFactory = tableClientFactory;
         }
 

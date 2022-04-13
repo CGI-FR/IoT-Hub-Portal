@@ -32,8 +32,7 @@ namespace AzureIoTHub.Portal.Server.Services
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
             return configurations
-                .Where(c => c.Priority > 0)
-                .Where(c => c.Content.ModulesContent.Count == 0);
+                .Where(c => c.Priority > 0 && c.Content.ModulesContent.Count == 0);
         }
 
         public Task<Configuration> GetConfigItem(string id)

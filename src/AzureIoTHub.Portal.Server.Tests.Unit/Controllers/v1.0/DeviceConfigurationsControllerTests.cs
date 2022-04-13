@@ -6,7 +6,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Azure;
+    using Azure.Data.Tables;
+    using Entities;
+    using Factories;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.Azure.Devices;
@@ -22,6 +27,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         private MockRepository mockRepository;
 
         private Mock<IConfigService> mockConfigService;
+        private Mock<ITableClientFactory> mockTableClientFactory;
+        private Mock<TableClient> mockDeviceModelPropertiesTableClient;
 
         [SetUp]
         public void SetUp()
@@ -29,12 +36,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockConfigService = this.mockRepository.Create<IConfigService>();
+            this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
+            this.mockDeviceModelPropertiesTableClient = this.mockRepository.Create<TableClient>();
         }
 
         private DeviceConfigurationsController CreateDeviceConfigurationsController()
         {
             return new DeviceConfigurationsController(
-                this.mockConfigService.Object);
+                this.mockConfigService.Object,
+                this.mockTableClientFactory.Object);
         }
 
         [Test]
@@ -141,8 +151,79 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                         It.Is<int>(x => x == 100)))
                 .Returns(Task.CompletedTask);
 
+            var mockResponse = this.mockRepository.Create<Response>();
+
+            _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.Query<DeviceModelProperty>(
+                    It.Is<string>(x => x == $"PartitionKey eq '{ deviceConfig.ModelId }'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Pageable<DeviceModelProperty>.FromPages(new[]
+                {
+                    Page<DeviceModelProperty>.FromValues(new[]
+                    {
+                        new DeviceModelProperty
+                        {
+                            RowKey = Guid.NewGuid().ToString(),
+                            PartitionKey = deviceConfig.ModelId
+                        }
+                    }, null, mockResponse.Object)
+                }));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
+                .Returns(this.mockDeviceModelPropertiesTableClient.Object);
+
             // Act
             await deviceConfigurationsController.CreateConfig(deviceConfig);
+
+            // Assert
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateConfig_StateUnderTest_ExpectedBehavior()
+        {
+            // Arrange
+            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+
+            var deviceConfig = new DeviceConfig
+            {
+                ConfigurationId = Guid.NewGuid().ToString(),
+                ModelId = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockConfigService.Setup(c =>
+                    c.RollOutDeviceConfiguration(It.Is<string>(x => x == deviceConfig.ModelId),
+                        It.IsAny<Dictionary<string, object>>(),
+                        It.Is<string>(x => x == deviceConfig.ConfigurationId),
+                        It.IsAny<Dictionary<string, string>>(),
+                        It.Is<int>(x => x == 100)))
+                .Returns(Task.CompletedTask);
+
+            var mockResponse = this.mockRepository.Create<Response>();
+
+            _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.Query<DeviceModelProperty>(
+                    It.Is<string>(x => x == $"PartitionKey eq '{ deviceConfig.ModelId }'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Pageable<DeviceModelProperty>.FromPages(new[]
+                {
+                    Page<DeviceModelProperty>.FromValues(new[]
+                    {
+                        new DeviceModelProperty
+                        {
+                            RowKey = Guid.NewGuid().ToString(),
+                            PartitionKey = deviceConfig.ModelId
+                        }
+                    }, null, mockResponse.Object)
+                }));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
+                .Returns(this.mockDeviceModelPropertiesTableClient.Object);
+
+            // Act
+            await deviceConfigurationsController.UpdateConfig(deviceConfig);
 
             // Assert
             this.mockRepository.VerifyAll();
