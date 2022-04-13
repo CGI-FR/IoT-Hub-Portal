@@ -11,13 +11,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Extensions
     {
         [TestCase("/*-+&\"'(-_)=}]@^\\`|[{# ", "-----------------------")]
         [TestCase("éèàçîïâäç", "eeaciiaac")]
-        public void RemoveDiacritics_StateUnderTest_ExpectedBehavior(string input, string expected)
+        public void RemoveDiacriticsStateUnderTestExpectedBehavior(string input, string expected)
         {
             // Act
             var result = input.RemoveDiacritics();
 
             // Assert
             Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void WhenInputIsNullRemoveDiacriticsShouldReturnNull()
+        {
+            const string test = null;
+
+            // Act
+            var result = test.RemoveDiacritics();
+
+            // Assert
+            Assert.IsNull(result);
         }
     }
 }

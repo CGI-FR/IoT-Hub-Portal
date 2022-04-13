@@ -102,6 +102,47 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public async Task GetConfigurationShouldReturnProperlyTheProperties()
+        {
+            // Arrange
+            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var configurationId = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
+
+            var targetCondition = $"tags.modelId = '{modelId}'";
+
+            var configuration = new Configuration(configurationId)
+            {
+                TargetCondition = targetCondition,
+                Labels = new AttributeDictionary()
+                {
+                    new("configuration-id", Guid.NewGuid().ToString())
+                }
+            };
+
+            configuration.Content.DeviceContent.Add("properties.desired.test", "toto");
+
+            _ = this.mockConfigService.Setup(c => c.GetConfigItem(configurationId))
+                .ReturnsAsync(configuration);
+
+            // Act
+            var response = await deviceConfigurationsController.Get(configurationId);
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<OkObjectResult>(response.Result);
+            var okObjectResult = response.Result as OkObjectResult;
+
+            Assert.IsNotNull(okObjectResult.Value);
+            Assert.IsAssignableFrom<DeviceConfig>(okObjectResult.Value);
+            var resultConfig = okObjectResult.Value as DeviceConfig;
+            Assert.IsNotNull(resultConfig);
+
+            Assert.AreEqual("toto", resultConfig.Properties["test"]);
+            this.mockRepository.VerifyAll();
+        }
+
         [TestCase(null, "Target condition is null.")]
         [TestCase("", "Target condition is null.")]
         [TestCase("fake condition", "Target condition is not formed as expected.")]
@@ -428,6 +469,132 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             // Assert
             Assert.IsNotNull(requestedProperties);
             Assert.AreEqual(expected, requestedProperties[$"properties.desired.{propertyName}"]);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenPropertyNotPresentInModelUpdateConfigShouldNotUpdateTheProperty()
+        {
+            // Arrange
+            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var propertyName = Guid.NewGuid().ToString();
+
+            var deviceConfig = new DeviceConfig
+            {
+                ConfigurationId = Guid.NewGuid().ToString(),
+                ModelId = Guid.NewGuid().ToString()
+            };
+
+            Dictionary<string, object> requestedProperties = null;
+
+            deviceConfig.Properties.Add(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            deviceConfig.Properties.Add(propertyName, Guid.NewGuid().ToString());
+
+            _ = this.mockConfigService.Setup(c =>
+                    c.RollOutDeviceConfiguration(It.Is<string>(x => x == deviceConfig.ModelId),
+                        It.IsAny<Dictionary<string, object>>(),
+                        It.Is<string>(x => x == deviceConfig.ConfigurationId),
+                        It.IsAny<Dictionary<string, string>>(),
+                        It.Is<int>(x => x == 100)))
+                .Returns(Task.CompletedTask)
+                .Callback((string _, Dictionary<string, object> properties, string _,
+                    Dictionary<string, string> _, int _) => requestedProperties = properties);
+
+            var mockResponse = this.mockRepository.Create<Response>();
+
+            _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.Query<DeviceModelProperty>(
+                    It.Is<string>(x => x == $"PartitionKey eq '{ deviceConfig.ModelId }'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Pageable<DeviceModelProperty>.FromPages(new[]
+                {
+                    Page<DeviceModelProperty>.FromValues(new[]
+                    {
+                        new DeviceModelProperty
+                        {
+                            RowKey = Guid.NewGuid().ToString(),
+                            PartitionKey = deviceConfig.ModelId,
+                            Name = propertyName,
+                            PropertyType = DevicePropertyType.String
+                        }
+                    }, null, mockResponse.Object)
+                }));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
+                .Returns(this.mockDeviceModelPropertiesTableClient.Object);
+
+            // Act
+            await deviceConfigurationsController.UpdateConfig(deviceConfig);
+
+            // Assert
+            Assert.IsNotNull(requestedProperties);
+            Assert.IsTrue(requestedProperties.Count == 1);
+            Assert.IsTrue(requestedProperties.ContainsKey($"properties.desired.{propertyName}"));
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenPropertyNotPresentInModelCreateConfigShouldNotUpdateTheProperty()
+        {
+            // Arrange
+            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var propertyName = Guid.NewGuid().ToString();
+
+            var deviceConfig = new DeviceConfig
+            {
+                ConfigurationId = Guid.NewGuid().ToString(),
+                ModelId = Guid.NewGuid().ToString()
+            };
+
+            Dictionary<string, object> requestedProperties = null;
+
+            deviceConfig.Properties.Add(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            deviceConfig.Properties.Add(propertyName, Guid.NewGuid().ToString());
+
+            _ = this.mockConfigService.Setup(c =>
+                    c.RollOutDeviceConfiguration(It.Is<string>(x => x == deviceConfig.ModelId),
+                        It.IsAny<Dictionary<string, object>>(),
+                        It.Is<string>(x => x == deviceConfig.ConfigurationId),
+                        It.IsAny<Dictionary<string, string>>(),
+                        It.Is<int>(x => x == 100)))
+                .Returns(Task.CompletedTask)
+                .Callback((string _, Dictionary<string, object> properties, string _,
+                    Dictionary<string, string> _, int _) => requestedProperties = properties);
+
+            var mockResponse = this.mockRepository.Create<Response>();
+
+            _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.Query<DeviceModelProperty>(
+                    It.Is<string>(x => x == $"PartitionKey eq '{ deviceConfig.ModelId }'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Pageable<DeviceModelProperty>.FromPages(new[]
+                {
+                    Page<DeviceModelProperty>.FromValues(new[]
+                    {
+                        new DeviceModelProperty
+                        {
+                            RowKey = Guid.NewGuid().ToString(),
+                            PartitionKey = deviceConfig.ModelId,
+                            Name = propertyName,
+                            PropertyType = DevicePropertyType.String
+                        }
+                    }, null, mockResponse.Object)
+                }));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
+                .Returns(this.mockDeviceModelPropertiesTableClient.Object);
+
+            // Act
+            await deviceConfigurationsController.CreateConfig(deviceConfig);
+
+            // Assert
+            Assert.IsNotNull(requestedProperties);
+            Assert.IsTrue(requestedProperties.Count == 1);
+            Assert.IsTrue(requestedProperties.ContainsKey($"properties.desired.{propertyName}"));
 
             this.mockRepository.VerifyAll();
         }
