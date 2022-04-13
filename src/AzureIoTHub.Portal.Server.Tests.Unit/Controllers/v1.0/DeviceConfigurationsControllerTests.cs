@@ -68,7 +68,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task GetConfiguration_StateUnderTest_ExpectedBehavior()
+        public async Task GetConfigurationStateUnderTestExpectedBehavior()
         {
             // Arrange
             var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
@@ -132,7 +132,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task CreateConfig_StateUnderTest_ExpectedBehavior()
+        public async Task CreateConfigStateUnderTestExpectedBehavior()
         {
             // Arrange
             var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
@@ -181,7 +181,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task UpdateConfig_StateUnderTest_ExpectedBehavior()
+        public async Task UpdateConfigStateUnderTestExpectedBehavior()
         {
             // Arrange
             var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
@@ -230,7 +230,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task DeleteConfig_StateUnderTest_ExpectedBehavior()
+        public async Task DeleteConfigStateUnderTestExpectedBehavior()
         {
             // Arrange
             var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
@@ -245,6 +245,46 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 deviceConfigId);
 
             // Assert
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetConfigurationMetricsStateUnderTestExpectedBehavior()
+        {
+            // Arrange
+            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+
+            var deviceConfig = new DeviceConfig
+            {
+                ConfigurationId = Guid.NewGuid().ToString(),
+                ModelId = Guid.NewGuid().ToString()
+            };
+
+            var targetCondition = $"tags.modelId = '{deviceConfig.ModelId}'";
+
+            var configurationMetrics = new ConfigurationMetrics();
+
+            configurationMetrics.Results.Add("targetedCount", Random.Shared.Next());
+            configurationMetrics.Results.Add("appliedCount", Random.Shared.Next());
+            configurationMetrics.Results.Add("reportedSuccessfulCount", Random.Shared.Next());
+            configurationMetrics.Results.Add("reportedFailedCount", Random.Shared.Next());
+
+            _ = this.mockConfigService.Setup(c => c.GetConfigItem(deviceConfig.ConfigurationId))
+                .ReturnsAsync(new Configuration(deviceConfig.ConfigurationId)
+                {
+                    TargetCondition = targetCondition,
+                    Labels = new AttributeDictionary()
+                    {
+                        new("configuration-id", Guid.NewGuid().ToString())
+                    },
+                    Metrics = configurationMetrics
+                });
+
+            // Act
+            var result = await deviceConfigurationsController.GetConfigurationMetrics(deviceConfig.ConfigurationId);
+
+            // Assert
+            Assert.IsNotNull(result);
             this.mockRepository.VerifyAll();
         }
     }
