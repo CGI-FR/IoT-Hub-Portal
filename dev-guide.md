@@ -48,6 +48,9 @@ Here are different settings that the user can configure:
 * **LoRaFeature__Enabled**: Whether the LoRaWAN feature is enabled or not.
 * **LoRaKeyManagement__Url**: The LoRa Key Management Facade URL.
 * **LoRaRegionRouterConfig__Url**: The LoRa Region Router Config URL.
+* **ASPNETCORE_ENVIRONMENT**: Built-in environment variable, used to target the configuration provided by a specific environment. Two accepted values:
+  * `Development`: On this environement, logs are produred up to `Debug` level.
+  * `Production`: Default value if ASPNETCORE_ENVIRONMENT is not set. On this environement, logs are produred up to `Information` level.
 
 > Note: `LoRaRegionRouterConfig__Url` is the URL of the LoRa Region Router Config file repository. By default you can use 'https://raw.githubusercontent.com/Azure/iotedge-lorawan-starterkit/dev/Tools/Cli-LoRa-Device-Provisioning/DefaultRouterConfig/' which is where the Azure IoT Edge LoRaWAN project is hosted.
 
