@@ -48,7 +48,7 @@
             </MudCard>
             <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
                 <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="Delete">Delete</MudButton>
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save">Save Changes</MudButton>
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton">Save Changes</MudButton>
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
@@ -82,7 +82,7 @@
                                                    Color="Color.Primary"
                                                    Disabled="string.IsNullOrEmpty(SelectedTag)"
                                                    OnClick="AddSelectedTag"
-                                                   StartIcon="@Icons.Filled.Add" id="addTag">Add Tag</MudButton>
+                                                   StartIcon="@Icons.Filled.Add" id="addTagButton">Add Tag</MudButton>
                                     </MudItem>
                                 </MudGrid>
                             </MudItem>
@@ -90,7 +90,7 @@
                                 @foreach (var item in Configuration.Tags.Keys)
                                 {
                                     <MudForm Model="item">
-                                        <MudGrid>
+                                        <MudGrid id="@($"tag-{item}")">
                                             <MudItem xs="8" md="10">
                                                 <MudTextField Label="@AvailableTags.Single(c => c.Name == item).Label"
                                                           @bind-Value="@Configuration.Tags[item]"
@@ -100,7 +100,7 @@
                                                           Required="true"></MudTextField>
                                             </MudItem>
                                             <MudItem xs="4" md="2">
-                                                <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="() => Configuration.Tags.Remove(item)"></MudIconButton>
+                                                <MudIconButton id="deleteTagButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="() => Configuration.Tags.Remove(item)"></MudIconButton>
                                             </MudItem>
                                         </MudGrid>
                                     </MudForm>
@@ -139,7 +139,7 @@
                                                    Color="Color.Primary"
                                                    Disabled="string.IsNullOrEmpty(SelectedProperty)"
                                                    OnClick="AddSelectedProperty"
-                                                   StartIcon="@Icons.Filled.Add" id="addProperty">Add Property</MudButton>
+                                                   StartIcon="@Icons.Filled.Add" id="addPropertyButton">Add Property</MudButton>
                                     </MudItem>
                                 </MudGrid>
                             </MudItem>
@@ -147,7 +147,7 @@
                                 @foreach (var item in Configuration.Properties.Keys)
                                 {
                                     <MudForm Model="item">
-                                        <MudGrid>
+                                        <MudGrid id="@($"property-{item}")">
                                             <MudItem xs="8" md="10">
                                                 @{
                                                     var property = this.AvailableProperties.Single(x => x.Name == item);
@@ -198,7 +198,7 @@
                                                 }
                                             </MudItem>
                                             <MudItem xs="4" md="2">
-                                                <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="() => Configuration.Properties.Remove(item)"></MudIconButton>
+                                                <MudIconButton id="deletePropertyButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="() => Configuration.Properties.Remove(item)"></MudIconButton>
                                             </MudItem>
                                         </MudGrid>
                                     </MudForm>
@@ -218,8 +218,8 @@
     IEnumerable<DeviceTag> AvailableTags { get; set; } = Array.Empty<DeviceTag>();
     IEnumerable<DeviceProperty> AvailableProperties = Array.Empty<DeviceProperty>();
 
-    string SelectedTag { get; set; }
-    string SelectedProperty { get; set; }
+    public string SelectedTag { get; set; }
+    public string SelectedProperty { get; set; }
 
     [Parameter]
     public string ConfigId { get; set; }
@@ -227,7 +227,7 @@
     public DeviceConfig Configuration { get; set; } = new();
     private ConfigurationMetrics Metrics { get; set; } = new();
 
-    private bool IsLoading { get; set; } = true;
+    public bool IsLoading { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
