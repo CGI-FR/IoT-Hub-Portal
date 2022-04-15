@@ -45,15 +45,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
         public async Task<IEnumerable<ConfigListItem>> Get()
         {
             var configList = await this.configService.GetDevicesConfigurations();
-            var results = new List<ConfigListItem>();
 
-            foreach (var item in configList)
-            {
-                var configItem = ConfigHelper.CreateConfigListItem(item);
-                results.Add(configItem);
-            }
-
-            return results;
+            return configList.Select(ConfigHelper.CreateConfigListItem);
         }
 
         [HttpGet("{configurationId}")]

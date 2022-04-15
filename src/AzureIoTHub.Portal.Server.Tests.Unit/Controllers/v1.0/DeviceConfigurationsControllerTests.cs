@@ -50,7 +50,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task GetConfigurations_StateUnderTest_ExpectedBehavior()
+        public async Task GetConfigurationsStateUnderTestExpectedBehavior()
         {
             // Arrange
             var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
@@ -95,10 +95,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             // Assert
             Assert.IsNotNull(response);
             Assert.IsAssignableFrom<OkObjectResult>(response.Result);
-            var okObjectResult = response.Result as OkObjectResult;
 
-            Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<DeviceConfig>(okObjectResult.Value);
+            if (response.Result is OkObjectResult okObjectResult)
+            {
+                Assert.IsNotNull(okObjectResult.Value);
+                Assert.IsAssignableFrom<DeviceConfig>(okObjectResult.Value);
+            }
+            else
+            {
+                Assert.Fail("Cannot inspect the result.");
+            }
+
             this.mockRepository.VerifyAll();
         }
 
@@ -132,14 +139,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             // Assert
             Assert.IsNotNull(response);
             Assert.IsAssignableFrom<OkObjectResult>(response.Result);
-            var okObjectResult = response.Result as OkObjectResult;
 
-            Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<DeviceConfig>(okObjectResult.Value);
-            var resultConfig = okObjectResult.Value as DeviceConfig;
-            Assert.IsNotNull(resultConfig);
+            if (response.Result is OkObjectResult okObjectResult)
+            {
+                Assert.IsNotNull(okObjectResult.Value);
+                Assert.IsAssignableFrom<DeviceConfig>(okObjectResult.Value);
+                var resultConfig = okObjectResult.Value as DeviceConfig;
+                Assert.IsNotNull(resultConfig);
 
-            Assert.AreEqual("toto", resultConfig.Properties["test"]);
+                Assert.AreEqual("toto", resultConfig.Properties["test"]);
+            }
+            else
+            {
+                Assert.Fail("Cannot inspect the result.");
+            }
+
             this.mockRepository.VerifyAll();
         }
 
@@ -151,7 +165,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             // Arrange
             var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
             var configurationId = Guid.NewGuid().ToString();
-            var modelId = Guid.NewGuid().ToString();
 
             _ = this.mockConfigService.Setup(c => c.GetConfigItem(configurationId))
                 .ReturnsAsync(new Configuration(configurationId)
