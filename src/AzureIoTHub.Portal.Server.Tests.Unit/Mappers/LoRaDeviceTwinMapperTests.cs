@@ -226,9 +226,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
                 Assert.AreEqual(item.Tags[tagName], DeviceHelper.RetrieveTagValue(twin, tagName));
             }
 
-            Assert.AreEqual(item.AppEUI, twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)].ToString());
             Assert.AreEqual(item.AppKey, twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)].ToString());
-            Assert.AreEqual(item.SensorDecoder, twin.Properties.Desired[nameof(LoRaDeviceDetails.SensorDecoder)].ToString());
 
             this.mockRepository.VerifyAll();
         }
@@ -286,7 +284,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             Assert.AreEqual(item.AppSKey, twin.Properties.Desired[nameof(LoRaDeviceDetails.AppSKey)].ToString());
             Assert.AreEqual(item.DevAddr, twin.Properties.Desired[nameof(LoRaDeviceDetails.DevAddr)].ToString());
             Assert.AreEqual(item.GatewayID, twin.Properties.Desired[nameof(LoRaDeviceDetails.GatewayID)].ToString());
-            Assert.AreEqual(item.SensorDecoder, twin.Properties.Desired[nameof(LoRaDeviceDetails.SensorDecoder)].ToString());
 
             this.mockRepository.VerifyAll();
         }

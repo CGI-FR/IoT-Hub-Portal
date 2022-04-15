@@ -108,7 +108,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
             Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
 
             // Update OTAA settings
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppEUI), item.AppEUI); // TODO : Remove if provided by the model
             Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.AppKey), item.AppKey);
 
             // Update ABP settings
@@ -117,21 +116,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
             Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.DevAddr), item.DevAddr);
 
             Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.GatewayID), item.GatewayID);
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.SensorDecoder), item.SensorDecoder); // TODO : Remove if provided by the model
-
-            // Updates device properties
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.Supports32BitFCnt), item.Supports32BitFCnt); // TODO : Remove if provided by the model
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.RXDelay), item.RXDelay); // TODO : Remove if provided by the model
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.RX2DataRate), item.RX2DataRate); // TODO : Remove if provided by the model
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.RX1DROffset), item.RX1DROffset); // TODO : Remove if provided by the model
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.ABPRelaxMode), item.ABPRelaxMode); // TODO : Remove if provided by the model
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.KeepAliveTimeout), item.KeepAliveTimeout); // TODO : Remove if provided by the model
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.FCntDownStart), item.FCntDownStart); // TODO : Remove if provided by the model
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.FCntResetCounter), item.FCntResetCounter); // TODO : Remove if provided by the model
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.FCntUpStart), item.FCntUpStart); // TODO : Remove if provided by the model
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.Deduplication), item.Deduplication); // TODO : Remove if provided by the model
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.Downlink), item.Downlink); // TODO : Remove if provided by the model
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.PreferredWindow), item.PreferredWindow); // TODO : Remove if provided by the model
 
             if (item.Tags != null)
             {
