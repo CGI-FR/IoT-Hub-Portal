@@ -1,0 +1,51 @@
+﻿@using AzureIoTHub.Portal.Models.v10
+
+@inject HttpClient Http
+@inject IJSRuntime JS
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs=12>
+                <MudText>
+                    Delete configuration @configurationName ?
+                </MudText>
+            </MudItem>
+            <MudItem xs=12>
+                <MudText><i>Warning : this cannot  be undone.</i></MudText>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="DeleteDevice">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string configurationName { get; set; }
+    [Parameter] public string configurationId { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+    /// <summary>
+    /// Sends a POST request to the DevicesController, to delete the device from the Azure IoT Hub
+    /// </summary>
+    /// <returns></returns>
+    private async Task DeleteDevice()
+    {
+        var response = await Http.DeleteAsync($"/api/device-configurations/{configurationId}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Oh oh, something went wrong while deleting device configuration {configurationName}... ", Severity.Error);
+            return;
+        }
+
+        Snackbar.Add($"Device configuration {configurationName} has been successfully deleted!", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

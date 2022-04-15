@@ -27,6 +27,14 @@
                         <MudIconButton id="addDeviceModelButton" OnClick="AddDeviceModel" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
                     </MudTooltip>
                 </MudPaper>
+                
+                <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/device-configurations/">Configurations</MudNavLink>
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
+                    <MudTooltip Text="Add device model">
+                        <MudIconButton id="addDeviceConfigurationButton" OnClick="AddDeviceConfig" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
+                    </MudTooltip>
+                </MudPaper>
             </MudNavGroup>
 
             <MudNavGroup Title="IoT Edge" Icon="@Icons.Outlined.DeveloperBoard"
@@ -57,8 +65,9 @@
 </AuthorizeView>
 
 @code {
-    private void AddDevice() => navigationManager.NavigateTo("devices/new");
+    private void AddDevice() => navigationManager.NavigateTo("/devices/new");
     private void AddDeviceModel() => navigationManager.NavigateTo("/device-models/new");
+    private void AddDeviceConfig() => navigationManager.NavigateTo("/device-configurations/new");
 
     private string collapsibleNavMenuKey = "collapsibleNavMenu";
 

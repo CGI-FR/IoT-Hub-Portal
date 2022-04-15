@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
 {
     using System;
     using System.Collections.Generic;
+    using System.Text.RegularExpressions;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices;
     using Newtonsoft.Json.Linq;
@@ -53,6 +54,82 @@ namespace AzureIoTHub.Portal.Server.Helpers
                 CreationDate = config.CreatedTimeUtc,
                 Modules = moduleList
             };
+        }
+
+        /// <summary>
+        /// Create a ConfigListItem from an Azure Configuration.
+        /// </summary>
+        /// <param name="config">Configuration object from Azure IoT Hub.</param>
+        /// <returns>A configuration converted to a ConfigListItem.</returns>
+        public static ConfigListItem CreateConfigListItem(Configuration config)
+        {
+            ArgumentNullException.ThrowIfNull(config, nameof(config));
+
+            return new ConfigListItem
+            {
+                ConfigurationID = config.Id,
+                Conditions = config.TargetCondition,
+                MetricsTargeted = RetrieveMetricValue(config, "targetedCount"),
+                MetricsApplied = RetrieveMetricValue(config, "appliedCount"),
+                MetricsSuccess = RetrieveMetricValue(config, "reportedSuccessfulCount"),
+                MetricsFailure = RetrieveMetricValue(config, "reportedFailedCount"),
+                Priority = config.Priority,
+                CreationDate = config.CreatedTimeUtc,
+            };
+        }
+
+        /// <summary>
+        /// Create a DeviceConfig from an Azure Configuration.
+        /// </summary>
+        /// <param name="config">Configuration object from Azure IoT Hub.</param>
+        /// <returns>A configuration converted to a DeviceConfig.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static DeviceConfig CreateDeviceConfig(Configuration config)
+        {
+            ArgumentNullException.ThrowIfNull(config, nameof(config));
+
+            // Define a regular expression for repeated words.
+            var rx = new Regex(@"tags[.](?<tagName>\w*)[ ]?[=][ ]?\'(?<tagValue>[\w-]*)\'", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+            if (string.IsNullOrEmpty(config.TargetCondition))
+            {
+                throw new InvalidOperationException("Target condition is null.");
+            }
+
+            var matches = rx.Matches(config.TargetCondition);
+
+            if (matches.Count == 0)
+            {
+                throw new InvalidOperationException("Target condition is not formed as expected.");
+            }
+
+            var result = new DeviceConfig
+            {
+                ConfigurationId = config.Labels.TryGetValue("configuration-id", out var id) ? id: config.Id,
+                Priority = config.Priority
+            };
+
+            // Find matches.
+            foreach (Match match in matches)
+            {
+                var groups = match.Groups;
+
+                result.Tags.Add(groups["tagName"].Value, groups["tagValue"].Value);
+            }
+
+            foreach (var item in config.Content.DeviceContent)
+            {
+                result.Properties.Add(item.Key.Replace("properties.desired.", null, StringComparison.OrdinalIgnoreCase), item.Value?.ToString());
+            }
+
+            if (result.Tags.ContainsKey("modelId"))
+            {
+                result.ModelId = result.Tags["modelId"];
+
+                _ = result.Tags.Remove("modelId");
+            }
+
+            return result;
         }
 
         /// <summary>

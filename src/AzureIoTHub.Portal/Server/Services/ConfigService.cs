@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Extensions;
     using Microsoft.Azure.Devices;
 
     public class ConfigService : IConfigService
@@ -30,7 +31,8 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
-            return configurations.Where(c => c.Content.ModulesContent.Count == 0);
+            return configurations
+                .Where(c => c.Priority > 0 && c.Content.ModulesContent.Count == 0);
         }
 
         public Task<Configuration> GetConfigItem(string id)
@@ -38,7 +40,12 @@ namespace AzureIoTHub.Portal.Server.Services
             return this.registryManager.GetConfigurationAsync(id);
         }
 
-        public async Task RolloutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties)
+        public async Task DeleteConfiguration(string configId)
+        {
+            await this.registryManager.RemoveConfigurationAsync(configId);
+        }
+
+        public async Task RollOutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
@@ -50,7 +57,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             foreach (var item in configurations)
             {
-                if (!item.Id.StartsWith(configurationNamePrefix, System.StringComparison.OrdinalIgnoreCase))
+                if (!item.Id.StartsWith(configurationNamePrefix, StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
@@ -63,6 +70,45 @@ namespace AzureIoTHub.Portal.Server.Services
             newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
             newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'";
             newConfiguration.Content.DeviceContent = desiredProperties;
+
+            _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
+        }
+
+        public async Task RollOutDeviceConfiguration(
+            string modelId,
+            Dictionary<string, object> desiredProperties,
+            string configurationId,
+            Dictionary<string, string> targetTags,
+            int priority = 0)
+        {
+            var configurations = await this.registryManager.GetConfigurationsAsync(0);
+
+            var configurationNamePrefix = configurationId.Trim().ToLowerInvariant().RemoveDiacritics();
+
+            foreach (var item in configurations)
+            {
+                if (!item.Id.StartsWith(configurationNamePrefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                await this.registryManager.RemoveConfigurationAsync(item.Id);
+            }
+
+            var newConfiguration = new Configuration($"{configurationNamePrefix}-{DateTime.UtcNow.Ticks}");
+
+            newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
+            newConfiguration.Labels.Add("configuration-id", configurationId);
+
+            var targetCondition = string.Empty;
+            foreach (var item in targetTags)
+            {
+                targetCondition += $" and tags.{item.Key} = '{item.Value}'";
+            }
+
+            newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'" + targetCondition;
+            newConfiguration.Content.DeviceContent = desiredProperties;
+            newConfiguration.Priority = priority;
 
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }
