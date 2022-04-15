@@ -58,6 +58,7 @@ To store additional information about the device, the application uses device tw
 |------------	|-----------------	|--------------------------------------------------------------------------------------------------------------------------------------------------------------	|
 | deviceName 	| ``tags.deviceName`` 	| Field that contains the device friendly name.<br>_**note**: if not set, the portal will show the device id instead of the device name until it's configured._ 	|
 | modelId    	| ``tags.modelId``    	| Field that contains the device model identifier that the device is related.<br>_**note**: if not set, the device is not usable on the IoT hub portal._       	|
+| supportLoRaFeatures | ``tags.supportLoRaFeatures`` | Field that specifies if the device must support LoRa features.<br>_**note**: if not set, LoRa features will be available on the device._       	|
 
 ## IoT Edge
 
@@ -93,8 +94,8 @@ To store additional information about the device, the application uses device tw
 
 | Name    	| Position     	| Description                                                                                                                                 	|
 |---------	|--------------	|---------------------------------------------------------------------------------------------------------------------------------------------	|
-| Purpose 	| ``tags.purpose`` 	| Field that contains the Device Type value.<br>_**note**: this tag may  be used to target deployment manifests for the IoT Edge_ 	|
 | Environment 	| ``tags.env`` 	| Field that contains the Device Environment value.<br>_**note**: this tag may be used to target deployment manifests for the IoT Edge_ 	|
+| Type 	| ``tags.type`` 	| Field that contains The type of the IoT Edge device.<br>_**note**: this tag may be used to target deployment manifests for the IoT Edge_ 	|
 
 ### DPS Enrollment groups
 
@@ -122,7 +123,7 @@ The IoT Hub portal will use the Target condition to extract this values from the
 |-------------	|----------------	|----------------------------------------------------------	|
 | Owner       	| ``tags.owner`` 	| Owner tag filter condition from the Deployment Manifest. 	|
 | Environment 	| ``tags.env``   	| Environment tag filter from the Deployment Manifest.     	|
-| Type        	| ``tags.type``  	| Device type tag filter from the Deployment Manifest.     	|
+| Type        	| ``tags.type``  	| Device type tag filter from the Deployment Manifest. Expected value for IoT Edge LoRaWAN LNS is `LoRa Network Server`, otherwise the value must be `Other`     	|
 
 ## Enrollment groups
 
@@ -189,6 +190,18 @@ The LoRaWAN tab shows the device details.
 ![./assets/images/lorawan-device-details.png](./assets/images/lorawan-device-details.png)
 
 > Note: By selecting the correct device model on the first tab, the portal will automatically take LoRaWAN settings from the device model to apply on the device.
+
+## Concentrators
+
+### Concentrator Tags
+
+To store additional information about the concentrator, the application will use the target device to extract values:
+
+| Name    	| Position     	| Description                                                                                                                                 	|
+|---------	|--------------	|---------------------------------------------------------------------------------------------------------------------------------------------	|
+| Device Name 	| ``tags.deviceName`` 	| Field that contains the Device name. 	|
+| Region 	| ``tags.loraRegion`` 	| Field that contains the Device region. 	|
+| deviceType 	| ``tags.deviceType`` 	| Field that contains The type of device. Expected value is `LoRa Concentrator`  |
 
 ## Command Execution
 
