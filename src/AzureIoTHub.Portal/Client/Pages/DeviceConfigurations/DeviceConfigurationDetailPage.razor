@@ -29,7 +29,10 @@
                 <MudCardContent>
                     <MudGrid>
                         <MudItem xs="12">
-                            <MudText>Model: <b>@Configuration.ModelId</b></MudText>
+                            <MudText>Model: <b>@DeviceModel.Name</b></MudText>
+                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
+                                @((!string.IsNullOrEmpty(@DeviceModel.Description) && @DeviceModel.Description.Length > 100) ? @DeviceModel.Description.Substring(0, 100) + "..." : @DeviceModel.Description)
+                            </MudText>
                         </MudItem>
                         <MudItem xs="12">
                             <MudText Typo="Typo.h6">Metrics</MudText>
@@ -225,6 +228,7 @@
     public string ConfigId { get; set; }
 
     public DeviceConfig Configuration { get; set; } = new();
+    public DeviceModel DeviceModel { get; set; } = new();
     private ConfigurationMetrics Metrics { get; set; } = new();
 
     public bool IsLoading { get; set; } = true;
@@ -233,6 +237,7 @@
     {
         Configuration = await HttpClient.GetFromJsonAsync<DeviceConfig>($"/api/device-configurations/{ConfigId}");
         Metrics = await HttpClient.GetFromJsonAsync<ConfigurationMetrics>($"/api/device-configurations/{ConfigId}/metrics");
+        DeviceModel = await HttpClient.GetFromJsonAsync<DeviceModel>($"/api/models/{Configuration.ModelId}");
 
         AvailableProperties = await HttpClient.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"/api/models/{Configuration.ModelId}/properties");
         AvailableTags = await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");

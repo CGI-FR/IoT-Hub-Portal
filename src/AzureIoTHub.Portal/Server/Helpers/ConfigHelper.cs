@@ -119,7 +119,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
 
             foreach (var item in config.Content.DeviceContent)
             {
-                result.Properties.Add(item.Key.Replace("properties.desired.", null, StringComparison.OrdinalIgnoreCase), item.Value.ToString());
+                result.Properties.Add(item.Key.Replace("properties.desired.", null, StringComparison.OrdinalIgnoreCase), item.Value?.ToString());
             }
 
             if (result.Tags.ContainsKey("modelId"))

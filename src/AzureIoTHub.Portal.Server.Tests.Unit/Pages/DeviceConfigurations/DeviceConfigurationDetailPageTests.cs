@@ -5,7 +5,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Json;
     using Bunit;
@@ -83,6 +82,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 });
 
             _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/models/{modelId}")
+                .RespondJson(new DeviceModel
+                {
+                    Name = Guid.NewGuid().ToString()
+                });
+
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
                 .RespondJson(Array.Empty<DeviceProperty>());
 
@@ -105,6 +111,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
+
+            var model = new DeviceModel
+            {
+                ModelId = modelId,
+                Name = Guid.NewGuid().ToString()
+            };
 
             var metrics = new ConfigurationMetrics
             {
@@ -129,6 +141,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .RespondJson(metrics);
 
             _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/models/{modelId}")
+                .RespondJson(model);
+
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
                 .RespondJson(Array.Empty<DeviceProperty>());
 
@@ -142,7 +158,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Assert
             cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
-                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1 mud-inherit-text\">Model: <b>{modelId}</b></p>");
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1 mud-inherit-text\">Model: <b>{model.Name}</b></p>");
 
             cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(3) > p")
                 .MarkupMatches($"<p class=\"mud-typography mud-typography-body1 mud-inherit-text\">Created at {metrics.CreationDate}</p>");
@@ -180,6 +196,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
                 .RespondJson(new ConfigurationMetrics());
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/models/{modelId}")
+                .RespondJson(new DeviceModel
+                {
+                    Name = Guid.NewGuid().ToString()
+                });
 
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
@@ -230,6 +253,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .RespondJson(new ConfigurationMetrics());
 
             _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/models/{modelId}")
+                .RespondJson(new DeviceModel
+                {
+                    Name = Guid.NewGuid().ToString()
+                });
+
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
                 .RespondJson(Array.Empty<DeviceProperty>());
 
@@ -247,6 +277,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             // Act
             var deleteTagButton = cut.WaitForElement("#tag-tag1 #deleteTagButton");
             deleteTagButton.Click();
+            cut.WaitForState(() => cut.Instance.Configuration.Tags.Count == 1);
 
             // Assert
             Assert.AreEqual(1, cut.Instance.Configuration.Tags.Count);
@@ -277,6 +308,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
                 .RespondJson(new ConfigurationMetrics());
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/models/{modelId}")
+                .RespondJson(new DeviceModel
+                {
+                    Name = Guid.NewGuid().ToString()
+                });
 
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
@@ -334,6 +372,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
                 .RespondJson(new ConfigurationMetrics());
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/models/{modelId}")
+                .RespondJson(new DeviceModel
+                {
+                    Name = Guid.NewGuid().ToString()
+                });
 
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
@@ -411,6 +456,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .RespondJson(new ConfigurationMetrics());
 
             _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/models/{modelId}")
+                .RespondJson(new DeviceModel
+                {
+                    Name = Guid.NewGuid().ToString()
+                });
+
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
                 .RespondJson(new DeviceProperty[]
                 {
@@ -449,6 +501,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Act
             cut.WaitForElement("#property-prop2 #deletePropertyButton").Click();
+            cut.WaitForState(() => cut.Instance.Configuration.Properties.Count == 1);
 
             // Assert
             Assert.AreEqual(1, cut.Instance.Configuration.Properties.Count);
@@ -481,6 +534,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
                 .RespondJson(new ConfigurationMetrics());
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/models/{modelId}")
+                .RespondJson(new DeviceModel
+                {
+                    Name = Guid.NewGuid().ToString()
+                });
 
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
@@ -559,6 +619,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
                 .RespondJson(new ConfigurationMetrics());
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/models/{modelId}")
+                .RespondJson(new DeviceModel
+                {
+                    Name = Guid.NewGuid().ToString()
+                });
 
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/models/{modelId}/properties")

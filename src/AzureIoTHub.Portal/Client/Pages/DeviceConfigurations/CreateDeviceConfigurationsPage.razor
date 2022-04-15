@@ -33,12 +33,13 @@
                         <MudItem xs="12">
                             Select a device model to configure.
                             <MudAutocomplete T="DeviceModel"
+                                             id="selectDeviceModel"
                                              Label="Targeted Device model*"
                                              Dense=true
                                              Variant="Variant.Outlined"
-                                             ToStringFunc="@(x => x.Name)"
+                                             ToStringFunc="@(x => x?.Name)"
                                              SearchFunc="@Search"
-                                             ValueChanged="@(async (modelId) => await LoadProperties(modelId))"
+                                             ValueChanged="@(async (model) => await SelectModel(model))"
                                              ResetValueOnEmptyText=true
                                              Immediate=true
                                              Clearable=true
@@ -57,7 +58,7 @@
                 </MudCardContent>
             </MudCard>
             <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save">Save Changes</MudButton>
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton">Save Changes</MudButton>
             </MudItem>
         </MudItem>
 
@@ -92,7 +93,7 @@
                                                    Color="Color.Primary"
                                                    Disabled="string.IsNullOrEmpty(SelectedTag)"
                                                    OnClick="AddSelectedTag"
-                                                   StartIcon="@Icons.Filled.Add" id="addTag">Add Tag</MudButton>
+                                                   StartIcon="@Icons.Filled.Add" id="addTagButton">Add Tag</MudButton>
                                     </MudItem>
                                 </MudGrid>
                             </MudItem>
@@ -100,7 +101,7 @@
                                 @foreach (var item in Configuration.Tags.Keys)
                                 {
                                     <MudForm Model="item">
-                                        <MudGrid>
+                                        <MudGrid id="@($"tag-{item}")">
                                             <MudItem xs="8" md="10">
                                                 <MudTextField Label="@AvailableTags.Single(c => c.Name == item).Label"
                                                           @bind-Value="@Configuration.Tags[item]"
@@ -110,7 +111,7 @@
                                                           Required="true"></MudTextField>
                                             </MudItem>
                                             <MudItem xs="4" md="2">
-                                                <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="() => Configuration.Tags.Remove(item)"></MudIconButton>
+                                                <MudIconButton id="deleteTagButton"  Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="() => Configuration.Tags.Remove(item)"></MudIconButton>
                                             </MudItem>
                                         </MudGrid>
                                     </MudForm>
@@ -131,6 +132,7 @@
                                 <MudGrid>
                                     <MudItem xs="12" md="6" sm="8">
                                         <MudSelect @bind-Value="@SelectedProperty"
+                                                   id="selectedProperty"
                                                    Label="Property"
                                                    HelperText="Select the property and click 'Add Property' to add a new setting."
                                                    HelperTextOnFocus="false"
@@ -149,7 +151,7 @@
                                                    Color="Color.Primary"
                                                    Disabled="string.IsNullOrEmpty(SelectedProperty)"
                                                    OnClick="AddSelectedProperty"
-                                                   StartIcon="@Icons.Filled.Add" id="addProperty">Add Property</MudButton>
+                                                   StartIcon="@Icons.Filled.Add" id="addPropertyButton">Add Property</MudButton>
                                     </MudItem>
                                 </MudGrid>
                             </MudItem>
@@ -157,7 +159,7 @@
                                 @foreach (var item in Configuration.Properties.Keys)
                                 {
                                     <MudForm Model="item">
-                                        <MudGrid>
+                                        <MudGrid  id="@($"property-{item}")">
                                             <MudItem xs="8" md="10">
                                                 @{
                                                     var property = this.AvailableProperties.Single(x => x.Name == item);
@@ -231,10 +233,10 @@
     IEnumerable<DeviceProperty> AvailableProperties = Array.Empty<DeviceProperty>();
     IEnumerable<DeviceModel> AvailableModels = Array.Empty<DeviceModel>();
 
-    string SelectedTag { get; set; }
-    string SelectedProperty { get; set; }
+    public string SelectedTag { get; set; }
+    public string SelectedProperty { get; set; }
 
-    private bool IsLoading { get; set; } = true;
+    public bool IsLoading { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -258,7 +260,7 @@
         navigationManager.NavigateTo("/device-configurations");
     }
 
-    private async Task LoadProperties(DeviceModel model)
+    public async Task SelectModel(DeviceModel model)
     {
         Configuration.ModelId = model.ModelId;
         AvailableProperties = await HttpClient.GetFromJsonAsync<IEnumerable<DevicePropertyValue>>($"/api/models/{model.ModelId}/properties");
