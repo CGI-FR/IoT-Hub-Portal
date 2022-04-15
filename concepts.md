@@ -123,7 +123,7 @@ The IoT Hub portal will use the Target condition to extract this values from the
 |-------------	|----------------	|----------------------------------------------------------	|
 | Owner       	| ``tags.owner`` 	| Owner tag filter condition from the Deployment Manifest. 	|
 | Environment 	| ``tags.env``   	| Environment tag filter from the Deployment Manifest.     	|
-| Type        	| ``tags.type``  	| Device type tag filter from the Deployment Manifest.     	|
+| Type        	| ``tags.type``  	| Device type tag filter from the Deployment Manifest. Expected value for IoT Edge LoRaWAN LNS is `LoRa Network Server`, otherwise the value must be `Other`     	|
 
 ## Enrollment groups
 
@@ -201,7 +201,7 @@ To store additional information about the concentrator, the application will use
 |---------	|--------------	|---------------------------------------------------------------------------------------------------------------------------------------------	|
 | Device Name 	| ``tags.deviceName`` 	| Field that contains the Device name. 	|
 | Region 	| ``tags.loraRegion`` 	| Field that contains the Device region. 	|
-| deviceType 	| ``tags.deviceType`` 	| Field that contains The type of device.  |
+| deviceType 	| ``tags.deviceType`` 	| Field that contains The type of device. Expected value is `LoRa Concentrator`  |
 
 ## Command Execution
 
