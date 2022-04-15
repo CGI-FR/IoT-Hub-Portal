@@ -25,6 +25,279 @@ Available APIs for managing devices from Azure IoT Hub.
 
 <h1 id="azure-iot-hub-portal-api-iot-devices">IoT Devices</h1>
 
+## get__api_device-configurations
+
+> Code samples
+
+`GET /api/device-configurations`
+
+> Example responses
+
+> 200 Response
+
+```
+[{"configurationID":"string","conditions":"string","metricsTargeted":0,"metricsApplied":0,"metricsSuccess":0,"metricsFailure":0,"priority":0,"creationDate":"2019-08-24T14:15:22Z","modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":{"property1":"string","property2":"string"},"moduleIdentityTwinSettings":{"property1":"string","property2":"string"}}]}]
+```
+
+```json
+[
+  {
+    "configurationID": "string",
+    "conditions": "string",
+    "metricsTargeted": 0,
+    "metricsApplied": 0,
+    "metricsSuccess": 0,
+    "metricsFailure": 0,
+    "priority": 0,
+    "creationDate": "2019-08-24T14:15:22Z",
+    "modules": [
+      {
+        "moduleName": "string",
+        "version": "string",
+        "status": "string",
+        "environmentVariables": {
+          "property1": "string",
+          "property2": "string"
+        },
+        "moduleIdentityTwinSettings": {
+          "property1": "string",
+          "property2": "string"
+        }
+      }
+    ]
+  }
+]
+```
+
+<h3 id="get__api_device-configurations-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+
+<h3 id="get__api_device-configurations-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[ConfigListItem](#schemaconfiglistitem)]|false|none|[IoT Edge configuration list item.]|
+|» configurationID|string¦null|false|none|The IoT Edge configuration identifier.|
+|» conditions|string¦null|false|none|The IoT Edge configuration target conditions.|
+|» metricsTargeted|integer(int64)|false|none|The IoT Edge configuration targeted metrics.|
+|» metricsApplied|integer(int64)|false|none|The IoT Edge configuration applied metrics.|
+|» metricsSuccess|integer(int64)|false|none|The IoT Edge configuration success metrics.|
+|» metricsFailure|integer(int64)|false|none|The IoT Edge configuration failure metrics.|
+|» priority|integer(int32)|false|none|The IoT Edge configuration priority.|
+|» creationDate|string(date-time)|false|none|The IoT Edge configuration creation date.|
+|» modules|[[IoTEdgeModule](#schemaiotedgemodule)]¦null|false|none|The IoT Edge modules configuration.|
+|»» moduleName|string|true|none|The module name.|
+|»» version|string¦null|false|none|The module configuration version.|
+|»» status|string¦null|false|none|The module status.|
+|»» environmentVariables|object¦null|false|read-only|The module environment variables.|
+|»»» **additionalProperties**|string¦null|false|none|none|
+|»» moduleIdentityTwinSettings|object¦null|false|read-only|The module identity twin settings.|
+|»»» **additionalProperties**|string¦null|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## post__api_device-configurations
+
+> Code samples
+
+`POST /api/device-configurations`
+
+> Body parameter
+
+```json
+{
+  "configurationId": "string",
+  "modelId": "string",
+  "tags": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "properties": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "priority": 2147483647
+}
+```
+
+<h3 id="post__api_device-configurations-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[DeviceConfig](#schemadeviceconfig)|false|none|
+
+<h3 id="post__api_device-configurations-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## get__api_device-configurations_{configurationId}
+
+> Code samples
+
+`GET /api/device-configurations/{configurationId}`
+
+<h3 id="get__api_device-configurations_{configurationid}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|configurationId|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```
+{"configurationId":"string","modelId":"string","tags":{"property1":"string","property2":"string"},"properties":{"property1":"string","property2":"string"},"priority":2147483647}
+```
+
+```json
+{
+  "configurationId": "string",
+  "modelId": "string",
+  "tags": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "properties": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "priority": 2147483647
+}
+```
+
+<h3 id="get__api_device-configurations_{configurationid}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[DeviceConfig](#schemadeviceconfig)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## put__api_device-configurations_{configurationId}
+
+> Code samples
+
+`PUT /api/device-configurations/{configurationId}`
+
+> Body parameter
+
+```json
+{
+  "configurationId": "string",
+  "modelId": "string",
+  "tags": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "properties": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "priority": 2147483647
+}
+```
+
+<h3 id="put__api_device-configurations_{configurationid}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|configurationId|path|string|true|none|
+|body|body|[DeviceConfig](#schemadeviceconfig)|false|none|
+
+<h3 id="put__api_device-configurations_{configurationid}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## delete__api_device-configurations_{configurationId}
+
+> Code samples
+
+`DELETE /api/device-configurations/{configurationId}`
+
+<h3 id="delete__api_device-configurations_{configurationid}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|configurationId|path|string|true|none|
+
+<h3 id="delete__api_device-configurations_{configurationid}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## get__api_device-configurations_{configurationId}_metrics
+
+> Code samples
+
+`GET /api/device-configurations/{configurationId}/metrics`
+
+<h3 id="get__api_device-configurations_{configurationid}_metrics-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|configurationId|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```
+{"metricsTargeted":0,"metricsApplied":0,"metricsSuccess":0,"metricsFailure":0,"creationDate":"2019-08-24T14:15:22Z"}
+```
+
+```json
+{
+  "metricsTargeted": 0,
+  "metricsApplied": 0,
+  "metricsSuccess": 0,
+  "metricsFailure": 0,
+  "creationDate": "2019-08-24T14:15:22Z"
+}
+```
+
+<h3 id="get__api_device-configurations_{configurationid}_metrics-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ConfigurationMetrics](#schemaconfigurationmetrics)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
 ## GET Device list
 
 <a id="opIdGET Device list"></a>
@@ -3318,6 +3591,70 @@ IoT Edge configuration list item.
 |priority|integer(int32)|false|none|The IoT Edge configuration priority.|
 |creationDate|string(date-time)|false|none|The IoT Edge configuration creation date.|
 |modules|[[IoTEdgeModule](#schemaiotedgemodule)]¦null|false|none|The IoT Edge modules configuration.|
+
+<h2 id="tocS_ConfigurationMetrics">ConfigurationMetrics</h2>
+<!-- backwards compatibility -->
+<a id="schemaconfigurationmetrics"></a>
+<a id="schema_ConfigurationMetrics"></a>
+<a id="tocSconfigurationmetrics"></a>
+<a id="tocsconfigurationmetrics"></a>
+
+```json
+{
+  "metricsTargeted": 0,
+  "metricsApplied": 0,
+  "metricsSuccess": 0,
+  "metricsFailure": 0,
+  "creationDate": "2019-08-24T14:15:22Z"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|metricsTargeted|integer(int64)|false|none|The IoT Edge configuration targeted metrics.|
+|metricsApplied|integer(int64)|false|none|The IoT Edge configuration applied metrics.|
+|metricsSuccess|integer(int64)|false|none|The IoT Edge configuration success metrics.|
+|metricsFailure|integer(int64)|false|none|The IoT Edge configuration failure metrics.|
+|creationDate|string(date-time)|false|none|The IoT Edge configuration creation date.|
+
+<h2 id="tocS_DeviceConfig">DeviceConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemadeviceconfig"></a>
+<a id="schema_DeviceConfig"></a>
+<a id="tocSdeviceconfig"></a>
+<a id="tocsdeviceconfig"></a>
+
+```json
+{
+  "configurationId": "string",
+  "modelId": "string",
+  "tags": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "properties": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "priority": 2147483647
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configurationId|string¦null|false|none|The configuration identifier.|
+|modelId|string¦null|false|none|The model identifier.|
+|tags|object¦null|false|none|The device tags targeted by the configuration.|
+|» **additionalProperties**|string¦null|false|none|none|
+|properties|object¦null|false|none|The configuration properties.|
+|» **additionalProperties**|string¦null|false|none|none|
+|priority|integer(int32)|false|none|The Configuration priority.|
 
 <h2 id="tocS_DeviceDetails">DeviceDetails</h2>
 <!-- backwards compatibility -->

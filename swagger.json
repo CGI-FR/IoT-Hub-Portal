@@ -6,6 +6,210 @@
     "version": "1.0"
   },
   "paths": {
+    "/api/device-configurations": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConfigListItem"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConfigListItem"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConfigListItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/device-configurations/{configurationId}": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "parameters": [
+          {
+            "name": "configurationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceConfig"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceConfig"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceConfig"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "parameters": [
+          {
+            "name": "configurationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "parameters": [
+          {
+            "name": "configurationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/device-configurations/{configurationId}/metrics": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "parameters": [
+          {
+            "name": "configurationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationMetrics"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationMetrics"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationMetrics"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/devices": {
       "get": {
         "tags": [
@@ -2828,6 +3032,78 @@
         },
         "additionalProperties": false,
         "description": "IoT Edge configuration list item."
+      },
+      "ConfigurationMetrics": {
+        "type": "object",
+        "properties": {
+          "metricsTargeted": {
+            "type": "integer",
+            "description": "The IoT Edge configuration targeted metrics.",
+            "format": "int64"
+          },
+          "metricsApplied": {
+            "type": "integer",
+            "description": "The IoT Edge configuration applied metrics.",
+            "format": "int64"
+          },
+          "metricsSuccess": {
+            "type": "integer",
+            "description": "The IoT Edge configuration success metrics.",
+            "format": "int64"
+          },
+          "metricsFailure": {
+            "type": "integer",
+            "description": "The IoT Edge configuration failure metrics.",
+            "format": "int64"
+          },
+          "creationDate": {
+            "type": "string",
+            "description": "The IoT Edge configuration creation date.",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeviceConfig": {
+        "type": "object",
+        "properties": {
+          "configurationId": {
+            "type": "string",
+            "description": "The configuration identifier.",
+            "nullable": true
+          },
+          "modelId": {
+            "type": "string",
+            "description": "The model identifier.",
+            "nullable": true
+          },
+          "tags": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "nullable": true
+            },
+            "description": "The device tags targeted by the configuration.",
+            "nullable": true
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "nullable": true
+            },
+            "description": "The configuration properties.",
+            "nullable": true
+          },
+          "priority": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "description": "The Configuration priority.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
       },
       "DeviceDetails": {
         "required": [
