@@ -25,7 +25,9 @@ Available APIs for managing devices from Azure IoT Hub.
 
 <h1 id="azure-iot-hub-portal-api-iot-devices">IoT Devices</h1>
 
-## get__api_device-configurations
+## GET Device configurations
+
+<a id="opIdGET Device configurations"></a>
 
 > Code samples
 
@@ -69,13 +71,13 @@ Available APIs for managing devices from Azure IoT Hub.
 ]
 ```
 
-<h3 id="get__api_device-configurations-responses">Responses</h3>
+<h3 id="get-device-configurations-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
 
-<h3 id="get__api_device-configurations-responseschema">Response Schema</h3>
+<h3 id="get-device-configurations-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -104,7 +106,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## post__api_device-configurations
+## POST Create Device configuration
+
+<a id="opIdPOST Create Device configuration"></a>
 
 > Code samples
 
@@ -128,13 +132,13 @@ None
 }
 ```
 
-<h3 id="post__api_device-configurations-parameters">Parameters</h3>
+<h3 id="post-create-device-configuration-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[DeviceConfig](#schemadeviceconfig)|false|none|
 
-<h3 id="post__api_device-configurations-responses">Responses</h3>
+<h3 id="post-create-device-configuration-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -145,13 +149,15 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_device-configurations_{configurationId}
+## GET Device configuration
+
+<a id="opIdGET Device configuration"></a>
 
 > Code samples
 
 `GET /api/device-configurations/{configurationId}`
 
-<h3 id="get__api_device-configurations_{configurationid}-parameters">Parameters</h3>
+<h3 id="get-device-configuration-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -181,7 +187,7 @@ None
 }
 ```
 
-<h3 id="get__api_device-configurations_{configurationid}-responses">Responses</h3>
+<h3 id="get-device-configuration-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -192,7 +198,9 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## put__api_device-configurations_{configurationId}
+## PUT Update Device configuration
+
+<a id="opIdPUT Update Device configuration"></a>
 
 > Code samples
 
@@ -216,14 +224,14 @@ None
 }
 ```
 
-<h3 id="put__api_device-configurations_{configurationid}-parameters">Parameters</h3>
+<h3 id="put-update-device-configuration-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |configurationId|path|string|true|none|
 |body|body|[DeviceConfig](#schemadeviceconfig)|false|none|
 
-<h3 id="put__api_device-configurations_{configurationid}-responses">Responses</h3>
+<h3 id="put-update-device-configuration-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -234,19 +242,21 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## delete__api_device-configurations_{configurationId}
+## DELETE Device configuration
+
+<a id="opIdDELETE Device configuration"></a>
 
 > Code samples
 
 `DELETE /api/device-configurations/{configurationId}`
 
-<h3 id="delete__api_device-configurations_{configurationid}-parameters">Parameters</h3>
+<h3 id="delete-device-configuration-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |configurationId|path|string|true|none|
 
-<h3 id="delete__api_device-configurations_{configurationid}-responses">Responses</h3>
+<h3 id="delete-device-configuration-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -257,13 +267,15 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
-## get__api_device-configurations_{configurationId}_metrics
+## GET Device configuration metrics
+
+<a id="opIdGET Device configuration metrics"></a>
 
 > Code samples
 
 `GET /api/device-configurations/{configurationId}/metrics`
 
-<h3 id="get__api_device-configurations_{configurationid}_metrics-parameters">Parameters</h3>
+<h3 id="get-device-configuration-metrics-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -287,7 +299,7 @@ None
 }
 ```
 
-<h3 id="get__api_device-configurations_{configurationid}_metrics-responses">Responses</h3>
+<h3 id="get-device-configuration-metrics-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|

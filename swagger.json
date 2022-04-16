@@ -11,6 +11,7 @@
         "tags": [
           "IoT Devices"
         ],
+        "operationId": "GET Device configurations",
         "responses": {
           "200": {
             "description": "Success",
@@ -47,6 +48,7 @@
         "tags": [
           "IoT Devices"
         ],
+        "operationId": "POST Create Device configuration",
         "requestBody": {
           "content": {
             "application/json": {
@@ -78,6 +80,7 @@
         "tags": [
           "IoT Devices"
         ],
+        "operationId": "GET Device configuration",
         "parameters": [
           {
             "name": "configurationId",
@@ -115,6 +118,7 @@
         "tags": [
           "IoT Devices"
         ],
+        "operationId": "PUT Update Device configuration",
         "parameters": [
           {
             "name": "configurationId",
@@ -154,6 +158,7 @@
         "tags": [
           "IoT Devices"
         ],
+        "operationId": "DELETE Device configuration",
         "parameters": [
           {
             "name": "configurationId",
@@ -176,6 +181,7 @@
         "tags": [
           "IoT Devices"
         ],
+        "operationId": "GET Device configuration metrics",
         "parameters": [
           {
             "name": "configurationId",
