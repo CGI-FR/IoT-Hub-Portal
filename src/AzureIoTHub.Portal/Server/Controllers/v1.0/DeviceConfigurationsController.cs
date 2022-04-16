@@ -40,7 +40,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             this.tableClientFactory = tableClientFactory;
         }
 
-        [HttpGet]
+        [HttpGet(Name = "GET Device configurations")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IEnumerable<ConfigListItem>> Get()
         {
@@ -49,7 +49,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             return configList.Select(ConfigHelper.CreateConfigListItem);
         }
 
-        [HttpGet("{configurationId}")]
+        [HttpGet("{configurationId}", Name = "GET Device configuration")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<DeviceConfig>> Get(string configurationId)
         {
@@ -67,7 +67,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             }
         }
 
-        [HttpGet("{configurationId}/metrics")]
+        [HttpGet("{configurationId}/metrics", Name = "GET Device configuration metrics")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ConfigurationMetrics>> GetConfigurationMetrics(string configurationId)
         {
@@ -83,21 +83,21 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             });
         }
 
-        [HttpPost]
+        [HttpPost(Name = "POST Create Device configuration")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task CreateConfig(DeviceConfig deviceConfig)
         {
             await CreateOrUpdateConfiguration(deviceConfig);
         }
 
-        [HttpPut("{configurationId}")]
+        [HttpPut("{configurationId}", Name = "PUT Update Device configuration")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task UpdateConfig(DeviceConfig deviceConfig)
         {
             await CreateOrUpdateConfiguration(deviceConfig);
         }
 
-        [HttpDelete("{configurationId}")]
+        [HttpDelete("{configurationId}", Name = "DELETE Device configuration")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task DeleteConfig(string configurationId)
         {
