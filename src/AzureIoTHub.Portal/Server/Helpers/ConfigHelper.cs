@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text.RegularExpressions;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices;
@@ -110,10 +111,8 @@ namespace AzureIoTHub.Portal.Server.Helpers
             };
 
             // Find matches.
-            foreach (Match match in matches)
+            foreach (var groups in matches.Select(c => c.Groups))
             {
-                var groups = match.Groups;
-
                 result.Tags.Add(groups["tagName"].Value, groups["tagValue"].Value);
             }
 
