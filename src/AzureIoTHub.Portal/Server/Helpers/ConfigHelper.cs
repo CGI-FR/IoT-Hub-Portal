@@ -121,9 +121,9 @@ namespace AzureIoTHub.Portal.Server.Helpers
                 result.Properties.Add(item.Key.Replace("properties.desired.", null, StringComparison.OrdinalIgnoreCase), item.Value?.ToString());
             }
 
-            if (result.Tags.ContainsKey("modelId"))
+            if (result.Tags.TryGetValue("modelId", out var modelId))
             {
-                result.ModelId = result.Tags["modelId"];
+                result.ModelId = modelId;
 
                 _ = result.Tags.Remove("modelId");
             }
