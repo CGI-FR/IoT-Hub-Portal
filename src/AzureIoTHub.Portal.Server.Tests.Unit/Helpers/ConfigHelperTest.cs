@@ -45,13 +45,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
             // Arrange
             var modelId = Guid.NewGuid().ToString();
             var targetCondition = $"tags.modelId = '{modelId}' and tags.name = test and tags.name01 = test";
+            var desiredProperties = new Dictionary<string, object>()
+            {
+                {"properties.desired.test", "test"}
+            };
 
             var config = new Configuration("test")
             {
                 TargetCondition = targetCondition,
                 Labels = new Dictionary<string, string> { { "id", "test" } },
-                Priority = 1
+                Priority = 1,
             };
+            config.Content.DeviceContent = desiredProperties;
 
             // Act
             var result = ConfigHelper.CreateDeviceConfig(config);

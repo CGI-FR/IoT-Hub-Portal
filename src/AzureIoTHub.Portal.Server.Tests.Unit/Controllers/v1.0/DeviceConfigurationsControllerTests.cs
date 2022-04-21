@@ -352,9 +352,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         [TestCase(DevicePropertyType.Double, "100.2", 100.2)]
         [TestCase(DevicePropertyType.Float, "100.2", 100.2f)]
         [TestCase(DevicePropertyType.Integer, "100", 100)]
-        [TestCase(DevicePropertyType.Integer, "100,2", null)]
+        [TestCase(DevicePropertyType.Integer, "100.2", null)]
         [TestCase(DevicePropertyType.Long, "100", 100)]
-        [TestCase(DevicePropertyType.Long, "100,2", null)]
+        [TestCase(DevicePropertyType.Long, "100.2", null)]
         public async Task UpdateConfigShouldUpdatePropertyInValueType(DevicePropertyType propertyType, string propertyValue, object expected)
         {
             // Arrange
@@ -423,9 +423,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         [TestCase(DevicePropertyType.Double, "100.2", 100.2)]
         [TestCase(DevicePropertyType.Float, "100.2", 100.2f)]
         [TestCase(DevicePropertyType.Integer, "100", 100)]
-        [TestCase(DevicePropertyType.Integer, "100,2", null)]
+        [TestCase(DevicePropertyType.Integer, "100.2", null)]
         [TestCase(DevicePropertyType.Long, "100", 100)]
-        [TestCase(DevicePropertyType.Long, "100,2", null)]
+        [TestCase(DevicePropertyType.Long, "100.2", null)]
         public async Task CreateConfigShouldUpdatePropertyInValueType(DevicePropertyType propertyType, string propertyValue, object expected)
         {
             // Arrange
