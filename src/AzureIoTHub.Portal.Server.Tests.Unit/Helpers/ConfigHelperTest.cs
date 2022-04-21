@@ -44,7 +44,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
         {
             // Arrange
             var modelId = Guid.NewGuid().ToString();
-            var targetCondition = $"tags.modelId = '{modelId}' and tags.name = test";
+            var targetCondition = $"tags.modelId = '{modelId}' and tags.name = test and tags.name01 = test";
 
             var config = new Configuration("test")
             {
