@@ -162,7 +162,7 @@ To activate the LoRaWAN features on the device model, the user have to enable th
 
 > Note: once activated, the device model detail adds a new tab called "LORAWAN" that adds new settings to the device model.
 
-![./assets/images/lorawan-device-model.png](./assets/images/lorawan-device-model.png)
+![./assets/images/lora-device-model.png](./assets/images/lora-device-model.png)
 
 ### Parameters
 
@@ -187,7 +187,7 @@ The devices commands are pre-stored frames that the user can add to the device m
 LoRaWAN devices are accessible from the IoT Hub portal for devices that inherits from the LoRaWAN device model.
 The LoRaWAN tab shows the device details.
 
-![./assets/images/lorawan-device-details.png](./assets/images/lorawan-device-details.png)
+![./assets/images/lora-device-details.png](./assets/images/lora-device-details.png)
 
 > Note: By selecting the correct device model on the first tab, the portal will automatically take LoRaWAN settings from the device model to apply on the device.
 
