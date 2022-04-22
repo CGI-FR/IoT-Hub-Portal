@@ -102,7 +102,7 @@ namespace AzureIoTHub.Portal.Server.Services
             newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
             newConfiguration.Labels.Add("configuration-id", configurationId);
 
-            var culture = CultureInfo.CreateSpecificCulture("fr-FR");
+            var culture = CultureInfo.CreateSpecificCulture("en-En");
             var targetCondition = new StringBuilder();
 
             foreach (var item in targetTags)
