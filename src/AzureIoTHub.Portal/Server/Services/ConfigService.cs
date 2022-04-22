@@ -5,7 +5,9 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
     using Extensions;
     using Microsoft.Azure.Devices;
@@ -100,10 +102,13 @@ namespace AzureIoTHub.Portal.Server.Services
             newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
             newConfiguration.Labels.Add("configuration-id", configurationId);
 
-            var targetCondition = string.Empty;
+            var culture = CultureInfo.CreateSpecificCulture("en-En");
+            var targetCondition = new StringBuilder();
+
             foreach (var item in targetTags)
             {
-                targetCondition += $" and tags.{item.Key} = '{item.Value}'";
+                _ = targetCondition.AppendFormat(culture, " and tags.{0}", item.Key);
+                _ = targetCondition.AppendFormat(culture, " = '{0}'", item.Value);
             }
 
             newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'" + targetCondition;
