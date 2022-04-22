@@ -125,6 +125,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 
             try
             {
+
+
                 // Create a new Twin from the form's fields.
                 var newTwin = new Twin()
                 {
@@ -132,6 +134,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
                 };
 
                 device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
+
+                device.ClientThumbprint ??= string.Empty;
 
                 this.concentratorTwinMapper.UpdateTwin(newTwin, device);
 
