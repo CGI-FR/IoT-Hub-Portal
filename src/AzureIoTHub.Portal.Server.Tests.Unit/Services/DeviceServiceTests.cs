@@ -128,7 +128,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             var mockQuery = this.mockRepository.Create<IQuery>();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
-            const string expectedAdditionalFilter = "AND devices.tags.type = 'filteredType'";
+            const string expectedAdditionalFilter = "AND devices.tags.deviceType = 'filteredType'";
 
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
@@ -170,7 +170,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             var mockQuery = this.mockRepository.Create<IQuery>();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
-            const string expectedAdditionalFilter = "AND (NOT is_defined(tags.type) OR devices.tags.type != 'filteredType')";
+            const string expectedAdditionalFilter = "AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != 'filteredType')";
 
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
