@@ -34,7 +34,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             commandContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            return await this.httpClient.PostAsync(new Uri($"api/cloudtodevicemessage/{deviceId}"), commandContent);
+            return await this.httpClient.PostAsync($"/api/cloudtodevicemessage/{deviceId}", commandContent);
         }
 
         public async Task<HttpResponseMessage> CheckAzureFunctionReturn(CancellationToken cancellationToken)
