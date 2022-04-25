@@ -75,9 +75,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var cut = RenderComponent<DeviceListPage>();
 
             // Assert
-            cut.Find("h5")
-                .MarkupMatches("<h5 class=\"mud-typography mud-typography-h5 mud-primary-text mb-4\">Device List</h5>");
-
             Assert.AreEqual("Search panel", cut.Find(".mud-expansion-panels .mud-expand-panel .mud-expand-panel-header .mud-expand-panel-text").TextContent);
 
             Assert.IsFalse(cut.Find(".mud-expansion-panels .mud-expand-panel")
