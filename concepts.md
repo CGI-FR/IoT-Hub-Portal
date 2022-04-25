@@ -153,7 +153,7 @@ Internally, the LoRaWAN connectivity is expected to be provided by [IoTEdge LoRa
 
 > Note: to disable LoRa Features, change the value of ``LoRaFeature__Enabled`` to false in the Portal App Settings.
 
-## Device models<a id='lorawan-device-models'></a>
+## LoRaWAN Device models
 
 For regular Device Models the IoT hub portal provides the possibility to manage LoRaWAN device models.
 To activate the LoRaWAN features on the device model, the user have to enable the option in the `LoRa Device` section
@@ -182,7 +182,7 @@ The devices commands are pre-stored frames that the user can add to the device m
 * ``Name``: The command name. This name is only a friendly name that the user can set to understand what the command is supposed to do.
 * ```Frame```: The LoRaWAN frame (in hex) to be sent to the device.
 
-## Devices<a id='lorawan-devices'></a>
+## LoRaWAN Devices
 
 LoRaWAN devices are accessible from the IoT Hub portal for devices that inherits from the LoRaWAN device model.
 The LoRaWAN tab shows the device details.
