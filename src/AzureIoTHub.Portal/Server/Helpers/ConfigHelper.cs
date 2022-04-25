@@ -111,10 +111,11 @@ namespace AzureIoTHub.Portal.Server.Helpers
             };
 
             // Find matches.
-            foreach (var groups in matches.Select(c => c.Groups))
-            {
-                result.Tags.Add(groups["tagName"].Value, groups["tagValue"].Value);
-            }
+            matches.Select(match => match.Groups).ToList()
+                .ForEach(group =>
+                {
+                    result.Tags.Add(group["tagName"].Value, group["tagValue"].Value);
+                });
 
             foreach (var item in config.Content.DeviceContent)
             {

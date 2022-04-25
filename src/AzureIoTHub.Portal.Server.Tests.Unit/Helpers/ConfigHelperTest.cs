@@ -12,52 +12,32 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
     [TestFixture]
     public class ConfigHelperTest
     {
-        //[Test]
-        //[TestCase("targetedCount")]
-        //[TestCase("appliedCount")]
-        //public void RetrieveMetricValue(string metricName)
-        //{
-        //    //Arrange
-        //    var metricValues = new Dictionary<string, long>
-        //    {
-        //        { "targetedCount", 2 },
-        //        { "appliedCount", 2 }
-        //    };
-
-        //    var configMetric = new ConfigurationMetrics(){ Results = metricValues };
-
-        //    //var config = new Configuration("test"){ SystemMetrics = configMetric };
-
-        //    var mockConfig = new Mock<Configuration>(MockBehavior.Strict);
-        //    mockConfig.SetupProperty(x => x.SystemMetrics).SetReturnsDefault(configMetric);
-
-        //    // Act
-        //    var result = ConfigHelper.RetrieveMetricValue(mockConfig.Object, metricName);
-
-        //    // Assert
-        //    Assert.IsNotNull(result);
-        //    Assert.AreEqual(2, result);
-        //}
-
         [Test]
         public void CreateDeviceConfigShouldReturnValue()
         {
             // Arrange
             var modelId = Guid.NewGuid().ToString();
-            var targetCondition = $"tags.modelId = '{modelId}' and tags.name = test";
+            var targetCondition = $"tags.modelId = '{modelId}' and tags.name = 'test' and tags.name01 = 'test'";
+            var desiredProperties = new Dictionary<string, object>()
+            {
+                {"properties.desired.test", "test"}
+            };
 
             var config = new Configuration("test")
             {
                 TargetCondition = targetCondition,
                 Labels = new Dictionary<string, string> { { "id", "test" } },
-                Priority = 1
+                Priority = 1,
             };
+            config.Content.DeviceContent = desiredProperties;
 
             // Act
             var result = ConfigHelper.CreateDeviceConfig(config);
 
             // Assert
             Assert.IsNotNull(result);
+            Assert.IsTrue(result.Tags.Count > 0);
+            Assert.IsNotNull(result.Properties);
             Assert.AreEqual(config.Priority, result.Priority);
             Assert.AreEqual(modelId, result.ModelId);
         }
