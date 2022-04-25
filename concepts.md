@@ -41,7 +41,7 @@ Devices are the physical IoT devices that are provisioned by the application. Th
 
 ### Parameters
 
-- ``Device Id``: The ID of the device.
+* ``Device Id``: The ID of the device.
 > Note: It is the device id stored in the Azure IoT Hub. It is asked to the user when creating a device and is not editable after the device is created.
 * ``Name``: The name of the device model.
 > Note: The device name is the device friendly name. The name is editable after the device is created.
