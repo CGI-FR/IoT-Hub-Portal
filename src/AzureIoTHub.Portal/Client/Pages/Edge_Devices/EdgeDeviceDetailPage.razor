@@ -168,7 +168,7 @@ else
                                                     <MudTd DataLabel="Version" Style="text-align: center">@context.Version</MudTd>
                                                     <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
                                                     <MudTd DataLabel="Device" Style="text-align: center">
-                                                        <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context,"GetModuleLogs") )">logs</MudButton>
+                                                        <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" Disabled="btn_disable" OnClick="@(async () => await ShowEdgeDeviceLogs(context) )">logs</MudButton>
                                                         <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context,"RestartModule") )">reboot</MudButton>
                                                     </MudTd>
                                                 </RowTemplate>
@@ -242,13 +242,6 @@ else
         if (c2dResult.Status == 200)
         {
             Snackbar.Add("Command successfully executed.", Severity.Success);
-            if (methodName == "GetModuleLogs")
-            {
-                var parameter = new DialogParameters();
-                parameter.Add("info", c2dResult);
-
-                _ = await DialogService.Show<ModuleLogsDialog>("Edge device log", parameter).Result;
-            }
         }
         else
         {
@@ -258,6 +251,16 @@ else
                     option.VisibleStateDuration = 10000;
                 });
         }
+    }
+
+    public async Task ShowEdgeDeviceLogs(IoTEdgeModule module)
+    {
+        var parameter = new DialogParameters();
+        parameter.Add("deviceId", deviceId);
+        parameter.Add("module", module);
+
+        _ = await DialogService.Show<ModuleLogsDialog>("Edge device log", parameter).Result;
+
     }
 
     public void ShowConnectionString()

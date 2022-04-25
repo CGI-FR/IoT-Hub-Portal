@@ -295,27 +295,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 });
             }
 
-            if (methodName == "GetModuleLogs")
-            {
-                payload = JsonConvert.SerializeObject(new
-                {
-                    schemaVersion = module.Version,
-                    items = new[]
-                    {
-                            new
-                            {
-                                id = module.ModuleName,
-                                filter = new
-                                {
-                                    tail = 10
-                                }
-                            }
-                    },
-                    encoding = "none",
-                    contentType = "json"
-                });
-            }
-
             _ = method.SetPayloadJson(payload);
 
             var result = await this.devicesService.ExecuteC2DMethod(deviceId, method);
@@ -326,6 +305,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 Payload = result.GetPayloadAsJson(),
                 Status = result.Status
             };
+        }
+
+        /// <summary>
+        /// Get edge device logs
+        /// </summary>
+        /// <param name="deviceId">Device Id</param>
+        /// <param name="edgeModule">Edge module</param>
+        /// <returns></returns>
+        [HttpPost("{deviceId}/logs", Name = "Get Edge Device logs")]
+        public async Task<IEnumerable<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule)
+        {
+            ArgumentNullException.ThrowIfNull(edgeModule, nameof(edgeModule));
+
+            return await this.devicesService.GetEdgeDeviceLogs(deviceId, edgeModule);
         }
 
         /// <summary>

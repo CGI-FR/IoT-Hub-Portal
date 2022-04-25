@@ -2,6 +2,8 @@
 @using AzureIoTHub.Portal.Models.v10
 @using Newtonsoft.Json;
 
+@inject EdgeDeviceService EdgeDeviceService
+
 
 <MudDialog Style="max-width:fit-content;">
     <DialogContent>
@@ -9,7 +11,9 @@
             <MudCardContent>
 
                 <MudItem xs="12">
-                <MudTable Items="@payloads" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
+                <MudTable Items="@Logs" Loading="@_loading" FixedHeader="true"
+                    Height="400px"
+                    Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
                     <ColGroup>
                         <col style="width: 20%;" />
                         <col style="width: 10%;" />
@@ -17,7 +21,7 @@
                     </ColGroup>
 
                     <HeaderContent>
-                        <MudTh Style="text-align: center">Time stamp</MudTh>
+                        <MudTh Style="text-align: center">Timestamp</MudTh>
                         <MudTh Style="text-align: center">Log level</MudTh>
                         <MudTh Style="text-align: center">Text</MudTh>
                     </HeaderContent>
@@ -29,8 +33,13 @@
                         <MudTd DataLabel="NbDevices" Style="text-align: center;">
                             <MudTextField T="string" Style="font-size: 0.875em;" DisableUnderLine="true" Text="@context.Text" Lines="3" ReadOnly="true"></MudTextField>
                         </MudTd>
-                        @*<MudTd DataLabel="NbDevices" Style="text-align: center;word-break: break-all;">@context.Text</MudTd>*@
                     </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText>No logs have been found</MudText>
+                    </NoRecordsContent>
+                    <LoadingContent>
+                        <MudText>Loading...</MudText>
+                    </LoadingContent>
                     <PagerContent>
                         <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
                     </PagerContent>
@@ -46,30 +55,25 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public C2Dresult info { get; set; }
-    private List<PayloadModel> payloads;
+    [Parameter] public string deviceId { get; set; }
+    [Parameter] public IoTEdgeModule module { get; set; }
+
+    private bool _loading = true;
     private int[] pageSizeOptions = new int[] { 3, 5 , 10};
+    private List<IoTEdgeDeviceLog> Logs;
 
     void Cancel() => MudDialog.Cancel();
 
-    protected override  void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        this.payloads = new();
+        await LoadEdgeDeviceLogs();
+    }
 
-        dynamic payloadGlo = JsonConvert.DeserializeObject(info.Payload);
-        string payloadModule = payloadGlo[0].payload;
-        dynamic payloadFinal = JsonConvert.DeserializeObject(payloadModule);
+    public async Task LoadEdgeDeviceLogs()
+    {
+        Logs = await EdgeDeviceService.GetEdgeDeviceLogs(deviceId, module);
 
-        foreach (var item in payloadFinal)
-        {
-            this.payloads.Add(new PayloadModel
-                {
-                    Text = item.text,
-                    LogLevel = item.loglevel,
-                    Id = item.id,
-                    TimeStamp = item.timestamp
-                });
-        }
+        _loading = false;
     }
 
     private class PayloadModel
