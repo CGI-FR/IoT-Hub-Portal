@@ -7,11 +7,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Constants;
+    using FluentAssertions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Moq;
+    using Newtonsoft.Json;
     using NUnit.Framework;
 
     [TestFixture]
@@ -754,6 +758,126 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             Assert.IsNotNull(result);
             Assert.AreEqual(200, result.Status);
             this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetEdgeDeviceLogsMustReturnLogsWhen200IsReturned()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+
+            var edgeModule = new IoTEdgeModule
+            {
+                Version = "1.0",
+                ModuleName = Guid.NewGuid().ToString()
+            };
+
+            var method = new CloudToDeviceMethod(CloudToDeviceMethods.GetModuleLogs);
+
+            var payload = JsonConvert.SerializeObject(new
+            {
+                schemaVersion = edgeModule.Version,
+                items = new[]
+                {
+                    new
+                    {
+                        id = edgeModule.ModuleName,
+                        filter = new
+                        {
+                            tail = 300
+                        }
+                    }
+                },
+                encoding = "none",
+                contentType = "json"
+            });
+
+            _ = method.SetPayloadJson(payload);
+
+
+            var logger = Mock.Of<ILogger<DeviceService>>();
+
+            _ = this.mockServiceClient.Setup(c => c.InvokeDeviceMethodAsync(
+                It.Is<string>(x => x == deviceId),
+                It.Is<string>(x => x == "$edgeAgent"),
+                It.Is<CloudToDeviceMethod>(x => x.MethodName == method.MethodName && x.GetPayloadAsJson() == payload),
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CloudToDeviceMethodResult
+                {
+                    Status = 200
+                });
+
+            var deviceService = new DeviceService(
+                logger,
+                this.mockRegistryManager.Object,
+                this.mockServiceClient.Object);
+
+            // Act
+            var result = await deviceService.GetEdgeDeviceLogs(deviceId, edgeModule);
+
+            // Assert
+            _ = result.Should().NotBeNull();
+            _ = result.Count().Should().Be(0);
+        }
+
+        [Test]
+        public async Task GetEdgeDeviceLogsMustReturnEmptyLogsWhenNot200IsReturned()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+
+            var edgeModule = new IoTEdgeModule
+            {
+                Version = "1.0",
+                ModuleName = Guid.NewGuid().ToString()
+            };
+
+            var method = new CloudToDeviceMethod(CloudToDeviceMethods.GetModuleLogs);
+
+            var payload = JsonConvert.SerializeObject(new
+            {
+                schemaVersion = edgeModule.Version,
+                items = new[]
+                {
+                    new
+                    {
+                        id = edgeModule.ModuleName,
+                        filter = new
+                        {
+                            tail = 300
+                        }
+                    }
+                },
+                encoding = "none",
+                contentType = "json"
+            });
+
+            _ = method.SetPayloadJson(payload);
+
+
+            var logger = Mock.Of<ILogger<DeviceService>>();
+
+            _ = this.mockServiceClient.Setup(c => c.InvokeDeviceMethodAsync(
+                It.Is<string>(x => x == deviceId),
+                It.Is<string>(x => x == "$edgeAgent"),
+                It.Is<CloudToDeviceMethod>(x => x.MethodName == method.MethodName && x.GetPayloadAsJson() == payload),
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CloudToDeviceMethodResult
+                {
+                    Status = 500
+                });
+
+            var deviceService = new DeviceService(
+                logger,
+                this.mockRegistryManager.Object,
+                this.mockServiceClient.Object);
+
+            // Act
+            var result = await deviceService.GetEdgeDeviceLogs(deviceId, edgeModule);
+
+            // Assert
+            _ = result.Should().NotBeNull();
+            _ = result.Count().Should().Be(0);
         }
     }
 }

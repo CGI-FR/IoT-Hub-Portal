@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Text;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Constants;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
@@ -324,7 +325,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>Edge device logs</returns>
         public async Task<IEnumerable<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule)
         {
-            var method = new CloudToDeviceMethod("GetModuleLogs");
+            var method = new CloudToDeviceMethod(CloudToDeviceMethods.GetModuleLogs);
 
             var logs = new List<IoTEdgeDeviceLog>();
 
@@ -350,9 +351,25 @@ namespace AzureIoTHub.Portal.Server.Services
 
             var result = await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
 
-            var payloadResponseAsJson = JsonConvert.DeserializeObject<dynamic[]>(result.GetPayloadAsJson()).Single().payload.ToString();
+            if (result.Status == 200)
+            {
+                var playloadResponse = result.GetPayloadAsJson();
 
-            logs.AddRange(JsonConvert.DeserializeObject<List<IoTEdgeDeviceLog>>(payloadResponseAsJson));
+                if (string.IsNullOrWhiteSpace(playloadResponse))
+                {
+                    this.log.LogInformation($"Payload logs' response of the device {deviceId} is empty");
+                }
+                else
+                {
+                    var payloadResponseAsJson = JsonConvert.DeserializeObject<dynamic[]>(result.GetPayloadAsJson()).Single().payload.ToString();
+
+                    logs.AddRange(JsonConvert.DeserializeObject<List<IoTEdgeDeviceLog>>(payloadResponseAsJson));
+                }
+            }
+            else
+            {
+                this.log.LogError($"Unable to retreive logs of the device {deviceId}, status code: {result.Status}");
+            }
 
 
             return logs.OrderByDescending(log => log.TimeStamp);
