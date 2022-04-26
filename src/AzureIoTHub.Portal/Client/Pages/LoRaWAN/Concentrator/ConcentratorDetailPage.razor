@@ -12,8 +12,14 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
+@inject NavigationManager navigationManager
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">LoRaWAN Concentrator</MudText>
+<MudTooltip Text="Return" Placement="Placement.Left">
+    <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" />       
+</MudTooltip>
+<MudTooltip Placement="Placement.Top">
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  LoRaWAN Concentrator</MudText>
+</MudTooltip>
 
 <MudForm Model="@concentrator" @ref="form">
     <MudGrid>
@@ -115,6 +121,7 @@
     private Concentrator concentrator { get; set; } = new Concentrator();
     private MudForm form;
     private ConcentratorValidator concentratorValidator = new ConcentratorValidator();
+    private void Return() => navigationManager.NavigateTo("/lorawan/concentrators");
 
     public PatternMask maskThumbprint = new PatternMask("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
     {

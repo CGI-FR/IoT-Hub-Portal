@@ -10,7 +10,12 @@
 @inject IDialogService DialogService
 @inject NavigationManager navigationManager
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Configuration Details</MudText>
+<MudTooltip Text="Return" Placement="Placement.Left">
+    <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" />       
+</MudTooltip>
+<MudTooltip Placement="Placement.Top">
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Device Configuration Details</MudText>
+</MudTooltip>
 
 @if (IsLoading)
 {
@@ -230,6 +235,7 @@
     public DeviceConfig Configuration { get; set; } = new();
     public DeviceModel DeviceModel { get; set; } = new();
     private ConfigurationMetrics Metrics { get; set; } = new();
+    private void Return() => navigationManager.NavigateTo("/device-configurations");
 
     public bool IsLoading { get; set; } = true;
 

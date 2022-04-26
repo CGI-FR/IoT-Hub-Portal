@@ -11,8 +11,14 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
 @inject IDialogService DialogService
+@inject NavigationManager navigationManager
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Details</MudText>
+<MudTooltip Text="Return" Placement="Placement.Left">
+    <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" />       
+</MudTooltip>
+<MudTooltip Placement="Placement.Top">
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Device Details</MudText>
+</MudTooltip>
 <MudForm Model="@Device" @ref="form">
     <MudGrid>
         <MudItem xs="12" sm="4" md="3">
@@ -211,7 +217,9 @@
     private DeviceModel DeviceModel { get;set; } = new DeviceModel();
 
     private bool isLoaded = false;
-    
+
+    private void Return() => navigationManager.NavigateTo("devices");
+
     private IEnumerable<DeviceModelCommand> Commands { get; set; }
 
     private IEnumerable<DeviceTag> TagList { get; set; } = Array.Empty<DeviceTag>();

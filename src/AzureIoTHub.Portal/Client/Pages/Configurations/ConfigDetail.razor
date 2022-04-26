@@ -9,6 +9,7 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
+@inject NavigationManager navigationManager
 
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
@@ -17,7 +18,12 @@
                 <MudCard>
                     <MudCardHeader>
                         <CardHeaderContent>
-                            <MudText Typo="Typo.h4">Configuration detail</MudText>
+                            <MudTooltip Text="Return" Placement="Placement.Left">
+                                <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" />
+                            </MudTooltip>
+                            <MudTooltip Placement="Placement.Top">
+                                <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Configuration detail</MudText>
+                            </MudTooltip>
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent>
@@ -122,6 +128,7 @@
     public string ConditionEnv { get; set; }
     public string ConditionType { get; set; }
     public string ConditionOwner { get; set; }
+     private void Return() => navigationManager.NavigateTo("edge/configurations");
 
     protected override async Task OnInitializedAsync()
     {

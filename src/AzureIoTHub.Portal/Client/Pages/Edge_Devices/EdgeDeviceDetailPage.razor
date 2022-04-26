@@ -9,9 +9,15 @@
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject NavigationManager navigationManager
 
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Edge Device Details</MudText>
+<MudTooltip Text="Return" Placement="Placement.Left">
+    <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" />       
+</MudTooltip>
+<MudTooltip Placement="Placement.Top">
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Edge Device Details</MudText>
+</MudTooltip>
 
 @if (loading)
 {
@@ -192,6 +198,7 @@ else
     private bool btn_disable = false;
     private bool processingUpdate = false;
     private bool processingDelete = false;
+    private void Return() => navigationManager.NavigateTo("edge/devices");
 
     private IoTEdgeDevice Gateway;
 
