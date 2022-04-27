@@ -38,14 +38,42 @@
                 <MudCardActions Class="pb-4 pl-4 justify-center">
                     @if (isLoaded && (!IsLoRa || !(Device is LoRaDeviceDetails)))
                     {
-                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString">Connect</MudButton>
+                        @if (processingConnect)
+                        {
+                            <MudButton Variant="Variant.Filled" Disabled="true">
+                                <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true" />Processing
+                            </MudButton>
+                        }
+                        else
+                        {
+                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString">Connect</MudButton>
+                        }
                     }
                 </MudCardActions>
             </MudCard>
 
             <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice">Delete device</MudButton>
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save">Save Changes</MudButton>
+                @if (processingDelete)
+                {
+                    <MudButton Variant="Variant.Filled" Disabled="true">
+                        <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true" />Processing
+                    </MudButton>
+                }
+                else
+                {
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice">Delete device</MudButton>
+                }
+                @if (processingUpdate)
+                {
+                    <MudButton Variant="Variant.Filled" Disabled="true">
+                        <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true" />Processing
+                    </MudButton>
+                }
+                else
+                {
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save">Save Changes</MudButton>
+                }
+
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
@@ -220,6 +248,10 @@
 
     private void Return() => navigationManager.NavigateTo("devices");
 
+    private bool processingUpdate = false;
+    private bool processingDelete = false;
+    private bool processingConnect = false;
+
     private IEnumerable<DeviceModelCommand> Commands { get; set; }
 
     private IEnumerable<DeviceTag> TagList { get; set; } = Array.Empty<DeviceTag>();
@@ -251,6 +283,7 @@
     /// </summary>
     public async void Save()
     {
+        processingUpdate = true;
         await form.Validate();
         bool tagValidationError = CheckTagsError();
 
@@ -259,6 +292,7 @@
             || tagValidationError)
         {
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
+            processingUpdate = false;
 
             return;
         }
@@ -282,16 +316,19 @@
 
         // Prompts a snack bar to inform the action was successful
         Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!", Severity.Success);
+        processingUpdate = false;
 
         // Go back to the list of devices
         NavManager.NavigateTo("devices");
     }
-    public void ShowConnectionString()
+    public async Task ShowConnectionString()
     {
+        processingConnect = true;
         var parameters = new DialogParameters();
         parameters.Add(nameof(ConnectionStringDialog.deviceId), this.DeviceID);
 
-        DialogService.Show<ConnectionStringDialog>("Device Credentials", parameters);
+        _  = await DialogService.Show<ConnectionStringDialog>("Device Credentials", parameters).Result;
+        processingConnect = false;
     }
 
     private bool CheckTagsError()
@@ -315,10 +352,12 @@
     /// <returns></returns>
     private async Task DeleteDevice()
     {
+        processingDelete = true;
         var parameters = new DialogParameters();
         parameters.Add("deviceID", Device.DeviceID);
         parameters.Add("deviceName", Device.DeviceName);
         var result = await DialogService.Show<DeleteDevicePage>("Confirm Deletion", parameters).Result;
+        processingDelete = false;
 
         if (result.Cancelled)
         {
