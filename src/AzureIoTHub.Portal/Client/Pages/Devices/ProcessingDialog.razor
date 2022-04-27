@@ -1,0 +1,26 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="4">
+                <MudProgressCircular Class="mr-2 my-5" Size="Size.Small" Indeterminate="true" />
+            </MudItem>
+            <MudItem xs="8">
+                <MudText Class="my-5">
+                    @ContentText
+                </MudText>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string ContentText { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(0);
+        MudDialog.Options.NoHeader = true;
+        MudDialog.Options.DisableBackdropClick = true;
+        MudDialog.SetOptions(MudDialog.Options);
+    }
+}

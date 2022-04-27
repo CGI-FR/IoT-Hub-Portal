@@ -3,6 +3,7 @@
 
 @inject HttpClient Http
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
 
 <MudExpansionPanels MultiExpansion="true">
     <MudGrid>
@@ -140,7 +141,7 @@
                             <MudTd DataLabel="Name" Style="word-break: break-all;">
                                 @CommandContext.Name
                             </MudTd>
-                            <MudTd Style="text-align: center">                                
+                            <MudTd Style="text-align: center">
                                 <MudTooltip Text="Send command">
                                     <MudIconButton Title="Execute" Color="Color.Default" Disabled="!LoRaDevice.AlreadyLoggedInOnce" Icon="@Icons.Material.Filled.Send" Size="Size.Medium" OnClick="@(() => ExecuteMethod(CommandContext))"></MudIconButton>
                                 </MudTooltip>
@@ -169,7 +170,13 @@
 
     private async Task ExecuteMethod(DeviceModelCommand method)
     {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Processing");
+        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+
         var result = await Http.PostAsJsonAsync($"api/lorawan/devices/{LoRaDevice.DeviceID}/_command/{method.Name}", method);
+
+        DialogService.Close(processingDialog);
 
         if (result.IsSuccessStatusCode)
         {
