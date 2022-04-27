@@ -260,8 +260,8 @@
             || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid)
             || tagValidationError)
         {
-            Snackbar.Add("One or more validation errors occurred", Severity.Error);
             DialogService.Close(processingDialog);
+            Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
             return;
         }
@@ -281,12 +281,12 @@
             result = await Http.PostAsJsonAsync($"{ApiUrlBase}/{DeviceID}/properties", Properties);
         }
 
+        DialogService.Close(processingDialog);
         result.EnsureSuccessStatusCode();
 
         // Prompts a snack bar to inform the action was successful
         Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!", Severity.Success);
-        DialogService.Close(processingDialog);
-
+        
         // Go back to the list of devices
         NavManager.NavigateTo("devices");
     }
