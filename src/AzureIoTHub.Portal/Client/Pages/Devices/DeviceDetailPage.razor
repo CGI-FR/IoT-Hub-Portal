@@ -281,8 +281,9 @@
             result = await Http.PostAsJsonAsync($"{ApiUrlBase}/{DeviceID}/properties", Properties);
         }
 
-        DialogService.Close(processingDialog);
         result.EnsureSuccessStatusCode();
+
+        DialogService.Close(processingDialog);
 
         // Prompts a snack bar to inform the action was successful
         Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!", Severity.Success);

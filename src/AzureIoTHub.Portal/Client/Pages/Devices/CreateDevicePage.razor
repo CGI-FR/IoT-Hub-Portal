@@ -12,6 +12,7 @@
 @inject HttpClient Http
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
+@inject IDialogService DialogService
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device</MudText>
 <MudForm Model="@Device" @ref="form">
@@ -276,6 +277,10 @@
     /// </summary>
     public async void Save()
     {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Processing");
+        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+
         await form.Validate();
         bool tagValidationError = CheckTagsError();
 
@@ -283,6 +288,7 @@
             || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid)
             || tagValidationError)
         {
+            DialogService.Close(processingDialog);
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
             // Allows to display ValidationError messages for the MudAutocomplete field.
@@ -303,6 +309,8 @@
         await Http.PostAsJsonAsync($"{ApiUrlBase}/{DeviceID}/properties", Properties);
 
         result.EnsureSuccessStatusCode();
+
+        DialogService.Close(processingDialog);
 
         // Prompts a snack bar to inform the action was successful
         Snackbar.Add($"Device {Device.DeviceID} has been successfully created!", Severity.Success);
