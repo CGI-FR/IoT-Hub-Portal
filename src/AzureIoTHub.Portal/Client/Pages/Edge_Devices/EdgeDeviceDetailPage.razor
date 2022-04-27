@@ -257,7 +257,7 @@ else
     {
         var parameter = new DialogParameters();
         parameter.Add("deviceId", deviceId);
-        parameter.Add("module", module);
+        parameter.Add("edgeModule", module);
 
         _ = await DialogService.Show<ModuleLogsDialog>("Edge device log", parameter).Result;
 
