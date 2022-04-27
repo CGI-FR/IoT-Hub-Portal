@@ -256,6 +256,10 @@
 
     private async Task Save()
     {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Processing");
+        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+
         // Displays validation error message for each field
         await form.Validate();
 
@@ -290,6 +294,7 @@
                            duplicated ||
                            cmdValidationError)))
         {
+            DialogService.Close(processingDialog);
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
             return;
         }
@@ -329,6 +334,7 @@
             var response = await httpClient.PostAsync($"{ApiUrlBase}/{Model.ModelId}/avatar", content);
         }
 
+        DialogService.Close(processingDialog);
         Snackbar.Add("Device model successfully created.", Severity.Success);
 
         // Go back to the list of devices
