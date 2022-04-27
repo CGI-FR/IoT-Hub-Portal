@@ -11,11 +11,11 @@ namespace AzureIoTHub.Portal.Client.Services
     using Newtonsoft.Json;
     using static System.Net.Mime.MediaTypeNames;
 
-    public class EdgeDeviceService
+    public class EdgeDeviceClientService
     {
         private readonly HttpClient http;
 
-        public EdgeDeviceService(HttpClient http)
+        public EdgeDeviceClientService(HttpClient http)
         {
             this.http = http;
         }
