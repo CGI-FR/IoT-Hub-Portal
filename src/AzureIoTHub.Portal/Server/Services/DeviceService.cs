@@ -10,9 +10,12 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Constants;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
     public class DeviceService : IDeviceService
@@ -312,6 +315,64 @@ namespace AzureIoTHub.Portal.Server.Services
         public async Task<CloudToDeviceMethodResult> ExecuteC2DMethod(string deviceId, CloudToDeviceMethod method)
         {
             return await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
+        }
+
+        /// <summary>
+        /// Get edge device logs
+        /// </summary>
+        /// <param name="deviceId">Device Id</param>
+        /// <param name="edgeModule">Edge module</param>
+        /// <returns>Edge device logs</returns>
+        public async Task<IEnumerable<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule)
+        {
+            var method = new CloudToDeviceMethod(CloudToDeviceMethods.GetModuleLogs);
+
+            var logs = new List<IoTEdgeDeviceLog>();
+
+            var payload = JsonConvert.SerializeObject(new
+            {
+                schemaVersion = edgeModule.Version,
+                items = new[]
+                {
+                    new
+                    {
+                        id = edgeModule.ModuleName,
+                        filter = new
+                        {
+                            tail = 300
+                        }
+                    }
+                },
+                encoding = "none",
+                contentType = "json"
+            });
+
+            _ = method.SetPayloadJson(payload);
+
+            var result = await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
+
+            if (result.Status == 200)
+            {
+                var playloadResponse = result.GetPayloadAsJson();
+
+                if (string.IsNullOrWhiteSpace(playloadResponse))
+                {
+                    this.log.LogInformation($"Payload logs' response of the device {deviceId} is empty");
+                }
+                else
+                {
+                    var payloadResponseAsJson = JsonConvert.DeserializeObject<dynamic[]>(result.GetPayloadAsJson()).Single().payload.ToString();
+
+                    logs.AddRange(JsonConvert.DeserializeObject<List<IoTEdgeDeviceLog>>(payloadResponseAsJson));
+                }
+            }
+            else
+            {
+                this.log.LogError($"Unable to retreive logs of the device {deviceId}, status code: {result.Status}");
+            }
+
+
+            return logs.OrderByDescending(log => log.TimeStamp);
         }
     }
 }

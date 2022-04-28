@@ -19,6 +19,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
+    using System.Collections.Generic;
+    using FluentAssertions;
 
     [TestFixture]
     public class EdgeDevicesControllerTests
@@ -373,7 +375,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [TestCase("RestartModule", /*lang=json,strict*/ "{\"id\":\"aaa\",\"schemaVersion\":null}")]
-        [TestCase("GetModuleLogs", /*lang=json,strict*/ "{\"schemaVersion\":null,\"items\":[{\"id\":\"aaa\",\"filter\":{\"tail\":10}}],\"encoding\":\"none\",\"contentType\":\"json\"}")]
         public async Task ExecuteMethodShouldExecuteC2DMethod(string methodName, string expected)
         {
             // Arrange
@@ -404,13 +405,69 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 });
 
             // Act
-           _ = await edgeDevicesController.ExecuteModuleMethod(
+            _ = await edgeDevicesController.ExecuteModuleMethod(
                 module,
                 deviceId,
                 methodName);
 
             // Assert
             this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetEdgeDeviceLogsMustReturnLogsWhenNoErrorIsReturned()
+        {
+            // Arrange
+            var edgeDevicesController = CreateEdgeDevicesController();
+            var deviceId = Guid.NewGuid().ToString();
+
+            var edgeModule = new IoTEdgeModule
+            {
+                Version = "1.0",
+                ModuleName = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockLogger.Setup(c => c.Log(
+                It.Is<LogLevel>(x => x == LogLevel.Information),
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            _ = this.mockDeviceService.Setup(c => c.GetEdgeDeviceLogs(
+                It.Is<string>(x => x == deviceId),
+                It.Is<IoTEdgeModule>(x => x == edgeModule)))
+                .ReturnsAsync(new List<IoTEdgeDeviceLog>
+                {
+                    new IoTEdgeDeviceLog
+                    {
+                        Id = deviceId,
+                        Text = Guid.NewGuid().ToString(),
+                        LogLevel = 1,
+                        TimeStamp = DateTime.UtcNow
+                    }
+                });
+
+            // Act
+            var result = await edgeDevicesController.GetEdgeDeviceLogs(deviceId, edgeModule);
+
+            // Assert
+            _ = result.Should().NotBeNull();
+            _ = result.Count().Should().Be(1);
+        }
+
+        [Test]
+        public async Task GetEdgeDeviceLogsThrowsArgumentNullExceptionWhenModelIsNull()
+        {
+            // Arrange
+            var edgeDevicesController = CreateEdgeDevicesController();
+            var deviceId = Guid.NewGuid().ToString();
+
+            // Act
+            var act = () => edgeDevicesController.GetEdgeDeviceLogs(deviceId, null);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<ArgumentNullException>();
         }
     }
 }
