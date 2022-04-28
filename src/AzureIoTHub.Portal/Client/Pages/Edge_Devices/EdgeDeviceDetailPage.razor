@@ -43,26 +43,8 @@ else
                     </MudCardActions>
                 </MudCard>
                 <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                    @if (processingDelete)
-                    {
-                        <MudButton Variant="Variant.Filled" Color="Color.Error" Class="mx-1" Disabled="true">
-                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />Processing
-                        </MudButton>
-                    }
-                    else
-                    {
-                        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="ShowDeleteModal">Delete edge device</MudButton>
-                    }
-                    @if (processingUpdate)
-                    {
-                        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" Disabled="true">
-                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />Processing
-                        </MudButton>
-                    }
-                    else
-                    {
-                        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="UpdateDevice">Save Changes</MudButton>
-                    }
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="ShowDeleteModal">Delete edge device</MudButton>
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="UpdateDevice">Save Changes</MudButton>
                 </MudItem>
             </MudItem>
             <MudItem xs="12" sm="8" md="9">
@@ -223,8 +205,14 @@ else
 
     public async Task UpdateDevice()
     {
-        processingUpdate = true;
+
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Processing");
+        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+
         var result = await Http.PutAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}", Gateway);
+
+        DialogService.Close(processingDialog);
 
         if (result.IsSuccessStatusCode)
         {
@@ -238,13 +226,18 @@ else
         {
             Snackbar.Add("Something unexpected occurred", Severity.Warning);
         }
-
-        processingUpdate = false;
     }
 
     public async Task OnMethod(IoTEdgeModule module, string methodName)
     {
+
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Processing");
+        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+
         var result = await Http.PostAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}/{module.ModuleName}/{methodName}", module);
+
+        DialogService.Close(processingDialog);
 
         var c2dResult = result.Content.ReadFromJsonAsync<C2Dresult>().Result;
 
@@ -282,13 +275,11 @@ else
 
     public async Task ShowDeleteModal()
     {
-        processingDelete = true;
         var parameter = new DialogParameters();
 
         parameter.Add(nameof(Gateway.DeviceId), Gateway.DeviceId);
 
         var result = await DialogService.Show<EdgeDeviceDeleteConfirmationDialog>("Edge device deletion confirmation", parameter).Result;
-        processingDelete = false;
 
         if (result.Cancelled)
         {
