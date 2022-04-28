@@ -1029,6 +1029,77 @@
         }
       }
     },
+    "/api/edge/devices/{deviceId}/logs": {
+      "post": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "summary": "Get edge device logs",
+        "operationId": "Get Edge Device logs",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "description": "Device Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Edge module",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModule"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModule"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModule"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeDeviceLog"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeDeviceLog"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeDeviceLog"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/lorawan/concentrators": {
       "get": {
         "tags": [
@@ -3507,6 +3578,28 @@
         },
         "additionalProperties": false,
         "description": "IoT Edge device."
+      },
+      "IoTEdgeDeviceLog": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          },
+          "logLevel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timeStamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
       },
       "IoTEdgeListItem": {
         "required": [
