@@ -1270,6 +1270,75 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
+## Get Edge Device logs
+
+<a id="opIdGet Edge Device logs"></a>
+
+> Code samples
+
+`POST /api/edge/devices/{deviceId}/logs`
+
+*Get edge device logs*
+
+> Body parameter
+
+```json
+{
+  "moduleName": "string",
+  "version": "string",
+  "status": "string"
+}
+```
+
+<h3 id="get-edge-device-logs-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceId|path|string|true|Device Id|
+|body|body|[IoTEdgeModule](#schemaiotedgemodule)|false|Edge module|
+
+> Example responses
+
+> 200 Response
+
+```
+[{"id":"string","text":"string","logLevel":0,"timeStamp":"2019-08-24T14:15:22Z"}]
+```
+
+```json
+[
+  {
+    "id": "string",
+    "text": "string",
+    "logLevel": 0,
+    "timeStamp": "2019-08-24T14:15:22Z"
+  }
+]
+```
+
+<h3 id="get-edge-device-logs-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|Inline|
+
+<h3 id="get-edge-device-logs-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[IoTEdgeDeviceLog](#schemaiotedgedevicelog)]|false|none|none|
+|» id|string¦null|false|none|none|
+|» text|string¦null|false|none|none|
+|» logLevel|integer(int32)|false|none|none|
+|» timeStamp|string(date-time)|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
 <h1 id="azure-iot-hub-portal-api-lora-wan">LoRa WAN</h1>
 
 ## GET LoRaWAN Concentrator list
@@ -4037,6 +4106,32 @@ IoT Edge device.
 |environment|string¦null|false|none|The IoT Edge environment tag value.|
 |lastDeployment|[ConfigItem](#schemaconfigitem)|false|none|IoT Edge configuration|
 |modules|[[IoTEdgeModule](#schemaiotedgemodule)]¦null|false|none|The IoT Edge modules.|
+
+<h2 id="tocS_IoTEdgeDeviceLog">IoTEdgeDeviceLog</h2>
+<!-- backwards compatibility -->
+<a id="schemaiotedgedevicelog"></a>
+<a id="schema_IoTEdgeDeviceLog"></a>
+<a id="tocSiotedgedevicelog"></a>
+<a id="tocsiotedgedevicelog"></a>
+
+```json
+{
+  "id": "string",
+  "text": "string",
+  "logLevel": 0,
+  "timeStamp": "2019-08-24T14:15:22Z"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string¦null|false|none|none|
+|text|string¦null|false|none|none|
+|logLevel|integer(int32)|false|none|none|
+|timeStamp|string(date-time)|false|none|none|
 
 <h2 id="tocS_IoTEdgeListItem">IoTEdgeListItem</h2>
 <!-- backwards compatibility -->
