@@ -9,6 +9,7 @@
 @attribute [Authorize]
 @inject HttpClient HttpClient
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
 
 
 <MudItem xs="12">
@@ -106,6 +107,10 @@
     private async Task Save()
     {
 
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Processing");
+        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+
         // Checks empty field and regex validation
         await FormLabel.Validate();
         await FormName.Validate();
@@ -127,11 +132,14 @@
             var response = await HttpClient.PostAsJsonAsync($"/api/settings/device-tags", Tags);
             response.EnsureSuccessStatusCode();
 
+            DialogService.Close(processingDialog);
+
             // Prompts a snack bar to inform the action was successful
             Snackbar.Add($"Settings have been successfully updated!", Severity.Success);
         }
         else
         {
+            DialogService.Close(processingDialog);
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
             return;
         }
