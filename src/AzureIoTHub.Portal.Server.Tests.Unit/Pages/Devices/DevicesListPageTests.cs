@@ -258,5 +258,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         protected virtual void Dispose(bool disposing)
         {
         }
+
     }
 }

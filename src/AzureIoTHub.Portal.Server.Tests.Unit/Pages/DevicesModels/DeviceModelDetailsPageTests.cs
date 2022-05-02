@@ -407,6 +407,37 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             return deviceModel;
         }
 
+        [Test]
+
+        public void ReturnButtonMustNavigateToPreviousPage()
+        {
+
+            // Arrange
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"{ApiBaseUrl}/properties")
+                .RespondJson(new List<DeviceProperty>());
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"{ApiBaseUrl}")
+                .RespondJson(new DeviceModel());
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"{ApiBaseUrl}/avatar")
+                .RespondText(string.Empty);
+
+            //_ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+
+            var cut = RenderComponent<DeviceModelDetailPage>(ComponentParameter.CreateParameter("ModelId", this.mockModelId ));
+            var returnButton = cut.WaitForElement("#returnButton", TimeSpan.FromSeconds(2));
+
+            // Act
+            returnButton.Click();
+
+            // Assert
+            cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
+        }
+
         public void Dispose()
         {
             Dispose(true);
