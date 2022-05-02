@@ -44,12 +44,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 expectedLog
             };
 
-            var mockHttp = new MockHttpMessageHandler();
+            using var mockHttp = new MockHttpMessageHandler();
 
             _ = mockHttp.When(HttpMethod.Post, $"http://localhost/api/edge/devices/{deviceId}/logs")
                 .Respond(Application.Json, JsonConvert.SerializeObject(expectedLogs));
 
-            var client = new HttpClient(mockHttp)
+            using var client = new HttpClient(mockHttp)
             {
                 BaseAddress = new Uri("http://localhost")
             };
@@ -77,12 +77,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 ModuleName = Guid.NewGuid().ToString()
             };
 
-            var mockHttp = new MockHttpMessageHandler();
+            using var mockHttp = new MockHttpMessageHandler();
 
             _ = mockHttp.When(HttpMethod.Post, $"http://localhost/api/edge/devices/{deviceId}/logs")
                 .Respond(System.Net.HttpStatusCode.BadRequest);
 
-            var client = new HttpClient(mockHttp)
+            using var client = new HttpClient(mockHttp)
             {
                 BaseAddress = new Uri("http://localhost")
             };
