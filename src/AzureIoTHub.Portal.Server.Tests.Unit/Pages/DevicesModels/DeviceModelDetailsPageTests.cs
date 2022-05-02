@@ -25,6 +25,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using AzureIoTHub.Portal.Client.Shared;
 
     [TestFixture]
     public class DeviceModelDetaislPageTests : IDisposable
@@ -138,6 +139,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             var saveButton = cut.WaitForElement("#SaveButton");
 
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
             // Act
             saveButton.Click();
             cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
@@ -196,6 +204,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             var saveButton = cut.WaitForElement("#SaveButton");
             var addPropertyButton = cut.WaitForElement("#addPropertyButton");
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
             // Act
             addPropertyButton.Click();
@@ -258,6 +273,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             var saveButton = cut.WaitForElement("#SaveButton");
             var removePropertyButton = cut.WaitForElement("#DeletePropertyButton");
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
             // Act
             removePropertyButton.Click();
