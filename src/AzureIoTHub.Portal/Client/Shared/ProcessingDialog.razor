@@ -16,9 +16,8 @@
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string ContentText { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await Task.Delay(0);
         MudDialog.Options.NoHeader = true;
         MudDialog.Options.DisableBackdropClick = true;
         MudDialog.SetOptions(MudDialog.Options);
