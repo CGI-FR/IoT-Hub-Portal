@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Server.Exceptions
 {
     using System;
 
-    public class BaseException : Exception
+    public abstract class BaseException : Exception
     {
         public BaseException(string title, string detail, Exception innerException = null) : base(detail, innerException)
         {
