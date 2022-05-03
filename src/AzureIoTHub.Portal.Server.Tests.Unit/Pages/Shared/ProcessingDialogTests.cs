@@ -32,12 +32,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             var comp = this.testContext.RenderComponent<MudDialogProvider>();
             _ = comp.Markup.Trim().Should().BeEmpty();
             var service = this.testContext.Services.GetService<IDialogService>() as DialogService;
-            _ = service.Should().NotBe(null);
+            _ = service?.Should().NotBe(null);
             IDialogReference dialogReference = null;
 
             // Opens dialog
             var parameters = new DialogParameters{{ "ContentText", "Processing" } };
-            await comp.InvokeAsync(() => dialogReference = service.Show<ProcessingDialog>("Processing", parameters));
+            await comp.InvokeAsync(() => dialogReference = service?.Show<ProcessingDialog>("Processing", parameters));
             _ = dialogReference.Should().NotBe(null);
 
             // Checks dialog content
@@ -50,7 +50,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             comp.WaitForAssertion(() => comp.Markup.Trim().Should().NotBeEmpty(), TimeSpan.FromSeconds(5));
 
             // Dialog should be closable through a method
-            await comp.InvokeAsync(() => service.Close(dialogReference as DialogReference));
+            await comp.InvokeAsync(() => service?.Close(dialogReference as DialogReference));
             var result = await dialogReference.Result;
             _ = result.Cancelled.Should().BeFalse();
         }
