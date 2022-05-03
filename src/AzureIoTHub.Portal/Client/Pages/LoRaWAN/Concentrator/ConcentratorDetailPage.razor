@@ -157,8 +157,7 @@
     public async void SaveDevice()
     {
 
-        var parameters = new DialogParameters();
-        parameters.Add("ContentText", "Processing");
+        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
         MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
 
         await form.Validate();
