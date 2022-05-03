@@ -13,6 +13,8 @@ namespace AzureIoTHub.Portal.Server
     using Azure.Storage.Blobs;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Server.Exceptions;
+    using AzureIoTHub.Portal.Server.Extensions;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Identity;
     using AzureIoTHub.Portal.Server.Managers;
@@ -20,6 +22,8 @@ namespace AzureIoTHub.Portal.Server
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Server.ServicesHealthCheck;
     using AzureIoTHub.Portal.Server.Wrappers;
+    using Hellang.Middleware.ProblemDetails;
+    using Hellang.Middleware.ProblemDetails.Mvc;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -133,7 +137,29 @@ namespace AzureIoTHub.Portal.Server
 
             _ = services.AddHttpClient<IRouterConfigManager, RouterConfigManager>(client => client.BaseAddress = new Uri(configuration.LoRaRegionRouterConfigUrl)).AddPolicyHandler(transientHttpErrorPolicy);
 
+            // Add problem details support
+            _ = services.AddProblemDetails(setup =>
+            {
+                setup.IncludeExceptionDetails = (_context, _exception) => HostEnvironment.IsDevelopment();
+
+                setup.Map<InternalServerErrorException>(exception => new ProblemDetails
+                {
+                    Title = exception.Title,
+                    Detail = exception.Detail,
+                    Status = StatusCodes.Status500InternalServerError
+                });
+
+                setup.Map<BaseException>(exception => new ProblemDetails
+                {
+                    Title = exception.Title,
+                    Detail = exception.Detail,
+                    Status = StatusCodes.Status400BadRequest
+                });
+
+            });
+
             _ = services.AddControllers();
+            _ = services.AddProblemDetailsConventions();
 
             _ = services.AddEndpointsApiExplorer();
 
@@ -221,17 +247,18 @@ namespace AzureIoTHub.Portal.Server
             ArgumentNullException.ThrowIfNull(env, nameof(env));
             ArgumentNullException.ThrowIfNull(app, nameof(app));
 
+            // Use problem details
+            _ = app.UseProblemDetails();
+            app.UseIfElse(IsApiRequest, UseApiExceptionMiddleware, UseUIExceptionMiddleware);
+
             if (env.IsDevelopment())
             {
                 app.UseWebAssemblyDebugging();
-
-                _ = app.UseDeveloperExceptionPage();
                 _ = app.UseSwagger();
                 _ = app.UseSwaggerUI();
             }
             else
             {
-                _ = app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 _ = app.UseHsts();
             }
@@ -267,6 +294,21 @@ namespace AzureIoTHub.Portal.Server
             await app?.ApplicationServices
                     .GetService<IDeviceModelImageManager>()
                     .InitializeDefaultImageBlob();
+        }
+
+        private static void UseApiExceptionMiddleware(IApplicationBuilder app)
+        {
+            _ = app.UseProblemDetails();
+        }
+
+        private void UseUIExceptionMiddleware(IApplicationBuilder app)
+        {
+            _ = HostEnvironment.IsDevelopment() ? app.UseDeveloperExceptionPage() : app.UseExceptionHandler("/Error");
+        }
+
+        private static bool IsApiRequest(HttpContext httpContext)
+        {
+            return httpContext.Request.Path.StartsWithSegments($"/api", StringComparison.OrdinalIgnoreCase);
         }
 
         private Task HandleApiFallback(HttpContext context)
