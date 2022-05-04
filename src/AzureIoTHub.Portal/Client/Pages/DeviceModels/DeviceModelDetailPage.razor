@@ -104,8 +104,6 @@ else
                                                             </MudItem>
                                                             <MudItem md="3" xs="12">
                                                                 <MudTextField id="@nameof(item.Name)" @bind-Value="@item.Name"
-                                                                  Mask="@(new RegexMask(@"^[^.$# ']+$"))"
-                                                                  HelperText="'.', '$', '#', or ' ' are prohibited"
                                                                   Label="Name"
                                                                   Variant="Variant.Outlined"
                                                                   For="@(()=> item.Name)"

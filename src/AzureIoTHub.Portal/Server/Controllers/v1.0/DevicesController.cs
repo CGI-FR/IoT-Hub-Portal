@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Entities;
+    using AzureIoTHub.Portal.Server.Extensions;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
@@ -145,13 +146,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             {
                 string value = null;
 
-                if (item.IsWritable && device.Properties.Desired.Contains(item.Name))
+                if (item.IsWritable && device.Properties.Desired.Contains(item.RowKey))
                 {
-                    value = device.Properties.Desired[item.Name].ToString();
+                    value = device.Properties.Desired[item.RowKey].ToString();
                 }
-                else if (device.Properties.Reported.Contains(item.Name))
+                else if (device.Properties.Reported.Contains(item.RowKey))
                 {
-                    value = device.Properties.Reported[item.Name].ToString();
+                    value = device.Properties.Reported[item.RowKey].ToString();
                 }
 
                 result.Add(new DevicePropertyValue
@@ -200,7 +201,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                     continue;
                 }
 
-                device.Properties.Desired[item.Name] = values.FirstOrDefault(x => x.Name == item.Name)?.Value;
+                device.Properties.Desired[item.RowKey] = values.FirstOrDefault(x => x.Name == item.Name)?.Value;
             }
 
             _ = await this.devicesService.UpdateDeviceTwin(deviceID, device);

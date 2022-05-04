@@ -474,8 +474,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var devicesController = CreateDevicesController();
             var twin = new Twin();
 
+            var expectDeviceModelProperty1 = new DeviceModelProperty
+            {
+                RowKey = Guid.NewGuid().ToString(),
+                PartitionKey = "bbb",
+                IsWritable = true,
+                Name = "writable",
+            };
+
+            var expectDeviceModelProperty2 = new DeviceModelProperty
+            {
+                RowKey = Guid.NewGuid().ToString(),
+                PartitionKey = "bbb",
+                IsWritable = false,
+                Name = "notwritable",
+            };
+
             DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
-            DeviceHelper.SetDesiredProperty(twin, "writable", "ccc");
+            DeviceHelper.SetDesiredProperty(twin, expectDeviceModelProperty1.RowKey, "ccc");
 
             var mockTableClient = this.mockRepository.Create<TableClient>();
             var mockResponse = this.mockRepository.Create<Response>();
@@ -495,20 +511,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                     {
                         Page<DeviceModelProperty>.FromValues(new[]
                         {
-                            new DeviceModelProperty
-                            {
-                                RowKey = Guid.NewGuid().ToString(),
-                                PartitionKey = "bbb",
-                                IsWritable = true,
-                                Name = "writable",
-                            },
-                            new DeviceModelProperty
-                            {
-                                RowKey = Guid.NewGuid().ToString(),
-                                PartitionKey = "bbb",
-                                IsWritable = false,
-                                Name = "notwritable",
-                            }
+                            expectDeviceModelProperty1,
+                            expectDeviceModelProperty2
                         }, null, mockResponse.Object)
                     }));
 
@@ -532,6 +536,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             // Arrange
             var devicesController = CreateDevicesController();
             var twin = new Twin();
+
+            var existingDeviceModelProperty = new DeviceModelProperty
+            {
+                RowKey = Guid.NewGuid().ToString(),
+                PartitionKey = "bbb",
+                IsWritable = true,
+                Name = "writable",
+            };
 
             DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
 
@@ -558,13 +570,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                     {
                         Page<DeviceModelProperty>.FromValues(new[]
                         {
-                            new DeviceModelProperty
-                            {
-                                RowKey = Guid.NewGuid().ToString(),
-                                PartitionKey = "bbb",
-                                IsWritable = true,
-                                Name = "writable",
-                            }
+                            existingDeviceModelProperty
                         }, null, mockResponse.Object)
                     }));
 
@@ -582,7 +588,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             Assert.IsNotNull(response);
             Assert.IsAssignableFrom<OkResult>(response.Result);
 
-            Assert.AreEqual("ccc", twin.Properties.Desired["writable"].ToString());
+            Assert.AreEqual("ccc", twin.Properties.Desired[existingDeviceModelProperty.RowKey].ToString());
 
             this.mockRepository.VerifyAll();
         }
