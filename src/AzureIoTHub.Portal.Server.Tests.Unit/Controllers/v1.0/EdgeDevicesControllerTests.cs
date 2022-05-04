@@ -11,7 +11,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
@@ -80,9 +79,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 });
 
             var edgeDevicesController = CreateEdgeDevicesController();
-
-            _ = this.mockUrlHelper.Setup(c => c.RouteUrl(It.IsAny<UrlRouteContext>()))
-                .Returns(Guid.NewGuid().ToString());
 
             // Act
             var result = await edgeDevicesController.Get();
