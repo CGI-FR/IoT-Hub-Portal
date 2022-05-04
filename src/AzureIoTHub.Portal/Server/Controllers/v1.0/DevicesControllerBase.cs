@@ -17,7 +17,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
@@ -85,23 +84,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 searchTags: searchTags,
                 excludeDeviceType: "LoRa Concentrator");
 
-            string nextPage = null;
-
             if (!string.IsNullOrEmpty(result.NextPage))
             {
-                nextPage = Url.RouteUrl(new UrlRouteContext
-                {
-                    RouteName = nameof(GetItems),
-                    Values = new
-                    {
-                        continuationToken = result.NextPage,
-                        searchText,
-                        searchState,
-                        searchStatus,
-                        pageSize
-                    }
-                });
-
                 var tagsFilterBuilder = new StringBuilder();
 
                 foreach (var tag in searchTags)
@@ -114,7 +98,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             {
                 Items = result.Items.Select(x => this.deviceTwinMapper.CreateDeviceListItem(x)),
                 TotalItems = result.TotalItems,
-                NextPage = nextPage
+                NextPage = result.NextPage
             };
         }
 

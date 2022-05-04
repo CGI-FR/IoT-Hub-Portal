@@ -13,7 +13,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Services;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
@@ -112,29 +111,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 });
             }
 
-            var nextPage = string.Empty;
-
-            if (!string.IsNullOrEmpty(result.NextPage))
-            {
-                nextPage = Url.RouteUrl(new UrlRouteContext
-                {
-                    RouteName = nameof(Get),
-                    Values = new
-                    {
-                        continuationToken = result.NextPage,
-                        searchText,
-                        searchType,
-                        searchStatus,
-                        pageSize
-                    }
-                });
-            }
-
             return Ok(new PaginationResult<IoTEdgeListItem>
             {
                 Items = newGatewayList,
                 TotalItems = result.TotalItems,
-                NextPage = nextPage
+                NextPage = result.NextPage
             });
         }
 
