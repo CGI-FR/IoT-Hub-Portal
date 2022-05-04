@@ -34,10 +34,5 @@ namespace AzureIoTHub.Portal.Server.Extensions
 
             return regex.Replace(normalized, "-");
         }
-
-        public static string KeepAuthorizedCharacters(this string text)
-        {
-            return string.IsNullOrWhiteSpace(text) ? text : Regex.Replace(text, @"[^0-9a-zA-Z]+", "", RegexOptions.Compiled);
-        }
     }
 }

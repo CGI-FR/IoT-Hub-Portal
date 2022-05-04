@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Extensions
 {
-    using FluentAssertions;
     using NUnit.Framework;
     using Server.Extensions;
 
@@ -31,23 +30,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Extensions
 
             // Assert
             Assert.IsNull(result);
-        }
-
-        [TestCase("^")]
-        [TestCase(".")]
-        [TestCase("$")]
-        [TestCase("#")]
-        [TestCase(" ")]
-        public void KeepAuthorizedCharactersMustReplaceProhibitedCharactersByEmpty(string prohibitedCharacter)
-        {
-            var input = $"firmware{prohibitedCharacter}url";
-            var expectedInput = "firmwareurl";
-
-            // Act
-            var result = input.KeepAuthorizedCharacters();
-
-            // Assert
-            _ = result.Should().Be(expectedInput);
         }
     }
 }

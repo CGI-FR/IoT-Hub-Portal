@@ -15,7 +15,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             _ = CreateMap<DeviceModelProperty, DeviceProperty>();
 
             _ = CreateMap<DeviceProperty, DeviceModelProperty>()
-                .ForMember(c => c.RowKey, opts => opts.MapFrom(c => c.Name.KeepAuthorizedCharacters()))
+                .ForMember(c => c.RowKey, opts => opts.MapFrom(c => c.Name.RemoveDiacritics()))
                 .ForMember(c => c.PartitionKey, opts => opts.MapFrom((_, _, _, context) => context.Items[nameof(DeviceModelProperty.PartitionKey)]));
         }
     }
