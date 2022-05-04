@@ -63,25 +63,32 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task GetAllDevicesShouldReturnListOfEdgeDevices()
         {
             // Arrange
-            var twin = new Twin("aaa");
-            twin.Tags["type"] = "test";
+            const int count = 100;
 
             _ = this.mockDeviceService.Setup(x => x.GetAllEdgeDevice(
+                    It.Is<string>(x => x == "aaa"),
+                    It.Is<string>(x => x == "bbb"),
+                    It.Is<bool?>(x => x == true),
                     It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<bool?>(),
-                    It.IsAny<string>(),
-                    It.IsAny<int>()))
+                    It.Is<int>(x => x == 2)))
                 .ReturnsAsync(new PaginationResult<Twin>
                 {
-                    Items = new[] { twin },
+                    Items = Enumerable.Range(0, 100).Select(x => new Twin
+                    {
+                        DeviceId = FormattableString.Invariant($"{x}"),
+                    }),
+                    TotalItems = 1000,
                     NextPage = Guid.NewGuid().ToString()
                 });
 
             var edgeDevicesController = CreateEdgeDevicesController();
 
             // Act
-            var result = await edgeDevicesController.Get();
+            var result = await edgeDevicesController.Get(
+                continuationToken: "aaa",
+                searchText: "bbb",
+                searchStatus: true,
+                pageSize: 2);
 
             // Assert
             Assert.IsNotNull(result);
@@ -91,16 +98,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             Assert.IsNotNull(okObjectResult);
             Assert.AreEqual(200, okObjectResult.StatusCode);
             Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<PaginationResult<IoTEdgeListItem>>(okObjectResult.Value);
-            var gatewayList = okObjectResult.Value as PaginationResult<IoTEdgeListItem>;
-            Assert.IsNotNull(gatewayList);
-            Assert.AreEqual(1, gatewayList.Items.Count());
-            var gateway = gatewayList.Items.ElementAt(0);
 
-            Assert.IsNotNull(gateway);
-            Assert.AreEqual(twin.DeviceId, gateway.DeviceId);
-            Assert.AreEqual("test", gateway.Type);
-            Assert.AreEqual(0, gateway.NbDevices);
+            Assert.IsAssignableFrom<PaginationResult<IoTEdgeListItem>>(okObjectResult.Value);
+            var paginationResult = okObjectResult.Value as PaginationResult<IoTEdgeListItem>;
+
+            Assert.IsNotNull(paginationResult);
+            Assert.AreEqual(count, paginationResult.Items.Count());
+            Assert.AreEqual(1000, paginationResult.TotalItems);
+            Assert.IsNotNull(paginationResult.NextPage);
 
             this.mockRepository.VerifyAll();
         }
