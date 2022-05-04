@@ -64,6 +64,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         {
             // Arrange
             const int count = 100;
+            var paginationResultSimul = new PaginationResult<Twin>
+            {
+                Items = Enumerable.Range(0, 100).Select(x => new Twin
+                {
+                    DeviceId = FormattableString.Invariant($"{x}"),
+                }),
+                TotalItems = 1000,
+                NextPage = Guid.NewGuid().ToString()
+
+
+            };
 
             _ = this.mockDeviceService.Setup(x => x.GetAllEdgeDevice(
                     It.Is<string>(x => x == "aaa"),
@@ -71,15 +82,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                     It.Is<bool?>(x => x == true),
                     It.IsAny<string>(),
                     It.Is<int>(x => x == 2)))
-                .ReturnsAsync(new PaginationResult<Twin>
-                {
-                    Items = Enumerable.Range(0, 100).Select(x => new Twin
-                    {
-                        DeviceId = FormattableString.Invariant($"{x}"),
-                    }),
-                    TotalItems = 1000,
-                    NextPage = Guid.NewGuid().ToString()
-                });
+                .ReturnsAsync(paginationResultSimul);
 
             var edgeDevicesController = CreateEdgeDevicesController();
 
@@ -106,6 +109,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             Assert.AreEqual(count, paginationResult.Items.Count());
             Assert.AreEqual(1000, paginationResult.TotalItems);
             Assert.IsNotNull(paginationResult.NextPage);
+            Assert.AreEqual(paginationResultSimul.NextPage, paginationResult.NextPage);
 
             this.mockRepository.VerifyAll();
         }
