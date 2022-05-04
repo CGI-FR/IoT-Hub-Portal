@@ -158,16 +158,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Assert
             cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
-                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1 mud-inherit-text\">Model: <b>{model.Name}</b></p>");
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Model: <b>{model.Name}</b></p>");
 
             cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(3) > p")
-                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1 mud-inherit-text\">Created at {metrics.CreationDate}</p>");
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Created at {metrics.CreationDate}</p>");
 
             cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(4) > p")
-                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1 mud-inherit-text\">{metrics.MetricsTargeted} devices targeted</p>");
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsTargeted} devices targeted</p>");
 
             cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(5) > p")
-                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1 mud-inherit-text\">{metrics.MetricsApplied} devices applied</p>");
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsApplied} devices applied</p>");
         }
 
         [Test]
