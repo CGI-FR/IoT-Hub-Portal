@@ -141,6 +141,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             Assert.IsNotNull(result);
             Assert.AreEqual(count, result.Items.Count());
             Assert.AreEqual(1000, result.TotalItems);
+            Assert.IsNotNull(result.NextPage);
             this.mockRepository.VerifyAll();
         }
 
