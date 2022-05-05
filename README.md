@@ -1,3 +1,5 @@
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/CGI-FR/IoT-Hub-Portal/tree/docs/main)
+
 # IoT Hub Portal
 
 This project aims to provide a solution for handling IoT Devices easily.
