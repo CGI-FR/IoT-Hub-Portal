@@ -225,6 +225,14 @@
         "operationId": "GET Device list",
         "parameters": [
           {
+            "name": "routeName",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "continuationToken",
             "in": "query",
             "description": "",
@@ -1308,6 +1316,14 @@
         "summary": "Gets the device list.",
         "operationId": "GET LoRaWAN device list",
         "parameters": [
+          {
+            "name": "routeName",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "continuationToken",
             "in": "query",
