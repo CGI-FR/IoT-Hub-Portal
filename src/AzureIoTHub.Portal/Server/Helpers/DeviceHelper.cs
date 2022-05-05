@@ -87,13 +87,13 @@ namespace AzureIoTHub.Portal.Server.Helpers
         /// Set the desired property value.
         /// </summary>
         /// <param name="twin">Device twin.</param>
-        /// <param name="propertyRowKey">Row key of the property to set.</param>
+        /// <param name="propertyName">Property to set.</param>
         /// <param name="value">Property value.</param>
-        public static void SetDesiredProperty(Twin twin, string propertyRowKey, object value)
+        public static void SetDesiredProperty(Twin twin, string propertyName, object value)
         {
             ArgumentNullException.ThrowIfNull(twin, nameof(twin));
 
-            twin.Properties.Desired[propertyRowKey] = value;
+            twin.Properties.Desired[propertyName] = value;
         }
 
         /// <summary>
