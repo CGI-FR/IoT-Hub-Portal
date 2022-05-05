@@ -134,8 +134,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             // Act
 
-            var result = await devicesController.GetItems(
-                "test",
+            var result = await devicesController.SearchItems(
                 continuationToken: "aaa",
                 searchText: "bbb",
                 searchStatus: true,

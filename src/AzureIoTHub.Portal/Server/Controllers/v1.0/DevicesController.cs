@@ -48,15 +48,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the device list.
         /// </summary>
-        /// <param name="routeName"></param>
         /// <param name="continuationToken"></param>
         /// <param name="searchText"></param>
         /// <param name="searchStatus"></param>
         /// <param name="searchState"></param>
         /// <param name="pageSize"></param>
         [HttpGet(Name = "GET Device list")]
-        public override Task<PaginationResult<DeviceListItem>> GetItems(
-            string routeName = null,
+        public Task<PaginationResult<DeviceListItem>> SearchItems(
             string continuationToken = null,
             string searchText = null,
             bool? searchStatus = null,
