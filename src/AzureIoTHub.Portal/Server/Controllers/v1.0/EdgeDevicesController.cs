@@ -118,7 +118,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             {
                 nextPage = Url.RouteUrl(new UrlRouteContext
                 {
-                    RouteName = nameof(Get),
+                    RouteName = "GET IoT Edge devices",
                     Values = new
                     {
                         continuationToken = result.NextPage,

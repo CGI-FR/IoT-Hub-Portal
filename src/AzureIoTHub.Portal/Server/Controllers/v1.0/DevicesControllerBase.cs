@@ -54,12 +54,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the device list.
         /// </summary>
+        /// <param name="routeName"></param>
         /// <param name="continuationToken"></param>
         /// <param name="searchText"></param>
         /// <param name="searchStatus"></param>
         /// <param name="searchState"></param>
         /// <param name="pageSize"></param>
         public virtual async Task<PaginationResult<TListItem>> GetItems(
+            string routeName = null,
             string continuationToken = null,
             string searchText = null,
             bool? searchStatus = null,
@@ -91,7 +93,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             {
                 nextPage = Url.RouteUrl(new UrlRouteContext
                 {
-                    RouteName = nameof(GetItems),
+                    RouteName = routeName,
                     Values = new
                     {
                         continuationToken = result.NextPage,
