@@ -20,6 +20,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using NUnit.Framework;
     using System.Collections.Generic;
     using FluentAssertions;
+    using Microsoft.AspNetCore.Mvc.Routing;
 
     [TestFixture]
     public class EdgeDevicesControllerTests
@@ -73,7 +74,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 TotalItems = 1000,
                 NextPage = Guid.NewGuid().ToString()
 
-
             };
 
             _ = this.mockDeviceService.Setup(x => x.GetAllEdgeDevice(
@@ -85,6 +85,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 .ReturnsAsync(paginationResultSimul);
 
             var edgeDevicesController = CreateEdgeDevicesController();
+
+            _ = this.mockUrlHelper.Setup(c => c.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(Guid.NewGuid().ToString());
 
             // Act
             var result = await edgeDevicesController.Get(
@@ -109,7 +112,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             Assert.AreEqual(count, paginationResult.Items.Count());
             Assert.AreEqual(1000, paginationResult.TotalItems);
             Assert.IsNotNull(paginationResult.NextPage);
-            Assert.AreEqual(paginationResultSimul.NextPage, paginationResult.NextPage);
 
             this.mockRepository.VerifyAll();
         }

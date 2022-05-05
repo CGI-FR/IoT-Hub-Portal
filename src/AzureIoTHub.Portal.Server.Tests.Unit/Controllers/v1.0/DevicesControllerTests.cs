@@ -28,6 +28,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using Microsoft.Extensions.Primitives;
     using Moq;
     using NUnit.Framework;
+    using Microsoft.AspNetCore.Mvc.Routing;
 
     [TestFixture]
     public class DevicesControllerTests
@@ -128,9 +129,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             _ = this.mockDeviceTagService.Setup(c => c.GetAllSearchableTagsNames())
                 .Returns(new string[] { "deviceType" });
 
+            _ = this.mockUrlHelper.Setup(c => c.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(Guid.NewGuid().ToString());
+
             // Act
 
             var result = await devicesController.GetItems(
+                "test",
                 continuationToken: "aaa",
                 searchText: "bbb",
                 searchStatus: true,
@@ -141,7 +146,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             Assert.IsNotNull(result);
             Assert.AreEqual(count, result.Items.Count());
             Assert.AreEqual(1000, result.TotalItems);
-            Assert.IsNotNull(result.NextPage);
             this.mockRepository.VerifyAll();
         }
 

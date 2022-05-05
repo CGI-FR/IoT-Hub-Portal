@@ -25,6 +25,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc.Routing;
 
     [TestFixture]
     public class LoRaWANDevicesControllerTests
@@ -252,6 +253,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
 
             _ = this.mockDeviceTagService.Setup(c => c.GetAllSearchableTagsNames())
                 .Returns(new List<string>());
+
+            _ = this.mockUrlHelper.Setup(c => c.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(Guid.NewGuid().ToString());
 
             // Act
             var result = await devicesController.GetItems();

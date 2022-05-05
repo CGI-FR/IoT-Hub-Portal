@@ -17,6 +17,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
@@ -53,12 +54,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the device list.
         /// </summary>
+        /// <param name="routeName"></param>
         /// <param name="continuationToken"></param>
         /// <param name="searchText"></param>
         /// <param name="searchStatus"></param>
         /// <param name="searchState"></param>
         /// <param name="pageSize"></param>
         public virtual async Task<PaginationResult<TListItem>> GetItems(
+            string routeName = null,
             string continuationToken = null,
             string searchText = null,
             bool? searchStatus = null,
@@ -84,8 +87,23 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 searchTags: searchTags,
                 excludeDeviceType: "LoRa Concentrator");
 
+            string nextPage = null;
+
             if (!string.IsNullOrEmpty(result.NextPage))
             {
+                nextPage = Url.RouteUrl(new UrlRouteContext
+                {
+                    RouteName = routeName,
+                    Values = new
+                    {
+                        continuationToken = result.NextPage,
+                        searchText,
+                        searchState,
+                        searchStatus,
+                        pageSize
+                    }
+                });
+
                 var tagsFilterBuilder = new StringBuilder();
 
                 foreach (var tag in searchTags)
@@ -98,7 +116,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             {
                 Items = result.Items.Select(x => this.deviceTwinMapper.CreateDeviceListItem(x)),
                 TotalItems = result.TotalItems,
-                NextPage = result.NextPage
+                NextPage = nextPage
             };
         }
 
