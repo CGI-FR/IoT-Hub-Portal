@@ -254,7 +254,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                 .Returns(new List<string>());
 
             // Act
-            var result = await devicesController.GetItems();
+            var result = await devicesController.SearchItems();
 
             // Assert
             Assert.IsNotNull(result);

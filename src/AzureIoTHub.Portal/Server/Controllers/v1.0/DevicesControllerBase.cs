@@ -60,7 +60,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="searchStatus"></param>
         /// <param name="searchState"></param>
         /// <param name="pageSize"></param>
-        public virtual async Task<PaginationResult<TListItem>> GetItems(
+        protected async Task<PaginationResult<TListItem>> GetItems(
             string routeName = null,
             string continuationToken = null,
             string searchText = null,
