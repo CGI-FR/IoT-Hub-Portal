@@ -142,7 +142,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var cut = RenderComponent<DeviceListPage>();
 
             // Act
-            cut.WaitForElement($"#addDeviceButton").Click();
+            cut.WaitForElement("#addDeviceButton").Click();
             cut.WaitForAssertion(() => string.Equals("http://localhost/devices/new", mockNavigationManager.Uri, StringComparison.OrdinalIgnoreCase));
 
             // Assert

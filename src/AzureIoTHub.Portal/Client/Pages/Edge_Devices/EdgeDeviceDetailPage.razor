@@ -9,9 +9,15 @@
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject NavigationManager navigationManager
 
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Edge Device Details</MudText>
+<MudTooltip Text="Return" Placement="Placement.Left">
+    <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id = "returnButton"/>       
+</MudTooltip>
+<MudTooltip Placement="Placement.Top">
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Edge Device Details</MudText>
+</MudTooltip>
 
 @if (loading)
 {
@@ -130,6 +136,7 @@ else
                                     <MudExpansionPanel Text="Tags">
                                         <TitleContent><MudText Typo="Typo.h6">Last deployment</MudText></TitleContent>
                                         <ChildContent>
+                                        @if (Gateway.LastDeployment != null){                                                                                   
                                             <MudGrid>
                                                 <MudItem xs="12" md="4">
                                                     <MudTextField @bind-Value="@Gateway.LastDeployment.Name" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
@@ -141,6 +148,7 @@ else
                                                     <MudTextField @bind-Value="@Gateway.LastDeployment.Status" Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
                                                 </MudItem>
                                             </MudGrid>
+                                         }
                                         </ChildContent>
                                     </MudExpansionPanel>
                                 </MudItem>
@@ -192,6 +200,7 @@ else
     private bool btn_disable = false;
     private bool processingUpdate = false;
     private bool processingDelete = false;
+    private void Return() => navigationManager.NavigateTo("edge/devices");
 
     private IoTEdgeDevice Gateway;
 

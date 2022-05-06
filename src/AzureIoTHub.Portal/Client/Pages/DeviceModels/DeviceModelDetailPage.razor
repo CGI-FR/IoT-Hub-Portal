@@ -20,9 +20,14 @@
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject NavigationManager navigationManager
 
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Device Model</MudText>
-
+<MudTooltip Text="Return" Placement="Placement.Left">
+    <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />       
+</MudTooltip>
+<MudTooltip Placement="Placement.Top">
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Device Model</MudText>
+</MudTooltip>
 @if (loading)
 {
     <MudGrid>
@@ -167,6 +172,8 @@ else
     private bool loading = true;
 
     private MudForm form;
+
+    private void Return() => navigationManager.NavigateTo("/device-models");
 
     private string ApiUrlBase => this.IsLoRa ? $"/api/lorawan/models/{ModelID}" : $"api/models/{ModelID}";
     private DeviceModelValidator standardValidator = new DeviceModelValidator();
