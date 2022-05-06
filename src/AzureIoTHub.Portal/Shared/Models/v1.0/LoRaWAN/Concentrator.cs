@@ -37,7 +37,7 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The client certificate thumbprint.
         /// </summary>
-        [RegularExpression("(?i)^([A-F0-9]{2}:){19}[A-F0-9]{2}$", ErrorMessage = "ClientThumbprint must contain 40 hexadecimal characters")]
+        [RegularExpression("^(([A-F0-9]{2}:){19}[A-F0-9]{2}|)$", ErrorMessage = "ClientThumbprint must contain 40 hexadecimal characters")]
         public string ClientThumbprint { get; set; }
 
         /// <summary>
