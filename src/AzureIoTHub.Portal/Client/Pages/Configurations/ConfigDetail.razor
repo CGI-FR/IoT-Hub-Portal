@@ -19,7 +19,7 @@
                     <MudCardHeader>
                         <CardHeaderContent>
                             <MudTooltip Text="Return" Placement="Placement.Left">
-                                <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id = "returnButton" />
+                                <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />
                             </MudTooltip>
                             <MudTooltip Placement="Placement.Top">
                                 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Configuration detail</MudText>
@@ -128,7 +128,7 @@
     public string ConditionEnv { get; set; }
     public string ConditionType { get; set; }
     public string ConditionOwner { get; set; }
-     private void Return() => navigationManager.NavigateTo("edge/configurations");
+    private void Return() => navigationManager.NavigateTo("edge/configurations");
 
     protected override async Task OnInitializedAsync()
     {

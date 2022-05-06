@@ -6,11 +6,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
+    using System.Threading;
     using AzureIoTHub.Portal.Client.Pages.Configurations;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
     using Bunit.TestDoubles;
+    using FluentAssertions.Extensions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -56,8 +58,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             return this.testContext.RenderComponent<TComponent>(parameters);
         }
 
-
-
         public void Dispose()
         {
             Dispose(true);
@@ -68,7 +68,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         {
         }
 
-        [Test]
+        [TestCase]
         public void ReturnButtonMustNavigateToPreviousPage()
         {
             // Arrange
@@ -76,17 +76,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Get, $"/api/edge/configurations/{mockConfigurationID}")
                 .RespondJson(new ConfigListItem());
 
-
             _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             var cut = RenderComponent<ConfigDetail>(ComponentParameter.CreateParameter("ConfigurationID", this.mockConfigurationID));
+            Thread.Sleep(500);
+
             var returnButton = cut.WaitForElement("#returnButton");
+
+            var mockNavigationManager = this.testContext.Services.GetRequiredService<FakeNavigationManager>();
 
             // Act
             returnButton.Click();
 
             // Assert
-            cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/edge/configurations", StringComparison.OrdinalIgnoreCase));
+            cut.WaitForState(() => mockNavigationManager.Uri.EndsWith("/edge/configurations", StringComparison.OrdinalIgnoreCase));
         }
     }
 }
