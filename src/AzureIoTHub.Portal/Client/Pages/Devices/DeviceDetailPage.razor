@@ -218,6 +218,8 @@
 
     private bool isLoaded = false;
 
+    private void Return() => navigationManager.NavigateTo("devices");
+
     private IEnumerable<DeviceModelCommand> Commands { get; set; }
 
     private IEnumerable<DeviceTag> TagList { get; set; } = Array.Empty<DeviceTag>();
