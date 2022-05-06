@@ -22,7 +22,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         public void SetUp()
         {
             this.testContext = new Bunit.TestContext();
-            testContext.AddTestServices();
+            testContext.JSInterop.Mode = JSRuntimeMode.Loose;
+            _ = testContext.Services.AddSingleton<IDialogService, DialogService>();
+            _ = testContext.Services.AddMudServices();
         }
 
         [Test]
@@ -63,15 +65,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
 
         protected virtual void Dispose(bool disposing)
         {
-        }
-    }
-    public static class TestContextExtensions
-    {
-        public static void AddTestServices(this Bunit.TestContext ctx)
-        {
-            ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-            _ = ctx.Services.AddSingleton<IDialogService, DialogService>();
-            _ = ctx.Services.AddMudServices();
         }
     }
 }

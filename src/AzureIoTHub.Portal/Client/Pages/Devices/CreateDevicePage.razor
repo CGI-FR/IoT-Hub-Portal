@@ -22,46 +22,47 @@
                 <MudCardHeader>
                     <CardHeaderContent>
                         <MudText Typo="Typo.h5" Align="Align.Center">@(string.IsNullOrEmpty(Device.DeviceName) ? Device.DeviceID : Device.DeviceName)</MudText>
-                        </CardHeaderContent>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <div class="d-flex justify-center mb-4">
-                            <MudAvatar Image="@Device.ImageUrl?.ToString()" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
-                        </div>
-                    </MudCardContent>
-                </MudCard>
-                <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save">Save Changes</MudButton>
-                </MudItem>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <div class="d-flex justify-center mb-4">
+                        <MudAvatar Image="@Device.ImageUrl?.ToString()" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                    </div>
+                </MudCardContent>
+            </MudCard>
+            <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="SaveButton">Save Changes</MudButton>
             </MudItem>
-            <MudItem xs="12" sm="8" md="9">
-                <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
-                    <MudTabPanel Text="General" Style=@(standardValidator.Validate(Device).IsValid ? "" : "color: red")>
-                        <MudExpansionPanels MultiExpansion="true">
-                            <MudGrid>
-                                <MudItem xs="12">
-                                    <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
-                                        <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
-                                        <ChildContent>
-                                            <MudGrid>
-                                                <MudItem xs="12" md="6">
-                                                    <MudAutocomplete T="DeviceModel"
+        </MudItem>
+        <MudItem xs="12" sm="8" md="9">
+            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
+                <MudTabPanel Text="General" Style=@(standardValidator.Validate(Device).IsValid ? "" : "color: red")>
+                    <MudExpansionPanels MultiExpansion="true">
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudGrid>
+                                            <MudItem xs="12" md="6">
+                                                <MudAutocomplete T="DeviceModel"
+                                                                 id="@nameof(DeviceDetails.ModelId)"
                                                                  @bind-Value="DeviceModel"
                                                                  SearchFunc="@Search"
                                                                  Label="Model*"
                                                                  Dense=true
                                                                  For=@(() => this.DeviceModel)
                                                                  Variant="Variant.Outlined"
-                                                                 ToStringFunc="@(x => x.Name)"
+                                                                 ToStringFunc="@(x => x?.Name)"
                                                                  ResetValueOnEmptyText=true
                                                                  Immediate=true
                                                                  Clearable=true
                                                                  CoerceText=true
                                                                  CoerceValue=false>
-                                                        <ItemTemplate>
-                                                            @context.Name
-                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
-                                                                @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
+                                                    <ItemTemplate>
+                                                        @context.Name
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
+                                                            @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
                                                         </MudText>
                                                     </ItemTemplate>
                                                 </MudAutocomplete>
@@ -93,6 +94,7 @@
                                             </MudItem>
                                             <MudItem xs="12">
                                                 <MudTextField @bind-Value="@Device.DeviceName"
+                                                              id="@nameof(DeviceDetails.DeviceName)"
                                                               Label="Device name"
                                                               Variant="Variant.Outlined"
                                                               For="@(()=> Device.DeviceName)"
@@ -236,9 +238,6 @@
 
     private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];
 
-    [Parameter]
-    public string DeviceID { get; set; }
-
     private DeviceDetails Device { get; set; } = new DeviceDetails();
 
     private IEnumerable<DeviceModel> DeviceModelList { get; set; } = new List<DeviceModel>();
@@ -277,7 +276,7 @@
     /// </summary>
     public async void Save()
     {
-        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
+        var parameters = new DialogParameters { { "ContentText", "Processing" } };
         MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
 
         await form.Validate();
@@ -301,11 +300,11 @@
         if (IsLoRa)
             result = await Http.PostAsJsonAsync(ApiUrlBase, Device as LoRaDeviceDetails);
         else
+        {
             result = await Http.PostAsJsonAsync(ApiUrlBase, Device);
-
-        result.EnsureSuccessStatusCode();
-
-        await Http.PostAsJsonAsync($"{ApiUrlBase}/{DeviceID}/properties", Properties);
+            result.EnsureSuccessStatusCode();
+            result = await Http.PostAsJsonAsync($"{ApiUrlBase}/{Device.DeviceID}/properties", Properties);
+        }
 
         result.EnsureSuccessStatusCode();
 
@@ -350,7 +349,7 @@
                     .Where(x => x.Name.StartsWith(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    private async Task ChangeModel(DeviceModel model)
+    internal async Task ChangeModel(DeviceModel model)
     {
         Properties.Clear();
 
