@@ -66,7 +66,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The IoT Edge modules.
         /// </summary>
-        public IReadOnlyCollection<IoTEdgeModule> Modules { get; set; }
+        public IReadOnlyCollection<IoTEdgeModule> Modules { get; set; } = new List<IoTEdgeModule>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IoTEdgeDevice"/> class.

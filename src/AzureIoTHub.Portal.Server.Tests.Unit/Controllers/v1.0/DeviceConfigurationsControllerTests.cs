@@ -426,7 +426,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         [TestCase(DevicePropertyType.Integer, "100.2", null)]
         [TestCase(DevicePropertyType.Long, "100", 100)]
         [TestCase(DevicePropertyType.Long, "100.2", null)]
-        [SetCulture("en-US")]
+
         public async Task CreateConfigShouldUpdatePropertyInValueType(DevicePropertyType propertyType, string propertyValue, object expected)
         {
             // Arrange

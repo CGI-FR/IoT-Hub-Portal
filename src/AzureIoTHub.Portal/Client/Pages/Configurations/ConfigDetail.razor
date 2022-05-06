@@ -19,7 +19,7 @@
                     <MudCardHeader>
                         <CardHeaderContent>
                             <MudTooltip Text="Return" Placement="Placement.Left">
-                                <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" />
+                                <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id = "returnButton" />
                             </MudTooltip>
                             <MudTooltip Placement="Placement.Top">
                                 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Configuration detail</MudText>
@@ -155,7 +155,7 @@
     {
         // Condition string looks like : tags.owner='value1' and tags.env='value2' and tags.type='value3'
         string regex = @"tags\." + field + @"\s?=\s?'(?<field>\S*)'";
-        if (Regex.IsMatch(Config.Conditions, regex))
+        if (!string.IsNullOrEmpty(Config.Conditions) && Regex.IsMatch(Config.Conditions, regex))
         {
             return Regex.Matches(Config.Conditions, regex).First().Groups[1].Value;
         }

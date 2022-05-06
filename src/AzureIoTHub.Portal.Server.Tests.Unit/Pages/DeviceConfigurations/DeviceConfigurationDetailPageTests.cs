@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System.Net.Http;
     using System.Net.Http.Json;
     using Bunit;
+    using Bunit.TestDoubles;
     using Client.Pages.DeviceConfigurations;
     using Helpers;
     using Microsoft.AspNetCore.Components;
@@ -32,6 +33,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
+        private readonly string mockConfigId = Guid.NewGuid().ToString();
 
         [SetUp]
         public void SetUp()
@@ -685,6 +687,47 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             cut.WaitForElement("#saveButton").Click();
 
             // Assert
+        }
+
+        [Test]
+        public void ReturnButtonMustNavigateToPreviousPage()
+        {
+
+            // Arrange
+            //var ConfigId = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
+
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/device-configurations/{mockConfigId}")
+                .RespondJson(new DeviceConfig() { ModelId = modelId, ConfigurationId = this.mockConfigId});
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/device-configurations/{mockConfigId}/metrics")
+                .RespondJson(new ConfigurationMetrics());
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
+                .RespondJson(new List<DeviceProperty>());
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/models/{modelId}")
+                .RespondJson(new DeviceModel());
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/settings/device-tags")
+                .RespondJson(new List<DeviceTag>());
+
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+
+            var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", this.mockConfigId));
+            var returnButton = cut.WaitForElement("#returnButton");
+
+            // Act
+            returnButton.Click();
+
+            // Assert
+            cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-configurations", StringComparison.OrdinalIgnoreCase));
         }
 
         public void Dispose()
