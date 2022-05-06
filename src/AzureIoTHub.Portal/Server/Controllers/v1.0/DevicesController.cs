@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json.Linq;
 
     [ApiController]
     [ApiVersion("1.0")]
@@ -141,17 +142,21 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             var result = new List<DevicePropertyValue>();
 
+            var desiredPropertiesAsJson = JObject.Parse(device.Properties.Desired.ToJson());
+
+            var reportedPropertiesAsJson = JObject.Parse(device.Properties.Reported.ToJson());
+
             await foreach (var item in items)
             {
-                string value = null;
+                string value;
 
-                if (item.IsWritable && device.Properties.Desired.Contains(item.Name))
+                if (item.IsWritable)
                 {
-                    value = device.Properties.Desired[item.Name].ToString();
+                    value = desiredPropertiesAsJson.SelectToken(item.Name)?.Value<string>();
                 }
-                else if (device.Properties.Reported.Contains(item.Name))
+                else
                 {
-                    value = device.Properties.Reported[item.Name].ToString();
+                    value = reportedPropertiesAsJson.SelectToken(item.Name)?.Value<string>();
                 }
 
                 result.Add(new DevicePropertyValue
@@ -193,6 +198,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 .GetDeviceTemplateProperties()
                 .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{modelId}'");
 
+            var desiredProperties = new Dictionary<string, object>();
+
             await foreach (var item in items)
             {
                 if (!item.IsWritable)
@@ -200,8 +207,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                     continue;
                 }
 
-                device.Properties.Desired[item.Name] = values.FirstOrDefault(x => x.Name == item.Name)?.Value;
+                _ = desiredProperties.TryAdd(item.Name, values.FirstOrDefault(x => x.Name == item.Name)?.Value);
             }
+
+            device.Properties.Desired = DeviceHelper.PropertiesWithDotNotationToTwinCollection(desiredProperties);
 
             _ = await this.devicesService.UpdateDeviceTwin(deviceID, device);
 
