@@ -3379,6 +3379,7 @@
         "type": "object",
         "properties": {
           "name": {
+            "pattern": "^([\\w]+\\.)+[\\w]+|[\\w]+$",
             "type": "string",
             "description": "The property name"
           },
@@ -3422,6 +3423,7 @@
         "type": "object",
         "properties": {
           "name": {
+            "pattern": "^([\\w]+\\.)+[\\w]+|[\\w]+$",
             "type": "string",
             "description": "The property name"
           },
