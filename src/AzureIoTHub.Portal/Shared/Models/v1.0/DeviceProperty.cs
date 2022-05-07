@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// The property name
         /// </summary>
         [Required(ErrorMessage = "The property name is required.")]
+        [RegularExpression(@"^([\w]+\.)+[\w]+|[\w]+$", ErrorMessage = "Property name must be formed by a word or words separated by a dot")]
         public string Name { get; set; }
 
         /// <summary>

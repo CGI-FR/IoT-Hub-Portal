@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Newtonsoft.Json.Linq;
+    using Newtonsoft.Json;
 
     public static class DeviceHelper
     {
@@ -203,6 +204,45 @@ namespace AzureIoTHub.Portal.Server.Helpers
             }
 
             return list.AsReadOnly();
+        }
+
+        /// <summary>
+        /// Convert properties with dot Notation to Twin Collection
+        /// </summary>
+        /// <param name="propertiesWithDotNotation">Properties with dot Notation</param>
+        /// <returns>Twin Collection</returns>
+        public static TwinCollection PropertiesWithDotNotationToTwinCollection(Dictionary<string, object> propertiesWithDotNotation)
+        {
+            var root = new Dictionary<string, object>();
+
+            foreach (var propertyWithDotNotation in propertiesWithDotNotation)
+            {
+                var hierarcy = propertyWithDotNotation.Key.Split('.');
+
+                var current = root;
+
+                for (var i = 0; i < hierarcy.Length; i++)
+                {
+                    var key = hierarcy[i];
+
+                    if (i == hierarcy.Length - 1)
+                    {
+                        // Last element
+                        current.Add(key, propertyWithDotNotation.Value);
+                    }
+                    else
+                    {
+                        if (!current.ContainsKey(key))
+                        {
+                            current.Add(key, new Dictionary<string, object>());
+                        }
+
+                        current = (Dictionary<string, object>)current[key];
+                    }
+                }
+            }
+
+            return new TwinCollection(JsonConvert.SerializeObject(root));
         }
     }
 }
