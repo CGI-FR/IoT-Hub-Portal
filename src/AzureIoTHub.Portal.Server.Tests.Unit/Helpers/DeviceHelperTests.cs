@@ -3,7 +3,10 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 {
+    using System;
+    using System.Collections.Generic;
     using AzureIoTHub.Portal.Server.Helpers;
+    using FluentAssertions;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Newtonsoft.Json;
@@ -341,6 +344,30 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Helpers
 
             // Assert
             Assert.AreEqual(moduleCount, result.Count);
+        }
+
+        [Test]
+        public void PropertiesWithDotNotationToTwinCollectionMustParseClassicPropertiesAndDotNotationProperties()
+        {
+            // Arrange
+            var input = new Dictionary<string, object>()
+            {
+                ["firmware.url"] = "fake.url.com",
+                ["firmware.version"] = 1.5,
+                ["enabled"] = true,
+            };
+
+            // Act
+            var result = DeviceHelper.PropertiesWithDotNotationToTwinCollection(input);
+
+            // Assert
+            string firmwareUrl = Convert.ToString(result["firmware"]["url"].Value);
+            string firmwareVersion = Convert.ToString(result["firmware"]["version"].Value);
+            string enabled = Convert.ToString(result["enabled"].Value);
+
+            _ = firmwareUrl.Should().Be("fake.url.com");
+            _ = firmwareVersion.Should().Be("1.5");
+            _ = enabled.Should().Be("True");
         }
     }
 }
