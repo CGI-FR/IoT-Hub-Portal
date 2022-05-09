@@ -132,3 +132,6 @@ If you'd like to change the theme's HTML layout:
 1. Update the `/_layouts/default.html`file from the documentation repository.
 1. Customize the layout as you'd like
 
+# Other dev documentations
+
+- [Problem Details](./docs/problem-details.md)
