@@ -23,6 +23,11 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         public string Frame { get; set; }
 
         /// <summary>
+        /// A value indicating if the command must be confirmed by sensor
+        /// </summary>
+        public bool Confirmed { get; set; }
+
+        /// <summary>
         /// The LoRa WAN port.
         /// </summary>
         [Required(ErrorMessage = "The port number is required.")]

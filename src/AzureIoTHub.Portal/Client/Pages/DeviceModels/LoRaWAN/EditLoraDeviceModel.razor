@@ -142,12 +142,14 @@
                                 <ColGroup>
                                     <col style="width: 30%;" />
                                     <col style="width: 60%;" />
+                                    <col style="width: 5%;" />
                                     <col style="width: 10%;" />
                                     <col style="width: 5%;" />
                                 </ColGroup>
                                 <HeaderContent>
                                     <MudTh>Name</MudTh>
                                     <MudTh Style="text-align: center">Frame</MudTh>
+                                    <MudTh Style="text-align: center">Confirmed</MudTh>
                                     <MudTh Style="text-align: center">Port</MudTh>
                                     <MudTh Style="text-align: center">Delete</MudTh>
                                 </HeaderContent>
@@ -157,6 +159,9 @@
                                     </MudTd>
                                     <MudTd DataLabel="Frame" Style="word-break: break-all; ">
                                         <MudTextField @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Variant="Variant.Outlined" Required="true" Disabled="CommandContext.IsBuiltin"></MudTextField>
+                                    </MudTd>
+                                    <MudTd DataLabel="Confirmed" Style="text-align: center; ">
+                                        <MudCheckBox @bind-Checked="@CommandContext.Confirmed" For="@(() => CommandContext.Confirmed)" Color="Color.Primary"></MudCheckBox>
                                     </MudTd>
                                     <MudTd DataLabel="Port" Style="text-align: center;">
                                         <MudNumericField @bind-Value="@CommandContext.Port" Label="Port" For="@(() => CommandContext.Port)" Variant="Variant.Outlined" Disabled="CommandContext.IsBuiltin"></MudNumericField>
