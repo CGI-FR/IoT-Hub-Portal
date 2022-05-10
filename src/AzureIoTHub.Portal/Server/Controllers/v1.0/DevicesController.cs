@@ -148,17 +148,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             await foreach (var item in items)
             {
-                string value;
-
-                if (item.IsWritable)
-                {
-                    value = desiredPropertiesAsJson.SelectToken(item.Name)?.Value<string>();
-                }
-                else
-                {
-                    value = reportedPropertiesAsJson.SelectToken(item.Name)?.Value<string>();
-                }
-
+                var value = item.IsWritable ? desiredPropertiesAsJson.SelectToken(item.Name)?.Value<string>() :
+                        reportedPropertiesAsJson.SelectToken(item.Name)?.Value<string>();
+    
                 result.Add(new DevicePropertyValue
                 {
                     DisplayName = item.DisplayName,
