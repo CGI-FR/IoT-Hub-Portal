@@ -20,6 +20,7 @@ namespace AzureIoTHub.Portal.Client.Validators
 
             _ = RuleFor(x => x.DeviceID)
                 .NotEmpty()
+                .WithMessage("DeviceID is required.")
                 .Length(1, 128)
                 .Matches("[a-zA-Z0-9\\-.+%_#*?!(),:=@$']")
                 .WithMessage("DeviceID is required. It should be a case-sensitive string (up to 128 characters long) of ASCII 7-bit alphanumeric characters plus certain special characters: - . + % _ # * ? ! ( ) , : = @ $ '.");

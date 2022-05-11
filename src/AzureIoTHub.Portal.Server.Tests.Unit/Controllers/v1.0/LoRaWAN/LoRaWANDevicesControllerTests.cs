@@ -300,7 +300,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             var devicesController = CreateLoRaWANDevicesController();
             var device = new LoRaDeviceDetails
             {
-                DeviceID = "aaa",
+                DeviceID = "AF441BB83C90E946",
             };
 
             Twin twin = null;
@@ -348,7 +348,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             var devicesController = CreateLoRaWANDevicesController();
             var device = new LoRaDeviceDetails
             {
-                DeviceID = "aaa"
+                DeviceID = "AF441BB83C90E946"
             };
 
             var item = new Device(device.DeviceID);

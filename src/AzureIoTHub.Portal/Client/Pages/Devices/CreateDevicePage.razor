@@ -77,6 +77,7 @@
                                                               Variant="Variant.Outlined"
                                                               For="@(()=> Device.DeviceID)"
                                                               Required="true"
+                                                              Mask="@maskLoRaDeviceID"
                                                               HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
                                                 }
                                                 else
@@ -224,6 +225,15 @@
     private LoRaDeviceModel loRaDeviceModel { get; set; }
 
     private bool IsLoRa => DeviceModelList.SingleOrDefault(c => c.ModelId == Device.ModelId)?.SupportLoRaFeatures ?? false;
+
+    public PatternMask maskLoRaDeviceID = new PatternMask("XXXXXXXXXXXXXXXX")
+    {
+            MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
+            CleanDelimiters = false,
+            Transformation = AllUpperCase
+    };
+
+    private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];
 
     [Parameter]
     public string DeviceID { get; set; }

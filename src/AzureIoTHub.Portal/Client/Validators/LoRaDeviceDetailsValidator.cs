@@ -46,7 +46,7 @@ namespace AzureIoTHub.Portal.Client.Validators
             _ = RuleFor(x => x.DeviceID)
                 .NotEmpty()
                 .Length(1, 128)
-                .Matches("[A-Z]{16}")
+                .Matches("[A-Z0-9]{16}")
                 .WithMessage("DeviceID is required. It should be a 16 bit hex string.");
         }
     }

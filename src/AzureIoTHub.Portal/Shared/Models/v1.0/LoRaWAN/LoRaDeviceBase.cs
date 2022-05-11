@@ -17,7 +17,7 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         [Required(ErrorMessage = "The device should have a unique identifier.")]
         [MaxLength(ErrorMessage = "The device identifier should be up to 128 characters long.")]
         [RegularExpression("^[A-Z0-9]{16}$", ErrorMessage = "The device identifier must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)")]
-        public new string DeviceID { get; set; }
+        public override string DeviceID { get; set; }
 
         /// <summary>
         /// The LoRa device class type.
