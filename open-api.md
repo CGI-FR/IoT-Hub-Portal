@@ -381,7 +381,7 @@ None
 
 ```json
 {
-  "deviceID": "string",
+  "deviceID": "",
   "deviceName": "string",
   "modelId": "string",
   "imageUrl": "http://example.com",
@@ -426,7 +426,7 @@ None
 
 ```json
 {
-  "deviceID": "string",
+  "deviceID": "",
   "deviceName": "string",
   "modelId": "string",
   "imageUrl": "http://example.com",
@@ -478,12 +478,12 @@ None
 > 200 Response
 
 ```
-{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"}}
+{"deviceID":"","deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"}}
 ```
 
 ```json
 {
-  "deviceID": "string",
+  "deviceID": "",
   "deviceName": "string",
   "modelId": "string",
   "imageUrl": "http://example.com",
@@ -1833,7 +1833,6 @@ None
 
 ```json
 {
-  "deviceID": "string",
   "deviceName": "string",
   "modelId": "string",
   "imageUrl": "http://example.com",
@@ -1844,6 +1843,7 @@ None
     "property1": "string",
     "property2": "string"
   },
+  "deviceID": "",
   "classType": "A",
   "useOTAA": true,
   "appEUI": "string",
@@ -1906,7 +1906,6 @@ None
 
 ```json
 {
-  "deviceID": "string",
   "deviceName": "string",
   "modelId": "string",
   "imageUrl": "http://example.com",
@@ -1917,6 +1916,7 @@ None
     "property1": "string",
     "property2": "string"
   },
+  "deviceID": "",
   "classType": "A",
   "useOTAA": true,
   "appEUI": "string",
@@ -1986,12 +1986,11 @@ None
 > 200 Response
 
 ```
-{"deviceID":"string","deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":0,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":4294967295,"fCntDownStart":4294967295,"supports32BitFCnt":true,"fCntResetCounter":4294967295,"keepAliveTimeout":0,"appKey":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string"}
+{"deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"deviceID":"","classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":0,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":4294967295,"fCntDownStart":4294967295,"supports32BitFCnt":true,"fCntResetCounter":4294967295,"keepAliveTimeout":0,"appKey":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string"}
 ```
 
 ```json
 {
-  "deviceID": "string",
   "deviceName": "string",
   "modelId": "string",
   "imageUrl": "http://example.com",
@@ -2002,6 +2001,7 @@ None
     "property1": "string",
     "property2": "string"
   },
+  "deviceID": "",
   "classType": "A",
   "useOTAA": true,
   "appEUI": "string",
@@ -3746,7 +3746,7 @@ IoT Edge configuration list item.
 
 ```json
 {
-  "deviceID": "string",
+  "deviceID": "",
   "deviceName": "string",
   "modelId": "string",
   "imageUrl": "http://example.com",
@@ -4241,7 +4241,6 @@ IoT Edge module.
 
 ```json
 {
-  "deviceID": "string",
   "deviceName": "string",
   "modelId": "string",
   "imageUrl": "http://example.com",
@@ -4252,6 +4251,7 @@ IoT Edge module.
     "property1": "string",
     "property2": "string"
   },
+  "deviceID": "",
   "classType": "A",
   "useOTAA": true,
   "appEUI": "string",
@@ -4290,7 +4290,6 @@ LoRa WAN Device details.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|deviceID|string|true|none|The device identifier.|
 |deviceName|string|true|none|The name of the device.|
 |modelId|string|true|none|The model identifier.|
 |imageUrl|string(uri)¦null|false|none|The device model image Url.|
@@ -4299,6 +4298,7 @@ LoRa WAN Device details.
 |statusUpdatedTime|string(date-time)|false|none|The status updated time.|
 |tags|object¦null|false|none|List of custom device tags and their values.|
 |» **additionalProperties**|string¦null|false|none|none|
+|deviceID|string|true|none|The device identifier.|
 |classType|string|false|none|The LoRa device class type.|
 |useOTAA|boolean|false|none|The status of OTAA setting.|
 |appEUI|string¦null|false|none|The device OTAA Application eui.|
