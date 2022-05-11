@@ -22,7 +22,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
                 ModelId = Guid.NewGuid().ToString(),
                 UseOTAA = true,
                 AppEUI = Guid.NewGuid().ToString(),
-                AppKey = Guid.NewGuid().ToString()
+                AppKey = Guid.NewGuid().ToString(),
+                DeviceID = "0533AEC287B6E96B"
             };
 
             // Act
@@ -45,7 +46,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
                 UseOTAA = false,
                 AppSKey = Guid.NewGuid().ToString(),
                 NwkSKey = Guid.NewGuid().ToString(),
-                DevAddr = Guid.NewGuid().ToString()
+                DevAddr = Guid.NewGuid().ToString(),
+                DeviceID = "0533AEC287B6E96B"
             };
 
             // Act
@@ -66,7 +68,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
                 UseOTAA = false,
                 AppSKey = Guid.NewGuid().ToString(),
                 NwkSKey = Guid.NewGuid().ToString(),
-                DevAddr = Guid.NewGuid().ToString()
+                DevAddr = Guid.NewGuid().ToString(),
+                DeviceID = "0533AEC287B6E96B"
             };
 
             // Act
@@ -103,7 +106,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
 
             // Assert
             Assert.IsFalse(loraValidation.IsValid);
-            Assert.AreEqual(1, loraValidation.Errors.Count);
+            Assert.GreaterOrEqual(loraValidation.Errors.Count, 1);
             Assert.AreEqual(loraValidation.Errors[0].ErrorMessage, $"{testedValue} is required.");
         }
 
@@ -129,7 +132,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
 
             // Assert
             Assert.IsFalse(loraValidation.IsValid);
-            Assert.AreEqual(1, loraValidation.Errors.Count);
+            Assert.GreaterOrEqual(loraValidation.Errors.Count, 1);
             Assert.AreEqual(loraValidation.Errors[0].ErrorMessage, $"{testedValue} is required.");
         }
     }

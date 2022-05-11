@@ -55,7 +55,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
 
             // Assert
             Assert.IsFalse(standardValidation.IsValid);
-            Assert.AreEqual(1, standardValidation.Errors.Count);
+            Assert.GreaterOrEqual(standardValidation.Errors.Count, 1);
             Assert.AreEqual(standardValidation.Errors[0].ErrorMessage, $"{testedValue} is required.");
         }
 
