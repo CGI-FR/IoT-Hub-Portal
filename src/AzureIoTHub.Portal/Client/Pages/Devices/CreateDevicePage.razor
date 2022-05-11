@@ -6,6 +6,7 @@
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Text.RegularExpressions
 
 @attribute [Authorize]
 @inject HttpClient Http
@@ -20,30 +21,30 @@
                 <MudCardHeader>
                     <CardHeaderContent>
                         <MudText Typo="Typo.h5" Align="Align.Center">@(string.IsNullOrEmpty(Device.DeviceName) ? Device.DeviceID : Device.DeviceName)</MudText>
-                    </CardHeaderContent>
-                </MudCardHeader>
-                <MudCardContent>
-                    <div class="d-flex justify-center mb-4">
-                        <MudAvatar Image="@Device.ImageUrl?.ToString()" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
-                    </div>
-                </MudCardContent>
-            </MudCard>
-            <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save">Save Changes</MudButton>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <div class="d-flex justify-center mb-4">
+                            <MudAvatar Image="@Device.ImageUrl?.ToString()" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                        </div>
+                    </MudCardContent>
+                </MudCard>
+                <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save">Save Changes</MudButton>
+                </MudItem>
             </MudItem>
-        </MudItem>
-        <MudItem xs="12" sm="8" md="9">
-            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
-                <MudTabPanel Text="General" Style=@(standardValidator.Validate(Device).IsValid ? "" : "color: red")>
-                    <MudExpansionPanels MultiExpansion="true">
-                        <MudGrid>
-                            <MudItem xs="12">
-                                <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
-                                    <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
-                                    <ChildContent>
-                                        <MudGrid>
-                                            <MudItem xs="12" md="6">
-                                                <MudAutocomplete T="DeviceModel"
+            <MudItem xs="12" sm="8" md="9">
+                <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
+                    <MudTabPanel Text="General" Style=@(standardValidator.Validate(Device).IsValid ? "" : "color: red")>
+                        <MudExpansionPanels MultiExpansion="true">
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudExpansionPanel Text="Details" IsInitiallyExpanded="true">
+                                        <TitleContent><MudText Typo="Typo.h6">Details</MudText></TitleContent>
+                                        <ChildContent>
+                                            <MudGrid>
+                                                <MudItem xs="12" md="6">
+                                                    <MudAutocomplete T="DeviceModel"
                                                                  @bind-Value="DeviceModel"
                                                                  SearchFunc="@Search"
                                                                  Label="Model*"
@@ -55,26 +56,38 @@
                                                                  Immediate=true
                                                                  Clearable=true
                                                                  CoerceText=true
-                                                                 CoerceValue=false >
-                                                    <ItemTemplate>
-                                                       @context.Name
-                                                       <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
-                                                            @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
-                                                       </MudText>
+                                                                 CoerceValue=false>
+                                                        <ItemTemplate>
+                                                            @context.Name
+                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
+                                                                @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
+                                                        </MudText>
                                                     </ItemTemplate>
-                                                                 </MudAutocomplete>
+                                                </MudAutocomplete>
                                                 @if (Device.ModelId == null && displayValidationErrorMessages)
                                                 {
                                                     <p class="validation-error-message">The Model is required.</p>
                                                 }
                                             </MudItem>
                                             <MudItem xs="12" md="6">
-                                                <MudTextField @bind-Value="@Device.DeviceID"
-                                                              Label="Device ID"
+                                                @if (IsLoRa)
+                                                {
+                                                    <MudTextField @bind-Value="@Device.DeviceID"
+                                                              Label="Device ID / DevEUI"
                                                               Variant="Variant.Outlined"
                                                               For="@(()=> Device.DeviceID)"
                                                               Required="true"
                                                               HelperText="DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)" />
+                                                }
+                                                else
+                                                {
+                                                    <MudTextField @bind-Value="@Device.DeviceID"
+                                                              Label="Device ID"
+                                                              Variant="Variant.Outlined"
+                                                              For="@(()=> Device.DeviceID)"
+                                                              Required="true"
+                                                              HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
+                                                }
                                             </MudItem>
                                             <MudItem xs="12">
                                                 <MudTextField @bind-Value="@Device.DeviceName"
@@ -209,7 +222,6 @@
     private DeviceDetailsValidator standardValidator = new DeviceDetailsValidator();
     private LoRaDeviceDetailsValidator loraValidator = new LoRaDeviceDetailsValidator();
     private LoRaDeviceModel loRaDeviceModel { get; set; }
-
 
     private bool IsLoRa => DeviceModelList.SingleOrDefault(c => c.ModelId == Device.ModelId)?.SupportLoRaFeatures ?? false;
 
