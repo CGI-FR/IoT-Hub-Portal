@@ -3191,6 +3191,8 @@
         "type": "object",
         "properties": {
           "deviceID": {
+            "maxLength": -1,
+            "pattern": "^[a-zA-Z0-9\\-.+%_#*?!(),:=@$']{1,128}$",
             "type": "string",
             "description": "The device identifier."
           },
@@ -3709,10 +3711,6 @@
         ],
         "type": "object",
         "properties": {
-          "deviceID": {
-            "type": "string",
-            "description": "The device identifier."
-          },
           "deviceName": {
             "type": "string",
             "description": "The name of the device."
@@ -3748,6 +3746,12 @@
             },
             "description": "List of custom device tags and their values.",
             "nullable": true
+          },
+          "deviceID": {
+            "maxLength": -1,
+            "pattern": "^[A-Z0-9]{16}$",
+            "type": "string",
+            "description": "The device identifier."
           },
           "classType": {
             "enum": [
