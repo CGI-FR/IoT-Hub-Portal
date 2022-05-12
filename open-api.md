@@ -2577,6 +2577,7 @@ None
   {
     "name": "string",
     "frame": "string",
+    "confirmed": true,
     "port": 1,
     "isBuiltin": true
   }
@@ -2643,7 +2644,7 @@ None
 > 200 Response
 
 ```
-[{"name":"string","frame":"string","port":1,"isBuiltin":true}]
+[{"name":"string","frame":"string","confirmed":true,"port":1,"isBuiltin":true}]
 ```
 
 ```json
@@ -2651,6 +2652,7 @@ None
   {
     "name": "string",
     "frame": "string",
+    "confirmed": true,
     "port": 1,
     "isBuiltin": true
   }
@@ -2673,6 +2675,7 @@ Status Code **200**
 |*anonymous*|[[DeviceModelCommand](#schemadevicemodelcommand)]|false|none|[Device model command.]|
 |» name|string|true|none|The command name.|
 |» frame|string|true|none|The command frame in hexa.|
+|» confirmed|boolean|false|none|A value indicating if the command must be confirmed by sensor|
 |» port|integer(int32)|true|none|The LoRa WAN port.|
 |» isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
 
@@ -3890,6 +3893,7 @@ Device model.
 {
   "name": "string",
   "frame": "string",
+  "confirmed": true,
   "port": 1,
   "isBuiltin": true
 }
@@ -3904,6 +3908,7 @@ Device model command.
 |---|---|---|---|---|
 |name|string|true|none|The command name.|
 |frame|string|true|none|The command frame in hexa.|
+|confirmed|boolean|false|none|A value indicating if the command must be confirmed by sensor|
 |port|integer(int32)|true|none|The LoRa WAN port.|
 |isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
 
