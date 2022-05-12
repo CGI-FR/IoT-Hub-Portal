@@ -3355,6 +3355,10 @@
             "type": "string",
             "description": "The command frame in hexa."
           },
+          "confirmed": {
+            "type": "boolean",
+            "description": "A value indicating if the command must be confirmed by sensor"
+          },
           "port": {
             "maximum": 223,
             "minimum": 1,
