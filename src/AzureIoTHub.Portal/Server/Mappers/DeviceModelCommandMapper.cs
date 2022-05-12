@@ -25,6 +25,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 Frame = entity[nameof(DeviceModelCommand.Frame)].ToString(),
                 Port = int.Parse(entity[nameof(DeviceModelCommand.Port)].ToString(), CultureInfo.InvariantCulture),
                 IsBuiltin = bool.Parse(entity[nameof(DeviceModelCommand.IsBuiltin)]?.ToString() ?? "false"),
+                Confirmed = bool.Parse(entity[nameof(DeviceModelCommand.Confirmed)]?.ToString() ?? "false"),
             };
         }
 
@@ -41,6 +42,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             commandEntity[nameof(DeviceModelCommand.Frame)] = element.Frame;
             commandEntity[nameof(DeviceModelCommand.Port)] = element.Port;
             commandEntity[nameof(DeviceModelCommand.IsBuiltin)] = element.IsBuiltin;
+            commandEntity[nameof(DeviceModelCommand.Confirmed)] = element.Confirmed;
         }
     }
 }

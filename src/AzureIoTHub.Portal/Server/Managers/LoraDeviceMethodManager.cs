@@ -7,10 +7,10 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Server.Extensions;
 
     public class LoraDeviceMethodManager : ILoraDeviceMethodManager
     {
@@ -26,11 +26,9 @@ namespace AzureIoTHub.Portal.Server.Managers
             ArgumentNullException.ThrowIfNull(deviceId, nameof(deviceId));
             ArgumentNullException.ThrowIfNull(command, nameof(command));
 
-            using var commandContent = JsonContent.Create(new
-            {
-                rawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(command.Frame)),
-                fport = command.Port
-            });
+            var body = command.ToDynamic();
+
+            using var commandContent = JsonContent.Create(body);
 
             commandContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
