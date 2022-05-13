@@ -66,7 +66,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             if (!string.IsNullOrWhiteSpace(searchType))
             {
-                filter += $" AND devices.tags.type = '{ searchType }'";
+                filter += $" AND devices.tags.type = '{searchType}'";
             }
 
             var emptyResult = new PaginationResult<Twin>
@@ -132,12 +132,12 @@ namespace AzureIoTHub.Portal.Server.Services
 
             if (!string.IsNullOrWhiteSpace(filterDeviceType))
             {
-                filter += $" AND devices.tags.deviceType = '{ filterDeviceType }'";
+                filter += $" AND devices.tags.deviceType = '{filterDeviceType}'";
             }
 
             if (!string.IsNullOrWhiteSpace(excludeDeviceType))
             {
-                filter += $" AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != '{ excludeDeviceType }')";
+                filter += $" AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != '{excludeDeviceType}')";
             }
 
             if (!string.IsNullOrWhiteSpace(searchText))
@@ -370,7 +370,6 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 this.log.LogError($"Unable to retreive logs of the device {deviceId}, status code: {result.Status}");
             }
-
 
             return logs.OrderByDescending(log => log.TimeStamp);
         }

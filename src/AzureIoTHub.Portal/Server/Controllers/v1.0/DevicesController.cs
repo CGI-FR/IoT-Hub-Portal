@@ -150,7 +150,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             {
                 var value = item.IsWritable ? desiredPropertiesAsJson.SelectToken(item.Name)?.Value<string>() :
                         reportedPropertiesAsJson.SelectToken(item.Name)?.Value<string>();
-    
+
                 result.Add(new DevicePropertyValue
                 {
                     DisplayName = item.DisplayName,
