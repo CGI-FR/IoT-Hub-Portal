@@ -45,7 +45,5 @@ namespace AzureIoTHub.Portal.Server
         internal override string LoRaKeyManagementUrl => this.config[LoRaKeyManagementUrlKey];
 
         internal override string LoRaKeyManagementCode => this.config.GetConnectionString(LoRaKeyManagementCodeKey);
-
-        internal override string LoRaRegionRouterConfigUrl => this.config[LoRaRegionRouterConfigUrlKey];
     }
 }
