@@ -107,6 +107,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
             _ = services.AddTransient<IDeviceModelCommandsManager, DeviceModelCommandsManager>();
             _ = services.AddTransient<IDeviceProvisioningServiceManager, DeviceProvisioningServiceManager>();
+            _ = services.AddTransient<IRouterConfigManager, RouterConfigManager>();
 
             _ = services.AddTransient<IDeviceTwinMapper<DeviceListItem, DeviceDetails>, DeviceTwinMapper>();
             _ = services.AddTransient<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>, LoRaDeviceTwinMapper>();
@@ -135,12 +136,10 @@ namespace AzureIoTHub.Portal.Server
             })
                 .AddPolicyHandler(transientHttpErrorPolicy);
 
-            _ = services.AddHttpClient<IRouterConfigManager, RouterConfigManager>(client => client.BaseAddress = new Uri(configuration.LoRaRegionRouterConfigUrl)).AddPolicyHandler(transientHttpErrorPolicy);
-
             // Add problem details support
             _ = services.AddProblemDetails(setup =>
             {
-                setup.IncludeExceptionDetails = (_context, _exception) => HostEnvironment.IsDevelopment();
+                setup.IncludeExceptionDetails = (_, _) => HostEnvironment.IsDevelopment();
 
                 setup.Map<InternalServerErrorException>(exception => new ProblemDetails
                 {

@@ -30,7 +30,6 @@ namespace AzureIoTHub.Portal.Server
 
         internal const string LoRaKeyManagementUrlKey = "LoRaKeyManagement:Url";
         internal const string LoRaKeyManagementCodeKey = "LoRaKeyManagement:Code";
-        internal const string LoRaRegionRouterConfigUrlKey = "LoRaRegionRouterConfig:Url";
 
         internal static ConfigHandler Create(IWebHostEnvironment env, IConfiguration config)
         {
@@ -74,8 +73,6 @@ namespace AzureIoTHub.Portal.Server
         internal abstract string LoRaKeyManagementUrl { get; }
 
         internal abstract string LoRaKeyManagementCode { get; }
-
-        internal abstract string LoRaRegionRouterConfigUrl { get; }
 
         internal abstract string PortalName { get; }
     }

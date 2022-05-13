@@ -3,23 +3,23 @@
 
 namespace AzureIoTHub.Portal.Server.Managers
 {
-    using System.Net.Http;
-    using System.Net.Http.Json;
+    using System.Reflection;
+    using System.Text.Json;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
     public class RouterConfigManager : IRouterConfigManager
     {
-        private readonly HttpClient httpClient;
-
-        public RouterConfigManager(HttpClient httpClient)
-        {
-            this.httpClient = httpClient;
-        }
-
         public async Task<RouterConfig> GetRouterConfig(string loRaRegion)
         {
-            return await this.httpClient.GetFromJsonAsync<RouterConfig>($"{loRaRegion}.json");
+            var currentAssembly = Assembly.GetExecutingAssembly();
+
+            using var resourceStream = currentAssembly.GetManifestResourceStream($"{currentAssembly.GetName().Name}.RouterConfigFiles.{loRaRegion}.json");
+
+            if (resourceStream == null)
+                return null;
+
+            return await JsonSerializer.DeserializeAsync<RouterConfig>(resourceStream);
         }
     }
 }
