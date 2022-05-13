@@ -125,8 +125,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 
             try
             {
-
-
                 // Create a new Twin from the form's fields.
                 var newTwin = new Twin()
                 {

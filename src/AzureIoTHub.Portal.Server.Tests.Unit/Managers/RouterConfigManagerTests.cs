@@ -5,57 +5,41 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
 {
     using AzureIoTHub.Portal.Server.Managers;
     using Moq;
-    using Moq.Protected;
     using NUnit.Framework;
     using System;
-    using System.Net.Http;
-    using System.Text;
-    using System.Threading;
     using System.Threading.Tasks;
 
     [TestFixture]
     public class RouterConfigManagerTests : IDisposable
     {
-#pragma warning disable CA2213 // Disposable fields should be disposed
-        private HttpClient mockHttpClient;
-#pragma warning restore CA2213 // Disposable fields should be disposed
         private MockRepository mockRepository;
-
-        private Mock<HttpMessageHandler> httpMessageHandlerMock;
 
         [SetUp]
         public void SetUp()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
-
-            this.httpMessageHandlerMock = this.mockRepository.Create<HttpMessageHandler>();
-            this.mockHttpClient = new HttpClient(this.httpMessageHandlerMock.Object)
-            {
-                BaseAddress = new Uri("http://fake.local")
-            };
         }
 
         private RouterConfigManager CreateManager()
         {
-            return new RouterConfigManager(this.mockHttpClient);
+            return new RouterConfigManager();
         }
 
-        [Test]
-        public async Task GetRouterConfigStateUnderTestExpectedBehavior()
+        [TestCase("CN_470_510_RP1")]
+        [TestCase("CN_470_510_RP2")]
+        [TestCase("EU_863_870")]
+        [TestCase("US_902_928_FSB_1")]
+        [TestCase("US_902_928_FSB_2")]
+        [TestCase("US_902_928_FSB_3")]
+        [TestCase("US_902_928_FSB_4")]
+        [TestCase("US_902_928_FSB_5")]
+        [TestCase("US_902_928_FSB_6")]
+        [TestCase("US_902_928_FSB_7")]
+        [TestCase("US_902_928_FSB_8")]
+        public async Task GetRouterConfigStateUnderTestExpectedBehavior(string loraRegion)
         {
             // Arrange
             var routerConfig = CreateManager();
-            var loraRegion = Guid.NewGuid().ToString();
-
-            using var deviceResponseMock = new HttpResponseMessage();
-
-            deviceResponseMock.Content = new StringContent("{}", Encoding.UTF8, "application/json");
-
-            this.httpMessageHandlerMock
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.RequestUri.LocalPath.Equals($"/{loraRegion}.json", StringComparison.OrdinalIgnoreCase)), ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync((HttpRequestMessage _, CancellationToken _) => deviceResponseMock)
-                .Verifiable();
 
             // Act
             var result = await routerConfig.GetRouterConfig(loraRegion);

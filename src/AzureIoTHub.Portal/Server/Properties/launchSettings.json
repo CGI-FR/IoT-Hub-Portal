@@ -4,6 +4,9 @@
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
       "DockerfileRunArguments": "-p 8001:443",
       "publishAllPorts": true,
       "useSSL": true
