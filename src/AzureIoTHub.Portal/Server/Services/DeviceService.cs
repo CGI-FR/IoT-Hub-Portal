@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Constants;
+    using Exceptions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
@@ -177,9 +178,18 @@ namespace AzureIoTHub.Portal.Server.Services
 
             var stopWatch = Stopwatch.StartNew();
 
-            var count = await this.registryManager
+            IEnumerable<string> count;
+
+            try
+            {
+                count = await this.registryManager
                     .CreateQuery($"SELECT COUNT() as totalNumber FROM devices { filter }")
                     .GetNextAsJsonAsync();
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to get devices count", e);
+            }
 
             this.log.LogDebug($"Count obtained in {stopWatch.Elapsed}");
 
@@ -195,23 +205,30 @@ namespace AzureIoTHub.Portal.Server.Services
 
             stopWatch.Restart();
 
-            var query = this.registryManager
-                .CreateQuery($"SELECT * FROM devices { filter }", pageSize);
-
-            var response = await query
-                            .GetNextAsTwinAsync(new QueryOptions
-                            {
-                                ContinuationToken = continuationToken
-                            });
-
-            this.log.LogDebug($"Data obtained in {stopWatch.Elapsed}");
-
-            return new PaginationResult<Twin>
+            try
             {
-                Items = response,
-                TotalItems = result.Value<int>(),
-                NextPage = response.ContinuationToken
-            };
+                var query = this.registryManager
+                    .CreateQuery($"SELECT * FROM devices { filter }", pageSize);
+
+                var response = await query
+                    .GetNextAsTwinAsync(new QueryOptions
+                    {
+                        ContinuationToken = continuationToken
+                    });
+
+                this.log.LogDebug($"Data obtained in {stopWatch.Elapsed}");
+
+                return new PaginationResult<Twin>
+                {
+                    Items = response,
+                    TotalItems = result.Value<int>(),
+                    NextPage = response.ContinuationToken
+                };
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to query devices: {e.Message}", e);
+            }
         }
 
         /// <summary>

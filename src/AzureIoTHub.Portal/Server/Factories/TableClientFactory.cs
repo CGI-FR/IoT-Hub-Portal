@@ -3,7 +3,9 @@
 
 namespace AzureIoTHub.Portal.Server.Factories
 {
+    using Azure;
     using Azure.Data.Tables;
+    using Exceptions;
 
     public class TableClientFactory : ITableClientFactory
     {
@@ -31,11 +33,18 @@ namespace AzureIoTHub.Portal.Server.Factories
 
         private TableClient CreateClient(string tableName)
         {
-            var tableClient = new TableClient(this.connectionString, tableName);
+            try
+            {
+                var tableClient = new TableClient(this.connectionString, tableName);
 
-            _ = tableClient.CreateIfNotExists();
+                _ = tableClient.CreateIfNotExists();
 
-            return tableClient;
+                return tableClient;
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to create table client with table name {tableName}: {e.Message}", e);
+            }
         }
 
         public TableClient GetDeviceTemplateProperties()

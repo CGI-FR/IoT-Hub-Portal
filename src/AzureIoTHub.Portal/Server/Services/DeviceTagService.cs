@@ -11,6 +11,8 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Azure;
+    using Exceptions;
 
     public class DeviceTagService : IDeviceTagService
     {
@@ -57,13 +59,20 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public IEnumerable<string> GetAllSearchableTagsNames()
         {
-            var tagNameList = this.tableClientFactory
-                .GetDeviceTagSettings()
-                .Query<TableEntity>()
-                .Where(c => this.deviceTagMapper.GetDeviceTag(c).Searchable)
-                .Select(c => this.deviceTagMapper.GetDeviceTag(c).Name);
+            try
+            {
+                var tagNameList = this.tableClientFactory
+                    .GetDeviceTagSettings()
+                    .Query<TableEntity>()
+                    .Where(c => this.deviceTagMapper.GetDeviceTag(c).Searchable)
+                    .Select(c => this.deviceTagMapper.GetDeviceTag(c).Name);
 
-            return tagNameList.ToList();
+                return tagNameList.ToList();
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to query device tag settings: {e.Message}", e);
+            }
         }
 
         public async Task UpdateTags(IEnumerable<DeviceTag> tags)
