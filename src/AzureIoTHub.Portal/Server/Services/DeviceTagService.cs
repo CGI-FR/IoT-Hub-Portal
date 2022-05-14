@@ -49,12 +49,19 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public IEnumerable<string> GetAllTagsNames()
         {
-            var tagNameList = this.tableClientFactory
-                .GetDeviceTagSettings()
-                .Query<TableEntity>()
-                .Select(c => this.deviceTagMapper.GetDeviceTag(c).Name);
+            try
+            {
+                var tagNameList = this.tableClientFactory
+                    .GetDeviceTagSettings()
+                    .Query<TableEntity>()
+                    .Select(c => this.deviceTagMapper.GetDeviceTag(c).Name);
 
-            return tagNameList.ToList();
+                return tagNameList.ToList();
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to query device tags names: {e.Message}", e);
+            }
         }
 
         public IEnumerable<string> GetAllSearchableTagsNames()
@@ -71,7 +78,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to query device tag settings: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to query searchable device tags names: {e.Message}", e);
             }
         }
 

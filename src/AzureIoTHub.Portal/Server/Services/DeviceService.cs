@@ -249,7 +249,14 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>Twin of a device.</returns>
         public async Task<Twin> GetDeviceTwin(string deviceId)
         {
-            return await this.registryManager.GetTwinAsync(deviceId);
+            try
+            {
+                return await this.registryManager.GetTwinAsync(deviceId);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to get device twin with id {deviceId}: {e.Message}", e);
+            }
         }
 
         /// <summary>
