@@ -172,12 +172,18 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="device">The device.</param>
         public virtual async Task<IActionResult> UpdateDeviceAsync(TModel device)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             ArgumentNullException.ThrowIfNull(device, nameof(device));
+
+            if (!ModelState.IsValid)
+            {
+                var validation = new ValidationProblemDetails(ModelState)
+                {
+                    Status = StatusCodes.Status422UnprocessableEntity
+                };
+
+                throw new ProblemDetailsException(validation);
+            }
 
             // Device status (enabled/disabled) has to be dealt with afterwards
             var currentDevice = await this.devicesService.GetDevice(device.DeviceID);

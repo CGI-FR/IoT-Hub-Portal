@@ -238,7 +238,14 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>Device.</returns>
         public async Task<Device> GetDevice(string deviceId)
         {
-            return await this.registryManager.GetDeviceAsync(deviceId);
+            try
+            {
+                return await this.registryManager.GetDeviceAsync(deviceId);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to get device with id {deviceId}: {e.Message}", e);
+            }
         }
 
         /// <summary>
@@ -321,7 +328,14 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>the updated device.</returns>
         public async Task<Device> UpdateDevice(Device device)
         {
-            return await this.registryManager.UpdateDeviceAsync(device);
+            try
+            {
+                return await this.registryManager.UpdateDeviceAsync(device);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to update the device with id {device.Id}: {e.Message}", e);
+            }
         }
 
         /// <summary>
@@ -334,7 +348,14 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             ArgumentNullException.ThrowIfNull(twin, nameof(twin));
 
-            return await this.registryManager.UpdateTwinAsync(deviceId, twin, twin.ETag);
+            try
+            {
+                return await this.registryManager.UpdateTwinAsync(deviceId, twin, twin.ETag);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to update the device twin with id {deviceId}: {e.Message}", e);
+            }
         }
 
         /// <summary>

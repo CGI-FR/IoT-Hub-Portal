@@ -270,11 +270,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             devicesController.ModelState.AddModelError("Key", "Device model is invalid");
 
             // Act
-            var result = await devicesController.UpdateDeviceAsync(device);
+            var act = () => devicesController.UpdateDeviceAsync(device);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<BadRequestObjectResult>(result);
+            _ = await act.Should().ThrowAsync<ProblemDetailsException>();
             this.mockRepository.VerifyAll();
         }
 
