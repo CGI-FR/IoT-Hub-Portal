@@ -318,7 +318,14 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <param name="deviceId">the device id.</param>
         public async Task DeleteDevice(string deviceId)
         {
-            await this.registryManager.RemoveDeviceAsync(deviceId);
+            try
+            {
+                await this.registryManager.RemoveDeviceAsync(deviceId);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to delete the device with id {deviceId}: {e.Message}", e);
+            }
         }
 
         /// <summary>
