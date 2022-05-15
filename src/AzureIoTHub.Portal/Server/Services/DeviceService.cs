@@ -295,7 +295,14 @@ namespace AzureIoTHub.Portal.Server.Services
                 Status = isEnabled
             };
 
-            return await this.registryManager.AddDeviceWithTwinAsync(device, twin);
+            try
+            {
+                return await this.registryManager.AddDeviceWithTwinAsync(device, twin);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to create the device twin with id {deviceId}: {e.Message}", e);
+            }
         }
 
         /// <summary>

@@ -16,10 +16,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using Hellang.Middleware.ProblemDetails;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
 
@@ -140,37 +141,29 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             ArgumentNullException.ThrowIfNull(device, nameof(device));
 
-            try
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
+                var validation = new ValidationProblemDetails(ModelState)
                 {
-                    return BadRequest(ModelState);
-                }
-
-                // Create a new Twin from the form's fields.
-                var newTwin = new Twin()
-                {
-                    DeviceId = device.DeviceID
+                    Status = StatusCodes.Status422UnprocessableEntity
                 };
 
-                this.deviceTwinMapper.UpdateTwin(newTwin, device);
-
-                var status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
-
-                var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin, status);
-
-                return Ok(result);
+                throw new ProblemDetailsException(validation);
             }
-            catch (DeviceAlreadyExistsException e)
+
+            // Create a new Twin from the form's fields.
+            var newTwin = new Twin()
             {
-                Logger?.LogError($"Create device failed -{device.DeviceID}", e);
-                return BadRequest(e.Message);
-            }
-            catch (InvalidOperationException e)
-            {
-                Logger?.LogError($"Create device failed - {device.DeviceID} -\n{e.Message}");
-                return BadRequest(e.Message);
-            }
+                DeviceId = device.DeviceID
+            };
+
+            this.deviceTwinMapper.UpdateTwin(newTwin, device);
+
+            var status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+
+            var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin, status);
+
+            return Ok(result);
         }
 
         /// <summary>

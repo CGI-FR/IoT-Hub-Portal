@@ -18,6 +18,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Models.v10;
+    using FluentAssertions;
+    using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Controllers;
@@ -216,11 +218,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             devicesController.ModelState.AddModelError("Key", "Device model is invalid");
 
             // Act
-            var result = await devicesController.CreateDeviceAsync(device);
+            var act = () => devicesController.CreateDeviceAsync(device);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<BadRequestObjectResult>(result);
+            _ = await act.Should().ThrowAsync<ProblemDetailsException>();
             this.mockRepository.VerifyAll();
         }
 

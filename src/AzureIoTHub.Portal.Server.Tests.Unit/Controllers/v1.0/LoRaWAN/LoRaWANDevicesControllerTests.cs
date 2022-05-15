@@ -25,6 +25,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
+    using FluentAssertions;
+    using Hellang.Middleware.ProblemDetails;
 
     [TestFixture]
     public class LoRaWANDevicesControllerTests
@@ -333,11 +335,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             devicesController.ModelState.AddModelError("Key", "Device model is invalid");
 
             // Act
-            var result = await devicesController.CreateDeviceAsync(device);
+            var act = () => devicesController.CreateDeviceAsync(device);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<BadRequestObjectResult>(result);
+            _ = await act.Should().ThrowAsync<ProblemDetailsException>();
             this.mockRepository.VerifyAll();
         }
 
