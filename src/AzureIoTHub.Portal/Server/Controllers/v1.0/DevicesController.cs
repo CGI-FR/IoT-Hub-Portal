@@ -214,9 +214,18 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 return BadRequest("Device has no modelId tag value");
             }
 
-            var items = this.tableClientFactory
-                .GetDeviceTemplateProperties()
-                .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{modelId}'");
+            AsyncPageable<DeviceModelProperty> items;
+
+            try
+            {
+                items = this.tableClientFactory
+                    .GetDeviceTemplateProperties()
+                    .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{modelId}'");
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to get templates properties fro device with id {deviceID}: {e.Message}", e);
+            }
 
             var desiredProperties = new Dictionary<string, object>();
 
