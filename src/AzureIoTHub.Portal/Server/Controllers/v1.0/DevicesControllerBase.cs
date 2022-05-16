@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using Exceptions;
     using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -231,8 +232,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 return BadRequest($"Cannot find device type from device {deviceID}");
             }
 
-            Response<TableEntity> response = await this.tableClientFactory.GetDeviceTemplates()
-                                            .GetEntityAsync<TableEntity>("0", item.Tags["modelId"].ToString());
+            Response<TableEntity> response;
+
+            try
+            {
+                response = await this.tableClientFactory.GetDeviceTemplates()
+                    .GetEntityAsync<TableEntity>("0", item.Tags["modelId"].ToString());
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to get model of the device with id {deviceID}: {e.Message}", e);
+            }
 
             var modelEntity = response.Value;
 
