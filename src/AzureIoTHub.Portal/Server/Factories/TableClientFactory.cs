@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Factories
 {
+    using System;
     using Azure;
     using Azure.Data.Tables;
     using Exceptions;
@@ -41,9 +42,11 @@ namespace AzureIoTHub.Portal.Server.Factories
 
                 return tableClient;
             }
-            catch (RequestFailedException e)
+            catch (Exception e) when (e is ArgumentNullException or
+                                          InvalidOperationException or
+                                          RequestFailedException)
             {
-                throw new InternalServerErrorException($"Unable to create table client with table name {tableName}: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to create table client with table name {tableName}", e);
             }
         }
 
