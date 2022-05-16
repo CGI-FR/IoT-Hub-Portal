@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Azure;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Entities;
     using AzureIoTHub.Portal.Server.Factories;
@@ -13,8 +14,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using Exceptions;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
     [ApiController]
@@ -136,15 +139,40 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 return BadRequest("Device has no modelId tag value");
             }
 
-            var items = this.tableClientFactory
-                            .GetDeviceTemplateProperties()
-                            .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{modelId}'");
+            AsyncPageable<DeviceModelProperty> items;
+
+            try
+            {
+                items = this.tableClientFactory
+                    .GetDeviceTemplateProperties()
+                    .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{modelId}'");
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to get templates properties fro device with id {deviceID}: {e.Message}", e);
+            }
 
             var result = new List<DevicePropertyValue>();
+            JObject desiredPropertiesAsJson;
+            JObject reportedPropertiesAsJson;
 
-            var desiredPropertiesAsJson = JObject.Parse(device.Properties.Desired.ToJson());
+            try
+            {
+                desiredPropertiesAsJson = JObject.Parse(device.Properties.Desired.ToJson());
+            }
+            catch (JsonReaderException e)
+            {
+                throw new InternalServerErrorException($"Unable to read desired properties for device with id {deviceID}", e);
+            }
 
-            var reportedPropertiesAsJson = JObject.Parse(device.Properties.Reported.ToJson());
+            try
+            {
+                reportedPropertiesAsJson = JObject.Parse(device.Properties.Reported.ToJson());
+            }
+            catch (JsonReaderException e)
+            {
+                throw new InternalServerErrorException($"Unable to read reported properties for device with id {deviceID}", e);
+            }
 
             await foreach (var item in items)
             {
