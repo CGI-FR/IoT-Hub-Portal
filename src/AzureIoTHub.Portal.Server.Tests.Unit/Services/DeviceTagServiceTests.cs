@@ -14,8 +14,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Models.v10;
+    using FluentAssertions;
     using Moq;
     using NUnit.Framework;
+    using Server.Exceptions;
 
     [TestFixture]
     public class DeviceTagServiceTests
@@ -185,6 +187,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             Assert.AreEqual(10, result.Count());
             Assert.IsAssignableFrom<string>(result.First());
 
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void GetAllTagsNamesShouldThrowInternalServerErrorExceptionWhenAnIssueOccurs()
+        {
+            // Arrange
+            var deviceTagService = CreateDeviceTagService();
+
+            _ = this.mockDeviceTagTableClient.Setup(c => c.Query<TableEntity>(It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+                .Throws(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
+                .Returns(this.mockDeviceTagTableClient.Object);
+
+            // Act
+            var act = () => deviceTagService.GetAllTagsNames();
+
+            // Assert
+            _ = act.Should().Throw<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 
