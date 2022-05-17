@@ -15,7 +15,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
     using Bunit.TestDoubles;
-    using FluentAssertions.Extensions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -126,11 +125,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models/{mockDeviceModel.ModelId}/properties")
                 .RespondJson(Array.Empty<DeviceProperty>());
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ ApiBaseUrl }/{expectedDeviceDetails.DeviceID}/properties")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/{expectedDeviceDetails.DeviceID}/properties")
                 .RespondText(string.Empty);
 
             var cut = RenderComponent<CreateDevicePage>();
-            Thread.Sleep(5000);
+            Thread.Sleep(2500);
             var saveButton = cut.WaitForElement("#SaveButton");
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
@@ -146,11 +145,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             await cut.Instance.ChangeModel(mockDeviceModel);
 
             saveButton.Click();
+            Thread.Sleep(2500);
             cut.WaitForState(() =>
             {
                 Console.WriteLine(this.mockNavigationManager.Uri);
                 return this.mockNavigationManager.Uri.EndsWith("/devices", StringComparison.OrdinalIgnoreCase);
-            }, 10.Seconds());
+            });
 
             // Assert            
             this.mockHttpClient.VerifyNoOutstandingExpectation();
