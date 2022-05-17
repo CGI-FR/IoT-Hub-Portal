@@ -644,6 +644,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public async Task GetDeviceShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockRegistryManager.Setup(c => c.GetDeviceAsync(It.Is<string>(x => x == deviceId)))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => service.GetDevice(deviceId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetDeviceTwinStateUnderTestExpectedBehavior()
         {
             // Arrange
@@ -660,6 +678,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(expected, result);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetDeviceTwinShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == deviceId)))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => service.GetDeviceTwin(deviceId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 
@@ -726,6 +762,27 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             // Assert
             Assert.IsNotNull(result);
             Assert.IsTrue(result.IsSuccessful);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task CreateDeviceWithTwinShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+            var twin = new Twin();
+
+            _ = this.mockRegistryManager
+                .Setup(c => c.AddDeviceWithTwinAsync(It.Is<Device>(x => x.Id == deviceId),
+                    It.Is<Twin>(x => x == twin)))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => service.CreateDeviceWithTwin(deviceId, true, twin);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 
