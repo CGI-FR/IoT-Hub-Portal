@@ -75,6 +75,7 @@
                                                 @if (IsLoRa)
                                                 {
                                                     <MudTextField @bind-Value="@Device.DeviceID"
+                                                              id=@nameof(DeviceDetails.DeviceID)
                                                               Label="Device ID / DevEUI"
                                                               Variant="Variant.Outlined"
                                                               For="@(()=> Device.DeviceID)"
@@ -85,6 +86,7 @@
                                                 else
                                                 {
                                                     <MudTextField @bind-Value="@Device.DeviceID"
+                                                              id=@nameof(DeviceDetails.DeviceID)
                                                               Label="Device ID"
                                                               Variant="Variant.Outlined"
                                                               For="@(()=> Device.DeviceID)"

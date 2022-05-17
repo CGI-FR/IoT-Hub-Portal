@@ -150,7 +150,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             {
                 Console.WriteLine(this.mockNavigationManager.Uri);
                 return this.mockNavigationManager.Uri.EndsWith("/devices", StringComparison.OrdinalIgnoreCase);
-            }, 5.Seconds());
+            }, 10.Seconds());
 
             // Assert            
             this.mockHttpClient.VerifyNoOutstandingExpectation();
