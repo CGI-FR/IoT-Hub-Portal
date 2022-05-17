@@ -17,6 +17,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
     using Moq;
     using Newtonsoft.Json;
     using NUnit.Framework;
+    using Server.Exceptions;
 
     [TestFixture]
     public class DeviceServiceTests
@@ -121,6 +122,65 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Items.Count());
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetAllDeviceShouldThrowInternalServerErrorExceptionWhenIssueOccursOnGettingDevicesCount()
+        {
+            // Arrange
+            var service = CreateService();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ThrowsAsync(new Exception("test"));
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var act = () => service.GetAllDevice();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetAllDeviceShouldThrowInternalServerErrorExceptionWhenIssueOccursOneGettingDevices()
+        {
+            // Arrange
+            var service = CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ThrowsAsync(new Exception("test"));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 10}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == "SELECT * FROM devices WHERE devices.capabilities.iotEdge = false"),
+                    It.Is<int>(x => x == 10)))
+                .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var act = () => service.GetAllDevice();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 
@@ -687,6 +747,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public async Task DeleteDeviceShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockRegistryManager.Setup(c => c.RemoveDeviceAsync(It.Is<string>(x => x == deviceId)))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => service.DeleteDevice(deviceId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task UpdateDeviceStateUnderTestExpectedBehavior()
         {
             // Arrange
@@ -702,6 +780,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             // Assert
             Assert.IsNotNull(result);
             Assert.AreNotEqual(result, device);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDeviceShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var service = CreateService();
+            var device = new Device();
+
+            _ = this.mockRegistryManager.Setup(c => c.UpdateDeviceAsync(It.Is<Device>(x => x == device)))
+                .ThrowsAsync(new Exception());
+
+            // Act
+            var act = () => service.UpdateDevice(device);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 
@@ -729,6 +825,32 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             // Assert
             Assert.IsNotNull(result);
             Assert.AreNotEqual(result, twin);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDeviceTwinShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+
+            var twin = new Twin()
+            {
+                ETag = Guid.NewGuid().ToString(),
+            };
+
+            _ = this.mockRegistryManager.Setup(c => c.UpdateTwinAsync(
+                    It.Is<string>(x => x == deviceId),
+                    It.Is<Twin>(x => x == twin),
+                    It.Is<string>(x => x == twin.ETag)))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => service.UpdateDeviceTwin(deviceId, twin);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 
