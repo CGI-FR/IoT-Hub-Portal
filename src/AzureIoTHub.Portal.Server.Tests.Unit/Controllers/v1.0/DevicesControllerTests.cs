@@ -31,6 +31,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using Moq;
     using NUnit.Framework;
     using Microsoft.AspNetCore.Mvc.Routing;
+    using Server.Exceptions;
 
     [TestFixture]
     public class DevicesControllerTests
@@ -528,6 +529,39 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
+        public async Task GetPropertiesShouldThrowInternalServerErrorExceptionWhenIssueOccursOnGettingProperties()
+        {
+            // Arrange
+            var devicesController = CreateDevicesController();
+            var twin = new Twin();
+
+            DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
+            DeviceHelper.SetDesiredProperty(twin, "writable", "ccc");
+
+            var mockTableClient = this.mockRepository.Create<TableClient>();
+
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+                .ReturnsAsync(twin);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
+                .Returns(mockTableClient.Object);
+
+            _ = mockTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
+                    It.Is<string>(x => x == "PartitionKey eq 'bbb'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                    .Throws(new RequestFailedException("test"));
+
+            // Act
+            var act = () => devicesController.GetProperties("aaa");
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task SetPropertiesShouldUpdateDesiredProperties()
         {
             // Arrange
@@ -585,6 +619,45 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             Assert.AreEqual("ccc", twin.Properties.Desired["writable"].ToString());
 
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task SetPropertiesShouldThrowInternalServerErrorExceptionWhenIssueOccursOnGettingProperties()
+        {
+            // Arrange
+            var devicesController = CreateDevicesController();
+            var twin = new Twin();
+
+            DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
+
+            var mockTableClient = this.mockRepository.Create<TableClient>();
+
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+                .ReturnsAsync(twin);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
+                .Returns(mockTableClient.Object);
+
+            _ = mockTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
+                    It.Is<string>(x => x == "PartitionKey eq 'bbb'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .Throws(new RequestFailedException("test"));
+
+            // Act
+            var act = () => devicesController.SetProperties("aaa", new[]
+            {
+                new DevicePropertyValue
+                {
+                    Name = "writable",
+                    Value = "ccc"
+                }
+            });
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 
