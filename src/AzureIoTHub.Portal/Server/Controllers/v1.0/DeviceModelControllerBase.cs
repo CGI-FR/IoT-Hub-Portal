@@ -18,6 +18,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
+    using AzureIoTHub.Portal.Server.Exceptions;
 
     public abstract class DeviceModelsControllerBase<TListItemModel, TModel> : ControllerBase
         where TListItemModel : DeviceModel
@@ -107,10 +108,18 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <returns>The list of device models.</returns>
         public virtual ActionResult<IEnumerable<TListItemModel>> GetItems()
         {
-            // PartitionKey 0 contains all device models
-            var entities = this.tableClientFactory
+            Pageable<TableEntity> entities;
+            try
+            {
+                // PartitionKey 0 contains all device models
+                entities = this.tableClientFactory
                             .GetDeviceTemplates()
                             .Query<TableEntity>(this.filter);
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException("Unable to get device models.", e);
+            }
 
             // Converts the query result into a list of device models
             var deviceModelList = entities.Select(this.deviceModelMapper.CreateDeviceModelListItem);
