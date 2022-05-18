@@ -26,6 +26,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
+    using FluentAssertions;
+    using AzureIoTHub.Portal.Server.Exceptions;
 
     [TestFixture]
     public class DeviceModelsControllerTests
@@ -112,6 +114,27 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             Assert.IsNotNull(okResponse.Value);
             var result = okResponse.Value as IEnumerable<DeviceModel>;
             Assert.AreEqual(10, result?.Count());
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void WhenQueryFailedGetListShouldThrowAnExceptionInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+
+            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.Query<TableEntity>(It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+                .Throws(new RequestFailedException("request failed."));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(this.mockDeviceTemplatesTableClient.Object);
+
+            // Act
+            var act = () => deviceModelsController.GetItems();
+
+            // Assert
+            _ = act.Should().Throw<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
