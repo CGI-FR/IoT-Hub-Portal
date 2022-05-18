@@ -80,7 +80,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 // Converts the object to a JObject to access its properties more easily
                 if (edgeAgentDesiredProperties is not JObject modObject)
                 {
-                    throw new InvalidOperationException("Could not parse properties.desired.");
+                    throw new InvalidOperationException($"Could not parse properties.desired for the configuration id {configurationID}");
                 }
 
                 // Adds regular modules to the list of modules

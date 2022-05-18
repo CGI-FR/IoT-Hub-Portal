@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Server.Exceptions;
     using Extensions;
     using Microsoft.Azure.Devices;
 
@@ -24,9 +25,15 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task<IEnumerable<Configuration>> GetIoTEdgeConfigurations()
         {
-            var configurations = await this.registryManager.GetConfigurationsAsync(0);
-
-            return configurations.Where(c => c.Content.ModulesContent.Count > 0);
+            try
+            {
+                var configurations = await this.registryManager.GetConfigurationsAsync(0);
+                return configurations.Where(c => c.Content.ModulesContent.Count > 0);
+            }
+            catch (Exception ex)
+            {
+                throw new InternalServerErrorException("Unable to get IOT Edge configurations", ex);
+            }
         }
 
         public async Task<IEnumerable<Configuration>> GetDevicesConfigurations()
@@ -37,9 +44,16 @@ namespace AzureIoTHub.Portal.Server.Services
                 .Where(c => c.Priority > 0 && c.Content.ModulesContent.Count == 0);
         }
 
-        public Task<Configuration> GetConfigItem(string id)
+        public async Task<Configuration> GetConfigItem(string id)
         {
-            return this.registryManager.GetConfigurationAsync(id);
+            try
+            {
+                return await this.registryManager.GetConfigurationAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new InternalServerErrorException($"Unable to get the configuration for id {id}", ex);
+            }
         }
 
         public async Task DeleteConfiguration(string configId)

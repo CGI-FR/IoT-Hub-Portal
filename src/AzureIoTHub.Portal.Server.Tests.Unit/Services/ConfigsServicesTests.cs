@@ -3,7 +3,9 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 {
+    using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Services;
+    using FluentAssertions;
     using Microsoft.Azure.Devices;
     using Moq;
     using NUnit.Framework;
@@ -59,6 +61,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public async Task GetIoTEdgeConfigurationsShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+            var iotEdgeConfiguration = new Configuration("bbb");
+
+            iotEdgeConfiguration.Content.ModulesContent.Add("test", new Dictionary<string, object>());
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => configsServices.GetIoTEdgeConfigurations();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetDevicesConfigsShouldReturnDeviceTwinConfigurations()
         {
             // Arrange
@@ -99,6 +121,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(id, result.Id);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetConfigItemShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+            const string id = "aaa";
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationAsync(It.Is<string>(x => x == id)))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => configsServices.GetConfigItem(id);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 
