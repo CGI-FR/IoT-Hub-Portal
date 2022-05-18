@@ -11,7 +11,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using Azure;
     using Azure.Data.Tables;
     using Entities;
-    using Factories;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.Azure.Devices;
@@ -20,6 +19,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using Moq;
     using NUnit.Framework;
     using Server.Controllers.v10;
+    using Server.Factories;
     using Server.Services;
     using Configuration = Microsoft.Azure.Devices.Configuration;
 
