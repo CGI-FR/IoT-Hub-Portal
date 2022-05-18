@@ -151,7 +151,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
                 this.log.Log(LogLevel.Error, e.Message, e);
 
-                throw new InternalServerErrorException($"Unable to get the device model with the id: {id}");
+                throw new InternalServerErrorException($"Unable to get the device model with the id: {id}", e);
             }
         }
 
@@ -179,7 +179,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
                 this.log.Log(LogLevel.Error, e.Message, e);
 
-                throw;
+                throw new InternalServerErrorException("Unable to get the device model avatar.", e);
             }
         }
 
@@ -208,7 +208,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
                 this.log.Log(LogLevel.Error, e.Message, e);
 
-                throw;
+                throw new InternalServerErrorException($"Unable to change the device model avatar with id:{id}.", e);
             }
         }
 
@@ -237,7 +237,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
                 this.log.Log(LogLevel.Error, e.Message, e);
 
-                throw;
+                throw new InternalServerErrorException($"Unable to delete avatar of the device model with the id: {id}", e);
             }
         }
 
@@ -264,7 +264,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                     {
                         this.log.Log(LogLevel.Error, e.Message, e);
 
-                        throw;
+                        throw new InternalServerErrorException($"Unable create the device model with id: {deviceModel?.ModelId}.", e);
                     }
                 }
             }
@@ -309,7 +309,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
                 this.log.Log(LogLevel.Error, e.Message, e);
 
-                throw;
+                throw new InternalServerErrorException($"Unable to update device model with id: {deviceModel?.ModelId}", e);
             }
 
             await SaveEntity(entity, deviceModel);
@@ -342,7 +342,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
                 this.log.Log(LogLevel.Error, e.Message, e);
 
-                throw;
+                throw new InternalServerErrorException("Unable to get the device model entity.");
             }
 
             if (deviceList.Items.Any(x => DeviceHelper.RetrieveTagValue(x, "modelId") == id))
@@ -350,24 +350,48 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 return BadRequest("This model is already in use by a device and cannot be deleted.");
             }
 
-            var queryCommand = this.tableClientFactory
+            TableEntity[] queryCommand;
+
+            try
+            {
+                queryCommand = this.tableClientFactory
                                    .GetDeviceCommands()
                                    .Query<TableEntity>(t => t.PartitionKey == id)
                                    .ToArray();
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to get commands for the device models with id: {id}", e);
+            }
+
 
             foreach (var item in queryCommand)
             {
-                _ = await this.tableClientFactory
-                                .GetDeviceCommands()
-                                .DeleteEntityAsync(id, item.RowKey);
+                try
+                {
+                    _ = await this.tableClientFactory
+                                    .GetDeviceCommands()
+                                    .DeleteEntityAsync(id, item.RowKey);
+                }
+                catch (RequestFailedException e)
+                {
+                    throw new InternalServerErrorException("Unable to delete the device model command entity.", e);
+                }
             }
 
             // Image deletion
             await this.deviceModelImageManager.DeleteDeviceModelImageAsync(id);
 
-            _ = await this.tableClientFactory
-                .GetDeviceTemplates()
-                .DeleteEntityAsync(DefaultPartitionKey, id);
+            try
+            {
+                _ = await this.tableClientFactory
+                    .GetDeviceTemplates()
+                    .DeleteEntityAsync(DefaultPartitionKey, id);
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException("Unable to delete the device model entity.", e);
+            }
 
             return NoContent();
         }
@@ -381,9 +405,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             var desiredProperties = this.deviceModelMapper.UpdateTableEntity(entity, deviceModelObject);
 
-            _ = await this.tableClientFactory
-                .GetDeviceTemplates()
-                .UpsertEntityAsync(entity);
+            try
+            {
+                _ = await this.tableClientFactory
+                    .GetDeviceTemplates()
+                    .UpsertEntityAsync(entity);
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException("Unable to upsert the device model entity.", e);
+            }
 
             var deviceModelTwin = new TwinCollection();
 
