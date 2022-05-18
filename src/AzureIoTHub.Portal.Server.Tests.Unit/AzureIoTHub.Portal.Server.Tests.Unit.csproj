@@ -44,4 +44,8 @@
     <ProjectReference Include="..\AzureIoTHub.Portal\Server\AzureIoTHub.Portal.Server.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Factories\" />
+  </ItemGroup>
+
 </Project>

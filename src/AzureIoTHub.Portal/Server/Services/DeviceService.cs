@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Constants;
+    using Exceptions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
@@ -177,9 +178,18 @@ namespace AzureIoTHub.Portal.Server.Services
 
             var stopWatch = Stopwatch.StartNew();
 
-            var count = await this.registryManager
+            IEnumerable<string> count;
+
+            try
+            {
+                count = await this.registryManager
                     .CreateQuery($"SELECT COUNT() as totalNumber FROM devices { filter }")
                     .GetNextAsJsonAsync();
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to get devices count", e);
+            }
 
             this.log.LogDebug($"Count obtained in {stopWatch.Elapsed}");
 
@@ -195,23 +205,30 @@ namespace AzureIoTHub.Portal.Server.Services
 
             stopWatch.Restart();
 
-            var query = this.registryManager
-                .CreateQuery($"SELECT * FROM devices { filter }", pageSize);
-
-            var response = await query
-                            .GetNextAsTwinAsync(new QueryOptions
-                            {
-                                ContinuationToken = continuationToken
-                            });
-
-            this.log.LogDebug($"Data obtained in {stopWatch.Elapsed}");
-
-            return new PaginationResult<Twin>
+            try
             {
-                Items = response,
-                TotalItems = result.Value<int>(),
-                NextPage = response.ContinuationToken
-            };
+                var query = this.registryManager
+                    .CreateQuery($"SELECT * FROM devices { filter }", pageSize);
+
+                var response = await query
+                    .GetNextAsTwinAsync(new QueryOptions
+                    {
+                        ContinuationToken = continuationToken
+                    });
+
+                this.log.LogDebug($"Data obtained in {stopWatch.Elapsed}");
+
+                return new PaginationResult<Twin>
+                {
+                    Items = response,
+                    TotalItems = result.Value<int>(),
+                    NextPage = response.ContinuationToken
+                };
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to query devices: {e.Message}", e);
+            }
         }
 
         /// <summary>
@@ -221,7 +238,14 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>Device.</returns>
         public async Task<Device> GetDevice(string deviceId)
         {
-            return await this.registryManager.GetDeviceAsync(deviceId);
+            try
+            {
+                return await this.registryManager.GetDeviceAsync(deviceId);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to get device with id {deviceId}: {e.Message}", e);
+            }
         }
 
         /// <summary>
@@ -232,7 +256,14 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>Twin of a device.</returns>
         public async Task<Twin> GetDeviceTwin(string deviceId)
         {
-            return await this.registryManager.GetTwinAsync(deviceId);
+            try
+            {
+                return await this.registryManager.GetTwinAsync(deviceId);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to get device twin with id {deviceId}: {e.Message}", e);
+            }
         }
 
         /// <summary>
@@ -271,7 +302,14 @@ namespace AzureIoTHub.Portal.Server.Services
                 Status = isEnabled
             };
 
-            return await this.registryManager.AddDeviceWithTwinAsync(device, twin);
+            try
+            {
+                return await this.registryManager.AddDeviceWithTwinAsync(device, twin);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to create the device twin with id {deviceId}: {e.Message}", e);
+            }
         }
 
         /// <summary>
@@ -280,7 +318,14 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <param name="deviceId">the device id.</param>
         public async Task DeleteDevice(string deviceId)
         {
-            await this.registryManager.RemoveDeviceAsync(deviceId);
+            try
+            {
+                await this.registryManager.RemoveDeviceAsync(deviceId);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to delete the device with id {deviceId}: {e.Message}", e);
+            }
         }
 
         /// <summary>
@@ -290,7 +335,14 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>the updated device.</returns>
         public async Task<Device> UpdateDevice(Device device)
         {
-            return await this.registryManager.UpdateDeviceAsync(device);
+            try
+            {
+                return await this.registryManager.UpdateDeviceAsync(device);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to update the device with id {device.Id}: {e.Message}", e);
+            }
         }
 
         /// <summary>
@@ -303,7 +355,14 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             ArgumentNullException.ThrowIfNull(twin, nameof(twin));
 
-            return await this.registryManager.UpdateTwinAsync(deviceId, twin, twin.ETag);
+            try
+            {
+                return await this.registryManager.UpdateTwinAsync(deviceId, twin, twin.ETag);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to update the device twin with id {deviceId}: {e.Message}", e);
+            }
         }
 
         /// <summary>

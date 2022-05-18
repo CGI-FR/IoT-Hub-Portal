@@ -141,6 +141,9 @@ namespace AzureIoTHub.Portal.Server
             {
                 setup.IncludeExceptionDetails = (_, _) => HostEnvironment.IsDevelopment();
 
+                // Custom mapping function for FluentValidation's ValidationException.
+                setup.MapFluentValidationException();
+
                 setup.Map<InternalServerErrorException>(exception => new ProblemDetails
                 {
                     Title = exception.Title,
@@ -153,6 +156,17 @@ namespace AzureIoTHub.Portal.Server
                     Title = exception.Title,
                     Detail = exception.Detail,
                     Status = StatusCodes.Status400BadRequest
+                });
+
+                setup.Map<ArgumentNullException>(exception => new ProblemDetails
+                {
+                    Title = "Null Argument",
+                    Detail = exception.Message,
+                    Status = StatusCodes.Status400BadRequest,
+                    Extensions =
+                    {
+                        ["params"] = exception.ParamName
+                    }
                 });
 
             });
