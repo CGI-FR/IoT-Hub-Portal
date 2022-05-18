@@ -61,7 +61,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public async Task GetIoTEdgeConfigurationsSHouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        public async Task GetIoTEdgeConfigurationsShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
         {
             // Arrange
             var configsServices = CreateConfigsServices();

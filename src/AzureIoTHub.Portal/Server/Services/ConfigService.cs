@@ -46,7 +46,14 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public Task<Configuration> GetConfigItem(string id)
         {
-            return this.registryManager.GetConfigurationAsync(id);
+            try
+            {
+                return this.registryManager.GetConfigurationAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new InternalServerErrorException($"Unable to get the configuration for id {id}", ex);
+            }
         }
 
         public async Task DeleteConfiguration(string configId)
