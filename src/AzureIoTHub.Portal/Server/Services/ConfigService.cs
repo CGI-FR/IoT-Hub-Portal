@@ -44,11 +44,11 @@ namespace AzureIoTHub.Portal.Server.Services
                 .Where(c => c.Priority > 0 && c.Content.ModulesContent.Count == 0);
         }
 
-        public Task<Configuration> GetConfigItem(string id)
+        public async Task<Configuration> GetConfigItem(string id)
         {
             try
             {
-                return this.registryManager.GetConfigurationAsync(id);
+                return await this.registryManager.GetConfigurationAsync(id);
             }
             catch (Exception ex)
             {

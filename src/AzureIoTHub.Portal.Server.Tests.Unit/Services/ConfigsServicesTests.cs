@@ -124,6 +124,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public async Task GetConfigItemShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+            const string id = "aaa";
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationAsync(It.Is<string>(x => x == id)))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => configsServices.GetConfigItem(id);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
