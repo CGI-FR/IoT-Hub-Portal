@@ -151,7 +151,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
                 this.log.Log(LogLevel.Error, e.Message, e);
 
-                throw;
+                throw new InternalServerErrorException($"Unable to get the device model with the id: {id}");
             }
         }
 
