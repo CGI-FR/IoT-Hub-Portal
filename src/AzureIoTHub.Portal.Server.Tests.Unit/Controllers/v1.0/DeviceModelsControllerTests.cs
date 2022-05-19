@@ -328,6 +328,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
+        public void WhenGetEntityThrowAnErrorChangeAvatarShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+            IFormFile formFile = null;
+
+            SetupErrorEntity();
+
+            // Act
+            var act = async () => await deviceModelsController.ChangeAvatar(Guid.NewGuid().ToString(), formFile);
+
+            // Assert
+            _ = act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task DeleteAvatarShouldRemoveModelImage()
         {
             // Arrange
@@ -365,6 +383,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsAssignableFrom<NotFoundResult>(result);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void WhenGetEntityThrowAnErrorDeleteAvatarShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+
+            SetupErrorEntity();
+
+            // Act
+            var act = async () => await deviceModelsController.DeleteAvatar(Guid.NewGuid().ToString());
+
+            // Assert
+            _ = act.Should().ThrowAsync<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
