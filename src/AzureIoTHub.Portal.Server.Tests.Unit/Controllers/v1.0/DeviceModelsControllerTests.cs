@@ -194,11 +194,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         {
             // Arrange
             var deviceModelsController = CreateDeviceModelsController();
-            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new RequestFailedException(""));
 
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
-                .Returns(this.mockDeviceTemplatesTableClient.Object);
+            SetupErrorEntity();
 
             // Act
             var act = () => deviceModelsController.GetItem(Guid.NewGuid().ToString());
@@ -252,6 +249,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             // Assert
             Assert.IsNotNull(response);
             Assert.IsAssignableFrom<NotFoundResult>(response.Result);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void WhenGetEntityThrowAnErrorGetAvatarShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+
+            SetupErrorEntity();
+
+            // Act
+            var act = async () => await deviceModelsController.GetAvatar(Guid.NewGuid().ToString());
+
+            // Assert
+            _ = act.Should().ThrowAsync<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
@@ -674,6 +688,19 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                     It.IsAny<IEnumerable<string>>(),
                     It.IsAny<CancellationToken>()))
                 .Throws(new RequestFailedException(StatusCodes.Status404NotFound, "Not Found"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(this.mockDeviceTemplatesTableClient.Object);
+        }
+
+        private void SetupErrorEntity()
+        {
+            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .Throws(new RequestFailedException(""));
 
             _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
                 .Returns(this.mockDeviceTemplatesTableClient.Object);
