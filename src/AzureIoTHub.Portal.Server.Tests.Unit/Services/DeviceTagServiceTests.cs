@@ -122,7 +122,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                     It.IsAny<int?>(),
                     It.IsAny<IEnumerable<string>>(),
                     It.IsAny<CancellationToken>()))
-                .Throws(new InternalServerErrorException("test"));
+                .Throws(new RequestFailedException("test"));
 
             _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
                 .Returns(this.mockDeviceTagTableClient.Object);
@@ -167,7 +167,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 It.IsAny<string>(),
                 It.IsAny<ETag>(),
                 It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new InternalServerErrorException("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
                 .Returns(this.mockDeviceTagTableClient.Object);
@@ -202,7 +202,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             _ = this.mockDeviceTagTableClient.Setup(c => c.AddEntityAsync(
                 It.Is<TableEntity>(x => x.PartitionKey == DeviceTagService.DefaultPartitionKey && x.RowKey == tag.Name),
                 It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new InternalServerErrorException("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             _ = this.mockDeviceTagTableClient.Setup(c => c.Query<TableEntity>(
                 It.Is<string>(_ => true),
