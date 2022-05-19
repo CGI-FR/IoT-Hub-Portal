@@ -190,6 +190,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
+        public void WhenGetEntityFailedOnGetItemShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new RequestFailedException(""));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(this.mockDeviceTemplatesTableClient.Object);
+
+            // Act
+            var act = () => deviceModelsController.GetItem(Guid.NewGuid().ToString());
+
+            // Assert
+            _ = act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetAvatarShouldReturnTheComputedModelAvatarUri()
         {
             // Arrange
