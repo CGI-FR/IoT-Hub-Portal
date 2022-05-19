@@ -213,7 +213,7 @@ else
 
         if (result.IsSuccessStatusCode)
         {
-            Snackbar.Add($"Device {Gateway.DeviceId} has been successfully updated!", Severity.Success, config => { config.VisibleStateDuration  = 1000000; });
+            Snackbar.Add($"Device {Gateway.DeviceId} has been successfully updated!", Severity.Success);
         }
         else if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {

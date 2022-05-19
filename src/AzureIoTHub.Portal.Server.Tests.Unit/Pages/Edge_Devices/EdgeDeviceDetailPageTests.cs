@@ -12,7 +12,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using AzureIoTHub.Portal.Client.Shared;
     using Bunit;
     using Bunit.TestDoubles;
-    using FluentAssertions.Extensions;
     using Helpers;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +33,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
+        private Mock<ISnackbar> mockSnackbarService;
         private readonly string mockdeviceId = Guid.NewGuid().ToString();
 
         private FakeNavigationManager mockNavigationManager;
@@ -45,9 +45,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             this.mockRepository = new MockRepository(MockBehavior.Strict);
             this.mockHttpClient = this.testContext.Services.AddMockHttpClient();
-            this.mockDialogService = this.mockRepository.Create<IDialogService>();
 
+            this.mockDialogService = this.mockRepository.Create<IDialogService>();
             _ = this.testContext.Services.AddSingleton(this.mockDialogService.Object);
+
+            this.mockSnackbarService = this.mockRepository.Create<ISnackbar>();
+            _ = this.testContext.Services.AddSingleton(this.mockSnackbarService.Object);
+
             _ = this.testContext.Services.AddMudServices();
 
             _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
@@ -129,16 +133,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
+            _ = this.mockSnackbarService.Setup(c => c.Add($"Device {mockdeviceId} has been successfully updated!", Severity.Success, null));
+
             // Act
             saveButton.Click();
-            //Thread.Sleep(2500);
-
-            // Assert
-            //var snackbar1 = cut.WaitForElement(".mud-snackbar",30.Seconds());
-            //cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/edge/devices", StringComparison.OrdinalIgnoreCase));
 
             // Assert            
             this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
         }
 
 
