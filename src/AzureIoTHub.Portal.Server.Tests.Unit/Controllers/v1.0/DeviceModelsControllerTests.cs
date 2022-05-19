@@ -736,6 +736,37 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public void WhenGetEntityThrowAnErrorDEleteShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+
+            _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<bool?>(),
+                It.IsAny<bool?>(),
+                It.IsAny<Dictionary<string, string>>(),
+                It.IsAny<int>()))
+            .ReturnsAsync(new PaginationResult<Twin>
+            {
+                Items = new List<Twin>()
+            });
+
+            SetupErrorEntity();
+
+            // Act
+            var act = async () => await deviceModelsController.Delete(Guid.NewGuid().ToString());
+
+            // Assert
+            _ = act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
         private TableEntity SetupMockEntity()
         {
             var mockResponse = this.mockRepository.Create<Response<TableEntity>>();

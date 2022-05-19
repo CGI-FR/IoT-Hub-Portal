@@ -342,7 +342,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
                 this.log.Log(LogLevel.Error, e.Message, e);
 
-                throw new InternalServerErrorException("Unable to get the device model entity.");
+                throw new InternalServerErrorException("Unable to get the device model entity.", e);
             }
 
             if (deviceList.Items.Any(x => DeviceHelper.RetrieveTagValue(x, "modelId") == id))
