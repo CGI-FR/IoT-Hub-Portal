@@ -627,6 +627,28 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
+        public void WhenGetEntityThrowAnErrorPutShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+
+            SetupErrorEntity();
+
+            var deviceModel = new DeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString()
+            };
+
+            // Act
+            var act = async () => await deviceModelsController.Put(deviceModel);
+
+            // Assert
+            _ = act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task DeleteShouldRemoveTheEntityCommandsAndAvatar()
         {
             // Arrange
