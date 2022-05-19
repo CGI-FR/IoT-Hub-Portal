@@ -44,7 +44,7 @@ else
                 </MudCard>
                 <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
                     <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="ShowDeleteModal">Delete edge device</MudButton>
-                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="UpdateDevice">Save Changes</MudButton>
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="UpdateDevice" id="saveButton">Save Changes</MudButton>
                 </MudItem>
             </MudItem>
             <MudItem xs="12" sm="8" md="9">
@@ -213,7 +213,7 @@ else
 
         if (result.IsSuccessStatusCode)
         {
-            Snackbar.Add($"Device {Gateway.DeviceId} has been successfully updated!", Severity.Success);
+            Snackbar.Add($"Device {Gateway.DeviceId} has been successfully updated!", Severity.Success, config => { config.VisibleStateDuration  = 1000000; });
         }
         else if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {

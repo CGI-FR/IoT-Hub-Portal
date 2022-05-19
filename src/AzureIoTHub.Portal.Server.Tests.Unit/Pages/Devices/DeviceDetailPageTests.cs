@@ -101,7 +101,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public void ClickOnSaveShouldPostDeviceDetails()
+        public void ClickOnSaveShouldPutDeviceDetails()
         {
             var mockDeviceModel = new DeviceModel
             {
@@ -131,7 +131,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             };
 
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
+            _ = this.mockHttpClient.When(HttpMethod.Put, $"{ApiBaseUrl}")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<JsonContent>(m.Content);
@@ -168,7 +168,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
             Thread.Sleep(2500);
-            Console.WriteLine(cut);
 
             var saveButton = cut.WaitForElement("#returnButton");
 
@@ -184,7 +183,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             Thread.Sleep(2500);
             cut.WaitForState(() =>
             {
-                Console.WriteLine(this.mockNavigationManager.Uri);
                 return this.mockNavigationManager.Uri.EndsWith("/devices", StringComparison.OrdinalIgnoreCase);
             });
 
