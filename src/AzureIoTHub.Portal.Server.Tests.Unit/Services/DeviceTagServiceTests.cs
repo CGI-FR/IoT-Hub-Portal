@@ -105,6 +105,136 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public async Task UpdateTagsShouldThrowInternalServerErrorExceptionWhenGettingExistingTags()
+        {
+            var deviceTagService = CreateDeviceTagService();
+
+            var tag = new DeviceTag
+            {
+                Name = "testName",
+                Label = "testLabel",
+                Required = true,
+                Searchable = true
+            };
+
+            _ = this.mockDeviceTagTableClient.Setup(c => c.Query<TableEntity>(
+                    It.Is<string>(_ => true),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .Throws(new InternalServerErrorException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
+                .Returns(this.mockDeviceTagTableClient.Object);
+
+            // Act
+            var act = () => deviceTagService.UpdateTags(new List<DeviceTag>(new[] { tag }));
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateTagsShouldThrowInternalServerErrorExceptionWhenDeletingExistingTags()
+        {
+            var deviceTagService = CreateDeviceTagService();
+
+            var tag = new DeviceTag
+            {
+                Name = "testName",
+                Label = "testLabel",
+                Required = true,
+                Searchable = true
+            };
+
+            var mockResponse = this.mockRepository.Create<Response>();
+
+            _ = this.mockDeviceTagTableClient.Setup(c => c.Query<TableEntity>(
+                It.Is<string>(_ => true),
+                It.IsAny<int?>(),
+                It.IsAny<IEnumerable<string>>(),
+                It.IsAny<CancellationToken>()))
+                .Returns(Pageable<TableEntity>.FromPages(new[] {
+                    Page<TableEntity>.FromValues(new[]
+                    {
+                        new TableEntity(DeviceTagService.DefaultPartitionKey,tag.Name)
+                    }, null, mockResponse.Object)
+                }));
+
+            _ = this.mockDeviceTagTableClient.Setup(c => c.DeleteEntityAsync(
+                It.Is<string>(_ => true),
+                It.IsAny<string>(),
+                It.IsAny<ETag>(),
+                It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new InternalServerErrorException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
+                .Returns(this.mockDeviceTagTableClient.Object);
+
+            // Act
+            var act = () => deviceTagService.UpdateTags(new List<DeviceTag>(new[] { tag }));
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateTagsShouldThrowInternalServerErrorExceptionWhenAddingNewTags()
+        {
+            var deviceTagService = CreateDeviceTagService();
+
+            var tag = new DeviceTag
+            {
+                Name = "testName",
+                Label = "testLabel",
+                Required = true,
+                Searchable = true
+            };
+
+            var mockResponse = this.mockRepository.Create<Response>();
+
+            _ = this.mockDeviceTagMapper.Setup(c => c.UpdateTableEntity(
+               It.Is<TableEntity>(x => x.RowKey == tag.Name && x.PartitionKey == DeviceTagService.DefaultPartitionKey),
+               It.Is<DeviceTag>(x => x == tag)));
+
+            _ = this.mockDeviceTagTableClient.Setup(c => c.AddEntityAsync(
+                It.Is<TableEntity>(x => x.PartitionKey == DeviceTagService.DefaultPartitionKey && x.RowKey == tag.Name),
+                It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new InternalServerErrorException("test"));
+
+            _ = this.mockDeviceTagTableClient.Setup(c => c.Query<TableEntity>(
+                It.Is<string>(_ => true),
+                It.IsAny<int?>(),
+                It.IsAny<IEnumerable<string>>(),
+                It.IsAny<CancellationToken>()))
+                .Returns(Pageable<TableEntity>.FromPages(new[] {
+                    Page<TableEntity>.FromValues(new[]
+                    {
+                        new TableEntity(DeviceTagService.DefaultPartitionKey,tag.Name)
+                    }, null, mockResponse.Object)
+                }));
+
+            _ = this.mockDeviceTagTableClient.Setup(c => c.DeleteEntityAsync(
+                It.Is<string>(_ => true),
+                It.IsAny<string>(),
+                It.IsAny<ETag>(),
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockResponse.Object);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
+                .Returns(this.mockDeviceTagTableClient.Object);
+
+            // Act
+            var act = () => deviceTagService.UpdateTags(new List<DeviceTag>(new[] { tag }));
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public void GetAllTagsShouldReturnAList()
         {
             // Arrange
@@ -144,6 +274,27 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             Assert.AreEqual(10, result.Count());
             Assert.IsAssignableFrom<DeviceTag>(result.First());
 
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void GetAllTagsShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var deviceTagService = CreateDeviceTagService();
+
+            _ = this.mockDeviceTagTableClient.Setup(c => c.Query<TableEntity>(It.IsAny<string>(), It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+                .Throws(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
+                .Returns(this.mockDeviceTagTableClient.Object);
+
+            // Act
+            var act = () => deviceTagService.GetAllTags();
+
+            // Assert
+            _ = act.Should().Throw<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 
