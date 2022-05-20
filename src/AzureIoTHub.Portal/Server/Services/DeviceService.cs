@@ -76,9 +76,18 @@ namespace AzureIoTHub.Portal.Server.Services
                 TotalItems = 0
             };
 
-            var count = await this.registryManager
+            IEnumerable<string> count;
+
+            try
+            {
+                count = await this.registryManager
                     .CreateQuery($"SELECT COUNT() as totalNumber FROM devices { filter }")
                     .GetNextAsJsonAsync();
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to get the count of edge devices", e);
+            }
 
             if (!JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result))
             {
@@ -89,22 +98,28 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return emptyResult;
             }
-
-            var query = this.registryManager
-                .CreateQuery($"SELECT * FROM devices { filter }", pageSize);
-
-            var response = await query
-                            .GetNextAsTwinAsync(new QueryOptions
-                            {
-                                ContinuationToken = continuationToken
-                            });
-
-            return new PaginationResult<Twin>
+            try
             {
-                Items = response,
-                TotalItems = result.Value<int>(),
-                NextPage = response.ContinuationToken
-            };
+                var response = await this.registryManager
+                .CreateQuery($"SELECT * FROM devices { filter }", pageSize)
+                .GetNextAsTwinAsync(new QueryOptions
+                {
+                    ContinuationToken = continuationToken
+                });
+
+
+                return new PaginationResult<Twin>
+
+                {
+                    Items = response,
+                    TotalItems = result.Value<int>(),
+                    NextPage = response.ContinuationToken
+                };
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to get edge devices", e);
+            }
         }
 
         /// <summary>
