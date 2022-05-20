@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using Exceptions;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -86,15 +87,31 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
                 throw;
             }
 
-            var query = this.tableClientFactory
-                                  .GetDeviceCommands()
-                                  .Query<TableEntity>(filter: $"PartitionKey eq '{id}'");
+            Pageable<TableEntity> query;
+
+            try
+            {
+                query = this.tableClientFactory
+                    .GetDeviceCommands()
+                    .Query<TableEntity>(filter: $"PartitionKey eq '{id}'");
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to get existing commands of the model with id {id}", e);
+            }
 
             foreach (var item in query)
             {
-                _ = await this.tableClientFactory
-                               .GetDeviceCommands()
-                               .DeleteEntityAsync(item.PartitionKey, item.RowKey);
+                try
+                {
+                    _ = await this.tableClientFactory
+                        .GetDeviceCommands()
+                        .DeleteEntityAsync(item.PartitionKey, item.RowKey);
+                }
+                catch (RequestFailedException e)
+                {
+                    throw new InternalServerErrorException($"Unable to delete the command {item.RowKey} of the model with id {id}", e);
+                }
             }
 
             foreach (var command in commands)
@@ -107,9 +124,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 
                 this.deviceModelCommandMapper.UpdateTableEntity(entity, command);
 
-                _ = await this.tableClientFactory
+                try
+                {
+                    _ = await this.tableClientFactory
                         .GetDeviceCommands()
                         .AddEntityAsync(entity);
+                }
+                catch (RequestFailedException e)
+                {
+                    throw new InternalServerErrorException($"Unable to create the command {command.Name} of the model with id {id}", e);
+                }
             }
 
             return Ok();
@@ -143,9 +167,18 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
                 throw;
             }
 
-            var query = this.tableClientFactory
-                                  .GetDeviceCommands()
-                                  .Query<TableEntity>(filter: $"PartitionKey eq '{id}'");
+            Pageable<TableEntity> query;
+
+            try
+            {
+                query = this.tableClientFactory
+                    .GetDeviceCommands()
+                    .Query<TableEntity>(filter: $"PartitionKey eq '{id}'");
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to get commands of the model with id {id}", e);
+            }
 
             var commands = new List<DeviceModelCommand>();
 
