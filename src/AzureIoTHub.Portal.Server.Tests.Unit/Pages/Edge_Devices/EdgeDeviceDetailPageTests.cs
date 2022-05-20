@@ -137,6 +137,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Act
             saveButton.Click();
+            Thread.Sleep(2500);
 
             // Assert            
             this.mockHttpClient.VerifyNoOutstandingExpectation();
