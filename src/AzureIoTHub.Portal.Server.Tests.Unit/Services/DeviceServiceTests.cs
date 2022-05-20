@@ -86,6 +86,66 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public async Task GetAllEdgeDeviceShouldThrowInternalServerErrorExceptionWhenGettingDevices()
+        {
+            // Arrange
+            var service = CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ThrowsAsync(new Exception("test"));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 1}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == "SELECT * FROM devices WHERE devices.capabilities.iotEdge = true"),
+                It.Is<int>(x => x == 10)))
+                .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var act = () => service.GetAllEdgeDevice();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetAllEdgeDeviceShouldThrowInternalServerErrorExceptionWhenGettingDevicesCount()
+        {
+            // Arrange
+            var service = CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ThrowsAsync(new Exception("test"));
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var act = () => service.GetAllEdgeDevice();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetAllDeviceStateUnderTestExpectedBehavior()
         {
             // Arrange
