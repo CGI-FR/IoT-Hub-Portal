@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using Azure;
     using Azure.Data.Tables;
     using Entities;
+    using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.Azure.Devices;
@@ -19,6 +20,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using Moq;
     using NUnit.Framework;
     using Server.Controllers.v10;
+    using Server.Exceptions;
     using Server.Factories;
     using Server.Services;
     using Configuration = Microsoft.Azure.Devices.Configuration;
@@ -237,6 +239,36 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
+        public async Task CreateConfigShouldThrowInternalServerErrorExceptionOnGettingDeviceModelProperties()
+        {
+            // Arrange
+            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+
+            var deviceConfig = new DeviceConfig
+            {
+                ConfigurationId = Guid.NewGuid().ToString(),
+                ModelId = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.Query<DeviceModelProperty>(
+                    It.Is<string>(x => x == $"PartitionKey eq '{deviceConfig.ModelId}'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .Throws(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
+                .Returns(this.mockDeviceModelPropertiesTableClient.Object);
+
+            // Act
+            var act = () => deviceConfigurationsController.CreateConfig(deviceConfig);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task UpdateConfigStateUnderTestExpectedBehavior()
         {
             // Arrange
@@ -282,6 +314,36 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             await deviceConfigurationsController.UpdateConfig(deviceConfig);
 
             // Assert
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateConfigShouldThrowInternalServerErrorExceptionOnGettingDeviceModelProperties()
+        {
+            // Arrange
+            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+
+            var deviceConfig = new DeviceConfig
+            {
+                ConfigurationId = Guid.NewGuid().ToString(),
+                ModelId = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.Query<DeviceModelProperty>(
+                    It.Is<string>(x => x == $"PartitionKey eq '{deviceConfig.ModelId}'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .Throws(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
+                .Returns(this.mockDeviceModelPropertiesTableClient.Object);
+
+            // Act
+            var act = () => deviceConfigurationsController.UpdateConfig(deviceConfig);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 
