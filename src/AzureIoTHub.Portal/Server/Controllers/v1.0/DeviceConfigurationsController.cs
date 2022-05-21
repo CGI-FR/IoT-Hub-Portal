@@ -106,10 +106,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
 
         private async Task CreateOrUpdateConfiguration(DeviceConfig deviceConfig)
         {
-            var table = this.tableClientFactory
-                .GetDeviceTemplateProperties();
-
-            var items = table
+            var items = this.tableClientFactory
+                .GetDeviceTemplateProperties()
                 .Query<DeviceModelProperty>($"PartitionKey eq '{deviceConfig.ModelId}'")
                 .ToArray();
 

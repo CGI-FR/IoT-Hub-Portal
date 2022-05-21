@@ -38,10 +38,17 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task<IEnumerable<Configuration>> GetDevicesConfigurations()
         {
-            var configurations = await this.registryManager.GetConfigurationsAsync(0);
+            try
+            {
+                var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
-            return configurations
-                .Where(c => c.Priority > 0 && c.Content.ModulesContent.Count == 0);
+                return configurations
+                    .Where(c => c.Priority > 0 && c.Content.ModulesContent.Count == 0);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to get devices configurations", e);
+            }
         }
 
         public async Task<Configuration> GetConfigItem(string id)
