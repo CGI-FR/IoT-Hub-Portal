@@ -104,7 +104,16 @@ namespace AzureIoTHub.Portal.Server.Services
             Dictionary<string, string> targetTags,
             int priority = 0)
         {
-            var configurations = await this.registryManager.GetConfigurationsAsync(0);
+            IEnumerable<Configuration> configurations;
+
+            try
+            {
+                configurations = await this.registryManager.GetConfigurationsAsync(0);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to get configurations", e);
+            }
 
             var configurationNamePrefix = configurationId.Trim().ToLowerInvariant().RemoveDiacritics();
 
@@ -115,7 +124,14 @@ namespace AzureIoTHub.Portal.Server.Services
                     continue;
                 }
 
-                await this.registryManager.RemoveConfigurationAsync(item.Id);
+                try
+                {
+                    await this.registryManager.RemoveConfigurationAsync(item.Id);
+                }
+                catch (Exception e)
+                {
+                    throw new InternalServerErrorException($"Unable to remove configuration {item.Id}", e);
+                }
             }
 
             var newConfiguration = new Configuration($"{configurationNamePrefix}-{DateTime.UtcNow.Ticks}");
@@ -136,7 +152,14 @@ namespace AzureIoTHub.Portal.Server.Services
             newConfiguration.Content.DeviceContent = desiredProperties;
             newConfiguration.Priority = priority;
 
-            _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
+            try
+            {
+                _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to add configuration {newConfiguration.Id}", e);
+            }
         }
     }
 }
