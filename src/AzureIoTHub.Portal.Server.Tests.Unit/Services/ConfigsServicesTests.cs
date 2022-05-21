@@ -251,6 +251,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             this.mockRegistryManager.Verify(c => c.RemoveConfigurationAsync(It.Is<string>(x => x == configurationId)), Times.Once());
         }
 
+        [Test]
+        public async Task DeleteConfigurationShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+
+            var configurationId = Guid.NewGuid().ToString();
+
+            _ = this.mockRegistryManager.Setup(c => c.RemoveConfigurationAsync(It.Is<string>(x => x == configurationId)))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => configsServices.DeleteConfiguration(configurationId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
         [TestCase]
         public async Task RolloutDeviceConfigurationStateUnderTestExpectedBehavior()
         {

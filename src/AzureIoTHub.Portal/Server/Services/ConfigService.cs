@@ -65,7 +65,14 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task DeleteConfiguration(string configId)
         {
-            await this.registryManager.RemoveConfigurationAsync(configId);
+            try
+            {
+                await this.registryManager.RemoveConfigurationAsync(configId);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to delete the configuration for id {configId}", e);
+            }
         }
 
         public async Task RollOutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties)
