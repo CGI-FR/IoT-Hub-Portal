@@ -190,7 +190,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public void WhenGetEntityFailedOnGetItemShouldThrowInternalServerErrorException()
+        public async Task WhenGetEntityFailedOnGetItemShouldThrowInternalServerErrorException()
         {
             // Arrange
             var deviceModelsController = CreateDeviceModelsController();
@@ -201,7 +201,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var act = () => deviceModelsController.GetItem(Guid.NewGuid().ToString());
 
             // Assert
-            _ = act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
@@ -254,7 +254,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public void WhenGetEntityThrowAnErrorGetAvatarShouldThrowInternalServerErrorException()
+        public async Task WhenGetEntityThrowAnErrorGetAvatarShouldThrowInternalServerErrorException()
         {
             // Arrange
             var deviceModelsController = CreateDeviceModelsController();
@@ -265,7 +265,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var act = async () => await deviceModelsController.GetAvatar(Guid.NewGuid().ToString());
 
             // Assert
-            _ = act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
@@ -328,7 +328,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public void WhenGetEntityThrowAnErrorChangeAvatarShouldThrowInternalServerErrorException()
+        public async Task WhenGetEntityThrowAnErrorChangeAvatarShouldThrowInternalServerErrorException()
         {
             // Arrange
             var deviceModelsController = CreateDeviceModelsController();
@@ -340,7 +340,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var act = async () => await deviceModelsController.ChangeAvatar(Guid.NewGuid().ToString(), formFile);
 
             // Assert
-            _ = act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
@@ -388,7 +388,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public void WhenGetEntityThrowAnErrorDeleteAvatarShouldThrowInternalServerErrorException()
+        public async Task WhenGetEntityThrowAnErrorDeleteAvatarShouldThrowInternalServerErrorException()
         {
             // Arrange
             var deviceModelsController = CreateDeviceModelsController();
@@ -399,7 +399,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var act = async () => await deviceModelsController.DeleteAvatar(Guid.NewGuid().ToString());
 
             // Assert
-            _ = act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
@@ -530,7 +530,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public void WhenGetEntityThrowAnErrorPostShouldThrowInternalServerErrorExceptiont()
+        public async Task WhenGetEntityThrowAnErrorPostShouldThrowInternalServerErrorExceptiont()
         {
             // Arrange
             var deviceModelsController = CreateDeviceModelsController();
@@ -546,7 +546,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var act = async () => await deviceModelsController.Post(deviceModel);
 
             // Assert
-            _ = act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
@@ -627,7 +627,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public void WhenGetEntityThrowAnErrorPutShouldThrowInternalServerErrorException()
+        public async Task WhenGetEntityThrowAnErrorPutShouldThrowInternalServerErrorException()
         {
             // Arrange
             var deviceModelsController = CreateDeviceModelsController();
@@ -643,7 +643,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var act = async () => await deviceModelsController.Put(deviceModel);
 
             // Assert
-            _ = act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
@@ -768,7 +768,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public void WhenQueryThrowAnErrorDeleteShouldThrowInternalServerErrorException()
+        public async Task WhenQueryThrowAnErrorDeleteShouldThrowInternalServerErrorException()
         {
             // Arrange
             var deviceModelsController = CreateDeviceModelsController();
@@ -815,13 +815,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var act = async () => await deviceModelsController.Delete(id);
 
             // Assert
-            _ = act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
 
         [Test]
-        public void WhenDeleteCommandAsyncThrowAnErrorDeleteShouldThrowInternalServerErrorException()
+        public async Task WhenDeleteCommandAsyncThrowAnErrorDeleteShouldThrowInternalServerErrorException()
         {
             // Arrange
             var deviceModelsController = CreateDeviceModelsController();
@@ -896,7 +896,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var act = async () => await deviceModelsController.Delete(id);
 
             // Assert
-            _ = act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
@@ -948,6 +948,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
                 .Returns(this.mockDeviceTemplatesTableClient.Object);
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
         }
     }
 }
