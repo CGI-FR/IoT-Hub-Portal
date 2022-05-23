@@ -5,37 +5,36 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Handlers
 {
     using System;
     using System.Collections.Generic;
-    using System.Net;
     using System.Net.Http;
-    using System.Threading;
+    using System.Net.Mime;
+    using System.Text;
     using System.Threading.Tasks;
     using Client.Exceptions;
     using Client.Handlers;
     using Client.Models;
     using FluentAssertions;
-    using Moq;
-    using Moq.Protected;
+    using Newtonsoft.Json;
     using NUnit.Framework;
+    using RichardSzalay.MockHttp;
 
     [TestFixture]
     public class ProblemDetailsHandlerTests
     {
         [Test]
-        public async Task HttpClientShouldReturnsResponseWhenProblemDetailsHandlerReturnsResponse()
+        public async Task HttpClientShouldReturnsResponseWhenProblemDetailsHandlerReturnsResponse1()
         {
             // Arrange
-            var mockProblemDetailsHandler = new Mock<ProblemDetailsHandler>();
+            using var mockHttp = new MockHttpMessageHandler();
 
-            _ = mockProblemDetailsHandler.Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(new HttpResponseMessage()
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent("test")
-                });
+            _ = mockHttp.When(HttpMethod.Get, "http://fake.com")
+                .Respond(MediaTypeNames.Application.Json, "test");
 
-            var httpClient = new HttpClient(mockProblemDetailsHandler.Object)
+            var problemDetailsHandler = new ProblemDetailsHandler
+            {
+                InnerHandler = mockHttp
+            };
+
+            var httpClient = new HttpClient(problemDetailsHandler)
             {
                 BaseAddress = new Uri("http://fake.com")
             };
@@ -45,14 +44,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Handlers
 
             // Assert
             _ = result.Should().Be("test");
-            mockProblemDetailsHandler.VerifyAll();
         }
 
         [Test]
         public async Task HttpClientShouldThrowsProblemDetailsExceptionWhenProblemDetailsHandlerThrowsProblemDetailsException()
         {
             // Arrange
-            var problemDetailsException = new ProblemDetailsException(new ProblemDetailsWithExceptionDetails
+            var problemDetailsWithExceptionDetails = new ProblemDetailsWithExceptionDetails
             {
                 Title = "title",
                 Detail = "detail",
@@ -81,17 +79,22 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Handlers
                         }
                     }
                 }
-            });
+            };
 
+            using var mockHttp = new MockHttpMessageHandler();
 
-            var mockProblemDetailsHandler = new Mock<ProblemDetailsHandler>();
+            _ = mockHttp.When(HttpMethod.Get, "http://fake.com")
+                .Respond(System.Net.HttpStatusCode.InternalServerError, new StringContent(
+                    JsonConvert.SerializeObject(problemDetailsWithExceptionDetails),
+                    Encoding.UTF8,
+                    MediaTypeNames.Application.Json));
 
-            _ = mockProblemDetailsHandler.Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>())
-                .ThrowsAsync(problemDetailsException);
+            var problemDetailsHandler = new ProblemDetailsHandler
+            {
+                InnerHandler = mockHttp
+            };
 
-            var httpClient = new HttpClient(mockProblemDetailsHandler.Object)
+            var httpClient = new HttpClient(problemDetailsHandler)
             {
                 BaseAddress = new Uri("http://fake.com")
             };
@@ -101,9 +104,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Handlers
 
             // Assert
             var exceptionAssertions = await result.Should().ThrowAsync<ProblemDetailsException>();
-            _ = exceptionAssertions.Which.Should().BeEquivalentTo(problemDetailsException);
-            _ = exceptionAssertions.Which.ProblemDetailsWithExceptionDetails.Should().BeEquivalentTo(problemDetailsException.ProblemDetailsWithExceptionDetails);
-            mockProblemDetailsHandler.VerifyAll();
+            _ = exceptionAssertions.Which.ProblemDetailsWithExceptionDetails.Should().BeEquivalentTo(problemDetailsWithExceptionDetails);
         }
     }
 }
