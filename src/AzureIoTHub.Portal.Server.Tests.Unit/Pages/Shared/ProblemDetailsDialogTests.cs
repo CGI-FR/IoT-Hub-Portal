@@ -4,7 +4,11 @@
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Bunit;
+    using Client.Extensions;
     using Client.Models;
     using Client.Shared;
     using FluentAssertions;
@@ -22,7 +26,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         private Bunit.TestContext testContext;
         private MockRepository mockRepository;
         private Mock<IWebAssemblyHostEnvironment> mockWebAssemblyHostEnvironment;
-        private Mock<IDialogService> mockDialogService;
 
         [SetUp]
         public void SetUp()
@@ -31,10 +34,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
 
             this.mockRepository = new MockRepository(MockBehavior.Strict);
             this.mockWebAssemblyHostEnvironment = this.mockRepository.Create<IWebAssemblyHostEnvironment>();
-            this.mockDialogService = this.mockRepository.Create<IDialogService>();
 
             _ = this.testContext.Services.AddSingleton(this.mockWebAssemblyHostEnvironment.Object);
-            _ = this.testContext.Services.AddSingleton(this.mockDialogService.Object);
 
             _ = this.testContext.Services.AddMudServices();
         }
@@ -46,7 +47,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         }
 
         [Test]
-        public void ProblemDetailsDialogShouldBeRenderedWithProblemDetailsInfos()
+        public async Task ProblemDetailsDialogShouldBeRenderedWithProblemDetailsInfosAsync()
         {
             // Arrange
             var problemDetailsWithExceptionDetails = new ProblemDetailsWithExceptionDetails
@@ -55,16 +56,40 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
                 Detail = "detail",
                 Status = 400,
                 TraceId = "traceId",
+                ExceptionDetails = new List<ProblemDetailsWithExceptionDetails.ExceptionDetail>()
             };
 
             _ = this.mockWebAssemblyHostEnvironment.Setup(c => c.Environment)
                 .Returns("Development");
 
+            var cut = RenderComponent<MudDialogProvider>();
+            var service = this.testContext.Services.GetService<IDialogService>() as DialogService;
+
+            var parameters = new DialogParameters
+            {
+                {
+                    "ProblemDetails", problemDetailsWithExceptionDetails
+                }
+            };
+
             // Act
-            var cut = RenderComponent<ProblemDetailsDialog>(ComponentParameter.CreateParameter("ProblemDetails", problemDetailsWithExceptionDetails));
+            await cut.InvokeAsync(() => service?.Show<ProblemDetailsDialog>(string.Empty, parameters));
 
             // Assert
-            _ = cut.Instance.ProblemDetails.Should().BeEquivalentTo(problemDetailsWithExceptionDetails);
+            var mudListItems = cut.FindComponents<MudListItem>();
+            _ = mudListItems.Count.Should().Be(3);
+            _ = mudListItems.Count(component => component.Markup
+                .Contains($"Status: {problemDetailsWithExceptionDetails.Status}", StringComparison.OrdinalIgnoreCase)).Should().Be(1);
+            _ = mudListItems.Count(component => component.Markup
+                .Contains($"Detail: {problemDetailsWithExceptionDetails.Detail}", StringComparison.OrdinalIgnoreCase)).Should().Be(1);
+            _ = mudListItems.Count(component => component.Markup
+                .Contains($"TraceId: {problemDetailsWithExceptionDetails.TraceId}", StringComparison.OrdinalIgnoreCase)).Should().Be(1);
+
+            var mudExpansionPanel = cut.FindComponent<MudExpansionPanel>();
+            mudExpansionPanel.Instance.Expand();
+
+            var exceptionDetailsMudTextField = mudExpansionPanel.FindComponent<MudTextField<string>>();
+            _ = exceptionDetailsMudTextField.Instance.Value.Should().Be(problemDetailsWithExceptionDetails.ToJson());
         }
 
         public void Dispose()
