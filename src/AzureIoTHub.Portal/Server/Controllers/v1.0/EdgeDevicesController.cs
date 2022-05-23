@@ -359,9 +359,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                         item.Status = nameof(ConfigurationStatus.Applied);
                     }
                 }
+                return item;
             }
-
-            return item;
+            return null;
         }
     }
 }
