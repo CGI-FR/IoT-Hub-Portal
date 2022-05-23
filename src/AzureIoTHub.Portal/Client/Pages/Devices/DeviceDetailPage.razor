@@ -61,6 +61,7 @@
                                         <MudGrid>
                                             <MudItem xs="12" md="6">
                                                 <MudTextField @bind-Value="@Device.DeviceID"
+                                                              id=@nameof(DeviceDetails.DeviceID)
                                                               Label="Device ID"
                                                               Variant="Variant.Outlined"
                                                               For="@(()=> Device.DeviceID)"
@@ -70,6 +71,7 @@
                                             </MudItem>
                                             <MudItem xs="12" md="6">
                                                 <MudTextField @bind-Value="@Device.DeviceName"
+                                                              id=@nameof(DeviceDetails.DeviceName)
                                                               Label="Device name"
                                                               Variant="Variant.Outlined"
                                                               For="@(()=> Device.DeviceName)"
