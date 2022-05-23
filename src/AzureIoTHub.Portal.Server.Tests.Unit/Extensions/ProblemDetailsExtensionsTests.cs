@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Extensions
     using Client.Extensions;
     using Client.Models;
     using FluentAssertions;
+    using Newtonsoft.Json;
     using NUnit.Framework;
 
     [TestFixture]
@@ -23,13 +24,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Extensions
                 TraceId = "traceId",
             };
 
-            const string expectedJsonStringResult = /*lang=json,strict*/ "{\r\n  \"TraceId\": \"traceId\",\r\n  \"ExceptionDetails\": null,\r\n  \"Type\": null,\r\n  \"Title\": \"title\",\r\n  \"Status\": 400,\r\n  \"Detail\": \"detail\",\r\n  \"Instance\": null,\r\n  \"Extensions\": {}\r\n}";
-
             // Act
             var result = problemDetailsWithExceptionDetails.ToJson();
 
             // Assert
-            _ = result.Should().BeEquivalentTo(expectedJsonStringResult);
+            var deserializeResult = JsonConvert.DeserializeObject<ProblemDetailsWithExceptionDetails>(result);
+            _ = deserializeResult.Should().BeEquivalentTo(problemDetailsWithExceptionDetails);
         }
     }
 }
