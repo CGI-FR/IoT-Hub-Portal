@@ -144,6 +144,118 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public void ClickOnSaveShouldDisplaySnackbarIfValidationError()
+        {
+            var mockIoTEdgeDevice = new IoTEdgeDevice()
+            {
+                DeviceId = mockdeviceId,
+                ConnectionState = "false",
+                Type = "Other"
+            };
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
+                .RespondJson(mockIoTEdgeDevice);
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Put, $"/api/edge/devices/{this.mockdeviceId}")
+                .With(m =>
+                {
+                    Assert.IsAssignableFrom<JsonContent>(m.Content);
+                    var jsonContent = m.Content as JsonContent;
+
+                    Assert.IsAssignableFrom<IoTEdgeDevice>(jsonContent.Value);
+                    var edgeDevice = jsonContent.Value as IoTEdgeDevice;
+
+                    Assert.AreEqual(mockIoTEdgeDevice.DeviceId, edgeDevice.DeviceId);
+                    Assert.AreEqual(mockIoTEdgeDevice.ConnectionState, edgeDevice.ConnectionState);
+                    Assert.AreEqual(mockIoTEdgeDevice.Type, edgeDevice.Type);
+
+                    return true;
+                })
+                //.RespondText(string.Empty);
+                .Respond(System.Net.HttpStatusCode.BadRequest);
+
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+            Thread.Sleep(2500);
+
+            var saveButton = cut.WaitForElement("#saveButton");
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
+            _ = this.mockSnackbarService.Setup(c => c.Add("One or more validation errors occurred", Severity.Error, null));
+
+            // Act
+            saveButton.Click();
+            Thread.Sleep(2500);
+
+            // Assert            
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void ClickOnSaveShouldDisplaySnackbarIfUnexpectedError()
+        {
+            var mockIoTEdgeDevice = new IoTEdgeDevice()
+            {
+                DeviceId = mockdeviceId,
+                ConnectionState = "false",
+                Type = "Other"
+            };
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
+                .RespondJson(mockIoTEdgeDevice);
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Put, $"/api/edge/devices/{this.mockdeviceId}")
+                .With(m =>
+                {
+                    Assert.IsAssignableFrom<JsonContent>(m.Content);
+                    var jsonContent = m.Content as JsonContent;
+
+                    Assert.IsAssignableFrom<IoTEdgeDevice>(jsonContent.Value);
+                    var edgeDevice = jsonContent.Value as IoTEdgeDevice;
+
+                    Assert.AreEqual(mockIoTEdgeDevice.DeviceId, edgeDevice.DeviceId);
+                    Assert.AreEqual(mockIoTEdgeDevice.ConnectionState, edgeDevice.ConnectionState);
+                    Assert.AreEqual(mockIoTEdgeDevice.Type, edgeDevice.Type);
+
+                    return true;
+                })
+                //.RespondText(string.Empty);
+                .Respond(System.Net.HttpStatusCode.NotFound);
+
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+            Thread.Sleep(2500);
+
+            var saveButton = cut.WaitForElement("#saveButton");
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
+            _ = this.mockSnackbarService.Setup(c => c.Add("Something unexpected occurred", Severity.Warning, null));
+
+            // Act
+            saveButton.Click();
+            Thread.Sleep(2500);
+
+            // Assert            
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
+        }
+
 
         public void Dispose()
         {
