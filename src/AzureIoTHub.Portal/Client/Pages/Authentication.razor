@@ -1,7 +1,38 @@
 ﻿@page "/authentication/{action}"
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-<RemoteAuthenticatorView Action="@Action" />
+@using Microsoft.Extensions.Logging
 
-@code{
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject ILogger<Authentication> Logger
+
+<MudMainContent>
+    <MudContainer MaxWidth="MaxWidth.False" Class="mt-4" Style="margin-bottom: 70px">
+        <MudGrid>
+            <RemoteAuthenticatorView Action="@Action">
+                <LoggingIn>
+                    <MudItem xs="12">
+                        You are about to be redirected to the identity provider...
+                    </MudItem>
+                </LoggingIn>
+                <LogInFailed>
+                    <MudItem xs="12">
+                        Something went wrong during the authentication. Please try to log in again.
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudChip Icon="@Icons.Material.Filled.Login" Label="true" Color="Color.Secondary" Variant="Variant.Filled" @onclick=@(() => Navigation.NavigateTo("authentication/login"))>Log in</MudChip>
+                    </MudItem>
+                </LogInFailed>
+            </RemoteAuthenticatorView>
+        </MudGrid>
+    </MudContainer>
+</MudMainContent>
+
+@code {
     [Parameter] public string Action { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
 }
