@@ -832,7 +832,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             var mockModelResponse = this.mockRepository.Create<Response<TableEntity>>();
 
-            var mockResponse = this.mockRepository.Create<Response>();
             var mockTableResponse = this.mockRepository.Create<Pageable<TableEntity>>();
             var mockEnumerator = this.mockRepository.Create<IEnumerator<TableEntity>>();
             _ = mockEnumerator.Setup(x => x.Dispose()).Callback(() => { });

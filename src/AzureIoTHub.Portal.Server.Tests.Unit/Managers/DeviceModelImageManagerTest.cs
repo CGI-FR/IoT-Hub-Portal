@@ -62,8 +62,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             var mockBlobContainerClient = new Mock<BlobContainerClient>();
             var mockBlobClient = new Mock<BlobClient>();
 
-            var mockResponse = new Mock<Response<BlobContainerInfo>>();
-
             _ = this.mockLogger
                 .Setup(x => x.Log(
                     It.IsAny<LogLevel>(),
