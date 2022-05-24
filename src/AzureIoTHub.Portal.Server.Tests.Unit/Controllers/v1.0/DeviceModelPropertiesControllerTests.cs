@@ -14,11 +14,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using AzureIoTHub.Portal.Server.Entities;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Models.v10;
+    using FluentAssertions;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
+    using Server.Exceptions;
 
     [TestFixture]
     public class DeviceModelPropertiesControllerTests
@@ -91,6 +93,59 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             Assert.NotNull(result);
             Assert.AreEqual(1, result.Count);
 
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetPropertiesShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
+            var entity = SetupMockEntity();
+
+            _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
+                    It.Is<string>(x => x == $"PartitionKey eq '{entity.RowKey}'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                    .Throws(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
+                .Returns(this.mockDeviceModelPropertiesTableClient.Object);
+
+            // Act
+            var act = () => deviceModelPropertiesController.GetProperties(entity.RowKey);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetPropertiesShouldThrowInternalServerErrorExceptionWhenIssueOccursWhenCheckingIfDeviceModelExists()
+        {
+            // Arrange
+            var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
+            var modelId = Guid.NewGuid().ToString();
+            var entity = new TableEntity("0", modelId);
+
+            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
+                    It.Is<string>(p => p == "0"),
+                    It.Is<string>(k => k == modelId),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(this.mockDeviceTemplatesTableClient.Object);
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
+
+            // Act
+            var act = () => deviceModelPropertiesController.GetProperties(entity.RowKey);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 
@@ -173,6 +228,160 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             // Assert
             Assert.IsAssignableFrom<OkResult>(result);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task SetPropertiesShouldThrowInternalServerErrorExceptionWhenIssueOccursWhenGettingExistingProperties()
+        {
+            // Arrange
+            var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
+            var entity = SetupMockEntity();
+
+            var properties = new[]
+            {
+                new DeviceProperty
+                {
+                    DisplayName =Guid.NewGuid().ToString(),
+                    Name = Guid.NewGuid().ToString()
+                }
+            };
+
+            _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
+                    It.Is<string>(x => x == $"PartitionKey eq '{entity.RowKey}'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                    .Throws(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
+                .Returns(this.mockDeviceModelPropertiesTableClient.Object);
+
+            // Act
+            var act = () => deviceModelPropertiesController.SetProperties(entity.RowKey, properties);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task SetPropertiesShouldThrowInternalServerErrorExceptionWhenIssueOccursWhenDeletingProperty()
+        {
+            // Arrange
+            var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
+            var entity = SetupMockEntity();
+            var mockResponse = this.mockRepository.Create<Response>();
+            var existingProperty = Guid.NewGuid().ToString();
+
+            var properties = new[]
+            {
+                new DeviceProperty
+                {
+                    DisplayName =Guid.NewGuid().ToString(),
+                    Name = Guid.NewGuid().ToString()
+                }
+            };
+
+            _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
+                    It.Is<string>(x => x == $"PartitionKey eq '{entity.RowKey}'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                    .Returns(AsyncPageable<DeviceModelProperty>.FromPages(new[]
+                    {
+                        Page<DeviceModelProperty>.FromValues(new DeviceModelProperty[]
+                        {
+                            new DeviceModelProperty
+                            {
+                                RowKey = existingProperty,
+                                PartitionKey = entity.RowKey,
+                            }
+                        }, null, mockResponse.Object)
+                    }));
+
+            _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.DeleteEntityAsync(
+                It.Is<string>(x => x == entity.RowKey),
+                It.Is<string>(x => x == existingProperty),
+                It.IsAny<ETag>(),
+                It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
+                .Returns(this.mockDeviceModelPropertiesTableClient.Object);
+
+            // Act
+            var act = () => deviceModelPropertiesController.SetProperties(entity.RowKey, properties);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task SetPropertiesShouldThrowInternalServerErrorExceptionWhenIssueOccursWhenAddingProperty()
+        {
+            // Arrange
+            var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
+            var entity = SetupMockEntity();
+            var mockResponse = this.mockRepository.Create<Response>();
+            var existingProperty = Guid.NewGuid().ToString();
+
+            var properties = new[]
+            {
+                new DeviceProperty
+                {
+                    DisplayName =Guid.NewGuid().ToString(),
+                    Name = Guid.NewGuid().ToString()
+                }
+            };
+
+            _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
+                    It.Is<string>(x => x == $"PartitionKey eq '{entity.RowKey}'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                    .Returns(AsyncPageable<DeviceModelProperty>.FromPages(new[]
+                    {
+                        Page<DeviceModelProperty>.FromValues(new DeviceModelProperty[]
+                        {
+                            new DeviceModelProperty
+                            {
+                                RowKey = existingProperty,
+                                PartitionKey = entity.RowKey,
+                            }
+                        }, null, mockResponse.Object)
+                    }));
+
+            _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.AddEntityAsync(
+                    It.Is<DeviceModelProperty>(x => x.PartitionKey == entity.RowKey),
+                    It.IsAny<CancellationToken>()))
+                    .ThrowsAsync(new RequestFailedException("test"));
+
+            _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.DeleteEntityAsync(
+                It.Is<string>(x => x == entity.RowKey),
+                It.Is<string>(x => x == existingProperty),
+                It.IsAny<ETag>(),
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockResponse.Object);
+
+            _ = this.mockMapper.Setup(c => c.Map(
+                It.IsAny<DeviceProperty>(),
+                It.IsAny<Action<IMappingOperationOptions<object, DeviceModelProperty>>>()))
+                .Returns((DeviceProperty x, Action<IMappingOperationOptions<object, DeviceModelProperty>> _) => new DeviceModelProperty
+                {
+                    Name = x.Name,
+                    PartitionKey = entity.RowKey
+                });
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
+                .Returns(this.mockDeviceModelPropertiesTableClient.Object);
+
+            // Act
+            var act = () => deviceModelPropertiesController.SetProperties(entity.RowKey, properties);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 
