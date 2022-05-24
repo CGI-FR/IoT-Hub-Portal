@@ -86,6 +86,65 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public async Task GetAllEdgeDeviceShouldThrowInternalServerErrorExceptionWhenGettingDevices()
+        {
+            // Arrange
+            var service = CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ThrowsAsync(new Exception("test"));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 1}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == "SELECT * FROM devices WHERE devices.capabilities.iotEdge = true"),
+                It.Is<int>(x => x == 10)))
+                .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var act = () => service.GetAllEdgeDevice();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetAllEdgeDeviceShouldThrowInternalServerErrorExceptionWhenGettingDevicesCount()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ThrowsAsync(new Exception("test"));
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var act = () => service.GetAllEdgeDevice();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetAllDeviceStateUnderTestExpectedBehavior()
         {
             // Arrange
@@ -141,6 +200,33 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             // Act
             var act = () => service.GetAllDevice();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetDeviceTwinWhithModuleShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockQuery.Setup(c => c.HasMoreResults)
+                .Returns(true);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == $"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']")))
+                .Returns(mockQuery.Object);
+
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync())
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => service.GetDeviceTwinWithModule(deviceId);
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
@@ -940,6 +1026,30 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public async Task ExecuteC2DMethodShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+
+            var method = new CloudToDeviceMethod(Guid.NewGuid().ToString());
+
+            _ = this.mockServiceClient.Setup(c => c.InvokeDeviceMethodAsync(
+                    It.Is<string>(x => x == deviceId),
+                    It.Is<string>(x => x == "$edgeAgent"),
+                    It.Is<CloudToDeviceMethod>(x => x == method),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => service.ExecuteC2DMethod(deviceId, method);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetEdgeDeviceLogsMustReturnLogsWhen200IsReturned()
         {
             // Arrange
@@ -1057,6 +1167,63 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             // Assert
             _ = result.Should().NotBeNull();
             _ = result.Count().Should().Be(0);
+        }
+
+        [Test]
+        public async Task GetEdgeDeviceLogsShouldInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+
+            var edgeModule = new IoTEdgeModule
+            {
+                Version = "1.0",
+                ModuleName = Guid.NewGuid().ToString()
+            };
+
+            var method = new CloudToDeviceMethod(CloudToDeviceMethods.GetModuleLogs);
+
+            var payload = JsonConvert.SerializeObject(new
+            {
+                schemaVersion = edgeModule.Version,
+                items = new[]
+                {
+                    new
+                    {
+                        id = edgeModule.ModuleName,
+                        filter = new
+                        {
+                            tail = 300
+                        }
+                    }
+                },
+                encoding = "none",
+                contentType = "json"
+            });
+
+            _ = method.SetPayloadJson(payload);
+
+
+            var logger = Mock.Of<ILogger<DeviceService>>();
+
+            _ = this.mockServiceClient.Setup(c => c.InvokeDeviceMethodAsync(
+                    It.Is<string>(x => x == deviceId),
+                    It.Is<string>(x => x == "$edgeAgent"),
+                    It.Is<CloudToDeviceMethod>(x => x.MethodName == method.MethodName && x.GetPayloadAsJson() == payload),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("test"));
+
+            var deviceService = new DeviceService(
+                logger,
+                this.mockRegistryManager.Object,
+                this.mockServiceClient.Object);
+
+            // Act
+            var act = () => deviceService.GetEdgeDeviceLogs(deviceId, edgeModule);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
         }
     }
 }
