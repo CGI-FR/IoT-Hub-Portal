@@ -8,8 +8,10 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Net.Http;
     using System.Reflection;
     using System.Threading.Tasks;
+    using Azure;
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
+    using AzureIoTHub.Portal.Server.Exceptions;
     using Microsoft.Extensions.Logging;
 
     public class DeviceModelImageManager : IDeviceModelImageManager
@@ -52,7 +54,14 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             this.logger.LogInformation($"Deleting from Blob storage :\n\t {blobClient.Uri}\n");
 
-            _ = await blobClient.DeleteIfExistsAsync();
+            try
+            {
+                _ = await blobClient.DeleteIfExistsAsync();
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException("Unable to delete the image from the blob storage.", e);
+            }
         }
 
         public Uri ComputeImageUri(string deviceModelId)

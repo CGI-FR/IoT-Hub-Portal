@@ -26,6 +26,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
+    using FluentAssertions;
+    using AzureIoTHub.Portal.Server.Exceptions;
 
     [TestFixture]
     public class DeviceModelsControllerTests
@@ -117,6 +119,27 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
+        public void WhenQueryFailedGetListShouldThrowAnExceptionInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+
+            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.Query<TableEntity>(It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+                .Throws(new RequestFailedException("request failed."));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(this.mockDeviceTemplatesTableClient.Object);
+
+            // Act
+            var act = () => deviceModelsController.GetItems();
+
+            // Assert
+            _ = act.Should().Throw<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetItemShouldReturnAValue()
         {
             // Arrange
@@ -167,6 +190,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
+        public async Task WhenGetEntityFailedOnGetItemShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+
+            SetupErrorEntity();
+
+            // Act
+            var act = () => deviceModelsController.GetItem(Guid.NewGuid().ToString());
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetAvatarShouldReturnTheComputedModelAvatarUri()
         {
             // Arrange
@@ -209,6 +249,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             // Assert
             Assert.IsNotNull(response);
             Assert.IsAssignableFrom<NotFoundResult>(response.Result);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenGetEntityThrowAnErrorGetAvatarShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+
+            SetupErrorEntity();
+
+            // Act
+            var act = async () => await deviceModelsController.GetAvatar(Guid.NewGuid().ToString());
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
@@ -271,6 +328,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
+        public async Task WhenGetEntityThrowAnErrorChangeAvatarShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+            IFormFile formFile = null;
+
+            SetupErrorEntity();
+
+            // Act
+            var act = async () => await deviceModelsController.ChangeAvatar(Guid.NewGuid().ToString(), formFile);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task DeleteAvatarShouldRemoveModelImage()
         {
             // Arrange
@@ -308,6 +383,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsAssignableFrom<NotFoundResult>(result);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenGetEntityThrowAnErrorDeleteAvatarShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+
+            SetupErrorEntity();
+
+            // Act
+            var act = async () => await deviceModelsController.DeleteAvatar(Guid.NewGuid().ToString());
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
@@ -438,6 +530,28 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
+        public async Task WhenGetEntityThrowAnErrorPostShouldThrowInternalServerErrorExceptiont()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+
+            SetupErrorEntity();
+
+            var deviceModel = new DeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString()
+            };
+
+            // Act
+            var act = async () => await deviceModelsController.Post(deviceModel);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task PutShouldUpdateTheDeviceModel()
         {
             // Arrange
@@ -510,6 +624,28 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             // Assert
             Assert.IsNotNull(result);
             Assert.IsAssignableFrom<NotFoundResult>(result);
+        }
+
+        [Test]
+        public async Task WhenGetEntityThrowAnErrorPutShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+
+            SetupErrorEntity();
+
+            var deviceModel = new DeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString()
+            };
+
+            // Act
+            var act = async () => await deviceModelsController.Put(deviceModel);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
         }
 
         [Test]
@@ -600,6 +736,170 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public void WhenGetEntityThrowAnErrorDeleteShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+
+            _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<bool?>(),
+                It.IsAny<bool?>(),
+                It.IsAny<Dictionary<string, string>>(),
+                It.IsAny<int>()))
+            .ReturnsAsync(new PaginationResult<Twin>
+            {
+                Items = new List<Twin>()
+            });
+
+            SetupErrorEntity();
+
+            // Act
+            var act = async () => await deviceModelsController.Delete(Guid.NewGuid().ToString());
+
+            // Assert
+            _ = act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenQueryThrowAnErrorDeleteShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+
+            var id = Guid.NewGuid().ToString();
+
+            var mockModelResponse = this.mockRepository.Create<Response<TableEntity>>();
+
+            _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<bool?>(),
+                It.IsAny<bool?>(),
+                It.IsAny<Dictionary<string, string>>(),
+                It.IsAny<int>()))
+            .ReturnsAsync(new PaginationResult<Twin>
+            {
+                Items = new List<Twin>()
+            });
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(this.mockDeviceTemplatesTableClient.Object);
+
+            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
+                    It.Is<string>(p => p == LoRaWANDeviceModelsController.DefaultPartitionKey),
+                    It.Is<string>(k => k == id),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mockModelResponse.Object);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceCommands())
+                .Returns(this.mockCommandsTableClient.Object);
+
+            _ = this.mockCommandsTableClient.Setup(c => c.Query(
+                It.IsAny<Expression<Func<TableEntity, bool>>>(),
+                It.IsAny<int?>(),
+                It.IsAny<IEnumerable<string>>(),
+                It.IsAny<CancellationToken>()))
+            .Throws(new RequestFailedException(""));
+
+            // Act
+            var act = async () => await deviceModelsController.Delete(id);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenDeleteCommandAsyncThrowAnErrorDeleteShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var deviceModelsController = CreateDeviceModelsController();
+
+            var id = Guid.NewGuid().ToString();
+            var commandId = Guid.NewGuid().ToString();
+            var returned = false;
+
+            var mockModelResponse = this.mockRepository.Create<Response<TableEntity>>();
+
+            var mockTableResponse = this.mockRepository.Create<Pageable<TableEntity>>();
+            var mockEnumerator = this.mockRepository.Create<IEnumerator<TableEntity>>();
+            _ = mockEnumerator.Setup(x => x.Dispose()).Callback(() => { });
+            _ = mockEnumerator.Setup(x => x.MoveNext()).Returns(() =>
+            {
+                if (returned)
+                    return false;
+
+                returned = true;
+                return true;
+            });
+
+            _ = mockEnumerator.Setup(x => x.Current)
+                .Returns(new TableEntity(id, commandId));
+
+            _ = mockTableResponse.Setup(x => x.GetEnumerator())
+                .Returns(mockEnumerator.Object);
+
+            _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<bool?>(),
+                It.IsAny<bool?>(),
+                It.IsAny<Dictionary<string, string>>(),
+                It.IsAny<int>()))
+            .ReturnsAsync(new PaginationResult<Twin>
+            {
+                Items = new List<Twin>()
+            });
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(this.mockDeviceTemplatesTableClient.Object);
+
+            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
+                    It.Is<string>(p => p == LoRaWANDeviceModelsController.DefaultPartitionKey),
+                    It.Is<string>(k => k == id),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mockModelResponse.Object);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceCommands())
+                .Returns(this.mockCommandsTableClient.Object);
+
+            _ = this.mockCommandsTableClient.Setup(c => c.Query(
+                It.IsAny<Expression<Func<TableEntity, bool>>>(),
+                It.IsAny<int?>(),
+                It.IsAny<IEnumerable<string>>(),
+                It.IsAny<CancellationToken>()))
+            .Returns(mockTableResponse.Object);
+
+            _ = this.mockCommandsTableClient.Setup(c => c.DeleteEntityAsync(
+                    It.Is<string>(p => p == id),
+                    It.Is<string>(k => k == commandId),
+                    It.IsAny<ETag>(),
+                    It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new RequestFailedException(""));
+
+            // Act
+            var act = async () => await deviceModelsController.Delete(id);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
         private TableEntity SetupMockEntity()
         {
             var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
@@ -634,6 +934,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
                 .Returns(this.mockDeviceTemplatesTableClient.Object);
+        }
+
+        private void SetupErrorEntity()
+        {
+            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .Throws(new RequestFailedException(""));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(this.mockDeviceTemplatesTableClient.Object);
+
+            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
         }
     }
 }
