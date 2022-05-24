@@ -259,7 +259,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
             catch (Exception e)
             {
-                throw new InternalServerErrorException($"Unable to get device with id {deviceId}: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to get device with id {deviceId}", e);
             }
         }
 
@@ -277,7 +277,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
             catch (Exception e)
             {
-                throw new InternalServerErrorException($"Unable to get device twin with id {deviceId}: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to get device twin with id {deviceId}", e);
             }
         }
 
@@ -345,7 +345,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
             catch (Exception e)
             {
-                throw new InternalServerErrorException($"Unable to delete the device with id {deviceId}: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to delete the device with id {deviceId}", e);
             }
         }
 
@@ -362,7 +362,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
             catch (Exception e)
             {
-                throw new InternalServerErrorException($"Unable to update the device with id {device.Id}: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to update the device with id {device.Id}", e);
             }
         }
 
@@ -382,7 +382,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
             catch (Exception e)
             {
-                throw new InternalServerErrorException($"Unable to update the device twin with id {deviceId}: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to update the device twin with id {deviceId}", e);
             }
         }
 
@@ -394,7 +394,14 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>CloudToDeviceMethodResult.</returns>
         public async Task<CloudToDeviceMethodResult> ExecuteC2DMethod(string deviceId, CloudToDeviceMethod method)
         {
-            return await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
+            try
+            {
+                return await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to execute the cloud to device method {method.MethodName} on the device with id {deviceId}", e);
+            }
         }
 
         /// <summary>
@@ -429,26 +436,26 @@ namespace AzureIoTHub.Portal.Server.Services
 
             _ = method.SetPayloadJson(payload);
 
-            var result = await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
+            var result = await ExecuteC2DMethod(deviceId, method);
 
             if (result.Status == 200)
             {
-                var playloadResponse = result.GetPayloadAsJson();
+                var payloadResponse = result.GetPayloadAsJson();
 
-                if (string.IsNullOrWhiteSpace(playloadResponse))
+                if (string.IsNullOrWhiteSpace(payloadResponse))
                 {
                     this.log.LogInformation($"Payload logs' response of the device {deviceId} is empty");
                 }
                 else
                 {
-                    var payloadResponseAsJson = JsonConvert.DeserializeObject<dynamic[]>(result.GetPayloadAsJson()).Single().payload.ToString();
+                    var payloadResponseAsJson = JsonConvert.DeserializeObject<dynamic[]>(payloadResponse).Single().payload.ToString();
 
                     logs.AddRange(JsonConvert.DeserializeObject<List<IoTEdgeDeviceLog>>(payloadResponseAsJson));
                 }
             }
             else
             {
-                this.log.LogError($"Unable to retreive logs of the device {deviceId}, status code: {result.Status}");
+                this.log.LogError($"Unable to retrieve logs of the device {deviceId}, status code: {result.Status}");
             }
 
             return logs.OrderByDescending(log => log.TimeStamp);
