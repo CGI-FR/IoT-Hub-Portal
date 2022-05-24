@@ -39,12 +39,18 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public IEnumerable<DeviceTag> GetAllTags()
         {
-            var tagList = this.tableClientFactory
-                            .GetDeviceTagSettings()
-                            .Query<TableEntity>()
-                            .Select(this.deviceTagMapper.GetDeviceTag);
-
-            return tagList.ToList();
+            try
+            {
+                return this.tableClientFactory
+                    .GetDeviceTagSettings()
+                    .Query<TableEntity>()
+                    .Select(this.deviceTagMapper.GetDeviceTag)
+                    .ToList();
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException("Unable to get devices tags", e);
+            }
         }
 
         public IEnumerable<string> GetAllTagsNames()
@@ -86,15 +92,31 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             ArgumentNullException.ThrowIfNull(tags, nameof(tags));
 
-            var query = this.tableClientFactory
-                        .GetDeviceTagSettings()
-                        .Query<TableEntity>();
+            Pageable<TableEntity> query;
+
+            try
+            {
+                query = this.tableClientFactory
+                    .GetDeviceTagSettings()
+                    .Query<TableEntity>();
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException("Unable to get existing devices tags", e);
+            }
 
             foreach (var item in query)
             {
-                _ = await this.tableClientFactory
-                    .GetDeviceTagSettings()
-                    .DeleteEntityAsync(item.PartitionKey, item.RowKey);
+                try
+                {
+                    _ = await this.tableClientFactory
+                        .GetDeviceTagSettings()
+                        .DeleteEntityAsync(item.PartitionKey, item.RowKey);
+                }
+                catch (RequestFailedException e)
+                {
+                    throw new InternalServerErrorException($"Unable to delete the device tag {item.RowKey}", e);
+                }
             }
 
             foreach (var tag in tags)
@@ -116,9 +138,17 @@ namespace AzureIoTHub.Portal.Server.Services
         private async Task SaveEntity(TableEntity entity, DeviceTag tag)
         {
             this.deviceTagMapper.UpdateTableEntity(entity, tag);
-            _ = await this.tableClientFactory
-                .GetDeviceTagSettings()
-                .AddEntityAsync(entity);
+
+            try
+            {
+                _ = await this.tableClientFactory
+                    .GetDeviceTagSettings()
+                    .AddEntityAsync(entity);
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to save the device tag {tag.Name}", e);
+            }
         }
     }
 }

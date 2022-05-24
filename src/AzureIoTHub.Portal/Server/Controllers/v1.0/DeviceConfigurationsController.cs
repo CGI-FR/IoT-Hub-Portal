@@ -7,10 +7,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Azure;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Services;
     using Entities;
+    using Exceptions;
     using Factories;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -106,12 +108,18 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
 
         private async Task CreateOrUpdateConfiguration(DeviceConfig deviceConfig)
         {
-            var table = this.tableClientFactory
-                .GetDeviceTemplateProperties();
-
-            var items = table
-                .Query<DeviceModelProperty>($"PartitionKey eq '{deviceConfig.ModelId}'")
-                .ToArray();
+            DeviceModelProperty[] items;
+            try
+            {
+                items = this.tableClientFactory
+                    .GetDeviceTemplateProperties()
+                    .Query<DeviceModelProperty>($"PartitionKey eq '{deviceConfig.ModelId}'")
+                    .ToArray();
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException("Unable to retrieve device model properties", e);
+            }
 
             var desiredProperties = new Dictionary<string, object>();
 

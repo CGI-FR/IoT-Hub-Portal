@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.Linq;
     using System.Threading.Tasks;
+    using Azure;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
@@ -13,6 +14,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using Exceptions;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
 
@@ -118,10 +120,24 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             var twin = await this.deviceService.GetDeviceTwin(deviceId);
             var modelId = this.deviceTwinMapper.CreateDeviceDetails(twin, null).ModelId;
 
-            var commandEntity = this.tableClientFactory
-                   .GetDeviceCommands()
-                   .Query<TableEntity>(filter: $"RowKey eq '{commandId}' and PartitionKey eq '{modelId}'")
-                   .Single();
+            TableEntity commandEntity;
+
+            try
+            {
+                commandEntity = this.tableClientFactory
+                    .GetDeviceCommands()
+                    .Query<TableEntity>(filter: $"RowKey eq '{commandId}' and PartitionKey eq '{modelId}'")
+                    .FirstOrDefault();
+
+                if (commandEntity == null)
+                {
+                    return NotFound($"The LoRaWAN command {commandId} for the device {deviceId} cannot be found");
+                }
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to get the LoRaWAN command {commandId} for the device {deviceId}", e);
+            }
 
             var deviceModelCommand = this.deviceModelCommandMapper.GetDeviceModelCommand(commandEntity);
 
@@ -131,7 +147,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             {
                 Logger.LogError($"{deviceId} - Execute command on device failed \n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}");
 
-                return BadRequest("Something went wrong when executing the command.");
+                return BadRequest($"Something went wrong when executing the command {deviceModelCommand.Name}.");
             }
 
             Logger.LogInformation($"{deviceId} - Execute command: \n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}");

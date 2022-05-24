@@ -13,11 +13,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Mappers;
+    using FluentAssertions;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
+    using Server.Exceptions;
 
     [TestFixture]
     public class DeviceModelCommandsControllerTests
@@ -110,6 +112,172 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
+        public async Task PostShouldInternalServerErrorExceptionWhenQueryingExistingCommands()
+        {
+            // Arrange
+            var deviceModelCommandsController = CreateDeviceModelCommandsController();
+
+            var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
+            var modelId = Guid.NewGuid().ToString();
+            var entity = new TableEntity(LoRaWANDeviceModelsController.DefaultPartitionKey, modelId);
+
+            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
+                    It.Is<string>(p => p == LoRaWANDeviceModelsController.DefaultPartitionKey),
+                    It.Is<string>(k => k == modelId),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockResponse.Object);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(this.mockDeviceTemplatesTableClient.Object);
+
+            var command = new DeviceModelCommand
+            {
+                Name = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockCommandsTableClient.Setup(c => c.Query<TableEntity>(
+                    It.Is<string>(x => x == $"PartitionKey eq '{entity.RowKey}'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .Throws(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceCommands())
+                .Returns(this.mockCommandsTableClient.Object);
+
+            // Act
+            var act = () => deviceModelCommandsController.Post(entity.RowKey, new[] { command });
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task PostShouldInternalServerErrorExceptionWhenDeletingExistingCommands()
+        {
+            // Arrange
+            var deviceModelCommandsController = CreateDeviceModelCommandsController();
+
+            var mockResponseTableEntity = this.mockRepository.Create<Response<TableEntity>>();
+            var mockResponse = this.mockRepository.Create<Response>();
+            var modelId = Guid.NewGuid().ToString();
+            var entity = new TableEntity(LoRaWANDeviceModelsController.DefaultPartitionKey, modelId);
+
+            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
+                    It.Is<string>(p => p == LoRaWANDeviceModelsController.DefaultPartitionKey),
+                    It.Is<string>(k => k == modelId),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockResponseTableEntity.Object);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(this.mockDeviceTemplatesTableClient.Object);
+
+            var command = new DeviceModelCommand
+            {
+                Name = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockCommandsTableClient.Setup(c => c.Query<TableEntity>(
+                    It.Is<string>(x => x == $"PartitionKey eq '{entity.RowKey}'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Pageable<TableEntity>.FromPages(new[]
+                {
+                    Page<TableEntity>.FromValues(new[]
+                    {
+                        new TableEntity(entity.RowKey, Guid.NewGuid().ToString())
+                    }, null, mockResponse.Object)
+                }));
+
+            _ = this.mockCommandsTableClient.Setup(c => c.DeleteEntityAsync(
+                    It.Is<string>(x => x == entity.RowKey),
+                    It.IsAny<string>(),
+                    It.IsAny<ETag>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceCommands())
+                .Returns(this.mockCommandsTableClient.Object);
+
+            // Act
+            var act = () => deviceModelCommandsController.Post(entity.RowKey, new[] { command });
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task PostShouldInternalServerErrorExceptionWhenAddingNewCommands()
+        {
+            // Arrange
+            var deviceModelCommandsController = CreateDeviceModelCommandsController();
+
+            var mockResponseTableEntity = this.mockRepository.Create<Response<TableEntity>>();
+            var mockResponse = this.mockRepository.Create<Response>();
+            var modelId = Guid.NewGuid().ToString();
+            var entity = new TableEntity(LoRaWANDeviceModelsController.DefaultPartitionKey, modelId);
+
+            var command = new DeviceModelCommand
+            {
+                Name = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockDeviceModelCommandMapper.Setup(c => c.UpdateTableEntity(
+                It.Is<TableEntity>(x => x.RowKey == command.Name && x.PartitionKey == entity.RowKey),
+                It.Is<DeviceModelCommand>(x => x == command)));
+
+            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
+                    It.Is<string>(p => p == LoRaWANDeviceModelsController.DefaultPartitionKey),
+                    It.Is<string>(k => k == modelId),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockResponseTableEntity.Object);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(this.mockDeviceTemplatesTableClient.Object);
+
+            _ = this.mockCommandsTableClient.Setup(c => c.Query<TableEntity>(
+                    It.Is<string>(x => x == $"PartitionKey eq '{entity.RowKey}'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Pageable<TableEntity>.FromPages(new[]
+                {
+                    Page<TableEntity>.FromValues(new[]
+                    {
+                        new TableEntity(entity.RowKey, Guid.NewGuid().ToString())
+                    }, null, mockResponse.Object)
+                }));
+
+            _ = this.mockCommandsTableClient.Setup(c => c.DeleteEntityAsync(
+                    It.Is<string>(x => x == entity.RowKey),
+                    It.IsAny<string>(),
+                    It.IsAny<ETag>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockResponse.Object);
+
+            _ = this.mockCommandsTableClient.Setup(c => c.AddEntityAsync(
+                It.Is<TableEntity>(x => x.RowKey == command.Name && x.PartitionKey == entity.RowKey),
+                It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceCommands())
+                .Returns(this.mockCommandsTableClient.Object);
+
+            // Act
+            var act = () => deviceModelCommandsController.Post(entity.RowKey, new[] { command });
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task WhenModelNotExistsPostShouldReturn404()
         {
             // Arrange
@@ -189,6 +357,43 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var result = (DeviceModelCommand[])okResult.Value;
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Length);
+        }
+
+        [Test]
+        public async Task GetShouldThrowRequestFailedExceptionWhenIssueOccursWhenQueryingCommands()
+        {
+            // Arrange
+            var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
+            var deviceModelId = Guid.NewGuid().ToString();
+
+            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
+                    It.Is<string>(p => p == LoRaWANDeviceModelsController.DefaultPartitionKey),
+                    It.Is<string>(k => k == deviceModelId),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockResponse.Object);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(this.mockDeviceTemplatesTableClient.Object);
+
+            var deviceModelCommandsController = CreateDeviceModelCommandsController();
+
+            _ = this.mockCommandsTableClient.Setup(c => c.Query<TableEntity>(
+                    It.Is<string>(x => x == $"PartitionKey eq '{deviceModelId}'"),
+                    It.IsAny<int?>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .Throws(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceCommands())
+                .Returns(this.mockCommandsTableClient.Object);
+
+            // Act
+            var act = () =>  deviceModelCommandsController.Get(deviceModelId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
         }
 
         private TableEntity SetupMockDeviceModel()
