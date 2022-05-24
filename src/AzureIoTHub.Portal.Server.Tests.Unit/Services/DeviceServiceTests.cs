@@ -208,6 +208,33 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public async Task GetDeviceTwinWhithModuleShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockQuery.Setup(c => c.HasMoreResults)
+                .Returns(true);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == $"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeAgent' AND deviceId in ['{deviceId}']")))
+                .Returns(mockQuery.Object);
+
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync())
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => service.GetDeviceTwinWithModule(deviceId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetAllDeviceShouldThrowInternalServerErrorExceptionWhenIssueOccursOneGettingDevices()
         {
             // Arrange

@@ -293,9 +293,15 @@ namespace AzureIoTHub.Portal.Server.Services
 
             while (devicesWithModules.HasMoreResults)
             {
-                var devicesTwins = await devicesWithModules.GetNextAsTwinAsync();
-
-                return devicesTwins.ElementAt(0);
+                try
+                {
+                    var devicesTwins = await devicesWithModules.GetNextAsTwinAsync();
+                    return devicesTwins.ElementAt(0);
+                }
+                catch (Exception e)
+                {
+                    throw new InternalServerErrorException($"Unable to get devices twins", e);
+                }
             }
 
             return null;
