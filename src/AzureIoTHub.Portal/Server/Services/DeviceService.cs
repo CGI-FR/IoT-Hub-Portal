@@ -81,7 +81,7 @@ namespace AzureIoTHub.Portal.Server.Services
             try
             {
                 count = await this.registryManager
-                    .CreateQuery($"SELECT COUNT() as totalNumber FROM devices { filter }")
+                    .CreateQuery($"SELECT COUNT() as totalNumber FROM devices {filter}")
                     .GetNextAsJsonAsync();
             }
             catch (Exception e)

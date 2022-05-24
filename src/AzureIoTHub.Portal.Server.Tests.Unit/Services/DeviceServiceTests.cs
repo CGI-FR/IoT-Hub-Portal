@@ -126,7 +126,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         {
             // Arrange
             var service = CreateService();
-            var mockQuery = this.mockRepository.Create<IQuery>();
 
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
