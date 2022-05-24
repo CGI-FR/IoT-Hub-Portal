@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Models.v10;
     using FluentAssertions;
+    using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -262,6 +263,28 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task SetPropertiesShouldThrowProblemDetailsExceptionWhenModelIsNotValid()
+        {
+            // Arrange
+            var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
+            var entity = SetupMockEntity();
+
+            var properties = new[]
+            {
+                new DeviceProperty()
+            };
+
+            deviceModelPropertiesController.ModelState.AddModelError("Key", "Device model is invalid");
+
+            // Act
+            var act = () => deviceModelPropertiesController.SetProperties(entity.RowKey, properties);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<ProblemDetailsException>();
             this.mockRepository.VerifyAll();
         }
 
