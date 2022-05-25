@@ -73,7 +73,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to ge existing device model properties for device with id {id}", e);
+                throw new InternalServerErrorException($"Unable to get existing device model properties for device with id {id}", e);
             }
 
             var result = new List<DeviceProperty>();
@@ -122,7 +122,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to ge existing device model properties for device with id {id}", e);
+                throw new InternalServerErrorException($"Unable to get existing device model properties for device with id {id}", e);
             }
 
             await foreach (var item in items)
