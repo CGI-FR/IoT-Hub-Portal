@@ -242,7 +242,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
             catch (Exception e)
             {
-                throw new InternalServerErrorException($"Unable to query devices: {e.Message}", e);
+                throw new InternalServerErrorException($"Unable to query devices", e);
             }
         }
 

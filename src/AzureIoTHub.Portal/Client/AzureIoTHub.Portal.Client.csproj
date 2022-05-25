@@ -66,6 +66,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Handlers\" />
+    <Folder Include="Exceptions\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>
