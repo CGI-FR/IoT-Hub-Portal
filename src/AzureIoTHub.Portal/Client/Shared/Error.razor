@@ -1,0 +1,41 @@
+﻿@inject ISnackbar Snackbar;
+@inject IDialogService DialogService
+
+<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    public void ProcessProblemDetails(ProblemDetailsException exception)
+    {
+        Snackbar.Add(exception.ProblemDetailsWithExceptionDetails.Detail, Severity.Error, config =>
+        {
+            config.Action = "More Details";
+            config.ActionColor = Color.Primary;            
+            config.RequireInteraction = true;
+            config.Onclick = _ =>
+            {
+                var parameters = new DialogParameters
+                {
+                    {
+                        "ProblemDetails", exception.ProblemDetailsWithExceptionDetails
+                    }
+                };
+
+                var options = new DialogOptions
+                {
+                    MaxWidth = MaxWidth.Medium,
+                    FullWidth = true
+                };
+
+
+                DialogService.Show<ProblemDetailsDialog>(string.Empty, parameters, options);
+                
+                return Task.CompletedTask;
+            };
+        });
+    }
+}

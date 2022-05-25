@@ -46,6 +46,7 @@
 
   <ItemGroup>
     <Folder Include="Factories\" />
+    <Folder Include="Handlers\" />
   </ItemGroup>
 
 </Project>

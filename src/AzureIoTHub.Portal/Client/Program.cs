@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Client
     using AzureIoTHub.Portal.Settings;
     using Blazored.LocalStorage;
     using Blazored.Modal;
+    using Handlers;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.DependencyInjection;
     using MudBlazor.Services;
@@ -24,11 +25,14 @@ namespace AzureIoTHub.Portal.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
+            _ = builder.Services.AddTransient<ProblemDetailsHandler>();
+
             _ = builder.Services.AddHttpClient("api", client =>
             {
                 client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
                 client.DefaultRequestHeaders.Add("X-Version", "1.0");
-            });
+            })
+                .AddHttpMessageHandler<ProblemDetailsHandler>();
 
             /*.AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();*/
 
