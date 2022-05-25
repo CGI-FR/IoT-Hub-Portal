@@ -12,6 +12,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Entities;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Models.v10;
+    using Exceptions;
+    using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -56,14 +58,23 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="id">The device model properties</param>
         public virtual async Task<ActionResult<IEnumerable<DeviceProperty>>> GetProperties(string id)
         {
-            if (!(await DeviceModelExists(id)))
+            if (!await DeviceModelExists(id))
             {
                 return NotFound();
             }
 
-            var items = this.tableClientFactory
-                            .GetDeviceTemplateProperties()
-                            .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{id}'");
+            AsyncPageable<DeviceModelProperty> items;
+
+            try
+            {
+                items = this.tableClientFactory
+                    .GetDeviceTemplateProperties()
+                    .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{id}'");
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to get existing device model properties for device with id {id}", e);
+            }
 
             var result = new List<DeviceProperty>();
 
@@ -89,7 +100,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                var validation = new ValidationProblemDetails(ModelState)
+                {
+                    Status = StatusCodes.Status422UnprocessableEntity
+                };
+
+                throw new ProblemDetailsException(validation);
             }
 
             ArgumentNullException.ThrowIfNull(properties, nameof(properties));
@@ -97,19 +113,42 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             var table = this.tableClientFactory
                          .GetDeviceTemplateProperties();
 
-            var items = table
-                        .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{id}'");
+            AsyncPageable<DeviceModelProperty> items;
+
+            try
+            {
+                items = table
+                    .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{id}'");
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to get existing device model properties for device with id {id}", e);
+            }
 
             await foreach (var item in items)
             {
-                _ = await table.DeleteEntityAsync(id, item.RowKey);
+                try
+                {
+                    _ = await table.DeleteEntityAsync(id, item.RowKey);
+                }
+                catch (RequestFailedException e)
+                {
+                    throw new InternalServerErrorException($"Unable to delete the property {item.RowKey} for device model with id {id}", e);
+                }
             }
 
             foreach (var item in properties)
             {
                 var entity = this.mapper.Map<DeviceModelProperty>(item, opts => opts.Items[nameof(DeviceModelProperty.PartitionKey)] = id);
 
-                _ = await table.AddEntityAsync(entity);
+                try
+                {
+                    _ = await table.AddEntityAsync(entity);
+                }
+                catch (RequestFailedException e)
+                {
+                    throw new InternalServerErrorException($"Unable to add the property {item.Name} for device model with id {id}", e);
+                }
             }
 
             return Ok();
@@ -134,7 +173,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
                 this.log.LogError(e.Message, e);
 
-                throw;
+                throw new InternalServerErrorException($"Unable to check if device model with id {id} exist", e);
             }
         }
     }

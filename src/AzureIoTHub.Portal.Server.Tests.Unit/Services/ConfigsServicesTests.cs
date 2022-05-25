@@ -107,6 +107,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public async Task GetDevicesConfigsShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+            var iotEdgeConfiguration = new Configuration("bbb");
+
+            iotEdgeConfiguration.Content.ModulesContent.Add("test", new Dictionary<string, object>());
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => configsServices.GetDevicesConfigurations();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetConfigItemStateUnderTestExpectedBehavior()
         {
             // Arrange
@@ -231,6 +251,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             this.mockRegistryManager.Verify(c => c.RemoveConfigurationAsync(It.Is<string>(x => x == configurationId)), Times.Once());
         }
 
+        [Test]
+        public async Task DeleteConfigurationShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+
+            var configurationId = Guid.NewGuid().ToString();
+
+            _ = this.mockRegistryManager.Setup(c => c.RemoveConfigurationAsync(It.Is<string>(x => x == configurationId)))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => configsServices.DeleteConfiguration(configurationId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
         [TestCase]
         public async Task RolloutDeviceConfigurationStateUnderTestExpectedBehavior()
         {
@@ -271,6 +310,93 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             this.mockRepository.VerifyAll();
             this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());
+        }
+
+        [Test]
+        public async Task RolloutDeviceConfigurationShouldThrowInternalServerErrorExceptionWhenIssueOccursOnGettingConfiguration()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+            var desiredProperties = new Dictionary<string, object>
+            {
+                { "prop1", "value1" }
+            };
+            var targetTags = new Dictionary<string, string>
+            {
+                { "tag1", "tagValue1" }
+            };
+            var configurationName = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => configsServices.RollOutDeviceConfiguration(modelId, desiredProperties, configurationName, targetTags);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task RolloutDeviceConfigurationShouldThrowInternalServerErrorExceptionWhenIssueOccursOnRemovingConfiguration()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+            var desiredProperties = new Dictionary<string, object>
+            {
+                { "prop1", "value1" }
+            };
+            var targetTags = new Dictionary<string, string>
+            {
+                { "tag1", "tagValue1" }
+            };
+            var configurationName = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ReturnsAsync(new[] { new Configuration(configurationName) });
+
+            _ = this.mockRegistryManager.Setup(c => c.RemoveConfigurationAsync(It.IsAny<string>()))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => configsServices.RollOutDeviceConfiguration(modelId, desiredProperties, configurationName, targetTags);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task RolloutDeviceConfigurationShouldThrowInternalServerErrorExceptionWhenIssueOccursOnAddingConfiguration()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+            var desiredProperties = new Dictionary<string, object>
+            {
+                { "prop1", "value1" }
+            };
+            var targetTags = new Dictionary<string, string>
+            {
+                { "tag1", "tagValue1" }
+            };
+            var configurationName = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ReturnsAsync(Array.Empty<Configuration>());
+
+            _ = this.mockRegistryManager.Setup(c => c.AddConfigurationAsync(It.Is<Configuration>(x => x.Id.StartsWith(configurationName))))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => configsServices.RollOutDeviceConfiguration(modelId, desiredProperties, configurationName, targetTags);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
         }
 
         [Test]

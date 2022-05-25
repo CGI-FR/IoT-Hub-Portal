@@ -190,7 +190,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             if (deviceTwin == null)
             {
-                return NotFound($"IoT Edge {deviceId} doesn' exist.");
+                return NotFound($"IoT Edge {deviceId} doesn't exist.");
             }
 
             var deviceType = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.Type));
