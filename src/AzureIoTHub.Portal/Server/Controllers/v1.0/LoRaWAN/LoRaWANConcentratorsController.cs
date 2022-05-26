@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
@@ -19,6 +20,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
 
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/lorawan/concentrators")]

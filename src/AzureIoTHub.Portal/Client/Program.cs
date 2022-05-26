@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Client
     using AzureIoTHub.Portal.Settings;
     using Blazored.LocalStorage;
     using Blazored.Modal;
+    using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
     using Handlers;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.DependencyInjection;
@@ -31,10 +32,8 @@ namespace AzureIoTHub.Portal.Client
             {
                 client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
                 client.DefaultRequestHeaders.Add("X-Version", "1.0");
-            })
-                .AddHttpMessageHandler<ProblemDetailsHandler>();
-
-            /*.AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();*/
+            }).AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>()
+              .AddHttpMessageHandler<ProblemDetailsHandler>();
 
             _ = builder.Services.AddFileReaderService(o => o.UseWasmSharedBuffer = true);
 
@@ -65,10 +64,16 @@ namespace AzureIoTHub.Portal.Client
                 options.ProviderOptions.MetadataUrl = settings.MetadataUrl.ToString();
                 options.ProviderOptions.ClientId = settings.ClientId;
 
-                options.ProviderOptions.DefaultScopes.Clear();
-                options.ProviderOptions.DefaultScopes.Add($"profile openid {settings.Scope}");
+                options.ProviderOptions.DefaultScopes.Add(settings.Scope);
+                options.ProviderOptions.ResponseType = "id_token token";
+            });
 
-                options.ProviderOptions.ResponseType = "id_token";
+            _ = builder.Services.Configure<OIDCSettings>(opts =>
+            {
+                opts.ClientId = settings.ClientId;
+                opts.MetadataUrl = settings.MetadataUrl;
+                opts.Authority = settings.Authority;
+                opts.Scope = settings.Scope;
             });
         }
 

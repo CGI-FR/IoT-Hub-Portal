@@ -7,7 +7,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
-    using System.Net.Http.Json;
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using AzureIoTHub.Portal.Models;
@@ -78,8 +77,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
                 .With(m =>
                 {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
+                    Assert.IsAssignableFrom<ObjectContent<DeviceModel>>(m.Content);
+                    var jsonContent = m.Content as ObjectContent<DeviceModel>;
 
                     Assert.IsAssignableFrom<DeviceModel>(jsonContent.Value);
                     var deviceModel = jsonContent.Value as DeviceModel;
@@ -125,8 +124,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Post, $"{ ApiBaseUrl }/*/properties")
                 .With(m =>
                 {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
+                    Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
+                    var jsonContent = m.Content as ObjectContent<List<DeviceProperty>>;
 
                     Assert.IsAssignableFrom<List<DeviceProperty>>(jsonContent.Value);
                     var properties = jsonContent.Value as IEnumerable<DeviceProperty>;
@@ -182,8 +181,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Post, $"{ ApiBaseUrl }/*/properties")
                 .With(m =>
                 {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
+                    Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
+                    var jsonContent = m.Content as ObjectContent<List<DeviceProperty>>;
 
                     Assert.IsAssignableFrom<List<DeviceProperty>>(jsonContent.Value);
                     var properties = jsonContent.Value as IEnumerable<DeviceProperty>;

@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
@@ -22,6 +23,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/edge/devices")]

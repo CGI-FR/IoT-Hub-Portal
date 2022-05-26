@@ -10,12 +10,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
 
-    [Route("/api/settings/device-tags")]
+    [Authorize]
     [ApiController]
-
     [ApiVersion("1.0")]
     [Produces("application/json")]
+    [Route("/api/settings/device-tags")]
     [ApiExplorerSettings(GroupName = "Portal Settings")]
     public class DeviceTagSettingsController : ControllerBase
     {

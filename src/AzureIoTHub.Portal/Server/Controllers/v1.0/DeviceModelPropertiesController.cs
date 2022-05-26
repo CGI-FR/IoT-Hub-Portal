@@ -11,7 +11,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using Microsoft.AspNetCore.Authorization;
 
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/models/{id}/properties")]
