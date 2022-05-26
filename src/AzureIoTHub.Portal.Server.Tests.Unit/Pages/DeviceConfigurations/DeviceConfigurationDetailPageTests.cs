@@ -674,8 +674,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .RespondText(string.Empty)
                 .With(m =>
                 {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
+                    Assert.IsAssignableFrom<ObjectContent<DeviceConfig>>(m.Content);
+                    var jsonContent = m.Content as ObjectContent<DeviceConfig>;
 
                     Assert.IsAssignableFrom<DeviceConfig>(jsonContent.Value);
                     Assert.AreEqual(cut.Instance.Configuration, jsonContent.Value);

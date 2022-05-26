@@ -172,8 +172,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Post, $"{ ApiBaseUrl}/properties")
                 .With(m =>
                 {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
+                    Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
+                    var jsonContent = m.Content as ObjectContent<List<DeviceProperty>>;
 
                     Assert.IsAssignableFrom<List<DeviceProperty>>(jsonContent.Value);
                     var properties = jsonContent.Value as IEnumerable<DeviceProperty>;
@@ -241,8 +241,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Post, $"{ ApiBaseUrl}/properties")
                 .With(m =>
                 {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
+                    Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
+                    var jsonContent = m.Content as ObjectContent<List<DeviceProperty>>;
 
                     Assert.IsAssignableFrom<List<DeviceProperty>>(jsonContent.Value);
                     var properties = jsonContent.Value as IEnumerable<DeviceProperty>;
