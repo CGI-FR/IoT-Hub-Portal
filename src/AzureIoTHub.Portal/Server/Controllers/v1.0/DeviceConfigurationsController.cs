@@ -14,11 +14,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
     using Entities;
     using Exceptions;
     using Factories;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Models;
     using Shared.Models.v10;
 
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/device-configurations")]

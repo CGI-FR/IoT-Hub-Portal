@@ -24,6 +24,7 @@ namespace AzureIoTHub.Portal.Server
     using AzureIoTHub.Portal.Server.Wrappers;
     using Hellang.Middleware.ProblemDetails;
     using Hellang.Middleware.ProblemDetails.Mvc;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -72,21 +73,23 @@ namespace AzureIoTHub.Portal.Server
                 opts.Authority = configuration.OIDCAuthority;
             });
 
-            /*
-            services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddOpenIdConnect(opts =>
+            _ = services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(opts =>
                 {
                     opts.Authority = configuration.OIDCAuthority;
                     opts.MetadataAddress = configuration.OIDCMetadataUrl;
-                    opts.ClientId = configuration.OIDCApiClientId;
-                });
+                    opts.Audience = configuration.OIDCApiClientId;
 
-            services.AddControllersWithViews(opts =>
-            {
-                opts.Filters.Add(new ApiRequiredScopeFilter(configuration));
-            });
-            */
+                    opts.TokenValidationParameters.ValidateIssuer = true;
+                    opts.TokenValidationParameters.ValidateAudience = true;
+                    opts.TokenValidationParameters.ValidateLifetime = true;
+                    opts.TokenValidationParameters.ValidateIssuerSigningKey = true;
+                });
 
             _ = services.AddSingleton(configuration);
 
