@@ -144,3 +144,43 @@ On IoT Hub Portal, we use the library [Hellang.Middleware.ProblemDetails](https:
     * It you want override the behaviour of the middleware when processing your exception, you have to add a new mapping within it.
 
 > 💡 You can also map exceptions from dotnet framework and third parties.
+
+### Handle `Problem Details` exceptions on frontend
+
+On frontend, http client uses a delegating handler [ProblemDetailsHandler](https://github.com/CGI-FR/IoT-Hub-Portal/blob/main/src/AzureIoTHub.Portal/Client/Handlers/ProblemDetailsHandler.cs) to:
+
+- Execute the http request and wait the response
+- If the response is not successful:
+  - The body of the response is deserialized to `ProblemDetailsWithExceptionDetails`
+  - An exception with type `ProblemDetailsException` (inluding the error response) is thrown 
+
+
+On blazor views, http calls must be catched to capture any exceptions of type `ProblemDetailsException` to be able to execute any business code to process them.
+
+When an http call fails, the user must be notified visually by the application: A component [Error](https://github.com/CGI-FR/IoT-Hub-Portal/blob/main/src/AzureIoTHub.Portal/Client/Shared/NavMenu.razor) has been made to respond to this use case.
+Below an example on how to:
+
+- Catch an ProblemDetailsException when making a http call
+- Delegate the exception to the `Error` component, so that it can visually warn the user
+
+```csharp
+@code {
+    // Inject the reference to the Error component as a cascading parameter
+    [CascadingParameter]
+    public Error Error {get; set;}
+
+    private await Task GetData()
+    {
+        try
+        {
+            // Execute an http request
+        }
+        catch (ProblemDetailsException exception)
+        {
+            // Pass the ProblemDetailsException exception to Error compoment using its method ProcessProblemDetails()
+            // The Error component will alert the user by showing a (snackbar/dialog) using the content of the exception
+            Error?.ProcessProblemDetails(exception)
+        }
+    }
+}
+```
