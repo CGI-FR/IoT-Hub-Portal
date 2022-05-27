@@ -39,6 +39,24 @@ jobs:
           username:  ${{ secrets.DOCKER_USERNAME }}
           password:  ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Get a latest Git tag
+        uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
+        with: 
+            semver_only: true
+
+      - name: Bump the semver version up
+        uses: actions-ecosystem/action-bump-semver@v1
+        id: bump-semver
+        with:
+          current_version: ${{ steps.get-latest-tag.outputs.tag }}
+          level: minor
+
+      - name: Remove leading v to semver
+        id: final-version
+        run: |
+            echo "::set-output name=new_version::$(echo ${{ steps.bump-semver.outputs.new_version }} | sed 's/^v//')"
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -48,7 +66,7 @@ jobs:
             ${{ env.registry_name }}/${{ github.repository_owner }}/${{ env.image_name }}
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=raw,enable=true,priority=200,prefix=,suffix=,value=1.0.0
+            type=raw,enable=true,priority=200,prefix=,suffix=,value=${{ steps.final-version.outputs.new_version }}
           flavor: |
             latest=true
 
@@ -61,7 +79,7 @@ jobs:
           # Push is a shorthand for --output=type=registry
           push: true
           build-args: | 
-            BUILD_VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            BUILD_VERSION=${{ steps.final-version.outputs.new_version }}
             GITHUB_RUN_NUMBER=${{ github.run_number }}
           tags: 
             ${{ steps.meta.outputs.tags }}
