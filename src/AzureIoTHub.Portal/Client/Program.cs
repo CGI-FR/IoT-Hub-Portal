@@ -65,7 +65,7 @@ namespace AzureIoTHub.Portal.Client
                 options.ProviderOptions.ClientId = settings.ClientId;
 
                 options.ProviderOptions.DefaultScopes.Add(settings.Scope);
-                options.ProviderOptions.ResponseType = "id_token token";
+                options.ProviderOptions.ResponseType = "code";
             });
 
             _ = builder.Services.Configure<OIDCSettings>(opts =>
