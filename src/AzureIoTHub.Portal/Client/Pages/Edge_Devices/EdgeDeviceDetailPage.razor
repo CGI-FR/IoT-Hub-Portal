@@ -39,11 +39,11 @@ else
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardActions Class="pb-4 pl-4 justify-center">
-                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString">Connect</MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
                     </MudCardActions>
                 </MudCard>
                 <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="ShowDeleteModal">Delete edge device</MudButton>
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="ShowDeleteModal" id="deleteButton">Delete edge device</MudButton>
                     <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="UpdateDevice" id="saveButton">Save Changes</MudButton>
                 </MudItem>
             </MudItem>
@@ -158,8 +158,8 @@ else
                                                     <MudTd DataLabel="Version" Style="text-align: center">@context.Version</MudTd>
                                                     <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
                                                     <MudTd DataLabel="Device" Style="text-align: center">
-                                                        <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" Disabled="btn_disable" OnClick="@(async () => await ShowEdgeDeviceLogs(context) )">logs</MudButton>
-                                                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context,"RestartModule") )">reboot</MudButton>
+                                                        <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" Disabled="btn_disable" id="showLogs" OnClick="@(async () => await ShowEdgeDeviceLogs(context) )">logs</MudButton>
+                                                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="btn_disable" id="rebootModule" OnClick="@(async () => await OnMethod(context,"RestartModule") )">reboot</MudButton>
                                                     </MudTd>
                                                 </RowTemplate>
                                             </MudTable>
