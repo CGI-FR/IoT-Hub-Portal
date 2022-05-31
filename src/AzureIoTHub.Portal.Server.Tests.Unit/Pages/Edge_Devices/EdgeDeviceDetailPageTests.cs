@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-    using System.Net.Http.Json;
     using System.Threading;
     using AzureIoTHub.Portal.Client.Pages.Edge_Devices;
     using AzureIoTHub.Portal.Client.Shared;
@@ -26,10 +25,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     [TestFixture]
     public class EdgeDeviceDetailPageTests : IDisposable
     {
-#pragma warning disable CA2213 // Disposable fields should be disposed
         private Bunit.TestContext testContext;
         private MockHttpMessageHandler mockHttpClient;
-#pragma warning restore CA2213 // Disposable fields should be disposed
 
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
@@ -106,11 +103,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Put, $"/api/edge/devices/{this.mockdeviceId}")
                 .With(m =>
                 {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
+                    Assert.IsAssignableFrom<ObjectContent<IoTEdgeDevice>>(m.Content);
+                    var objectContent = m.Content as ObjectContent<IoTEdgeDevice>;
 
-                    Assert.IsAssignableFrom<IoTEdgeDevice>(jsonContent.Value);
-                    var edgeDevice = jsonContent.Value as IoTEdgeDevice;
+                    Assert.IsAssignableFrom<IoTEdgeDevice>(objectContent.Value);
+                    var edgeDevice = objectContent.Value as IoTEdgeDevice;
 
                     Assert.AreEqual(mockIoTEdgeDevice.DeviceId, edgeDevice.DeviceId);
                     Assert.AreEqual(mockIoTEdgeDevice.ConnectionState, edgeDevice.ConnectionState);
@@ -133,7 +130,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
-            _ = this.mockSnackbarService.Setup(c => c.Add($"Device {mockdeviceId} has been successfully updated!", Severity.Success, null));
+            _ = this.mockSnackbarService.Setup(c => c.Add($"Device {this.mockdeviceId} has been successfully updated!", Severity.Success, null));
 
             // Act
             saveButton.Click();
@@ -162,11 +159,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Put, $"/api/edge/devices/{this.mockdeviceId}")
                 .With(m =>
                 {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
+                    Assert.IsAssignableFrom<ObjectContent<IoTEdgeDevice>>(m.Content);
+                    var objectContent = m.Content as ObjectContent<IoTEdgeDevice>;
 
-                    Assert.IsAssignableFrom<IoTEdgeDevice>(jsonContent.Value);
-                    var edgeDevice = jsonContent.Value as IoTEdgeDevice;
+                    Assert.IsAssignableFrom<IoTEdgeDevice>(objectContent.Value);
+                    var edgeDevice = objectContent.Value as IoTEdgeDevice;
 
                     Assert.AreEqual(mockIoTEdgeDevice.DeviceId, edgeDevice.DeviceId);
                     Assert.AreEqual(mockIoTEdgeDevice.ConnectionState, edgeDevice.ConnectionState);
@@ -217,11 +214,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Put, $"/api/edge/devices/{this.mockdeviceId}")
                 .With(m =>
                 {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
+                    Assert.IsAssignableFrom<ObjectContent<IoTEdgeDevice>>(m.Content);
+                    var objectContent = m.Content as ObjectContent<IoTEdgeDevice>;
 
-                    Assert.IsAssignableFrom<IoTEdgeDevice>(jsonContent.Value);
-                    var edgeDevice = jsonContent.Value as IoTEdgeDevice;
+                    Assert.IsAssignableFrom<IoTEdgeDevice>(objectContent.Value);
+                    var edgeDevice = objectContent.Value as IoTEdgeDevice;
 
                     Assert.AreEqual(mockIoTEdgeDevice.DeviceId, edgeDevice.DeviceId);
                     Assert.AreEqual(mockIoTEdgeDevice.ConnectionState, edgeDevice.ConnectionState);
@@ -279,21 +276,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Post, $"/api/edge/devices/{mockIoTEdgeDevice.DeviceId}/{mockIoTEdgeModule.ModuleName}/RestartModule")
                 .With(m =>
                 {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
+                    Assert.IsAssignableFrom<ObjectContent<IoTEdgeModule>>(m.Content);
+                    var objectContent = m.Content as ObjectContent<IoTEdgeModule>;
 
-                    Assert.IsAssignableFrom<IoTEdgeModule>(jsonContent.Value);
-                    var edgeModule = jsonContent.Value as IoTEdgeModule;
+                    Assert.IsAssignableFrom<IoTEdgeModule>(objectContent.Value);
+                    var edgeModule = objectContent.Value as IoTEdgeModule;
 
                     Assert.AreEqual(mockIoTEdgeModule.ModuleName, edgeModule.ModuleName);
 
                     return true;
                 })
-                .RespondText((new C2Dresult()
+                .RespondText(new C2Dresult()
                 {
                     Payload = "ABC",
                     Status = 200
-                }).ToString()
+                }.ToString()
                 );
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));

@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-    using System.Net.Http.Json;
     using System.Threading;
     using AzureIoTHub.Portal.Client.Pages.LoRaWAN.Concentrator;
     using AzureIoTHub.Portal.Client.Shared;
@@ -104,11 +103,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Put, $"/api/lorawan/concentrators")
                 .With(m =>
                 {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
+                    Assert.IsAssignableFrom<ObjectContent<Concentrator>>(m.Content);
+                    var objectContent = m.Content as ObjectContent<Concentrator>;
 
-                    Assert.IsAssignableFrom<Concentrator>(jsonContent.Value);
-                    var concentrator = jsonContent.Value as Concentrator;
+                    Assert.IsAssignableFrom<Concentrator>(objectContent.Value);
+                    var concentrator = objectContent.Value as Concentrator;
 
                     Assert.AreEqual(mockConcentrator.DeviceId, concentrator.DeviceId);
                     Assert.AreEqual(mockConcentrator.DeviceName, concentrator.DeviceName);

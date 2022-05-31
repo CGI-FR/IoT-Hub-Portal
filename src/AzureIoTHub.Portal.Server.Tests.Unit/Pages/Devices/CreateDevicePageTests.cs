@@ -90,11 +90,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
                 .With(m =>
                 {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
+                    Assert.IsAssignableFrom<ObjectContent<DeviceDetails>>(m.Content);
+                    var objectContent = m.Content as ObjectContent<DeviceDetails>;
 
-                    Assert.IsAssignableFrom<DeviceDetails>(jsonContent.Value);
-                    var deviceDetails = jsonContent.Value as DeviceDetails;
+                    Assert.IsAssignableFrom<DeviceDetails>(objectContent.Value);
+                    var deviceDetails = objectContent.Value as DeviceDetails;
 
                     Assert.AreEqual(expectedDeviceDetails.DeviceID, deviceDetails.DeviceID);
                     Assert.AreEqual(expectedDeviceDetails.DeviceName, deviceDetails.DeviceName);
@@ -148,7 +148,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             Thread.Sleep(2500);
             cut.WaitForState(() =>
             {
-                Console.WriteLine(this.mockNavigationManager.Uri);
                 return this.mockNavigationManager.Uri.EndsWith("/devices", StringComparison.OrdinalIgnoreCase);
             });
 
