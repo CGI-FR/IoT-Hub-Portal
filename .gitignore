@@ -264,8 +264,7 @@ paket-files/
 __pycache__/
 *.pyc
 
-# App.css generated each time
-app.css
+
 src/.env
 /src/AzureIoTHub.Portal/Client/Properties/launchSettings.json
 
