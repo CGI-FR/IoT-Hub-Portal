@@ -20,7 +20,7 @@
     <None Include="wwwroot\js\bootstrap.bundle.min.js" />
     <None Include="wwwroot\js\bootstrap.bundle.min.js.map" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.ClientAssets" Version="0.1.0-alpha.21528.2" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
