@@ -468,7 +468,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 Type = "Other",
             };
 
-
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
                 .RespondJson(mockIoTEdgeDevice);
@@ -489,9 +488,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             // Assert            
             this.mockHttpClient.VerifyNoOutstandingExpectation();
             this.mockRepository.VerifyAll();
-
-            //Thread.Sleep(2500);
-            //cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/edge/devices", StringComparison.OrdinalIgnoreCase));
         }
 
         [Test]
@@ -503,7 +499,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 ConnectionState = "Connected",
                 Type = "Other",
             };
-
 
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
@@ -526,10 +521,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             this.mockHttpClient.VerifyNoOutstandingExpectation();
             this.mockRepository.VerifyAll();
 
-            // Thread.Sleep(2500);
             cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/edge/devices", StringComparison.OrdinalIgnoreCase));
         }
-
 
         public void Dispose()
         {

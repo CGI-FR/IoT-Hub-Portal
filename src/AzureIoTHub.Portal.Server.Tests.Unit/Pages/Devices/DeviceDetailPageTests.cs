@@ -284,6 +284,199 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public void ClickOnConnectShouldDisplayDeviceCredentials()
+        {
+            var mockDeviceModel = new DeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                SupportLoRaFeatures = false,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var mockTag = new DeviceTag
+            {
+                Label = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString(),
+                Required = false,
+                Searchable = false
+            };
+
+            var mockDeviceDetails = new DeviceDetails
+            {
+                DeviceName = Guid.NewGuid().ToString(),
+                ModelId = mockDeviceModel.ModelId,
+                DeviceID = Guid.NewGuid().ToString(),
+                Tags = new Dictionary<string, string>()
+                {
+                    {mockTag.Name,Guid.NewGuid().ToString()}
+                }
+            };
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/devices/{mockDeviceDetails.DeviceID}")
+                .RespondJson(mockDeviceDetails);
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models/{mockDeviceDetails.ModelId}")
+                .RespondJson(mockDeviceModel);
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/settings/device-tags")
+                .RespondJson(new List<DeviceTag>()
+                {
+                    mockTag
+                });
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/{mockDeviceDetails.DeviceID}/properties")
+                .RespondJson(Array.Empty<DeviceProperty>());
+
+            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
+            Thread.Sleep(2500);
+
+            var connectButton = cut.WaitForElement("#connectButton");
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<ConnectionStringDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+
+            // Act
+            connectButton.Click();
+
+            // Assert            
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void ClickOnDeleteShouldDisplayConfirmationDialogAndReturnIfAborted()
+        {
+            var mockDeviceModel = new DeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                SupportLoRaFeatures = false,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var mockTag = new DeviceTag
+            {
+                Label = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString(),
+                Required = false,
+                Searchable = false
+            };
+
+            var mockDeviceDetails = new DeviceDetails
+            {
+                DeviceName = Guid.NewGuid().ToString(),
+                ModelId = mockDeviceModel.ModelId,
+                DeviceID = Guid.NewGuid().ToString(),
+                Tags = new Dictionary<string, string>()
+                {
+                    {mockTag.Name,Guid.NewGuid().ToString()}
+                }
+            };
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/devices/{mockDeviceDetails.DeviceID}")
+                .RespondJson(mockDeviceDetails);
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models/{mockDeviceDetails.ModelId}")
+                .RespondJson(mockDeviceModel);
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/settings/device-tags")
+                .RespondJson(new List<DeviceTag>()
+                {
+                    mockTag
+                });
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/{mockDeviceDetails.DeviceID}/properties")
+                .RespondJson(Array.Empty<DeviceProperty>());
+
+            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
+            Thread.Sleep(2500);
+
+            var deleteButton = cut.WaitForElement("#deleteButton");
+
+            var mockDialogReference = this.mockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
+
+            _ = this.mockDialogService.Setup(c => c.Show<DeleteDevicePage>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference.Object);
+
+            // Act
+            deleteButton.Click();
+
+            // Assert            
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void ClickOnDeleteShouldDisplayConfirmationDialogAndRedirectIfConfirmed()
+        {
+            var mockDeviceModel = new DeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                SupportLoRaFeatures = false,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var mockTag = new DeviceTag
+            {
+                Label = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString(),
+                Required = false,
+                Searchable = false
+            };
+
+            var mockDeviceDetails = new DeviceDetails
+            {
+                DeviceName = Guid.NewGuid().ToString(),
+                ModelId = mockDeviceModel.ModelId,
+                DeviceID = Guid.NewGuid().ToString(),
+                Tags = new Dictionary<string, string>()
+                {
+                    {mockTag.Name,Guid.NewGuid().ToString()}
+                }
+            };
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/devices/{mockDeviceDetails.DeviceID}")
+                .RespondJson(mockDeviceDetails);
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models/{mockDeviceDetails.ModelId}")
+                .RespondJson(mockDeviceModel);
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/settings/device-tags")
+                .RespondJson(new List<DeviceTag>()
+                {
+                    mockTag
+                });
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/{mockDeviceDetails.DeviceID}/properties")
+                .RespondJson(Array.Empty<DeviceProperty>());
+
+            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
+            Thread.Sleep(2500);
+
+            var deleteButton = cut.WaitForElement("#deleteButton");
+
+            var mockDialogReference = this.mockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
+
+            _ = this.mockDialogService.Setup(c => c.Show<DeleteDevicePage>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference.Object);
+
+            // Act
+            deleteButton.Click();
+
+            // Assert            
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
+
+            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/devices", StringComparison.OrdinalIgnoreCase));
+        }
+
         public void Dispose()
         {
             Dispose(true);
