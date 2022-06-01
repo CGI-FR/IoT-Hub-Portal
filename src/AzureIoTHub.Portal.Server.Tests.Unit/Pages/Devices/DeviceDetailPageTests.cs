@@ -138,11 +138,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Put, $"{ApiBaseUrl}")
                 .With(m =>
                 {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
+                    Assert.IsAssignableFrom<ObjectContent<DeviceDetails>>(m.Content);
+                    var objectContent = m.Content as ObjectContent<DeviceDetails>;
 
-                    Assert.IsAssignableFrom<DeviceDetails>(jsonContent.Value);
-                    var deviceDetails = jsonContent.Value as DeviceDetails;
+                    Assert.IsAssignableFrom<DeviceDetails>(objectContent.Value);
+                    var deviceDetails = objectContent.Value as DeviceDetails;
 
                     Assert.AreEqual(mockDeviceDetails.DeviceID, deviceDetails.DeviceID);
                     Assert.AreEqual(mockDeviceDetails.DeviceName, deviceDetails.DeviceName);
@@ -173,7 +173,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
             Thread.Sleep(2500);
 
-            var saveButton = cut.WaitForElement("#returnButton");
+            var saveButton = cut.WaitForElement("#saveButton");
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
 
@@ -182,16 +182,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null));
+
             // Act
             saveButton.Click();
             Thread.Sleep(2500);
-            cut.WaitForState(() =>
-            {
-                return this.mockNavigationManager.Uri.EndsWith("/devices", StringComparison.OrdinalIgnoreCase);
-            });
 
             // Assert            
             this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
+            // cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("devices", StringComparison.OrdinalIgnoreCase));
         }
 
         [Test]
