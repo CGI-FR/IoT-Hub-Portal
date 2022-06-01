@@ -5,13 +5,8 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
-    "node-sass": "^7.0.1",
     "json-schema": ">=0.4.0",
     "trim-newlines": ">=3.0.1"
-  },
-  "scripts": {
-    "prebuild-css": "npm install",
-    "build-css": "node-sass --include-path wwwroot/scss --output-style compressed wwwroot/scss/app.scss --output wwwroot/css"
   },
   "author": "",
   "license": "MIT"
