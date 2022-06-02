@@ -133,7 +133,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
-            _ = this.mockSnackbarService.Setup(c => c.Add($"Device {this.mockdeviceId} has been successfully updated!", Severity.Success, null));
+            _ = this.mockSnackbarService.Setup(c => c.Add($"Device {this.mockdeviceId} has been successfully updated!", Severity.Success, null)).Returns((Snackbar)null);
 
             // Act
             saveButton.Click();
@@ -188,7 +188,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
-            _ = this.mockSnackbarService.Setup(c => c.Add("One or more validation errors occurred", Severity.Error, null));
+            _ = this.mockSnackbarService.Setup(c => c.Add("One or more validation errors occurred", Severity.Error, null)).Returns((Snackbar)null);
 
             // Act
             saveButton.Click();
@@ -243,7 +243,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
-            _ = this.mockSnackbarService.Setup(c => c.Add("Something unexpected occurred", Severity.Warning, null));
+            _ = this.mockSnackbarService.Setup(c => c.Add("Something unexpected occurred", Severity.Warning, null)).Returns((Snackbar)null);
 
             // Act
             saveButton.Click();
@@ -310,7 +310,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
-            _ = this.mockSnackbarService.Setup(c => c.Add("Command successfully executed.", Severity.Success, null));
+            _ = this.mockSnackbarService.Setup(c => c.Add("Command successfully executed.", Severity.Success, null)).Returns((Snackbar)null);
 
             // Act
             rebootButton.Click();
@@ -377,7 +377,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>()));
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>())).Returns((Snackbar)null);
 
             // Act
             rebootButton.Click();

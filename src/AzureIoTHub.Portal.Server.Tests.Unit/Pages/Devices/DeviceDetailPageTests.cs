@@ -182,7 +182,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null));
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns((Snackbar)null);
 
             // Act
             saveButton.Click();
@@ -191,7 +191,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             // Assert            
             this.mockHttpClient.VerifyNoOutstandingExpectation();
             this.mockRepository.VerifyAll();
-            // cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("devices", StringComparison.OrdinalIgnoreCase));
+            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("devices", StringComparison.OrdinalIgnoreCase));
         }
 
         [Test]
@@ -273,7 +273,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
-            _ = this.mockSnackbarService.Setup(c => c.Add("One or more validation errors occurred", Severity.Error, null));
+            _ = this.mockSnackbarService.Setup(c => c.Add("One or more validation errors occurred", Severity.Error, null)).Returns((Snackbar)null);
 
             // Act
             saveButton.Click();
