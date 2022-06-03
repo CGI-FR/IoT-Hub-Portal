@@ -108,9 +108,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 {
                     Assert.IsAssignableFrom<ObjectContent<IoTEdgeDevice>>(m.Content);
                     var objectContent = m.Content as ObjectContent<IoTEdgeDevice>;
+                    Assert.IsNotNull(objectContent);
 
                     Assert.IsAssignableFrom<IoTEdgeDevice>(objectContent.Value);
                     var edgeDevice = objectContent.Value as IoTEdgeDevice;
+                    Assert.IsNotNull(edgeDevice);
 
                     Assert.AreEqual(mockIoTEdgeDevice.DeviceId, edgeDevice.DeviceId);
                     Assert.AreEqual(mockIoTEdgeDevice.ConnectionState, edgeDevice.ConnectionState);
@@ -164,9 +166,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 {
                     Assert.IsAssignableFrom<ObjectContent<IoTEdgeDevice>>(m.Content);
                     var objectContent = m.Content as ObjectContent<IoTEdgeDevice>;
+                    Assert.IsNotNull(objectContent);
 
                     Assert.IsAssignableFrom<IoTEdgeDevice>(objectContent.Value);
                     var edgeDevice = objectContent.Value as IoTEdgeDevice;
+                    Assert.IsNotNull(edgeDevice);
 
                     Assert.AreEqual(mockIoTEdgeDevice.DeviceId, edgeDevice.DeviceId);
                     Assert.AreEqual(mockIoTEdgeDevice.ConnectionState, edgeDevice.ConnectionState);
@@ -219,9 +223,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 {
                     Assert.IsAssignableFrom<ObjectContent<IoTEdgeDevice>>(m.Content);
                     var objectContent = m.Content as ObjectContent<IoTEdgeDevice>;
+                    Assert.IsNotNull(objectContent);
 
                     Assert.IsAssignableFrom<IoTEdgeDevice>(objectContent.Value);
                     var edgeDevice = objectContent.Value as IoTEdgeDevice;
+                    Assert.IsNotNull(edgeDevice);
 
                     Assert.AreEqual(mockIoTEdgeDevice.DeviceId, edgeDevice.DeviceId);
                     Assert.AreEqual(mockIoTEdgeDevice.ConnectionState, edgeDevice.ConnectionState);
@@ -281,9 +287,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 {
                     Assert.IsAssignableFrom<ObjectContent<IoTEdgeModule>>(m.Content);
                     var objectContent = m.Content as ObjectContent<IoTEdgeModule>;
+                    Assert.IsNotNull(objectContent);
 
                     Assert.IsAssignableFrom<IoTEdgeModule>(objectContent.Value);
                     var edgeModule = objectContent.Value as IoTEdgeModule;
+                    Assert.IsNotNull(edgeModule);
 
                     Assert.AreEqual(mockIoTEdgeModule.ModuleName, edgeModule.ModuleName);
 
@@ -348,9 +356,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 {
                     Assert.IsAssignableFrom<ObjectContent<IoTEdgeModule>>(m.Content);
                     var objectContent = m.Content as ObjectContent<IoTEdgeModule>;
+                    Assert.IsNotNull(objectContent);
 
                     Assert.IsAssignableFrom<IoTEdgeModule>(objectContent.Value);
                     var edgeModule = objectContent.Value as IoTEdgeModule;
+                    Assert.IsNotNull(edgeModule);
 
                     Assert.AreEqual(mockIoTEdgeModule.ModuleName, edgeModule.ModuleName);
 

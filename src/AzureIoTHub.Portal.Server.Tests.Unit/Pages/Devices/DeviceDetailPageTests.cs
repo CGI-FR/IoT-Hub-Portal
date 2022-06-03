@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-    using System.Net.Http.Json;
     using System.Threading;
     using AzureIoTHub.Portal.Client.Pages.Devices;
     using AzureIoTHub.Portal.Client.Shared;
@@ -140,9 +139,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 {
                     Assert.IsAssignableFrom<ObjectContent<DeviceDetails>>(m.Content);
                     var objectContent = m.Content as ObjectContent<DeviceDetails>;
+                    Assert.IsNotNull(objectContent);
 
                     Assert.IsAssignableFrom<DeviceDetails>(objectContent.Value);
                     var deviceDetails = objectContent.Value as DeviceDetails;
+                    Assert.IsNotNull(deviceDetails);
 
                     Assert.AreEqual(mockDeviceDetails.DeviceID, deviceDetails.DeviceID);
                     Assert.AreEqual(mockDeviceDetails.DeviceName, deviceDetails.DeviceName);
@@ -228,11 +229,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Put, $"{ApiBaseUrl}")
                 .With(m =>
                 {
-                    Assert.IsAssignableFrom<JsonContent>(m.Content);
-                    var jsonContent = m.Content as JsonContent;
+                    Assert.IsAssignableFrom<ObjectContent<DeviceDetails>>(m.Content);
+                    var objectContent = m.Content as ObjectContent<DeviceDetails>;
+                    Assert.IsNotNull(objectContent);
 
-                    Assert.IsAssignableFrom<DeviceDetails>(jsonContent.Value);
-                    var deviceDetails = jsonContent.Value as DeviceDetails;
+                    Assert.IsAssignableFrom<DeviceDetails>(objectContent.Value);
+                    var deviceDetails = objectContent.Value as DeviceDetails;
+                    Assert.IsNotNull(deviceDetails);
 
                     Assert.AreEqual(mockDeviceDetails.DeviceID, deviceDetails.DeviceID);
                     Assert.AreEqual(mockDeviceDetails.DeviceName, deviceDetails.DeviceName);
