@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
 {
     using System;
     using System.Collections.Generic;
@@ -24,14 +24,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using RichardSzalay.MockHttp;
 
     [TestFixture]
-    public class ConcentratorDetailPageTests : IDisposable
+    public class CreateConcentratorPageTest : IDisposable
     {
         private Bunit.TestContext testContext;
         private MockHttpMessageHandler mockHttpClient;
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
-
-        private readonly string mockDeviceID = Guid.NewGuid().ToString();
+        private Mock<ISnackbar> mockSnackbarService;
 
         private FakeNavigationManager mockNavigationManager;
 
@@ -41,13 +40,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             this.testContext = new Bunit.TestContext();
 
             this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockDialogService = this.mockRepository.Create<IDialogService>();
-
             this.mockHttpClient = this.testContext.Services.AddMockHttpClient();
 
+            this.mockDialogService = this.mockRepository.Create<IDialogService>();
             _ = this.testContext.Services.AddSingleton(this.mockDialogService.Object);
-            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            this.mockSnackbarService = this.mockRepository.Create<ISnackbar>();
+            _ = this.testContext.Services.AddSingleton(this.mockSnackbarService.Object);
+
             _ = this.testContext.Services.AddMudServices();
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
             _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
@@ -55,6 +57,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
             _ = this.testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
             _ = this.testContext.JSInterop.SetupVoid("mudJsEvent.connect", _ => true);
+            _ = this.testContext.JSInterop.SetupVoid("mudKeyInterceptor.updatekey", _ => true);
             this.mockHttpClient.AutoFlush = true;
 
             this.mockNavigationManager = this.testContext.Services.GetRequiredService<FakeNavigationManager>();
@@ -67,39 +70,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public void ReturnButtonMustNavigateToPreviousPage()
-        {
-            // Arrange
-            _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"/api/lorawan/concentrators/{this.mockDeviceID}")
-                .RespondJson(new Concentrator());
-
-            var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceID", this.mockDeviceID));
-            var returnButton = cut.WaitForElement("#returnButton");
-
-            // Act
-            returnButton.Click();
-
-            // Assert
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/lorawan/concentrators", StringComparison.OrdinalIgnoreCase));
-        }
-
-        [Test]
-        public void ClickOnSaveShouldPutConcentratorDetails()
+        public void ClickOnSaveShouldPostConcentratorDetails()
         {
             var mockConcentrator = new Concentrator()
             {
                 DeviceId = "1234567890123456",
                 DeviceName = Guid.NewGuid().ToString(),
-                LoraRegion = Guid.NewGuid().ToString()
+                LoraRegion = "CN_470_510_RP2"
             };
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"/api/lorawan/concentrators/{mockConcentrator.DeviceId}")
-                .RespondJson(mockConcentrator);
-
-            _ = this.mockHttpClient
-                .When(HttpMethod.Put, $"/api/lorawan/concentrators")
+                .When(HttpMethod.Post, $"/api/lorawan/concentrators")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<Concentrator>>(m.Content);
@@ -116,22 +97,49 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 })
                 .RespondText(string.Empty);
 
-            var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockConcentrator.DeviceId));
+            var cut = RenderComponent<CreateConcentratorPage>();
             var saveButton = cut.WaitForElement("#saveButton");
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
-            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
-
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns((Snackbar)null);
+
+
+            cut.Find($"#{nameof(Concentrator.DeviceId)}").Change(mockConcentrator.DeviceId);
+            cut.Find($"#{nameof(Concentrator.DeviceName)}").Change(mockConcentrator.DeviceName);
+            cut.Instance.ChangeRegion(mockConcentrator.LoraRegion);
+
             saveButton.Click();
-            Thread.Sleep(2500);
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/lorawan/concentrators", StringComparison.OrdinalIgnoreCase));
+            Thread.Sleep(1000);
 
             // Assert            
             this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
+            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/lorawan/concentrators", StringComparison.OrdinalIgnoreCase));
+        }
+
+        [Test]
+        public void ClickOnSaveShouldDisplayErrorSnackbarIfValidationError()
+        {
+            var cut = RenderComponent<CreateConcentratorPage>();
+            var saveButton = cut.WaitForElement("#saveButton");
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, null)).Returns((Snackbar)null);
+
+            saveButton.Click();
+            Thread.Sleep(1000);
+
+            // Assert            
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
         }
 
         public void Dispose()
@@ -143,6 +151,5 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         protected virtual void Dispose(bool disposing)
         {
         }
-
     }
 }

@@ -23,7 +23,7 @@
                 </MudCardHeader>
             </MudCard>
             <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveDevice">Save Changes</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveDevice" id="saveButton">Save Changes</MudButton>
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
@@ -38,6 +38,7 @@
                                         <MudGrid>
                                             <MudItem xs="12">
                                                 <MudTextField @bind-Value="@concentrator.DeviceId"
+                                                              id="@nameof(Concentrator.DeviceId)"
                                                               Label="Device Id"
                                                               Variant="Variant.Outlined"
                                                               For="@(()=> concentrator.DeviceId)"
@@ -46,6 +47,7 @@
                                             </MudItem>
                                             <MudItem xs="12">
                                                 <MudTextField @bind-Value="@concentrator.DeviceName"
+                                                              id="@nameof(Concentrator.DeviceName)"
                                                               For="@(()=> concentrator.DeviceName)"
                                                               Label="Device name" Variant="Variant.Outlined" Required="true" />
                                             </MudItem>
@@ -56,7 +58,7 @@
                                                               @bind-Value="@concentrator.ClientThumbprint" Label="Client Certificate Thumbprint" Variant="Variant.Outlined" />
                                             </MudItem>
                                             <MudItem xs="12" md="6">
-                                                <MudSelect T="string" For="@(()=> concentrator.LoraRegion)" Label="Region" Variant="Variant.Outlined" @bind-Value="@concentrator.LoraRegion" Required="true">
+                                                <MudSelect T="string" For="@(()=> concentrator.LoraRegion)" Label="Region" Variant="Variant.Outlined" @bind-Value="@concentrator.LoraRegion" Required="true" id="@nameof(Concentrator.LoraRegion)">
                                                     <MudSelectItem Value="@("EU_863_870")">Europe 863-870 MHz</MudSelectItem>
                                                     <MudSelectItem Value="@("US_902_928_FSB_1")">United States 902-928 MHz, FSB 1</MudSelectItem>
                                                     <MudSelectItem Value="@("US_902_928_FSB_2")">United States 902-928 MHz, FSB 2</MudSelectItem>
@@ -123,6 +125,7 @@
         if (!this.concentratorValidator.Validate(this.concentrator).IsValid)
         {
             // string errorMsg = await response.Content.ReadAsStringAsync();
+            DialogService.Close(processingDialog);
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
             return;
         }
@@ -142,4 +145,8 @@
         // Go back to the list of concentrator
         NavManager.NavigateTo("lorawan/concentrators");
     }
+
+    // Workaround to change MudSelect value when performing unit tests.
+    internal void ChangeRegion(string region) { concentrator.LoraRegion = region; }
+
 }
