@@ -47,7 +47,7 @@
             </MudCard>
             <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
                 <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice">Delete device</MudButton>
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="SaveDevice">Save Changes</MudButton>
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="SaveDevice" id="saveButton">Save Changes</MudButton>
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
@@ -157,9 +157,13 @@
     public async void SaveDevice()
     {
 
+        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
+        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+
         await form.Validate();
         if (!this.concentratorValidator.Validate(this.concentrator).IsValid)
         {
+            DialogService.Close(processingDialog);
             Snackbar.Add($"One or more validation errors occurred", Severity.Error);
             return;
         }
@@ -167,6 +171,8 @@
         var result = await Http.PutAsJsonAsync<Concentrator>($"api/lorawan/concentrators", concentrator);
 
         result.EnsureSuccessStatusCode();
+
+        DialogService.Close(processingDialog);
 
         // Prompts a snack bar to inform the action was successful
         Snackbar.Add($"Device {concentrator.DeviceId} has been successfully updated!", Severity.Success);

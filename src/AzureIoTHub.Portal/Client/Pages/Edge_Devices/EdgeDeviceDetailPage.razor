@@ -39,30 +39,12 @@ else
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardActions Class="pb-4 pl-4 justify-center">
-                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString">Connect</MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
                     </MudCardActions>
                 </MudCard>
                 <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                    @if (processingDelete)
-                    {
-                        <MudButton Variant="Variant.Filled" Color="Color.Error" Class="mx-1" Disabled="true">
-                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />Processing
-                        </MudButton>
-                    }
-                    else
-                    {
-                        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="ShowDeleteModal">Delete edge device</MudButton>
-                    }
-                    @if (processingUpdate)
-                    {
-                        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" Disabled="true">
-                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />Processing
-                        </MudButton>
-                    }
-                    else
-                    {
-                        <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="UpdateDevice">Save Changes</MudButton>
-                    }
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="ShowDeleteModal" id="deleteButton">Delete edge device</MudButton>
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="UpdateDevice" id="saveButton">Save Changes</MudButton>
                 </MudItem>
             </MudItem>
             <MudItem xs="12" sm="8" md="9">
@@ -176,8 +158,8 @@ else
                                                     <MudTd DataLabel="Version" Style="text-align: center">@context.Version</MudTd>
                                                     <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
                                                     <MudTd DataLabel="Device" Style="text-align: center">
-                                                        <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" Disabled="btn_disable" OnClick="@(async () => await ShowEdgeDeviceLogs(context) )">logs</MudButton>
-                                                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context,"RestartModule") )">reboot</MudButton>
+                                                        <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" Disabled="btn_disable" id="showLogs" OnClick="@(async () => await ShowEdgeDeviceLogs(context) )">logs</MudButton>
+                                                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="btn_disable" id="rebootModule" OnClick="@(async () => await OnMethod(context,"RestartModule") )">reboot</MudButton>
                                                     </MudTd>
                                                 </RowTemplate>
                                             </MudTable>
@@ -198,8 +180,6 @@ else
     public string deviceId { get; set; }
     private bool loading = true;
     private bool btn_disable = false;
-    private bool processingUpdate = false;
-    private bool processingDelete = false;
     private void Return() => navigationManager.NavigateTo("edge/devices");
 
     private IoTEdgeDevice Gateway;
@@ -223,8 +203,13 @@ else
 
     public async Task UpdateDevice()
     {
-        processingUpdate = true;
+
+        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
+        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+
         var result = await Http.PutAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}", Gateway);
+
+        DialogService.Close(processingDialog);
 
         if (result.IsSuccessStatusCode)
         {
@@ -238,13 +223,17 @@ else
         {
             Snackbar.Add("Something unexpected occurred", Severity.Warning);
         }
-
-        processingUpdate = false;
     }
 
     public async Task OnMethod(IoTEdgeModule module, string methodName)
     {
+
+        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
+        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+
         var result = await Http.PostAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}/{module.ModuleName}/{methodName}", module);
+
+        DialogService.Close(processingDialog);
 
         var c2dResult = result.Content.ReadFromJsonAsync<C2Dresult>().Result;
 
@@ -282,13 +271,11 @@ else
 
     public async Task ShowDeleteModal()
     {
-        processingDelete = true;
         var parameter = new DialogParameters();
 
         parameter.Add(nameof(Gateway.DeviceId), Gateway.DeviceId);
 
         var result = await DialogService.Show<EdgeDeviceDeleteConfirmationDialog>("Edge device deletion confirmation", parameter).Result;
-        processingDelete = false;
 
         if (result.Cancelled)
         {

@@ -25,14 +25,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using AzureIoTHub.Portal.Client.Shared;
 
     [TestFixture]
     public class DeviceModelDetaislPageTests : IDisposable
     {
-#pragma warning disable CA2213 // Disposable fields should be disposed
         private Bunit.TestContext testContext;
         private MockHttpMessageHandler mockHttpClient;
-#pragma warning restore CA2213 // Disposable fields should be disposed
 
         private readonly string mockModelId = Guid.NewGuid().ToString();
 
@@ -89,7 +88,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             var expectedModel = SetupMockDeviceModel(properties: expectedProperties);
 
-            _ = this.mockHttpClient.When(HttpMethod.Put, $"{ ApiBaseUrl}")
+            _ = this.mockHttpClient.When(HttpMethod.Put, $"{ApiBaseUrl}")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<JsonContent>(m.Content);
@@ -109,7 +108,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .RespondText(string.Empty);
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Post, $"{ ApiBaseUrl}/properties")
+                .When(HttpMethod.Post, $"{ApiBaseUrl}/properties")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<JsonContent>(m.Content);
@@ -138,6 +137,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             var saveButton = cut.WaitForElement("#SaveButton");
 
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
             // Act
             saveButton.Click();
             cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
@@ -153,23 +159,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var propertyName = Guid.NewGuid().ToString();
             var displayName = Guid.NewGuid().ToString();
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ ApiBaseUrl }")
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
                 .RespondJson(new DeviceModel
                 {
                     ModelId = this.mockModelId,
                     Name = Guid.NewGuid().ToString()
                 });
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ ApiBaseUrl }/avatar")
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/avatar")
                 .RespondText(string.Empty);
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ ApiBaseUrl }/properties")
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/properties")
                 .RespondJson(Array.Empty<DeviceProperty>());
 
-            _ = this.mockHttpClient.When(HttpMethod.Put, $"{ ApiBaseUrl }")
+            _ = this.mockHttpClient.When(HttpMethod.Put, $"{ApiBaseUrl}")
                 .RespondText(string.Empty);
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ ApiBaseUrl}/properties")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/properties")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
@@ -197,6 +203,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var saveButton = cut.WaitForElement("#SaveButton");
             var addPropertyButton = cut.WaitForElement("#addPropertyButton");
 
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
             // Act
             addPropertyButton.Click();
 
@@ -219,26 +232,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         public void ClickOnRemovePropertyShouldRemoveTheProperty()
         {
             // Arrange
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ ApiBaseUrl }")
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
                 .RespondJson(new DeviceModel
                 {
                     ModelId = this.mockModelId,
                     Name = Guid.NewGuid().ToString()
                 });
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ ApiBaseUrl }/avatar")
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/avatar")
                 .RespondText(string.Empty);
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ ApiBaseUrl }/properties")
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/properties")
                 .RespondJson(new DeviceProperty[]
                 {
                     new DeviceProperty()
                 });
 
-            _ = this.mockHttpClient.When(HttpMethod.Put, $"{ ApiBaseUrl}")
+            _ = this.mockHttpClient.When(HttpMethod.Put, $"{ApiBaseUrl}")
                 .RespondText(string.Empty);
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ ApiBaseUrl}/properties")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/properties")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
@@ -258,6 +271,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             var saveButton = cut.WaitForElement("#SaveButton");
             var removePropertyButton = cut.WaitForElement("#DeletePropertyButton");
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
             // Act
             removePropertyButton.Click();
@@ -299,9 +319,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 Assert.AreEqual(item.DisplayName, cut.Find($"{propertyCssSelector} #{nameof(item.DisplayName)}").Attributes["value"].Value);
                 Assert.AreEqual(item.Name, cut.Find($"{propertyCssSelector} #{nameof(item.Name)}").Attributes["value"].Value);
                 Assert.AreEqual(item.PropertyType.ToString(), cut.Find($"{propertyCssSelector} #{nameof(item.PropertyType)}").Attributes["value"].Value);
-#pragma warning disable CA1308 // Normalize strings to uppercase
                 Assert.AreEqual(item.IsWritable.ToString().ToLowerInvariant(), cut.Find($"{propertyCssSelector} #{nameof(item.IsWritable)}").Attributes["aria-checked"].Value);
-#pragma warning restore CA1308 // Normalize strings to uppercase
             }
 
             this.mockHttpClient.VerifyNoOutstandingExpectation();

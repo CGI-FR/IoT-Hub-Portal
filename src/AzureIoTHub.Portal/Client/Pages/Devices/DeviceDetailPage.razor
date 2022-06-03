@@ -38,14 +38,14 @@
                 <MudCardActions Class="pb-4 pl-4 justify-center">
                     @if (isLoaded && (!IsLoRa || !(Device is LoRaDeviceDetails)))
                     {
-                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString">Connect</MudButton>
+                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
                     }
                 </MudCardActions>
             </MudCard>
 
             <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice">Delete device</MudButton>
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save">Save Changes</MudButton>
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice" id="deleteButton">Delete device</MudButton>
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton">Save Changes</MudButton>
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
@@ -61,6 +61,7 @@
                                         <MudGrid>
                                             <MudItem xs="12" md="6">
                                                 <MudTextField @bind-Value="@Device.DeviceID"
+                                                              id=@nameof(DeviceDetails.DeviceID)
                                                               Label="Device ID"
                                                               Variant="Variant.Outlined"
                                                               For="@(()=> Device.DeviceID)"
@@ -70,6 +71,7 @@
                                             </MudItem>
                                             <MudItem xs="12" md="6">
                                                 <MudTextField @bind-Value="@Device.DeviceName"
+                                                              id=@nameof(DeviceDetails.DeviceName)
                                                               Label="Device name"
                                                               Variant="Variant.Outlined"
                                                               For="@(()=> Device.DeviceName)"
@@ -104,6 +106,10 @@
                                             @foreach (DeviceTag tag in TagList)
                                             {
                                                 <MudItem xs="12" md="6">
+                                                    @if (!Device.Tags.ContainsKey(tag.Name))
+                                                    {
+                                                        Device.Tags.Add(tag.Name, "");
+                                                    }
                                                     <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
                                                               Required="@tag.Required"
                                                               Variant="Variant.Outlined" />
@@ -251,6 +257,9 @@
     /// </summary>
     public async void Save()
     {
+        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
+        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+
         await form.Validate();
         bool tagValidationError = CheckTagsError();
 
@@ -258,6 +267,7 @@
             || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid)
             || tagValidationError)
         {
+            DialogService.Close(processingDialog);
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
             return;
@@ -280,18 +290,20 @@
 
         result.EnsureSuccessStatusCode();
 
-        // Prompts a snack bar to inform the action was successful
-        Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!", Severity.Success);
+        DialogService.Close(processingDialog);
 
+        // Prompts a snack bar to inform the action was successful
+        Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!", Severity.Success, null);
+        
         // Go back to the list of devices
         NavManager.NavigateTo("devices");
     }
-    public void ShowConnectionString()
+    public async Task ShowConnectionString()
     {
         var parameters = new DialogParameters();
         parameters.Add(nameof(ConnectionStringDialog.deviceId), this.DeviceID);
 
-        DialogService.Show<ConnectionStringDialog>("Device Credentials", parameters);
+        _  = await DialogService.Show<ConnectionStringDialog>("Device Credentials", parameters).Result;
     }
 
     private bool CheckTagsError()

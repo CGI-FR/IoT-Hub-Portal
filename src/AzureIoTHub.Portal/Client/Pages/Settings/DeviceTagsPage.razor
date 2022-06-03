@@ -9,6 +9,7 @@
 @attribute [Authorize]
 @inject HttpClient HttpClient
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
 
 
 <MudItem xs="12">
@@ -61,7 +62,7 @@
             </MudTd>
         </RowTemplate>
         <FooterContent>
-            <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddTag">Add a new Tag</MudButton>
+            <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddTag" id="addTagButton">Add a new Tag</MudButton>
         </FooterContent>
 
         <NoRecordsContent>
@@ -72,7 +73,7 @@
         </LoadingContent>
     </MudTable>
     <MudCardActions Class="pb-4 pl-4">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save">Save Changes</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save" id="saveButton">Save Changes</MudButton>
     </MudCardActions>
 </MudItem>
 @code {
@@ -106,6 +107,9 @@
     private async Task Save()
     {
 
+        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
+        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+
         // Checks empty field and regex validation
         await FormLabel.Validate();
         await FormName.Validate();
@@ -122,16 +126,22 @@
             duplicated = true;
         }
 
+        var test = FormLabel.IsValid;
+        var test2 = FormName.IsValid;
+
         if (FormLabel.IsValid && FormName.IsValid && !duplicated)
         {
             var response = await HttpClient.PostAsJsonAsync($"/api/settings/device-tags", Tags);
             response.EnsureSuccessStatusCode();
+
+            DialogService.Close(processingDialog);
 
             // Prompts a snack bar to inform the action was successful
             Snackbar.Add($"Settings have been successfully updated!", Severity.Success);
         }
         else
         {
+            DialogService.Close(processingDialog);
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
             return;
         }

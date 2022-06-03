@@ -45,7 +45,17 @@
                 </MudCardContent>
                 <MudCardActions Class="pb-4 pl-4">
                     <MudButton Variant="Variant.Outlined" Color="Color.Dark" Class="ml-auto" @onclick="Cancel">Cancel</MudButton>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-4">Create</MudButton>
+
+                    @if (processingSave)
+                    {
+                        <MudButton Variant="Variant.Filled" Class="ml-4" Color="Color.Primary" Disabled="true">
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />Processing
+                        </MudButton>
+                    }
+                    else
+                    {
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-4">Create</MudButton>
+                    }
                 </MudCardActions>
             </MudCard>
         </EditForm>
@@ -56,12 +66,15 @@
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
     private IoTEdgeDevice gateway = new IoTEdgeDevice();
+    private bool processingSave = false;
 
     void Cancel() => MudDialog.Cancel();
 
     private async Task OnValidation()
     {
+        processingSave = true;
         var result = await Http.PostAsJsonAsync("api/edge/devices", gateway);
+        processingSave = false;
 
         if (result.IsSuccessStatusCode)
         {
