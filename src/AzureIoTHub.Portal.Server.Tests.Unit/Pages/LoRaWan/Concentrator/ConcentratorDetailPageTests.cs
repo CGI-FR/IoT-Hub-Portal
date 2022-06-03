@@ -104,9 +104,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 {
                     Assert.IsAssignableFrom<ObjectContent<Concentrator>>(m.Content);
                     var objectContent = m.Content as ObjectContent<Concentrator>;
+                    Assert.IsNotNull(objectContent);
 
                     Assert.IsAssignableFrom<Concentrator>(objectContent.Value);
                     var concentrator = objectContent.Value as Concentrator;
+                    Assert.IsNotNull(concentrator);
 
                     Assert.AreEqual(mockConcentrator.DeviceId, concentrator.DeviceId);
                     Assert.AreEqual(mockConcentrator.DeviceName, concentrator.DeviceName);

@@ -1,0 +1,78 @@
+﻿@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+.custom-form {
+  display: flex !important;
+  align-items: baseline !important;
+}
+
+.custom-disabled {
+  background-color: #e2e2e2;
+}
+
+.custom-centered-container {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.custom-centered-item {
+  margin: auto;
+}
+
+.custom-img-sm {
+  width: 35px;
+}
+
+.img-device-model {
+  width: 200px;
+  height: auto;
+  margin-top: 1em;
+}
+
+/*//////////////////// Search Panel ////////////////*/
+.search-panel {
+  /*width: max-content;*/
+  /*padding: 5px;*/
+  /*margin-left: 25%;*/
+  /*justify-content: center;*/
+  /*margin-bottom: 15px;*/
+  /*    .mud-grid-spacing-xs-3 {
+          display: contents;
+      }*/
+}
+
+.mud-dialog-width-sm {
+  max-width: fit-content;
+}
+.mud-dialog-width-sm .Add-dialog {
+  width: fit-content;
+}
+.mud-dialog-width-sm .Add-dialog .mud-input-control .mud-input-control-input-container {
+  width: 300px;
+}
+
+.grid-custom .last-deployment {
+  background: gainsboro;
+  padding: 4px;
+}
+
+.btn {
+  font-size: 0.9em;
+}
+.btn:hover {
+  color: #000000;
+}
+
+.form-group {
+  font-size: 0.9em;
+}
+
+.connectionString-modal-card .form-group {
+  align-items: baseline;
+  margin: 10px;
+  width: max-content;
+}
+.connectionString-modal-card .form-group label {
+  padding-right: 2px;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+}

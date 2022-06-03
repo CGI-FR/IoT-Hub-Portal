@@ -89,10 +89,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<List<DeviceTag>>>(m.Content);
-                    var jsonContent = m.Content as ObjectContent<List<DeviceTag>>;
+                    var objectContent = m.Content as ObjectContent<List<DeviceTag>>;
+                    Assert.IsNotNull(objectContent);
 
-                    Assert.IsAssignableFrom<List<DeviceTag>>(jsonContent.Value);
-                    var tags = jsonContent.Value as IEnumerable<DeviceTag>;
+                    Assert.IsAssignableFrom<List<DeviceTag>>(objectContent.Value);
+                    var tags = objectContent.Value as IEnumerable<DeviceTag>;
+                    Assert.IsNotNull(tags);
 
                     Assert.AreEqual(1, tags.Count());
 
@@ -148,10 +150,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<List<DeviceTag>>>(m.Content);
-                    var jsonContent = m.Content as ObjectContent<List<DeviceTag>>;
+                    var objectContent = m.Content as ObjectContent<List<DeviceTag>>;
+                    Assert.IsNotNull(objectContent);
 
-                    Assert.IsAssignableFrom<List<DeviceTag>>(jsonContent.Value);
-                    var tags = jsonContent.Value as IEnumerable<DeviceTag>;
+                    Assert.IsAssignableFrom<List<DeviceTag>>(objectContent.Value);
+                    var tags = objectContent.Value as IEnumerable<DeviceTag>;
+                    Assert.IsNotNull(tags);
 
                     Assert.AreEqual(1, tags.Count());
 
@@ -208,10 +212,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<List<DeviceTag>>>(m.Content);
-                    var jsonContent = m.Content as ObjectContent<List<DeviceTag>>;
+                    var objectContent = m.Content as ObjectContent<List<DeviceTag>>;
+                    Assert.IsNotNull(objectContent);
 
-                    Assert.IsAssignableFrom<List<DeviceTag>>(jsonContent.Value);
-                    var tags = jsonContent.Value as IEnumerable<DeviceTag>;
+                    Assert.IsAssignableFrom<List<DeviceTag>>(objectContent.Value);
+                    var tags = objectContent.Value as IEnumerable<DeviceTag>;
+                    Assert.IsNotNull(tags);
 
                     Assert.AreEqual(1, tags.Count());
 

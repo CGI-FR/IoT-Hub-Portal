@@ -91,9 +91,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 {
                     Assert.IsAssignableFrom<ObjectContent<DeviceDetails>>(m.Content);
                     var objectContent = m.Content as ObjectContent<DeviceDetails>;
+                    Assert.IsNotNull(objectContent);
 
                     Assert.IsAssignableFrom<DeviceDetails>(objectContent.Value);
                     var deviceDetails = objectContent.Value as DeviceDetails;
+                    Assert.IsNotNull(deviceDetails);
 
                     Assert.AreEqual(expectedDeviceDetails.DeviceID, deviceDetails.DeviceID);
                     Assert.AreEqual(expectedDeviceDetails.DeviceName, deviceDetails.DeviceName);
