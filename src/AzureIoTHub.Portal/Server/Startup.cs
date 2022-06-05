@@ -267,6 +267,8 @@ namespace AzureIoTHub.Portal.Server
             _ = app.UseProblemDetails();
             app.UseIfElse(IsApiRequest, UseApiExceptionMiddleware, UseUIExceptionMiddleware);
 
+            _ = app.UseSecurityHeaders();
+
             if (env.IsDevelopment())
             {
                 app.UseWebAssemblyDebugging();
