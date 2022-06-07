@@ -412,18 +412,16 @@
             }
             else
             {
-                await Http.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"api/models/{model.ModelId}/properties")
-                    .ContinueWith(c =>
+                var properties = await Http.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"api/models/{model.ModelId}/properties");
+
+                Properties.AddRange(properties.Select(x => new DevicePropertyValue
                     {
-                        Properties.AddRange(c.Result.Select(x => new DevicePropertyValue
-                        {
-                            DisplayName = x.DisplayName,
-                            IsWritable = x.IsWritable,
-                            Name = x.Name,
-                            Order = x.Order,
-                            PropertyType = x.PropertyType
-                        }));
-                    });
+                        DisplayName = x.DisplayName,
+                        IsWritable = x.IsWritable,
+                        Name = x.Name,
+                        Order = x.Order,
+                        PropertyType = x.PropertyType
+                    }));
             }
         }
         catch (ProblemDetailsException exception)

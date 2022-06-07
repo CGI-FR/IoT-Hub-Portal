@@ -266,11 +266,11 @@
     /// </summary>
     public async void Save()
     {
+        var parameters = new DialogParameters {{"ContentText", "Processing"}};
+        DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
+        
         try
         {
-            var parameters = new DialogParameters{{ "ContentText", "Processing" }};
-            DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
-
             await form.Validate();
             bool tagValidationError = CheckTagsError();
 
@@ -284,34 +284,30 @@
                 return;
             }
 
-            HttpResponseMessage result;
-
             if (IsLoRa)
             {
-                result = await Http.PutAsJsonAsync(ApiUrlBase, Device as LoRaDeviceDetails);
+                await Http.PutAsJsonAsync(ApiUrlBase, Device as LoRaDeviceDetails);
             }
             else
             {
-                result = await Http.PutAsJsonAsync(ApiUrlBase, Device);
+                await Http.PutAsJsonAsync(ApiUrlBase, Device);
 
-                result.EnsureSuccessStatusCode();
-
-                result = await Http.PostAsJsonAsync($"{ApiUrlBase}/{DeviceID}/properties", Properties);
+                await Http.PostAsJsonAsync($"{ApiUrlBase}/{DeviceID}/properties", Properties);
             }
-
-            result.EnsureSuccessStatusCode();
-
-            DialogService.Close(processingDialog);
 
             // Prompts a snack bar to inform the action was successful
             Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!", Severity.Success, null);
-        
+
             // Go back to the list of devices
             NavManager.NavigateTo("devices");
         }
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            DialogService.Close(processingDialog);            
         }
     }
     public async Task ShowConnectionString()

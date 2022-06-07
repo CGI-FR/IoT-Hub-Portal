@@ -14,6 +14,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
     using Bunit.TestDoubles;
+    using Client.Exceptions;
+    using Client.Models;
+    using FluentAssertions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -153,6 +156,185 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             });
 
             // Assert            
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public void OnInitializedAsyncShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceTags()
+        {
+            var mockDeviceModel = new DeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                SupportLoRaFeatures = false,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models")
+                .RespondJson(new DeviceModel[]
+                {
+                    mockDeviceModel
+                });
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/settings/device-tags")
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            // Act
+            var cut = RenderComponent<CreateDevicePage>();
+
+            // Assert
+            _ = cut.Markup.Should().NotBeNullOrEmpty();
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public void OnInitializedAsyncShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceModels()
+        {
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models")
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            // Act
+            var cut = RenderComponent<CreateDevicePage>();
+
+            // Assert
+            _ = cut.Markup.Should().NotBeNullOrEmpty();
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task SaveShouldProcessProblemDetailsExceptionWhenIssueOccursOnCreatingDevice()
+        {
+            var mockDeviceModel = new DeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                SupportLoRaFeatures = false,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var expectedDeviceDetails = new DeviceDetails
+            {
+                DeviceName = Guid.NewGuid().ToString(),
+                ModelId = mockDeviceModel.ModelId,
+                DeviceID = Guid.NewGuid().ToString(),
+            };
+
+
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
+                .With(m =>
+                {
+                    Assert.IsAssignableFrom<ObjectContent<DeviceDetails>>(m.Content);
+                    var objectContent = m.Content as ObjectContent<DeviceDetails>;
+                    Assert.IsNotNull(objectContent);
+
+                    Assert.IsAssignableFrom<DeviceDetails>(objectContent.Value);
+                    var deviceDetails = objectContent.Value as DeviceDetails;
+                    Assert.IsNotNull(deviceDetails);
+
+                    Assert.AreEqual(expectedDeviceDetails.DeviceID, deviceDetails.DeviceID);
+                    Assert.AreEqual(expectedDeviceDetails.DeviceName, deviceDetails.DeviceName);
+                    Assert.AreEqual(expectedDeviceDetails.ModelId, deviceDetails.ModelId);
+
+                    return true;
+                })
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, "/api/models")
+                .RespondJson(new DeviceModel[]
+                {
+                    mockDeviceModel
+                });
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, "/api/settings/device-tags")
+                .RespondJson(new List<DeviceTag>
+                {
+                    new()
+                    {
+                        Label = Guid.NewGuid().ToString(),
+                        Name = Guid.NewGuid().ToString(),
+                        Required = false,
+                        Searchable = false
+                    }
+                });
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models/{mockDeviceModel.ModelId}/properties")
+                .RespondJson(Array.Empty<DeviceProperty>());
+
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/{expectedDeviceDetails.DeviceID}/properties")
+                .RespondText(string.Empty);
+
+            var cut = RenderComponent<CreateDevicePage>();
+            Thread.Sleep(2500);
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
+            // Act
+            cut.Find($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+            cut.Find($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+            await cut.Instance.ChangeModel(mockDeviceModel);
+
+            saveButton.Click();
+            Thread.Sleep(2500);
+
+            // Assert
+            _ = this.mockNavigationManager.Uri.Should().NotEndWith("/devices");
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task ChangeModelShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingModelProperties()
+        {
+            var mockDeviceModel = new DeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                SupportLoRaFeatures = false,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var expectedDeviceDetails = new DeviceDetails
+            {
+                DeviceName = Guid.NewGuid().ToString(),
+                ModelId = mockDeviceModel.ModelId,
+                DeviceID = Guid.NewGuid().ToString(),
+            };
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, "/api/models")
+                .RespondJson(new DeviceModel[]
+                {
+                    mockDeviceModel
+                });
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, "/api/settings/device-tags")
+                .RespondJson(new List<DeviceTag>
+                {
+                    new()
+                    {
+                        Label = Guid.NewGuid().ToString(),
+                        Name = Guid.NewGuid().ToString(),
+                        Required = false,
+                        Searchable = false
+                    }
+                });
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models/{mockDeviceModel.ModelId}/properties")
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            var cut = RenderComponent<CreateDevicePage>();
+            Thread.Sleep(2500);
+
+            // Act
+            cut.Find($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+            cut.Find($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+            await cut.Instance.ChangeModel(mockDeviceModel);
+
+            // Assert
             this.mockHttpClient.VerifyNoOutstandingExpectation();
         }
 
