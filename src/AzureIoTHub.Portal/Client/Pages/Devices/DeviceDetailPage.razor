@@ -200,6 +200,8 @@
     </MudGrid>
 </MudForm>
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
 
     private MudForm form;
 
@@ -234,22 +236,29 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (IsLoRa)
+        try
         {
-            Device = await Http.GetFromJsonAsync<LoRaDeviceDetails>($"{ApiUrlBase}/{DeviceID}");
-            Commands = await Http.GetFromJsonAsync<DeviceModelCommand[]>($"/api/lorawan/models/{Device.ModelId}/commands");
-            DeviceModel = await Http.GetFromJsonAsync<LoRaDeviceModel>($"api/lorawan/models/{Device.ModelId}");
+            if (IsLoRa)
+            {
+                Device = await Http.GetFromJsonAsync<LoRaDeviceDetails>($"{ApiUrlBase}/{DeviceID}");
+                Commands = await Http.GetFromJsonAsync<DeviceModelCommand[]>($"/api/lorawan/models/{Device.ModelId}/commands");
+                DeviceModel = await Http.GetFromJsonAsync<LoRaDeviceModel>($"api/lorawan/models/{Device.ModelId}");
+            }
+            else
+            {
+                Device = await Http.GetFromJsonAsync<DeviceDetails>($"{ApiUrlBase}/{DeviceID}");
+                Properties = await Http.GetFromJsonAsync<List<DevicePropertyValue>>($"{ApiUrlBase}/{DeviceID}/properties");
+                DeviceModel = await Http.GetFromJsonAsync<DeviceModel>($"api/models/{Device.ModelId}");
+            }
+
+            TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
+
+            isLoaded = true;
         }
-        else
+        catch (ProblemDetailsException exception)
         {
-            Device = await Http.GetFromJsonAsync<DeviceDetails>($"{ApiUrlBase}/{DeviceID}");
-            Properties = await Http.GetFromJsonAsync<List<DevicePropertyValue>>($"{ApiUrlBase}/{DeviceID}/properties");
-            DeviceModel = await Http.GetFromJsonAsync<DeviceModel>($"api/models/{Device.ModelId}");
+            Error?.ProcessProblemDetails(exception);
         }
-
-        TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
-
-        isLoaded = true;
     }
 
     /// <summary>
@@ -257,46 +266,53 @@
     /// </summary>
     public async void Save()
     {
-        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
-        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
-
-        await form.Validate();
-        bool tagValidationError = CheckTagsError();
-
-        if (!standardValidator.Validate(Device).IsValid
-            || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid)
-            || tagValidationError)
+        try
         {
-            DialogService.Close(processingDialog);
-            Snackbar.Add("One or more validation errors occurred", Severity.Error);
+            var parameters = new DialogParameters{{ "ContentText", "Processing" }};
+            DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
 
-            return;
-        }
+            await form.Validate();
+            bool tagValidationError = CheckTagsError();
 
-        HttpResponseMessage result;
+            if (!standardValidator.Validate(Device).IsValid
+                || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid)
+                || tagValidationError)
+            {
+                DialogService.Close(processingDialog);
+                Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
-        if (IsLoRa)
-        {
-            result = await Http.PutAsJsonAsync(ApiUrlBase, Device as LoRaDeviceDetails);
-        }
-        else
-        {
-            result = await Http.PutAsJsonAsync(ApiUrlBase, Device);
+                return;
+            }
+
+            HttpResponseMessage result;
+
+            if (IsLoRa)
+            {
+                result = await Http.PutAsJsonAsync(ApiUrlBase, Device as LoRaDeviceDetails);
+            }
+            else
+            {
+                result = await Http.PutAsJsonAsync(ApiUrlBase, Device);
+
+                result.EnsureSuccessStatusCode();
+
+                result = await Http.PostAsJsonAsync($"{ApiUrlBase}/{DeviceID}/properties", Properties);
+            }
 
             result.EnsureSuccessStatusCode();
 
-            result = await Http.PostAsJsonAsync($"{ApiUrlBase}/{DeviceID}/properties", Properties);
-        }
+            DialogService.Close(processingDialog);
 
-        result.EnsureSuccessStatusCode();
-
-        DialogService.Close(processingDialog);
-
-        // Prompts a snack bar to inform the action was successful
-        Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!", Severity.Success, null);
+            // Prompts a snack bar to inform the action was successful
+            Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!", Severity.Success, null);
         
-        // Go back to the list of devices
-        NavManager.NavigateTo("devices");
+            // Go back to the list of devices
+            NavManager.NavigateTo("devices");
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
     }
     public async Task ShowConnectionString()
     {
