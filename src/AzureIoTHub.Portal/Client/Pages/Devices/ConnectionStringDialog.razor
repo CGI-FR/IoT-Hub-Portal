@@ -48,6 +48,9 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string deviceId { get; set; }
     private EnrollmentCredentials Credentials;
@@ -61,19 +64,10 @@
 
             Credentials = await this.Http.GetFromJsonAsync<EnrollmentCredentials>($"api/devices/{deviceId}/credentials");
             loading = false;
-
         }
-        catch (HttpRequestException e)
+        catch (ProblemDetailsException exception)
         {
-            if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                Snackbar.Add("Cannot obtain the connection string <br> because the enrollment group does not exist.", Severity.Error);
-            }
-            else
-            {
-                Snackbar.Add($"Something went wrong.", Severity.Error);
-            }
-
+            Error?.ProcessProblemDetails(exception);
             MudDialog.Close();
         }
     }
