@@ -13,6 +13,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
     using Bunit.TestDoubles;
+    using Client.Exceptions;
+    using Client.Models;
+    using FluentAssertions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -193,6 +196,93 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             this.mockHttpClient.VerifyNoOutstandingExpectation();
             this.mockRepository.VerifyAll();
             cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("devices", StringComparison.OrdinalIgnoreCase));
+        }
+
+        [Test]
+        public void SaveShouldProcessProblemDetailsExceptionWhenIssueOccursOnUpdatingDevice()
+        {
+            var mockDeviceModel = new DeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                SupportLoRaFeatures = false,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var mockTag = new DeviceTag
+            {
+                Label = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString(),
+                Required = false,
+                Searchable = false
+            };
+
+            var mockDeviceDetails = new DeviceDetails
+            {
+                DeviceName = Guid.NewGuid().ToString(),
+                ModelId = mockDeviceModel.ModelId,
+                DeviceID = Guid.NewGuid().ToString(),
+                Tags = new Dictionary<string, string>()
+                {
+                    {mockTag.Name,Guid.NewGuid().ToString()}
+                }
+            };
+
+
+            _ = this.mockHttpClient.When(HttpMethod.Put, $"{ApiBaseUrl}")
+                .With(m =>
+                {
+                    Assert.IsAssignableFrom<ObjectContent<DeviceDetails>>(m.Content);
+                    var objectContent = m.Content as ObjectContent<DeviceDetails>;
+                    Assert.IsNotNull(objectContent);
+
+                    Assert.IsAssignableFrom<DeviceDetails>(objectContent.Value);
+                    var deviceDetails = objectContent.Value as DeviceDetails;
+                    Assert.IsNotNull(deviceDetails);
+
+                    Assert.AreEqual(mockDeviceDetails.DeviceID, deviceDetails.DeviceID);
+                    Assert.AreEqual(mockDeviceDetails.DeviceName, deviceDetails.DeviceName);
+                    Assert.AreEqual(mockDeviceDetails.ModelId, deviceDetails.ModelId);
+
+                    return true;
+                })
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/devices/{mockDeviceDetails.DeviceID}")
+                .RespondJson(mockDeviceDetails);
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models/{mockDeviceDetails.ModelId}")
+                .RespondJson(mockDeviceModel);
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/settings/device-tags")
+                .RespondJson(new List<DeviceTag>()
+                {
+                    mockTag
+                });
+
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/{mockDeviceDetails.DeviceID}/properties")
+                .RespondJson(Array.Empty<DeviceProperty>());
+
+            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
+            Thread.Sleep(2500);
+
+            var saveButton = cut.WaitForElement("#saveButton");
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
+            // Act
+            saveButton.Click();
+            Thread.Sleep(2500);
+
+            // Assert
+            _ = this.mockNavigationManager.Uri.Should().NotEndWith("/devices");
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
         }
 
         [Test]
