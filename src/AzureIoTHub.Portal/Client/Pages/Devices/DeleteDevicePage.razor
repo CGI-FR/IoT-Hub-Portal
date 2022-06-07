@@ -24,6 +24,9 @@
 </MudDialog>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string deviceID { get; set; }
     [Parameter] public string deviceName { get; set; }
@@ -37,18 +40,19 @@
     /// <returns></returns>
     private async Task DeleteDevice()
     {
-        // var response = await Http.PostAsJsonAsync<DeviceListItem>($"Devices/delete", device);
-        var response = await Http.DeleteAsync($"api/devices/{deviceID}");
-
-        // Prompts a snack bar to inform if the action was successful
-        // TODO : Deal more effectively with error/success messages
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            Snackbar.Add($"Oh oh, something went wrong while deleting device {deviceName}... ", Severity.Error);
-            return;
-        }
+            await Http.DeleteAsync($"api/devices/{deviceID}");
 
-        Snackbar.Add($"Device {deviceName} has been successfully deleted!", Severity.Success);
-        MudDialog.Close(DialogResult.Ok(true));
+            Snackbar.Add($"Device {deviceName} has been successfully deleted!", Severity.Success);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            MudDialog.Close();
+        }
     }
 }
