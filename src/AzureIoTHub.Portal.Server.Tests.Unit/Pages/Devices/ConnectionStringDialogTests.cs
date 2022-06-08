@@ -91,38 +91,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public async Task OnClickCancelConnectionStringDialogMustBeCanceled()
-        {
-            // Arrange
-            var deviceId = Guid.NewGuid().ToString();
-
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/devices/{deviceId}/credentials")
-                .RespondJson(new EnrollmentCredentials());
-
-            var cut = RenderComponent<MudDialogProvider>();
-            var service = this.testContext.Services.GetService<IDialogService>() as DialogService;
-
-            var parameters = new DialogParameters
-            {
-                {
-                    "deviceId", deviceId
-                }
-            };
-
-            IDialogReference dialogReference = null;
-
-            // Act
-            await cut.InvokeAsync(() => dialogReference = service?.Show<ConnectionStringDialog>(string.Empty, parameters));
-            cut.Find("button").Click();
-
-            var result = await dialogReference.Result;
-
-            // Assert
-            _ = result.Cancelled.Should().BeTrue();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-        }
-
-        [Test]
         public async Task OnInitializedAsyncShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingCredentials()
         {
             // Arrange
