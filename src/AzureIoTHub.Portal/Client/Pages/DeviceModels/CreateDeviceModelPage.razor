@@ -49,7 +49,7 @@
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
-            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6" id="tabs">
+            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content" id="tabs">
                 <MudTabPanel Text="General" Style=@(standardValidator.Validate(Model).IsValid ? "" : "color: red")>
                     <MudExpansionPanels MultiExpansion="true" id="general">
                         <MudGrid>
