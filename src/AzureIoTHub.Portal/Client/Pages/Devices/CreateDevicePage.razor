@@ -221,6 +221,8 @@
 </MudForm>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
 
     private MudForm form;
 
@@ -258,18 +260,25 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Enable device by default
-        Device.IsEnabled = true;
-
-        // Gets a list of device model previously registered to Azure to allow autocomplete field in the form
-        DeviceModelList = await Http.GetFromJsonAsync<DeviceModel[]>("api/models");
-
-        // Gets the custom tags that can be set when creating a device
-        TagList = await Http.GetFromJsonAsync<IEnumerable<DeviceTag>>($"/api/settings/device-tags");
-
-        foreach (DeviceTag tag in TagList)
+        try
         {
-            Device.Tags.Add(tag.Name, "");
+            // Enable device by default
+            Device.IsEnabled = true;
+
+            // Gets a list of device model previously registered to Azure to allow autocomplete field in the form
+            DeviceModelList = await Http.GetFromJsonAsync<DeviceModel[]>("api/models");
+
+            // Gets the custom tags that can be set when creating a device
+            TagList = await Http.GetFromJsonAsync<IEnumerable<DeviceTag>>($"/api/settings/device-tags");
+
+            foreach (DeviceTag tag in TagList)
+            {
+                Device.Tags.Add(tag.Name, "");
+            }
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
         }
     }
 
@@ -279,44 +288,48 @@
     public async void Save()
     {
         var parameters = new DialogParameters { { "ContentText", "Processing" } };
-        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+        DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
+        
+        try
+        {
+            await form.Validate();
+            bool tagValidationError = CheckTagsError();
 
-        await form.Validate();
-        bool tagValidationError = CheckTagsError();
+            if (!standardValidator.Validate(Device).IsValid
+                || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid)
+                || tagValidationError)
+            {
+                DialogService.Close(processingDialog);
+                Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
-        if (!standardValidator.Validate(Device).IsValid
-            || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid)
-            || tagValidationError)
+                // Allows to display ValidationError messages for the MudAutocomplete field.
+                displayValidationErrorMessages = true;
+
+                return;
+            }
+
+            if (IsLoRa)
+                await Http.PostAsJsonAsync(ApiUrlBase, Device as LoRaDeviceDetails);
+            else
+            {
+                await Http.PostAsJsonAsync(ApiUrlBase, Device);
+                await Http.PostAsJsonAsync($"{ApiUrlBase}/{Device.DeviceID}/properties", Properties);
+            }
+
+            // Prompts a snack bar to inform the action was successful
+            Snackbar.Add($"Device {Device.DeviceID} has been successfully created!", Severity.Success);
+
+            // Go back to the list of devices
+            NavManager.NavigateTo("devices");
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
         {
             DialogService.Close(processingDialog);
-            Snackbar.Add("One or more validation errors occurred", Severity.Error);
-
-            // Allows to display ValidationError messages for the MudAutocomplete field.
-            displayValidationErrorMessages = true;
-
-            return;
         }
-
-        HttpResponseMessage result;
-
-        if (IsLoRa)
-            result = await Http.PostAsJsonAsync(ApiUrlBase, Device as LoRaDeviceDetails);
-        else
-        {
-            result = await Http.PostAsJsonAsync(ApiUrlBase, Device);
-            result.EnsureSuccessStatusCode();
-            result = await Http.PostAsJsonAsync($"{ApiUrlBase}/{Device.DeviceID}/properties", Properties);
-        }
-
-        result.EnsureSuccessStatusCode();
-
-        DialogService.Close(processingDialog);
-
-        // Prompts a snack bar to inform the action was successful
-        Snackbar.Add($"Device {Device.DeviceID} has been successfully created!", Severity.Success);
-
-        // Go back to the list of devices
-        NavManager.NavigateTo("devices");
     }
 
     private bool CheckTagsError()
@@ -353,11 +366,13 @@
 
     internal async Task ChangeModel(DeviceModel model)
     {
-        Properties.Clear();
+        try
+        {
+            Properties.Clear();
 
-        _deviceModel = model;
+            _deviceModel = model;
 
-        Device = new DeviceDetails
+            Device = new DeviceDetails
             {
                 DeviceID = Device.DeviceID,
                 ModelId = model?.ModelId,
@@ -367,14 +382,14 @@
                 Tags = Device.Tags
             };
 
-        if (model == null)
-        {
-            return;
-        }
+            if (model == null)
+            {
+                return;
+            }
 
-        if (model?.SupportLoRaFeatures ?? false)
-        {
-            var device = new LoRaDeviceDetails
+            if (model?.SupportLoRaFeatures ?? false)
+            {
+                var device = new LoRaDeviceDetails
                 {
                     DeviceID = Device.DeviceID,
                     ModelId = model.ModelId,
@@ -384,23 +399,22 @@
                     Tags = Device.Tags
                 };
 
-            Device = device;
+                Device = device;
 
-            await Http.GetFromJsonAsync<LoRaDeviceModel>($"api/lorawan/models/{model.ModelId}")
-                .ContinueWith(c =>
-                {
-                    device.AppEUI = c.Result.AppEUI;
-                    device.SensorDecoder = c.Result.SensorDecoder;
-                    device.UseOTAA = c.Result.UseOTAA;
-                    loRaDeviceModel = c.Result;
-                });
-        }
-        else
-        {
-            await Http.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"api/models/{model.ModelId}/properties")
-            .ContinueWith(c =>
+                await Http.GetFromJsonAsync<LoRaDeviceModel>($"api/lorawan/models/{model.ModelId}")
+                    .ContinueWith(c =>
+                    {
+                        device.AppEUI = c.Result.AppEUI;
+                        device.SensorDecoder = c.Result.SensorDecoder;
+                        device.UseOTAA = c.Result.UseOTAA;
+                        loRaDeviceModel = c.Result;
+                    });
+            }
+            else
             {
-                Properties.AddRange(c.Result.Select(x => new DevicePropertyValue
+                var properties = await Http.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"api/models/{model.ModelId}/properties");
+
+                Properties.AddRange(properties.Select(x => new DevicePropertyValue
                     {
                         DisplayName = x.DisplayName,
                         IsWritable = x.IsWritable,
@@ -408,7 +422,11 @@
                         Order = x.Order,
                         PropertyType = x.PropertyType
                     }));
-            });
+            }
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
         }
     }
 }

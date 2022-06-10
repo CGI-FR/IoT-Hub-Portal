@@ -11,6 +11,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
     using Bunit.TestDoubles;
+    using Client.Exceptions;
+    using Client.Models;
+    using FluentAssertions;
     using FluentAssertions.Extensions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
@@ -247,6 +250,53 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             {
                 Assert.AreEqual($"devices/{deviceId}?isLora=true", item.GetAttribute("href"));
             }
+        }
+
+        [Test]
+        public void OnInitializedAsyncShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceTags()
+        {
+            // Arrange
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
+                .RespondJson(new PaginationResult<DeviceListItem>
+                {
+                    Items = Array.Empty<DeviceListItem>()
+                });
+
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, this.apiTagsBaseUrl)
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            // Act
+            var cut = RenderComponent<DeviceListPage>();
+
+            // Assert
+            _ = cut.Markup.Should().NotBeNullOrEmpty();
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public void LoadItemsShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDevices()
+        {
+            // Arrange
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, this.apiTagsBaseUrl)
+                .RespondJson(Array.Empty<object>());
+
+            // Act
+            var cut = RenderComponent<DeviceListPage>();
+
+            // Assert
+            _ = cut.Markup.Should().NotBeNullOrEmpty();
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         public void Dispose()
