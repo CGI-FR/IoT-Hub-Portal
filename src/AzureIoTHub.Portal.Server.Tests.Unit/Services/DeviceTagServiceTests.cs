@@ -430,5 +430,127 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             _ = act.Should().Throw<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task CreateOrUpdateDeviceTagShouldUpsertDeviceTag()
+        {
+            // Arrange
+            var deviceTag = new DeviceTag
+            {
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var deviceTagService = CreateDeviceTagService();
+
+            var mockResponse = this.mockRepository.Create<Response>();
+
+            _ = this.mockDeviceTagMapper.Setup(c => c.UpdateTableEntity(
+                It.Is<TableEntity>(x => x.RowKey == deviceTag.Name && x.PartitionKey == DeviceTagService.DefaultPartitionKey),
+                It.Is<DeviceTag>(x => x == deviceTag)));
+
+            _ = this.mockDeviceTagTableClient.Setup(c => c.UpsertEntityAsync(It.Is<TableEntity>(x =>
+                    x.PartitionKey == DeviceTagService.DefaultPartitionKey && x.RowKey == deviceTag.Name), It.IsAny<TableUpdateMode>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockResponse.Object);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
+                .Returns(this.mockDeviceTagTableClient.Object);
+
+            // Act
+            var act = () => deviceTagService.CreateOrUpdateDeviceTag(deviceTag);
+
+            // Assert
+            _ = await act.Should().NotThrowAsync();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task CreateOrUpdateDeviceTagShouldThrowInternalServerErrorExceptionWhenAnIssueOccurs()
+        {
+            // Arrange
+            var deviceTag = new DeviceTag
+            {
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var deviceTagService = CreateDeviceTagService();
+
+            _ = this.mockDeviceTagMapper.Setup(c => c.UpdateTableEntity(
+                It.Is<TableEntity>(x => x.RowKey == deviceTag.Name && x.PartitionKey == DeviceTagService.DefaultPartitionKey),
+                It.Is<DeviceTag>(x => x == deviceTag)));
+
+            _ = this.mockDeviceTagTableClient.Setup(c => c.UpsertEntityAsync(It.Is<TableEntity>(x =>
+                    x.PartitionKey == DeviceTagService.DefaultPartitionKey && x.RowKey == deviceTag.Name), It.IsAny<TableUpdateMode>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
+                .Returns(this.mockDeviceTagTableClient.Object);
+
+            // Act
+            var act = () => deviceTagService.CreateOrUpdateDeviceTag(deviceTag);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceTagByNameShouldDeleteDeviceTag()
+        {
+            // Arrange
+            var deviceTag = new DeviceTag
+            {
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var deviceTagService = CreateDeviceTagService();
+
+            var mockResponse = this.mockRepository.Create<Response>();
+
+            _ = this.mockDeviceTagTableClient.Setup(c => c.DeleteEntityAsync(
+                    It.Is<string>(x => x.Equals(DeviceTagService.DefaultPartitionKey, StringComparison.Ordinal)),
+                    It.Is<string>(x => x.Equals(deviceTag.Name, StringComparison.Ordinal)),
+                    It.IsAny<ETag>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockResponse.Object);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
+                .Returns(this.mockDeviceTagTableClient.Object);
+
+            // Act
+            var act = () => deviceTagService.DeleteDeviceTagByName(deviceTag.Name);
+
+            // Assert
+            _ = await act.Should().NotThrowAsync();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceTagByNameShouldThrowInternalServerErrorExceptionWhenAnIssueOccurs()
+        {
+            // Arrange
+            var deviceTag = new DeviceTag
+            {
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var deviceTagService = CreateDeviceTagService();
+
+            _ = this.mockDeviceTagTableClient.Setup(c => c.DeleteEntityAsync(
+                    It.Is<string>(x => x.Equals(DeviceTagService.DefaultPartitionKey, StringComparison.Ordinal)),
+                    It.Is<string>(x => x.Equals(deviceTag.Name, StringComparison.Ordinal)),
+                    It.IsAny<ETag>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTagSettings())
+                .Returns(this.mockDeviceTagTableClient.Object);
+
+            // Act
+            var act = () => deviceTagService.DeleteDeviceTagByName(deviceTag.Name);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
     }
 }
