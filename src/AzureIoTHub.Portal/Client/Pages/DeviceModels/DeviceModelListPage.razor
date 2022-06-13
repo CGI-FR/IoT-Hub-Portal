@@ -36,10 +36,10 @@
                     <MudText Typo="Typo.h6">Device Models</MudText>
                     <MudSpacer />
                     <MudTooltip Text="Refresh list">
-                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadDeviceModels" Class="ma-2"></MudIconButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadDeviceModels" Class="ma-2" id="tableRefreshButton"></MudIconButton>
                     </MudTooltip>
                     <MudTooltip Text="Add device model">
-                        <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDeviceModel" />
+                        <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDeviceModel" id="addDeviceModelButton"/>
                     </MudTooltip>
                 </ToolBarContent>
                 <HeaderContent>
@@ -68,7 +68,7 @@
                     </MudTd>
                     <MudTd DataLabel="Delete" Style="text-align: center">
                         <MudTooltip Text="Delete device model">
-                            <MudIconButton Color="Color.Default" Disabled="context.IsBuiltin" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDeviceModel(context))"></MudIconButton>
+                            <MudIconButton Color="Color.Default" Disabled="context.IsBuiltin" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => DeleteDeviceModel(context))" id="deleteButton"></MudIconButton>
                         </MudTooltip>
                     </MudTd>
                 </RowTemplate>
@@ -88,6 +88,8 @@
 </MudGrid>
 
 @code {
+    [CascadingParameter]
+    public Error Error{ get; set; }
 
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
     private List<DeviceModel> result = new();
@@ -114,6 +116,11 @@
         {
             result = await httpClient.GetFromJsonAsync<List<DeviceModel>>("api/models");
         }
+        catch(ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+
         catch (AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
