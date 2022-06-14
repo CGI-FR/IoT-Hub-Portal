@@ -161,6 +161,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"{this.apiBaseUrl}")
                 .Throw(new InternalServerErrorException(""));
+                // .Throw(new ProblemDetailsException(null));
 
             _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -170,6 +171,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             // Assert
             _ = cut.Markup.Should().NotBeNullOrEmpty();
             this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
         }
 
         [Test]
@@ -222,7 +224,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         public void ClickOnDeleteShouldDisplayConfirmationDialogAndReturnIfAborted()
         {
             var deviceId = Guid.NewGuid().ToString();
-            var apiCall = this.mockHttpClient
+            _ = this.mockHttpClient
                 .When(HttpMethod.Get, this.apiBaseUrl)
                 .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
