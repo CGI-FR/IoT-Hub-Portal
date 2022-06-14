@@ -8,11 +8,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System.Net.Http;
     using System.Threading;
     using AzureIoTHub.Portal.Client.Pages.Configurations;
-    using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
+    using Models.v10;
+    using Helpers;
     using Bunit;
     using Bunit.TestDoubles;
-    using FluentAssertions.Extensions;
+    using Client.Exceptions;
+    using Client.Models;
+    using FluentAssertions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -73,7 +75,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         {
             // Arrange
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/configurations/{mockConfigurationID}")
+                .When(HttpMethod.Get, $"/api/edge/configurations/{this.mockConfigurationID}")
                 .RespondJson(new ConfigListItem());
 
             _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
@@ -90,6 +92,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Assert
             cut.WaitForState(() => mockNavigationManager.Uri.EndsWith("/edge/configurations", StringComparison.OrdinalIgnoreCase));
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [TestCase]
+        public void ConfigDetailShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingConfiguration()
+        {
+            // Arrange
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/edge/configurations/{this.mockConfigurationID}")
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+
+
+            // Act
+            var cut = RenderComponent<ConfigDetail>(ComponentParameter.CreateParameter("ConfigurationID", this.mockConfigurationID));
+
+            // Assert
+            _ = cut.Markup.Should().NotBeEmpty();
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
         }
     }
 }
