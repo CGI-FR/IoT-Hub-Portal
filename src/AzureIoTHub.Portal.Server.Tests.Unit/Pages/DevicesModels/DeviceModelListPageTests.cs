@@ -6,10 +6,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System;
     using System.Net.Http;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Client.Exceptions;
-    using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
     using Bunit.TestDoubles;
@@ -30,7 +29,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     {
         private Bunit.TestContext testContext;
         private MockHttpMessageHandler mockHttpClient;
-        private FakeNavigationManager mockNavigationManager;
 
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
@@ -50,13 +48,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.testContext.Services.AddMudServices();
 
-            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
-
             _ = this.testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
             _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
             _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
-
-            this.mockNavigationManager = this.testContext.Services.GetRequiredService<FakeNavigationManager>();
         }
 
         private IRenderedComponent<TComponent> RenderComponent<TComponent>(params ComponentParameter[] parameters)
@@ -75,8 +69,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Get, this.apiBaseUrl)
                 .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
-            //_ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
-            //Thread.Sleep(2000);
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             var cut = RenderComponent<DeviceModelListPage>();
             _ = cut.WaitForElements(".detail-link");
@@ -102,7 +95,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Get, this.apiBaseUrl)
                 .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
-            //_ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             var cut = RenderComponent<DeviceModelListPage>();
             _ = cut.WaitForElements(".detail-link");
@@ -128,7 +121,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Get, this.apiBaseUrl)
                 .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
-            //_ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
@@ -149,13 +142,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Get, this.apiBaseUrl)
                 .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
-            //_ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             var cut = RenderComponent<DeviceModelListPage>();
 
             // Act
             cut.WaitForElement("#addDeviceModelButton").Click();
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("device-models/new", StringComparison.OrdinalIgnoreCase));
+            cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("device-models/new", StringComparison.OrdinalIgnoreCase));
 
             // Assert
             this.mockRepository.VerifyAll();
@@ -167,7 +160,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             // Arrange
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"{this.apiBaseUrl}")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+                .Throw(new InternalServerErrorException(""));
+
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
@@ -183,7 +178,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             // Arrange
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"{this.apiBaseUrl}")
-                .Throw(new AccessTokenNotAvailableException(this.mockNavigationManager, null, null));
+                .Throw(new AccessTokenNotAvailableException(null, null, null));
+
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
@@ -202,7 +199,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Get, this.apiBaseUrl)
                 .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
-            //_ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             var cut = RenderComponent<DeviceModelListPage>();
             cut.WaitForAssertion(() => cut.Find("#tableRefreshButton"), 1.Seconds());
@@ -229,6 +226,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Get, this.apiBaseUrl)
                 .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
             var cut = RenderComponent<DeviceModelListPage>();
 
             var deleteButton = cut.WaitForElement("#deleteButton");
@@ -254,6 +253,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var apiCall = this.mockHttpClient
                 .When(HttpMethod.Get, this.apiBaseUrl)
                 .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
+
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             var cut = RenderComponent<DeviceModelListPage>();
 
