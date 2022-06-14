@@ -130,6 +130,43 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
+        public async Task CreateOrUpdateDeviceTag(DeviceTag deviceTag)
+        {
+            var entity = new TableEntity
+            {
+                PartitionKey = DefaultPartitionKey,
+                RowKey = deviceTag.Name
+            };
+
+            this.deviceTagMapper.UpdateTableEntity(entity, deviceTag);
+
+            try
+            {
+                _ = await this.tableClientFactory
+                    .GetDeviceTagSettings()
+                    .UpsertEntityAsync(entity);
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to create or update the device tag {deviceTag.Name}", e);
+            }
+        }
+
+        public async Task DeleteDeviceTagByName(string deviceTagName)
+        {
+
+            try
+            {
+                _ = await this.tableClientFactory
+                    .GetDeviceTagSettings()
+                    .DeleteEntityAsync(DefaultPartitionKey, deviceTagName);
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to delete the device tag {deviceTagName}", e);
+            }
+        }
+
         /// <summary>
         /// Saves the entity.
         /// </summary>

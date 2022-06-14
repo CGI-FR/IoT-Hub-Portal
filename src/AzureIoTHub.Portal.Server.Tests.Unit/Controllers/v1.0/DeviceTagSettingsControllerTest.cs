@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -26,9 +27,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            //this.mockDeviceTagMapper = this.mockRepository.Create<IDeviceTagMapper>();
-            //this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
-            //this.mockDeviceTagTableClient = this.mockRepository.Create<TableClient>();
             this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
             this.mockLogger = this.mockRepository.Create<ILogger<DeviceTagSettingsController>>();
         }
@@ -93,6 +91,52 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             Assert.AreEqual(10, result?.Count());
 
             this.mockDeviceTagService.VerifyAll();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task CreateOrUpdateDeviceTagShouldCreateOrUpdateDeviceTag()
+        {
+            // Arrange
+            var deviceTag = new DeviceTag
+            {
+                Name = Guid.NewGuid().ToString(),
+            };
+
+            var deviceTagSettingsController = CreateDeviceTagSettingsController();
+
+            _ = this.mockDeviceTagService.Setup(x => x.CreateOrUpdateDeviceTag(It.Is<DeviceTag>(x => x.Name.Equals(deviceTag.Name, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var response = await deviceTagSettingsController.CreateOrUpdateDeviceTag(deviceTag);
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<OkResult>(response);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceTagByNameShouldDeleteDeviceTag()
+        {
+            // Arrange
+            var deviceTag = new DeviceTag
+            {
+                Name = Guid.NewGuid().ToString(),
+            };
+
+            var deviceTagSettingsController = CreateDeviceTagSettingsController();
+
+            _ = this.mockDeviceTagService.Setup(x => x.DeleteDeviceTagByName(It.Is<string>(x => x.Equals(deviceTag.Name, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var response = await deviceTagSettingsController.DeleteDeviceTagByName(deviceTag.Name);
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<OkResult>(response);
             this.mockRepository.VerifyAll();
         }
     }
