@@ -66,5 +66,29 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             return Ok(this.deviceTagService.GetAllTags());
         }
+
+        /// <summary>
+        /// Create or update a device tag
+        /// </summary>
+        /// <param name="deviceTag">Device Tag</param>
+        /// <returns>The action result</returns>
+        [HttpPatch(Name = "Create or update a device tag")]
+        public async Task<IActionResult> CreateOrUpdateDeviceTag([FromBody] DeviceTag deviceTag)
+        {
+            await this.deviceTagService.CreateOrUpdateDeviceTag(deviceTag);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Delete a device tag by name
+        /// </summary>
+        /// <param name="deviceTagName">Device Tag Name</param>
+        /// <returns>The action result</returns>
+        [HttpDelete("{deviceTagName}", Name = "Delete a device tag by name")]
+        public async Task<IActionResult> DeleteDeviceTagByName([FromRoute] string deviceTagName)
+        {
+            await this.deviceTagService.DeleteDeviceTagByName(deviceTagName);
+            return Ok();
+        }
     }
 }
