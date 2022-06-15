@@ -3324,6 +3324,71 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
+## Create or update a device tag
+
+<a id="opIdCreate or update a device tag"></a>
+
+> Code samples
+
+`PATCH /api/settings/device-tags`
+
+*Create or update a device tag*
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "label": "string",
+  "required": true,
+  "searchable": true
+}
+```
+
+<h3 id="create-or-update-a-device-tag-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[DeviceTag](#schemadevicetag)|false|Device Tag|
+
+<h3 id="create-or-update-a-device-tag-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
+## Delete a device tag by name
+
+<a id="opIdDelete a device tag by name"></a>
+
+> Code samples
+
+`DELETE /api/settings/device-tags/{deviceTagName}`
+
+*Delete a device tag by name*
+
+<h3 id="delete-a-device-tag-by-name-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|deviceTagName|path|string|true|Device Tag Name|
+
+<h3 id="delete-a-device-tag-by-name-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
 ## GET Open ID settings
 
 <a id="opIdGET Open ID settings"></a>

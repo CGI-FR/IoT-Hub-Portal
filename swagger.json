@@ -2855,6 +2855,63 @@
             }
           }
         }
+      },
+      "patch": {
+        "tags": [
+          "Portal Settings"
+        ],
+        "summary": "Create or update a device tag",
+        "operationId": "Create or update a device tag",
+        "requestBody": {
+          "description": "Device Tag",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceTag"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceTag"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceTag"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/settings/device-tags/{deviceTagName}": {
+      "delete": {
+        "tags": [
+          "Portal Settings"
+        ],
+        "summary": "Delete a device tag by name",
+        "operationId": "Delete a device tag by name",
+        "parameters": [
+          {
+            "name": "deviceTagName",
+            "in": "path",
+            "description": "Device Tag Name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
       }
     },
     "/api/settings/oidc": {
