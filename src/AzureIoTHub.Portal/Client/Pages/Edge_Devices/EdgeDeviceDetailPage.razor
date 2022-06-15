@@ -1,8 +1,6 @@
 ﻿@page "/edge/devices/{deviceId}"
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Models.v10
-@using System.Net.Http.Json
 
 @attribute [Authorize]
 @inject HttpClient Http
@@ -176,6 +174,9 @@ else
 }
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
     [Parameter]
     public string deviceId { get; set; }
     private bool loading = true;
@@ -192,36 +193,45 @@ else
 
     public async Task LoadDevice()
     {
-        Gateway = await Http.GetFromJsonAsync<IoTEdgeDevice>($"api/edge/devices/{deviceId}");
-
-        if (Gateway.ConnectionState == "Disconnected")
+        try
         {
-            btn_disable = true;
+            Gateway = await Http.GetFromJsonAsync<IoTEdgeDevice>($"api/edge/devices/{deviceId}");
+
+
+            if (Gateway.ConnectionState == "Disconnected")
+            {
+                btn_disable = true;
+            }
         }
-        loading = false;
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            loading = false;
+        }
     }
 
     public async Task UpdateDevice()
     {
 
         var parameters = new DialogParameters{{ "ContentText", "Processing" }};
-        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+        var processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
 
-        var result = await Http.PutAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}", Gateway);
-
-        DialogService.Close(processingDialog);
-
-        if (result.IsSuccessStatusCode)
+        try
         {
+            var result = await Http.PutAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}", Gateway);
+
             Snackbar.Add($"Device {Gateway.DeviceId} has been successfully updated!", Severity.Success);
         }
-        else if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        catch (ProblemDetailsException exception)
         {
-            Snackbar.Add("One or more validation errors occurred", Severity.Error);
+            Error?.ProcessProblemDetails(exception);
         }
-        else
+        finally
         {
-            Snackbar.Add("Something unexpected occurred", Severity.Warning);
+            DialogService.Close(processingDialog);
         }
     }
 
@@ -229,33 +239,44 @@ else
     {
 
         var parameters = new DialogParameters{{ "ContentText", "Processing" }};
-        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+        var processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
 
-        var result = await Http.PostAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}/{module.ModuleName}/{methodName}", module);
-
-        DialogService.Close(processingDialog);
-
-        var c2dResult = result.Content.ReadFromJsonAsync<C2Dresult>().Result;
-
-        if (c2dResult.Status == 200)
+        try
         {
-            Snackbar.Add("Command successfully executed.", Severity.Success);
+            var result = await Http.PostAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}/{module.ModuleName}/{methodName}", module);
+
+            var c2dResult = result.Content.ReadFromJsonAsync<C2Dresult>().Result;
+
+            if (c2dResult.Status == 200)
+            {
+                Snackbar.Add("Command successfully executed.", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add($"Error<br>Status : {c2dResult.Status};<br>Payload : {c2dResult.Payload};", Severity.Error,
+                    (option) =>
+                    {
+                        option.VisibleStateDuration = 10000;
+                    });
+            }
         }
-        else
+        catch (ProblemDetailsException exception)
         {
-            Snackbar.Add($"Error<br>Status : {c2dResult.Status};<br>Payload : {c2dResult.Payload};", Severity.Error,
-                (option) =>
-                {
-                    option.VisibleStateDuration = 10000;
-                });
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            DialogService.Close(processingDialog);
         }
     }
 
     public async Task ShowEdgeDeviceLogs(IoTEdgeModule module)
     {
-        var parameter = new DialogParameters();
-        parameter.Add("deviceId", deviceId);
-        parameter.Add("edgeModule", module);
+        var parameter = new DialogParameters
+        {
+            {"deviceId", deviceId},
+            {"edgeModule", module}
+        };
 
         _ = await DialogService.Show<ModuleLogsDialog>("Edge device log", parameter).Result;
 
@@ -263,17 +284,14 @@ else
 
     public void ShowConnectionString()
     {
-        var parameters = new DialogParameters();
-        parameters.Add(nameof(ConnectionStringDialog.deviceId), this.deviceId);
+        var parameters = new DialogParameters {{nameof(ConnectionStringDialog.deviceId), this.deviceId}};
 
         DialogService.Show<ConnectionStringDialog>("Edge Device Connection String", parameters);
     }
 
     public async Task ShowDeleteModal()
     {
-        var parameter = new DialogParameters();
-
-        parameter.Add(nameof(Gateway.DeviceId), Gateway.DeviceId);
+        var parameter = new DialogParameters {{nameof(Gateway.DeviceId), Gateway.DeviceId}};
 
         var result = await DialogService.Show<EdgeDeviceDeleteConfirmationDialog>("Edge device deletion confirmation", parameter).Result;
 
