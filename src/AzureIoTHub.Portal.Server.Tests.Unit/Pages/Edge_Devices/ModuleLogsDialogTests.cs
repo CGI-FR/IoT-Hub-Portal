@@ -5,10 +5,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.Edge_Devices;
     using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Models.v10;
     using Bunit;
+    using Client.Exceptions;
+    using Client.Models;
     using FluentAssertions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +31,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
 
         private MockRepository mockRepository;
         private Mock<IEdgeDeviceClientService> edgeDeviceClientServiceMock;
-        private Mock<IDialogService> mockDialogService;
 
         [SetUp]
         public void SetUp()
@@ -37,13 +39,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
 
             this.mockRepository = new MockRepository(MockBehavior.Strict);
             this.edgeDeviceClientServiceMock = this.mockRepository.Create<IEdgeDeviceClientService>();
-            this.mockDialogService = this.mockRepository.Create<IDialogService>();
 
             _ = this.testContext.Services.AddMudServices();
 
             _ = this.testContext.Services.AddSingleton(this.edgeDeviceClientServiceMock.Object);
-
-            _ = this.testContext.Services.AddSingleton(this.mockDialogService.Object);
 
             _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
             _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
@@ -58,7 +57,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
         }
 
         [Test]
-        public void ModuleLogsDialogParametersMustBeCorrect()
+        public async Task ModuleLogsDialogParametersMustBeCorrect()
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
@@ -69,28 +68,113 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
                 ModuleName = Guid.NewGuid().ToString()
             };
 
-            var expectedLog = new IoTEdgeDeviceLog
+            var expectedLogs = new List<IoTEdgeDeviceLog>()
             {
-                Id = deviceId,
-                Text = Guid.NewGuid().ToString(),
-                LogLevel = 1,
-                TimeStamp = DateTime.UtcNow
+                new(),
+                new(),
+                new()
+            };
+
+            _ = this.edgeDeviceClientServiceMock.Setup(c => c.GetEdgeDeviceLogs(It.Is<string>(x => x.Equals(deviceId, StringComparison.Ordinal)), It.Is<IoTEdgeModule>(x => x.Equals(edgeModule))))
+                .ReturnsAsync(expectedLogs);
+
+            var cut = RenderComponent<MudDialogProvider>();
+            var service = this.testContext.Services.GetService<IDialogService>() as DialogService;
+
+            var parameters = new DialogParameters
+            {
+                {
+                    "deviceId", deviceId
+                },
+                {
+                    "edgeModule", edgeModule
+                }
+            };
+
+            // Act
+            await cut.InvokeAsync(() => service?.Show<ModuleLogsDialog>(string.Empty, parameters));
+
+            // Assert
+            _ = cut.FindAll("tr").Count.Should().Be(4);
+        }
+
+        [Test]
+        public async Task ModuleLogsShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingLogs()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+
+            var edgeModule = new IoTEdgeModule
+            {
+                Version = "1.0",
+                ModuleName = Guid.NewGuid().ToString()
+            };
+
+            _ = this.edgeDeviceClientServiceMock.Setup(c => c.GetEdgeDeviceLogs(It.Is<string>(x => x.Equals(deviceId, StringComparison.Ordinal)), It.Is<IoTEdgeModule>(x => x.Equals(edgeModule))))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            var cut = RenderComponent<MudDialogProvider>();
+            var service = this.testContext.Services.GetService<IDialogService>() as DialogService;
+
+            var parameters = new DialogParameters
+            {
+                {
+                    "deviceId", deviceId
+                },
+                {
+                    "edgeModule", edgeModule
+                }
+            };
+
+            // Act
+            await cut.InvokeAsync(() => service?.Show<ModuleLogsDialog>(string.Empty, parameters));
+
+            // Assert
+            _ = cut.FindAll("tr").Count.Should().Be(2);
+        }
+
+        [Test]
+        public async Task ModuleLogsMustCloseOnCLickOnCloseButton()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+
+            var edgeModule = new IoTEdgeModule
+            {
+                Version = "1.0",
+                ModuleName = Guid.NewGuid().ToString()
             };
 
             var expectedLogs = new List<IoTEdgeDeviceLog>()
             {
-                expectedLog
+                new()
             };
 
-            _ = edgeDeviceClientServiceMock.Setup(c => c.GetEdgeDeviceLogs(It.Is<string>(x => x.Equals(deviceId, StringComparison.Ordinal)), It.Is<IoTEdgeModule>(x => x.Equals(edgeModule))))
+            _ = this.edgeDeviceClientServiceMock.Setup(c => c.GetEdgeDeviceLogs(It.Is<string>(x => x.Equals(deviceId, StringComparison.Ordinal)), It.Is<IoTEdgeModule>(x => x.Equals(edgeModule))))
                 .ReturnsAsync(expectedLogs);
 
+            var cut = RenderComponent<MudDialogProvider>();
+            var service = this.testContext.Services.GetService<IDialogService>() as DialogService;
+
+            var parameters = new DialogParameters
+            {
+                {
+                    "deviceId", deviceId
+                },
+                {
+                    "edgeModule", edgeModule
+                }
+            };
+
+            IDialogReference dialogReference = null;
+
             // Act
-            var cut = RenderComponent<ModuleLogsDialog>(ComponentParameter.CreateParameter("deviceId", deviceId), ComponentParameter.CreateParameter("edgeModule", edgeModule));
+            await cut.InvokeAsync(() => dialogReference = service?.Show<ModuleLogsDialog>(string.Empty, parameters));
+            cut.Find("#close").Click();
+            var result = await dialogReference.Result;
 
             // Assert
-            _ = cut.Instance.deviceId.Should().Be(deviceId);
-            _ = cut.Instance.edgeModule.Should().Be(edgeModule);
+            _ = result.Cancelled.Should().BeTrue();
         }
     }
 }
