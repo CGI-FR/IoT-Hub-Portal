@@ -5,14 +5,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 {
     using System;
     using System.Net.Http;
+    using System.Threading;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Client.Exceptions;
+    using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
     using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
     using Bunit.TestDoubles;
-    using FluentAssertions;
     using FluentAssertions.Extensions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -115,19 +116,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         public void DeviceModelListPageRendersCorrectly()
         {
             // Arrange
-            var deviceId = Guid.NewGuid().ToString();
-
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, this.apiBaseUrl)
-                .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
+                .RespondJson(new DeviceModel[] {
+                    new DeviceModel { ModelId = Guid.NewGuid().ToString() },
+                    new DeviceModel{  ModelId = Guid.NewGuid().ToString() }
+                });
 
             _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
+            var grid = cut.WaitForElement("div.mud-grid", TimeSpan.FromSeconds(5));
+            Thread.Sleep(5000);
 
             // Assert
+            Assert.IsNotNull(cut.Markup);
             Assert.AreEqual("Device Models", cut.Find(".mud-typography-h6").TextContent);
+            Assert.IsNotNull(grid.InnerHtml);
+            Assert.AreEqual(3, cut.FindAll("tr").Count);
             Assert.IsNotNull(cut.Find(".mud-table-container"));
             this.mockRepository.VerifyAll();
         }
@@ -155,21 +162,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public void LoadDeviceModelsShouldDisplayProblemDetailsExceptionWhenIssueOccursOnGettingDeviceModels()
+        public void LoadDeviceModelsShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceModels()
         {
             // Arrange
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"{this.apiBaseUrl}")
-                .Throw(new InternalServerErrorException(""));
-                // .Throw(new ProblemDetailsException(null));
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
+            var grid = cut.WaitForElement("div.mud-grid", TimeSpan.FromSeconds(5));
 
             // Assert
-            _ = cut.Markup.Should().NotBeNullOrEmpty();
+            Assert.IsNotEmpty(cut.Markup);
+            Assert.IsNotEmpty(grid.InnerHtml);
+            Assert.AreEqual(2, cut.FindAll("tr").Count);
             this.mockHttpClient.VerifyNoOutstandingExpectation();
             this.mockRepository.VerifyAll();
         }
@@ -188,8 +197,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var cut = RenderComponent<DeviceModelListPage>();
 
             // Assert
-            _ = cut.Markup.Should().NotBeNullOrEmpty();
+            Assert.IsNotEmpty(cut.Markup);
             this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
         }
 
         [Test]
