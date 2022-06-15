@@ -1,5 +1,4 @@
 ﻿@page "/edge/devices/add"
-@using Microsoft.AspNetCore.Authorization
 @using AzureIoTHub.Portal.Models.v10;
 
 @inject HttpClient Http
@@ -63,28 +62,33 @@
 </MudDialog>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    private IoTEdgeDevice gateway = new IoTEdgeDevice();
-    private bool processingSave = false;
+    private readonly IoTEdgeDevice gateway = new();
+    private bool processingSave;
 
     void Cancel() => MudDialog.Cancel();
 
     private async Task OnValidation()
     {
-        processingSave = true;
-        var result = await Http.PostAsJsonAsync("api/edge/devices", gateway);
-        processingSave = false;
-
-        if (result.IsSuccessStatusCode)
+        try
         {
-            Snackbar.Add($"Device has been successfully created !", Severity.Success);
+            processingSave = true;
+            await Http.PostAsJsonAsync("api/edge/devices", gateway);
+
+            Snackbar.Add("Device has been successfully created !", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));
         }
-        else
+        catch (ProblemDetailsException exception)
         {
-            Snackbar.Add($"Something went wrong while creating device ... ", Severity.Error);
-            return;
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            processingSave = false;
         }
     }
 }
