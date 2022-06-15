@@ -1,8 +1,5 @@
-﻿@using AzureIoTHub.Portal.Models.v10
-@inject HttpClient Http
-@inject IJSRuntime JS
+﻿@inject HttpClient Http
 @inject ISnackbar Snackbar
-@inject NavigationManager NavigationManager
 
 <MudDialog>
     <DialogContent>
@@ -24,6 +21,9 @@
 </MudDialog>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string DeviceId { get; set; }
 
@@ -31,14 +31,16 @@
 
     private async Task DeleteDevice()
     {
-        var result = await Http.DeleteAsync($"api/edge/devices/{DeviceId}");
-
-        if (!result.IsSuccessStatusCode)
+        try
         {
-            Snackbar.Add($"Oh oh, something went wrong while deleting device {DeviceId}... ", Severity.Error);
-        }
+            await Http.DeleteAsync($"api/edge/devices/{DeviceId}");
 
-        Snackbar.Add($"Device {DeviceId} has been successfully deleted!", Severity.Success);
-        MudDialog.Close(DialogResult.Ok(true));
+            Snackbar.Add($"Device {DeviceId} has been successfully deleted!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
     }
 }
