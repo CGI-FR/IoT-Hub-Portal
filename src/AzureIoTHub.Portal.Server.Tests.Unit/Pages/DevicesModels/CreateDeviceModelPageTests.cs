@@ -22,17 +22,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using AzureIoTHub.Portal.Client.Shared;
+    using AzureIoTHub.Portal.Client.Exceptions;
+    using AzureIoTHub.Portal.Client.Models;
+    using AzureIoTHub.Portal.Models;
 
     [TestFixture]
     public class CreateDeviceModelPageTests : IDisposable
     {
-#pragma warning disable CA2213 // Disposable fields should be disposed
         private Bunit.TestContext testContext;
         private MockHttpMessageHandler mockHttpClient;
-#pragma warning restore CA2213 // Disposable fields should be disposed
 
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
+        private Mock<ISnackbar> mockSnackbarService;
 
         private static string ApiBaseUrl => "/api/models";
         // private static string LorawanApiUrl => "/api/lorawan/models";
@@ -43,11 +46,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             this.testContext = new Bunit.TestContext();
 
             this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockDialogService = this.mockRepository.Create<IDialogService>();
             this.mockHttpClient = this.testContext.Services
                                             .AddMockHttpClient();
 
+            this.mockDialogService = this.mockRepository.Create<IDialogService>();
             _ = this.testContext.Services.AddSingleton(this.mockDialogService.Object);
+
+            this.mockSnackbarService = this.mockRepository.Create<ISnackbar>();
+            _ = this.testContext.Services.AddSingleton(this.mockSnackbarService.Object);
 
             _ = this.testContext.Services.AddMudServices();
 
@@ -93,7 +99,46 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 })
                 .RespondText(string.Empty);
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ ApiBaseUrl }/*/properties")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/*/properties")
+                .RespondText(string.Empty);
+
+            var cut = RenderComponent<CreateDeviceModelPage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>())).Returns((Snackbar)null);
+
+            // Act
+            cut.Find($"#{nameof(DeviceModel.Name)}").Change(modelName);
+            cut.Find($"#{nameof(DeviceModel.Description)}").Change(description);
+
+            saveButton.Click();
+            cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
+
+            // Assert            
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void SaveShouldProcessProblemDetailsExceptionWhenIssueOccursOnCreatingDeviceModel()
+        {
+            // Arrange
+            var modelName = Guid.NewGuid().ToString();
+            var description = Guid.NewGuid().ToString();
+
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/*/properties")
                 .RespondText(string.Empty);
 
             var cut = RenderComponent<CreateDeviceModelPage>();
@@ -111,7 +156,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             cut.Find($"#{nameof(DeviceModel.Description)}").Change(description);
 
             saveButton.Click();
-            cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
+            cut.WaitForState(() => !this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
             // Assert            
             this.mockHttpClient.VerifyNoOutstandingExpectation();
@@ -124,12 +169,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var propertyName = Guid.NewGuid().ToString();
             var displayName = Guid.NewGuid().ToString();
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ ApiBaseUrl}")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
                 .RespondText(string.Empty);
 
             _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ ApiBaseUrl }/*/properties")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/*/properties")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
@@ -165,6 +210,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .Returns(mockDialogReference);
 
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>())).Returns((Snackbar)null);
 
             // Act
             addPropertyButton.Click();
@@ -176,6 +222,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             cut.Find($"{propertyCssSelector} #{nameof(DeviceProperty.DisplayName)}").Change(displayName);
             cut.Find($"{propertyCssSelector} #{nameof(DeviceProperty.PropertyType)}").Change(nameof(DevicePropertyType.Boolean));
             cut.Find($"{propertyCssSelector} #{nameof(DeviceProperty.IsWritable)}").Change(true);
+
+            Assert.AreEqual(1, cut.FindAll("#deletePropertyButton").Count);
 
             saveButton.Click();
             cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
@@ -190,10 +238,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             // Arrange
             _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ ApiBaseUrl }")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
                 .RespondText(string.Empty);
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ ApiBaseUrl }/*/properties")
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/*/properties")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
@@ -215,25 +263,28 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             cut.Find($"#{nameof(DeviceModel.Name)}").Change(Guid.NewGuid().ToString());
             cut.Find($"#{nameof(DeviceModel.Description)}").Change(Guid.NewGuid().ToString());
 
-            var addPropertyButton = cut.WaitForElement("#addPropertyButton");
-            addPropertyButton.Click();
-
-            var removePropertyButton = cut.WaitForElement("#DeletePropertyButton");
-
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
 
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
 
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>())).Returns((Snackbar)null);
 
-            // Act
+            //Act and Assert
+            var addPropertyButton = cut.WaitForElement("#addPropertyButton");
+            addPropertyButton.Click();
+
+            Assert.AreEqual(1, cut.FindAll("#deletePropertyButton").Count);
+
+            var removePropertyButton = cut.WaitForElement("#deletePropertyButton");
             removePropertyButton.Click();
+
+            Assert.AreEqual(0, cut.FindAll("#deletePropertyButton").Count);
 
             saveButton.Click();
             cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
-            // Assert
             this.mockHttpClient.VerifyNoOutstandingExpectation();
         }
 

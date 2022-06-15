@@ -5,7 +5,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 {
     using System;
     using System.Net.Http;
-    using System.Threading;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
@@ -128,7 +127,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
             var grid = cut.WaitForElement("div.mud-grid", TimeSpan.FromSeconds(5));
-            Thread.Sleep(5000);
 
             // Assert
             Assert.IsNotNull(cut.Markup);
