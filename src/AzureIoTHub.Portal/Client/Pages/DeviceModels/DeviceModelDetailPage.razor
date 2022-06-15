@@ -60,8 +60,8 @@ else
                     </MudCardActions>
                 </MudCard>
                 <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDeviceModel">Delete model</MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="SaveButton">Save Changes</MudButton>
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDeviceModel" id="deleteButton">Delete model</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="saveButton">Save Changes</MudButton>
                 </MudItem>
             </MudItem>
             <MudItem xs="12" sm="8" md="9">
@@ -166,6 +166,9 @@ else
 }
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+
     [Parameter]
     public string ModelID { get; set; }
 
@@ -230,20 +233,28 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        if (IsLoRa)
+        try
         {
-            this.Model = await httpClient.GetFromJsonAsync<LoRaDeviceModel>($"{ApiUrlBase}");
-            this.Commands.AddRange(await httpClient.GetFromJsonAsync<DeviceModelCommand[]>($"{ApiUrlBase}/commands"));
+            if (IsLoRa)
+            {
+                this.Model = await httpClient.GetFromJsonAsync<LoRaDeviceModel>($"{ApiUrlBase}");
+                this.Commands.AddRange(await httpClient.GetFromJsonAsync<DeviceModelCommand[]>($"{ApiUrlBase}/commands"));
+            }
+            else
+            {
+                this.Model = await httpClient.GetFromJsonAsync<DeviceModel>($"{ApiUrlBase}");
+                this.Properties.AddRange(await httpClient.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"{ApiUrlBase}/properties"));
+            }
+
+            imageDataUrl = await httpClient.GetStringAsync($"{ApiUrlBase}/avatar");
+
+            this.loading = false;
         }
-        else
+        catch (ProblemDetailsException exception)
         {
-            this.Model = await httpClient.GetFromJsonAsync<DeviceModel>($"{ApiUrlBase}");
-            this.Properties.AddRange(await httpClient.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"{ApiUrlBase}/properties"));
+            Error?.ProcessProblemDetails(exception);
         }
 
-        imageDataUrl = await httpClient.GetStringAsync($"{ApiUrlBase}/avatar");
-
-        this.loading = false;
     }
 
     private void DeleteAvatar()
@@ -274,7 +285,7 @@ else
     private async Task Save()
     {
         var parameters = new DialogParameters{{ "ContentText", "Processing" }};
-        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+        DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
 
         if (!standardValidator.Validate(Model).IsValid
             || !propertiesValidator.Validate(Properties).IsValid
@@ -287,54 +298,51 @@ else
             propertiesValidator.Validate(Properties).Errors.ForEach(x =>
                 Snackbar.Add(x.ErrorMessage, Severity.Warning)
             );
-            
+
             return;
         }
 
         HttpResponseMessage result;
 
-        if (IsLoRa)
+        try
         {
-            result = await httpClient.PutAsJsonAsync(ApiUrlBase, Model as LoRaDeviceModel);
+            if (IsLoRa)
+            {
+                result = await httpClient.PutAsJsonAsync(ApiUrlBase, Model as LoRaDeviceModel);
+
+                result.EnsureSuccessStatusCode();
+
+                result = await httpClient.PostAsJsonAsync($"{ApiUrlBase}/commands", Commands);
+            }
+            else
+            {
+                result = await httpClient.PutAsJsonAsync(ApiUrlBase, Model);
+
+                result.EnsureSuccessStatusCode();
+
+                result = await httpClient.PostAsJsonAsync($"{ApiUrlBase}/properties", Properties);
+            }
 
             result.EnsureSuccessStatusCode();
 
-            result = await httpClient.PostAsJsonAsync($"{ApiUrlBase}/commands", Commands);
-        }
-        else
-        {
-            result = await httpClient.PutAsJsonAsync(ApiUrlBase, Model);
+            if (content is not null)
+            {
+                result = await httpClient.PostAsync($"{ApiUrlBase}/avatar", content);
+            }
 
-            result.EnsureSuccessStatusCode();
-
-            result = await httpClient.PostAsJsonAsync($"{ApiUrlBase}/properties", Properties);
-        }
-
-        result.EnsureSuccessStatusCode();
-
-        if (content is not null)
-        {
-            result = await httpClient.PostAsync($"{ApiUrlBase}/avatar", content);
-        }
-
-        DialogService.Close(processingDialog);
-
-        if (result.IsSuccessStatusCode)
-        {
+            DialogService.Close(processingDialog);
+            
             Snackbar.Add("Device model successfully updated.", Severity.Success);
 
             // Go back to the list of devices models
             NavigationManager.NavigateTo("device-models");
         }
-        else if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        catch (ProblemDetailsException exception)
         {
-            Snackbar.Add("One or more validation errors occurred", Severity.Error);
-            string errorMsg = await result.Content.ReadAsStringAsync();
+            DialogService.Close(processingDialog);
+            Error?.ProcessProblemDetails(exception);
         }
-        else
-        {
-            Snackbar.Add("Something unexpected occurred", Severity.Warning);
-        }
+        
     }
 
     private async Task DeleteDeviceModel()
