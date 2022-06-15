@@ -249,8 +249,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
-            _ = this.mockSnackbarService.Setup(c => c.Add("Something unexpected occurred", Severity.Warning, null)).Returns((Snackbar)null);
-
             // Act
             saveButton.Click();
             Thread.Sleep(2500);
