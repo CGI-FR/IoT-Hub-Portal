@@ -182,9 +182,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                     Assert.IsAssignableFrom<JsonContent>(m.Content);
                     var jsonContent = m.Content as JsonContent;
 
+                    Assert.IsNotNull(jsonContent);
                     Assert.IsAssignableFrom<DeviceModel>(jsonContent.Value);
                     var deviceModel = jsonContent.Value as DeviceModel;
 
+                    Assert.IsNotNull(deviceModel);
                     Assert.AreEqual(expectedModel.ModelId, deviceModel.ModelId);
                     Assert.AreEqual(expectedModel.Name, deviceModel.Name);
                     Assert.AreEqual(expectedModel.Description, deviceModel.Description);
@@ -264,9 +266,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                     Assert.IsAssignableFrom<JsonContent>(m.Content);
                     var jsonContent = m.Content as JsonContent;
 
+                    Assert.IsNotNull(jsonContent);
                     Assert.IsAssignableFrom<DeviceModel>(jsonContent.Value);
                     var deviceModel = jsonContent.Value as DeviceModel;
 
+                    Assert.IsNotNull(deviceModel);
                     Assert.AreEqual(expectedModel.ModelId, deviceModel.ModelId);
                     Assert.AreEqual(expectedModel.Name, deviceModel.Name);
                     Assert.AreEqual(expectedModel.Description, deviceModel.Description);
