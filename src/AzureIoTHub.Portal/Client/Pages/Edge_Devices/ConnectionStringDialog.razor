@@ -1,9 +1,6 @@
-﻿@using AzureIoTHub.Portal.Client.Services
-@using Microsoft.AspNetCore.Authorization
-@using AzureIoTHub.Portal.Models.v10
+﻿@using AzureIoTHub.Portal.Models.v10
 
 @inject HttpClient Http
-@inject ISnackbar Snackbar
 @inject ClipboardService ClipboardService
 
 <div class="ConnectionString-dialog">
@@ -48,6 +45,9 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string deviceId { get; set; }
     private EnrollmentCredentials Credentials;
@@ -59,22 +59,16 @@
         {
             await base.OnInitializedAsync();
 
-            Credentials = await this.Http.GetFromJsonAsync<EnrollmentCredentials>($"api/edge/devices/{deviceId}/credentials");
-            loading = false;
-
+            Credentials = await Http.GetFromJsonAsync<EnrollmentCredentials>($"api/edge/devices/{deviceId}/credentials");
         }
-        catch (HttpRequestException e)
+        catch (ProblemDetailsException exception)
         {
-            if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                Snackbar.Add("Cannot obtain the connection string <br> because the enrollment group does not exist.", Severity.Error);
-            }
-            else
-            {
-                Snackbar.Add($"Something went wrong.", Severity.Error);
-            }
-
+            Error?.ProcessProblemDetails(exception);
             MudDialog.Close();
+        }
+        finally
+        {
+            loading = false;
         }
     }
 
