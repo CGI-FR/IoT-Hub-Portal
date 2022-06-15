@@ -149,7 +149,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         [Test]
         public void ClickOnSaveShouldDisplaySnackbarIfValidationError()
         {
-            var mockIoTEdgeDevice = new IoTEdgeDevice()
+            var mockIoTEdgeDevice = new IoTEdgeDevice
             {
                 DeviceId = mockdeviceId,
                 ConnectionState = "Connected",
@@ -191,8 +191,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .Returns(mockDialogReference);
 
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
-
-            _ = this.mockSnackbarService.Setup(c => c.Add("One or more validation errors occurred", Severity.Error, null)).Returns((Snackbar)null);
 
             // Act
             saveButton.Click();
