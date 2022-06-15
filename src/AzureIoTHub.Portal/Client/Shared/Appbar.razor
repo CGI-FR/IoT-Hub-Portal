@@ -13,10 +13,10 @@
     <Authorized>
         <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
             <ActivatorContent>
-                <MudAvatar Color="Color.Primary" Variant="Variant.Outlined">
-                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Secondary" Size="Size.Medium" />
+                <MudAvatar Variant="Variant.Outlined">
+                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Style="color: white;" Size="Size.Medium" />
                 </MudAvatar>
-                <MudIconButton Icon="@Icons.Filled.KeyboardArrowDown" Color="Color.Secondary" Size="Size.Small" />
+                <MudIconButton Icon="@Icons.Filled.KeyboardArrowDown" Style="color: white !important;" Size="Size.Small" />
             </ActivatorContent>
             <ChildContent>
                 <MudList Clickable="true">
@@ -25,7 +25,6 @@
                         <MudText Typo="Typo.body1"><b>@context.User.Identity.Name</b></MudText>
                     </MudListSubheader>
                     <MudDivider/>
-                    <MudListItem Icon="@Icons.Material.Filled.Details">Details</MudListItem>
                     <MudListItem Href="#" OnClick="BeginLogout" Icon="@Icons.Material.Filled.Logout">Log out</MudListItem>
                 </MudList>
             </ChildContent>
