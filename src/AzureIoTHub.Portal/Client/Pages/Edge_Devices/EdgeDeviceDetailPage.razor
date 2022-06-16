@@ -221,7 +221,7 @@ else
 
         try
         {
-            var result = await Http.PutAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}", Gateway);
+            await Http.PutAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}", Gateway);
 
             Snackbar.Add($"Device {Gateway.DeviceId} has been successfully updated!", Severity.Success);
         }
