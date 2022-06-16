@@ -1,0 +1,49 @@
+﻿@using AzureIoTHub.Portal.Models.v10
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject PortalSettings Portal
+@inject SignOutSessionStateManager SignOutManager
+@inject NavigationManager Navigation
+@inject ILayoutService LayoutService
+
+<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@LayoutService.ToggleDrawer" />
+<MudText Typo="Typo.h5">@Portal.PortalName</MudText>
+<MudSpacer />
+<AuthorizeView>
+    <Authorized>
+        <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+            <ActivatorContent>
+                <MudAvatar>
+                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Style="color: white;" Size="Size.Medium" />
+                </MudAvatar>
+                <MudIconButton Icon="@Icons.Filled.KeyboardArrowDown" Style="color: white !important;" Size="Size.Small" />
+            </ActivatorContent>
+            <ChildContent>
+                <MudList Clickable="true">
+                    <MudListSubheader>
+                        <MudText Typo="Typo.caption">Signed in as</MudText>
+                        <MudText Typo="Typo.body1"><b>@context.User.Identity.Name</b></MudText>
+                    </MudListSubheader>
+                    <MudDivider/>
+                    <MudListItem Href="#" OnClick="BeginLogout" Icon="@Icons.Material.Filled.Logout">Log out</MudListItem>
+                </MudList>
+            </ChildContent>
+        </MudMenu>
+    </Authorized>
+    <NotAuthorized>
+        <MudChip id="login" Icon="@Icons.Material.Filled.Login" Label="true" Color="Color.Secondary" Variant="Variant.Filled" @onclick="BeginLogin">Log in</MudChip>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private async Task BeginLogout(MouseEventArgs args)
+    {
+        await SignOutManager.SetSignOutState();
+        Navigation.NavigateTo("authentication/logout");
+    }
+
+    private void BeginLogin(MouseEventArgs args)
+    {
+        Navigation.NavigateTo("authentication/login");
+    }
+}

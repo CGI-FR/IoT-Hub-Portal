@@ -1,45 +1,26 @@
 ﻿@inherits LayoutComponentBase
 
 @using AzureIoTHub.Portal.Models.v10
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.AspNetCore.Components.Web.Extensions.Head
 
-@inject SignOutSessionStateManager SignOutManager
-@inject NavigationManager Navigation
-@inject HttpClient httpClient
 @inject PortalSettings Portal
+@inject ILayoutService LayoutService
+
+@implements IDisposable
 
 <MudThemeProvider Theme="currentTheme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
+
 <Title value="@Portal.PortalName" />
 
 <MudLayout>
 
     <MudAppBar Elevation="25">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudText Typo="Typo.h5">@Portal.PortalName</MudText>
-        <MudSpacer />
-        <AuthorizeView>
-            <Authorized>
-                <MudMenu FullWidth="true" Direction="Direction.Bottom" ActivationEvent="@MouseEvent.MouseOver" OffsetY="true">
-                    <ActivatorContent>
-                        <MudChip Icon="@Icons.Material.Filled.AccountCircle" Label="true" Color="Color.Secondary" Variant="Variant.Filled">@context.User.Identity.Name</MudChip>
-                    </ActivatorContent>
-                    <ChildContent>
-                        <MudMenuItem>Details</MudMenuItem>
-                        <MudMenuItem><a href="#" @onclick="BeginLogout">Log out</a></MudMenuItem>
-                    </ChildContent>
-                </MudMenu>
-            </Authorized>
-            <NotAuthorized>
-                <MudChip Icon="@Icons.Material.Filled.Login" Label="true" Color="Color.Secondary" Variant="Variant.Filled" @onclick="BeginLogin">Log in</MudChip>
-            </NotAuthorized>
-        </AuthorizeView>
+        <Appbar />
     </MudAppBar>
 
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="25" ClipMode="DrawerClipMode.Always">
+    <MudDrawer @bind-Open="LayoutService.IsDrawerOpen" Elevation="25" ClipMode="DrawerClipMode.Always">
         <NavMenu />
     </MudDrawer>
 
@@ -57,30 +38,26 @@
 </MudLayout>
 
 @code {
-    public bool _drawerOpen = true;
 
-    void DrawerToggle()
+    readonly MudTheme currentTheme = new()
     {
-        _drawerOpen = !_drawerOpen;
-    }
-
-    private async Task BeginLogout(MouseEventArgs args)
-    {
-        await SignOutManager.SetSignOutState();
-        Navigation.NavigateTo("authentication/logout");
-    }
-
-    private void BeginLogin(MouseEventArgs args)
-    {
-        Navigation.NavigateTo("authentication/login");
-    }
-
-    MudTheme currentTheme = new MudTheme()
+        Palette = new Palette
         {
-            Palette = new Palette()
-            {
 
-                Background = "#efefef"
-            }
-        };
+            Background = "#efefef"
+        }
+    };
+
+    protected override void OnInitialized()
+    {
+        LayoutService.MajorUpdateOccurred += LayoutServiceOnMajorUpdateOccurred;
+        base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        LayoutService.MajorUpdateOccurred -= LayoutServiceOnMajorUpdateOccurred;
+    }
+
+    private void LayoutServiceOnMajorUpdateOccurred(object sender, EventArgs e) => StateHasChanged();
 }
