@@ -63,7 +63,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Delete, $"api/edge/devices/{deviceId}")
+                .When(HttpMethod.Delete, $"/api/edge/devices/{deviceId}")
                 .Respond(HttpStatusCode.NoContent);
 
             var cut = RenderComponent<MudDialogProvider>();
@@ -93,7 +93,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Delete, $"api/edge/devices/{deviceId}")
+                .When(HttpMethod.Delete, $"/api/edge/devices/{deviceId}")
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<MudDialogProvider>();
@@ -120,7 +120,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Delete, $"api/edge/devices/{deviceId}")
+                .When(HttpMethod.Delete, $"/api/edge/devices/{deviceId}")
                 .Respond(HttpStatusCode.NoContent);
 
             var cut = RenderComponent<MudDialogProvider>();
