@@ -3,7 +3,9 @@
 
 namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
 {
+    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// LoRa Device model base.
@@ -12,12 +14,18 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
     {
         /// <summary>
         /// The LoRa device class.
+        /// Default is A.
         /// </summary>
+        [DefaultValue(ClassType.A)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public ClassType ClassType { get; set; }
 
         /// <summary>
-        /// The status of OTAA setting.
+        /// A value indicating whether the device uses OTAA to authenticate to LoRaWAN network. Otherwise ABP.
+        /// Default is true.
         /// </summary>
+        [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool UseOTAA { get; set; }
 
         /// <summary>
@@ -35,18 +43,24 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// Allows disabling the downstream (cloud to device) for a device.
         /// By default downstream messages are enabled.
         /// </summary>
+        [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool? Downlink { get; set; }
 
         /// <summary>
         /// Allows setting the device preferred receive window (RX1 or RX2).
         /// The default preferred receive window is 1.
         /// </summary>
+        [DefaultValue(1)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int PreferredWindow { get; set; }
 
         /// <summary>
         /// Allows controlling the handling of duplicate messages received by multiple gateways.
-        /// The default is None.
+        /// The default is Drop.
         /// </summary>
+        [DefaultValue(DeduplicationMode.Drop)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public DeduplicationMode Deduplication { get; set; }
 
         /// <summary>
@@ -54,6 +68,8 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// Valid for OTAA devices.
         /// If an invalid value is provided the network server will use default value 0.
         /// </summary>
+        [DefaultValue(0)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int? RX1DROffset { get; set; }
 
         /// <summary>
@@ -61,6 +77,8 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// Valid for OTAA devices.
         /// If an invalid value is provided the network server will use default value 0 (DR0).
         /// </summary>
+        [DefaultValue(0)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int? RX2DataRate { get; set; }
 
         /// <summary>
@@ -72,36 +90,51 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// Allows to disable the relax mode when using ABP.
         /// By default relaxed mode is enabled.
         /// </summary>
+        [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool? ABPRelaxMode { get; set; }
 
         /// <summary>
         /// Allows to explicitly specify a frame counter up start value.
         /// If the device joins, this value will be used to validate the first frame and initialize the server state for the device.
+        /// Default is 0.
         /// </summary>
         [Range(0, 4294967295)]
+        [DefaultValue(0)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int? FCntUpStart { get; set; }
 
         /// <summary>
         /// Allows to explicitly specify a frame counter down start value.
+        /// Default is 0.
         /// </summary>
         [Range(0, 4294967295)]
+        [DefaultValue(0)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int? FCntDownStart { get; set; }
 
         /// <summary>
         /// Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.
+        /// Default is 0.
         /// </summary>
         [Range(0, 4294967295)]
+        [DefaultValue(0)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int? FCntResetCounter { get; set; }
 
         /// <summary>
         /// Allow the usage of 32bit counters on your device.
         /// </summary>
+        [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool? Supports32BitFCnt { get; set; }
 
         /// <summary>
         /// Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.
         /// The default is none, which causes the connection to not be dropped.
         /// </summary>
+        [DefaultValue(null)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public int? KeepAliveTimeout { get; set; }
 
         /// <summary>
