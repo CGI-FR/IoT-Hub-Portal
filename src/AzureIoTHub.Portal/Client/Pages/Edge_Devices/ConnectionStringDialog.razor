@@ -3,8 +3,7 @@
 @inject HttpClient Http
 @inject ClipboardService ClipboardService
 
-<div class="ConnectionString-dialog">
-    <MudDialog>
+<MudDialog>
         <DialogContent>
             @if (loading)
             {
@@ -39,10 +38,9 @@
             }
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton id="cancel" OnClick="Cancel">Cancel</MudButton>
         </DialogActions>
     </MudDialog>
-</div>
 
 @code {
     [CascadingParameter]
@@ -64,7 +62,7 @@
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
-            MudDialog.Close();
+            Cancel();
         }
         finally
         {
