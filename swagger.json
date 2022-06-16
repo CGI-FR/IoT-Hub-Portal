@@ -3234,7 +3234,8 @@
             "minimum": 0,
             "type": "integer",
             "description": "The Configuration priority.",
-            "format": "int32"
+            "format": "int32",
+            "default": 100
           }
         },
         "additionalProperties": false
@@ -3452,7 +3453,7 @@
           },
           "isWritable": {
             "type": "boolean",
-            "description": "Indicates whether the property is writable from the portal\r\n> Note: if writable, the property is set to the desired properties of the device twin\r\n>       otherwise, the property is read from the reported properties."
+            "description": "Indicates whether the property is writable from the portal\r\n> Note: if writable, the property is set to the desired properties of the device twin\r\n>       otherwise, the property is read from the reported properties.\r\nDefault is false."
           },
           "order": {
             "type": "integer",
@@ -3496,7 +3497,7 @@
           },
           "isWritable": {
             "type": "boolean",
-            "description": "Indicates whether the property is writable from the portal\r\n> Note: if writable, the property is set to the desired properties of the device twin\r\n>       otherwise, the property is read from the reported properties."
+            "description": "Indicates whether the property is writable from the portal\r\n> Note: if writable, the property is set to the desired properties of the device twin\r\n>       otherwise, the property is read from the reported properties.\r\nDefault is false."
           },
           "order": {
             "type": "integer",
@@ -3542,11 +3543,13 @@
           },
           "required": {
             "type": "boolean",
-            "description": "Whether the field is required when creating a new device or not."
+            "description": "Whether the field is required when creating a new device or not.\r\nDefault is false.",
+            "default": false
           },
           "searchable": {
             "type": "boolean",
-            "description": "Whether the field can be searcheable via the device search panel or not."
+            "description": "Whether the field can be searcheable via the device search panel or not.\r\nDefault is false.",
+            "default": false
           }
         },
         "additionalProperties": false,
@@ -3820,11 +3823,13 @@
               "C"
             ],
             "type": "string",
-            "description": "The LoRa device class type."
+            "description": "The LoRa device class type. (default A)",
+            "default": "A"
           },
           "useOTAA": {
             "type": "boolean",
-            "description": "The status of OTAA setting."
+            "description": "A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP",
+            "default": true
           },
           "appEUI": {
             "type": "string",
@@ -3843,13 +3848,15 @@
           },
           "downlink": {
             "type": "boolean",
-            "description": "Allows disabling the downstream (cloud to device) for a device.\r\nBy default downstream messages are enabled.",
+            "description": "A value indicating whether the downlinks are enabled (True if not provided)",
+            "default": true,
             "nullable": true
           },
           "preferredWindow": {
             "type": "integer",
             "description": "Allows setting the device preferred receive window (RX1 or RX2).\r\nThe default preferred receive window is 1.",
             "format": "int32",
+            "default": 1,
             "nullable": true
           },
           "deduplication": {
@@ -3859,18 +3866,21 @@
               "Mark"
             ],
             "type": "string",
-            "description": "Allows controlling the handling of duplicate messages received by multiple gateways.\r\nThe default is None."
+            "description": "Allows controlling the handling of duplicate messages received by multiple gateways.\r\nThe default is Drop.",
+            "default": "Drop"
           },
           "rX1DROffset": {
             "type": "integer",
             "description": "Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0.",
             "format": "int32",
+            "default": 0,
             "nullable": true
           },
           "rX2DataRate": {
             "type": "integer",
             "description": "Allows setting a custom Datarate for second receive windows.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0 (DR0).",
             "format": "int32",
+            "default": 0,
             "nullable": true
           },
           "rxDelay": {
@@ -3882,41 +3892,47 @@
           "abpRelaxMode": {
             "type": "boolean",
             "description": "Allows to disable the relax mode when using ABP.\r\nBy default relaxed mode is enabled.",
+            "default": true,
             "nullable": true
           },
           "fCntUpStart": {
             "maximum": 4294967295,
             "minimum": 0,
             "type": "integer",
-            "description": "Allows to explicitly specify a frame counter up start value.\r\nIf the device joins, this value will be used to validate the first frame and initialize the server state for the device.",
+            "description": "Allows to explicitly specify a frame counter up start value.\r\nIf the device joins, this value will be used to validate the first frame and initialize the server state for the device.\r\nDefault is 0.",
             "format": "int32",
+            "default": 0,
             "nullable": true
           },
           "fCntDownStart": {
             "maximum": 4294967295,
             "minimum": 0,
             "type": "integer",
-            "description": "Allows to explicitly specify a frame counter down start value.",
+            "description": "Allows to explicitly specify a frame counter down start value.\r\nDefault is 0.",
             "format": "int32",
+            "default": 0,
             "nullable": true
           },
           "supports32BitFCnt": {
             "type": "boolean",
-            "description": "Allow the usage of 32bit counters on your device.",
+            "description": "Allow the usage of 32bit counters on your device.\r\nDefault is true.",
+            "default": true,
             "nullable": true
           },
           "fCntResetCounter": {
             "maximum": 4294967295,
             "minimum": 0,
             "type": "integer",
-            "description": "Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.",
+            "description": "Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.\r\nDefault is 0.",
             "format": "int32",
+            "default": 0,
             "nullable": true
           },
           "keepAliveTimeout": {
             "type": "integer",
             "description": "Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.\r\nThe default is none, which causes the connection to not be dropped.",
             "format": "int32",
+            "default": null,
             "nullable": true
           },
           "appKey": {
@@ -4017,11 +4033,13 @@
               "C"
             ],
             "type": "string",
-            "description": "The LoRa device class."
+            "description": "The LoRa device class.\r\nDefault is A.",
+            "default": "A"
           },
           "useOTAA": {
             "type": "boolean",
-            "description": "The status of OTAA setting."
+            "description": "A value indicating whether the device uses OTAA to authenticate to LoRaWAN network. Otherwise ABP.\r\nDefault is true.",
+            "default": true
           },
           "appEUI": {
             "type": "string",
@@ -4036,12 +4054,14 @@
           "downlink": {
             "type": "boolean",
             "description": "Allows disabling the downstream (cloud to device) for a device.\r\nBy default downstream messages are enabled.",
+            "default": true,
             "nullable": true
           },
           "preferredWindow": {
             "type": "integer",
             "description": "Allows setting the device preferred receive window (RX1 or RX2).\r\nThe default preferred receive window is 1.",
-            "format": "int32"
+            "format": "int32",
+            "default": 1
           },
           "deduplication": {
             "enum": [
@@ -4050,18 +4070,21 @@
               "Mark"
             ],
             "type": "string",
-            "description": "Allows controlling the handling of duplicate messages received by multiple gateways.\r\nThe default is None."
+            "description": "Allows controlling the handling of duplicate messages received by multiple gateways.\r\nThe default is Drop.",
+            "default": "Drop"
           },
           "rX1DROffset": {
             "type": "integer",
             "description": "Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0.",
             "format": "int32",
+            "default": 0,
             "nullable": true
           },
           "rX2DataRate": {
             "type": "integer",
             "description": "Allows setting a custom Datarate for second receive windows.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0 (DR0).",
             "format": "int32",
+            "default": 0,
             "nullable": true
           },
           "rxDelay": {
@@ -4073,41 +4096,47 @@
           "abpRelaxMode": {
             "type": "boolean",
             "description": "Allows to disable the relax mode when using ABP.\r\nBy default relaxed mode is enabled.",
+            "default": true,
             "nullable": true
           },
           "fCntUpStart": {
             "maximum": 4294967295,
             "minimum": 0,
             "type": "integer",
-            "description": "Allows to explicitly specify a frame counter up start value.\r\nIf the device joins, this value will be used to validate the first frame and initialize the server state for the device.",
+            "description": "Allows to explicitly specify a frame counter up start value.\r\nIf the device joins, this value will be used to validate the first frame and initialize the server state for the device.\r\nDefault is 0.",
             "format": "int32",
+            "default": 0,
             "nullable": true
           },
           "fCntDownStart": {
             "maximum": 4294967295,
             "minimum": 0,
             "type": "integer",
-            "description": "Allows to explicitly specify a frame counter down start value.",
+            "description": "Allows to explicitly specify a frame counter down start value.\r\nDefault is 0.",
             "format": "int32",
+            "default": 0,
             "nullable": true
           },
           "fCntResetCounter": {
             "maximum": 4294967295,
             "minimum": 0,
             "type": "integer",
-            "description": "Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.",
+            "description": "Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.\r\nDefault is 0.",
             "format": "int32",
+            "default": 0,
             "nullable": true
           },
           "supports32BitFCnt": {
             "type": "boolean",
             "description": "Allow the usage of 32bit counters on your device.",
+            "default": true,
             "nullable": true
           },
           "keepAliveTimeout": {
             "type": "integer",
             "description": "Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.\r\nThe default is none, which causes the connection to not be dropped.",
             "format": "int32",
+            "default": null,
             "nullable": true
           }
         },

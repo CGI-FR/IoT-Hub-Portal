@@ -128,7 +128,7 @@ None
     "property1": "string",
     "property2": "string"
   },
-  "priority": 2147483647
+  "priority": 100
 }
 ```
 
@@ -168,7 +168,7 @@ None
 > 200 Response
 
 ```
-{"configurationId":"string","modelId":"string","tags":{"property1":"string","property2":"string"},"properties":{"property1":"string","property2":"string"},"priority":2147483647}
+{"configurationId":"string","modelId":"string","tags":{"property1":"string","property2":"string"},"properties":{"property1":"string","property2":"string"},"priority":100}
 ```
 
 ```json
@@ -183,7 +183,7 @@ None
     "property1": "string",
     "property2": "string"
   },
-  "priority": 2147483647
+  "priority": 100
 }
 ```
 
@@ -220,7 +220,7 @@ None
     "property1": "string",
     "property2": "string"
   },
-  "priority": 2147483647
+  "priority": 100
 }
 ```
 
@@ -631,7 +631,7 @@ Status Code **200**
 |*anonymous*|[[DevicePropertyValue](#schemadevicepropertyvalue)]|false|none|[Device property value.]|
 |» name|string|true|none|The property name|
 |» displayName|string|true|none|The property display name|
-|» isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
+|» isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.<br>Default is false.|
 |» order|integer(int32)|true|none|The property display order.|
 |» propertyType|string|true|none|The device property type|
 |» value|string¦null|false|none|The current property value.|
@@ -720,7 +720,7 @@ Status Code **200**
 |*anonymous*|[[DevicePropertyValue](#schemadevicepropertyvalue)]|false|none|[Device property value.]|
 |» name|string|true|none|The property name|
 |» displayName|string|true|none|The property display name|
-|» isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
+|» isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.<br>Default is false.|
 |» order|integer(int32)|true|none|The property display order.|
 |» propertyType|string|true|none|The device property type|
 |» value|string¦null|false|none|The current property value.|
@@ -1850,17 +1850,17 @@ None
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
-  "preferredWindow": 0,
+  "preferredWindow": 1,
   "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 4294967295,
-  "fCntDownStart": 4294967295,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
   "supports32BitFCnt": true,
-  "fCntResetCounter": 4294967295,
-  "keepAliveTimeout": 0,
+  "fCntResetCounter": 0,
+  "keepAliveTimeout": null,
   "appKey": "string",
   "appSKey": "string",
   "nwkSKey": "string",
@@ -1923,17 +1923,17 @@ None
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
-  "preferredWindow": 0,
+  "preferredWindow": 1,
   "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 4294967295,
-  "fCntDownStart": 4294967295,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
   "supports32BitFCnt": true,
-  "fCntResetCounter": 4294967295,
-  "keepAliveTimeout": 0,
+  "fCntResetCounter": 0,
+  "keepAliveTimeout": null,
   "appKey": "string",
   "appSKey": "string",
   "nwkSKey": "string",
@@ -1986,7 +1986,7 @@ None
 > 200 Response
 
 ```
-{"deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"deviceID":"","classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":0,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":4294967295,"fCntDownStart":4294967295,"supports32BitFCnt":true,"fCntResetCounter":4294967295,"keepAliveTimeout":0,"appKey":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string"}
+{"deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"deviceID":"","classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":1,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"supports32BitFCnt":true,"fCntResetCounter":0,"keepAliveTimeout":null,"appKey":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string"}
 ```
 
 ```json
@@ -2008,17 +2008,17 @@ None
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
-  "preferredWindow": 0,
+  "preferredWindow": 1,
   "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 4294967295,
-  "fCntDownStart": 4294967295,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
   "supports32BitFCnt": true,
-  "fCntResetCounter": 4294967295,
-  "keepAliveTimeout": 0,
+  "fCntResetCounter": 0,
+  "keepAliveTimeout": null,
   "appKey": "string",
   "appSKey": "string",
   "nwkSKey": "string",
@@ -2180,17 +2180,17 @@ None
   "appEUI": "string",
   "sensorDecoder": "string",
   "downlink": true,
-  "preferredWindow": 0,
+  "preferredWindow": 1,
   "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 4294967295,
-  "fCntDownStart": 4294967295,
-  "fCntResetCounter": 4294967295,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
+  "fCntResetCounter": 0,
   "supports32BitFCnt": true,
-  "keepAliveTimeout": 0
+  "keepAliveTimeout": null
 }
 ```
 
@@ -2253,7 +2253,7 @@ None
 > 200 Response
 
 ```
-{"modelId":"string","imageUrl":"http://example.com","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true,"classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","downlink":true,"preferredWindow":0,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":4294967295,"fCntDownStart":4294967295,"fCntResetCounter":4294967295,"supports32BitFCnt":true,"keepAliveTimeout":0}
+{"modelId":"string","imageUrl":"http://example.com","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true,"classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","downlink":true,"preferredWindow":1,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"fCntResetCounter":0,"supports32BitFCnt":true,"keepAliveTimeout":null}
 ```
 
 ```json
@@ -2269,17 +2269,17 @@ None
   "appEUI": "string",
   "sensorDecoder": "string",
   "downlink": true,
-  "preferredWindow": 0,
+  "preferredWindow": 1,
   "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 4294967295,
-  "fCntDownStart": 4294967295,
-  "fCntResetCounter": 4294967295,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
+  "fCntResetCounter": 0,
   "supports32BitFCnt": true,
-  "keepAliveTimeout": 0
+  "keepAliveTimeout": null
 }
 ```
 
@@ -2320,17 +2320,17 @@ None
   "appEUI": "string",
   "sensorDecoder": "string",
   "downlink": true,
-  "preferredWindow": 0,
+  "preferredWindow": 1,
   "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 4294967295,
-  "fCntDownStart": 4294967295,
-  "fCntResetCounter": 4294967295,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
+  "fCntResetCounter": 0,
   "supports32BitFCnt": true,
-  "keepAliveTimeout": 0
+  "keepAliveTimeout": null
 }
 ```
 
@@ -3151,7 +3151,7 @@ Status Code **200**
 |*anonymous*|[[DeviceProperty](#schemadeviceproperty)]|false|none|[Device property.]|
 |» name|string|true|none|The property name|
 |» displayName|string|true|none|The property display name|
-|» isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
+|» isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.<br>Default is false.|
 |» order|integer(int32)|true|none|The property display order.|
 |» propertyType|string|true|none|The device property type|
 
@@ -3253,8 +3253,8 @@ None
   {
     "name": "string",
     "label": "string",
-    "required": true,
-    "searchable": true
+    "required": false,
+    "searchable": false
   }
 ]
 ```
@@ -3295,8 +3295,8 @@ None
   {
     "name": "string",
     "label": "string",
-    "required": true,
-    "searchable": true
+    "required": false,
+    "searchable": false
   }
 ]
 ```
@@ -3316,8 +3316,8 @@ Status Code **200**
 |*anonymous*|[[DeviceTag](#schemadevicetag)]|false|none|[Device tag.]|
 |» name|string|true|none|The registered name in the device twin.|
 |» label|string|true|none|The label shown to the user.|
-|» required|boolean|false|none|Whether the field is required when creating a new device or not.|
-|» searchable|boolean|false|none|Whether the field can be searcheable via the device search panel or not.|
+|» required|boolean|false|none|Whether the field is required when creating a new device or not.<br>Default is false.|
+|» searchable|boolean|false|none|Whether the field can be searcheable via the device search panel or not.<br>Default is false.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -3340,8 +3340,8 @@ None
 {
   "name": "string",
   "label": "string",
-  "required": true,
-  "searchable": true
+  "required": false,
+  "searchable": false
 }
 ```
 
@@ -3788,7 +3788,7 @@ IoT Edge configuration list item.
     "property1": "string",
     "property2": "string"
   },
-  "priority": 2147483647
+  "priority": 100
 }
 
 ```
@@ -4003,7 +4003,7 @@ Device property.
 |---|---|---|---|---|
 |name|string|true|none|The property name|
 |displayName|string|true|none|The property display name|
-|isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
+|isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.<br>Default is false.|
 |order|integer(int32)|true|none|The property display order.|
 |propertyType|string|true|none|The device property type|
 
@@ -4045,7 +4045,7 @@ Device property value.
 |---|---|---|---|---|
 |name|string|true|none|The property name|
 |displayName|string|true|none|The property display name|
-|isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.|
+|isWritable|boolean|true|none|Indicates whether the property is writable from the portal<br>> Note: if writable, the property is set to the desired properties of the device twin<br>>       otherwise, the property is read from the reported properties.<br>Default is false.|
 |order|integer(int32)|true|none|The property display order.|
 |propertyType|string|true|none|The device property type|
 |value|string¦null|false|none|The current property value.|
@@ -4072,8 +4072,8 @@ Device property value.
 {
   "name": "string",
   "label": "string",
-  "required": true,
-  "searchable": true
+  "required": false,
+  "searchable": false
 }
 
 ```
@@ -4086,8 +4086,8 @@ Device tag.
 |---|---|---|---|---|
 |name|string|true|none|The registered name in the device twin.|
 |label|string|true|none|The label shown to the user.|
-|required|boolean|false|none|Whether the field is required when creating a new device or not.|
-|searchable|boolean|false|none|Whether the field can be searcheable via the device search panel or not.|
+|required|boolean|false|none|Whether the field is required when creating a new device or not.<br>Default is false.|
+|searchable|boolean|false|none|Whether the field can be searcheable via the device search panel or not.<br>Default is false.|
 
 <h2 id="tocS_EnrollmentCredentials">EnrollmentCredentials</h2>
 <!-- backwards compatibility -->
@@ -4328,17 +4328,17 @@ IoT Edge module.
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
-  "preferredWindow": 0,
+  "preferredWindow": 1,
   "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 4294967295,
-  "fCntDownStart": 4294967295,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
   "supports32BitFCnt": true,
-  "fCntResetCounter": 4294967295,
-  "keepAliveTimeout": 0,
+  "fCntResetCounter": 0,
+  "keepAliveTimeout": null,
   "appKey": "string",
   "appSKey": "string",
   "nwkSKey": "string",
@@ -4369,22 +4369,22 @@ LoRa WAN Device details.
 |tags|object¦null|false|none|List of custom device tags and their values.|
 |» **additionalProperties**|string¦null|false|none|none|
 |deviceID|string|true|none|The device identifier.|
-|classType|string|false|none|The LoRa device class type.|
-|useOTAA|boolean|false|none|The status of OTAA setting.|
+|classType|string|false|none|The LoRa device class type. (default A)|
+|useOTAA|boolean|false|none|A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP|
 |appEUI|string¦null|false|none|The device OTAA Application eui.|
 |sensorDecoder|string¦null|false|none|The sensor decoder API Url.|
 |gatewayID|string¦null|false|none|The GatewayID of the device.|
-|downlink|boolean¦null|false|none|Allows disabling the downstream (cloud to device) for a device.<br>By default downstream messages are enabled.|
+|downlink|boolean¦null|false|none|A value indicating whether the downlinks are enabled (True if not provided)|
 |preferredWindow|integer(int32)¦null|false|none|Allows setting the device preferred receive window (RX1 or RX2).<br>The default preferred receive window is 1.|
-|deduplication|string|false|none|Allows controlling the handling of duplicate messages received by multiple gateways.<br>The default is None.|
+|deduplication|string|false|none|Allows controlling the handling of duplicate messages received by multiple gateways.<br>The default is Drop.|
 |rX1DROffset|integer(int32)¦null|false|none|Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.<br>Valid for OTAA devices.<br>If an invalid value is provided the network server will use default value 0.|
 |rX2DataRate|integer(int32)¦null|false|none|Allows setting a custom Datarate for second receive windows.<br>Valid for OTAA devices.<br>If an invalid value is provided the network server will use default value 0 (DR0).|
 |rxDelay|integer(int32)¦null|false|none|Allows setting a custom wait time between receiving and transmission as specified in the specification.|
 |abpRelaxMode|boolean¦null|false|none|Allows to disable the relax mode when using ABP.<br>By default relaxed mode is enabled.|
-|fCntUpStart|integer(int32)¦null|false|none|Allows to explicitly specify a frame counter up start value.<br>If the device joins, this value will be used to validate the first frame and initialize the server state for the device.|
-|fCntDownStart|integer(int32)¦null|false|none|Allows to explicitly specify a frame counter down start value.|
-|supports32BitFCnt|boolean¦null|false|none|Allow the usage of 32bit counters on your device.|
-|fCntResetCounter|integer(int32)¦null|false|none|Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.|
+|fCntUpStart|integer(int32)¦null|false|none|Allows to explicitly specify a frame counter up start value.<br>If the device joins, this value will be used to validate the first frame and initialize the server state for the device.<br>Default is 0.|
+|fCntDownStart|integer(int32)¦null|false|none|Allows to explicitly specify a frame counter down start value.<br>Default is 0.|
+|supports32BitFCnt|boolean¦null|false|none|Allow the usage of 32bit counters on your device.<br>Default is true.|
+|fCntResetCounter|integer(int32)¦null|false|none|Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.<br>Default is 0.|
 |keepAliveTimeout|integer(int32)¦null|false|none|Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.<br>The default is none, which causes the connection to not be dropped.|
 |appKey|string¦null|false|none|The OTAA App Key.|
 |appSKey|string¦null|false|none|The ABP AppSKey.|
@@ -4428,17 +4428,17 @@ LoRa WAN Device details.
   "appEUI": "string",
   "sensorDecoder": "string",
   "downlink": true,
-  "preferredWindow": 0,
+  "preferredWindow": 1,
   "deduplication": "None",
   "rX1DROffset": 0,
   "rX2DataRate": 0,
   "rxDelay": 0,
   "abpRelaxMode": true,
-  "fCntUpStart": 4294967295,
-  "fCntDownStart": 4294967295,
-  "fCntResetCounter": 4294967295,
+  "fCntUpStart": 0,
+  "fCntDownStart": 0,
+  "fCntResetCounter": 0,
   "supports32BitFCnt": true,
-  "keepAliveTimeout": 0
+  "keepAliveTimeout": null
 }
 
 ```
@@ -4455,20 +4455,20 @@ LoRa Device model.
 |description|string¦null|false|none|The device model description.|
 |isBuiltin|boolean|false|none|A value indicating whether this instance is builtin.|
 |supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
-|classType|string|false|none|The LoRa device class.|
-|useOTAA|boolean|false|none|The status of OTAA setting.|
+|classType|string|false|none|The LoRa device class.<br>Default is A.|
+|useOTAA|boolean|false|none|A value indicating whether the device uses OTAA to authenticate to LoRaWAN network. Otherwise ABP.<br>Default is true.|
 |appEUI|string¦null|false|none|The device OTAA Application eui.|
 |sensorDecoder|string¦null|false|none|The sensor decoder API Url.|
 |downlink|boolean¦null|false|none|Allows disabling the downstream (cloud to device) for a device.<br>By default downstream messages are enabled.|
 |preferredWindow|integer(int32)|false|none|Allows setting the device preferred receive window (RX1 or RX2).<br>The default preferred receive window is 1.|
-|deduplication|string|false|none|Allows controlling the handling of duplicate messages received by multiple gateways.<br>The default is None.|
+|deduplication|string|false|none|Allows controlling the handling of duplicate messages received by multiple gateways.<br>The default is Drop.|
 |rX1DROffset|integer(int32)¦null|false|none|Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.<br>Valid for OTAA devices.<br>If an invalid value is provided the network server will use default value 0.|
 |rX2DataRate|integer(int32)¦null|false|none|Allows setting a custom Datarate for second receive windows.<br>Valid for OTAA devices.<br>If an invalid value is provided the network server will use default value 0 (DR0).|
 |rxDelay|integer(int32)¦null|false|none|Allows setting a custom wait time between receiving and transmission as specified in the specification.|
 |abpRelaxMode|boolean¦null|false|none|Allows to disable the relax mode when using ABP.<br>By default relaxed mode is enabled.|
-|fCntUpStart|integer(int32)¦null|false|none|Allows to explicitly specify a frame counter up start value.<br>If the device joins, this value will be used to validate the first frame and initialize the server state for the device.|
-|fCntDownStart|integer(int32)¦null|false|none|Allows to explicitly specify a frame counter down start value.|
-|fCntResetCounter|integer(int32)¦null|false|none|Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.|
+|fCntUpStart|integer(int32)¦null|false|none|Allows to explicitly specify a frame counter up start value.<br>If the device joins, this value will be used to validate the first frame and initialize the server state for the device.<br>Default is 0.|
+|fCntDownStart|integer(int32)¦null|false|none|Allows to explicitly specify a frame counter down start value.<br>Default is 0.|
+|fCntResetCounter|integer(int32)¦null|false|none|Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.<br>Default is 0.|
 |supports32BitFCnt|boolean¦null|false|none|Allow the usage of 32bit counters on your device.|
 |keepAliveTimeout|integer(int32)¦null|false|none|Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.<br>The default is none, which causes the connection to not be dropped.|
 
