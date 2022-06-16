@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Models.v10
 {
     using System.ComponentModel.DataAnnotations;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Device property.
@@ -27,6 +28,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// Indicates whether the property is writable from the portal
         /// > Note: if writable, the property is set to the desired properties of the device twin
         /// >       otherwise, the property is read from the reported properties.
+        /// Default is false.
         /// </summary>
         [Required(ErrorMessage = "The property should indicate whether it's writable or not.")]
         public bool IsWritable { get; set; }
