@@ -3,7 +3,9 @@
 
 namespace AzureIoTHub.Portal.Models.v10
 {
+    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Device tag.
@@ -25,12 +27,18 @@ namespace AzureIoTHub.Portal.Models.v10
 
         /// <summary>
         /// Whether the field is required when creating a new device or not.
+        /// Default is false.
         /// </summary>
+        [DefaultValue(false)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool Required { get; set; }
 
         /// <summary>
         /// Whether the field can be searcheable via the device search panel or not.
+        /// Default is false.
         /// </summary>
+        [DefaultValue(false)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool Searchable { get; set; }
     }
 }
