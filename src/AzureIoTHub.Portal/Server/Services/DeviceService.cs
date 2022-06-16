@@ -44,6 +44,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <param name="searchType"></param>
         /// <param name="pageSize"></param>
         /// <returns>IEnumerable twin.</returns>
+        /// <exception cref="InternalServerErrorException"></exception>
         public async Task<PaginationResult<Twin>> GetAllEdgeDevice(
             string continuationToken = null,
             string searchText = null,
@@ -84,7 +85,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     .CreateQuery($"SELECT COUNT() as totalNumber FROM devices {filter}")
                     .GetNextAsJsonAsync();
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
                 throw new InternalServerErrorException("Unable to get the count of edge devices", e);
             }
@@ -107,7 +108,6 @@ namespace AzureIoTHub.Portal.Server.Services
                     ContinuationToken = continuationToken
                 });
 
-
                 return new PaginationResult<Twin>
 
                 {
@@ -116,7 +116,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     NextPage = response.ContinuationToken
                 };
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
                 throw new InternalServerErrorException("Unable to get edge devices", e);
             }
@@ -201,7 +201,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     .CreateQuery($"SELECT COUNT() as totalNumber FROM devices {filter}")
                     .GetNextAsJsonAsync();
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
                 throw new InternalServerErrorException("Unable to get devices count", e);
             }
@@ -240,7 +240,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     NextPage = response.ContinuationToken
                 };
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
                 throw new InternalServerErrorException($"Unable to query devices", e);
             }
@@ -257,7 +257,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return await this.registryManager.GetDeviceAsync(deviceId);
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
                 throw new InternalServerErrorException($"Unable to get device with id {deviceId}", e);
             }
@@ -275,7 +275,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return await this.registryManager.GetTwinAsync(deviceId);
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
                 throw new InternalServerErrorException($"Unable to get device twin with id {deviceId}", e);
             }
@@ -298,7 +298,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     var devicesTwins = await devicesWithModules.GetNextAsTwinAsync();
                     return devicesTwins.ElementAt(0);
                 }
-                catch (Exception e)
+                catch (AggregateException e)
                 {
                     throw new InternalServerErrorException($"Unable to get devices twins", e);
                 }
@@ -327,7 +327,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return await this.registryManager.AddDeviceWithTwinAsync(device, twin);
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
                 throw new InternalServerErrorException($"Unable to create the device twin with id {deviceId}: {e.Message}", e);
             }
@@ -343,7 +343,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 await this.registryManager.RemoveDeviceAsync(deviceId);
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
                 throw new InternalServerErrorException($"Unable to delete the device with id {deviceId}", e);
             }
@@ -360,7 +360,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return await this.registryManager.UpdateDeviceAsync(device);
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
                 throw new InternalServerErrorException($"Unable to update the device with id {device.Id}", e);
             }
@@ -380,7 +380,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return await this.registryManager.UpdateTwinAsync(deviceId, twin, twin.ETag);
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
                 throw new InternalServerErrorException($"Unable to update the device twin with id {deviceId}", e);
             }
@@ -398,7 +398,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
                 throw new InternalServerErrorException($"Unable to execute the cloud to device method {method.MethodName} on the device with id {deviceId}", e);
             }
