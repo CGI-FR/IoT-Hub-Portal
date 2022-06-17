@@ -53,6 +53,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
             _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
+            _ = this.testContext.JSInterop.SetupVoid("mudElementRef.restoreFocus", _ => true);
             _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
         }
 
