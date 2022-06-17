@@ -26,6 +26,7 @@ namespace AzureIoTHub.Portal.Server
     using Hellang.Middleware.ProblemDetails.Mvc;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -171,7 +172,6 @@ namespace AzureIoTHub.Portal.Server
                         ["params"] = exception.ParamName
                     }
                 });
-
             });
 
             _ = services.AddControllers();
@@ -306,7 +306,10 @@ namespace AzureIoTHub.Portal.Server
                     OnPrepareResponse = ctx => ctx.Context.Response.Headers.Add("Cache-Control", new StringValues("no-cache"))
                 });
 
-                _ = endpoints.MapHealthChecks("/healthz");
+                _ = endpoints.MapHealthChecks("/healthz", new HealthCheckOptions
+                {
+                    ResponseWriter = HealthCheckResponseWriter.WriteHealthReport
+                });
             });
 
             await app?.ApplicationServices

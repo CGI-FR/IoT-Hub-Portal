@@ -8,9 +8,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System.Linq;
     using System.Net.Http;
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
-    using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
+    using AzureIoTHub.Portal.Client.Shared;
     using AzureIoTHub.Portal.Models;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
     using Bunit.TestDoubles;
     using Microsoft.AspNetCore.Components;
@@ -21,7 +22,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
-    using AzureIoTHub.Portal.Client.Shared;
 
     [TestFixture]
     public class CreateDeviceModelPageTests : IDisposable
