@@ -222,16 +222,10 @@
             };
     }
 
-    private DeviceModel Model { get; set; } = new DeviceModel
+    public DeviceModel Model { get; set; } = new DeviceModel
         {
             ModelId = Guid.NewGuid().ToString()
         };
-
-    // Used in unit testing
-    public void SetAppEUI(string appEUI)
-    {
-        Model = new LoRaDeviceModel(Model) { AppEUI = appEUI };
-    }
 
     // Used to manage the picture
     private MultipartFormDataContent content;

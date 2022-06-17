@@ -391,7 +391,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             cut.Find($"#{nameof(DeviceModel.Name)}").Change(modelName);
             cut.Find($"#{nameof(DeviceModel.Description)}").Change(description);
-            cut.Instance.SetAppEUI("AppEUI");
+            (cut.Instance.Model as LoRaDeviceModel).AppEUI = "AppEUI";
 
             saveButton.Click();
             cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
