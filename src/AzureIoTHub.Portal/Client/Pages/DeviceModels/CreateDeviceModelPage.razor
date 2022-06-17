@@ -227,6 +227,12 @@
             ModelId = Guid.NewGuid().ToString()
         };
 
+    // Used in unit testing
+    public void SetAppEUI(string appEUI)
+    {
+        Model = new LoRaDeviceModel(Model) { AppEUI = appEUI };
+    }
+
     // Used to manage the picture
     private MultipartFormDataContent content;
     private string imageDataUrl;

@@ -26,6 +26,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Models;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
     [TestFixture]
     public class CreateDeviceModelPageTests : IDisposable
@@ -38,7 +39,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         private Mock<ISnackbar> mockSnackbarService;
 
         private static string ApiBaseUrl => "/api/models";
-        // private static string LorawanApiUrl => "/api/lorawan/models";
+        private static string LorawanApiUrl => "/api/lorawan/models";
 
         [SetUp]
         public void SetUp()
@@ -73,7 +74,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public void ClickOnSaveShouldPostDeviceModelData()
+        public void ClickOnSaveShouldPostNonLoRaDeviceModelData()
         {
             // Arrange
             var modelName = Guid.NewGuid().ToString();
@@ -127,7 +128,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public void SaveShouldProcessProblemDetailsExceptionWhenIssueOccursOnCreatingDeviceModel()
+        public void ClickOnSaveShouldProcessProblemDetailsExceptionWhenIssueOccursOnCreatingDeviceModel()
         {
             // Arrange
             var modelName = Guid.NewGuid().ToString();
@@ -340,6 +341,64 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             Assert.AreEqual("LoRaWAN", tabs[1].TextContent);
 
             this.mockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public void ClickOnSaveShouldPostLoRaDeviceModelData()
+        {
+            // Arrange
+            var modelName = Guid.NewGuid().ToString();
+            var description = Guid.NewGuid().ToString();
+
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{LorawanApiUrl}")
+                .With(m =>
+                {
+                    Assert.IsAssignableFrom<ObjectContent<LoRaDeviceModel>>(m.Content);
+                    var jsonContent = m.Content as ObjectContent<LoRaDeviceModel>;
+
+                    Assert.IsAssignableFrom<LoRaDeviceModel>(jsonContent.Value);
+                    var deviceModel = jsonContent.Value as LoRaDeviceModel;
+
+                    Assert.IsNotNull(deviceModel.ModelId);
+                    Assert.AreEqual(deviceModel.Name, modelName);
+                    Assert.AreEqual(deviceModel.Description, description);
+                    Assert.AreEqual(deviceModel.SupportLoRaFeatures, true);
+
+                    return true;
+                })
+                .RespondText(string.Empty);
+
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{LorawanApiUrl}/*/commands")
+                .RespondText(string.Empty);
+
+            var cut = RenderComponent<CreateDeviceModelPage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>())).Returns((Snackbar)null);
+
+            // Act
+            cut.WaitForElement("#SupportLoRaFeatures").Change(true);
+            cut.WaitForState(() => cut.FindAll(".mud-tabs .mud-tab").Count == 2);
+
+            cut.Find($"#{nameof(DeviceModel.Name)}").Change(modelName);
+            cut.Find($"#{nameof(DeviceModel.Description)}").Change(description);
+            cut.Instance.SetAppEUI("AppEUI");
+
+            saveButton.Click();
+            cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
+
+            // Assert            
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
         }
 
         //[Test]
