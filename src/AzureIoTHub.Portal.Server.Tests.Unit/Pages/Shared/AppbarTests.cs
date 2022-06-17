@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
+    using Moq;
     using MudBlazor.Services;
     using NUnit.Framework;
 
@@ -19,14 +20,19 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
     {
         private TestAuthorizationContext authContext;
         private FakeNavigationManager fakeNavigationManager;
+        private MockRepository mockRepository;
+        private Mock<ILayoutService> mockLayoutService;
 
         [SetUp]
         public void Setup()
         {
+            this.mockRepository = new MockRepository(MockBehavior.Strict);
+            this.mockLayoutService = this.mockRepository.Create<ILayoutService>();
+
             TestContext = new Bunit.TestContext();
             _ = TestContext.Services.AddMudServices();
             this.authContext = TestContext.AddTestAuthorization();
-            _ = TestContext.Services.AddSingleton<ILayoutService>(new LayoutService());
+            _ = TestContext.Services.AddSingleton(this.mockLayoutService.Object);
             _ = TestContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             this.fakeNavigationManager = TestContext.Services.GetRequiredService<FakeNavigationManager>();
@@ -42,14 +48,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            _ = this.mockLayoutService.Setup(service => service.IsDarkMode).Returns(false);
 
             // Act
             var cut = RenderComponent<Appbar>();
 
             // Assert
             _ = cut.Markup.Should().NotBeNullOrEmpty();
-            _ = cut.FindAll("button.mud-button-root").Count.Should().Be(2);
+            _ = cut.FindAll("button.mud-button-root").Count.Should().Be(3);
             _ = cut.FindAll("div.mud-avatar").Count.Should().Be(1);
+            this.mockRepository.VerifyAll();
         }
 
         [Test]
@@ -57,6 +65,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            _ = this.mockLayoutService.Setup(service => service.IsDarkMode).Returns(false);
 
             // Act
             var cut = RenderComponent<Appbar>();
@@ -64,6 +73,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             // Assert
             _ = cut.Markup.Should().NotBeNullOrEmpty();
             _ = cut.FindAll("#login").Count.Should().Be(0);
+            this.mockRepository.VerifyAll();
         }
 
         [Test]

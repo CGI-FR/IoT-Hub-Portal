@@ -11,12 +11,15 @@
 <MudSpacer />
 <AuthorizeView>
     <Authorized>
+        <MudTooltip Duration="1000" Text="@(LayoutService.IsDarkMode ? "Switch to Light Theme" : "Switch to Dark Theme")">
+            <MudIconButton Icon="@(LayoutService.IsDarkMode ? @Icons.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@LayoutService.ToggleDarkMode"/>
+        </MudTooltip>
         <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
             <ActivatorContent>
                 <MudAvatar>
-                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Style="color: white;" Size="Size.Medium" />
+                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Style="color: white;" Size="Size.Medium"/>
                 </MudAvatar>
-                <MudIconButton Icon="@Icons.Filled.KeyboardArrowDown" Style="color: white !important;" Size="Size.Small" />
+                <MudIconButton Icon="@Icons.Filled.KeyboardArrowDown" Style="color: white !important;" Size="Size.Small"/>
             </ActivatorContent>
             <ChildContent>
                 <MudList Clickable="true">

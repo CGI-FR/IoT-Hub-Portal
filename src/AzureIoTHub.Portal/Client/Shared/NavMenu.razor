@@ -4,14 +4,14 @@
 @using Blazored.LocalStorage
 @inject NavigationManager navigationManager
 @inject PortalSettings Portal
-@inject ILocalStorageService LocalStorageService
+@inject ILayoutService LayoutService
 
 <AuthorizeView>
     <Authorized>
         <MudNavMenu>
             <MudNavGroup Title="Devices" Icon="@Icons.Outlined.Memory"
-                         Expanded="@GetExpanded("Devices")"
-                         ExpandedChanged="@(b => SetExpanded("Devices", b))">
+                         Expanded="@LayoutService.GetNavGroupExpanded("Devices")"
+                         ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Devices", b))">
                 <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
                     <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/devices">Device List</MudNavLink>
                     <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
@@ -38,8 +38,8 @@
             </MudNavGroup>
 
             <MudNavGroup Title="IoT Edge" Icon="@Icons.Outlined.DeveloperBoard"
-                         Expanded="@GetExpanded("IoTEdge")"
-                         ExpandedChanged="@(b => SetExpanded("IoTEdge", b))">
+                         Expanded="@LayoutService.GetNavGroupExpanded("IoTEdge")"
+                         ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("IoTEdge", b))">
                 <MudNavLink Href="/edge/devices">Devices</MudNavLink>
                 <MudNavLink Href="/edge/configurations">Configuration</MudNavLink>
             </MudNavGroup>
@@ -47,8 +47,8 @@
             @if (Portal.IsLoRaSupported)
             {
                 <MudNavGroup Title="LoRaWAN" Icon="@Icons.Outlined.WifiTethering"
-                         Expanded="@GetExpanded("LoRaWAN")"
-                         ExpandedChanged="@(b => SetExpanded("LoRaWAN", b))">
+                         Expanded="@LayoutService.GetNavGroupExpanded("LoRaWAN")"
+                         ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("LoRaWAN", b))">
                     <MudNavLink Href="/lorawan/concentrators">
                         Concentrators
                     </MudNavLink>
@@ -56,8 +56,8 @@
             }
 
             <MudNavGroup Title="Settings" Icon="@Icons.Outlined.Settings"
-                         Expanded="@GetExpanded("Settings")"
-                         ExpandedChanged="@(b => SetExpanded("Settings", b))">
+                         Expanded="@LayoutService.GetNavGroupExpanded("Settings")"
+                         ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Settings", b))">
                 <MudNavLink Href="/settings/device-tag">Device Tags</MudNavLink>
             </MudNavGroup>
         </MudNavMenu>
@@ -69,37 +69,47 @@
     private void AddDeviceModel() => navigationManager.NavigateTo("/device-models/new");
     private void AddDeviceConfig() => navigationManager.NavigateTo("/device-configurations/new");
 
-    private string collapsibleNavMenuKey = "collapsibleNavMenu";
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    LayoutService.MajorUpdateOccurred += LayoutServiceOnMajorUpdateOccurred;
+    //    base.OnInitialized();
+        
+    //}
 
-    private Dictionary<string, bool> collapsibleNavMenu;
-
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        collapsibleNavMenu = await LocalStorageService.GetItemAsync<Dictionary<string, bool>>(collapsibleNavMenuKey)
-                             ?? new Dictionary<string, bool>();
+        LayoutService.MajorUpdateOccurred += LayoutServiceOnMajorUpdateOccurred;
+        base.OnInitialized();
     }
 
-    private async Task SetExpanded(string key, bool value)
+    public void Dispose()
     {
-        if (collapsibleNavMenu.ContainsKey(key))
-        {
-            collapsibleNavMenu[key] = value;
-        }
-        else
-        {
-            collapsibleNavMenu.Add(key, value);
-        }
-
-        await LocalStorageService.SetItemAsync(collapsibleNavMenuKey, collapsibleNavMenu);
+        LayoutService.MajorUpdateOccurred -= LayoutServiceOnMajorUpdateOccurred;
     }
 
-    private bool GetExpanded(string key)
-    {
-        if (collapsibleNavMenu == null)
-        {
-            return true;
-        }
+    private void LayoutServiceOnMajorUpdateOccurred(object sender, EventArgs e) => StateHasChanged();
 
-        return !collapsibleNavMenu.TryGetValue(key, out var result) || result;
-    }
+    //private async Task SetExpanded(string key, bool value)
+    //{
+    //    if (collapsibleNavMenu.ContainsKey(key))
+    //    {
+    //        collapsibleNavMenu[key] = value;
+    //    }
+    //    else
+    //    {
+    //        collapsibleNavMenu.Add(key, value);
+    //    }
+
+    //    await LocalStorageService.SetItemAsync(collapsibleNavMenuKey, collapsibleNavMenu);
+    //}
+
+    //private bool GetExpanded(string key)
+    //{
+    //    if (collapsibleNavMenu == null)
+    //    {
+    //        return true;
+    //    }
+
+    //    return !collapsibleNavMenu.TryGetValue(key, out var result) || result;
+    //}
 }

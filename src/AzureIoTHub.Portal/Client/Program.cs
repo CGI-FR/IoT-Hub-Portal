@@ -46,7 +46,7 @@ namespace AzureIoTHub.Portal.Client
             _ = builder.Services.AddMudServices();
 
             _ = builder.Services.AddScoped<IEdgeDeviceClientService, EdgeDeviceClientService>();
-            _ = builder.Services.AddSingleton<ILayoutService, LayoutService>();
+            _ = builder.Services.AddScoped<ILayoutService, LayoutService>();
 
             await ConfigureOidc(builder);
             await ConfigurePortalSettings(builder);

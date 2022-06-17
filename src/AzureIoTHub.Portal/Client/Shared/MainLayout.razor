@@ -8,7 +8,7 @@
 
 @implements IDisposable
 
-<MudThemeProvider Theme="currentTheme" />
+<MudThemeProvider Theme="currentTheme" IsDarkMode="@LayoutService.IsDarkMode" IsDarkModeChanged="LayoutService.SetDarkMode" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
@@ -47,6 +47,18 @@
             Background = "#efefef"
         }
     };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+            
+        if (firstRender)
+        {
+            // Load layout configuration from local storage
+            await LayoutService.LoadLayoutConfigurationFromLocalStorage();
+            StateHasChanged();
+        }
+    }
 
     protected override void OnInitialized()
     {
