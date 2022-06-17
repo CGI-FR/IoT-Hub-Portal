@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
     using Bunit.TestDoubles;
+    using FluentAssertions;
     using FluentAssertions.Extensions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -171,14 +172,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
-            var grid = cut.WaitForElement("div.mud-grid", TimeSpan.FromSeconds(5));
+            cut.WaitForAssertion(() => cut.FindAll("tr").Count.Should().Be(2));
 
             // Assert
-            Assert.IsNotEmpty(cut.Markup);
-            Assert.IsNotEmpty(grid.InnerHtml);
-            Assert.AreEqual(2, cut.FindAll("tr").Count);
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [Test]

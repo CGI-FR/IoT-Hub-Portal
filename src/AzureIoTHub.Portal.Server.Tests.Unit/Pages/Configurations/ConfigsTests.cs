@@ -66,12 +66,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Act
             var cut = RenderComponent<Configs>();
-            var grid = cut.WaitForElement("div.mud-grid", TimeSpan.FromSeconds(5));
+            cut.WaitForAssertion(() => cut.FindAll("tr").Count.Should().Be(3));
 
             // Assert
-            _ = cut.Markup.Should().NotBeEmpty();
-            _ = grid.InnerHtml.Should().NotBeEmpty();
-            _ = cut.FindAll("tr").Count.Should().Be(3);
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [TestCase]
@@ -84,11 +83,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Act
             var cut = RenderComponent<Configs>();
-            var grid = cut.WaitForElement("div.mud-grid", TimeSpan.FromSeconds(5));
+            cut.WaitForAssertion(() => cut.FindAll("tr").Count.Should().Be(2));
 
             // Assert
-            _ = grid.InnerHtml.Should().NotBeEmpty();
-            _ = cut.FindAll("tr").Count.Should().Be(2);
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
         }
     }
 }
