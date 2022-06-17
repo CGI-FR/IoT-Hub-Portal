@@ -5,11 +5,11 @@
 The code is organized into the following directory structure:
 
 * **src**: Source code
-    * **AzureIoTHub.Portal.Server.Tests**: Unit test project for the Portal
-    * **AzureIoTHub.Portal**: The Portal project
-        * **Client**: .NET 6 Blazor Web Assembly project that alow to visualize the IoT Hub data
-        * **Server**: .NET 6 Web API project that provides the API for the Portal
-        * **Shared**: Shared code between the Client and Server projects
+  * **AzureIoTHub.Portal.Server.Tests**: Unit test project for the Portal
+  * **AzureIoTHub.Portal**: The Portal project
+    * **Client**: .NET 6 Blazor Web Assembly project that alow to visualize the IoT Hub data
+    * **Server**: .NET 6 Web API project that provides the API for the Portal
+    * **Shared**: Shared code between the Client and Server projects
 * **templates**: contains the templates for the "deploy to Azure" button
 
 ## Overall Architecture
@@ -51,10 +51,8 @@ Here are different settings that the user can configure:
 * **LoRaKeyManagement__Url**: The LoRa Key Management Facade URL.
 * **StorageAccount__BlobContainerName**: The name of the Azure Storage container where the device models images are stored.
 * **ASPNETCORE_ENVIRONMENT**: Built-in environment variable, used to target the configuration provided by a specific environment. Two accepted values:
-  * `Development`: On this environement, logs are produred up to `Debug` level.
-  * `Production`: Default value if ASPNETCORE_ENVIRONMENT is not set. On this environement, logs are produred up to `Information` level.
-
-> Note: `LoRaRegionRouterConfig__Url` is the URL of the LoRa Region Router Config file repository. By default you can use 'https://raw.githubusercontent.com/Azure/iotedge-lorawan-starterkit/dev/Tools/Cli-LoRa-Device-Provisioning/DefaultRouterConfig/' which is where the Azure IoT Edge LoRaWAN project is hosted.
+  * `Development`: On this environment, logs are produced up to `Debug` level.
+  * `Production`: Default value if ASPNETCORE_ENVIRONMENT is not set. On this environment, logs are produced up to `Information` level.
 
 #### Connection strings
 
@@ -72,7 +70,7 @@ Here are different connection strings that the user can configure:
 The IoT Hub portal uses some tags to configure the devices. The tags are stored in the Azure IoT Hub in Device Twins.
 
 * **deviceType**: The device type, can be "LoRa Device" or "null".
-> By setting the device type to "LoRa Device", the device will be configured to send LoRaWAN and receive C2D commands.
+    > By setting the device type to "LoRa Device", the device will be configured to send LoRaWAN and receive C2D commands.
 * **modelId**: The device model ID that is used to retrieve the device model configuration.
 
 ## Storage Account
@@ -101,7 +99,7 @@ This documentation site is build using Github Pages.
 
 ## How to update the documentation
 
-1. Checkout the branch that contains the documentation: 
+1. Checkout the branch that contains the documentation:
 
     ```sh
     git checkout origin/docs/main
@@ -136,14 +134,14 @@ If you'd like to change the theme's HTML layout:
 
 ## Problem Details
 
-On IoT Hub Portal, we use the library [Hellang.Middleware.ProblemDetails](https://github.com/khellang/Middleware) which implements [RFC7807](https://datatracker.ietf.org/doc/html/rfc7807) to describe issues/problems that occured on backend.
+On IoT Hub Portal, we use the library [Hellang.Middleware.ProblemDetails](https://github.com/khellang/Middleware) which implements [RFC7807](https://datatracker.ietf.org/doc/html/rfc7807) to describe issues/problems that occurred on backend.
 
 ### Handle a new exception using `Problem Details`
 
 * Create a new exception which extends [`BaseException`](https://github.com/CGI-FR/IoT-Hub-Portal/blob/main/src/AzureIoTHub.Portal/Server/Exceptions/BaseException.cs). For example see 👉 [`InternalServerErrorException`](https://github.com/CGI-FR/IoT-Hub-Portal/blob/main/src/AzureIoTHub.Portal/Server/Exceptions/InternalServerErrorException.cs)
 * On [Startup](https://github.com/CGI-FR/IoT-Hub-Portal/blob/main/src/AzureIoTHub.Portal/Server/Startup.cs) class, within the instruction `services.AddProblemDetails()`:
-    * Your new exception is already catched by the middleware Problem Details because its extends the exception `BaseException`.
-    * It you want override the behaviour of the middleware when processing your exception, you have to add a new mapping within it.
+    > Your new exception is already catched by the middleware Problem Details because its extends the exception `BaseException`.
+    > If you want override the behavior of the middleware when processing your exception, you have to add a new mapping within it.
 
 > 💡 You can also map exceptions from dotnet framework and third parties.
 
@@ -151,19 +149,18 @@ On IoT Hub Portal, we use the library [Hellang.Middleware.ProblemDetails](https:
 
 On frontend, http client uses a delegating handler [ProblemDetailsHandler](https://github.com/CGI-FR/IoT-Hub-Portal/blob/main/src/AzureIoTHub.Portal/Client/Handlers/ProblemDetailsHandler.cs) to:
 
-- Execute the http request and wait the response
-- If the response is not successful:
-  - The body of the response is deserialized to `ProblemDetailsWithExceptionDetails`
-  - An exception with type `ProblemDetailsException` (inluding the error response) is thrown 
+* Execute the http request and wait the response
+* If the response is not successful:
+  * The body of the response is deserialized to `ProblemDetailsWithExceptionDetails`
+  * An exception with type `ProblemDetailsException` (including the error response) is thrown. 
 
-
-On blazor views, http calls must be catched to capture any exceptions of type `ProblemDetailsException` to be able to execute any business code to process them.
+On Blazor views, http calls must be catched to capture any exceptions of type `ProblemDetailsException` to be able to execute any business code to process them.
 
 When an http call fails, the user must be notified visually by the application: A component [Error](https://github.com/CGI-FR/IoT-Hub-Portal/blob/main/src/AzureIoTHub.Portal/Client/Shared/NavMenu.razor) has been made to respond to this use case.
 Below an example on how to:
 
-- Catch an ProblemDetailsException when making a http call
-- Delegate the exception to the `Error` component, so that it can visually warn the user
+* Catch an ProblemDetailsException when making a http call
+* Delegate the exception to the `Error` component, so that it can visually warn the user
 
 ```csharp
 @code {
@@ -179,7 +176,7 @@ Below an example on how to:
         }
         catch (ProblemDetailsException exception)
         {
-            // Pass the ProblemDetailsException exception to Error compoment using its method ProcessProblemDetails()
+            // Pass the ProblemDetailsException exception to Error component using its method ProcessProblemDetails()
             // The Error component will alert the user by showing a (snackbar/dialog) using the content of the exception
             Error?.ProcessProblemDetails(exception)
         }
