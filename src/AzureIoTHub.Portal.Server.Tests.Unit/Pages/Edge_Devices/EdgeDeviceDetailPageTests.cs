@@ -472,8 +472,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .RespondJson(mockIoTEdgeDevice);
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+            cut.WaitForAssertion(() => cut.Find("#connectButton"));
 
-            var connectButton = cut.WaitForElement("#connectButton");
+            var connectButton = cut.Find("#connectButton");
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
 
@@ -483,9 +484,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             // Act
             connectButton.Click();
 
-            // Assert            
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            // Assert
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
