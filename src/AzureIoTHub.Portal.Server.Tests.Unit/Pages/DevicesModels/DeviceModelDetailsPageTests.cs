@@ -241,6 +241,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Act
             saveButton.Click();
+            Thread.Sleep(2500);
             cut.WaitForState(() => !this.mockNavigationManager.Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
             // Assert            
