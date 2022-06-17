@@ -141,7 +141,7 @@
 
                                                     </MudItem>
                                                     <MudItem md="1" xs="3">
-                                                        <MudIconButton id="DeletePropertyButton" Icon="@Icons.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
+                                                        <MudIconButton id="deletePropertyButton" Icon="@Icons.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
                                                     </MudItem>
                                                 </MudGrid>
                                                     }
@@ -168,6 +168,9 @@
 </MudForm>
 
 @code {
+    [CascadingParameter]
+    public Error Error { get; set; }
+
     private MudForm form;
 
     private string ApiUrlBase => this.IsLoRa ? "/api/lorawan/models" : "api/models";
@@ -219,7 +222,7 @@
             };
     }
 
-    private DeviceModel Model { get; set; } = new DeviceModel
+    internal DeviceModel Model { get; set; } = new DeviceModel
         {
             ModelId = Guid.NewGuid().ToString()
         };
@@ -252,7 +255,6 @@
 
         imageDataUrl = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
     }
-
 
     private async Task Save()
     {
@@ -300,43 +302,54 @@
 
         HttpResponseMessage result;
 
-        if (IsLoRa)
+        try
         {
-            var loraDeviceModel = Model as LoRaDeviceModel;
-
-            if (!loraDeviceModel.UseOTAA)
+            if (IsLoRa)
             {
-                loraDeviceModel.AppEUI = null;
+                var loraDeviceModel = Model as LoRaDeviceModel;
+
+                if (!loraDeviceModel.UseOTAA)
+                {
+                    loraDeviceModel.AppEUI = null;
+                }
+
+                loraDeviceModel.SupportLoRaFeatures = true;
+
+
+                result = await httpClient.PostAsJsonAsync(ApiUrlBase, loraDeviceModel);
+
+                result.EnsureSuccessStatusCode();
+
+                result = await httpClient.PostAsJsonAsync($"{ApiUrlBase}/{Model.ModelId}/commands", Commands);
+            }
+            else
+            {
+                result = await httpClient.PostAsJsonAsync(ApiUrlBase, Model);
+
+                result.EnsureSuccessStatusCode();
+
+                result = await httpClient.PostAsJsonAsync($"{ApiUrlBase}/{Model.ModelId}/properties", Properties);
             }
 
-            loraDeviceModel.SupportLoRaFeatures = true;
-
-            result = await httpClient.PostAsJsonAsync(ApiUrlBase, loraDeviceModel);
-
             result.EnsureSuccessStatusCode();
 
-            result = await httpClient.PostAsJsonAsync($"{ApiUrlBase}/{Model.ModelId}/commands", Commands);
+            if (content is not null)
+            {
+                var response = await httpClient.PostAsync($"{ApiUrlBase}/{Model.ModelId}/avatar", content);
+            }
+
+
+            DialogService.Close(processingDialog);
+            Snackbar.Add("Device model successfully created.", Severity.Success);
+
+            // Go back to the list of devices
+            NavigationManager.NavigateTo("device-models");
         }
-        else
+
+        catch(ProblemDetailsException exception)
         {
-            result = await httpClient.PostAsJsonAsync(ApiUrlBase, Model);
-
-            result.EnsureSuccessStatusCode();
-
-            result = await httpClient.PostAsJsonAsync($"{ApiUrlBase}/{Model.ModelId}/properties", Properties);
+            DialogService.Close(processingDialog);
+            Error?.ProcessProblemDetails(exception);
         }
-
-        result.EnsureSuccessStatusCode();
-
-        if (content is not null)
-        {
-            var response = await httpClient.PostAsync($"{ApiUrlBase}/{Model.ModelId}/avatar", content);
-        }
-
-        DialogService.Close(processingDialog);
-        Snackbar.Add("Device model successfully created.", Severity.Success);
-
-        // Go back to the list of devices
-        NavigationManager.NavigateTo("device-models");
     }
  }

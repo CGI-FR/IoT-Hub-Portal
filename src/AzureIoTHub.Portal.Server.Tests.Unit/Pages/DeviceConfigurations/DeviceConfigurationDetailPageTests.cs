@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-    using System.Net.Http.Json;
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Pages.DeviceConfigurations;
@@ -26,10 +25,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     [TestFixture]
     public class DeviceConfigurationDetailPageTests : IDisposable
     {
-#pragma warning disable CA2213 // Disposable fields should be disposed
         private Bunit.TestContext testContext;
         private MockHttpMessageHandler mockHttpClient;
-#pragma warning restore CA2213 // Disposable fields should be disposed
 
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
@@ -49,6 +46,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
             _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
+            _ = this.testContext.JSInterop.SetupVoid("mudElementRef.restoreFocus", _ => true);
             _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
         }
 
@@ -699,11 +697,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{mockConfigId}")
-                .RespondJson(new DeviceConfig() { ModelId = modelId, ConfigurationId = this.mockConfigId});
+                .When(HttpMethod.Get, $"/api/device-configurations/{this.mockConfigId}")
+                .RespondJson(new DeviceConfig() { ModelId = modelId, ConfigurationId = this.mockConfigId });
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{mockConfigId}/metrics")
+                .When(HttpMethod.Get, $"/api/device-configurations/{this.mockConfigId}/metrics")
                 .RespondJson(new ConfigurationMetrics());
 
             _ = this.mockHttpClient

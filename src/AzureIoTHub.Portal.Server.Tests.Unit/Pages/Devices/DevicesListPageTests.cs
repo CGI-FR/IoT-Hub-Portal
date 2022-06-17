@@ -72,6 +72,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Get, this.apiBaseUrl)
                 .RespondJson(Array.Empty<object>());
 
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, this.apiTagsBaseUrl)
+                .RespondJson(Array.Empty<object>());
+
             _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             // Act
