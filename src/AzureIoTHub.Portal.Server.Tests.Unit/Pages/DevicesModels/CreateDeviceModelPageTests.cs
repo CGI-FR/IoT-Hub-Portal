@@ -22,10 +22,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
-    using AzureIoTHub.Portal.Client.Shared;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
-    using AzureIoTHub.Portal.Models;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
     [TestFixture]
@@ -356,12 +354,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<LoRaDeviceModel>>(m.Content);
-                    var jsonContent = m.Content as ObjectContent<LoRaDeviceModel>;
+                    var objectContent = m.Content as ObjectContent<LoRaDeviceModel>;
+                    Assert.IsNotNull(objectContent);
 
-                    Assert.IsAssignableFrom<LoRaDeviceModel>(jsonContent.Value);
-                    var deviceModel = jsonContent.Value as LoRaDeviceModel;
-
+                    Assert.IsAssignableFrom<LoRaDeviceModel>(objectContent.Value);
+                    var deviceModel = objectContent.Value as LoRaDeviceModel;
                     Assert.IsNotNull(deviceModel.ModelId);
+
                     Assert.AreEqual(deviceModel.Name, modelName);
                     Assert.AreEqual(deviceModel.Description, description);
                     Assert.AreEqual(deviceModel.SupportLoRaFeatures, true);
