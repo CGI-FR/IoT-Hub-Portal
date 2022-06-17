@@ -39,15 +39,17 @@ Since the IoT Hub Portal is deployed as a Docker container, the application sett
 
 Here are different settings that the user can configure:
 
+* **PortalName**: The name of the portal (shown in the App Bar and the Page Title).
 * **OIDC__Authority**: The OpenID Connect issuer.
 * **OIDC__MetadataUrl**: The OpenID Connect metadata URL (e.g. `.well-known/openid-configuration`).
 * **OIDC__ClientId**: The OpenID Connect client ID for the Web UI.
 * **OIDC__ApiClientId**: The OpenID Connect client ID for the API.
 * **OIDC__Scope**: The OpenID Connect scope that represents the portal API.
 * **IoTDPS__ServiceEndpoint**: The IoT Device Provisioning Service endpoint.
+* **IoTDPS__IDScope**: The IoT Device Provisioning Service ID scope.
 * **LoRaFeature__Enabled**: Whether the LoRaWAN feature is enabled or not.
 * **LoRaKeyManagement__Url**: The LoRa Key Management Facade URL.
-* **LoRaRegionRouterConfig__Url**: The LoRa Region Router Config URL.
+* **StorageAccount__BlobContainerName**: The name of the Azure Storage container where the device models images are stored.
 * **ASPNETCORE_ENVIRONMENT**: Built-in environment variable, used to target the configuration provided by a specific environment. Two accepted values:
   * `Development`: On this environement, logs are produred up to `Debug` level.
   * `Production`: Default value if ASPNETCORE_ENVIRONMENT is not set. On this environement, logs are produred up to `Information` level.
