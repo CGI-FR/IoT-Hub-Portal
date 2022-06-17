@@ -69,12 +69,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             using var deviceResponseMock = new HttpResponseMessage();
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, this.apiBaseUrl)
+                .When(HttpMethod.Get, this.apiTagsBaseUrl)
                 .RespondJson(Array.Empty<object>());
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, this.apiTagsBaseUrl)
-                .RespondJson(Array.Empty<object>());
+                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
+                .RespondJson(new PaginationResult<DeviceListItem>
+                {
+                    Items = Array.Empty<DeviceListItem>()
+                });
 
             _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -82,12 +85,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var cut = RenderComponent<DeviceListPage>();
 
             // Assert
-            Assert.AreEqual("Search panel", cut.Find(".mud-expansion-panels .mud-expand-panel .mud-expand-panel-header .mud-expand-panel-text").TextContent);
+            cut.WaitForAssertion(() => cut.Find(".mud-expansion-panels .mud-expand-panel .mud-expand-panel-header .mud-expand-panel-text").TextContent.Should().Be("Search panel"));
+            cut.WaitForAssertion(() => cut.Find(".mud-expansion-panels .mud-expand-panel").ClassList.Should().NotContain("Search panel should be collapsed"));
 
-            Assert.IsFalse(cut.Find(".mud-expansion-panels .mud-expand-panel")
-                                .ClassList.Contains("mud-panel-expanded"), "Search panel should be collapsed");
-
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [Test]
