@@ -69,13 +69,6 @@
     private void AddDeviceModel() => navigationManager.NavigateTo("/device-models/new");
     private void AddDeviceConfig() => navigationManager.NavigateTo("/device-configurations/new");
 
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    LayoutService.MajorUpdateOccurred += LayoutServiceOnMajorUpdateOccurred;
-    //    base.OnInitialized();
-        
-    //}
-
     protected override void OnInitialized()
     {
         LayoutService.MajorUpdateOccurred += LayoutServiceOnMajorUpdateOccurred;
@@ -88,28 +81,4 @@
     }
 
     private void LayoutServiceOnMajorUpdateOccurred(object sender, EventArgs e) => StateHasChanged();
-
-    //private async Task SetExpanded(string key, bool value)
-    //{
-    //    if (collapsibleNavMenu.ContainsKey(key))
-    //    {
-    //        collapsibleNavMenu[key] = value;
-    //    }
-    //    else
-    //    {
-    //        collapsibleNavMenu.Add(key, value);
-    //    }
-
-    //    await LocalStorageService.SetItemAsync(collapsibleNavMenuKey, collapsibleNavMenu);
-    //}
-
-    //private bool GetExpanded(string key)
-    //{
-    //    if (collapsibleNavMenu == null)
-    //    {
-    //        return true;
-    //    }
-
-    //    return !collapsibleNavMenu.TryGetValue(key, out var result) || result;
-    //}
 }
