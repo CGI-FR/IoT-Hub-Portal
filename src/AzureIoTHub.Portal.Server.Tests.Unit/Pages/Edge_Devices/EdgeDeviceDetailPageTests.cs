@@ -562,8 +562,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             logsButton.Click();
 
             // Assert            
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
