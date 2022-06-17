@@ -27,14 +27,7 @@ namespace AzureIoTHub.Portal.Client.Services
                 Encoding.UTF8,
                 Application.Json));
 
-            if (response.IsSuccessStatusCode)
-            {
-                return JsonConvert.DeserializeObject<List<IoTEdgeDeviceLog>>(await response.Content.ReadAsStringAsync());
-            }
-            else
-            {
-                throw new HttpRequestException(response.ReasonPhrase);
-            }
+            return JsonConvert.DeserializeObject<List<IoTEdgeDeviceLog>>(await response.Content.ReadAsStringAsync());
         }
     }
 }

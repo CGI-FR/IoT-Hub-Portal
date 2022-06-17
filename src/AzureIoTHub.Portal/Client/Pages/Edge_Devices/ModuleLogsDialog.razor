@@ -10,7 +10,7 @@
             <MudCardContent>
 
                 <MudItem xs="12">
-                <MudTable Items="@Logs" FixedHeader="true"
+                <MudTable Items="@logs" FixedHeader="true"
                     Height="400px"
                     Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
                     <ColGroup>
@@ -48,17 +48,20 @@
         </MudCard>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton id="close" OnClick="Cancel">Cancel</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string deviceId { get; set; }
     [Parameter] public IoTEdgeModule edgeModule { get; set; }
     
     private int[] pageSizeOptions = new int[] { 3, 5 , 10};
-    private List<IoTEdgeDeviceLog> Logs;
+    private List<IoTEdgeDeviceLog> logs = new();
 
     void Cancel() => MudDialog.Cancel();
 
@@ -71,6 +74,13 @@
 
     public async Task LoadEdgeDeviceLogs()
     {
-        Logs = await EdgeDeviceService.GetEdgeDeviceLogs(deviceId, edgeModule);
+        try
+        {
+            logs = await EdgeDeviceService.GetEdgeDeviceLogs(deviceId, edgeModule);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
     }
 }

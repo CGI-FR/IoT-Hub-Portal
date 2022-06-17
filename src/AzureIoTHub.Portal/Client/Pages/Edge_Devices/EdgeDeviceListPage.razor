@@ -1,17 +1,11 @@
 ﻿@page "/edge/devices"
 @using AzureIoTHub.Portal
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using AzureIoTHub.Portal.Models.v10
-@using System.Net.Http.Json
-@using Blazored.Modal
-@using Blazored.Modal.Services
 @using System.Web
 
 @attribute [Authorize]
 @inject HttpClient Http
-@inject NavigationManager NavigationManager
-@inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
 
@@ -46,7 +40,7 @@
                     </MudItem>
                     <MudItem xs="12" Class="pb-4 pl-4">
                         <MudButton Variant="Variant.Outlined" Color="Color.Success" Class="ml-auto" OnClick="Search">Search</MudButton>
-                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="ml-4" OnClick="ResetFiltre">Reset</MudButton>
+                        <MudButton id="reset" Variant="Variant.Outlined" Color="Color.Primary" Class="ml-4" OnClick="ResetFilter">Reset</MudButton>
                     </MudItem>
                 </MudGrid>
             </MudExpansionPanel>
@@ -128,10 +122,13 @@
 </MudGrid>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
     private MudTable<IoTEdgeListItem> table;
-    private SearchModel searchModel = new SearchModel();
+    private SearchModel searchModel = new();
 
-    DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+    readonly DialogOptions maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
     private Dictionary<int, string> Pages { get; set; } = new();
 
     private bool IsLoading { get; set; } = true;
@@ -145,42 +142,48 @@
 
     private async Task<TableData<IoTEdgeListItem>> LoadItems(TableState state)
     {
-        PaginationResult<IoTEdgeListItem> result;
-
-        if (Pages.Keys.Contains(state.Page))
+        try
         {
-            result = await Http.GetFromJsonAsync<PaginationResult<IoTEdgeListItem>>(Pages[state.Page]);
-        }
-        else
-        {
-            var uri = $"api/edge/devices?pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&searchType={searchModel.Type}";
+            PaginationResult<IoTEdgeListItem> result;
 
-            _ = Pages.TryAdd(state.Page, uri);
+            if (Pages.Keys.Contains(state.Page))
+            {
+                result = await Http.GetFromJsonAsync<PaginationResult<IoTEdgeListItem>>(Pages[state.Page]);
+            }
+            else
+            {
+                var uri = $"api/edge/devices?pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&searchType={searchModel.Type}";
 
-            result = await Http.GetFromJsonAsync<PaginationResult<IoTEdgeListItem>>(uri);
-        }
+                _ = Pages.TryAdd(state.Page, uri);
 
-        _ = Pages.TryAdd(state.Page + 1, result.NextPage);
+                result = await Http.GetFromJsonAsync<PaginationResult<IoTEdgeListItem>>(uri);
+            }
 
-        IsLoading = false;
+            _ = Pages.TryAdd(state.Page + 1, result.NextPage);
 
-        return new TableData<IoTEdgeListItem>
+            return new TableData<IoTEdgeListItem>
             {
                 Items = result.Items,
                 TotalItems = result.TotalItems
             };
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+
+            return new TableData<IoTEdgeListItem>();
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
-    private void ResetFiltre()
+    private void ResetFilter()
     {
-        this.searchModel = new SearchModel();
+        searchModel = new SearchModel();
 
         Search();
-    }
-
-    private void RedirectToDetail(string id)
-    {
-        NavigationManager.NavigateTo($"/edge-device/detail/{id}");
     }
 
     private async Task ShowAddDialog()
@@ -197,8 +200,7 @@
 
     public async Task ShowDeleteDialog(IoTEdgeListItem gateway)
     {
-        var parameters = new DialogParameters();
-        parameters.Add(nameof(IoTEdgeDevice.DeviceId), gateway.DeviceId);
+        var parameters = new DialogParameters {{nameof(IoTEdgeDevice.DeviceId), gateway.DeviceId}};
         var result = await DialogService.Show<EdgeDeviceDeleteConfirmationDialog>("Confirm Deletion", parameters).Result;
 
         if (result.Cancelled)

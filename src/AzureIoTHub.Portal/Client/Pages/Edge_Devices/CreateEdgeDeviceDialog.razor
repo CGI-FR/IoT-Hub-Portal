@@ -1,5 +1,4 @@
 ﻿@page "/edge/devices/add"
-@using Microsoft.AspNetCore.Authorization
 @using AzureIoTHub.Portal.Models.v10;
 
 @inject HttpClient Http
@@ -13,6 +12,7 @@
                 <MudCardContent>
                     <MudItem xs="12">
                         <MudTextField @bind-Value="@gateway.DeviceId"
+                                      id="name"
                                       Label="Name"
                                       Variant="Variant.Text"
                                       For="@(() => gateway.DeviceId)"
@@ -21,6 +21,7 @@
 
                     <MudItem xs="12">
                         <MudSelect T="string" @bind-Value="gateway.Type"
+                                   id="type"
                                    Dense="true" Variant="Variant.Text"
                                    For="@(()=> gateway.Type)"
                                    Placeholder="Please select the type"
@@ -33,6 +34,7 @@
 
                     <MudItem xs="12">
                         <MudSelect T="string" @bind-Value="gateway.Environment"
+                                   id="environment"
                                    Dense="true" Variant="Variant.Text"
                                    For="@(()=> gateway.Environment)"
                                    Placeholder="Please select the environment"
@@ -44,7 +46,7 @@
                     </MudItem>
                 </MudCardContent>
                 <MudCardActions Class="pb-4 pl-4">
-                    <MudButton Variant="Variant.Outlined" Color="Color.Dark" Class="ml-auto" @onclick="Cancel">Cancel</MudButton>
+                    <MudButton id="cancel" Variant="Variant.Outlined" Color="Color.Dark" Class="ml-auto" @onclick="Cancel">Cancel</MudButton>
 
                     @if (processingSave)
                     {
@@ -54,7 +56,7 @@
                     }
                     else
                     {
-                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-4">Create</MudButton>
+                        <MudButton id="create" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-4">Create</MudButton>
                     }
                 </MudCardActions>
             </MudCard>
@@ -63,28 +65,33 @@
 </MudDialog>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    private IoTEdgeDevice gateway = new IoTEdgeDevice();
-    private bool processingSave = false;
+    private readonly IoTEdgeDevice gateway = new();
+    private bool processingSave;
 
     void Cancel() => MudDialog.Cancel();
 
     private async Task OnValidation()
     {
-        processingSave = true;
-        var result = await Http.PostAsJsonAsync("api/edge/devices", gateway);
-        processingSave = false;
-
-        if (result.IsSuccessStatusCode)
+        try
         {
-            Snackbar.Add($"Device has been successfully created !", Severity.Success);
+            processingSave = true;
+            await Http.PostAsJsonAsync("api/edge/devices", gateway);
+
+            Snackbar.Add("Device has been successfully created !", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));
         }
-        else
+        catch (ProblemDetailsException exception)
         {
-            Snackbar.Add($"Something went wrong while creating device ... ", Severity.Error);
-            return;
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            processingSave = false;
         }
     }
 }

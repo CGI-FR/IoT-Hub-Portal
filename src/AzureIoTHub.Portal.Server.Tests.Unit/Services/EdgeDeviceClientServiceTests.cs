@@ -8,7 +8,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
     using System.Net.Http;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Services;
-    using AzureIoTHub.Portal.Models.v10;
+    using Models.v10;
+    using Client.Exceptions;
+    using Client.Models;
     using FluentAssertions;
     using Newtonsoft.Json;
     using NUnit.Framework;
@@ -66,7 +68,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public async Task GetEdgeDeviceLogsMustThowHttpRequestExceptionWhenError()
+        public async Task GetEdgeDeviceLogsMustThrowProblemDetailsExceptionWhenErrorOccurs()
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
@@ -80,7 +82,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             using var mockHttp = new MockHttpMessageHandler();
 
             _ = mockHttp.When(HttpMethod.Post, $"http://localhost/api/edge/devices/{deviceId}/logs")
-                .Respond(System.Net.HttpStatusCode.BadRequest);
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             using var client = new HttpClient(mockHttp)
             {
@@ -93,7 +95,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             var act = () => edgeDeviceClientService.GetEdgeDeviceLogs(deviceId, edgeModule);
 
             // Assert
-            _ = await act.Should().ThrowAsync<HttpRequestException>();
+            _ = await act.Should().ThrowAsync<ProblemDetailsException>();
         }
     }
 }
