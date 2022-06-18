@@ -20,19 +20,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
     {
         private TestAuthorizationContext authContext;
         private FakeNavigationManager fakeNavigationManager;
-        private MockRepository mockRepository;
 
         [SetUp]
         public void Setup()
         {
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-
             TestContext = new Bunit.TestContext();
             _ = TestContext.Services.AddMudServices();
             this.authContext = TestContext.AddTestAuthorization();
             _ = TestContext.AddBlazoredLocalStorage();
             _ = TestContext.Services.AddScoped<ILayoutService, LayoutService>();
-            _ = TestContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = TestContext.Services.AddSingleton(new PortalSettings
+            {
+                PortalName = "TEST",
+                IsLoRaSupported = false
+            });
 
             this.fakeNavigationManager = TestContext.Services.GetRequiredService<FakeNavigationManager>();
 
@@ -50,12 +51,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
 
             // Act
             var cut = RenderComponent<Appbar>();
+            cut.WaitForAssertion(() => cut.Find("#title"));
 
             // Assert
             _ = cut.Markup.Should().NotBeNullOrEmpty();
+            _ = cut.Find("#title").TextContent.Should().Be("TEST");
             _ = cut.FindAll("button.mud-button-root").Count.Should().Be(3);
             _ = cut.FindAll("div.mud-avatar").Count.Should().Be(1);
-            this.mockRepository.VerifyAll();
         }
 
         [Test]
@@ -71,7 +73,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
 
             // Assert
             cut.WaitForAssertion(() => cut.Find("div.mud-overlay"));
-            this.mockRepository.VerifyAll();
         }
 
         [Test]
@@ -89,7 +90,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
 
             // Assert
             cut.WaitForAssertion(() => cut.FindAll("div.mud-overlay").Count.Should().Be(0));
-            this.mockRepository.VerifyAll();
         }
 
         [Test]
@@ -105,7 +105,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
 
             // Assert
             _ = TestContext?.Services.GetRequiredService<ILayoutService>().IsDarkMode.Should().BeTrue();
-            this.mockRepository.VerifyAll();
         }
 
         [Test]
@@ -122,7 +121,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
 
             // Assert
             _ = TestContext?.Services.GetRequiredService<ILayoutService>().IsDarkMode.Should().BeFalse();
-            this.mockRepository.VerifyAll();
         }
 
         [Test]
@@ -137,7 +135,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             // Assert
             _ = cut.Markup.Should().NotBeNullOrEmpty();
             _ = cut.FindAll("#login").Count.Should().Be(0);
-            this.mockRepository.VerifyAll();
         }
 
         [Test]

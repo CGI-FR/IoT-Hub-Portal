@@ -7,7 +7,7 @@
 @inject ILayoutService LayoutService
 
 <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@LayoutService.ToggleDrawer" />
-<MudText Typo="Typo.h5">@Portal.PortalName</MudText>
+<MudText id="title" Typo="Typo.h5">@Portal.PortalName</MudText>
 <MudSpacer />
 <AuthorizeView>
     <Authorized>
