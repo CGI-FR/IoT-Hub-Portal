@@ -21,18 +21,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         private TestAuthorizationContext authContext;
         private FakeNavigationManager fakeNavigationManager;
         private MockRepository mockRepository;
-        private Mock<ILayoutService> mockLayoutService;
 
         [SetUp]
         public void Setup()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockLayoutService = this.mockRepository.Create<ILayoutService>();
 
             TestContext = new Bunit.TestContext();
             _ = TestContext.Services.AddMudServices();
             this.authContext = TestContext.AddTestAuthorization();
-            _ = TestContext.Services.AddSingleton(this.mockLayoutService.Object);
+            _ = TestContext.AddBlazoredLocalStorage();
+            _ = TestContext.Services.AddScoped<ILayoutService, LayoutService>();
             _ = TestContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             this.fakeNavigationManager = TestContext.Services.GetRequiredService<FakeNavigationManager>();
@@ -48,7 +47,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
-            _ = this.mockLayoutService.Setup(service => service.IsDarkMode).Returns(false);
 
             // Act
             var cut = RenderComponent<Appbar>();
@@ -61,11 +59,77 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         }
 
         [Test]
+        public void ClickOnUserMenuShouldOpenUserMenuOverlay()
+        {
+            // Arrange
+            _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            var cut = RenderComponent<Appbar>();
+            cut.WaitForAssertion(() => cut.Find("div.mud-menu-activator"));
+
+            // Act
+            cut.Find("div.mud-menu-activator").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Find("div.mud-overlay"));
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void ClickOnOpenUserMenuShouldCloseUserMenuOverlay()
+        {
+            // Arrange
+            _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            var cut = RenderComponent<Appbar>();
+            cut.WaitForAssertion(() => cut.Find("div.mud-menu-activator"));
+            cut.Find("div.mud-menu-activator").Click();
+            cut.WaitForAssertion(() => cut.Find("div.mud-overlay"));
+
+            // Act
+            cut.Find("div.mud-menu-activator").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.FindAll("div.mud-overlay").Count.Should().Be(0));
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void ClickOnDarkModeShouldSetDarkMode()
+        {
+            // Arrange
+            _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            var cut = RenderComponent<Appbar>();
+            cut.WaitForAssertion(() => cut.Find("#dark_light_switch button"));
+
+            // Act
+            cut.Find("#dark_light_switch button").Click();
+
+            // Assert
+            _ = TestContext?.Services.GetRequiredService<ILayoutService>().IsDarkMode.Should().BeTrue();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void ClickOnLightModeShouldSetLightMode()
+        {
+            // Arrange
+            _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            var cut = RenderComponent<Appbar>();
+            cut.WaitForAssertion(() => cut.Find("#dark_light_switch button"));
+
+            // Act
+            cut.Find("#dark_light_switch button").Click();
+            cut.Find("#dark_light_switch button").Click();
+
+            // Assert
+            _ = TestContext?.Services.GetRequiredService<ILayoutService>().IsDarkMode.Should().BeFalse();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public void LoginMustNotBeShownWhenUserIsAuthorized()
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
-            _ = this.mockLayoutService.Setup(service => service.IsDarkMode).Returns(false);
 
             // Act
             var cut = RenderComponent<Appbar>();
