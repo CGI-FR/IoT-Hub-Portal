@@ -2,7 +2,6 @@
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 @using AzureIoTHub.Portal.Client.Validators
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @attribute [Authorize]
 @inject HttpClient Http
@@ -100,11 +99,14 @@
 
 
 @code {
-    private Concentrator concentrator = new Concentrator();
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
+    private Concentrator concentrator = new();
     private MudForm form;
-    private ConcentratorValidator concentratorValidator = new ConcentratorValidator();
+    private ConcentratorValidator concentratorValidator = new();
 
-    public PatternMask maskThumbprint = new PatternMask("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
+    public PatternMask maskThumbprint = new("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
     {
             MaskChars = new[] { new MaskChar('X', @"[0-9a-fA-F]") },
             CleanDelimiters = false,
@@ -118,32 +120,37 @@
     /// </summary>
     public async void SaveDevice()
     {
-        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
-        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
-
-        await form.Validate();
-        if (!this.concentratorValidator.Validate(this.concentrator).IsValid)
+        try
         {
-            // string errorMsg = await response.Content.ReadAsStringAsync();
+            var parameters = new DialogParameters{{ "ContentText", "Processing" }};
+            var processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
+
+            await form.Validate();
+            if (!this.concentratorValidator.Validate(this.concentrator).IsValid)
+            {
+                // string errorMsg = await response.Content.ReadAsStringAsync();
+                DialogService.Close(processingDialog);
+                Snackbar.Add("One or more validation errors occurred", Severity.Error);
+                return;
+            }
+
+            concentrator.DeviceType = "LoRa Concentrator";
+
+            // Sends the device to be added to the controller
+            await Http.PostAsJsonAsync<Concentrator>($"api/lorawan/concentrators", concentrator);
+
             DialogService.Close(processingDialog);
-            Snackbar.Add("One or more validation errors occurred", Severity.Error);
-            return;
+
+            // Prompts a snack bar to inform the action was successful
+            Snackbar.Add($"Device {concentrator.DeviceId} has been successfully created!", Severity.Success);
+
+            // Go back to the list of concentrator
+            NavManager.NavigateTo("lorawan/concentrators");
         }
-
-        concentrator.DeviceType = "LoRa Concentrator";
-
-        // Sends the device to be added to the controller
-        var response = await Http.PostAsJsonAsync<Concentrator>($"api/lorawan/concentrators", concentrator);
-
-        response.EnsureSuccessStatusCode();
-
-        DialogService.Close(processingDialog);
-
-        // Prompts a snack bar to inform the action was successful
-        Snackbar.Add($"Device {concentrator.DeviceId} has been successfully created!", Severity.Success);
-
-        // Go back to the list of concentrator
-        NavManager.NavigateTo("lorawan/concentrators");
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
     }
 
     // Workaround to change MudSelect value when performing unit tests.
