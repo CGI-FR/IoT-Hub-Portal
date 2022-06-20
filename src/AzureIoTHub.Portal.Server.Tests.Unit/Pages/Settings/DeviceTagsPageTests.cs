@@ -8,6 +8,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
     using System.Linq;
     using System.Net.Http;
     using System.Threading;
+    using AzureIoTHub.Portal.Client.Exceptions;
+    using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.Settings;
     using AzureIoTHub.Portal.Client.Shared;
     using AzureIoTHub.Portal.Models.v10;
@@ -70,6 +72,61 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
         }
 
         [Test]
+        public void DeviceListPageRendersCorrectly()
+        {
+            // Arrange
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
+                .RespondJson(new List<DeviceTag>(){
+                    //new DeviceTag
+                    //    { Label =  Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString(), Required = false, Searchable = false },
+                    //new DeviceTag
+                    //    { Label =  Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString(), Required = false, Searchable = false },
+                    new DeviceTag
+                        { Label = Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString(), Required = false, Searchable = false }
+                    });
+
+            // Act
+            var cut = RenderComponent<DeviceTagsPage>();
+            var grid = cut.WaitForElement("div.mud-grid", TimeSpan.FromSeconds(5));
+
+            // Assert
+            Assert.IsNotNull(cut.Markup);
+            Assert.AreEqual("Tags", cut.Find(".mud-typography-h6").TextContent);
+            Assert.IsNotNull(grid.InnerHtml);
+            Assert.AreEqual(3, cut.FindAll("tr").Count);
+            Assert.IsNotNull(cut.Find(".mud-table-container"));
+
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void OnInitializedAsyncShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceTags()
+        {
+            // Arrange
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            // Act
+            var cut = RenderComponent<DeviceTagsPage>();
+            var grid = cut.WaitForElement("div.mud-grid", TimeSpan.FromSeconds(5));
+
+            // Assert
+            Assert.IsNotNull(cut.Markup);
+            Assert.AreEqual("Tags", cut.Find(".mud-typography-h6").TextContent);
+            Assert.IsNotNull(grid.InnerHtml);
+            Assert.AreEqual(4, cut.FindAll("tr").Count);
+            Assert.IsNotNull(cut.Find(".mud-table-container"));
+
+            // Assert
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+        }
+
+
+        [Test]
         public void ClickOnSaveShouldUpdateTagList()
         {
             var mockTag = new DeviceTag
@@ -125,8 +182,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
             saveButton.Click();
             Thread.Sleep(1000);
 
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -187,8 +244,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
             saveButton.Click();
             Thread.Sleep(1000);
 
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -249,8 +306,36 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
             saveButton.Click();
             Thread.Sleep(1000);
 
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnSaveShouldProcessProblemDetailsExceptionIfIssueOccursWhenUpdatingDeviceTags()
+        {
+            // Arrange
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
+                .RespondJson(new List<DeviceTag>(){
+                    new DeviceTag
+                        { Label = "Label", Name = "Name", Required = false, Searchable = false }
+                    });
+
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
+            // Act
+            var cut = RenderComponent<DeviceTagsPage>();
+            var saveButton = cut.WaitForElement("#saveButton");
+            saveButton.Click();
+
+            // Assert            
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         public void Dispose()
