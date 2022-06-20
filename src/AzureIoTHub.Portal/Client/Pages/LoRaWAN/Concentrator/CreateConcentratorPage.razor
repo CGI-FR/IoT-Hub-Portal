@@ -137,7 +137,7 @@
             concentrator.DeviceType = "LoRa Concentrator";
 
             // Sends the device to be added to the controller
-            await Http.PostAsJsonAsync<Concentrator>($"api/lorawan/concentrators", concentrator);
+            await Http.PostAsJsonAsync($"api/lorawan/concentrators", concentrator);
 
             DialogService.Close(processingDialog);
 
