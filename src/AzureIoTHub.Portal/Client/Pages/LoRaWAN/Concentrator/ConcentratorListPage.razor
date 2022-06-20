@@ -11,7 +11,7 @@
 <MudGrid>
 
     <MudItem xs="12">
-        <MudTable ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading">
+        <MudTable id="concentrators-listing" ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading">
             <ColGroup>
                 <col style="width: 60%;" />
                 <col style="width: 10%;" />
