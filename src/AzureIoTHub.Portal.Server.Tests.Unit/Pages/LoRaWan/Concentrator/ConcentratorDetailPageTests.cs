@@ -158,6 +158,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/lorawan/concentrators"));
             this.mockHttpClient.VerifyNoOutstandingRequest();
             this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
         }
 
         [Test]
@@ -211,6 +212,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             // Assert
             this.mockHttpClient.VerifyNoOutstandingRequest();
             this.mockHttpClient.VerifyNoOutstandingExpectation();
+            this.mockRepository.VerifyAll();
         }
 
         public void Dispose()

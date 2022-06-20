@@ -6,14 +6,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-    using System.Threading;
     using AzureIoTHub.Portal.Client.Pages.LoRaWAN.Concentrator;
     using AzureIoTHub.Portal.Client.Shared;
-    using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
+    using Models.v10;
+    using Models.v10.LoRaWAN;
+    using Helpers;
     using Bunit;
     using Bunit.TestDoubles;
+    using Client.Exceptions;
+    using Client.Models;
+    using FluentAssertions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -72,7 +74,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
         [Test]
         public void ClickOnSaveShouldPostConcentratorDetails()
         {
-            var mockConcentrator = new Concentrator()
+            // Arrange
+            var mockConcentrator = new Concentrator
             {
                 DeviceId = "1234567890123456",
                 DeviceName = Guid.NewGuid().ToString(),
@@ -99,49 +102,84 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
                 })
                 .RespondText(string.Empty);
 
-            var cut = RenderComponent<CreateConcentratorPage>();
-            var saveButton = cut.WaitForElement("#saveButton");
-
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns((Snackbar)null);
 
+            var cut = RenderComponent<CreateConcentratorPage>();
+            cut.WaitForAssertion(() => cut.Find("#saveButton"));
+
 
             cut.Find($"#{nameof(Concentrator.DeviceId)}").Change(mockConcentrator.DeviceId);
             cut.Find($"#{nameof(Concentrator.DeviceName)}").Change(mockConcentrator.DeviceName);
             cut.Instance.ChangeRegion(mockConcentrator.LoraRegion);
 
-            saveButton.Click();
-            Thread.Sleep(1000);
+            // Act
+            cut.Find("#saveButton").Click();
 
             // Assert            
+            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/lorawan/concentrators"));
+            this.mockHttpClient.VerifyNoOutstandingRequest();
             this.mockHttpClient.VerifyNoOutstandingExpectation();
             this.mockRepository.VerifyAll();
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/lorawan/concentrators", StringComparison.OrdinalIgnoreCase));
         }
 
         [Test]
-        public void ClickOnSaveShouldDisplayErrorSnackbarIfValidationError()
+        public void ClickOnSaveShouldProcessProblemDetailsExceptionWhenIssueOccursOnCreatingConcentratorDetails()
         {
-            var cut = RenderComponent<CreateConcentratorPage>();
-            var saveButton = cut.WaitForElement("#saveButton");
+            // Arrange
+            var mockConcentrator = new Concentrator
+            {
+                DeviceId = "1234567890123456",
+                DeviceName = Guid.NewGuid().ToString(),
+                LoraRegion = "CN_470_510_RP2"
+            };
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Post, $"/api/lorawan/concentrators")
+                .With(m =>
+                {
+                    Assert.IsAssignableFrom<ObjectContent<Concentrator>>(m.Content);
+                    var objectContent = m.Content as ObjectContent<Concentrator>;
+                    Assert.IsNotNull(objectContent);
+
+                    Assert.IsAssignableFrom<Concentrator>(objectContent.Value);
+                    var concentrator = objectContent.Value as Concentrator;
+                    Assert.IsNotNull(concentrator);
+
+                    Assert.AreEqual(mockConcentrator.DeviceId, concentrator.DeviceId);
+                    Assert.AreEqual(mockConcentrator.DeviceName, concentrator.DeviceName);
+                    Assert.AreEqual(mockConcentrator.LoraRegion, concentrator.LoraRegion);
+
+                    return true;
+                })
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, null)).Returns((Snackbar)null);
+            var cut = RenderComponent<CreateConcentratorPage>();
+            cut.WaitForAssertion(() => cut.Find("#saveButton"));
 
-            saveButton.Click();
-            Thread.Sleep(1000);
+
+            cut.Find($"#{nameof(Concentrator.DeviceId)}").Change(mockConcentrator.DeviceId);
+            cut.Find($"#{nameof(Concentrator.DeviceName)}").Change(mockConcentrator.DeviceName);
+            cut.Instance.ChangeRegion(mockConcentrator.LoraRegion);
+
+            // Act
+            cut.Find("#saveButton").Click();
 
             // Assert            
+            this.mockHttpClient.VerifyNoOutstandingRequest();
             this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         public void Dispose()
