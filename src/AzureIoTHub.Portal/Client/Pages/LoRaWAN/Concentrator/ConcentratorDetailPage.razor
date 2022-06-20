@@ -155,12 +155,11 @@
     /// </summary>
     public async void SaveDevice()
     {
+        var parameters = new DialogParameters {{"ContentText", "Processing"}};
+        var processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
 
         try
         {
-            var parameters = new DialogParameters{{ "ContentText", "Processing" }};
-            var processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
-
             await form.Validate();
             if (!this.concentratorValidator.Validate(this.concentrator).IsValid)
             {
@@ -171,8 +170,6 @@
 
             await Http.PutAsJsonAsync($"api/lorawan/concentrators", concentrator);
 
-            DialogService.Close(processingDialog);
-
             // Prompts a snack bar to inform the action was successful
             Snackbar.Add($"Device {concentrator.DeviceId} has been successfully updated!", Severity.Success);
 
@@ -182,6 +179,10 @@
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            DialogService.Close(processingDialog);
         }
     }
 
