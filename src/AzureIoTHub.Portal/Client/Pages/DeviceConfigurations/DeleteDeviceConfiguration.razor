@@ -1,7 +1,4 @@
-﻿@using AzureIoTHub.Portal.Models.v10
-
-@inject HttpClient Http
-@inject IJSRuntime JS
+﻿@inject HttpClient Http
 @inject ISnackbar Snackbar
 
 <MudDialog>
@@ -19,16 +16,18 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="DeleteDevice">Delete</MudButton>
+        <MudButton id="delete-device-configuration" Color="Color.Primary" OnClick="DeleteDevice">Delete</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string configurationName { get; set; }
     [Parameter] public string configurationId { get; set; }
-
-    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    
     void Cancel() => MudDialog.Cancel();
 
     /// <summary>
@@ -37,15 +36,16 @@
     /// <returns></returns>
     private async Task DeleteDevice()
     {
-        var response = await Http.DeleteAsync($"/api/device-configurations/{configurationId}");
-
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            Snackbar.Add($"Oh oh, something went wrong while deleting device configuration {configurationName}... ", Severity.Error);
-            return;
-        }
+            await Http.DeleteAsync($"/api/device-configurations/{configurationId}");
 
-        Snackbar.Add($"Device configuration {configurationName} has been successfully deleted!", Severity.Success);
-        MudDialog.Close(DialogResult.Ok(true));
+            Snackbar.Add($"Device configuration {configurationName} has been successfully deleted!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
     }
 }
