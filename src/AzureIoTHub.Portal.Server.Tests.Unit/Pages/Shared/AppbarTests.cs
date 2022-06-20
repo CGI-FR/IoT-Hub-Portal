@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
+    using Moq;
     using MudBlazor.Services;
     using NUnit.Framework;
 
@@ -26,8 +27,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             TestContext = new Bunit.TestContext();
             _ = TestContext.Services.AddMudServices();
             this.authContext = TestContext.AddTestAuthorization();
-            _ = TestContext.Services.AddSingleton<ILayoutService>(new LayoutService());
-            _ = TestContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = TestContext.AddBlazoredLocalStorage();
+            _ = TestContext.Services.AddScoped<ILayoutService, LayoutService>();
+            _ = TestContext.Services.AddSingleton(new PortalSettings
+            {
+                PortalName = "TEST",
+                IsLoRaSupported = false
+            });
 
             this.fakeNavigationManager = TestContext.Services.GetRequiredService<FakeNavigationManager>();
 
@@ -45,11 +51,76 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
 
             // Act
             var cut = RenderComponent<Appbar>();
+            cut.WaitForAssertion(() => cut.Find("#title"));
 
             // Assert
             _ = cut.Markup.Should().NotBeNullOrEmpty();
-            _ = cut.FindAll("button.mud-button-root").Count.Should().Be(2);
+            _ = cut.Find("#title").TextContent.Should().Be("TEST");
+            _ = cut.FindAll("button.mud-button-root").Count.Should().Be(3);
             _ = cut.FindAll("div.mud-avatar").Count.Should().Be(1);
+        }
+
+        [Test]
+        public void ClickOnUserMenuShouldOpenUserMenuOverlay()
+        {
+            // Arrange
+            _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            var cut = RenderComponent<Appbar>();
+            cut.WaitForAssertion(() => cut.Find("div.mud-menu-activator"));
+
+            // Act
+            cut.Find("div.mud-menu-activator").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Find("div.mud-overlay"));
+        }
+
+        [Test]
+        public void ClickOnOpenUserMenuShouldCloseUserMenuOverlay()
+        {
+            // Arrange
+            _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            var cut = RenderComponent<Appbar>();
+            cut.WaitForAssertion(() => cut.Find("div.mud-menu-activator"));
+            cut.Find("div.mud-menu-activator").Click();
+            cut.WaitForAssertion(() => cut.Find("div.mud-overlay"));
+
+            // Act
+            cut.Find("div.mud-menu-activator").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.FindAll("div.mud-overlay").Count.Should().Be(0));
+        }
+
+        [Test]
+        public void ClickOnDarkModeShouldSetDarkMode()
+        {
+            // Arrange
+            _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            var cut = RenderComponent<Appbar>();
+            cut.WaitForAssertion(() => cut.Find("#dark_light_switch button"));
+
+            // Act
+            cut.Find("#dark_light_switch button").Click();
+
+            // Assert
+            _ = TestContext?.Services.GetRequiredService<ILayoutService>().IsDarkMode.Should().BeTrue();
+        }
+
+        [Test]
+        public void ClickOnLightModeShouldSetLightMode()
+        {
+            // Arrange
+            _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            var cut = RenderComponent<Appbar>();
+            cut.WaitForAssertion(() => cut.Find("#dark_light_switch button"));
+
+            // Act
+            cut.Find("#dark_light_switch button").Click();
+            cut.Find("#dark_light_switch button").Click();
+
+            // Assert
+            _ = TestContext?.Services.GetRequiredService<ILayoutService>().IsDarkMode.Should().BeFalse();
         }
 
         [Test]

@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Pages.DeviceConfigurations;
+    using FluentAssertions;
     using Helpers;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
@@ -681,10 +682,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                     return true;
                 });
 
+            cut.WaitForAssertion(() => cut.Find("#saveButton"));
+
             // Act
-            cut.WaitForElement("#saveButton").Click();
+            cut.Find("#saveButton").Click();
 
             // Assert
+            cut.WaitForAssertion(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-configurations"));
         }
 
         [Test]
@@ -692,7 +696,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         {
 
             // Arrange
-            //var ConfigId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
 
@@ -725,7 +728,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             returnButton.Click();
 
             // Assert
-            cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-configurations", StringComparison.OrdinalIgnoreCase));
+            cut.WaitForAssertion(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-configurations"));
         }
 
         public void Dispose()

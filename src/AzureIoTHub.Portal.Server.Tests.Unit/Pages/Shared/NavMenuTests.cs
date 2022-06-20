@@ -10,6 +10,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
     using Blazored.LocalStorage;
     using Bunit;
     using Bunit.TestDoubles;
+    using Client.Constants;
+    using Client.Services;
     using Client.Shared;
     using FluentAssertions;
     using Microsoft.AspNetCore.Components;
@@ -36,6 +38,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
 
             _ = this.testContext.Services.AddMudServices();
             this.localStorageService = this.testContext.AddBlazoredLocalStorage();
+            _ = this.testContext.Services.AddScoped<ILayoutService, LayoutService>();
 
             var authContext = this.testContext.AddTestAuthorization();
             _ = authContext.SetAuthorized(Guid.NewGuid().ToString());
@@ -67,7 +70,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             button.Click();
 
             // Assert
-            var navGroupExpandedDictionary = await this.localStorageService.GetItemAsync<Dictionary<string, bool>>("collapsibleNavMenu");
+            var navGroupExpandedDictionary = await this.localStorageService.GetItemAsync<Dictionary<string, bool>>(LocalStorageKey.CollapsibleNavMenu);
             Assert.IsFalse(navGroupExpandedDictionary[property]);
         }
 
@@ -84,7 +87,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             {
                 { property, false }
             };
-            await this.localStorageService.SetItemAsync("collapsibleNavMenu", dic);
+            await this.localStorageService.SetItemAsync(LocalStorageKey.CollapsibleNavMenu, dic);
+
+            // Load layout configuration from local storage
+            await this.testContext.Services.GetRequiredService<ILayoutService>().LoadLayoutConfigurationFromLocalStorage();
 
             var cut = RenderComponent<NavMenu>();
             var navGroups = cut.FindComponents<MudNavGroup>();
@@ -95,7 +101,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             button.Click();
 
             // Assert
-            var navGroupExpandedDictionary = await this.localStorageService.GetItemAsync<Dictionary<string, bool>>("collapsibleNavMenu");
+            var navGroupExpandedDictionary = await this.localStorageService.GetItemAsync<Dictionary<string, bool>>(LocalStorageKey.CollapsibleNavMenu);
             Assert.IsTrue(navGroupExpandedDictionary[property]);
         }
 
@@ -111,7 +117,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             {
                 { property, true }
             };
-            await this.localStorageService.SetItemAsync("collapsibleNavMenu", dic);
+            await this.localStorageService.SetItemAsync(LocalStorageKey.CollapsibleNavMenu, dic);
+
+            // Load layout configuration from local storage
+            await this.testContext.Services.GetRequiredService<ILayoutService>().LoadLayoutConfigurationFromLocalStorage();
 
             var cut = RenderComponent<NavMenu>();
             var navGroups = cut.FindComponents<MudNavGroup>();
@@ -122,7 +131,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             button.Click();
 
             // Assert
-            var navGroupExpandedDictionary = await this.localStorageService.GetItemAsync<Dictionary<string, bool>>("collapsibleNavMenu");
+            var navGroupExpandedDictionary = await this.localStorageService.GetItemAsync<Dictionary<string, bool>>(LocalStorageKey.CollapsibleNavMenu);
             Assert.IsFalse(navGroupExpandedDictionary[property]);
         }
 
@@ -139,7 +148,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
                 { property, false }
             };
 
-            await this.localStorageService.SetItemAsync("collapsibleNavMenu", dic);
+            await this.localStorageService.SetItemAsync(LocalStorageKey.CollapsibleNavMenu, dic);
+
+            // Load layout configuration from local storage
+            await this.testContext.Services.GetRequiredService<ILayoutService>().LoadLayoutConfigurationFromLocalStorage();
 
             // Act
             var cut = RenderComponent<NavMenu>();
@@ -162,7 +174,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
                 { property, true }
             };
 
-            await this.localStorageService.SetItemAsync("collapsibleNavMenu", dic);
+            await this.localStorageService.SetItemAsync(LocalStorageKey.CollapsibleNavMenu, dic);
 
             // Act
             var cut = RenderComponent<NavMenu>();
@@ -187,7 +199,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             _ = navGroups.Count.Should().Be(4);
             _ = navGroups.Should().OnlyContain(navGroup => navGroup.Instance.Expanded);
 
-            var navGroupExpandedDictionary = await this.localStorageService.GetItemAsync<Dictionary<string, bool>>("collapsibleNavMenu");
+            var navGroupExpandedDictionary = await this.localStorageService.GetItemAsync<Dictionary<string, bool>>(LocalStorageKey.CollapsibleNavMenu);
 
             _ = navGroupExpandedDictionary.Should().BeNull();
         }

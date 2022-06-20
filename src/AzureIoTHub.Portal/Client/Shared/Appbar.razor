@@ -7,16 +7,19 @@
 @inject ILayoutService LayoutService
 
 <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@LayoutService.ToggleDrawer" />
-<MudText Typo="Typo.h5">@Portal.PortalName</MudText>
+<MudText id="title" Typo="Typo.h5">@Portal.PortalName</MudText>
 <MudSpacer />
 <AuthorizeView>
     <Authorized>
+        <MudTooltip id="dark_light_switch" Duration="1000" Text="@(LayoutService.IsDarkMode ? "Switch to Light Theme" : "Switch to Dark Theme")">
+            <MudIconButton Icon="@(LayoutService.IsDarkMode ? @Icons.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@LayoutService.ToggleDarkMode"/>
+        </MudTooltip>
         <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
             <ActivatorContent>
                 <MudAvatar>
-                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Style="color: white;" Size="Size.Medium" />
+                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Style="color: white;" Size="Size.Medium"/>
                 </MudAvatar>
-                <MudIconButton Icon="@Icons.Filled.KeyboardArrowDown" Style="color: white !important;" Size="Size.Small" />
+                <MudIconButton Icon="@Icons.Filled.KeyboardArrowDown" Style="color: white !important;" Size="Size.Small"/>
             </ActivatorContent>
             <ChildContent>
                 <MudList Clickable="true">
