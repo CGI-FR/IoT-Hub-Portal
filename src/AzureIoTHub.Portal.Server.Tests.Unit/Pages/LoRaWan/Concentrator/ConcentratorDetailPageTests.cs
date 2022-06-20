@@ -16,7 +16,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using Client.Exceptions;
     using Client.Models;
     using FluentAssertions;
-    using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
@@ -26,9 +25,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using RichardSzalay.MockHttp;
 
     [TestFixture]
-    public class ConcentratorDetailPageTests : IDisposable
+    public class ConcentratorDetailPageTests : TestContextWrapper, IDisposable
     {
-        private Bunit.TestContext testContext;
         private MockHttpMessageHandler mockHttpClient;
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
@@ -40,33 +38,27 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         [SetUp]
         public void SetUp()
         {
-            this.testContext = new Bunit.TestContext();
+            TestContext = new Bunit.TestContext();
 
             this.mockRepository = new MockRepository(MockBehavior.Strict);
             this.mockDialogService = this.mockRepository.Create<IDialogService>();
 
-            this.mockHttpClient = this.testContext.Services.AddMockHttpClient();
+            this.mockHttpClient = TestContext.Services.AddMockHttpClient();
 
-            _ = this.testContext.Services.AddSingleton(this.mockDialogService.Object);
-            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
-            _ = this.testContext.Services.AddMudServices();
+            _ = TestContext.Services.AddSingleton(this.mockDialogService.Object);
+            _ = TestContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = TestContext.Services.AddMudServices();
 
-            _ = this.testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
-            _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            _ = this.testContext.JSInterop.SetupVoid("Blazor._internal.InputFile.init", _ => true);
-            _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
-            _ = this.testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
-            _ = this.testContext.JSInterop.SetupVoid("mudJsEvent.connect", _ => true);
+            _ = TestContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
+            _ = TestContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
+            _ = TestContext.JSInterop.SetupVoid("Blazor._internal.InputFile.init", _ => true);
+            _ = TestContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
+            _ = TestContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
+            _ = TestContext.JSInterop.SetupVoid("mudJsEvent.connect", _ => true);
 
             this.mockHttpClient.AutoFlush = true;
 
-            this.mockNavigationManager = this.testContext.Services.GetRequiredService<FakeNavigationManager>();
-        }
-
-        private IRenderedComponent<TComponent> RenderComponent<TComponent>(params ComponentParameter[] parameters)
-         where TComponent : IComponent
-        {
-            return this.testContext.RenderComponent<TComponent>(parameters);
+            this.mockNavigationManager = TestContext.Services.GetRequiredService<FakeNavigationManager>();
         }
 
         [Test]
@@ -85,8 +77,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Assert
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/lorawan/concentrators"));
-            this.mockHttpClient.VerifyNoOutstandingRequest();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [Test]
@@ -102,8 +94,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             cut.WaitForAssertion(() => cut.Find("#returnButton"));
 
             // Assert
-            this.mockHttpClient.VerifyNoOutstandingRequest();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [Test]
@@ -156,9 +148,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Assert
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/lorawan/concentrators"));
-            this.mockHttpClient.VerifyNoOutstandingRequest();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -210,9 +202,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             cut.Find("#saveButton").Click();
 
             // Assert
-            this.mockHttpClient.VerifyNoOutstandingRequest();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         public void Dispose()
