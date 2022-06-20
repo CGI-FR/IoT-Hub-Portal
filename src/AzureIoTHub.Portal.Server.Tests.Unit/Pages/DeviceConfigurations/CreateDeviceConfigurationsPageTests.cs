@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 {
     using System;
+    using System.Collections.Generic;
     using System.Net.Http;
     using Bunit;
     using Client.Exceptions;
@@ -64,6 +65,112 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Act
             var cut = RenderComponent<CreateDeviceConfigurationsPage>();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+        }
+
+        [Test]
+        public void DeviceConfigurationDetailShouldCreateConfiguration()
+        {
+            // Arrange
+            var modelId = Guid.NewGuid().ToString();
+            var configuration = new DeviceConfig
+            {
+                ConfigurationId = Guid.NewGuid().ToString(),
+                ModelId = Guid.NewGuid().ToString(),
+                Priority = 1,
+                Tags = new Dictionary<string, string>(),
+                Properties = new Dictionary<string, string>()
+            };
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, "/api/models")
+                .RespondJson(Array.Empty<DeviceModel>());
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
+                .RespondJson(Array.Empty<DeviceProperty>());
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, "/api/settings/device-tags")
+                .RespondJson(Array.Empty<DeviceTag>());
+
+            _ = this.mockHttpClient.When(HttpMethod.Put, $"/api/device-configurations")
+                .RespondText(string.Empty)
+                .With(m =>
+                {
+                    Assert.IsAssignableFrom<ObjectContent<DeviceConfig>>(m.Content);
+                    var jsonContent = m.Content as ObjectContent<DeviceConfig>;
+
+                    Assert.IsAssignableFrom<DeviceConfig>(jsonContent.Value);
+                    Assert.AreEqual(configuration, jsonContent.Value);
+
+                    return true;
+                });
+
+            var cut = RenderComponent<CreateDeviceConfigurationsPage>();
+            cut.WaitForAssertion(() => cut.Find("#saveButton"));
+            cut.Instance.Configuration = configuration;
+
+
+            // Act
+            cut.Find("#saveButton").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+        }
+
+        [Test]
+        public void DeviceConfigurationDetailShouldProcessProblemDetailsExceptionWhenIssueOccursOnCreatingConfiguration()
+        {
+            // Arrange
+            var modelId = Guid.NewGuid().ToString();
+            var configuration = new DeviceConfig
+            {
+                ConfigurationId = Guid.NewGuid().ToString(),
+                ModelId = Guid.NewGuid().ToString(),
+                Priority = 1,
+                Tags = new Dictionary<string, string>(),
+                Properties = new Dictionary<string, string>()
+            };
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, "/api/models")
+                .RespondJson(Array.Empty<DeviceModel>());
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
+                .RespondJson(Array.Empty<DeviceProperty>());
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, "/api/settings/device-tags")
+                .RespondJson(Array.Empty<DeviceTag>());
+
+            _ = this.mockHttpClient.When(HttpMethod.Put, $"/api/device-configurations")
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()))
+                .With(m =>
+                {
+                    Assert.IsAssignableFrom<ObjectContent<DeviceConfig>>(m.Content);
+                    var jsonContent = m.Content as ObjectContent<DeviceConfig>;
+
+                    Assert.IsAssignableFrom<DeviceConfig>(jsonContent.Value);
+                    Assert.AreEqual(configuration, jsonContent.Value);
+
+                    return true;
+                });
+
+            var cut = RenderComponent<CreateDeviceConfigurationsPage>();
+            cut.WaitForAssertion(() => cut.Find("#saveButton"));
+            cut.Instance.Configuration = configuration;
+
+
+            // Act
+            cut.Find("#saveButton").Click();
 
             // Assert
             cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());

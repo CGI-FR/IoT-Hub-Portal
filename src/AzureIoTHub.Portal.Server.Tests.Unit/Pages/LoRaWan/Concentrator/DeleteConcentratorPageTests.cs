@@ -118,6 +118,40 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
             cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
         }
 
+        [Test]
+        public async Task OnClickOnCancelShouldCancelDialog()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Delete, $"/api/lorawan/concentrators/{deviceId}")
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            var cut = RenderComponent<MudDialogProvider>();
+
+            var parameters = new DialogParameters
+            {
+                {
+                    "deviceId", deviceId
+                }
+            };
+
+            IDialogReference dialogReference = null;
+
+            await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<DeleteConcentratorPage>(string.Empty, parameters));
+            cut.WaitForAssertion(() => cut.Find("#cancel-delete-concentrator"));
+
+            // Act
+            cut.Find("#cancel-delete-concentrator").Click();
+            var result = await dialogReference.Result;
+
+            // Assert
+            _ = result.Cancelled.Should().BeTrue();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+        }
+
         public void Dispose()
         {
             Dispose(true);

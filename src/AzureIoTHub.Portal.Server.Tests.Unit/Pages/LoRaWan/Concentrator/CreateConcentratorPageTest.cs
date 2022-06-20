@@ -182,6 +182,31 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
             cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
+        [Test]
+        public void ClickOnSaveShouldNotCreateConcentratorWhenModelIsNotValid()
+        {
+            // Arrange
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, null)).Returns((Snackbar)null);
+
+            var cut = RenderComponent<CreateConcentratorPage>();
+            cut.WaitForAssertion(() => cut.Find("#saveButton"));
+
+            // Act
+            cut.Find("#saveButton").Click();
+
+            // Assert            
+            this.mockHttpClient.VerifyNoOutstandingRequest();
+            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+        }
+
         public void Dispose()
         {
             Dispose(true);

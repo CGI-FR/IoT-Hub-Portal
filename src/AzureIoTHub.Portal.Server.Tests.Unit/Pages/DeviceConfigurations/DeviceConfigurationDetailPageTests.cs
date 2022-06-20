@@ -99,6 +99,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
+        public void DeviceConfigurationDetailPageShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingConfiguration()
+        {
+            // Arrange
+            var configurationId = Guid.NewGuid().ToString();
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}")
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            // Act
+            var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+        }
+
+        [Test]
         public void DeviceConfigurationDetailPageShouldRenderCardCorrectly()
         {
             // Arrange
