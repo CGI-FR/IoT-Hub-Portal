@@ -56,6 +56,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
             _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
             _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
             _ = this.testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
+            _ = this.testContext.JSInterop.SetupVoid("mudElementRef.restoreFocus", _ => true);
 
             this.mockHttpClient.AutoFlush = true;
         }
