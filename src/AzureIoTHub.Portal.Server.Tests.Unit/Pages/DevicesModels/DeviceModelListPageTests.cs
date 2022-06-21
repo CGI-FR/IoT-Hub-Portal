@@ -51,6 +51,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
             _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
             _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
+            _ = this.testContext.JSInterop.SetupVoid("mudElementRef.restoreFocus", _ => true);
         }
 
         private IRenderedComponent<TComponent> RenderComponent<TComponent>(params ComponentParameter[] parameters)
@@ -196,7 +197,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
-            Assert.IsNotEmpty(cut.Markup);
+            cut.WaitForAssertion(() => Assert.IsNotEmpty(cut.Markup));
 
             // Assert
             cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
