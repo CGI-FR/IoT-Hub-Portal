@@ -140,9 +140,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
                         new()
                     }
                 });
+            var cut = RenderComponent<EdgeDeviceListPage>();
+            cut.WaitForAssertion(() => cut.Find("#reset"));
 
             // Act
-            var cut = RenderComponent<EdgeDeviceListPage>();
             cut.Find("#reset").Click();
 
             // Assert

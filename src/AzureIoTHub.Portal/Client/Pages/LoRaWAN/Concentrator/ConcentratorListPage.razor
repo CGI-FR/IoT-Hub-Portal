@@ -2,7 +2,6 @@
 @using AzureIoTHub.Portal
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @attribute [Authorize]
 @inject HttpClient Http
@@ -12,7 +11,7 @@
 <MudGrid>
 
     <MudItem xs="12">
-        <MudTable ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading">
+        <MudTable id="concentrators-listing" ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading">
             <ColGroup>
                 <col style="width: 60%;" />
                 <col style="width: 10%;" />
@@ -96,6 +95,9 @@
 </MudGrid>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
     private MudTable<Concentrator> table;
 
     private Dictionary<int, string> Pages { get; set; } = new();
@@ -104,30 +106,38 @@
 
     private async Task<TableData<Concentrator>> LoadItems(TableState state)
     {
-        PaginationResult<Concentrator> result;
-
-        if (Pages.Keys.Contains(state.Page))
+        try
         {
-            result = await Http.GetFromJsonAsync<PaginationResult<Concentrator>>(Pages[state.Page]);
-        }
-        else
-        {
-            var uri = $"api/lorawan/concentrators?pageSize={state.PageSize}";
+            PaginationResult<Concentrator> result;
 
-            _ = Pages.TryAdd(state.Page, uri);
+            if (Pages.Keys.Contains(state.Page))
+            {
+                result = await Http.GetFromJsonAsync<PaginationResult<Concentrator>>(Pages[state.Page]);
+            }
+            else
+            {
+                var uri = $"api/lorawan/concentrators?pageSize={state.PageSize}";
 
-            result = await Http.GetFromJsonAsync<PaginationResult<Concentrator>>(uri);
-        }
+                _ = Pages.TryAdd(state.Page, uri);
 
-        _ = Pages.TryAdd(state.Page + 1, result.NextPage);
+                result = await Http.GetFromJsonAsync<PaginationResult<Concentrator>>(uri);
+            }
 
-        IsLoading = false;
+            _ = Pages.TryAdd(state.Page + 1, result.NextPage);
 
-        return new TableData<Concentrator>
+            IsLoading = false;
+
+            return new TableData<Concentrator>
             {
                 Items = result.Items,
                 TotalItems = result.TotalItems
             };
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+            return new TableData<Concentrator>();
+        }
     }
 
     private void AddDevice()
@@ -137,8 +147,8 @@
 
     private async Task DeleteDevice(Concentrator device)
     {
-        var parameters = new DialogParameters();
-        parameters.Add("deviceId", device.DeviceId);
+        var parameters = new DialogParameters {{"deviceId", device.DeviceId}};
+        
         var result = await DialogService.Show<DeleteConcentratorPage>("Confirm Deletion", parameters).Result;
 
         if (result.Cancelled)

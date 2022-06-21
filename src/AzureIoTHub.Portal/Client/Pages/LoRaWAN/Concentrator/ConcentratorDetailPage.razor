@@ -1,11 +1,7 @@
 ﻿@page "/lorawan/concentrators/{DeviceID}"
-@using System.Text.Json;
 @using AzureIoTHub.Portal.Client.Validators
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Newtonsoft.Json
-@using Newtonsoft.Json.Linq
 
 @attribute [Authorize]
 @inject HttpClient Http
@@ -121,12 +117,15 @@
 </MudForm>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
     [Parameter]
     public string DeviceID { get; set; }
 
-    private Concentrator concentrator { get; set; } = new Concentrator();
+    private Concentrator concentrator { get; set; } = new();
     private MudForm form;
-    private ConcentratorValidator concentratorValidator = new ConcentratorValidator();
+    private ConcentratorValidator concentratorValidator = new();
     private void Return() => navigationManager.NavigateTo("/lorawan/concentrators");
 
     public PatternMask maskThumbprint = new PatternMask("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
@@ -145,9 +144,9 @@
             // Sends a GET request to the DevicesController, to retrieve the specific device from Azure IoT Hub
             concentrator = await Http.GetFromJsonAsync<Concentrator>($"api/lorawan/concentrators/{DeviceID}");
         }
-        catch (AccessTokenNotAvailableException exception)
+        catch (ProblemDetailsException exception)
         {
-            exception.Redirect();
+            Error?.ProcessProblemDetails(exception);
         }
     }
 
@@ -156,29 +155,35 @@
     /// </summary>
     public async void SaveDevice()
     {
+        var parameters = new DialogParameters {{"ContentText", "Processing"}};
+        var processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
 
-        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
-        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+        try
+        {
+            await form.Validate();
+            if (!this.concentratorValidator.Validate(this.concentrator).IsValid)
+            {
+                DialogService.Close(processingDialog);
+                Snackbar.Add($"One or more validation errors occurred", Severity.Error);
+                return;
+            }
 
-        await form.Validate();
-        if (!this.concentratorValidator.Validate(this.concentrator).IsValid)
+            await Http.PutAsJsonAsync($"api/lorawan/concentrators", concentrator);
+
+            // Prompts a snack bar to inform the action was successful
+            Snackbar.Add($"Device {concentrator.DeviceId} has been successfully updated!", Severity.Success);
+
+            // Go back to the list of device
+            NavManager.NavigateTo("lorawan/concentrators");
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
         {
             DialogService.Close(processingDialog);
-            Snackbar.Add($"One or more validation errors occurred", Severity.Error);
-            return;
         }
-
-        var result = await Http.PutAsJsonAsync<Concentrator>($"api/lorawan/concentrators", concentrator);
-
-        result.EnsureSuccessStatusCode();
-
-        DialogService.Close(processingDialog);
-
-        // Prompts a snack bar to inform the action was successful
-        Snackbar.Add($"Device {concentrator.DeviceId} has been successfully updated!", Severity.Success);
-
-        // Go back to the list of device
-        NavManager.NavigateTo("lorawan/concentrators");
     }
 
     /// <summary>

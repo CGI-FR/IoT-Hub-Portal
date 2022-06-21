@@ -1,4 +1,4 @@
-﻿@page "/device-configurations/{ConfigId}"
+@page "/device-configurations/{ConfigId}"
 @using AzureIoTHub.Portal.Models.v10
 @using Microsoft.AspNetCore.Authorization
 @using AzureIoTHub.Portal.Models
@@ -222,6 +222,8 @@
 </MudForm>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
 
     IEnumerable<DeviceTag> AvailableTags { get; set; } = Array.Empty<DeviceTag>();
     IEnumerable<DeviceProperty> AvailableProperties = Array.Empty<DeviceProperty>();
@@ -237,18 +239,30 @@
     private ConfigurationMetrics Metrics { get; set; } = new();
     private void Return() => navigationManager.NavigateTo("/device-configurations");
 
-    public bool IsLoading { get; set; } = true;
+    public bool IsLoading { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        Configuration = await HttpClient.GetFromJsonAsync<DeviceConfig>($"/api/device-configurations/{ConfigId}");
-        Metrics = await HttpClient.GetFromJsonAsync<ConfigurationMetrics>($"/api/device-configurations/{ConfigId}/metrics");
-        DeviceModel = await HttpClient.GetFromJsonAsync<DeviceModel>($"/api/models/{Configuration.ModelId}");
+        try
+        {
+            IsLoading = true;
+            Configuration = await HttpClient.GetFromJsonAsync<DeviceConfig>($"/api/device-configurations/{ConfigId}");
+            Metrics = await HttpClient.GetFromJsonAsync<ConfigurationMetrics>($"/api/device-configurations/{ConfigId}/metrics");
+            DeviceModel = await HttpClient.GetFromJsonAsync<DeviceModel>($"/api/models/{Configuration.ModelId}");
 
-        AvailableProperties = await HttpClient.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"/api/models/{Configuration.ModelId}/properties");
-        AvailableTags = await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
+            AvailableProperties = await HttpClient.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"/api/models/{Configuration.ModelId}/properties");
+            AvailableTags = await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
 
-        IsLoading = false;
+            IsLoading = false;
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     private void AddSelectedTag()
@@ -281,13 +295,18 @@
 
     private async Task Save()
     {
-        var result = await HttpClient.PutAsJsonAsync($"/api/device-configurations/{ConfigId}", Configuration);
+        try
+        {
+            await HttpClient.PutAsJsonAsync($"/api/device-configurations/{ConfigId}", Configuration);
 
-        result.EnsureSuccessStatusCode();
+            // Prompts a snack bar to inform the action was successful
+            Snackbar.Add($"{Configuration.ConfigurationId} has been successfully updated!", Severity.Success);
 
-        // Prompts a snack bar to inform the action was successful
-        Snackbar.Add($"{Configuration.ConfigurationId} has been successfully updated!", Severity.Success);
-
-        navigationManager.NavigateTo("/device-configurations");
+            navigationManager.NavigateTo("/device-configurations");
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
     }
 }
