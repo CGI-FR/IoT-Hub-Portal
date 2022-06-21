@@ -222,7 +222,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             cut.WaitForElement($"{propertyCssSelector} #{nameof(DeviceProperty.IsWritable)}").Change(true);
 
             cut.WaitForAssertion(() => Assert.AreEqual(1, cut.FindAll("#deletePropertyButton").Count));
-            //Assert.AreEqual(1, cut.FindAll("#deletePropertyButton").Count);
 
             saveButton.Click();
             cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
@@ -275,7 +274,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var addPropertyButton = cut.WaitForElement("#addPropertyButton");
             addPropertyButton.Click();
 
-            cut.WaitForAssertion(()=> Assert.AreEqual(1, cut.FindAll("#deletePropertyButton").Count));
+            cut.WaitForAssertion(() => Assert.AreEqual(1, cut.FindAll("#deletePropertyButton").Count));
 
             var removePropertyButton = cut.WaitForElement("#deletePropertyButton");
             removePropertyButton.Click();
@@ -313,8 +312,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Act
             var cut = RenderComponent<CreateDeviceModelPage>();
-            //_ = cut.WaitForElement("#form");
-            //_ = cut.WaitForElement("#SupportLoRaFeatures");
 
             // Assert
             cut.WaitForAssertion(() => cut.Find("#form"));
