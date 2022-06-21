@@ -67,6 +67,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.testContext.JSInterop.SetupVoid("Blazor._internal.InputFile.init", _ => true);
             _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
             _ = this.testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
+            _ = this.testContext.JSInterop.SetupVoid("mudElementRef.restoreFocus", _ => true);
 
             this.mockNavigationManager = this.testContext.Services.GetRequiredService<FakeNavigationManager>();
 
