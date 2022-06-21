@@ -147,7 +147,6 @@
             try
             {
                 var response = await HttpClient.PostAsJsonAsync($"/api/settings/device-tags", Tags);
-                response.EnsureSuccessStatusCode();
 
                 // Prompts a snack bar to inform the action was successful
                 Snackbar.Add($"Settings have been successfully updated!", Severity.Success);   
