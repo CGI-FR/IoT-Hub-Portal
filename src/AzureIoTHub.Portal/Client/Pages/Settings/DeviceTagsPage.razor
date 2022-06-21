@@ -85,18 +85,22 @@
     List<DeviceTag> Tags { get; set; } = new();
     private MudForm FormName { get; set; }
     private MudForm FormLabel { get; set; }
-    private bool IsLoading { get; set; } = true;
+    private bool IsLoading { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            IsLoading = true;
             Tags.AddRange(await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags"));
-            IsLoading = false;
         }
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            IsLoading = false;            
         }
 
     }
@@ -145,15 +149,16 @@
                 var response = await HttpClient.PostAsJsonAsync($"/api/settings/device-tags", Tags);
                 response.EnsureSuccessStatusCode();
 
-                DialogService.Close(processingDialog);
-
                 // Prompts a snack bar to inform the action was successful
                 Snackbar.Add($"Settings have been successfully updated!", Severity.Success);   
             }
             catch (ProblemDetailsException exception)
             {
-                DialogService.Close(processingDialog);
                 Error?.ProcessProblemDetails(exception);
+            }
+            finally
+            {
+                DialogService.Close(processingDialog);                
             }
         }
         else
