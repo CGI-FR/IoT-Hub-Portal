@@ -7,13 +7,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
-    using System.Threading;
+    using AzureIoTHub.Portal.Client.Exceptions;
+    using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.Settings;
     using AzureIoTHub.Portal.Client.Shared;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
-    using Bunit.TestDoubles;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -31,7 +31,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
         private Mock<ISnackbar> mockSnackbarService;
-        private FakeNavigationManager mockNavigationManager;
 
         private static string ApiBaseUrl => "/api/settings/device-tags";
 
@@ -57,8 +56,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
             _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
             _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
             _ = this.testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
-
-            this.mockNavigationManager = this.testContext.Services.GetRequiredService<FakeNavigationManager>();
+            _ = this.testContext.JSInterop.SetupVoid("mudElementRef.restoreFocus", _ => true);
 
             this.mockHttpClient.AutoFlush = true;
         }
@@ -68,6 +66,61 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
         {
             return this.testContext.RenderComponent<TComponent>(parameters);
         }
+
+        [Test]
+        public void DeviceListPageRendersCorrectly()
+        {
+            // Arrange
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
+                .RespondJson(new List<DeviceTag>(){
+                    new DeviceTag
+                        { Label =  Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString(), Required = false, Searchable = false },
+                    new DeviceTag
+                        { Label = Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString(), Required = false, Searchable = false }
+                    });
+
+            // Act
+            var cut = RenderComponent<DeviceTagsPage>();
+            cut.WaitForAssertion(() => cut.Find("div.mud-grid"));
+            var grid = cut.Find("div.mud-grid");
+
+            // Assert
+            Assert.IsNotNull(cut.Markup);
+            Assert.AreEqual("Tags", cut.Find(".mud-typography-h6").TextContent);
+            Assert.IsNotNull(grid.InnerHtml);
+            Assert.AreEqual(4, cut.FindAll("tr").Count);
+            Assert.IsNotNull(cut.Find(".mud-table-container"));
+
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void OnInitializedAsyncShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceTags()
+        {
+            // Arrange
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            // Act
+            var cut = RenderComponent<DeviceTagsPage>();
+            cut.WaitForAssertion(() => cut.Find("div.mud-grid"));
+            var grid = cut.Find("div.mud-grid");
+
+            // Assert
+            Assert.IsNotNull(cut.Markup);
+            Assert.AreEqual("Tags", cut.Find(".mud-typography-h6").TextContent);
+            Assert.IsNotNull(grid.InnerHtml);
+            Assert.AreEqual(3, cut.FindAll("tr").Count);
+            Assert.IsNotNull(cut.Find(".mud-table-container"));
+
+            // Assert
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+        }
+
 
         [Test]
         public void ClickOnSaveShouldUpdateTagList()
@@ -118,15 +171,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
 
 
             var cut = RenderComponent<DeviceTagsPage>();
-
-            var saveButton = cut.WaitForElement("#saveButton");
+            cut.WaitForAssertion(() => cut.Find("#saveButton"));
+            var saveButton = cut.Find("#saveButton");
 
             // Act
             saveButton.Click();
-            Thread.Sleep(1000);
 
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -181,14 +233,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
 
             var cut = RenderComponent<DeviceTagsPage>();
 
-            var saveButton = cut.WaitForElement("#saveButton");
+            cut.WaitForAssertion(() => cut.Find("#saveButton"));
+            var saveButton = cut.Find("#saveButton");
 
             // Act
             saveButton.Click();
-            Thread.Sleep(1000);
 
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -243,14 +295,43 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
 
             var cut = RenderComponent<DeviceTagsPage>();
 
-            var saveButton = cut.WaitForElement("#saveButton");
+            cut.WaitForAssertion(() => cut.Find("#saveButton"));
+            var saveButton = cut.Find("#saveButton");
 
             // Act
             saveButton.Click();
-            Thread.Sleep(1000);
 
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnSaveShouldProcessProblemDetailsExceptionIfIssueOccursWhenUpdatingDeviceTags()
+        {
+            // Arrange
+            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
+                .RespondJson(new List<DeviceTag>(){
+                    new DeviceTag
+                        { Label = "Label", Name = "Name", Required = false, Searchable = false }
+                    });
+
+            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
+            // Act
+            var cut = RenderComponent<DeviceTagsPage>();
+            cut.WaitForAssertion(() => cut.Find("#saveButton"));
+            var saveButton = cut.Find("#saveButton");
+            saveButton.Click();
+
+            // Assert            
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         public void Dispose()

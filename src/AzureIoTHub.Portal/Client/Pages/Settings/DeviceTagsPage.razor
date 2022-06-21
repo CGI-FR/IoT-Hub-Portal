@@ -11,7 +11,7 @@
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
-
+<MudGrid>
 <MudItem xs="12">
     <MudTable Items=@Tags Loading="IsLoading" Dense=true Hover=true Bordered=true Striped=true>
 
@@ -76,17 +76,33 @@
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save" id="saveButton">Save Changes</MudButton>
     </MudCardActions>
 </MudItem>
+</MudGrid>
+
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+
     List<DeviceTag> Tags { get; set; } = new();
     private MudForm FormName { get; set; }
     private MudForm FormLabel { get; set; }
-    private bool IsLoading { get; set; } = true;
+    private bool IsLoading { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        Tags.AddRange(await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags"));
+        try
+        {
+            IsLoading = true;
+            Tags.AddRange(await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags"));
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            IsLoading = false;            
+        }
 
-        IsLoading = false;
     }
 
     private void AddTag()
@@ -126,18 +142,23 @@
             duplicated = true;
         }
 
-        var test = FormLabel.IsValid;
-        var test2 = FormName.IsValid;
-
         if (FormLabel.IsValid && FormName.IsValid && !duplicated)
         {
-            var response = await HttpClient.PostAsJsonAsync($"/api/settings/device-tags", Tags);
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                var response = await HttpClient.PostAsJsonAsync($"/api/settings/device-tags", Tags);
 
-            DialogService.Close(processingDialog);
-
-            // Prompts a snack bar to inform the action was successful
-            Snackbar.Add($"Settings have been successfully updated!", Severity.Success);
+                // Prompts a snack bar to inform the action was successful
+                Snackbar.Add($"Settings have been successfully updated!", Severity.Success);   
+            }
+            catch (ProblemDetailsException exception)
+            {
+                Error?.ProcessProblemDetails(exception);
+            }
+            finally
+            {
+                DialogService.Close(processingDialog);                
+            }
         }
         else
         {
