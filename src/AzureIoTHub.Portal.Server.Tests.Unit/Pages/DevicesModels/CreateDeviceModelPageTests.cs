@@ -84,10 +84,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<DeviceModel>>(m.Content);
-                    var jsonContent = m.Content as ObjectContent<DeviceModel>;
+                    var objectContent = m.Content as ObjectContent<DeviceModel>;
+                    Assert.IsNotNull(objectContent);
 
-                    Assert.IsAssignableFrom<DeviceModel>(jsonContent.Value);
-                    var deviceModel = jsonContent.Value as DeviceModel;
+                    Assert.IsAssignableFrom<DeviceModel>(objectContent.Value);
+                    var deviceModel = objectContent.Value as DeviceModel;
+                    Assert.IsNotNull(deviceModel);
 
                     Assert.IsNotNull(deviceModel.ModelId);
                     Assert.AreEqual(deviceModel.Name, modelName);
@@ -101,28 +103,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/*/properties")
                 .RespondText(string.Empty);
 
-            var cut = RenderComponent<CreateDeviceModelPage>();
-            var saveButton = cut.WaitForElement("#SaveButton");
-
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
-
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>())).Returns((Snackbar)null);
 
             // Act
-            cut.Find($"#{nameof(DeviceModel.Name)}").Change(modelName);
-            cut.Find($"#{nameof(DeviceModel.Description)}").Change(description);
+            var cut = RenderComponent<CreateDeviceModelPage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            cut.WaitForElement($"#{nameof(DeviceModel.Name)}").Change(modelName);
+            cut.WaitForElement($"#{nameof(DeviceModel.Description)}").Change(description);
 
             saveButton.Click();
             cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
-            // Assert            
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            // Assert
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -140,25 +140,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/*/properties")
                 .RespondText(string.Empty);
 
-            var cut = RenderComponent<CreateDeviceModelPage>();
-            var saveButton = cut.WaitForElement("#SaveButton");
-
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
-
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
             // Act
-            cut.Find($"#{nameof(DeviceModel.Name)}").Change(modelName);
-            cut.Find($"#{nameof(DeviceModel.Description)}").Change(description);
+            var cut = RenderComponent<CreateDeviceModelPage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            cut.WaitForElement($"#{nameof(DeviceModel.Name)}").Change(modelName);
+            cut.WaitForElement($"#{nameof(DeviceModel.Description)}").Change(description);
 
             saveButton.Click();
             cut.WaitForState(() => !this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
-            // Assert            
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            // Assert
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -177,10 +176,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
-                    var jsonContent = m.Content as ObjectContent<List<DeviceProperty>>;
+                    var objectContent = m.Content as ObjectContent<List<DeviceProperty>>;
+                    Assert.IsNotNull(objectContent);
 
-                    Assert.IsAssignableFrom<List<DeviceProperty>>(jsonContent.Value);
-                    var properties = jsonContent.Value as IEnumerable<DeviceProperty>;
+                    Assert.IsAssignableFrom<List<DeviceProperty>>(objectContent.Value);
+                    var properties = objectContent.Value as IEnumerable<DeviceProperty>;
+                    Assert.IsNotNull(properties);
 
                     Assert.AreEqual(1, properties?.Count());
 
@@ -195,40 +196,39 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 })
                 .RespondText(string.Empty);
 
-            var cut = RenderComponent<CreateDeviceModelPage>();
-
-            var saveButton = cut.WaitForElement("#SaveButton");
-            var addPropertyButton = cut.WaitForElement("#addPropertyButton");
-
-            cut.Find($"#{nameof(DeviceModel.Name)}").Change(Guid.NewGuid().ToString());
-            cut.Find($"#{nameof(DeviceModel.Description)}").Change(Guid.NewGuid().ToString());
-
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
-
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>())).Returns((Snackbar)null);
 
             // Act
+            var cut = RenderComponent<CreateDeviceModelPage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+            var addPropertyButton = cut.WaitForElement("#addPropertyButton");
+
+            cut.WaitForElement($"#{nameof(DeviceModel.Name)}").Change(Guid.NewGuid().ToString());
+            cut.WaitForElement($"#{nameof(DeviceModel.Description)}").Change(Guid.NewGuid().ToString());
+
             addPropertyButton.Click();
 
             cut.WaitForElement($"#property- #{nameof(DeviceProperty.Name)}").Change(propertyName);
 
             var propertyCssSelector = $"#property-{propertyName}";
 
-            cut.Find($"{propertyCssSelector} #{nameof(DeviceProperty.DisplayName)}").Change(displayName);
-            cut.Find($"{propertyCssSelector} #{nameof(DeviceProperty.PropertyType)}").Change(nameof(DevicePropertyType.Boolean));
-            cut.Find($"{propertyCssSelector} #{nameof(DeviceProperty.IsWritable)}").Change(true);
+            cut.WaitForElement($"{propertyCssSelector} #{nameof(DeviceProperty.DisplayName)}").Change(displayName);
+            cut.WaitForElement($"{propertyCssSelector} #{nameof(DeviceProperty.PropertyType)}").Change(nameof(DevicePropertyType.Boolean));
+            cut.WaitForElement($"{propertyCssSelector} #{nameof(DeviceProperty.IsWritable)}").Change(true);
 
-            Assert.AreEqual(1, cut.FindAll("#deletePropertyButton").Count);
+            cut.WaitForAssertion(() => Assert.AreEqual(1, cut.FindAll("#deletePropertyButton").Count));
 
             saveButton.Click();
             cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
             // Assert
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -244,10 +244,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
-                    var jsonContent = m.Content as ObjectContent<List<DeviceProperty>>;
+                    var objectContent = m.Content as ObjectContent<List<DeviceProperty>>;
+                    Assert.IsNotNull(objectContent);
 
-                    Assert.IsAssignableFrom<List<DeviceProperty>>(jsonContent.Value);
-                    var properties = jsonContent.Value as IEnumerable<DeviceProperty>;
+                    Assert.IsAssignableFrom<List<DeviceProperty>>(objectContent.Value);
+                    var properties = objectContent.Value as IEnumerable<DeviceProperty>;
+                    Assert.IsNotNull(properties);
 
                     Assert.AreEqual(0, properties?.Count());
 
@@ -255,36 +257,36 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 })
                 .RespondText(string.Empty);
 
-            var cut = RenderComponent<CreateDeviceModelPage>();
-
-            var saveButton = cut.WaitForElement("#SaveButton");
-
-            cut.Find($"#{nameof(DeviceModel.Name)}").Change(Guid.NewGuid().ToString());
-            cut.Find($"#{nameof(DeviceModel.Description)}").Change(Guid.NewGuid().ToString());
-
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
-
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
+
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>())).Returns((Snackbar)null);
 
-            //Act and Assert
+            // Act
+            var cut = RenderComponent<CreateDeviceModelPage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            cut.WaitForElement($"#{nameof(DeviceModel.Name)}").Change(Guid.NewGuid().ToString());
+            cut.WaitForElement($"#{nameof(DeviceModel.Description)}").Change(Guid.NewGuid().ToString());
+
             var addPropertyButton = cut.WaitForElement("#addPropertyButton");
             addPropertyButton.Click();
 
-            Assert.AreEqual(1, cut.FindAll("#deletePropertyButton").Count);
+            cut.WaitForAssertion(() => Assert.AreEqual(1, cut.FindAll("#deletePropertyButton").Count));
 
             var removePropertyButton = cut.WaitForElement("#deletePropertyButton");
             removePropertyButton.Click();
 
-            Assert.AreEqual(0, cut.FindAll("#deletePropertyButton").Count);
+            cut.WaitForAssertion(() => Assert.AreEqual(0, cut.FindAll("#deletePropertyButton").Count));
 
             saveButton.Click();
             cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            // Assert
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -295,11 +297,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Act
             var cut = RenderComponent<CreateDeviceModelPage>();
-            _ = cut.WaitForElement("#form");
 
             // Assert
-            Assert.AreEqual(0, cut.FindAll("#SupportLoRaFeatures").Count);
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => cut.Find("#form"));
+            cut.WaitForAssertion(() => Assert.AreEqual(0, cut.FindAll("#SupportLoRaFeatures").Count));
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [Test]
@@ -310,11 +312,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Act
             var cut = RenderComponent<CreateDeviceModelPage>();
-            _ = cut.WaitForElement("#form");
-            _ = cut.WaitForElement("#SupportLoRaFeatures");
 
             // Assert
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => cut.Find("#form"));
+            cut.WaitForAssertion(() => cut.Find("#SupportLoRaFeatures"));
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [Test]
@@ -323,22 +325,22 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             // Arrange
             _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-            var cut = RenderComponent<CreateDeviceModelPage>();
-            _ = cut.WaitForElement("#form");
-
             // Act
-            cut.WaitForElement("#SupportLoRaFeatures")
-                .Change(true);
+            var cut = RenderComponent<CreateDeviceModelPage>();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Find("#form"));
+            cut.WaitForElement("#SupportLoRaFeatures").Change(true);
 
             cut.WaitForState(() => cut.FindAll(".mud-tabs .mud-tab").Count == 2);
 
-            // Assert
-            var tabs = cut.FindAll(".mud-tabs .mud-tab");
+            var tabs = cut.WaitForElements(".mud-tabs .mud-tab");
+
             Assert.AreEqual(2, tabs.Count);
             Assert.AreEqual("General", tabs[0].TextContent);
             Assert.AreEqual("LoRaWAN", tabs[1].TextContent);
 
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [Test]
@@ -372,32 +374,30 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Post, $"{LorawanApiUrl}/*/commands")
                 .RespondText(string.Empty);
 
-            var cut = RenderComponent<CreateDeviceModelPage>();
-            var saveButton = cut.WaitForElement("#SaveButton");
-
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
-
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>())).Returns((Snackbar)null);
 
             // Act
+            var cut = RenderComponent<CreateDeviceModelPage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
             cut.WaitForElement("#SupportLoRaFeatures").Change(true);
             cut.WaitForState(() => cut.FindAll(".mud-tabs .mud-tab").Count == 2);
 
-            cut.Find($"#{nameof(DeviceModel.Name)}").Change(modelName);
-            cut.Find($"#{nameof(DeviceModel.Description)}").Change(description);
+            cut.WaitForElement($"#{nameof(DeviceModel.Name)}").Change(modelName);
+            cut.WaitForElement($"#{nameof(DeviceModel.Description)}").Change(description);
             (cut.Instance.Model as LoRaDeviceModel).AppEUI = "AppEUI";
 
             saveButton.Click();
             cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
             // Assert            
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         //[Test]
