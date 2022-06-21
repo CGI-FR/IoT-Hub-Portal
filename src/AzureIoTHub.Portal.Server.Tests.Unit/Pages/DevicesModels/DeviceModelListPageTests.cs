@@ -189,15 +189,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         public void LoadDeviceModelsShouldDisplayAccessTokenNotAvailableExceptionWhenIssueOccursOnGettingDeviceModels()
         {
             // Arrange
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, $"{this.apiBaseUrl}")
-                .Throw(new AccessTokenNotAvailableException(null, null, null));
-
-            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+                .Throw(new AccessTokenNotAvailableException(this.testContext.Services.GetRequiredService<FakeNavigationManager>(), new AccessTokenResult(AccessTokenResultStatus.Success, new AccessToken(), "redirectUrl"), null));
 
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
             cut.WaitForAssertion(() => Assert.IsNotEmpty(cut.Markup));
+            cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/redirectUrl", StringComparison.OrdinalIgnoreCase));
 
             // Assert
             cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
