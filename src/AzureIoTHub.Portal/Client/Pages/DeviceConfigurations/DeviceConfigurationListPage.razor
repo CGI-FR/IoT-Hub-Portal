@@ -4,13 +4,12 @@
 
 @attribute [Authorize]
 @inject HttpClient Http
-@inject IDialogService DialogService
 @inject NavigationManager navigationManager
 
 
 <MudGrid>
     <MudItem xs="12">
-        <MudTable Items=@result Loading="IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
+        <MudTable id="device-configurations-listing" Items=@result Loading="IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
             <ColGroup>
                 <col style="width: 20%;" />
                 <col style="width: 20%;" />
@@ -70,6 +69,9 @@
 </MudGrid>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
     private readonly List<ConfigListItem> result = new();
     private bool IsLoading { get; set; } = true;
 
@@ -80,12 +82,21 @@
 
     private async Task LoadConfigurations()
     {
-        IsLoading = true;
+        try
+        {
+            IsLoading = true;
 
-        result.Clear();
-        result.AddRange(await Http.GetFromJsonAsync<ConfigListItem[]>("/api/device-configurations") ?? throw new InvalidOperationException());
-        
-        IsLoading = false;
+            result.Clear();
+            result.AddRange(await Http.GetFromJsonAsync<ConfigListItem[]>("/api/device-configurations") ?? throw new InvalidOperationException());
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     private void AddDevice()

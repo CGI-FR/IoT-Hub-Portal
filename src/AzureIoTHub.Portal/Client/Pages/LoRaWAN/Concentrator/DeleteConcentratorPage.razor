@@ -1,8 +1,4 @@
-﻿
-@using AzureIoTHub.Portal.Models.v10.LoRaWAN
-
-@inject HttpClient Http
-@inject IJSRuntime JS
+﻿@inject HttpClient Http
 @inject ISnackbar Snackbar
 
 <MudDialog>
@@ -12,16 +8,18 @@
         <p><i>Warning : this cannot  be undone.</i></p>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="DeleteDevice">Delete</MudButton>
+        <MudButton id="cancel-delete-concentrator" OnClick="Cancel">Cancel</MudButton>
+        <MudButton id="delete-concentrator" Color="Color.Primary" OnClick="DeleteDevice">Delete</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+    
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string deviceId { get; set; }
-
-    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    
     void Cancel() => MudDialog.Cancel();
 
     /// <summary>
@@ -30,17 +28,16 @@
     /// <returns></returns>
     private async Task DeleteDevice()
     {
-        var response = await Http.DeleteAsync($"api/lorawan/concentrators/{deviceId}");
-
-        // Prompts a snack bar to inform if the action was successful
-        // TODO : Deal more effectively with error/success messages
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            Snackbar.Add($"Oh oh, something went wrong while deleting device {deviceId}... ", Severity.Error);
-            return;
-        }
+            await Http.DeleteAsync($"api/lorawan/concentrators/{deviceId}");
 
-        Snackbar.Add($"Device {deviceId} has been successfully deleted!", Severity.Success);
-        MudDialog.Close(DialogResult.Ok(true));
+            Snackbar.Add($"Device {deviceId} has been successfully deleted!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
     }
 }
