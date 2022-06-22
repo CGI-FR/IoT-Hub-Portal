@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Server.Exceptions;
     using Extensions;
     using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Common.Extensions;
 
     public class ConfigService : IConfigService
     {
@@ -166,6 +167,23 @@ namespace AzureIoTHub.Portal.Server.Services
             catch (Exception e)
             {
                 throw new InternalServerErrorException($"Unable to add configuration {newConfiguration.Id}", e);
+            }
+        }
+
+        public async Task<int> GetFailedDeploymentsCount()
+        {
+            try
+            {
+                var configurations = await this.registryManager.GetConfigurationsAsync(0);
+
+                var failedDeploymentsCount= configurations.Where(c => c.Content.ModulesContent.Count > 0)
+                    .Sum(c => c.SystemMetrics.Results.GetValueOrDefault("reportedFailedCount", 0));
+
+                return Convert.ToInt32(failedDeploymentsCount);
+            }
+            catch (Exception ex)
+            {
+                throw new InternalServerErrorException("Unable to get failed deployments count", ex);
             }
         }
     }

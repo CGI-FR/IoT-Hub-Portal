@@ -20,5 +20,7 @@ namespace AzureIoTHub.Portal.Server.Services
         Task<Configuration> GetConfigItem(string id);
 
         Task DeleteConfiguration(string configId);
+
+        Task<int> GetFailedDeploymentsCount();
     }
 }
