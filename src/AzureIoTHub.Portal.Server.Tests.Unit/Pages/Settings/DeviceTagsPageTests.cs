@@ -112,7 +112,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
             Assert.IsNotNull(cut.Markup);
             Assert.AreEqual("Tags", cut.Find(".mud-typography-h6").TextContent);
             Assert.IsNotNull(grid.InnerHtml);
-            Assert.AreEqual(3, cut.FindAll("tr").Count);
+            Assert.AreEqual(1, cut.FindAll("table tbody tr").Count);
             Assert.IsNotNull(cut.Find(".mud-table-container"));
 
             // Assert
