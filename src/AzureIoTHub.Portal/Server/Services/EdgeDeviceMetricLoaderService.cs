@@ -72,7 +72,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     scope.ServiceProvider
                         .GetRequiredService<IDeviceService>();
 
-                this.portalMetric.EdgeDeviceCount = await deviceService.GetConnectedEdgeDevicesCount();
+                this.portalMetric.ConnectedEdgeDeviceCount = await deviceService.GetConnectedEdgeDevicesCount();
 
             }
             catch (InternalServerErrorException e)
