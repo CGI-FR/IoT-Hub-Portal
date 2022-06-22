@@ -21,6 +21,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using AzureIoTHub.Portal.Client.Pages.Configurations;
+    using Bunit.TestDoubles;
 
     [TestFixture]
     public class EdgeDeviceListPageTests : TestContextWrapper, IDisposable
@@ -151,6 +153,35 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
             _ = cut.FindAll("tr").Count.Should().Be(4);
             this.mockHttpClient.VerifyNoOutstandingRequest();
             this.mockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public void ClickToItemShouldRedirectToEdgeDetailsPage()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, "/api/edge/devices?pageSize=10&searchText=&searchStatus=&searchType=")
+                .RespondJson(new PaginationResult<IoTEdgeListItem>
+                {
+                    Items = new List<IoTEdgeListItem>
+                    {
+                        new()
+                        {
+                            DeviceId = deviceId,
+                        }
+                    }
+                });
+
+            var cut = RenderComponent<EdgeDeviceListPage>();
+            _ = cut.WaitForElements("table tbody tr");
+
+            // Act
+            cut.Find("table tbody tr").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => this.TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/edge/devices/{deviceId}"));
         }
     }
 }
