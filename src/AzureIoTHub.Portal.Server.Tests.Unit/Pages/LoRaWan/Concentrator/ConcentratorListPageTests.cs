@@ -6,22 +6,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
+    using System.Threading;
     using AzureIoTHub.Portal.Client.Pages.LoRaWAN.Concentrator;
-    using Models.v10;
-    using Models.v10.LoRaWAN;
-    using Helpers;
+    using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
     using Bunit;
+    using Bunit.TestDoubles;
     using Client.Exceptions;
     using Client.Models;
     using FluentAssertions;
+    using Helpers;
     using Microsoft.Extensions.DependencyInjection;
+    using Models.v10;
+    using Models.v10.LoRaWAN;
     using Moq;
     using MudBlazor;
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
-using AzureIoTHub.Portal.Client.Pages.Edge_Devices;
-using Bunit.TestDoubles;
 
     [TestFixture]
     public class ConcentratorListPageTests : TestContextWrapper, IDisposable
@@ -125,10 +126,9 @@ using Bunit.TestDoubles;
 
             var cut = RenderComponent<ConcentratorListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
-            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(2));
 
             // Act
-            cut.Find("table tbody tr").Click();
+            cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
 
             // Assert
             cut.WaitForAssertion(() => this.TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/lorawan/concentrators/{deviceId}"));

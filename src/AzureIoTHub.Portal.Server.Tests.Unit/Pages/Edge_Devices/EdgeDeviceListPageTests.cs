@@ -23,6 +23,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
     using RichardSzalay.MockHttp;
     using AzureIoTHub.Portal.Client.Pages.Configurations;
     using Bunit.TestDoubles;
+using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
 
     [TestFixture]
     public class EdgeDeviceListPageTests : TestContextWrapper, IDisposable
@@ -177,10 +178,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
 
             var cut = RenderComponent<EdgeDeviceListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
-            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(2));
 
             // Act
-            cut.Find("table tbody tr").Click();
+            cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
 
             // Assert
             cut.WaitForAssertion(() => this.TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/edge/devices/{deviceId}"));

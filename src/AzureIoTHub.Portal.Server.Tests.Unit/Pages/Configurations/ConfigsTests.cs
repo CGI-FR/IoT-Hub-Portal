@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System.Collections.Generic;
     using System.Net.Http;
     using AzureIoTHub.Portal.Client.Pages.Configurations;
+    using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Exceptions;
@@ -110,10 +111,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .RespondJson(configurations);
 
             var cut = RenderComponent<Configs>();
-            _ = cut.WaitForElements("table tbody tr");
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
             // Act
-            cut.Find("table tbody tr").Click();
+            cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
 
             // Assert
             cut.WaitForAssertion(() => this.TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/edge/configurations/{configurationId}"));
