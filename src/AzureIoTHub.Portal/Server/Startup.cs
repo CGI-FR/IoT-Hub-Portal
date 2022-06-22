@@ -42,6 +42,7 @@ namespace AzureIoTHub.Portal.Server
     using Polly;
     using Polly.Extensions.Http;
     using Prometheus;
+    using Shared.Models.v1._0;
 
     public class Startup
     {
@@ -93,6 +94,7 @@ namespace AzureIoTHub.Portal.Server
                 });
 
             _ = services.AddSingleton(configuration);
+            _ = services.AddSingleton(new PortalMetric());
 
             _ = services.AddRazorPages();
 
@@ -182,48 +184,48 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddApplicationInsightsTelemetry();
 
             _ = services.AddSwaggerGen(opts =>
-              {
-                  opts.SwaggerDoc("v1", new OpenApiInfo
-                  {
-                      Version = "1.0",
-                      Title = "Azure IoT Hub Portal API",
-                      Description = "Available APIs for managing devices from Azure IoT Hub."
-                  });
+            {
+                opts.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "1.0",
+                    Title = "Azure IoT Hub Portal API",
+                    Description = "Available APIs for managing devices from Azure IoT Hub."
+                });
 
-                  // using System.Reflection;
-                  opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "AzureIoTHub.Portal.Server.xml"));
-                  opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "AzureIoTHub.Portal.Shared.xml"));
+                // using System.Reflection;
+                opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "AzureIoTHub.Portal.Server.xml"));
+                opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "AzureIoTHub.Portal.Shared.xml"));
 
-                  opts.TagActionsBy(api => new[] { api.GroupName });
-                  opts.DocInclusionPredicate((_, _) => true);
+                opts.TagActionsBy(api => new[] { api.GroupName });
+                opts.DocInclusionPredicate((_, _) => true);
 
-                  opts.DescribeAllParametersInCamelCase();
+                opts.DescribeAllParametersInCamelCase();
 
-                  var securityDefinition = new OpenApiSecurityScheme()
-                  {
-                      Name = "Bearer",
-                      BearerFormat = "JWT",
-                      Scheme = "bearer",
-                      Description =
+                var securityDefinition = new OpenApiSecurityScheme()
+                {
+                    Name = "Bearer",
+                    BearerFormat = "JWT",
+                    Scheme = "bearer",
+                    Description =
   @"
     Specify the authorization token got from your IDP as a header.
     > Ex: ``Authorization: Bearer * ***``",
-                      In = ParameterLocation.Header,
-                      Type = SecuritySchemeType.Http,
-                  };
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                };
 
-                  var securityRequirements = new OpenApiSecurityRequirement()
+                var securityRequirements = new OpenApiSecurityRequirement()
                   {
                     { securityDefinition, Array.Empty<string>() },
                   };
 
-                  opts.AddSecurityDefinition("Bearer", securityDefinition);
+                opts.AddSecurityDefinition("Bearer", securityDefinition);
 
-                  opts.AddSecurityRequirement(securityRequirements);
+                opts.AddSecurityRequirement(securityRequirements);
 
-                  opts.OrderActionsBy(api => api.RelativePath);
-                  opts.UseInlineDefinitionsForEnums();
-              });
+                opts.OrderActionsBy(api => api.RelativePath);
+                opts.UseInlineDefinitionsForEnums();
+            });
 
             _ = services.AddApiVersioning(o =>
             {
@@ -251,6 +253,16 @@ namespace AzureIoTHub.Portal.Server
                 .AddCheck<TableStorageHealthCheck>("tableStorageHealth")
                 .AddCheck<ProvisioningServiceClientHealthCheck>("dpsHealth")
                 .AddCheck<LoRaManagementKeyFacadeHealthCheck>("loraManagementFacadeHealth");
+
+            // Register metric loaders as Hosted Services
+            _ = services.AddHostedService<DeviceMetricLoaderService>();
+            _ = services.AddHostedService<EdgeDeviceMetricLoaderService>();
+            _ = services.AddHostedService<ConcentratorMetricLoaderService>();
+
+            // Register metric exporters as Hosted Services
+            _ = services.AddHostedService<DeviceMetricExporterService>();
+            _ = services.AddHostedService<EdgeDeviceMetricExporterService>();
+            _ = services.AddHostedService<ConcentratorMetricExporterService>();
         }
 
         /// <summary>
