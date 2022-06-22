@@ -45,5 +45,17 @@ namespace AzureIoTHub.Portal.Server.Services
             int pageSize = 10);
 
         Task<IEnumerable<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule);
+
+        Task<int> GetDevicesCount();
+
+        Task<int> GetConnectedDevicesCount();
+
+        Task<int> GetEdgeDevicesCount();
+
+        Task<int> GetConnectedEdgeDevicesCount();
+
+        Task<int> GetConcentratorsCount();
+
+        Task<int> GetConnectedConcentratorsCount();
     }
 }
