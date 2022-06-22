@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using Client.Exceptions;
     using Client.Models;
     using FluentAssertions;
+    using FluentAssertions.Extensions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -148,7 +149,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Assert            
             cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/devices", StringComparison.OrdinalIgnoreCase));
+            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/devices", StringComparison.OrdinalIgnoreCase), 3.Seconds());
         }
 
         [Test]
