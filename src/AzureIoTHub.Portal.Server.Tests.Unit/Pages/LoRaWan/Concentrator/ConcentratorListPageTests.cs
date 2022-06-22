@@ -20,6 +20,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+using AzureIoTHub.Portal.Client.Pages.Edge_Devices;
+using Bunit.TestDoubles;
 
     [TestFixture]
     public class ConcentratorListPageTests : TestContextWrapper, IDisposable
@@ -99,6 +101,35 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
             _ = cut.FindAll("tr").Count.Should().Be(2);
             this.mockHttpClient.VerifyNoOutstandingRequest();
             this.mockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public void ClickToItemShouldRedirectToConcentratorDetailsPage()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, "/api/lorawan/concentrators?pageSize=10")
+                .RespondJson(new PaginationResult<Concentrator>
+                {
+                    Items = new List<Concentrator>
+                    {
+                        new()
+                        {
+                            DeviceId = deviceId,
+                        }
+                    }
+                });
+
+            var cut = RenderComponent<ConcentratorListPage>();
+            _ = cut.WaitForElements("table tbody tr");
+
+            // Act
+            cut.Find("table tbody tr").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => this.TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/lorawan/concentrators/{deviceId}"));
         }
 
         public void Dispose()
