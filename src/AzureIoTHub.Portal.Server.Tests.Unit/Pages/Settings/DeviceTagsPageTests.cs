@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
+    using FluentAssertions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -112,6 +113,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
             Assert.IsNotNull(cut.Markup);
             Assert.AreEqual("Tags", cut.Find(".mud-typography-h6").TextContent);
             Assert.IsNotNull(grid.InnerHtml);
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
             Assert.AreEqual(1, cut.FindAll("table tbody tr").Count);
             Assert.IsNotNull(cut.Find(".mud-table-container"));
 
