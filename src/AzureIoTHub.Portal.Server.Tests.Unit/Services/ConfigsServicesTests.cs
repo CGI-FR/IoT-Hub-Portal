@@ -439,5 +439,46 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());
             this.mockRegistryManager.Verify(c => c.RemoveConfigurationAsync(It.IsAny<string>()), Times.Once());
         }
+
+        [Test]
+        public async Task GetFailedDeploymentsCountShouldReturnFailedDeploymentsCount()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+            var iotEdgeConfiguration = new Configuration("bbb");
+            iotEdgeConfiguration.SystemMetrics.Results.Add("reportedFailedCount", 2);
+            iotEdgeConfiguration.Content.ModulesContent.Add("test", new Dictionary<string, object>());
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ReturnsAsync(new[]
+                {
+                    iotEdgeConfiguration
+                });
+
+            // Act
+            var result = await configsServices.GetFailedDeploymentsCount();
+
+            // Assert
+            _ = result.Should().Be(2);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetFailedDeploymentsCountShouldInternalServerErrorExceptionWhenIssueOccursOnGettingFailedDeploymentsCount()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ThrowsAsync(new Exception("test"));
+
+            // Act
+            var act = () => configsServices.GetFailedDeploymentsCount();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
     }
 }
