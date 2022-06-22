@@ -174,10 +174,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
 
             var cut = RenderComponent<DeviceTagsPage>();
             cut.WaitForAssertion(() => cut.Find("#saveButton"));
-            var saveButton = cut.Find("#saveButton");
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
             // Act
-            saveButton.Click();
+            cut.Find("#saveButton").Click();
 
             cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
             cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
