@@ -7,13 +7,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System.Collections.Generic;
     using System.Net.Http;
     using AzureIoTHub.Portal.Client.Pages.Configurations;
-    using Models.v10;
-    using Helpers;
     using Bunit;
+    using Bunit.TestDoubles;
     using Client.Exceptions;
     using Client.Models;
     using FluentAssertions;
+    using Helpers;
     using Microsoft.Extensions.DependencyInjection;
+    using Models.v10;
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
@@ -88,6 +89,34 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             // Assert
             cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
             cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+        }
+
+        [Test]
+        public void ClickToItemShouldRedirectToConfigurationDetailsPage()
+        {
+            // Arrange
+            var configurationId = Guid.NewGuid().ToString();
+
+            var configurations = new List<ConfigListItem>
+            {
+                new ConfigListItem
+                {
+                    ConfigurationID = configurationId
+                }
+            };
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, "/api/edge/configurations")
+                .RespondJson(configurations);
+
+            var cut = RenderComponent<Configs>();
+            _ = cut.WaitForElements("table tbody tr");
+
+            // Act
+            cut.Find("table tbody tr").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => this.TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/edge/configurations/{configurationId}"));
         }
     }
 }

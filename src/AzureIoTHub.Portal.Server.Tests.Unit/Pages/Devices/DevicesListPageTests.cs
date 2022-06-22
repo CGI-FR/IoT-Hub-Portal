@@ -194,7 +194,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public void WhenLoraFeatureDisableDeviceDetailLinkShouldNotContainLora()
+        public void WhenLoraFeatureDisableClickToItemShouldRedirectToDeviceDetailsPage()
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
@@ -213,21 +213,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .RespondJson(Array.Empty<object>());
 
             var cut = RenderComponent<DeviceListPage>();
-            _ = cut.WaitForElements(".detail-link");
+            _ = cut.WaitForElements("table tbody tr");
 
             // Act
-            var link = cut.FindAll("a.detail-link");
+            cut.Find("table tbody tr").Click();
 
             // Assert
-            Assert.IsNotNull(link);
-            foreach (var item in link)
-            {
-                Assert.AreEqual($"devices/{deviceId}", item.GetAttribute("href"));
-            }
+            cut.WaitForAssertion(() => this.testContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/devices/{deviceId}"));
         }
 
         [Test]
-        public void WhenLoraFeatureEnableDeviceDetailLinkShouldContainLora()
+        public void WhenLoraFeatureEnableClickToItemShouldRedirectToLoRaDeviceDetailsPage()
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
@@ -246,17 +242,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .RespondJson(Array.Empty<object>());
 
             var cut = RenderComponent<DeviceListPage>();
-            _ = cut.WaitForElements(".detail-link");
+            _ = cut.WaitForElements("table tbody tr");
 
             // Act
-            var link = cut.FindAll("a.detail-link");
+            cut.Find("table tbody tr").Click();
 
             // Assert
-            Assert.IsNotNull(link);
-            foreach (var item in link)
-            {
-                Assert.AreEqual($"devices/{deviceId}?isLora=true", item.GetAttribute("href"));
-            }
+            cut.WaitForAssertion(() => this.testContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/devices/{deviceId}?isLora=true"));
         }
 
         [Test]

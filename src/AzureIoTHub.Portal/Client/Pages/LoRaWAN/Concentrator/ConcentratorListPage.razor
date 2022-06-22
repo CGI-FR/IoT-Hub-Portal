@@ -11,7 +11,7 @@
 <MudGrid>
 
     <MudItem xs="12">
-        <MudTable id="concentrators-listing" ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading">
+        <MudTable T="Concentrator" id="concentrators-listing" ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="OnRowClick">
             <ColGroup>
                 <col style="width: 60%;" />
                 <col style="width: 10%;" />
@@ -38,7 +38,7 @@
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="Device" Style="word-break: break-all;">
-                    <a href="lorawan/concentrators/@context.DeviceId">@context.DeviceName</a>
+                    @context.DeviceName
                 </MudTd>
                 <MudTd DataLabel="Status" Style="text-align: center">
                     @if (context.IsEnabled)
@@ -71,7 +71,7 @@
                 </MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
                     <MudTooltip Text="See concentrator details">
-                        <a href="lorawan/concentrators/@context.DeviceId"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                        <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" />
                     </MudTooltip>
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
@@ -165,5 +165,10 @@
         Pages.Clear();
 
         table.ReloadServerData();
+    }
+
+    private void OnRowClick(TableRowClickEventArgs<Concentrator> e)
+    {
+        navigationManager.NavigateTo($"/lorawan/concentrators/{@e.Item.DeviceId}");
     }
 }

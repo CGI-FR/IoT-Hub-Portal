@@ -6,7 +6,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
+using AzureIoTHub.Portal.Client.Pages.Configurations;
     using Bunit;
+    using Bunit.TestDoubles;
     using Client.Exceptions;
     using Client.Models;
     using Client.Pages.DeviceConfigurations;
@@ -84,6 +86,34 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             _ = cut.FindAll("tr").Count.Should().Be(2);
             this.mockHttpClient.VerifyNoOutstandingRequest();
             this.mockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public void ClickToItemShouldRedirectToConfigurationDetailsPage()
+        {
+            // Arrange
+            var configurationId = Guid.NewGuid().ToString();
+
+            var configurations = new List<ConfigListItem>
+            {
+                new ConfigListItem
+                {
+                    ConfigurationID = configurationId
+                }
+            };
+
+            _ = this.mockHttpClient
+                .When(HttpMethod.Get, "/api/device-configurations")
+                .RespondJson(configurations);
+
+            var cut = RenderComponent<DeviceConfigurationListPage>();
+            _ = cut.WaitForElements("table tbody tr");
+
+            // Act
+            cut.Find("table tbody tr").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => this.TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/device-configurations/{configurationId}"));
         }
 
         public void Dispose()

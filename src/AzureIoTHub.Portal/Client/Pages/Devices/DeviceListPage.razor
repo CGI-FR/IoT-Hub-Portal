@@ -71,7 +71,7 @@
         </MudExpansionPanels>
     </MudItem>
     <MudItem xs="12">
-        <MudTable ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading">
+        <MudTable T="DeviceListItem" ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="OnRowClick">
             <ColGroup>
                 <col style="width: 5%;" />
                 <col style="width: 40%;" />
@@ -105,9 +105,7 @@
                     <img height="25" src="@context.ImageUrl" />
                 </MudTd>
                 <MudTd DataLabel="Device" Style="word-break: break-all;">
-                    <a class="detail-link" href="@($"devices/{@context.DeviceID}{((@context.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true": "")}")">
-                        @(string.IsNullOrEmpty(context.DeviceName) ? context.DeviceID : context.DeviceName)
-                    </a>
+                    @(string.IsNullOrEmpty(context.DeviceName) ? context.DeviceID : context.DeviceName)
                 </MudTd>
 
                 <MudTd DataLabel="Allowed" Style="text-align: center">
@@ -141,11 +139,9 @@
                 </MudTd>
                 <MudTd DataLabel="LSU" Style="text-align: center">@context.StatusUpdatedTime</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
-                    <a class="detail-link" href="@($"devices/{@context.DeviceID}{((@context.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true": "")}")">
-                        <MudTooltip Text="See device details">
-                            <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" />
-                        </MudTooltip>
-                    </a>
+                    <MudTooltip Text="See device details">
+                        <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" />
+                    </MudTooltip>
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
                     <MudTooltip Text="Delete device">
@@ -167,9 +163,9 @@
 </MudGrid>
 
 @code {
-    [CascadingParameter]
-    public Error Error {get; set;}
-    
+        [CascadingParameter]
+        public Error Error { get; set; }
+
     private string searchID = "";
     private string searchStatus;
     private string searchState;
@@ -188,7 +184,7 @@
     {
         try
         {
-        // Gets the custom tags that can be searched via the panel
+            // Gets the custom tags that can be searched via the panel
             TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
             foreach (DeviceTag tag in TagList)
             {
@@ -200,7 +196,7 @@
         {
             Error?.ProcessProblemDetails(exception);
         }
-        
+
     }
 
     private async Task<TableData<DeviceListItem>> LoadItems(TableState state)
@@ -230,10 +226,10 @@
             _ = Pages.TryAdd(state.Page + 1, result.NextPage);
 
             return new TableData<DeviceListItem>
-            {
-                Items = result.Items,
-                TotalItems = result.TotalItems
-            };
+                {
+                    Items = result.Items,
+                    TotalItems = result.TotalItems
+                };
         }
         catch (ProblemDetailsException exception)
         {
@@ -291,5 +287,10 @@
         }
 
         Search();
+    }
+
+    private void OnRowClick(TableRowClickEventArgs<DeviceListItem> e)
+    {
+        navigationManager.NavigateTo($"devices/{e.Item.DeviceID}{((e.Item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
     }
 }

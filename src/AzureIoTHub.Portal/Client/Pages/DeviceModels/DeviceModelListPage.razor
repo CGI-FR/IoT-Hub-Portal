@@ -24,7 +24,7 @@
     else
     {
         <MudItem xs="12">
-            <MudTable Items="@result" Loading="@IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
+            <MudTable T="DeviceModel" Items="@result" Loading="@IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true OnRowClick="OnRowClick">
                 <ColGroup>
                     <col style="width: 5%;" />
                     <col style="width: 30%;" />
@@ -39,7 +39,7 @@
                         <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadDeviceModels" Class="ma-2" id="tableRefreshButton"></MudIconButton>
                     </MudTooltip>
                     <MudTooltip Text="Add device model">
-                        <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDeviceModel" id="addDeviceModelButton"/>
+                        <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDeviceModel" id="addDeviceModelButton" />
                     </MudTooltip>
                 </ToolBarContent>
                 <HeaderContent>
@@ -54,17 +54,15 @@
                         <img height="25" src="@context.ImageUrl" />
                     </MudTd>
                     <MudTd DataLabel="Name" Style="word-break: break-all;">
-                        <a class="detail-link" href=@($"device-models/{@context.ModelId}{((@context.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true": "")}")>@context.Name</a>
+                        @context.Name
                     </MudTd>
                     <MudTd DataLabel="Description" Style="word-break: break-all; ">
                         @context.Description
                     </MudTd>
                     <MudTd DataLabel="Details" Style="text-align: center">
-                        <a class="detail-link" href="@($"device-models/{@context.ModelId}{((@context.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true": "")}")">
-                            <MudTooltip Text="Delete device model">
-                                <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" />
-                            </MudTooltip>
-                        </a>
+                        <MudTooltip Text="Delete device model">
+                            <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" />
+                        </MudTooltip>
                     </MudTd>
                     <MudTd DataLabel="Delete" Style="text-align: center">
                         <MudTooltip Text="Delete device model">
@@ -89,7 +87,7 @@
 
 @code {
     [CascadingParameter]
-    public Error Error{ get; set; }
+    public Error Error { get; set; }
 
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
     private List<DeviceModel> result = new();
@@ -116,7 +114,7 @@
         {
             result = await httpClient.GetFromJsonAsync<List<DeviceModel>>("api/models");
         }
-        catch(ProblemDetailsException exception)
+        catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
         }
@@ -141,5 +139,10 @@
 
         // Update the list of devices after the deletion
         await LoadDeviceModels();
+    }
+
+    private void OnRowClick(TableRowClickEventArgs<DeviceModel> e)
+    {
+        navigationManager.NavigateTo($"/device-models/{e.Item.ModelId}{((e.Item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
     }
 }
