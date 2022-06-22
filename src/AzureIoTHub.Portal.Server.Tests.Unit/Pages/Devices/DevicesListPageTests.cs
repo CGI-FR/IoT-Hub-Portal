@@ -27,11 +27,8 @@ using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
     [TestFixture]
     public class DevicesListPageTests : IDisposable
     {
-#pragma warning disable CA2213 // Disposable fields should be disposed
         private Bunit.TestContext testContext;
         private MockHttpMessageHandler mockHttpClient;
-#pragma warning restore CA2213 // Disposable fields should be disposed
-
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
 
