@@ -3,10 +3,11 @@
 @using AzureIoTHub.Portal.Models.v10
 @attribute [Authorize]
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <MudGrid>
     <MudItem xs="12">
-        <MudTable Items="@result" Loading="IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true>
+        <MudTable T="ConfigListItem" Items="@result" Loading="IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true OnRowClick="OnRowClick">
             <ColGroup>
                 <col style="width: 20%;" />
                 <col style="width: 20%;" />
@@ -35,10 +36,10 @@
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="ID" Style="word-break: break-all;">
-                    <a href="/edge/configurations/@context.ConfigurationID">@context.ConfigurationID</a>
+                    @context.ConfigurationID
                 </MudTd>
                 <MudTd DataLabel="Conditions" Style="word-break: break-all; ">
-                    <a href="/edge/configurations/@context.ConfigurationID">@context.Conditions</a>
+                    @context.Conditions
                 </MudTd>
                 <MudTd DataLabel="System Metrics" Style="text-align: center;">
                     @context.MetricsTargeted targeted<br />
@@ -52,7 +53,7 @@
                 <MudTd DataLabel="Creation date" Style="text-align: center;">@context.CreationDate</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
                     <MudTooltip Text="See details">
-                        <a href="/edge/configurations/@context.ConfigurationID"><MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" /></a>
+                        <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" />
                     </MudTooltip>
                 </MudTd>
             </RowTemplate>
@@ -102,5 +103,10 @@
         {
             IsLoading = false;
         }
+    }
+
+    private void OnRowClick(TableRowClickEventArgs<ConfigListItem> e)
+    {
+        NavigationManager.NavigateTo($"/edge/configurations/{e.Item.ConfigurationID}");
     }
 }
