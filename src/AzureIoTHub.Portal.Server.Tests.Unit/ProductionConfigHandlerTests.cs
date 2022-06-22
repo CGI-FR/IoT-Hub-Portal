@@ -6,7 +6,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
     using System;
     using System.Globalization;
     using System.Reflection;
-    using AzureIoTHub.Portal.Server;
+    using Server;
+    using FluentAssertions;
     using Microsoft.Extensions.Configuration;
     using Moq;
     using NUnit.Framework;
@@ -124,6 +125,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
             // Assert
             Assert.AreEqual(expected, result);
             this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void MetricExporterRefreshIntervalInSecondsConfigMustHaveDefaultValue()
+        {
+            // Arrange
+            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = productionConfigHandler.MetricExporterRefreshIntervalInSeconds.Should().Be(30);
+        }
+
+        [Test]
+        public void MetricLoaderRefreshIntervalInMinutesConfigMustHaveDefaultValue()
+        {
+            // Arrange
+            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = productionConfigHandler.MetricLoaderRefreshIntervalInMinutes.Should().Be(10);
         }
     }
 }
