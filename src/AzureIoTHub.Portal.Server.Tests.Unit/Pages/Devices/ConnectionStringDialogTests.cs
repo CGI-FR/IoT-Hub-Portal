@@ -53,6 +53,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.testContext.JSInterop.SetupVoid("Blazor._internal.InputFile.init", _ => true);
             _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
             _ = this.testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
+            _ = this.testContext.JSInterop.SetupVoid("mudElementRef.saveFocus", _ => true);
 
             this.mockHttpClient.AutoFlush = true;
         }
@@ -86,8 +87,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             await cut.InvokeAsync(() => service?.Show<ConnectionStringDialog>(string.Empty, parameters));
 
             // Assert
-            _ = cut.Find("div.mud-dialog-container").Should().NotBeNull();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [Test]
@@ -117,8 +118,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             var result = await dialogReference.Result;
 
             // Assert
-            _ = result.Cancelled.Should().BeFalse();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => result.Cancelled.Should().BeFalse());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         public void Dispose()
