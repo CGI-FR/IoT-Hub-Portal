@@ -7,7 +7,7 @@
 @attribute [Authorize]
 @inject HttpClient Http
 @inject IDialogService DialogService
-
+@inject NavigationManager NavigationManager
 
 <MudGrid>
     <MudItem xs="12">
@@ -47,7 +47,7 @@
         </MudExpansionPanels>
     </MudItem>
     <MudItem xs="12">
-        <MudTable ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading">
+        <MudTable T="IoTEdgeListItem" ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="OnRowClick">
             <ColGroup>
                 <col style="width: 40%;" />
                 <col style="width: 10%;" />
@@ -76,7 +76,7 @@
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="Device" Style="word-break: break-all;">
-                    <a href="/edge/devices/@context.DeviceId">@context.DeviceId</a>
+                    @context.DeviceId
                 </MudTd>
                 <MudTd DataLabel="Status" Style="text-align: center">
                     @if (context.Status == "Enabled")
@@ -96,11 +96,9 @@
                 <MudTd DataLabel="Type" Style="text-align: center">@context.Type</MudTd>
                 <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
-                    <a href="/edge/devices/@context.DeviceId">
                         <MudTooltip Text="See device details">
                             <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" />
                         </MudTooltip>
-                    </a>
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
                     <MudTooltip Text="Delete device">
@@ -123,8 +121,8 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
-    
+    public Error Error { get; set; }
+
     private MudTable<IoTEdgeListItem> table;
     private SearchModel searchModel = new();
 
@@ -162,10 +160,10 @@
             _ = Pages.TryAdd(state.Page + 1, result.NextPage);
 
             return new TableData<IoTEdgeListItem>
-            {
-                Items = result.Items,
-                TotalItems = result.TotalItems
-            };
+                {
+                    Items = result.Items,
+                    TotalItems = result.TotalItems
+                };
         }
         catch (ProblemDetailsException exception)
         {
@@ -200,7 +198,7 @@
 
     public async Task ShowDeleteDialog(IoTEdgeListItem gateway)
     {
-        var parameters = new DialogParameters {{nameof(IoTEdgeDevice.DeviceId), gateway.DeviceId}};
+        var parameters = new DialogParameters { { nameof(IoTEdgeDevice.DeviceId), gateway.DeviceId } };
         var result = await DialogService.Show<EdgeDeviceDeleteConfirmationDialog>("Confirm Deletion", parameters).Result;
 
         if (result.Cancelled)
@@ -210,5 +208,10 @@
 
         // Update the list of gateways after the deletion
         Search();
+    }
+
+    private void OnRowClick(TableRowClickEventArgs<IoTEdgeListItem> e)
+    {
+        NavigationManager.NavigateTo($"/edge/devices/{@e.Item.DeviceId}");
     }
 }
