@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
+    using AzureIoTHub.Portal.Client.Pages.Devices;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
@@ -61,59 +62,49 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
         }
 
         [Test]
-        public void WhenLoraFeatureEnableDeviceDetailLinkShouldContainLora()
+        public void WhenLoraFeatureDisableClickToItemShouldRedirectToDeviceDetailsPage()
         {
             // Arrange
-            var deviceId = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
 
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, this.apiBaseUrl)
-                .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
+                .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = modelId, SupportLoRaFeatures = false } });
 
             _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
-            var link = cut.WaitForElements("a.detail-link");
+            _ = cut.WaitForElements("table tbody tr");
 
-            Assert.IsNotNull(link);
-            foreach (var item in link)
-            {
-                Assert.AreEqual($"device-models/{deviceId}?isLora=true", item.GetAttribute("href"));
-            }
+            // Act
+            cut.Find("table tbody tr").Click();
 
             // Assert
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
-            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+            cut.WaitForAssertion(() => this.testContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/device-models/{modelId}"));
         }
 
         [Test]
-        public void WhenLoraFeatureDisableDeviceDetailLinkShouldNotContainLora()
+        public void WhenLoraFeatureEnableClickToItemShouldRedirectToLoRaDeviceDetailsPage()
         {
             // Arrange
-            var deviceId = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
 
             _ = this.mockHttpClient
                 .When(HttpMethod.Get, this.apiBaseUrl)
-                .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
+                .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = modelId, SupportLoRaFeatures = true } });
 
-            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
-
+            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             // Act
             var cut = RenderComponent<DeviceModelListPage>();
-            var link = cut.WaitForElements("a.detail-link");
+            _ = cut.WaitForElements("table tbody tr");
 
-            Assert.IsNotNull(link);
-            foreach (var item in link)
-            {
-                Assert.AreEqual($"device-models/{deviceId}", item.GetAttribute("href"));
-            }
+            // Act
+            cut.Find("table tbody tr").Click();
 
             // Assert
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
-            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+            cut.WaitForAssertion(() => this.testContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/device-models/{modelId}?isLora=true"));
         }
 
         [Test]
