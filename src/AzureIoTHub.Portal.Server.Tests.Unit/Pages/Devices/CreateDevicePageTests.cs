@@ -146,10 +146,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             saveButton.Click();
 
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/devices", StringComparison.OrdinalIgnoreCase));
-
             // Assert            
             cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/devices", StringComparison.OrdinalIgnoreCase));
         }
 
         [Test]
@@ -272,9 +271,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             saveButton.Click();
 
             // Assert
-            cut.WaitForState(() => !this.mockNavigationManager.Uri.EndsWith("devices", StringComparison.OrdinalIgnoreCase));
             cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+            cut.WaitForState(() => !this.mockNavigationManager.Uri.EndsWith("devices", StringComparison.OrdinalIgnoreCase));
         }
 
         [Test]
