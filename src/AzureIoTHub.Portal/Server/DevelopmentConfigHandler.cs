@@ -16,6 +16,10 @@ namespace AzureIoTHub.Portal.Server
 
         internal override string PortalName => this.config[PortalNameKey];
 
+        internal override int MetricExporterRefreshIntervalInSeconds => this.config.GetValue(MetricExporterRefreshIntervalKey, 30);
+
+        internal override int MetricLoaderRefreshIntervalInMinutes => this.config.GetValue(MetricLoaderRefreshIntervalKey, 10);
+
         internal override string IoTHubConnectionString => this.config[IoTHubConnectionStringKey];
 
         internal override string DPSConnectionString => this.config[DPSConnectionStringKey];
