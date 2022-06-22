@@ -176,6 +176,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
                 });
 
             var cut = RenderComponent<EdgeDeviceListPage>();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(2));
 
             // Act
