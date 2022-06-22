@@ -118,12 +118,13 @@ using Bunit.TestDoubles;
                         new()
                         {
                             DeviceId = deviceId,
-                        }
+                        },
+                        new()
                     }
                 });
 
             var cut = RenderComponent<ConcentratorListPage>();
-            _ = cut.WaitForElements("table tbody tr");
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(2));
 
             // Act
             cut.Find("table tbody tr").Click();
