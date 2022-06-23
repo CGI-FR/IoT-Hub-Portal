@@ -54,7 +54,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             _ = this.mockDeviceService.Setup(service => service.GetDevicesCount()).ReturnsAsync(10);
             _ = this.mockDeviceService.Setup(service => service.GetConnectedDevicesCount()).ReturnsAsync(3);
 
-            var cancellationToken = new CancellationTokenSource();
+            using var cancellationToken = new CancellationTokenSource();
 
             // Act
             _ = this.deviceMetricLoaderService.StartAsync(cancellationToken.Token);
@@ -76,7 +76,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             _ = this.mockDeviceService.Setup(service => service.GetDevicesCount()).ThrowsAsync(new InternalServerErrorException("test"));
             _ = this.mockDeviceService.Setup(service => service.GetConnectedDevicesCount()).ReturnsAsync(3);
 
-            var cancellationToken = new CancellationTokenSource();
+            using var cancellationToken = new CancellationTokenSource();
 
             // Act
             _ = this.deviceMetricLoaderService.StartAsync(cancellationToken.Token);
@@ -99,7 +99,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             _ = this.mockDeviceService.Setup(service => service.GetDevicesCount()).ReturnsAsync(10);
             _ = this.mockDeviceService.Setup(service => service.GetConnectedDevicesCount()).ThrowsAsync(new InternalServerErrorException("test"));
 
-            var cancellationToken = new CancellationTokenSource();
+            using var cancellationToken = new CancellationTokenSource();
 
             // Act
             _ = this.deviceMetricLoaderService.StartAsync(cancellationToken.Token);

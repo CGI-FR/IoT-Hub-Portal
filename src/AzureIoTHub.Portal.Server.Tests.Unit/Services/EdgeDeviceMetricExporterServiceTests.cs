@@ -53,7 +53,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             this.portalMetric.ConnectedEdgeDeviceCount = 8;
             this.portalMetric.FailedDeploymentCount = 3;
 
-            var cancellationToken = new CancellationTokenSource();
+            using var cancellationToken = new CancellationTokenSource();
 
             // Act
             _ = this.edgeDeviceMetricExporterService.StartAsync(cancellationToken.Token);

@@ -51,7 +51,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             this.portalMetric.ConcentratorCount = 15;
             this.portalMetric.ConnectedConcentratorCount = 8;
 
-            var cancellationToken = new CancellationTokenSource();
+            using var cancellationToken = new CancellationTokenSource();
 
             // Act
             _ = this.concentratorMetricExporterService.StartAsync(cancellationToken.Token);

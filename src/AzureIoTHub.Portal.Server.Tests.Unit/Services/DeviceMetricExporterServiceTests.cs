@@ -51,7 +51,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             this.portalMetric.DeviceCount = 15;
             this.portalMetric.ConnectedDeviceCount = 8;
 
-            var cancellationToken = new CancellationTokenSource();
+            using var cancellationToken = new CancellationTokenSource();
 
             // Act
             _ = this.deviceMetricExporterService.StartAsync(cancellationToken.Token);
