@@ -47,7 +47,7 @@
         </MudExpansionPanels>
     </MudItem>
     <MudItem xs="12">
-        <MudTable T="IoTEdgeListItem" ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="OnRowClick">
+        <MudTable T="IoTEdgeListItem" ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))">
             <ColGroup>
                 <col style="width: 40%;" />
                 <col style="width: 10%;" />
@@ -97,7 +97,7 @@
                 <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
                         <MudTooltip Text="See device details">
-                            <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" />
+                        <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
                         </MudTooltip>
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
@@ -210,8 +210,8 @@
         Search();
     }
 
-    private void OnRowClick(TableRowClickEventArgs<IoTEdgeListItem> e)
+    private void GoToDetails(IoTEdgeListItem item)
     {
-        NavigationManager.NavigateTo($"/edge/devices/{@e.Item.DeviceId}");
+        NavigationManager.NavigateTo($"/edge/devices/{item.DeviceId}");
     }
 }
