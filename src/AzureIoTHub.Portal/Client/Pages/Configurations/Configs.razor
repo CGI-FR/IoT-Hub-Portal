@@ -7,7 +7,7 @@
 
 <MudGrid>
     <MudItem xs="12">
-        <MudTable T="ConfigListItem" Items="@result" Loading="IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))">
+        <MudTable T="ConfigListItem" Items="@result" Loading="IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
             <ColGroup>
                 <col style="width: 20%;" />
                 <col style="width: 20%;" />
