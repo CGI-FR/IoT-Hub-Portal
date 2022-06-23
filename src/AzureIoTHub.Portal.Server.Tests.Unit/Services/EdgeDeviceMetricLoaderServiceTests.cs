@@ -58,7 +58,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             _ = this.mockDeviceService.Setup(service => service.GetConnectedEdgeDevicesCount()).ReturnsAsync(3);
             _ = this.mockConfigService.Setup(service => service.GetFailedDeploymentsCount()).ReturnsAsync(1);
 
-            var cancellationToken = new CancellationTokenSource();
+            using var cancellationToken = new CancellationTokenSource();
 
             // Act
             _ = this.edgeDeviceMetricLoaderService.StartAsync(cancellationToken.Token);
@@ -82,7 +82,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             _ = this.mockDeviceService.Setup(service => service.GetConnectedEdgeDevicesCount()).ReturnsAsync(3);
             _ = this.mockConfigService.Setup(service => service.GetFailedDeploymentsCount()).ReturnsAsync(1);
 
-            var cancellationToken = new CancellationTokenSource();
+            using var cancellationToken = new CancellationTokenSource();
 
             // Act
             _ = this.edgeDeviceMetricLoaderService.StartAsync(cancellationToken.Token);
@@ -107,7 +107,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             _ = this.mockDeviceService.Setup(service => service.GetConnectedEdgeDevicesCount()).ThrowsAsync(new InternalServerErrorException("test"));
             _ = this.mockConfigService.Setup(service => service.GetFailedDeploymentsCount()).ReturnsAsync(1);
 
-            var cancellationToken = new CancellationTokenSource();
+            using var cancellationToken = new CancellationTokenSource();
 
             // Act
             _ = this.edgeDeviceMetricLoaderService.StartAsync(cancellationToken.Token);
@@ -131,7 +131,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             _ = this.mockDeviceService.Setup(service => service.GetConnectedEdgeDevicesCount()).ReturnsAsync(3);
             _ = this.mockConfigService.Setup(service => service.GetFailedDeploymentsCount()).ThrowsAsync(new InternalServerErrorException("test"));
 
-            var cancellationToken = new CancellationTokenSource();
+            using var cancellationToken = new CancellationTokenSource();
 
             // Act
             _ = this.edgeDeviceMetricLoaderService.StartAsync(cancellationToken.Token);
