@@ -6,33 +6,37 @@
 @inject PortalSettings Portal
 @inject ILayoutService LayoutService
 
+@implements IDisposable
+
 <AuthorizeView>
     <Authorized>
         <MudNavMenu>
+            <MudNavLink Href="/dashboard" Icon="@Icons.Filled.Dashboard">Dashboard</MudNavLink>
+
             <MudNavGroup Title="Devices" Icon="@Icons.Outlined.Memory"
                          Expanded="@LayoutService.GetNavGroupExpanded("Devices")"
                          ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Devices", b))">
                 <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
-                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/devices">Device List</MudNavLink>
-                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary"/><MudNavLink Href="/devices">Device List</MudNavLink>
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary"/>
                     <MudTooltip Text="Add device">
-                        <MudIconButton id="addDeviceButton" OnClick="AddDevice" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
+                        <MudIconButton id="addDeviceButton" OnClick="AddDevice" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small"/>
                     </MudTooltip>
                 </MudPaper>
 
                 <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
-                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/device-models">Device Models</MudNavLink>
-                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary"/><MudNavLink Href="/device-models">Device Models</MudNavLink>
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary"/>
                     <MudTooltip Text="Add device model">
-                        <MudIconButton id="addDeviceModelButton" OnClick="AddDeviceModel" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
+                        <MudIconButton id="addDeviceModelButton" OnClick="AddDeviceModel" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small"/>
                     </MudTooltip>
                 </MudPaper>
-                
+
                 <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
-                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary" /><MudNavLink Href="/device-configurations/">Configurations</MudNavLink>
-                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary" />
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-primary"/><MudNavLink Href="/device-configurations/">Configurations</MudNavLink>
+                    <MudPaper Class="py-4 d-flex flex-1 mud-theme-secondary"/>
                     <MudTooltip Text="Add device model">
-                        <MudIconButton id="addDeviceConfigurationButton" OnClick="AddDeviceConfig" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small" />
+                        <MudIconButton id="addDeviceConfigurationButton" OnClick="AddDeviceConfig" Color="Color.Secondary" Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small"/>
                     </MudTooltip>
                 </MudPaper>
             </MudNavGroup>
@@ -47,8 +51,8 @@
             @if (Portal.IsLoRaSupported)
             {
                 <MudNavGroup Title="LoRaWAN" Icon="@Icons.Outlined.WifiTethering"
-                         Expanded="@LayoutService.GetNavGroupExpanded("LoRaWAN")"
-                         ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("LoRaWAN", b))">
+                             Expanded="@LayoutService.GetNavGroupExpanded("LoRaWAN")"
+                             ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("LoRaWAN", b))">
                     <MudNavLink Href="/lorawan/concentrators">
                         Concentrators
                     </MudNavLink>
