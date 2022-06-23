@@ -53,6 +53,8 @@ Here are different settings that the user can configure:
 * **ASPNETCORE_ENVIRONMENT**: Built-in environment variable, used to target the configuration provided by a specific environment. Two accepted values:
   * `Development`: On this environment, logs are produced up to `Debug` level.
   * `Production`: Default value if ASPNETCORE_ENVIRONMENT is not set. On this environment, logs are produced up to `Information` level.
+* **Metrics__ExporterRefreshIntervalInSeconds**: (Optional, default value `30`) The refresh interval in `seconds` to collect custom metrics and expose them to the exporter endpoint.
+* **Metrics__LoaderRefreshIntervalInMinutes**: (Optional, default value `10`) The refresh interval in `minutes` to calculate/refresh custom metrics values.
 
 #### Connection strings
 
