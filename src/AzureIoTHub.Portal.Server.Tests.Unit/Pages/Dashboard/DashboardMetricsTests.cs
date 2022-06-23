@@ -73,6 +73,48 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Dashboard
         }
 
         [Test]
+        public void OnRefreshDashboardEventDashboardMetricShouldRefreshMetrics()
+        {
+            // Arrange
+            var portalMetric = new PortalMetric
+            {
+                DeviceCount = 1,
+                ConnectedDeviceCount = 2,
+                EdgeDeviceCount = 3,
+                ConnectedEdgeDeviceCount = 4,
+                FailedDeploymentCount = 5,
+                ConcentratorCount = 6,
+                ConnectedConcentratorCount = 7
+            };
+
+            _ = this.mockDashboardMetricsClientService.Setup(c => c.GetPortalMetrics())
+                .ReturnsAsync(portalMetric);
+
+            var cut = RenderComponent<DashboardMetrics>();
+
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-icon").Count.Should().Be(7));
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-title").Count.Should().Be(7));
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-value").Count.Should().Be(7));
+
+            cut.WaitForAssertion(() => cut.Find("#dashboard-metric-counter-title").TextContent.Should().Be("Devices"));
+            cut.WaitForAssertion(() => cut.Find("#dashboard-metric-counter-value").TextContent.Should().Be(portalMetric.DeviceCount.ToString(CultureInfo.InvariantCulture)));
+
+            // Act
+            TestContext?.Services.GetRequiredService<IDashboardLayoutService>().RefreshDashboard();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-icon").Count.Should().Be(7));
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-title").Count.Should().Be(7));
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-value").Count.Should().Be(7));
+
+            cut.WaitForAssertion(() => cut.Find("#dashboard-metric-counter-title").TextContent.Should().Be("Devices"));
+            cut.WaitForAssertion(() => cut.Find("#dashboard-metric-counter-value").TextContent.Should().Be(portalMetric.DeviceCount.ToString(CultureInfo.InvariantCulture)));
+
+            cut.WaitForAssertion(() => this.mockDashboardMetricsClientService.Verify(service => service.GetPortalMetrics(), Times.Exactly(2)));
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+        }
+
+        [Test]
         public void DashboardMetricShouldProcessProblemDetailsExceptionWhenIssueOccurs()
         {
             // Arrange
