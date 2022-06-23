@@ -1,6 +1,5 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @inject NavigationManager NavManager
 
@@ -9,6 +8,6 @@
     protected override void OnInitialized()
     {
         // Go back to the list of device
-        NavManager.NavigateTo("devices");
+        NavManager.NavigateTo("dashboard");
     }
 }
