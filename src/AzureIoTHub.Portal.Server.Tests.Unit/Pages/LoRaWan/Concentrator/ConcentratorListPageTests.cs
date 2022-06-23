@@ -124,6 +124,7 @@ using Bunit.TestDoubles;
                 });
 
             var cut = RenderComponent<ConcentratorListPage>();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(2));
 
             // Act
