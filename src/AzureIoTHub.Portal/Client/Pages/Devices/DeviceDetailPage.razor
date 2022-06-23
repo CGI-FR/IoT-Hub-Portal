@@ -25,7 +25,7 @@
             <MudCard>
                 <MudCardHeader>
                     <CardHeaderContent>
-                            <MudText Typo="Typo.body2" Class="mb-6">Model: <b>@DeviceModel.Name</b></MudText>
+                            <MudText Typo="Typo.body2" Class="mb-6" id=@nameof(DeviceModel.Name)>Model: <b>@DeviceModel.Name</b></MudText>
                         <MudText Typo="Typo.h5" Align="Align.Center">@(string.IsNullOrEmpty(Device.DeviceName) ? Device.DeviceID : Device.DeviceName)</MudText>
                     </CardHeaderContent>
                 </MudCardHeader>

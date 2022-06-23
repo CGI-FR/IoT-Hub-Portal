@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using Bunit.TestDoubles;
     using Client.Exceptions;
     using Client.Models;
+    using FluentAssertions;
     using FluentAssertions.Extensions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
@@ -182,6 +183,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             // Act
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModel.Name)}>b").InnerHtml.Should().NotBeEmpty());
 
             var saveButton = cut.WaitForElement("#saveButton");
             saveButton.Click();
