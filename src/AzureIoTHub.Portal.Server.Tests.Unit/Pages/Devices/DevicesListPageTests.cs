@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.Devices;
     using AzureIoTHub.Portal.Models.v10;
+using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
     using Bunit.TestDoubles;
@@ -213,10 +214,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .RespondJson(Array.Empty<object>());
 
             var cut = RenderComponent<DeviceListPage>();
-            _ = cut.WaitForElements("table tbody tr");
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
             // Act
-            cut.Find("table tbody tr").Click();
+            cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
 
             // Assert
             cut.WaitForAssertion(() => this.testContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/devices/{deviceId}"));
@@ -242,10 +243,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .RespondJson(Array.Empty<object>());
 
             var cut = RenderComponent<DeviceListPage>();
-            _ = cut.WaitForElements("table tbody tr");
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
             // Act
-            cut.Find("table tbody tr").Click();
+            cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
 
             // Assert
             cut.WaitForAssertion(() => this.testContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/devices/{deviceId}?isLora=true"));

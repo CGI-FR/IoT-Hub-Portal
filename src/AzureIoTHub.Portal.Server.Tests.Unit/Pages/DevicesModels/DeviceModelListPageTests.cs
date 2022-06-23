@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
     using AzureIoTHub.Portal.Client.Pages.Devices;
     using AzureIoTHub.Portal.Models.v10;
+using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
     using Bunit.TestDoubles;
@@ -73,12 +74,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-            // Act
             var cut = RenderComponent<DeviceModelListPage>();
-            _ = cut.WaitForElements("table tbody tr");
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
             // Act
-            cut.Find("table tbody tr").Click();
+            cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
 
             // Assert
             cut.WaitForAssertion(() => this.testContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/device-models/{modelId}"));
@@ -96,12 +96,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
 
             _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-            // Act
             var cut = RenderComponent<DeviceModelListPage>();
-            _ = cut.WaitForElements("table tbody tr");
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
             // Act
-            cut.Find("table tbody tr").Click();
+            cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
 
             // Assert
             cut.WaitForAssertion(() => this.testContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/device-models/{modelId}?isLora=true"));
