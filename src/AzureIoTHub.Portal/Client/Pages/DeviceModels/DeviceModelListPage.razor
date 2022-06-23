@@ -24,7 +24,7 @@
     else
     {
         <MudItem xs="12">
-            <MudTable T="DeviceModel" Items="@result" Loading="@IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true OnRowClick="OnRowClick">
+            <MudTable T="DeviceModel" Items="@result" Loading="@IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))">
                 <ColGroup>
                     <col style="width: 5%;" />
                     <col style="width: 30%;" />
@@ -61,7 +61,7 @@
                     </MudTd>
                     <MudTd DataLabel="Details" Style="text-align: center">
                         <MudTooltip Text="Delete device model">
-                            <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" />
+                            <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
                         </MudTooltip>
                     </MudTd>
                     <MudTd DataLabel="Delete" Style="text-align: center">
@@ -141,8 +141,8 @@
         await LoadDeviceModels();
     }
 
-    private void OnRowClick(TableRowClickEventArgs<DeviceModel> e)
+    private void GoToDetails(DeviceModel item)
     {
-        navigationManager.NavigateTo($"/device-models/{e.Item.ModelId}{((e.Item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
+        navigationManager.NavigateTo($"/device-models/{item.ModelId}{((item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
     }
 }

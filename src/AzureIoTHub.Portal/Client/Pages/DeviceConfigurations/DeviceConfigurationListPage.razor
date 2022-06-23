@@ -9,7 +9,7 @@
 
 <MudGrid>
     <MudItem xs="12">
-        <MudTable T="ConfigListItem" id="device-configurations-listing" Items=@result Loading="IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true  OnRowClick="OnRowClick">
+        <MudTable T="ConfigListItem" id="device-configurations-listing" Items=@result Loading="IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true  OnRowClick="@((e) => GoToDetails(e.Item))">
             <ColGroup>
                 <col style="width: 20%;" />
                 <col style="width: 20%;" />
@@ -52,7 +52,7 @@
                 <MudTd DataLabel="Priority" Style="text-align: center">@context.Priority</MudTd>
                 <MudTd DataLabel="Creation date" Style="text-align: center;">@context.CreationDate</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
-                    <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" />
+                    <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
                 </MudTd>
             </RowTemplate>
             <NoRecordsContent>
@@ -105,8 +105,8 @@
     }
 
 
-    private void OnRowClick(TableRowClickEventArgs<ConfigListItem> e)
+    private void GoToDetails(ConfigListItem item)
     {
-        navigationManager.NavigateTo($"/device-configurations/{e.Item.ConfigurationID}");
+        navigationManager.NavigateTo($"/device-configurations/{item.ConfigurationID}");
     }
 }
