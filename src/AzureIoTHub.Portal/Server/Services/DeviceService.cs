@@ -460,5 +460,101 @@ namespace AzureIoTHub.Portal.Server.Services
 
             return logs.OrderByDescending(log => log.TimeStamp);
         }
+
+        public async Task<int> GetDevicesCount()
+        {
+            try
+            {
+                var count = await this.registryManager
+                    .CreateQuery("SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != 'LoRa Concentrator')")
+                    .GetNextAsJsonAsync();
+
+                return !JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result) ? 0 : result.Value<int>();
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to get devices count", e);
+            }
+        }
+
+        public async Task<int> GetConnectedDevicesCount()
+        {
+            try
+            {
+                var count = await this.registryManager
+                    .CreateQuery("SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND connectionState = 'Connected' AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != 'LoRa Concentrator')")
+                    .GetNextAsJsonAsync();
+
+                return !JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result) ? 0 : result.Value<int>();
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to get connected devices count", e);
+            }
+        }
+
+        public async Task<int> GetEdgeDevicesCount()
+        {
+            try
+            {
+                var count = await this.registryManager
+                    .CreateQuery("SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true")
+                    .GetNextAsJsonAsync();
+
+                return !JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result) ? 0 : result.Value<int>();
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to get edge devices count", e);
+            }
+        }
+
+        public async Task<int> GetConnectedEdgeDevicesCount()
+        {
+            try
+            {
+                var count = await this.registryManager
+                    .CreateQuery("SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true AND connectionState = 'Connected'")
+                    .GetNextAsJsonAsync();
+
+                return !JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result) ? 0 : result.Value<int>();
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to get connected edge devices count", e);
+            }
+        }
+
+        public async Task<int> GetConcentratorsCount()
+        {
+            try
+            {
+                var count = await this.registryManager
+                    .CreateQuery("SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND devices.tags.deviceType = 'LoRa Concentrator'")
+                    .GetNextAsJsonAsync();
+
+                return !JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result) ? 0 : result.Value<int>();
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to get connected LoRaWAN concentrators count", e);
+            }
+        }
+
+        public async Task<int> GetConnectedConcentratorsCount()
+        {
+            try
+            {
+                var count = await this.registryManager
+                    .CreateQuery("SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND devices.tags.deviceType = 'LoRa Concentrator' AND connectionState = 'Connected'")
+                    .GetNextAsJsonAsync();
+
+                return !JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result) ? 0 : result.Value<int>();
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to get connected LoRaWAN concentrators count", e);
+            }
+        }
     }
 }

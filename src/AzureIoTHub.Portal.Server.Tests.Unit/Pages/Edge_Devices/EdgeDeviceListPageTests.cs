@@ -170,12 +170,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
                         new()
                         {
                             DeviceId = deviceId,
-                        }
+                        },
+                        new()
                     }
                 });
 
             var cut = RenderComponent<EdgeDeviceListPage>();
-            _ = cut.WaitForElements("table tbody tr");
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(2));
 
             // Act
             cut.Find("table tbody tr").Click();

@@ -1225,5 +1225,305 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task GetDevicesCountShouldReturnDevicesCount()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 1}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != 'LoRa Concentrator')")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetDevicesCount();
+
+            // Assert
+            _ = result.Should().Be(1);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetDevicesCountShouldInternalServerErrorExceptionWhenIssueOccursOnGettingDevicesCount()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ThrowsAsync(new Exception("test"));
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != 'LoRa Concentrator')")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var act = () => service.GetDevicesCount();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetConnectedDevicesCountCountShouldReturnConnectedDevicesCount()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 1}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND connectionState = 'Connected' AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != 'LoRa Concentrator')")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetConnectedDevicesCount();
+
+            // Assert
+            _ = result.Should().Be(1);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetConnectedDevicesCountShouldInternalServerErrorExceptionWhenIssueOccursOnGettingConnectedDevicesCount()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ThrowsAsync(new Exception("test"));
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND connectionState = 'Connected' AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != 'LoRa Concentrator')")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var act = () => service.GetConnectedDevicesCount();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetEdgeDevicesCountCountShouldReturnEdgeDevicesCount()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 1}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetEdgeDevicesCount();
+
+            // Assert
+            _ = result.Should().Be(1);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetEdgeDevicesCountShouldInternalServerErrorExceptionWhenIssueOccursOnGettingEdgeDevicesCount()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ThrowsAsync(new Exception("test"));
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var act = () => service.GetEdgeDevicesCount();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetConnectedEdgeDevicesCountCountShouldReturnConnectedEdgeDevicesCount()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 1}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true AND connectionState = 'Connected'")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetConnectedEdgeDevicesCount();
+
+            // Assert
+            _ = result.Should().Be(1);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetConnectedEdgeDevicesCountShouldInternalServerErrorExceptionWhenIssueOccursOnGettingConnectedEdgeDevicesCount()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ThrowsAsync(new Exception("test"));
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true AND connectionState = 'Connected'")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var act = () => service.GetConnectedEdgeDevicesCount();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetConcentratorsCountShouldReturnConcentratorsCount()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 1}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND devices.tags.deviceType = 'LoRa Concentrator'")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetConcentratorsCount();
+
+            // Assert
+            _ = result.Should().Be(1);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetConcentratorsCountShouldInternalServerErrorExceptionWhenIssueOccursOnGettingConcentratorsCount()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ThrowsAsync(new Exception("test"));
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND devices.tags.deviceType = 'LoRa Concentrator'")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var act = () => service.GetConcentratorsCount();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetConnectedConcentratorsCountShouldReturnConnectedConcentratorsCount()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 1}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND devices.tags.deviceType = 'LoRa Concentrator' AND connectionState = 'Connected'")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetConnectedConcentratorsCount();
+
+            // Assert
+            _ = result.Should().Be(1);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetConnectedConcentratorsCountShouldInternalServerErrorExceptionWhenIssueOccursOnGettingConnectedConcentratorsCount()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ThrowsAsync(new Exception("test"));
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                    It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND devices.tags.deviceType = 'LoRa Concentrator' AND connectionState = 'Connected'")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var act = () => service.GetConnectedConcentratorsCount();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
     }
 }

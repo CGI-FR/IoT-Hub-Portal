@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
+    using FluentAssertions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -112,7 +113,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
             Assert.IsNotNull(cut.Markup);
             Assert.AreEqual("Tags", cut.Find(".mud-typography-h6").TextContent);
             Assert.IsNotNull(grid.InnerHtml);
-            Assert.AreEqual(3, cut.FindAll("tr").Count);
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            Assert.AreEqual(1, cut.FindAll("table tbody tr").Count);
             Assert.IsNotNull(cut.Find(".mud-table-container"));
 
             // Assert
@@ -172,10 +174,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
 
             var cut = RenderComponent<DeviceTagsPage>();
             cut.WaitForAssertion(() => cut.Find("#saveButton"));
-            var saveButton = cut.Find("#saveButton");
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
             // Act
-            saveButton.Click();
+            cut.Find("#saveButton").Click();
 
             cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
             cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
