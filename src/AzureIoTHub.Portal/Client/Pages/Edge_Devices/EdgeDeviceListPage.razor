@@ -47,7 +47,7 @@
         </MudExpansionPanels>
     </MudItem>
     <MudItem xs="12">
-        <MudTable T="IoTEdgeListItem" ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))">
+        <MudTable T="IoTEdgeListItem" ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
             <ColGroup>
                 <col style="width: 40%;" />
                 <col style="width: 10%;" />

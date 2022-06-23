@@ -24,7 +24,7 @@
     else
     {
         <MudItem xs="12">
-            <MudTable T="DeviceModel" Items="@result" Loading="@IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))">
+            <MudTable T="DeviceModel" Items="@result" Loading="@IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
                 <ColGroup>
                     <col style="width: 5%;" />
                     <col style="width: 30%;" />
