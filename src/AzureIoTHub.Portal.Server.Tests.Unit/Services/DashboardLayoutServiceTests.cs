@@ -17,14 +17,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         {
             // Arrange
             var receivedEvents = new List<string>();
-            var layoutService = new DashboardLayoutService();
-            layoutService.RefreshDashboardOccurred += (sender, _) =>
+            var dashboardLayoutService = new DashboardLayoutService();
+            dashboardLayoutService.RefreshDashboardOccurred += (sender, _) =>
             {
                 receivedEvents.Add(sender?.GetType().ToString());
             };
 
             // Act
-            layoutService.RefreshDashboard();
+            dashboardLayoutService.RefreshDashboard();
 
             // Assert
             _ = receivedEvents.Count.Should().Be(1);
