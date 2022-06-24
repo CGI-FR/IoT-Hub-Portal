@@ -271,9 +271,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             saveButton.Click();
 
             // Assert
-            cut.WaitForState(() => !this.mockNavigationManager.Uri.EndsWith("devices", StringComparison.OrdinalIgnoreCase));
-
+            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().NotEndWith("devices"));
             cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
             cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
