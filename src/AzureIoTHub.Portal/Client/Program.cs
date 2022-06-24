@@ -7,15 +7,16 @@ namespace AzureIoTHub.Portal.Client
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Client.Services;
+    using Services;
     using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Settings;
+    using Settings;
     using Blazored.LocalStorage;
     using Blazored.Modal;
     using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
     using Handlers;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.DependencyInjection;
+    using MudBlazor;
     using MudBlazor.Services;
     using Tewr.Blazor.FileReader;
 
@@ -43,7 +44,11 @@ namespace AzureIoTHub.Portal.Client
 
             _ = builder.Services.AddBlazoredLocalStorage();
             _ = builder.Services.AddBlazoredModal();
-            _ = builder.Services.AddMudServices();
+            _ = builder.Services.AddMudServices(config =>
+            {
+                config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
+                config.SnackbarConfiguration.PreventDuplicates = false;
+            });
 
             _ = builder.Services.AddScoped<ILayoutService, LayoutService>();
             _ = builder.Services.AddScoped<IDashboardLayoutService, DashboardLayoutService>();
