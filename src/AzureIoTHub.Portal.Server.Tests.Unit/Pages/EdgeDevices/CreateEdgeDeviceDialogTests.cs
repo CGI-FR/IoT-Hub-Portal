@@ -1,11 +1,10 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 {
     using System;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Client.Pages.Edge_Devices;
     using Models.v10;
     using Bunit;
     using Client.Services;
@@ -19,6 +18,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
 
     [TestFixture]
     public class CreateEdgeDeviceDialogTests : TestContextWrapper, IDisposable

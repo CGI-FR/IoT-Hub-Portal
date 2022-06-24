@@ -1,21 +1,20 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 {
     using System;
     using System.Net.Http;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.Devices;
     using AzureIoTHub.Portal.Models.v10;
-using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
+    using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Exceptions;
     using Client.Models;
     using FluentAssertions;
-    using FluentAssertions.Extensions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -28,11 +27,8 @@ using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
     [TestFixture]
     public class DevicesListPageTests : IDisposable
     {
-#pragma warning disable CA2213 // Disposable fields should be disposed
         private Bunit.TestContext testContext;
         private MockHttpMessageHandler mockHttpClient;
-#pragma warning restore CA2213 // Disposable fields should be disposed
-
         private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
 
@@ -111,24 +107,25 @@ using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
                 .When(HttpMethod.Get, this.apiTagsBaseUrl)
                 .RespondJson(Array.Empty<object>());
 
-            var cut = RenderComponent<DeviceListPage>();
-
-            cut.Find("#searchID").NodeValue = Guid.NewGuid().ToString();
-            cut.Find("#searchStatusEnabled").Click();
-            cut.Find("#searchStateDisconnected").Click();
 
             // Act
-            cut.Find("#resetSearch").Click();
+            var cut = RenderComponent<DeviceListPage>();
+
+            cut.WaitForElement("#searchID").NodeValue = Guid.NewGuid().ToString();
+            cut.WaitForElement("#searchStatusEnabled").Click();
+            cut.WaitForElement("#searchStateDisconnected").Click();
+
+            cut.WaitForElement("#resetSearch").Click();
             await Task.Delay(100);
 
             // Assert
-            Assert.IsNull(cut.Find("#searchID").NodeValue);
-            Assert.AreEqual("false", cut.Find("#searchStatusEnabled").Attributes["aria-checked"].Value);
-            Assert.AreEqual("false", cut.Find("#searchStateDisconnected").Attributes["aria-checked"].Value);
-            Assert.AreEqual("true", cut.Find("#searchStatusAll").Attributes["aria-checked"].Value);
-            Assert.AreEqual("true", cut.Find("#searchStateAll").Attributes["aria-checked"].Value);
+            cut.WaitForAssertion(() => Assert.IsNull(cut.Find("#searchID").NodeValue));
+            cut.WaitForAssertion(() => Assert.AreEqual("false", cut.Find("#searchStatusEnabled").Attributes["aria-checked"].Value));
+            cut.WaitForAssertion(() => Assert.AreEqual("false", cut.Find("#searchStateDisconnected").Attributes["aria-checked"].Value));
+            cut.WaitForAssertion(() => Assert.AreEqual("true", cut.Find("#searchStatusAll").Attributes["aria-checked"].Value));
+            cut.WaitForAssertion(() => Assert.AreEqual("true", cut.Find("#searchStateAll").Attributes["aria-checked"].Value));
 
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -150,14 +147,15 @@ using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
 
             var mockNavigationManager = this.testContext.Services.GetRequiredService<FakeNavigationManager>();
 
-            var cut = RenderComponent<DeviceListPage>();
 
             // Act
+            var cut = RenderComponent<DeviceListPage>();
+
             cut.WaitForElement("#addDeviceButton").Click();
             cut.WaitForAssertion(() => string.Equals("http://localhost/devices/new", mockNavigationManager.Uri, StringComparison.OrdinalIgnoreCase));
 
             // Assert
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -177,21 +175,21 @@ using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
                 .When(HttpMethod.Get, this.apiTagsBaseUrl)
                 .RespondJson(Array.Empty<object>());
 
-            var cut = RenderComponent<DeviceListPage>();
-            cut.WaitForAssertion(() => cut.Find("#tableRefreshButton"), 1.Seconds());
 
             // Act
+            var cut = RenderComponent<DeviceListPage>();
+            cut.WaitForAssertion(() => cut.Find("#tableRefreshButton"));
+
             for (var i = 0; i < 3; i++)
             {
-                cut.Find("#tableRefreshButton")
-                        .Click();
+                cut.Find("#tableRefreshButton").Click();
                 await Task.Delay(100);
             }
 
             // Assert
             var matchCount = this.mockHttpClient.GetMatchCount(apiCall);
             Assert.AreEqual(4, matchCount);
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -273,8 +271,10 @@ using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
             var cut = RenderComponent<DeviceListPage>();
 
             // Assert
-            _ = cut.Markup.Should().NotBeNullOrEmpty();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotBeNullOrEmpty());
+            cut.WaitForAssertion(() => cut.FindAll("tr").Count.Should().Be(2));
+
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [Test]
@@ -295,8 +295,10 @@ using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
             var cut = RenderComponent<DeviceListPage>();
 
             // Assert
-            _ = cut.Markup.Should().NotBeNullOrEmpty();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotBeNullOrEmpty());
+            cut.WaitForAssertion(() => cut.FindAll("tr").Count.Should().Be(2));
+
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         public void Dispose()

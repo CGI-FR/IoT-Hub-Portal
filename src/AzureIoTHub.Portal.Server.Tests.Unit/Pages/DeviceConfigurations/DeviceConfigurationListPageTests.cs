@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
+    using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Exceptions;
@@ -113,7 +113,7 @@ using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
             cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
 
             // Assert
-            cut.WaitForAssertion(() => this.TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/device-configurations/{configurationId}"));
+            cut.WaitForAssertion(() => TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/device-configurations/{configurationId}"));
         }
 
         public void Dispose()

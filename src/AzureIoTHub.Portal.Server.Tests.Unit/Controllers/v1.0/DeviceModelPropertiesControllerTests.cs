@@ -55,7 +55,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var mockResponse = this.mockRepository.Create<Response>();
 
             _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
-                    It.Is<string>(x => x == $"PartitionKey eq '{ entity.RowKey }'"),
+                    It.Is<string>(x => x == $"PartitionKey eq '{entity.RowKey}'"),
                     It.IsAny<int?>(),
                     It.IsAny<IEnumerable<string>>(),
                     It.IsAny<CancellationToken>()))
@@ -184,7 +184,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             };
 
             _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
-                    It.Is<string>(x => x == $"PartitionKey eq '{ entity.RowKey }'"),
+                    It.Is<string>(x => x == $"PartitionKey eq '{entity.RowKey}'"),
                     It.IsAny<int?>(),
                     It.IsAny<IEnumerable<string>>(),
                     It.IsAny<CancellationToken>()))

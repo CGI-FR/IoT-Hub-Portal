@@ -1,12 +1,11 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 {
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-    using System.Threading;
     using AzureIoTHub.Portal.Client.Pages.Devices;
     using AzureIoTHub.Portal.Client.Shared;
     using AzureIoTHub.Portal.Models.v10;
@@ -16,6 +15,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using Client.Exceptions;
     using Client.Models;
     using FluentAssertions;
+    using FluentAssertions.Extensions;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -96,10 +96,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                 .When(HttpMethod.Get, $"/api/settings/device-tags")
                 .RespondJson(new List<DeviceTag>());
 
+
+            // Act
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", deviceId));
             var returnButton = cut.WaitForElement("#returnButton");
 
-            // Act
             returnButton.Click();
 
             // Assert
@@ -135,7 +136,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
                     {mockTag.Name,Guid.NewGuid().ToString()}
                 }
             };
-
 
             _ = this.mockHttpClient.When(HttpMethod.Put, $"{ApiBaseUrl}")
                 .With(m =>
@@ -174,28 +174,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/{mockDeviceDetails.DeviceID}/properties")
                 .RespondText(string.Empty);
 
-            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
-            Thread.Sleep(2500);
-
-            var saveButton = cut.WaitForElement("#saveButton");
-
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
-
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns((Snackbar)null);
 
             // Act
+            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModel.Name)}>b").InnerHtml.Should().NotBeEmpty());
+
+            var saveButton = cut.WaitForElement("#saveButton");
             saveButton.Click();
-            Thread.Sleep(2500);
 
             // Assert            
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("devices", StringComparison.OrdinalIgnoreCase));
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("devices", StringComparison.OrdinalIgnoreCase), 3.Seconds());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -263,26 +259,22 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/{mockDeviceDetails.DeviceID}/properties")
                 .RespondJson(Array.Empty<DeviceProperty>());
 
-            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
-            Thread.Sleep(2500);
-
-            var saveButton = cut.WaitForElement("#saveButton");
-
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
-
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
             // Act
+            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
+
+            var saveButton = cut.WaitForElement("#saveButton");
             saveButton.Click();
-            Thread.Sleep(2500);
 
             // Assert
-            _ = this.mockNavigationManager.Uri.Should().NotEndWith("/devices");
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().NotEndWith("devices"));
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -353,28 +345,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/{mockDeviceDetails.DeviceID}/properties")
                 .RespondText(string.Empty);
 
-            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
-            Thread.Sleep(2500);
-
-            cut.Find($"#{nameof(DeviceDetails.DeviceName)}").Change("");
-            var saveButton = cut.WaitForElement("#saveButton");
-
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
-
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
-            _ = this.mockSnackbarService.Setup(c => c.Add("One or more validation errors occurred", Severity.Error, null)).Returns((Snackbar)null);
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, null)).Returns((Snackbar)null);
 
             // Act
+            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
+
+            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change("");
+            var saveButton = cut.WaitForElement("#saveButton");
             saveButton.Click();
-            Thread.Sleep(2500);
 
             // Assert            
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -422,17 +409,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/{mockDeviceDetails.DeviceID}/properties")
                 .RespondJson(Array.Empty<DeviceProperty>());
 
-            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
-            cut.WaitForAssertion(() => cut.Find("#connectButton"));
-
-            var connectButton = cut.Find("#connectButton");
-
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
             _ = this.mockDialogService.Setup(c => c.Show<ConnectionStringDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
 
             // Act
+            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
+
+            var connectButton = cut.WaitForElement("#connectButton");
             connectButton.Click();
 
             // Assert
@@ -486,23 +470,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/{mockDeviceDetails.DeviceID}/properties")
                 .RespondJson(Array.Empty<DeviceProperty>());
 
-            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
-            Thread.Sleep(2500);
-
-            var deleteButton = cut.WaitForElement("#deleteButton");
-
             var mockDialogReference = this.mockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
-
             _ = this.mockDialogService.Setup(c => c.Show<DeleteDevicePage>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference.Object);
 
             // Act
+            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
+
+            var deleteButton = cut.WaitForElement("#deleteButton");
             deleteButton.Click();
 
             // Assert            
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         [Test]
@@ -550,25 +531,22 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/{mockDeviceDetails.DeviceID}/properties")
                 .RespondJson(Array.Empty<DeviceProperty>());
 
-            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
-            Thread.Sleep(2500);
-
-            var deleteButton = cut.WaitForElement("#deleteButton");
-
             var mockDialogReference = this.mockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
-
             _ = this.mockDialogService.Setup(c => c.Show<DeleteDevicePage>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference.Object);
 
             // Act
+            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
+
+            var deleteButton = cut.WaitForElement("#deleteButton");
             deleteButton.Click();
 
             // Assert            
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
-            this.mockRepository.VerifyAll();
-
             cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/devices", StringComparison.OrdinalIgnoreCase));
+
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
 
         public void Dispose()

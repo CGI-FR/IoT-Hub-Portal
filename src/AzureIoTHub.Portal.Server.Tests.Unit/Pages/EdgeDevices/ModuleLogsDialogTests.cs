@@ -1,12 +1,12 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Client.Pages.Edge_Devices;
+    using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
     using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Models.v10;
     using Bunit;
@@ -22,12 +22,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
     using NUnit.Framework;
 
     [TestFixture]
-    public class ModuleLogsDialogTests
+    public class ModuleLogsDialogTests : IDisposable
     {
 
-#pragma warning disable CA2213 // Disposable fields should be disposed
         private Bunit.TestContext testContext;
-#pragma warning restore CA2213 // Disposable fields should be disposed
 
         private MockRepository mockRepository;
         private Mock<IEdgeDeviceClientService> edgeDeviceClientServiceMock;
@@ -175,6 +173,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
 
             // Assert
             _ = result.Cancelled.Should().BeTrue();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
         }
     }
 }

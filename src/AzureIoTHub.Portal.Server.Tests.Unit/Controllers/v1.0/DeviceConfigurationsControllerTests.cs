@@ -55,7 +55,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task GetConfigurationsStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var deviceConfigurationsController = CreateDeviceConfigurationsController();
             _ = this.mockConfigService.Setup(c => c.GetDevicesConfigurations())
                 .ReturnsAsync(new List<Configuration>
                 {
@@ -75,7 +75,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task GetConfigurationStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var deviceConfigurationsController = CreateDeviceConfigurationsController();
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
@@ -115,7 +115,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task GetConfigurationShouldReturnProperlyTheProperties()
         {
             // Arrange
-            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var deviceConfigurationsController = CreateDeviceConfigurationsController();
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
@@ -165,7 +165,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task WhenTargetConditionMalFormedShouldReturnBadRequest(string targetCondition, string errorMessage)
         {
             // Arrange
-            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var deviceConfigurationsController = CreateDeviceConfigurationsController();
             var configurationId = Guid.NewGuid().ToString();
 
             _ = this.mockConfigService.Setup(c => c.GetConfigItem(configurationId))
@@ -193,7 +193,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task CreateConfigStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var deviceConfigurationsController = CreateDeviceConfigurationsController();
 
             var deviceConfig = new DeviceConfig
             {
@@ -212,7 +212,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var mockResponse = this.mockRepository.Create<Response>();
 
             _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.Query<DeviceModelProperty>(
-                    It.Is<string>(x => x == $"PartitionKey eq '{ deviceConfig.ModelId }'"),
+                    It.Is<string>(x => x == $"PartitionKey eq '{deviceConfig.ModelId}'"),
                     It.IsAny<int?>(),
                     It.IsAny<IEnumerable<string>>(),
                     It.IsAny<CancellationToken>()))
@@ -242,7 +242,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task CreateConfigShouldThrowInternalServerErrorExceptionOnGettingDeviceModelProperties()
         {
             // Arrange
-            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var deviceConfigurationsController = CreateDeviceConfigurationsController();
 
             var deviceConfig = new DeviceConfig
             {
@@ -272,7 +272,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task UpdateConfigStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var deviceConfigurationsController = CreateDeviceConfigurationsController();
 
             var deviceConfig = new DeviceConfig
             {
@@ -291,7 +291,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var mockResponse = this.mockRepository.Create<Response>();
 
             _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.Query<DeviceModelProperty>(
-                    It.Is<string>(x => x == $"PartitionKey eq '{ deviceConfig.ModelId }'"),
+                    It.Is<string>(x => x == $"PartitionKey eq '{deviceConfig.ModelId}'"),
                     It.IsAny<int?>(),
                     It.IsAny<IEnumerable<string>>(),
                     It.IsAny<CancellationToken>()))
@@ -321,7 +321,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task UpdateConfigShouldThrowInternalServerErrorExceptionOnGettingDeviceModelProperties()
         {
             // Arrange
-            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var deviceConfigurationsController = CreateDeviceConfigurationsController();
 
             var deviceConfig = new DeviceConfig
             {
@@ -351,7 +351,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task DeleteConfigStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var deviceConfigurationsController = CreateDeviceConfigurationsController();
             var deviceConfigId =  Guid.NewGuid().ToString();
 
             _ = this.mockConfigService.Setup(c =>
@@ -370,7 +370,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task GetConfigurationMetricsStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var deviceConfigurationsController = CreateDeviceConfigurationsController();
 
             var deviceConfig = new DeviceConfig
             {
@@ -420,7 +420,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task UpdateConfigShouldUpdatePropertyInValueType(DevicePropertyType propertyType, string propertyValue, object expected)
         {
             // Arrange
-            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var deviceConfigurationsController = CreateDeviceConfigurationsController();
             var propertyName = Guid.NewGuid().ToString();
 
             var deviceConfig = new DeviceConfig
@@ -446,7 +446,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var mockResponse = this.mockRepository.Create<Response>();
 
             _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.Query<DeviceModelProperty>(
-                    It.Is<string>(x => x == $"PartitionKey eq '{ deviceConfig.ModelId }'"),
+                    It.Is<string>(x => x == $"PartitionKey eq '{deviceConfig.ModelId}'"),
                     It.IsAny<int?>(),
                     It.IsAny<IEnumerable<string>>(),
                     It.IsAny<CancellationToken>()))
@@ -491,7 +491,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task CreateConfigShouldUpdatePropertyInValueType(DevicePropertyType propertyType, string propertyValue, object expected)
         {
             // Arrange
-            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var deviceConfigurationsController = CreateDeviceConfigurationsController();
             var propertyName = Guid.NewGuid().ToString();
 
             var deviceConfig = new DeviceConfig
@@ -517,7 +517,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var mockResponse = this.mockRepository.Create<Response>();
 
             _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.Query<DeviceModelProperty>(
-                    It.Is<string>(x => x == $"PartitionKey eq '{ deviceConfig.ModelId }'"),
+                    It.Is<string>(x => x == $"PartitionKey eq '{deviceConfig.ModelId}'"),
                     It.IsAny<int?>(),
                     It.IsAny<IEnumerable<string>>(),
                     It.IsAny<CancellationToken>()))
@@ -552,7 +552,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task WhenPropertyNotPresentInModelUpdateConfigShouldNotUpdateTheProperty()
         {
             // Arrange
-            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var deviceConfigurationsController = CreateDeviceConfigurationsController();
             var propertyName = Guid.NewGuid().ToString();
 
             var deviceConfig = new DeviceConfig
@@ -579,7 +579,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var mockResponse = this.mockRepository.Create<Response>();
 
             _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.Query<DeviceModelProperty>(
-                    It.Is<string>(x => x == $"PartitionKey eq '{ deviceConfig.ModelId }'"),
+                    It.Is<string>(x => x == $"PartitionKey eq '{deviceConfig.ModelId}'"),
                     It.IsAny<int?>(),
                     It.IsAny<IEnumerable<string>>(),
                     It.IsAny<CancellationToken>()))
@@ -615,7 +615,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task WhenPropertyNotPresentInModelCreateConfigShouldNotUpdateTheProperty()
         {
             // Arrange
-            var deviceConfigurationsController = this.CreateDeviceConfigurationsController();
+            var deviceConfigurationsController = CreateDeviceConfigurationsController();
             var propertyName = Guid.NewGuid().ToString();
 
             var deviceConfig = new DeviceConfig
@@ -642,7 +642,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var mockResponse = this.mockRepository.Create<Response>();
 
             _ = this.mockDeviceModelPropertiesTableClient.Setup(c => c.Query<DeviceModelProperty>(
-                    It.Is<string>(x => x == $"PartitionKey eq '{ deviceConfig.ModelId }'"),
+                    It.Is<string>(x => x == $"PartitionKey eq '{deviceConfig.ModelId}'"),
                     It.IsAny<int?>(),
                     It.IsAny<IEnumerable<string>>(),
                     It.IsAny<CancellationToken>()))

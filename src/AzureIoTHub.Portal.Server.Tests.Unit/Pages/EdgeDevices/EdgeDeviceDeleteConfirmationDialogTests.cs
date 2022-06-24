@@ -1,35 +1,31 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 {
     using System;
+    using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Client.Pages.Edge_Devices;
     using Models.v10;
     using Bunit;
     using Client.Exceptions;
     using Client.Models;
-    using Client.Services;
     using FluentAssertions;
     using Helpers;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.JSInterop;
-    using Moq;
     using MudBlazor;
     using MudBlazor.Interop;
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
 
     [TestFixture]
-    public class ConnectionStringDialogTests : TestContextWrapper, IDisposable
+    public class EdgeDeviceDeleteConfirmationDialogTests : TestContextWrapper, IDisposable
     {
         private MockHttpMessageHandler mockHttpClient;
         private DialogService dialogService;
-        private MockRepository mockRepository;
-        private Mock<IJSRuntime> mockJSRuntime;
 
         [SetUp]
         public void Setup()
@@ -39,15 +35,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
             this.mockHttpClient = TestContext.Services.AddMockHttpClient();
             _ = TestContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockJSRuntime = this.mockRepository.Create<IJSRuntime>();
-            _ = TestContext.Services.AddSingleton(new ClipboardService(this.mockJSRuntime.Object));
-
             this.mockHttpClient.AutoFlush = true;
 
             _ = TestContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
             _ = TestContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            _ = TestContext.JSInterop.SetupVoid("mudElementRef.saveFocus", _ => true);
 
             this.dialogService = TestContext.Services.GetService<IDialogService>() as DialogService;
         }
@@ -66,42 +57,43 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
         }
 
         [Test]
-        public async Task ConnectionStringDialogMustShowEnrollmentCredentials()
+        public async Task EdgeDeviceDeleteConfirmationDialogMustDeleteDevice()
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/credentials")
-                .RespondJson(new EnrollmentCredentials());
+                .When(HttpMethod.Delete, $"/api/edge/devices/{deviceId}")
+                .Respond(HttpStatusCode.NoContent);
 
             var cut = RenderComponent<MudDialogProvider>();
 
             var parameters = new DialogParameters
             {
                 {
-                    "deviceId", deviceId
+                    "DeviceId", deviceId
                 }
             };
 
+            IDialogReference dialogReference = null;
+
             // Act
-            await cut.InvokeAsync(() => this.dialogService?.Show<ConnectionStringDialog>(string.Empty, parameters));
-            _ = cut.WaitForElement("div.mud-paper");
+            await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<EdgeDeviceDeleteConfirmationDialog>(string.Empty, parameters));
+            cut.Find("#delete").Click();
+            var result = await dialogReference.GetReturnValueAsync<bool>();
 
             // Assert
-            _ = cut.FindAll("div.mud-grid-item").Count.Should().Be(4);
-            this.mockHttpClient.VerifyNoOutstandingRequest();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            _ = result.Should().BeTrue();
         }
 
         [Test]
-        public async Task ConnectionStringDialogMustBeCancelledWhenProblemDetailsOccurs()
+        public async Task EdgeDeviceDeleteConfirmationDialogShouldProcessProblemDetailsExceptionWhenIssueOccursWhenDeletingDevice()
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/credentials")
+                .When(HttpMethod.Delete, $"/api/edge/devices/{deviceId}")
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<MudDialogProvider>();
@@ -109,52 +101,46 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
             var parameters = new DialogParameters
             {
                 {
-                    "deviceId", deviceId
+                    "DeviceId", deviceId
                 }
             };
 
-            IDialogReference dialogReference = null;
-
             // Act
-            await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<ConnectionStringDialog>(string.Empty, parameters));
-            var result = await dialogReference.Result;
+            await cut.InvokeAsync(() => this.dialogService?.Show<EdgeDeviceDeleteConfirmationDialog>(string.Empty, parameters));
+            cut.Find("#delete").Click();
 
             // Assert
-            _ = result.Cancelled.Should().BeTrue();
-            this.mockHttpClient.VerifyNoOutstandingRequest();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            _ = cut.Find("#delete").TextContent.Should().Be("Delete");
         }
 
         [Test]
-        public async Task ConnectionStringDialogMustBeCancelledOnClickOnCancel()
+        public async Task EdgeDeviceDeleteConfirmationDialogMustBeCanceledOnClickOnCancel()
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"api/devices/{deviceId}/credentials")
-                .RespondJson(new EnrollmentCredentials());
+                .When(HttpMethod.Delete, $"/api/edge/devices/{deviceId}")
+                .Respond(HttpStatusCode.NoContent);
 
             var cut = RenderComponent<MudDialogProvider>();
 
             var parameters = new DialogParameters
             {
                 {
-                    "deviceId", deviceId
+                    "DeviceId", deviceId
                 }
             };
 
             IDialogReference dialogReference = null;
 
             // Act
-            await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<ConnectionStringDialog>(string.Empty, parameters));
+            await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<EdgeDeviceDeleteConfirmationDialog>(string.Empty, parameters));
             cut.Find("#cancel").Click();
             var result = await dialogReference.Result;
 
             // Assert
             _ = result.Cancelled.Should().BeTrue();
-            this.mockHttpClient.VerifyNoOutstandingRequest();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
         }
     }
 }

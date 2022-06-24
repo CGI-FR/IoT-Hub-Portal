@@ -1,12 +1,11 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 {
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-    using AzureIoTHub.Portal.Client.Pages.Edge_Devices;
     using Models.v10;
     using Bunit;
     using Client.Exceptions;
@@ -21,9 +20,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Edge_Devices
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
-    using AzureIoTHub.Portal.Client.Pages.Configurations;
     using Bunit.TestDoubles;
-using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
+    using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
 
     [TestFixture]
     public class EdgeDeviceListPageTests : TestContextWrapper, IDisposable
@@ -183,7 +181,7 @@ using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
             cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
 
             // Assert
-            cut.WaitForAssertion(() => this.TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/edge/devices/{deviceId}"));
+            cut.WaitForAssertion(() => TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/edge/devices/{deviceId}"));
         }
     }
 }

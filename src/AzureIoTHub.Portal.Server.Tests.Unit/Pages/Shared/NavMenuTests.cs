@@ -23,11 +23,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
     using NUnit.Framework;
 
     [TestFixture]
-    public class NavMenuTests
+    public class NavMenuTests : IDisposable
     {
-#pragma warning disable CA2213 // Disposable fields should be disposed
         private Bunit.TestContext testContext;
-#pragma warning restore CA2213 // Disposable fields should be disposed
 
         private ILocalStorageService localStorageService;
 
@@ -242,6 +240,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
 
             // Assert
             cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith(path, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
         }
     }
 }

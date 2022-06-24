@@ -40,7 +40,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
         {
             // Arrange
             var expected = Guid.NewGuid().ToString();
-            var productionConfigHandler = this.CreateProductionConfigHandler();
+            var productionConfigHandler = CreateProductionConfigHandler();
             var mockConfigurationSection = this.mockRepository.Create<IConfigurationSection>();
 
             _ = this.mockConfiguration.Setup(c => c.GetSection(It.Is<string>(x => x == "ConnectionStrings")))
@@ -75,7 +75,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
         {
             // Arrange
             var expected = Guid.NewGuid().ToString();
-            var productionConfigHandler = this.CreateProductionConfigHandler();
+            var productionConfigHandler = CreateProductionConfigHandler();
 
             _ = this.mockConfiguration.SetupGet(c => c[It.Is<string>(x => x == configKey)])
                 .Returns(expected);
@@ -96,7 +96,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
         {
             // Arrange
             var expected = false;
-            var productionConfigHandler = this.CreateProductionConfigHandler();
+            var productionConfigHandler = CreateProductionConfigHandler();
 
             _ = this.mockConfiguration.SetupGet(c => c[It.Is<string>(x => x == configKey)])
                 .Returns(Convert.ToString(expected, CultureInfo.InvariantCulture));

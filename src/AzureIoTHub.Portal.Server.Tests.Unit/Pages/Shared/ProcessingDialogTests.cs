@@ -22,9 +22,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         public void SetUp()
         {
             this.testContext = new Bunit.TestContext();
-            testContext.JSInterop.Mode = JSRuntimeMode.Loose;
-            _ = testContext.Services.AddSingleton<IDialogService, DialogService>();
-            _ = testContext.Services.AddMudServices();
+            this.testContext.JSInterop.Mode = JSRuntimeMode.Loose;
+            _ = this.testContext.Services.AddSingleton<IDialogService, DialogService>();
+            _ = this.testContext.Services.AddMudServices();
         }
 
         [Test]
