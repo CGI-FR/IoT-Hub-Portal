@@ -1,0 +1,11 @@
+﻿@inject IDashboardLayoutService DashboardLayoutService
+
+<div class="d-flex mb-4">
+    <MudText Typo="Typo.h5" Color="Color.Primary">Dashboard</MudText>
+    <MudSpacer />
+    <MudTooltip Duration="1000" Text="Refresh Dashboard">
+        <MudIconButton id="refresh-dashboard" Icon="@Icons.Filled.Refresh" Color="Color.Inherit" OnClick="@DashboardLayoutService.RefreshDashboard"/>
+    </MudTooltip>
+</div>
+
+<DashboardMetrics />

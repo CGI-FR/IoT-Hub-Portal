@@ -1,0 +1,22 @@
+﻿<MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+    <MudIcon id="dashboard-metric-counter-icon" Icon="@Icon" Color="@Color" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+    <div>
+        <MudText id="dashboard-metric-counter-title" Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">@Title</MudText>
+        <MudText id="dashboard-metric-counter-value" Typo="Typo.h5">@Counter</MudText>
+    </div>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public int Counter { get; set; }
+
+    [Parameter]
+    public string Icon { get; set; }
+
+    [Parameter]
+    public Color Color { get; set; } = Color.Inherit;
+
+}

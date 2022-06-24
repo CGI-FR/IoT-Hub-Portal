@@ -1,14 +1,5 @@
 ﻿@page "/"
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-
-@inject NavigationManager NavManager
 
 @attribute [Authorize]
-@code {
-    protected override void OnInitialized()
-    {
-        // Go back to the list of device
-        NavManager.NavigateTo("devices");
-    }
-}
+
+<Dashboard />
