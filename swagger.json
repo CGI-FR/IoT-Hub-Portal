@@ -6,6 +6,35 @@
     "version": "1.0"
   },
   "paths": {
+    "/api/dashboard/metrics": {
+      "get": {
+        "tags": [
+          "Metrics"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalMetric"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalMetric"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalMetric"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/device-configurations": {
       "get": {
         "tags": [
@@ -4142,6 +4171,40 @@
         },
         "additionalProperties": false,
         "description": "LoRa Device model."
+      },
+      "PortalMetric": {
+        "type": "object",
+        "properties": {
+          "deviceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "connectedDeviceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "edgeDeviceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "connectedEdgeDeviceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "failedDeploymentCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "concentratorCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "connectedConcentratorCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
       },
       "PortalSettings": {
         "type": "object",
