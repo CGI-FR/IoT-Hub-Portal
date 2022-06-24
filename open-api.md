@@ -23,6 +23,45 @@ Available APIs for managing devices from Azure IoT Hub.
     Specify the authorization token got from your IDP as a header.
     > Ex: ``Authorization: Bearer * ***``
 
+<h1 id="azure-iot-hub-portal-api-metrics">Metrics</h1>
+
+## get__api_dashboard_metrics
+
+> Code samples
+
+`GET /api/dashboard/metrics`
+
+> Example responses
+
+> 200 Response
+
+```
+{"deviceCount":0,"connectedDeviceCount":0,"edgeDeviceCount":0,"connectedEdgeDeviceCount":0,"failedDeploymentCount":0,"concentratorCount":0,"connectedConcentratorCount":0}
+```
+
+```json
+{
+  "deviceCount": 0,
+  "connectedDeviceCount": 0,
+  "edgeDeviceCount": 0,
+  "connectedEdgeDeviceCount": 0,
+  "failedDeploymentCount": 0,
+  "concentratorCount": 0,
+  "connectedConcentratorCount": 0
+}
+```
+
+<h3 id="get__api_dashboard_metrics-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[PortalMetric](#schemaportalmetric)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
 <h1 id="azure-iot-hub-portal-api-iot-devices">IoT Devices</h1>
 
 ## GET Device configurations
@@ -4481,6 +4520,38 @@ LoRa Device model.
 |deduplication|None|
 |deduplication|Drop|
 |deduplication|Mark|
+
+<h2 id="tocS_PortalMetric">PortalMetric</h2>
+<!-- backwards compatibility -->
+<a id="schemaportalmetric"></a>
+<a id="schema_PortalMetric"></a>
+<a id="tocSportalmetric"></a>
+<a id="tocsportalmetric"></a>
+
+```json
+{
+  "deviceCount": 0,
+  "connectedDeviceCount": 0,
+  "edgeDeviceCount": 0,
+  "connectedEdgeDeviceCount": 0,
+  "failedDeploymentCount": 0,
+  "concentratorCount": 0,
+  "connectedConcentratorCount": 0
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deviceCount|integer(int32)|false|none|none|
+|connectedDeviceCount|integer(int32)|false|none|none|
+|edgeDeviceCount|integer(int32)|false|none|none|
+|connectedEdgeDeviceCount|integer(int32)|false|none|none|
+|failedDeploymentCount|integer(int32)|false|none|none|
+|concentratorCount|integer(int32)|false|none|none|
+|connectedConcentratorCount|integer(int32)|false|none|none|
 
 <h2 id="tocS_PortalSettings">PortalSettings</h2>
 <!-- backwards compatibility -->
