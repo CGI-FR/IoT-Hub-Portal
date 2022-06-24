@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 {
     using System;
     using System.Collections.Generic;
@@ -9,7 +9,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using System.Net.Mime;
     using System.Text;
     using System.Threading;
-    using AzureIoTHub.Portal.Client.Pages.Edge_Devices;
+    using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
     using AzureIoTHub.Portal.Client.Shared;
     using Bunit;
     using Bunit.TestDoubles;

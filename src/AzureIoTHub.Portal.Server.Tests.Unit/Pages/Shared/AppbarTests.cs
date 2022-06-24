@@ -11,7 +11,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
-    using Moq;
     using MudBlazor.Services;
     using NUnit.Framework;
 

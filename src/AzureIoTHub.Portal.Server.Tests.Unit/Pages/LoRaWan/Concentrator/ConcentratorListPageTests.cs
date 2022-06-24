@@ -6,9 +6,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-    using System.Threading;
     using AzureIoTHub.Portal.Client.Pages.LoRaWAN.Concentrator;
-    using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Exceptions;
@@ -131,7 +129,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
             cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
 
             // Assert
-            cut.WaitForAssertion(() => this.TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/lorawan/concentrators/{deviceId}"));
+            cut.WaitForAssertion(() => TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/lorawan/concentrators/{deviceId}"));
         }
 
         public void Dispose()
