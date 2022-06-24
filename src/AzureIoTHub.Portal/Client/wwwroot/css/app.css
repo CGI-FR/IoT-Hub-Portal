@@ -10,5 +10,5 @@
 
 .scrollable-tab-content {
     overflow-x: hidden;
-    height: 60vh;
+    height: calc(100vh - 270px);
 }
