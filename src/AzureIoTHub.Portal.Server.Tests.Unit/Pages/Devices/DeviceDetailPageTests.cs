@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 {
     using System;
     using System.Collections.Generic;
@@ -192,7 +192,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("devices", StringComparison.OrdinalIgnoreCase), 3.Seconds());
             cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
-
         }
 
         [Test]
