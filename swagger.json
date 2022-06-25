@@ -11,6 +11,7 @@
         "tags": [
           "Metrics"
         ],
+        "operationId": "Get Portal Metrics",
         "responses": {
           "200": {
             "description": "Success",

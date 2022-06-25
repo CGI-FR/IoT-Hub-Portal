@@ -25,7 +25,9 @@ Available APIs for managing devices from Azure IoT Hub.
 
 <h1 id="azure-iot-hub-portal-api-metrics">Metrics</h1>
 
-## get__api_dashboard_metrics
+## Get Portal Metrics
+
+<a id="opIdGet Portal Metrics"></a>
 
 > Code samples
 
@@ -51,7 +53,7 @@ Available APIs for managing devices from Azure IoT Hub.
 }
 ```
 
-<h3 id="get__api_dashboard_metrics-responses">Responses</h3>
+<h3 id="get-portal-metrics-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
