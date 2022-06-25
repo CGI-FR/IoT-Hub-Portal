@@ -21,7 +21,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0
             this.portalMetric = portalMetric;
         }
 
-        [HttpGet("metrics")]
+        [HttpGet("metrics", Name = "Get Portal Metrics")]
         public ActionResult<PortalMetric> GetPortalMetrics()
         {
             return this.portalMetric;
