@@ -8,34 +8,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
-    using MudBlazor.Services;
     using NUnit.Framework;
     using Portal.Shared.Models.v1._0;
     using Index = Client.Pages.Index;
 
     [TestFixture]
-    public class IndexTests : TestContextWrapper
+    public class IndexTests : BlazorUnitTest
     {
-        private MockRepository mockRepository;
         private Mock<IDashboardMetricsClientService> mockDashboardMetricsClientService;
-
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockDashboardMetricsClientService = this.mockRepository.Create<IDashboardMetricsClientService>();
+            base.Setup();
 
-            TestContext = new Bunit.TestContext();
-            _ = TestContext.Services.AddMudServices();
-            _ = TestContext.Services.AddScoped<IDashboardLayoutService, DashboardLayoutService>();
+            this.mockDashboardMetricsClientService = MockRepository.Create<IDashboardMetricsClientService>();
 
-            _ = TestContext.Services.AddSingleton(this.mockDashboardMetricsClientService.Object);
+            _ = Services.AddScoped<IDashboardLayoutService, DashboardLayoutService>();
 
-            TestContext.JSInterop.Mode = JSRuntimeMode.Loose;
+            _ = Services.AddSingleton(this.mockDashboardMetricsClientService.Object);
         }
-
-        [TearDown]
-        public void TearDown() => TestContext?.Dispose();
 
         [Test]
         public void IndexShouldRenderCorrectly()
@@ -54,7 +44,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages
             cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-title").Count.Should().Be(7));
             cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-value").Count.Should().Be(7));
 
-            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }
