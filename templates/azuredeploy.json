@@ -38,18 +38,21 @@
         },
         "edgeGatewayName": {
             "type": "string",
+            "defaultValue": "",
             "metadata": {
                 "description": "The name of the Edge gateway"
             }
         },
         "deployDevice": {
             "type": "bool",
+            "defaultValue": true,
             "metadata": {
                 "description": "Provision a final LoRa device in the IoT hub in addition to the gateway"
             }
         },
         "resetPin": {
             "type": "int",
+            "defaultValue": 0,
             "metadata": {
                 "description": "Provide the reset pin value of your gateway. Please refer to the doc if you are unfamiliar with the value"
             }
@@ -86,14 +89,23 @@
             "metadata": {
                 "description": "SPI Dev version for x86 based gateway"
             }
+        },
+        "isLoRaFeatureEnabled": {
+            "defaultValue": true,
+            "type": "bool",
+            "metadata": {
+                "description": "Enable LoRaWAN feature?"
+            }
         }
     },
     "variables": {
         "startKitDeploymentName": "lorawan-starter-kit",
-        "portalDeploymentName": "iothub-portal"
+        "portalWithLoRaDeploymentName": "iothub-portal-with-lora",
+        "portalWithoutLoRaDeploymentName": "iothub-portal-without-lora"
     },
     "resources": [
-        {
+                {
+            "condition": "[parameters('isLoRaFeatureEnabled')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
             "name": "[variables('startKitDeploymentName')]",
@@ -129,16 +141,50 @@
             }
         },
         {
+            "condition": "[parameters('isLoRaFeatureEnabled')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
-            "name": "[variables('portalDeploymentName')]",
+            "name": "[variables('portalWithLoRaDeploymentName')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', variables('startKitDeploymentName'))]"
             ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/CGI-FR/iot-hub-portal/main/templates/portalDeploy.json",
+                    "uri": "https://raw.githubusercontent.com/CGI-FR/IoT-Hub-Portal/main/templates/portalDeployWithLoRa.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[resourceGroup().location]"
+                    },
+                    "uniqueSolutionPrefix": {
+                        "value": "[parameters('uniqueSolutionPrefix')]"
+                    },
+                    "openIdAuthority": {
+                        "value": "[parameters('openIdAuthority')]"
+                    },
+                    "openIdMetadataURL": {
+                        "value": "[parameters('openIdMetadataURL')]"
+                    },
+                    "apiClientId": {
+                        "value": "[parameters('apiClientId')]"
+                    },
+                    "clientId": {
+                        "value": "[parameters('clientId')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[not(parameters('isLoRaFeatureEnabled'))]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "[variables('portalWithoutLoRaDeploymentName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/CGI-FR/IoT-Hub-Portal/main/templates/portalDeployWithoutLoRa.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
