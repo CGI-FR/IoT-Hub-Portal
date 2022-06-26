@@ -14,41 +14,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
     using Client.Services;
     using Client.Shared;
     using FluentAssertions;
-    using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
     using MudBlazor;
-    using MudBlazor.Interop;
-    using MudBlazor.Services;
     using NUnit.Framework;
 
     [TestFixture]
-    public class NavMenuTests : IDisposable
+    public class NavMenuTests : BlazorUnitTest
     {
-        private Bunit.TestContext testContext;
-
         private ILocalStorageService localStorageService;
 
-        [SetUp]
-        public void SetUp()
+        public override void Setup()
         {
-            this.testContext = new Bunit.TestContext();
+            base.Setup();
 
-            _ = this.testContext.Services.AddMudServices();
-            this.localStorageService = this.testContext.AddBlazoredLocalStorage();
-            _ = this.testContext.Services.AddScoped<ILayoutService, LayoutService>();
+            this.localStorageService = TestContext.AddBlazoredLocalStorage();
+            _ = Services.AddScoped<ILayoutService, LayoutService>();
 
-            var authContext = this.testContext.AddTestAuthorization();
-            _ = authContext.SetAuthorized(Guid.NewGuid().ToString());
-
-            _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
-            _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-        }
-
-        private IRenderedComponent<TComponent> RenderComponent<TComponent>(params ComponentParameter[] parameters)
-            where TComponent : IComponent
-        {
-            return this.testContext.RenderComponent<TComponent>(parameters);
+            _ = TestContext?.AddTestAuthorization().SetAuthorized(Guid.NewGuid().ToString());
         }
 
         [TestCase("Devices", "Devices")]
@@ -58,7 +41,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         public async Task CollapseButtonNavGroupShouldSaveNewState(string title, string property)
         {
             // Arrange
-            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
             var cut = RenderComponent<NavMenu>();
             var navGroups = cut.FindComponents<MudNavGroup>();
 
@@ -79,7 +62,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         public async Task ExpandButtonNavGroupShouldSaveState(string title, string property)
         {
             // Arrange
-            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             var dic = new Dictionary<string, bool>
             {
@@ -88,7 +71,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             await this.localStorageService.SetItemAsync(LocalStorageKey.CollapsibleNavMenu, dic);
 
             // Load layout configuration from local storage
-            await this.testContext.Services.GetRequiredService<ILayoutService>().LoadLayoutConfigurationFromLocalStorage();
+            await Services.GetRequiredService<ILayoutService>().LoadLayoutConfigurationFromLocalStorage();
 
             var cut = RenderComponent<NavMenu>();
             var navGroups = cut.FindComponents<MudNavGroup>();
@@ -110,7 +93,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         public async Task CollapseButtonNavGroupShouldSaveState(string title, string property)
         {
             // Arrange
-            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
             var dic = new Dictionary<string, bool>
             {
                 { property, true }
@@ -118,7 +101,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             await this.localStorageService.SetItemAsync(LocalStorageKey.CollapsibleNavMenu, dic);
 
             // Load layout configuration from local storage
-            await this.testContext.Services.GetRequiredService<ILayoutService>().LoadLayoutConfigurationFromLocalStorage();
+            await Services.GetRequiredService<ILayoutService>().LoadLayoutConfigurationFromLocalStorage();
 
             var cut = RenderComponent<NavMenu>();
             var navGroups = cut.FindComponents<MudNavGroup>();
@@ -140,7 +123,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         public async Task WhenFalseCollapseNavGroupShouldBeCollapsed(string title, string property)
         {
             // Arrange
-            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
             var dic = new Dictionary<string, bool>
             {
                 { property, false }
@@ -149,7 +132,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             await this.localStorageService.SetItemAsync(LocalStorageKey.CollapsibleNavMenu, dic);
 
             // Load layout configuration from local storage
-            await this.testContext.Services.GetRequiredService<ILayoutService>().LoadLayoutConfigurationFromLocalStorage();
+            await Services.GetRequiredService<ILayoutService>().LoadLayoutConfigurationFromLocalStorage();
 
             // Act
             var cut = RenderComponent<NavMenu>();
@@ -166,7 +149,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         public async Task WhenTrueCollapseNavGroupShouldBeExpanded(string title, string property)
         {
             // Arrange
-            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
             var dic = new Dictionary<string, bool>
             {
                 { property, true }
@@ -186,10 +169,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         public async Task NavGroupsExpendedValuesShouldBeTrueWhenFirstTime()
         {
             // Arrange
-            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             // Act
-            var cut = this.testContext.RenderComponent<NavMenu>();
+            var cut = RenderComponent<NavMenu>();
 
             // Assert
             var navGroups = cut.FindComponents<MudNavGroup>();
@@ -207,7 +190,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         public void LoRaNavGroupShouldBeDisplayedOnlyIfSupported(bool supported)
         {
             // Arrange
-            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = supported });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = supported });
 
             // Act
             var cut = RenderComponent<NavMenu>();
@@ -231,7 +214,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         public void WhenClickToNewButtonShouldNavigate(string buttonName, string path)
         {
             // Arrange
-            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
             var cut = RenderComponent<NavMenu>();
             var button = cut.WaitForElement($"#{buttonName}");
 
@@ -239,17 +222,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             button.Click();
 
             // Assert
-            cut.WaitForState(() => this.testContext.Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith(path, StringComparison.OrdinalIgnoreCase));
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
+            cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith(path));
         }
     }
 }
