@@ -41,13 +41,6 @@
       "metadata": {
         "description": "The API client ID for the B2C tenant"
       }
-    },
-    "isLoRaFeatureEnabled": {
-      "defaultValue": true,
-      "type": "bool",
-      "metadata": {
-        "description": "Indicate whether the LoRa Features should be activated on the UI (default: true)."
-      }
     }
   },
   "variables": {
@@ -204,7 +197,7 @@
             },
             {
               "name": "LoRaFeature__Enabled",
-              "value": "[parameters('isLoRaFeatureEnabled')]"
+              "value": "true"
             },
             {
               "name": "LoRaRegionRouterConfig__Url",
