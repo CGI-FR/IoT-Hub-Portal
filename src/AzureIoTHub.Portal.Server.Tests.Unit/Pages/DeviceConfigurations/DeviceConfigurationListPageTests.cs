@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-    using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Exceptions;
@@ -16,39 +15,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
     using Helpers;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
-    using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
-    using TestContext = Bunit.TestContext;
 
     [TestFixture]
-    public class DeviceConfigurationListPageTests : TestContextWrapper, IDisposable
+    public class DeviceConfigurationListPageTests : BlazorUnitTest
     {
-        private MockHttpMessageHandler mockHttpClient;
-
-        [SetUp]
-        public void SetUp()
+        public override void Setup()
         {
-            TestContext = new TestContext();
+            base.Setup();
 
-            this.mockHttpClient = TestContext.Services.AddMockHttpClient();
-
-            _ = TestContext.Services.AddMudServices();
-            _ = TestContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
-
-            TestContext.JSInterop.Mode = JSRuntimeMode.Loose;
-            this.mockHttpClient.AutoFlush = true;
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
         }
-
-        [TearDown]
-        public void TearDown() => TestContext?.Dispose();
 
         [Test]
         public void DeviceConfigurationListPageShouldLoadAndShowConfigurations()
         {
             // Arrange
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Get, "/api/device-configurations")
                 .RespondJson(new List<ConfigListItem>
                 {
@@ -64,8 +49,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 
             // Assert
             _ = cut.FindAll("tr").Count.Should().Be(4);
-            this.mockHttpClient.VerifyNoOutstandingRequest();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         [Test]
@@ -73,7 +58,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
         {
             // Arrange
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Get, "/api/device-configurations")
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
@@ -84,8 +69,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 
             // Assert
             _ = cut.FindAll("tr").Count.Should().Be(2);
-            this.mockHttpClient.VerifyNoOutstandingRequest();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         [Test]
@@ -102,7 +87,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 }
             };
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Get, "/api/device-configurations")
                 .RespondJson(configurations);
 
@@ -113,17 +98,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
 
             // Assert
-            cut.WaitForAssertion(() => TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/device-configurations/{configurationId}"));
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
+            cut.WaitForAssertion(() => Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/device-configurations/{configurationId}"));
         }
     }
 }
