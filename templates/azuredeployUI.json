@@ -112,15 +112,6 @@
 							"visible": "[equals(steps('lorawanStep').isLoRaFeatureEnabled,true)]",
 							"elements": [
 								{
-									"name": "edgeGatewayName",
-									"type": "Microsoft.Common.TextBox",
-									"label": "Edge Gateway Name",
-									"toolTip": "The name of the Edge gateway",
-									"constraints": {
-										"required": true
-									}
-								},
-								{
 									"name": "deployDevice",
 									"type": "Microsoft.Common.OptionsGroup",
 									"label": "Do you want to deploy a device ?",
@@ -140,6 +131,16 @@
 										"required": true
 									},
 									"visible": true
+								},
+								{
+									"name": "edgeGatewayName",
+									"type": "Microsoft.Common.TextBox",
+									"label": "Edge Gateway Name",
+									"toolTip": "The name of the Edge gateway",
+									"visible": "[equals(steps('lorawanStep').lorawanSection.deployDevice,true)]",
+									"constraints": {
+										"required": true
+									}
 								},
 								{
 									"name": "resetPin",
