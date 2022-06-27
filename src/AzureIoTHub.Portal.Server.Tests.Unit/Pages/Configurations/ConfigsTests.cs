@@ -15,40 +15,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
     using Helpers;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
-    using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
 
     [TestFixture]
-    public class ConfigsTests : TestContextWrapper, IDisposable
+    public class ConfigsTests : BlazorUnitTest
     {
-        private MockHttpMessageHandler mockHttpClient;
-
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            TestContext = new Bunit.TestContext();
-            _ = TestContext.Services.AddMudServices();
-            this.mockHttpClient = TestContext.Services.AddMockHttpClient();
-            _ = TestContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            base.Setup();
 
-            this.mockHttpClient.AutoFlush = true;
-
-            _ = TestContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            _ = TestContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
-        }
-
-        [TearDown]
-        public void TearDown() => TestContext?.Dispose();
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
         }
 
         [TestCase]
@@ -61,7 +38,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
                 new()
             };
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Get, "/api/edge/configurations")
                 .RespondJson(configurations);
 
@@ -70,15 +47,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
             cut.WaitForAssertion(() => cut.FindAll("tr").Count.Should().Be(3));
 
             // Assert
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [TestCase]
         public void ConfigsPageShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingConfigurations()
         {
             // Arrange
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Get, "/api/edge/configurations")
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
@@ -87,8 +64,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
             cut.WaitForAssertion(() => cut.FindAll("tr").Count.Should().Be(2));
 
             // Assert
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [Test]
@@ -105,7 +82,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
                 }
             };
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Get, "/api/edge/configurations")
                 .RespondJson(configurations);
 
