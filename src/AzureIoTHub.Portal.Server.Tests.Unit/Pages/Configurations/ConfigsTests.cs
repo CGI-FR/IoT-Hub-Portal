@@ -6,8 +6,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-    using AzureIoTHub.Portal.Client.Pages.Configurations;
-    using AzureIoTHub.Portal.Server.Tests.Unit.Extensions;
+    using AzureIoTHub.Portal.Client.Pages.EdgeModels;
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Exceptions;
