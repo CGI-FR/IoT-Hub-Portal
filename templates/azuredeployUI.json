@@ -133,7 +133,7 @@
 									"type": "Microsoft.Common.TextBox",
 									"label": "Reset Pin",
 									"toolTip": "Provide the reset pin value of your gateway. Please refer to the doc if you are unfamiliar with the value",
-									"visible": "[equals(steps('lorawanStep').deployDevice,true)]",
+									"visible": "[equals(steps('lorawanStep').lorawanSection.deployDevice,true)]",
 									"constraints": {
 										"required": true,
 										"validations": [
@@ -150,7 +150,7 @@
 									"label": "Region",
 									"defaultValue": "EU",
 									"toolTip": "In what region is your gateway deployed?",
-									"visible": "[equals(steps('lorawanStep').deployDevice,true)]",
+									"visible": "[equals(steps('lorawanStep').lorawanSection.deployDevice,true)]",
 									"constraints": {
 										"allowedValues": [
 											{
@@ -170,7 +170,7 @@
 									"label": "Spi Speed",
 									"defaultValue": "8",
 									"toolTip": "[In Mbps] Custom SPI speed for your gateway, currently only supported for ARM gateways",
-									"visible": "[equals(steps('lorawanStep').deployDevice,true)]",
+									"visible": "[equals(steps('lorawanStep').lorawanSection.deployDevice,true)]",
 									"constraints": {
 										"allowedValues": [
 											{
@@ -190,7 +190,7 @@
 									"label": "Spi Dev",
 									"defaultValue": "2",
 									"toolTip": "SPI Dev version for x86 based gateway",
-									"visible": "[equals(steps('lorawanStep').deployDevice,true)]",
+									"visible": "[equals(steps('lorawanStep').lorawanSection.deployDevice,true)]",
 									"constraints": {
 										"allowedValues": [
 											{
