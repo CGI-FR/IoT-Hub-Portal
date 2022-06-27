@@ -89,7 +89,7 @@
 							"type": "Microsoft.Common.OptionsGroup",
 							"label": "Do you want to enable LoRaWAN feature?",
 							"defaultValue": "No",
-							"toolTip": "",
+							"toolTip": "Enable LoRaWAN feature",
 							"constraints": {
 								"allowedValues": [
 									{
@@ -125,6 +125,7 @@
 									"type": "Microsoft.Common.OptionsGroup",
 									"label": "Do you want to deploy a device ?",
 									"toolTip": "Provision a final LoRa device in the IoT hub in addition to the gateway",
+									"defaultValue": "No",
 									"constraints": {
 										"allowedValues": [
 											{
