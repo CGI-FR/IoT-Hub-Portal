@@ -30,7 +30,13 @@
 							"label": "Unique Solution Prefix",
 							"toolTip": "Prefix used for resource names. Should be unique as this will also be used for domain names",
 							"constraints": {
-								"required": true
+								"required": true,
+								"validations": [
+								  {
+									"regex": "^[a-z0-9A-Z]{1,16}$",
+									"message": "Only alphanumeric characters are allowed, and the value must be 1-16 characters long."
+								  }
+								]
 							},
 							"visible": true
 						},
