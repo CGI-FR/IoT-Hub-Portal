@@ -7,7 +7,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading;
-    using AzureIoTHub.Portal.Client.Pages.Configurations;
     using Models.v10;
     using Helpers;
     using Bunit;
@@ -23,6 +22,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using AzureIoTHub.Portal.Client.Pages.EdgeModels;
 
     [TestFixture]
     public class ConfigDetailTests : IDisposable
