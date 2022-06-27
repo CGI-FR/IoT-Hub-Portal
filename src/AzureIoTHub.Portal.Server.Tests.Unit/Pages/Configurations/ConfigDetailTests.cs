@@ -12,7 +12,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
     using Bunit.TestDoubles;
     using Client.Exceptions;
     using Client.Models;
-    using Client.Services;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -32,8 +31,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
             base.Setup();
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
-
-            _ = Services.AddScoped<IDashboardLayoutService, DashboardLayoutService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
         }
