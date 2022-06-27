@@ -148,7 +148,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 
             // Assert
             cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
-            //cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/devices"));
             cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
         }
