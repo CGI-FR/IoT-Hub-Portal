@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
     using System.Net.Http;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.Devices;
-    using AzureIoTHub.Portal.Client.Shared;
+    //using AzureIoTHub.Portal.Client.Shared;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
     using Bunit;
@@ -36,7 +36,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 
         private FakeNavigationManager mockNavigationManager;
 
-        private static string ApiBaseUrl => "/api/devices";
+        //private static string ApiBaseUrl => "/api/devices";
 
         [SetUp]
         public void SetUp()
