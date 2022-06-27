@@ -9,28 +9,24 @@
             }
         },
         "openIdAuthority": {
-            "defaultValue": "",
             "type": "string",
             "metadata": {
                 "description": "The Open ID Authority"
             }
         },
         "openIdMetadataURL": {
-            "defaultValue": "",
             "type": "string",
             "metadata": {
                 "description": "The Open ID metadata Url from the Identity provider"
             }
         },
         "clientId": {
-            "defaultValue": "",
             "type": "string",
             "metadata": {
                 "description": "The client ID for the B2C tenant"
             }
         },
         "apiClientId": {
-            "defaultValue": "",
             "type": "string",
             "metadata": {
                 "description": "The API client ID for the B2C tenant"

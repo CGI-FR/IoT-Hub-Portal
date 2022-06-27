@@ -43,25 +43,37 @@
 									"name": "openIdAuthority",
 									"type": "Microsoft.Common.TextBox",
 									"label": "Open Id Authority",
-									"toolTip": "The Open ID Authority"
+									"toolTip": "The Open ID Authority",
+									"constraints": {
+										"required": true
+									}
 								},
 								{
 									"name": "openIdMetadataURL",
 									"type": "Microsoft.Common.TextBox",
 									"label": "Open Id Metadata URL",
-									"toolTip": "The Open ID metadata Url from the Identity provider"
+									"toolTip": "The Open ID metadata Url from the Identity provider",
+									"constraints": {
+										"required": true
+									}
 								},
 								{
 									"name": "clientId",
 									"type": "Microsoft.Common.TextBox",
 									"label": "Client Id",
-									"toolTip": "The client ID for the B2C tenant"
+									"toolTip": "The client ID for the B2C tenant",
+									"constraints": {
+										"required": true
+									}
 								},
 								{
 									"name": "apiClientId",
 									"type": "Microsoft.Common.TextBox",
 									"label": "Api Client Id",
-									"toolTip": "The API client ID for the B2C tenant"
+									"toolTip": "The API client ID for the B2C tenant",
+									"constraints": {
+										"required": true
+									}
 								}
 							],
 							"visible": true
