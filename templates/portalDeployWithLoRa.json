@@ -15,38 +15,27 @@
       }
     },
     "openIdAuthority": {
-      "defaultValue": "",
       "type": "string",
       "metadata": {
         "description": "The Open ID Authority"
       }
     },
     "openIdMetadataURL": {
-      "defaultValue": "",
       "type": "string",
       "metadata": {
         "description": "The Open ID metadata Url from the Identity provider"
       }
     },
     "clientId": {
-      "defaultValue": "",
       "type": "string",
       "metadata": {
         "description": "The client ID for the B2C tenant"
       }
     },
     "apiClientId": {
-      "defaultValue": "",
       "type": "string",
       "metadata": {
         "description": "The API client ID for the B2C tenant"
-      }
-    },
-    "isLoRaFeatureEnabled": {
-      "defaultValue": true,
-      "type": "bool",
-      "metadata": {
-        "description": "Indicate whether the LoRa Features should be activated on the UI (default: true)."
       }
     }
   },
@@ -204,7 +193,7 @@
             },
             {
               "name": "LoRaFeature__Enabled",
-              "value": "[parameters('isLoRaFeatureEnabled')]"
+              "value": "true"
             },
             {
               "name": "LoRaRegionRouterConfig__Url",
