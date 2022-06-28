@@ -12,48 +12,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
     using Client.Exceptions;
     using Client.Models;
     using FluentAssertions;
-    using Helpers;
     using Microsoft.Extensions.DependencyInjection;
     using MudBlazor;
-    using MudBlazor.Interop;
-    using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
     using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
 
     [TestFixture]
-    public class EdgeDeviceDeleteConfirmationDialogTests : TestContextWrapper, IDisposable
+    public class EdgeDeviceDeleteConfirmationDialogTests : BlazorUnitTest
     {
-        private MockHttpMessageHandler mockHttpClient;
         private DialogService dialogService;
 
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            TestContext = new Bunit.TestContext();
-            _ = TestContext.Services.AddMudServices();
-            this.mockHttpClient = TestContext.Services.AddMockHttpClient();
-            _ = TestContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            base.Setup();
 
-            this.mockHttpClient.AutoFlush = true;
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
-            _ = TestContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
-            _ = TestContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-
-            this.dialogService = TestContext.Services.GetService<IDialogService>() as DialogService;
-        }
-
-        [TearDown]
-        public void TearDown() => TestContext?.Dispose();
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
+            this.dialogService = Services.GetService<IDialogService>() as DialogService;
         }
 
         [Test]
@@ -62,7 +38,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Delete, $"/api/edge/devices/{deviceId}")
                 .Respond(HttpStatusCode.NoContent);
 
@@ -92,7 +68,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Delete, $"/api/edge/devices/{deviceId}")
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
@@ -119,7 +95,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Delete, $"/api/edge/devices/{deviceId}")
                 .Respond(HttpStatusCode.NoContent);
 
