@@ -101,7 +101,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = MockHttpClient
-                .When(HttpMethod.Get, $"api/devices/{deviceId}/credentials")
+                .When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/credentials")
                 .RespondJson(new EnrollmentCredentials());
 
             var cut = RenderComponent<MudDialogProvider>();
@@ -118,6 +118,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             // Act
             await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<ConnectionStringDialog>(string.Empty, parameters));
             cut.WaitForElement("#cancel").Click();
+
             var result = await dialogReference.Result;
 
             // Assert
