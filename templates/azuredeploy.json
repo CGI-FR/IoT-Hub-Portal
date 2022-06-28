@@ -34,7 +34,7 @@
         },
         "edgeGatewayName": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": "TestLoRaWANGateway",
             "metadata": {
                 "description": "The name of the Edge gateway"
             }
@@ -48,7 +48,7 @@
         },
         "resetPin": {
             "type": "int",
-            "defaultValue": 0,
+            "defaultValue": 2,
             "metadata": {
                 "description": "Provide the reset pin value of your gateway. Please refer to the doc if you are unfamiliar with the value"
             }
