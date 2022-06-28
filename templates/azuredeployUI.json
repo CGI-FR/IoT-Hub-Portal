@@ -144,6 +144,7 @@
 									"label": "Edge Gateway Name",
 									"toolTip": "The name of the Edge gateway",
 									"visible": "[equals(steps('lorawanStep').lorawanSection.deployDevice,true)]",
+									"defaultValue": "TestLoRaWANGateway",
 									"constraints": {
 										"required": true
 									}
