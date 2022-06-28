@@ -17,55 +17,33 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
     using Client.Models;
     using Client.Shared;
     using FluentAssertions;
-    using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
+    using Mocks;
     using Moq;
     using MudBlazor;
-    using MudBlazor.Interop;
     using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
 
     [TestFixture]
-    public class CreateDevicePageTests : IDisposable
+    public class CreateDevicePageTests : BlazorUnitTest
     {
-        private Bunit.TestContext testContext;
-        private MockHttpMessageHandler mockHttpClient;
-
-        private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
-
         private FakeNavigationManager mockNavigationManager;
 
         private static string ApiBaseUrl => "/api/devices";
 
-        [SetUp]
-        public void SetUp()
+        public override void Setup()
         {
-            this.testContext = new Bunit.TestContext();
+            base.Setup();
 
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockDialogService = this.mockRepository.Create<IDialogService>();
-            this.mockHttpClient = this.testContext.Services
-                                            .AddMockHttpClient();
+            this.mockDialogService = MockRepository.Create<IDialogService>();
 
-            _ = this.testContext.Services.AddSingleton(this.mockDialogService.Object);
+            _ = Services.AddSingleton(this.mockDialogService.Object);
 
-            _ = this.testContext.Services.AddMudServices();
+            Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 
-            _ = this.testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
-            _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            _ = this.testContext.JSInterop.SetupVoid("Blazor._internal.InputFile.init", _ => true);
-            _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
-            _ = this.testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
-
-            this.mockNavigationManager = this.testContext.Services.GetRequiredService<FakeNavigationManager>();
-        }
-
-        private IRenderedComponent<TComponent> RenderComponent<TComponent>(params ComponentParameter[] parameters)
-            where TComponent : IComponent
-        {
-            return this.testContext.RenderComponent<TComponent>(parameters);
+            this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
         }
 
         [Test]
@@ -87,7 +65,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             };
 
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
+            _ = MockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<DeviceDetails>>(m.Content);
@@ -106,13 +84,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
                 })
                 .RespondText(string.Empty);
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models")
-                .RespondJson(new DeviceModel[]
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/models")
+                .RespondJson(new[]
                 {
                     mockDeviceModel
                 });
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/settings/device-tags")
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/settings/device-tags")
                 .RespondJson(new List<DeviceTag>()
                 {
                     new DeviceTag()
@@ -124,10 +102,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
                     }
                 });
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models/{mockDeviceModel.ModelId}/properties")
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{mockDeviceModel.ModelId}/properties")
                 .RespondJson(Array.Empty<DeviceProperty>());
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/{expectedDeviceDetails.DeviceID}/properties")
+            _ = MockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/{expectedDeviceDetails.DeviceID}/properties")
                 .RespondText(string.Empty);
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
@@ -147,8 +125,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             Thread.Sleep(3000);
 
             // Assert
-            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/devices"));
         }
 
@@ -163,13 +141,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models")
-                .RespondJson(new DeviceModel[]
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/models")
+                .RespondJson(new[]
                 {
                     mockDeviceModel
                 });
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/settings/device-tags")
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/settings/device-tags")
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
@@ -177,13 +155,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 
             // Assert
             cut.WaitForAssertion(() => cut.Markup.Should().NotBeNullOrEmpty());
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [Test]
         public void OnInitializedAsyncShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceModels()
         {
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models")
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/models")
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
@@ -191,7 +169,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 
             // Assert
             cut.WaitForAssertion(() => cut.Markup.Should().NotBeNullOrEmpty());
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [Test]
@@ -213,7 +191,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             };
 
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
+            _ = MockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<DeviceDetails>>(m.Content);
@@ -232,13 +210,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
                 })
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, "/api/models")
-                .RespondJson(new DeviceModel[]
+            _ = MockHttpClient.When(HttpMethod.Get, "/api/models")
+                .RespondJson(new[]
                 {
                     mockDeviceModel
                 });
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, "/api/settings/device-tags")
+            _ = MockHttpClient.When(HttpMethod.Get, "/api/settings/device-tags")
                 .RespondJson(new List<DeviceTag>
                 {
                     new()
@@ -250,10 +228,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
                     }
                 });
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models/{mockDeviceModel.ModelId}/properties")
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{mockDeviceModel.ModelId}/properties")
                 .RespondJson(Array.Empty<DeviceProperty>());
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/{expectedDeviceDetails.DeviceID}/properties")
+            _ = MockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/{expectedDeviceDetails.DeviceID}/properties")
                 .RespondText(string.Empty);
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
@@ -272,9 +250,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             saveButton.Click();
 
             // Assert
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().NotEndWith("devices"));
-            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -295,13 +273,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
                 DeviceID = Guid.NewGuid().ToString(),
             };
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, "/api/models")
-                .RespondJson(new DeviceModel[]
+            _ = MockHttpClient.When(HttpMethod.Get, "/api/models")
+                .RespondJson(new[]
                 {
                     mockDeviceModel
                 });
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, "/api/settings/device-tags")
+            _ = MockHttpClient.When(HttpMethod.Get, "/api/settings/device-tags")
                 .RespondJson(new List<DeviceTag>
                 {
                     new()
@@ -313,7 +291,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
                     }
                 });
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/models/{mockDeviceModel.ModelId}/properties")
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{mockDeviceModel.ModelId}/properties")
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<CreateDevicePage>();
@@ -324,17 +302,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             await cut.Instance.ChangeModel(mockDeviceModel);
 
             // Assert
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
         }
     }
 }
