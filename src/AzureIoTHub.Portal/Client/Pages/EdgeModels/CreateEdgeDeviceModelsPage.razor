@@ -34,7 +34,7 @@
                 </MudCardActions>
             </MudCard>
             <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Save())" id="SaveButton">Save Changes</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" id="SaveButton">Save Changes</MudButton>
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
@@ -68,8 +68,7 @@
                                         <MudItem xs="12">
                                             <MudTable Items="@moduleCommands" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                                                 <ColGroup>
-                                                    <col style="width: 30%;" />
-                                                    <col style="width: 30%;" />
+                                                    <col style="width: 50%;" />
                                                     <col style="width: 10%;" />
                                                     <col style="width: 5%;" />
                                                 </ColGroup>
@@ -94,7 +93,7 @@
                                                     </MudTd>
                                                 </RowTemplate>
                                                 <FooterContent>
-                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="ShowAddEdgeModuleDialog">Add new module</MudButton>
+                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddCommand">Add new module</MudButton>
                                                 </FooterContent>
                                             </MudTable>
                                         </MudItem>
@@ -110,6 +109,7 @@
         </MudItem>
     </MudGrid>
 
+
 </MudForm>
 
 @code {
@@ -122,10 +122,7 @@
 
     private MudForm form;
 
-    private IoTEdgeModel Model = new IoTEdgeModel()
-    {
-            ModelId = Guid.NewGuid().ToString()
-    };
+    private IoTEdgeModel Model = new IoTEdgeModel();
 
     // Used to manage the picture
     private MultipartFormDataContent content;
@@ -182,30 +179,14 @@
             }
         };
 
-        try
-        {
-
-            var result = await EdgeModelService.CreateIoTEdgeModel(Model);
-            result.EnsureSuccessStatusCode();
-
-            if (content is not null)
-            {
-                var response = EdgeModelService.ChangeAvatar(Model.ModelId, content);
-            }
-
-            DialogService.Close(processingDialog);
-            Snackbar.Add("Device model successfully created.", Severity.Success);
-        }
-        catch(ProblemDetailsException exception)
-        {
-            DialogService.Close(processingDialog);
-            Error?.ProcessProblemDetails(exception);
-        }
-    }
-
     private void AddCommand()
     {
+        var last = moduleCommands.LastOrDefault();
 
+        if (moduleCommands.Count == 0 || (last.ModuleName is not null))
+        {
+            moduleCommands.Add(new IoTEdgeModule());
+        }
     }
 
     private void DeleteCommand(IoTEdgeModule item)
