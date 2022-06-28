@@ -18,48 +18,33 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
     using Models.v10.LoRaWAN;
     using Moq;
     using MudBlazor;
-    using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
 
     [TestFixture]
-    public class ConcentratorListPageTests : TestContextWrapper, IDisposable
+    public class ConcentratorListPageTests : BlazorUnitTest
     {
-        private MockHttpMessageHandler mockHttpClient;
-        private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
         private Mock<ISnackbar> mockSnackbarService;
 
-        [SetUp]
-        public void SetUp()
+        public override void Setup()
         {
-            TestContext = new Bunit.TestContext();
+            base.Setup();
 
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockHttpClient = TestContext.Services.AddMockHttpClient();
+            this.mockDialogService = MockRepository.Create<IDialogService>();
+            this.mockSnackbarService = MockRepository.Create<ISnackbar>();
 
-            this.mockDialogService = this.mockRepository.Create<IDialogService>();
-            _ = TestContext.Services.AddSingleton(this.mockDialogService.Object);
-
-            this.mockSnackbarService = this.mockRepository.Create<ISnackbar>();
-            _ = TestContext.Services.AddSingleton(this.mockSnackbarService.Object);
-
-            _ = TestContext.Services.AddMudServices();
-            _ = TestContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
-
-            TestContext.JSInterop.Mode = JSRuntimeMode.Loose;
-            this.mockHttpClient.AutoFlush = true;
+            _ = Services.AddSingleton(this.mockDialogService.Object);
+            _ = Services.AddSingleton(this.mockSnackbarService.Object);
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
         }
-
-        [TearDown]
-        public void TearDown() => TestContext?.Dispose();
 
         [Test]
         public void ConcentratorListPageShouldLoadAndShowConcentrators()
         {
             // Arrange
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Get, "/api/lorawan/concentrators?pageSize=10")
                 .RespondJson(new PaginationResult<Concentrator>
                 {
@@ -78,8 +63,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
 
             // Assert
             _ = cut.FindAll("tr").Count.Should().Be(4);
-            this.mockHttpClient.VerifyNoOutstandingRequest();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         [Test]
@@ -87,7 +72,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
         {
             // Arrange
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Get, "/api/lorawan/concentrators?pageSize=10")
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
@@ -98,8 +83,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
 
             // Assert
             _ = cut.FindAll("tr").Count.Should().Be(2);
-            this.mockHttpClient.VerifyNoOutstandingRequest();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         [Test]
@@ -108,7 +93,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Get, "/api/lorawan/concentrators?pageSize=10")
                 .RespondJson(new PaginationResult<Concentrator>
                 {
@@ -129,17 +114,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
             cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
 
             // Assert
-            cut.WaitForAssertion(() => TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/lorawan/concentrators/{deviceId}"));
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
+            cut.WaitForAssertion(() => Services.GetService<FakeNavigationManager>()?.Uri.Should().EndWith($"/lorawan/concentrators/{deviceId}"));
         }
     }
 }
