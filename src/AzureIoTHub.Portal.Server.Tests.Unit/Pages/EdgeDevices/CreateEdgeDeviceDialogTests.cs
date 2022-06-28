@@ -3,64 +3,29 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 {
-    using System;
     using System.Threading.Tasks;
     using Models.v10;
     using Bunit;
     using Client.Services;
     using FluentAssertions;
-    using Helpers;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.JSInterop;
-    using Moq;
     using MudBlazor;
-    using MudBlazor.Interop;
-    using MudBlazor.Services;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
     using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
 
     [TestFixture]
-    public class CreateEdgeDeviceDialogTests : TestContextWrapper, IDisposable
+    public class CreateEdgeDeviceDialogTests : BlazorUnitTest
     {
-        private MockHttpMessageHandler mockHttpClient;
-        private MockRepository mockRepository;
-        private Mock<IJSRuntime> mockJsRuntime;
         private DialogService dialogService;
 
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            TestContext = new Bunit.TestContext();
-            _ = TestContext.Services.AddMudServices();
-            this.mockHttpClient = TestContext.Services.AddMockHttpClient();
-            _ = TestContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            base.Setup();
 
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockJsRuntime = this.mockRepository.Create<IJSRuntime>();
-            _ = TestContext.Services.AddSingleton(new ClipboardService(this.mockJsRuntime.Object));
+            _ = Services.AddSingleton<ClipboardService>();
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
-            this.mockHttpClient.AutoFlush = true;
-
-            _ = TestContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
-            _ = TestContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
-            _ = TestContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            _ = TestContext.JSInterop.SetupVoid("mudElementRef.saveFocus", _ => true);
-
-            this.dialogService = TestContext.Services.GetService<IDialogService>() as DialogService;
-        }
-
-        [TearDown]
-        public void TearDown() => TestContext?.Dispose();
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
+            this.dialogService = Services.GetService<IDialogService>() as DialogService;
         }
 
         [Test]
