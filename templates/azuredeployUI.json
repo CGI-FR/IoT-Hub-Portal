@@ -155,6 +155,7 @@
 									"label": "Reset Pin",
 									"toolTip": "Provide the reset pin value of your gateway. Please refer to the doc if you are unfamiliar with the value",
 									"visible": "[equals(steps('lorawanStep').lorawanSection.deployDevice,true)]",
+									"defaultValue": "2",
 									"constraints": {
 										"required": true,
 										"validations": [
