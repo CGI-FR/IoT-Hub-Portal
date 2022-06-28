@@ -1,6 +1,9 @@
 ﻿@page "/edge-device-models/new"
 
+@using AzureIoTHub.Portal.Models
+@using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Shared.Models.v10
+@using System.Net.Http.Headers
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
@@ -56,23 +59,65 @@
                             </MudItem>
                         </MudGrid>
 
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Commands" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">Modules</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudItem xs="12">
+                                            <MudTable Items="@moduleCommands" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                <ColGroup>
+                                                    <col style="width: 50%;" />
+                                                    <col style="width: 10%;" />
+                                                    <col style="width: 5%;" />
+                                                </ColGroup>
+                                                <HeaderContent>
+                                                    <MudTh Style="text-align: center">Module Name</MudTh>
+                                                    <MudTh Style="text-align: center">See detail</MudTh>
+                                                    <MudTh Style="text-align: center">Delete</MudTh>
+                                                </HeaderContent>
+                                                <RowTemplate Context="CommandContext">
+                                                    <MudTd DataLabel="odule Name" Style="word-break: break-all;">
+                                                        <MudText >@CommandContext.ModuleName</MudText>
+                                                    </MudTd>
+                                                    <MudTd DataLabel="See detail" Style="text-align: center;">
+                                                        <MudButton Variant="Variant.Filled">Edit</MudButton>
+                                                    </MudTd>
+                                                    <MudTd DataLabel="Delete" Style="text-align: center">
+                                                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteCommand(CommandContext))"></MudIconButton>
+                                                    </MudTd>
+                                                </RowTemplate>
+                                                <FooterContent>
+                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddCommand">Add new module</MudButton>
+                                                </FooterContent>
+                                            </MudTable>
+                                        </MudItem>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+
                     </MudExpansionPanels>
                 </MudTabPanel>
 
             </MudTabs>
         </MudItem>
     </MudGrid>
+
+
 </MudForm>
 
 @code {
     [CascadingParameter]
     public Error Error { get; set; }
 
+    public List<IoTEdgeModule> moduleCommands { get; set; } = new List<IoTEdgeModule>();
+
     private MudForm form;
 
-    private EdgeDeviceModel Model = new EdgeDeviceModel();
+    private IoTEdgeModel Model = new IoTEdgeModel();
 
-        // Used to manage the picture
+    // Used to manage the picture
     private MultipartFormDataContent content;
     private string imageDataUrl;
 
@@ -99,5 +144,20 @@
         await resizedImageFile.OpenReadStream().ReadAsync(buffer);
 
         imageDataUrl = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
+    }
+
+    private void AddCommand()
+    {
+        var last = moduleCommands.LastOrDefault();
+
+        if (moduleCommands.Count == 0 || (last.ModuleName is not null))
+        {
+            moduleCommands.Add(new IoTEdgeModule());
+        }
+    }
+
+    private void DeleteCommand(IoTEdgeModule item)
+    {
+        moduleCommands.Remove(item);
     }
 }

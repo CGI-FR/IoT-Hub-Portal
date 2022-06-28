@@ -22,6 +22,9 @@ namespace AzureIoTHub.Portal.Models.v10
         /// </summary>
         public string Version { get; set; }
 
+        [Required(ErrorMessage = "The device image uri is required.")]
+        public string ImageURI { get; set; }
+
         /// <summary>
         /// The module status.
         /// </summary>
@@ -30,11 +33,13 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The module environment variables.
         /// </summary>
-        public Dictionary<string, string> EnvironmentVariables { get; } = new Dictionary<string, string>();
+        public Dictionary<string, string> EnvironmentVariables { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         /// The module identity twin settings.
         /// </summary>
-        public Dictionary<string, string> ModuleIdentityTwinSettings { get; } = new Dictionary<string, string>();
+        public Dictionary<string, string> ModuleIdentityTwinSettings { get; set; } = new Dictionary<string, string>();
+
+        public List<ModuleCommand> Commands { get; set; } = new List<ModuleCommand>();
     }
 }
