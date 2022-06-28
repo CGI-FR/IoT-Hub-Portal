@@ -21,6 +21,10 @@ namespace AzureIoTHub.Portal.Server
         internal const string OIDCMetadataUrlKey = "OIDC:MetadataUrl";
         internal const string OIDCClientIdKey = "OIDC:ClientId";
         internal const string OIDCApiClientIdKey = "OIDC:ApiClientId";
+        internal const string OIDCValidateIssuerKey = "OIDC:ValidateIssuer";
+        internal const string OIDCValidateAudienceKey = "OIDC:ValidateAudience";
+        internal const string OIDCValidateLifetimeKey = "OIDC:ValidateLifetime";
+        internal const string OIDCValidateIssuerSigningKeyKey = "OIDC:ValidateIssuerSigningKey";
 
         internal const string IsLoRaFeatureEnabledKey = "LoRaFeature:Enabled";
 
@@ -66,6 +70,14 @@ namespace AzureIoTHub.Portal.Server
         internal abstract string OIDCMetadataUrl { get; }
 
         internal abstract string OIDCAuthority { get; }
+
+        internal abstract bool OIDCValidateIssuer { get; }
+
+        internal abstract bool OIDCValidateAudience { get; }
+
+        internal abstract bool OIDCValidateLifetime { get; }
+
+        internal abstract bool OIDCValidateIssuerSigningKey { get; }
 
         internal abstract bool IsLoRaEnabled { get; }
 

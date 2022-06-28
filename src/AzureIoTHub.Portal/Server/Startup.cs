@@ -87,10 +87,10 @@ namespace AzureIoTHub.Portal.Server
                     opts.MetadataAddress = configuration.OIDCMetadataUrl;
                     opts.Audience = configuration.OIDCApiClientId;
 
-                    opts.TokenValidationParameters.ValidateIssuer = true;
-                    opts.TokenValidationParameters.ValidateAudience = true;
-                    opts.TokenValidationParameters.ValidateLifetime = true;
-                    opts.TokenValidationParameters.ValidateIssuerSigningKey = true;
+                    opts.TokenValidationParameters.ValidateIssuer = configuration.OIDCValidateIssuer;
+                    opts.TokenValidationParameters.ValidateAudience = configuration.OIDCValidateAudience;
+                    opts.TokenValidationParameters.ValidateLifetime = configuration.OIDCValidateLifetime;
+                    opts.TokenValidationParameters.ValidateIssuerSigningKey = configuration.OIDCValidateIssuerSigningKey;
                 });
 
             _ = services.AddSingleton(configuration);
