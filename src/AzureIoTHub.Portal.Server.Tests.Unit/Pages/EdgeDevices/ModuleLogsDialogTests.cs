@@ -8,50 +8,28 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
     using AzureIoTHub.Portal.Client.Services;
-    using AzureIoTHub.Portal.Models.v10;
+    using Models.v10;
     using Bunit;
     using Client.Exceptions;
     using Client.Models;
     using FluentAssertions;
-    using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
-    using MudBlazor.Interop;
-    using MudBlazor.Services;
     using NUnit.Framework;
 
     [TestFixture]
-    public class ModuleLogsDialogTests : IDisposable
+    public class ModuleLogsDialogTests : BlazorUnitTest
     {
-
-        private Bunit.TestContext testContext;
-
-        private MockRepository mockRepository;
         private Mock<IEdgeDeviceClientService> edgeDeviceClientServiceMock;
 
-        [SetUp]
-        public void SetUp()
+        public override void Setup()
         {
-            this.testContext = new Bunit.TestContext();
+            base.Setup();
 
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.edgeDeviceClientServiceMock = this.mockRepository.Create<IEdgeDeviceClientService>();
+            this.edgeDeviceClientServiceMock = MockRepository.Create<IEdgeDeviceClientService>();
 
-            _ = this.testContext.Services.AddMudServices();
-
-            _ = this.testContext.Services.AddSingleton(this.edgeDeviceClientServiceMock.Object);
-
-            _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
-            _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-        }
-
-
-
-        private IRenderedComponent<TComponent> RenderComponent<TComponent>(params ComponentParameter[] parameters)
-            where TComponent : IComponent
-        {
-            return this.testContext.RenderComponent<TComponent>(parameters);
+            _ = Services.AddSingleton(this.edgeDeviceClientServiceMock.Object);
         }
 
         [Test]
@@ -77,7 +55,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
                 .ReturnsAsync(expectedLogs);
 
             var cut = RenderComponent<MudDialogProvider>();
-            var service = this.testContext.Services.GetService<IDialogService>() as DialogService;
+            var service = Services.GetService<IDialogService>() as DialogService;
 
             var parameters = new DialogParameters
             {
@@ -112,7 +90,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<MudDialogProvider>();
-            var service = this.testContext.Services.GetService<IDialogService>() as DialogService;
+            var service = Services.GetService<IDialogService>() as DialogService;
 
             var parameters = new DialogParameters
             {
@@ -152,7 +130,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
                 .ReturnsAsync(expectedLogs);
 
             var cut = RenderComponent<MudDialogProvider>();
-            var service = this.testContext.Services.GetService<IDialogService>() as DialogService;
+            var service = Services.GetService<IDialogService>() as DialogService;
 
             var parameters = new DialogParameters
             {
@@ -173,16 +151,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             _ = result.Cancelled.Should().BeTrue();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
         }
     }
 }
