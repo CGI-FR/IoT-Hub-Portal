@@ -11,68 +11,42 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.Settings;
     using AzureIoTHub.Portal.Client.Shared;
-    using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Server.Tests.Unit.Helpers;
+    using Models.v10;
+    using Helpers;
     using Bunit;
     using FluentAssertions;
-    using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
-    using MudBlazor.Interop;
-    using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
 
     [TestFixture]
-    public class DeviceTagsPageTests : IDisposable
+    public class DeviceTagsPageTests : BlazorUnitTest
     {
-        private Bunit.TestContext testContext;
-        private MockHttpMessageHandler mockHttpClient;
-        private MockRepository mockRepository;
         private Mock<IDialogService> mockDialogService;
         private Mock<ISnackbar> mockSnackbarService;
 
         private static string ApiBaseUrl => "/api/settings/device-tags";
 
-        [SetUp]
-        public void SetUp()
+        public override void Setup()
         {
-            this.testContext = new Bunit.TestContext();
+            base.Setup();
 
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockHttpClient = this.testContext.Services.AddMockHttpClient();
+            this.mockDialogService = MockRepository.Create<IDialogService>();
+            this.mockSnackbarService = MockRepository.Create<ISnackbar>();
 
-            this.mockDialogService = this.mockRepository.Create<IDialogService>();
-            _ = this.testContext.Services.AddSingleton(this.mockDialogService.Object);
+            _ = Services.AddSingleton(this.mockDialogService.Object);
+            _ = Services.AddSingleton(this.mockSnackbarService.Object);
 
-            this.mockSnackbarService = this.mockRepository.Create<ISnackbar>();
-            _ = this.testContext.Services.AddSingleton(this.mockSnackbarService.Object);
-
-            _ = this.testContext.Services.AddMudServices();
-
-            _ = this.testContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
-
-            _ = this.testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
-            _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
-            _ = this.testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
-            _ = this.testContext.JSInterop.SetupVoid("mudElementRef.restoreFocus", _ => true);
-
-            this.mockHttpClient.AutoFlush = true;
-        }
-
-        private IRenderedComponent<TComponent> RenderComponent<TComponent>(params ComponentParameter[] parameters)
-            where TComponent : IComponent
-        {
-            return this.testContext.RenderComponent<TComponent>(parameters);
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
         }
 
         [Test]
         public void DeviceListPageRendersCorrectly()
         {
             // Arrange
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
+            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
                 .RespondJson(new List<DeviceTag>(){
                     new DeviceTag
                         { Label =  Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString(), Required = false, Searchable = false },
@@ -92,16 +66,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
             Assert.AreEqual(4, cut.FindAll("tr").Count);
             Assert.IsNotNull(cut.Find(".mud-table-container"));
 
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
-            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void OnInitializedAsyncShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceTags()
         {
             // Arrange
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
+            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
@@ -118,9 +92,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
             Assert.IsNotNull(cut.Find(".mud-table-container"));
 
             // Assert
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
-            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
 
@@ -135,12 +109,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
                 Searchable = false
             };
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
+            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
                 .RespondJson(new List<DeviceTag>(){
                     mockTag
                 });
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
+            _ = MockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<List<DeviceTag>>>(m.Content);
@@ -179,8 +153,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
             // Act
             cut.Find("#saveButton").Click();
 
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -194,13 +168,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
                 Searchable = false
             };
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
+            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
                 .RespondJson(new List<DeviceTag>(){
                     mockTag,
                     mockTag
                 });
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
+            _ = MockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<List<DeviceTag>>>(m.Content);
@@ -241,8 +215,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
             // Act
             saveButton.Click();
 
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -256,13 +230,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
                 Searchable = false
             };
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
+            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
                 .RespondJson(new List<DeviceTag>(){
                     mockTag,
                     mockTag
                 });
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
+            _ = MockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
                 .With(m =>
                 {
                     Assert.IsAssignableFrom<ObjectContent<List<DeviceTag>>>(m.Content);
@@ -303,21 +277,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
             // Act
             saveButton.Click();
 
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void ClickOnSaveShouldProcessProblemDetailsExceptionIfIssueOccursWhenUpdatingDeviceTags()
         {
             // Arrange
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
+            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
                 .RespondJson(new List<DeviceTag>(){
                     new DeviceTag
                         { Label = "Label", Name = "Name", Required = false, Searchable = false }
                     });
 
-            _ = this.mockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
+            _ = MockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
@@ -332,18 +306,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
             saveButton.Click();
 
             // Assert            
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }
