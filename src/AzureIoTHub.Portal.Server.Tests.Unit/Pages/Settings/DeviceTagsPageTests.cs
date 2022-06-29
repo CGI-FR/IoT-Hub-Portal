@@ -72,6 +72,40 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
         }
 
         [Test]
+        public void OnclickOnReloadShouldReloadTags()
+        {
+            // Arrange
+            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
+                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            var cut = RenderComponent<DeviceTagsPage>();
+
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            cut.WaitForAssertion(() => cut.Markup.Should().Contain("No matching records found"));
+
+            MockHttpClient.Clear();
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
+                .RespondJson(new List<DeviceTag>{
+                    new(),
+                    new(),
+                    new()
+                });
+
+            // Act
+            cut.WaitForElement("#reload-tags").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("No matching records found"));
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(3));
+
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
         public void OnInitializedAsyncShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceTags()
         {
             // Arrange
