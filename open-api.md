@@ -3470,7 +3470,8 @@ None
 {
   "isLoRaSupported": true,
   "version": "string",
-  "portalName": "string"
+  "portalName": "string",
+  "copyrightYear": "string"
 }
 ```
 
@@ -4566,12 +4567,13 @@ LoRa Device model.
 {
   "isLoRaSupported": true,
   "version": "string",
-  "portalName": "string"
+  "portalName": "string",
+  "copyrightYear": "string"
 }
 
 ```
 
-Protal Settings.
+Portal Settings.
 
 ### Properties
 
@@ -4580,6 +4582,7 @@ Protal Settings.
 |isLoRaSupported|boolean|false|none|A value indicating whether the LoRa features are acticated.|
 |version|string¦null|false|none|The portal version.|
 |portalName|string¦null|false|none|The poral name.|
+|copyrightYear|string¦null|false|none|Copyright Year|
 
 <h2 id="tocS_ProblemDetails">ProblemDetails</h2>
 <!-- backwards compatibility -->
