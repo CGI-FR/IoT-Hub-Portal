@@ -4,7 +4,7 @@
 namespace AzureIoTHub.Portal.Models.v10
 {
     /// <summary>
-    /// Protal Settings.
+    /// Portal Settings.
     /// </summary>
     public class PortalSettings
     {
@@ -22,5 +22,10 @@ namespace AzureIoTHub.Portal.Models.v10
         /// The poral name.
         /// </summary>
         public string PortalName { get; set; }
+
+        /// <summary>
+        /// Copyright Year
+        /// </summary>
+        public string CopyrightYear { get; set; }
     }
 }

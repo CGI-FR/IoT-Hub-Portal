@@ -4,9 +4,11 @@
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 {
     using System;
+    using System.Globalization;
     using AzureIoTHub.Portal.Server.Controllers.V10;
-    using AzureIoTHub.Portal.Server.Identity;
-    using AzureIoTHub.Portal.Models.v10;
+    using FluentAssertions;
+    using Identity;
+    using Models.v10;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
     using Moq;
@@ -99,6 +101,38 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             var okSettings = okObjectResult.Value as PortalSettings;
 
             Assert.AreEqual(loraFeatureStatus, okSettings?.IsLoRaSupported);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void CopyrightYearShouldBeEqualsToCurrentYear()
+        {
+            // Arrange
+            var expectedCopyrightYear = DateTime.Now.Year.ToString(CultureInfo.InvariantCulture);
+
+            const bool loraFeatureStatus = true;
+
+            _ = this.mockConfiguration.SetupGet(c => c.Value).Returns(value: null);
+
+            _ = this.mockConfigHandler
+                .SetupGet(c => c.IsLoRaEnabled)
+                .Returns(loraFeatureStatus);
+
+            _ = this.mockConfigHandler
+                .SetupGet(c => c.PortalName)
+                .Returns(string.Empty);
+
+            var controller = CreateController();
+
+            // Act
+            var response = controller.GetPortalSetting();
+            var objectResult = response as ObjectResult;
+            var result = objectResult?.Value as PortalSettings;
+
+            // Assert
+            _ = result.Should().NotBeNull();
+            _ = result.CopyrightYear.Should().Be(expectedCopyrightYear);
 
             this.mockRepository.VerifyAll();
         }
