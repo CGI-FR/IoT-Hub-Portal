@@ -48,6 +48,10 @@ namespace AzureIoTHub.Portal.Server
 
         internal override bool OIDCValidateIssuerSigningKey => this.config.GetValue(OIDCValidateIssuerSigningKeyKey, true);
 
+        internal override bool OIDCValidateActor => this.config.GetValue(OIDCValidateActorKey, false);
+
+        internal override bool OIDCValidateTokenReplay => this.config.GetValue(OIDCValidateTokenReplayKey, false);
+
         internal override bool IsLoRaEnabled => bool.Parse(this.config[IsLoRaFeatureEnabledKey] ?? "true");
 
         internal override string StorageAccountBlobContainerName => this.config[StorageAccountBlobContainerNameKey];
