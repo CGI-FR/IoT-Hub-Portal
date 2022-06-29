@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Server
         internal const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
         internal const string DPSServiceEndpointKey = "IoTDPS:ServiceEndpoint";
         internal const string DPSIDScopeKey = "IoTDPS:IDScope";
+        internal const string UseSecurityHeadersKey = "UseSecurityHeaders";
 
         internal const string OIDCScopeKey = "OIDC:Scope";
         internal const string OIDCAuthorityKey = "OIDC:Authority";
@@ -62,6 +63,8 @@ namespace AzureIoTHub.Portal.Server
         internal abstract string DPSScopeID { get; }
 
         internal abstract string StorageAccountConnectionString { get; }
+
+        internal abstract bool UseSecurityHeaders { get; }
 
         internal abstract string OIDCScope { get; }
 

@@ -30,6 +30,8 @@ namespace AzureIoTHub.Portal.Server
 
         internal override string StorageAccountConnectionString => this.config[StorageAccountConnectionStringKey];
 
+        internal override bool UseSecurityHeaders => this.config.GetValue(UseSecurityHeadersKey, true);
+
         internal override string OIDCScope => this.config[OIDCScopeKey];
 
         internal override string OIDCAuthority => this.config[OIDCAuthorityKey];
