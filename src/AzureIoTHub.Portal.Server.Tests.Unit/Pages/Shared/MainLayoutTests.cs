@@ -9,40 +9,31 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
     using Client.Services;
     using Client.Shared;
     using FluentAssertions;
-    using Helpers;
     using Microsoft.AspNetCore.Components.Web.Extensions.Head;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
     using MudBlazor;
-    using MudBlazor.Services;
     using NUnit.Framework;
 
     [TestFixture]
-    public class MainLayoutTests : TestContextWrapper
+    public class MainLayoutTests : BlazorUnitTest
     {
         private TestAuthorizationContext authContext;
 
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            TestContext = new Bunit.TestContext();
-            _ = TestContext.Services.AddMudServices();
-            _ = TestContext.Services.AddMockHttpClient();
-            this.authContext = TestContext.AddTestAuthorization();
+            base.Setup();
+
+            this.authContext = TestContext?.AddTestAuthorization();
+
             _ = TestContext.AddBlazoredLocalStorage();
-            _ = TestContext.Services.AddScoped<ILayoutService, LayoutService>();
-            _ = TestContext.Services.AddSingleton(new PortalSettings
+            _ = Services.AddScoped<ILayoutService, LayoutService>();
+            _ = Services.AddSingleton(new PortalSettings
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false
             });
-
-            TestContext.JSInterop.Mode = JSRuntimeMode.Loose;
-
         }
-
-        [TearDown]
-        public void TearDown() => TestContext?.Dispose();
 
         [Test]
         public void MainLayoutShouldRenderCorrectly()

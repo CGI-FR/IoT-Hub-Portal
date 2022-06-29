@@ -8,24 +8,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Dashboard
     using Bunit;
     using FluentAssertions;
     using MudBlazor;
-    using MudBlazor.Services;
     using NUnit.Framework;
 
     [TestFixture]
-    public class DashboardMetricCounterTests : TestContextWrapper
+    public class DashboardMetricCounterTests : BlazorUnitTest
     {
-        [SetUp]
-        public void Setup()
-        {
-            TestContext = new Bunit.TestContext();
-            _ = TestContext.Services.AddMudServices();
-
-            TestContext.JSInterop.Mode = JSRuntimeMode.Loose;
-        }
-
-        [TearDown]
-        public void TearDown() => TestContext?.Dispose();
-
         [Test]
         public void DashboardMetricCounterShouldRenderCorrectly()
         {

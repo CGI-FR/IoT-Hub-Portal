@@ -3,50 +3,21 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
 {
-    using System;
     using System.Collections.Generic;
-    using Bunit;
+    using System.Linq;
     using Client.Exceptions;
     using Client.Models;
     using Client.Shared;
-    using Microsoft.AspNetCore.Components;
-    using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+    using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
-    using Moq;
     using MudBlazor;
-    using MudBlazor.Services;
     using NUnit.Framework;
 
     [TestFixture]
-    public class ErrorTests : IDisposable
+    public class ErrorTests : BlazorUnitTest
     {
-        private Bunit.TestContext testContext;
-        private MockRepository mockRepository;
-        private Mock<ISnackbar> mockSnackbar;
-        private Mock<IWebAssemblyHostEnvironment> mockWebAssemblyHostEnvironment;
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.testContext = new Bunit.TestContext();
-
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockSnackbar = new Mock<ISnackbar>();
-            this.mockWebAssemblyHostEnvironment = this.mockRepository.Create<IWebAssemblyHostEnvironment>();
-
-            _ = this.testContext.Services.AddSingleton(this.mockWebAssemblyHostEnvironment.Object);
-
-            _ = this.testContext.Services.AddMudServices();
-        }
-
-        private IRenderedComponent<TComponent> RenderComponent<TComponent>(params ComponentParameter[] parameters)
-            where TComponent : IComponent
-        {
-            return this.testContext.RenderComponent<TComponent>(parameters);
-        }
-
         [Test]
-        public void ProcessProblemDetailsShouldAddSnackBar()
+        public void ProcessProblemDetailsShouldSnackBar()
         {
             // Arrange
             var problemDetailsException = new ProblemDetailsException(new ProblemDetailsWithExceptionDetails
@@ -58,8 +29,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
                 ExceptionDetails = new List<ProblemDetailsWithExceptionDetails.ExceptionDetail>()
             });
 
-            _ = this.mockSnackbar.Setup(c => c.Add(It.Is<string>(x => x == problemDetailsException.ProblemDetailsWithExceptionDetails.Detail),
-                It.Is<Severity>(severity => severity == Severity.Error), It.IsAny<Action<SnackbarOptions>>()));
+            var snackBarService = Services.GetRequiredService<ISnackbar>();
 
             var cut = RenderComponent<Error>();
 
@@ -67,18 +37,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             cut.Instance.ProcessProblemDetails(problemDetailsException);
 
             // Assert
-            this.mockRepository.VerifyAll();
-        }
+            var snackBars = snackBarService.ShownSnackbars.ToList();
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+            _ = snackBars.Count.Should().Be(1);
 
-        protected virtual void Dispose(bool disposing)
-        {
-            this.testContext?.Dispose();
+            var errorSnackBar = snackBars.First();
+
+            _ = errorSnackBar.Message.Should().Be(problemDetailsException.ProblemDetailsWithExceptionDetails.Detail);
+            _ = errorSnackBar.Severity.Should().Be(Severity.Error);
         }
     }
 }

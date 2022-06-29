@@ -10,30 +10,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using MudBlazor;
-    using MudBlazor.Services;
     using NUnit.Framework;
 
     [TestFixture]
-    public class ProcessingDialogTests : IDisposable
+    public class ProcessingDialogTests : BlazorUnitTest
     {
-        private Bunit.TestContext testContext;
-
-        [SetUp]
-        public void SetUp()
+        public override void Setup()
         {
-            this.testContext = new Bunit.TestContext();
-            this.testContext.JSInterop.Mode = JSRuntimeMode.Loose;
-            _ = this.testContext.Services.AddSingleton<IDialogService, DialogService>();
-            _ = this.testContext.Services.AddMudServices();
+            base.Setup();
+
+            _ = Services.AddSingleton<IDialogService, DialogService>();
         }
 
         [Test]
         public async Task DisplayDialog()
         {
             // Assert
-            var comp = this.testContext.RenderComponent<MudDialogProvider>();
+            var comp = RenderComponent<MudDialogProvider>();
             _ = comp.Markup.Trim().Should().BeEmpty();
-            var service = this.testContext.Services.GetService<IDialogService>() as DialogService;
+            var service = Services.GetService<IDialogService>() as DialogService;
             _ = service?.Should().NotBe(null);
             IDialogReference dialogReference = null;
 
@@ -55,16 +50,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             await comp.InvokeAsync(() => service?.Close(dialogReference as DialogReference));
             var result = await dialogReference.Result;
             _ = result.Cancelled.Should().BeFalse();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
         }
     }
 }

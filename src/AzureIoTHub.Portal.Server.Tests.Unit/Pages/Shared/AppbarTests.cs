@@ -11,36 +11,30 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
-    using MudBlazor.Services;
     using NUnit.Framework;
 
     [TestFixture]
-    public class AppbarTests : TestContextWrapper
+    public class AppbarTests : BlazorUnitTest
     {
         private TestAuthorizationContext authContext;
         private FakeNavigationManager fakeNavigationManager;
 
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            TestContext = new Bunit.TestContext();
-            _ = TestContext.Services.AddMudServices();
-            this.authContext = TestContext.AddTestAuthorization();
+            base.Setup();
+
+            this.authContext = TestContext?.AddTestAuthorization();
             _ = TestContext.AddBlazoredLocalStorage();
-            _ = TestContext.Services.AddScoped<ILayoutService, LayoutService>();
-            _ = TestContext.Services.AddSingleton(new PortalSettings
+
+            _ = Services.AddScoped<ILayoutService, LayoutService>();
+            _ = Services.AddSingleton(new PortalSettings
             {
                 PortalName = "TEST",
                 IsLoRaSupported = false
             });
 
-            this.fakeNavigationManager = TestContext.Services.GetRequiredService<FakeNavigationManager>();
-
-            _ = TestContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
+            this.fakeNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
         }
-
-        [TearDown]
-        public void TearDown() => TestContext?.Dispose();
 
         [Test]
         public void AppBarShouldRendersCorrectly()

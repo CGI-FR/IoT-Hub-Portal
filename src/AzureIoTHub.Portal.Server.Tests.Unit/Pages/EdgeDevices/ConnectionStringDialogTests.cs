@@ -15,54 +15,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
     using FluentAssertions;
     using Helpers;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.JSInterop;
-    using Moq;
     using MudBlazor;
-    using MudBlazor.Interop;
-    using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
 
     [TestFixture]
-    public class ConnectionStringDialogTests : TestContextWrapper, IDisposable
+    public class ConnectionStringDialogTests : BlazorUnitTest
     {
-        private MockHttpMessageHandler mockHttpClient;
         private DialogService dialogService;
-        private MockRepository mockRepository;
-        private Mock<IJSRuntime> mockJSRuntime;
 
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            TestContext = new Bunit.TestContext();
-            _ = TestContext.Services.AddMudServices();
-            this.mockHttpClient = TestContext.Services.AddMockHttpClient();
-            _ = TestContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            base.Setup();
 
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockJSRuntime = this.mockRepository.Create<IJSRuntime>();
-            _ = TestContext.Services.AddSingleton(new ClipboardService(this.mockJSRuntime.Object));
+            _ = Services.AddSingleton<ClipboardService>();
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
-            this.mockHttpClient.AutoFlush = true;
-
-            _ = TestContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
-            _ = TestContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            _ = TestContext.JSInterop.SetupVoid("mudElementRef.saveFocus", _ => true);
-
-            this.dialogService = TestContext.Services.GetService<IDialogService>() as DialogService;
-        }
-
-        [TearDown]
-        public void TearDown() => TestContext?.Dispose();
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
+            this.dialogService = Services.GetService<IDialogService>() as DialogService;
         }
 
         [Test]
@@ -71,7 +40,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/credentials")
                 .RespondJson(new EnrollmentCredentials());
 
@@ -90,8 +59,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             _ = cut.FindAll("div.mud-grid-item").Count.Should().Be(4);
-            this.mockHttpClient.VerifyNoOutstandingRequest();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         [Test]
@@ -100,7 +69,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/credentials")
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
@@ -121,8 +90,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             _ = result.Cancelled.Should().BeTrue();
-            this.mockHttpClient.VerifyNoOutstandingRequest();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         [Test]
@@ -131,8 +100,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockHttpClient
-                .When(HttpMethod.Get, $"api/devices/{deviceId}/credentials")
+            _ = MockHttpClient
+                .When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/credentials")
                 .RespondJson(new EnrollmentCredentials());
 
             var cut = RenderComponent<MudDialogProvider>();
@@ -148,13 +117,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Act
             await cut.InvokeAsync(() => dialogReference = this.dialogService?.Show<ConnectionStringDialog>(string.Empty, parameters));
-            cut.Find("#cancel").Click();
+            cut.WaitForElement("#cancel").Click();
+
             var result = await dialogReference.Result;
 
             // Assert
             _ = result.Cancelled.Should().BeTrue();
-            this.mockHttpClient.VerifyNoOutstandingRequest();
-            this.mockHttpClient.VerifyNoOutstandingExpectation();
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
         }
     }
 }

@@ -16,40 +16,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
-    using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
 
     [TestFixture]
-    public class DeleteDeviceConfigurationTests : TestContextWrapper, IDisposable
+    public class DeleteDeviceConfigurationTests : BlazorUnitTest
     {
-        private MockHttpMessageHandler mockHttpClient;
-        private MockRepository mockRepository;
         private DialogService dialogService;
         private Mock<ISnackbar> mockSnackbarService;
 
-        [SetUp]
-        public void SetUp()
+        public override void Setup()
         {
-            TestContext = new Bunit.TestContext();
+            base.Setup();
 
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockHttpClient = TestContext.Services.AddMockHttpClient();
+            this.mockSnackbarService = MockRepository.Create<ISnackbar>();
 
-            this.mockSnackbarService = this.mockRepository.Create<ISnackbar>();
-            _ = TestContext.Services.AddSingleton(this.mockSnackbarService.Object);
+            _ = Services.AddSingleton(this.mockSnackbarService.Object);
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-            _ = TestContext.Services.AddMudServices();
-            _ = TestContext.Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
-
-            TestContext.JSInterop.Mode = JSRuntimeMode.Loose;
-            this.mockHttpClient.AutoFlush = true;
-
-            this.dialogService = TestContext.Services.GetService<IDialogService>() as DialogService;
+            this.dialogService = Services.GetService<IDialogService>() as DialogService;
         }
-
-        [TearDown]
-        public void TearDown() => TestContext?.Dispose();
 
         [Test]
         public async Task DeleteDeviceConfigurationShouldDeleteConfiguration()
@@ -58,7 +44,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             var configurationId = Guid.NewGuid().ToString();
             var configurationName = Guid.NewGuid().ToString();
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Delete, $"/api/device-configurations/{configurationId}")
                 .RespondText(string.Empty);
 
@@ -87,9 +73,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 
             // Assert
             _ = result.Cancelled.Should().BeFalse();
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
-            cut.WaitForAssertion(() => this.mockRepository.VerifyAll());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -99,7 +85,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             var configurationId = Guid.NewGuid().ToString();
             var configurationName = Guid.NewGuid().ToString();
 
-            _ = this.mockHttpClient
+            _ = MockHttpClient
                 .When(HttpMethod.Delete, $"/api/device-configurations/{configurationId}")
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
@@ -122,18 +108,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             cut.Find("#delete-device-configuration").Click();
 
             // Assert
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
         }
     }
 }

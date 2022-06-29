@@ -4,7 +4,6 @@
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 {
     using System;
-    using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;
     using Bunit;
@@ -14,54 +13,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
     using Client.Services;
     using FluentAssertions;
     using Helpers;
-    using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.JSInterop;
     using Models.v10;
-    using Moq;
     using MudBlazor;
-    using MudBlazor.Interop;
-    using MudBlazor.Services;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
 
     [TestFixture]
-    public class ConnectionStringDialogTests : IDisposable
+    public class ConnectionStringDialogTests : BlazorUnitTest
     {
-        private Bunit.TestContext testContext;
-        private MockHttpMessageHandler mockHttpClient;
-
-        private MockRepository mockRepository;
-        private Mock<IJSRuntime> mockJSRuntime;
-
-        [SetUp]
-        public void SetUp()
+        public override void Setup()
         {
-            this.testContext = new Bunit.TestContext();
+            base.Setup();
 
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockJSRuntime = this.mockRepository.Create<IJSRuntime>();
-            this.mockHttpClient = this.testContext.Services
-                .AddMockHttpClient();
-
-            _ = this.testContext.Services.AddSingleton(new ClipboardService(this.mockJSRuntime.Object));
-
-            _ = this.testContext.Services.AddMudServices();
-
-            _ = this.testContext.JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
-            _ = this.testContext.JSInterop.SetupVoid("mudPopover.connect", _ => true);
-            _ = this.testContext.JSInterop.SetupVoid("Blazor._internal.InputFile.init", _ => true);
-            _ = this.testContext.JSInterop.Setup<BoundingClientRect>("mudElementRef.getBoundingClientRect", _ => true);
-            _ = this.testContext.JSInterop.Setup<IEnumerable<BoundingClientRect>>("mudResizeObserver.connect", _ => true);
-            _ = this.testContext.JSInterop.SetupVoid("mudElementRef.saveFocus", _ => true);
-
-            this.mockHttpClient.AutoFlush = true;
-        }
-
-        private IRenderedComponent<TComponent> RenderComponent<TComponent>(params ComponentParameter[] parameters)
-            where TComponent : IComponent
-        {
-            return this.testContext.RenderComponent<TComponent>(parameters);
+            _ = Services.AddSingleton<ClipboardService>();
         }
 
         [Test]
@@ -70,11 +35,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/devices/{deviceId}/credentials")
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/devices/{deviceId}/credentials")
                 .RespondJson(new EnrollmentCredentials());
 
             var cut = RenderComponent<MudDialogProvider>();
-            var service = this.testContext.Services.GetService<IDialogService>() as DialogService;
+            var service = Services.GetService<IDialogService>() as DialogService;
 
             var parameters = new DialogParameters
             {
@@ -88,7 +53,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 
             // Assert
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
         }
 
         [Test]
@@ -97,11 +62,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockHttpClient.When(HttpMethod.Get, $"/api/devices/{deviceId}/credentials")
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/devices/{deviceId}/credentials")
                 .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<MudDialogProvider>();
-            var service = this.testContext.Services.GetService<IDialogService>() as DialogService;
+            var service = Services.GetService<IDialogService>() as DialogService;
 
             var parameters = new DialogParameters
             {
@@ -119,17 +84,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 
             // Assert
             cut.WaitForAssertion(() => result.Cancelled.Should().BeFalse());
-            cut.WaitForAssertion(() => this.mockHttpClient.VerifyNoOutstandingExpectation());
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
+            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
         }
     }
 }

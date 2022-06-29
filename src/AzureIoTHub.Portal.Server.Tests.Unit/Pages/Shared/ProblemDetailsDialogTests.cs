@@ -12,38 +12,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
     using Client.Models;
     using Client.Shared;
     using FluentAssertions;
-    using Microsoft.AspNetCore.Components;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
-    using MudBlazor.Services;
     using NUnit.Framework;
 
     [TestFixture]
-    public class ProblemDetailsDialogTests : IDisposable
+    public class ProblemDetailsDialogTests : BlazorUnitTest
     {
-        private Bunit.TestContext testContext;
-        private MockRepository mockRepository;
         private Mock<IWebAssemblyHostEnvironment> mockWebAssemblyHostEnvironment;
 
-        [SetUp]
-        public void SetUp()
+        public override void Setup()
         {
-            this.testContext = new Bunit.TestContext();
+            base.Setup();
 
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockWebAssemblyHostEnvironment = this.mockRepository.Create<IWebAssemblyHostEnvironment>();
-
-            _ = this.testContext.Services.AddSingleton(this.mockWebAssemblyHostEnvironment.Object);
-
-            _ = this.testContext.Services.AddMudServices();
-        }
-
-        private IRenderedComponent<TComponent> RenderComponent<TComponent>(params ComponentParameter[] parameters)
-            where TComponent : IComponent
-        {
-            return this.testContext.RenderComponent<TComponent>(parameters);
+            this.mockWebAssemblyHostEnvironment = MockRepository.Create<IWebAssemblyHostEnvironment>();
+            _ = Services.AddSingleton(this.mockWebAssemblyHostEnvironment.Object);
         }
 
         [Test]
@@ -63,7 +48,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
                 .Returns("Development");
 
             var cut = RenderComponent<MudDialogProvider>();
-            var service = this.testContext.Services.GetService<IDialogService>() as DialogService;
+            var service = Services.GetService<IDialogService>() as DialogService;
 
             var parameters = new DialogParameters
             {
@@ -90,17 +75,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
 
             var exceptionDetailsMudTextField = mudExpansionPanel.FindComponent<MudTextField<string>>();
             _ = exceptionDetailsMudTextField.Instance.Value.Should().Be(problemDetailsWithExceptionDetails.ToJson());
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            this.testContext?.Dispose();
         }
     }
 }

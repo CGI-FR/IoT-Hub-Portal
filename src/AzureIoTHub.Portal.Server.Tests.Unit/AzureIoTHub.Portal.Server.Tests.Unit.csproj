@@ -48,6 +48,7 @@
   <ItemGroup>
     <Folder Include="Factories\" />
     <Folder Include="Handlers\" />
+    <Folder Include="Mocks\" />
   </ItemGroup>
 
 </Project>
