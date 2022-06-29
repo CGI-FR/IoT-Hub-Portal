@@ -4,8 +4,9 @@
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System;
+    using System.Globalization;
     using System.Reflection;
-    using AzureIoTHub.Portal.Server.Identity;
+    using Identity;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
@@ -21,7 +22,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     public class SettingsController : ControllerBase
     {
         /// <summary>
-        /// The device client api indentity options.
+        /// The device client api identity options.
         /// </summary>
         private readonly ClientApiIndentityOptions configuration;
 
@@ -67,7 +68,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             {
                 IsLoRaSupported = this.configHandler.IsLoRaEnabled,
                 PortalName = this.configHandler.PortalName ?? "Azure IoT Hub Portal",
-                Version = Assembly.GetExecutingAssembly().GetName().Version.ToString()
+                Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
+                CopyrightYear = DateTime.Now.Year.ToString(CultureInfo.InvariantCulture)
             });
         }
     }

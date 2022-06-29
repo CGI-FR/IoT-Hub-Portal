@@ -54,6 +54,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             cut.WaitForAssertion(() => cut.FindComponent<Appbar>().Instance.Should().NotBeNull());
             cut.WaitForAssertion(() => cut.FindComponent<MudDrawer>().Instance.Should().NotBeNull());
             cut.WaitForAssertion(() => cut.FindComponent<NavMenu>().Instance.Should().NotBeNull());
+            cut.WaitForAssertion(() => cut.FindComponent<PortalFooter>().Instance.Should().NotBeNull());
 
             _ = cut.Markup.Should().NotBeNullOrEmpty();
             _ = cut.FindAll("div.mud-popover-provider").Count.Should().Be(1);
