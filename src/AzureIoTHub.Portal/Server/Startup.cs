@@ -91,6 +91,8 @@ namespace AzureIoTHub.Portal.Server
                     opts.TokenValidationParameters.ValidateAudience = configuration.OIDCValidateAudience;
                     opts.TokenValidationParameters.ValidateLifetime = configuration.OIDCValidateLifetime;
                     opts.TokenValidationParameters.ValidateIssuerSigningKey = configuration.OIDCValidateIssuerSigningKey;
+                    opts.TokenValidationParameters.ValidateActor = configuration.OIDCValidateActor;
+                    opts.TokenValidationParameters.ValidateTokenReplay = configuration.OIDCValidateTokenReplay;
                 });
 
             _ = services.AddSingleton(configuration);

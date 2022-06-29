@@ -25,6 +25,8 @@ namespace AzureIoTHub.Portal.Server
         internal const string OIDCValidateAudienceKey = "OIDC:ValidateAudience";
         internal const string OIDCValidateLifetimeKey = "OIDC:ValidateLifetime";
         internal const string OIDCValidateIssuerSigningKeyKey = "OIDC:ValidateIssuerSigningKey";
+        internal const string OIDCValidateActorKey = "OIDC:ValidateActor";
+        internal const string OIDCValidateTokenReplayKey = "OIDC:ValidateTokenReplay";
 
         internal const string IsLoRaFeatureEnabledKey = "LoRaFeature:Enabled";
 
@@ -78,6 +80,10 @@ namespace AzureIoTHub.Portal.Server
         internal abstract bool OIDCValidateLifetime { get; }
 
         internal abstract bool OIDCValidateIssuerSigningKey { get; }
+
+        internal abstract bool OIDCValidateActor { get; }
+
+        internal abstract bool OIDCValidateTokenReplay { get; }
 
         internal abstract bool IsLoRaEnabled { get; }
 
