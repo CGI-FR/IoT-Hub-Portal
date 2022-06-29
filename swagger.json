@@ -4223,10 +4223,15 @@
             "type": "string",
             "description": "The poral name.",
             "nullable": true
+          },
+          "copyrightYear": {
+            "type": "string",
+            "description": "Copyright Year",
+            "nullable": true
           }
         },
         "additionalProperties": false,
-        "description": "Protal Settings."
+        "description": "Portal Settings."
       },
       "ProblemDetails": {
         "type": "object",
