@@ -277,19 +277,24 @@ namespace AzureIoTHub.Portal.Server
             ArgumentNullException.ThrowIfNull(env, nameof(env));
             ArgumentNullException.ThrowIfNull(app, nameof(app));
 
+            var configuration = app.ApplicationServices.GetService<ConfigHandler>();
+
             // Use problem details
             _ = app.UseProblemDetails();
             app.UseIfElse(IsApiRequest, UseApiExceptionMiddleware, UseUIExceptionMiddleware);
 
-            _ = app.UseSecurityHeaders(opts =>
+            if (configuration.UseSecurityHeaders)
             {
-                _= opts.AddContentSecurityPolicy(csp =>
+                _ = app.UseSecurityHeaders(opts =>
                 {
-                    _ = csp.AddFrameAncestors()
-                        .Self()
-                        .From(app.ApplicationServices.GetService<ConfigHandler>().OIDCMetadataUrl);
+                    _ = opts.AddContentSecurityPolicy(csp =>
+                    {
+                        _ = csp.AddFrameAncestors()
+                            .Self()
+                            .From(configuration.OIDCMetadataUrl);
+                    });
                 });
-            });
+            }
 
             if (env.IsDevelopment())
             {
