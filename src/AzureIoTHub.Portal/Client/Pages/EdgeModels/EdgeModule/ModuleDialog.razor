@@ -1,0 +1,69 @@
+﻿@using AzureIoTHub.Portal.Models.v10
+@using AzureIoTHub.Portal.Shared.Models.v10
+@inject HttpClient Http
+@inject IJSRuntime JS
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="@Module.ModuleName"
+                              id=@nameof(IoTEdgeModule.ModuleName)
+                              Label="Module Name"
+                              Variant="Variant.Outlined"
+                              For="@(()=> Module.ModuleName)"
+                              Required="true" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="@Module.Version"
+                              id=@nameof(IoTEdgeModule.Version)
+                              Label="Image URI"
+                              Variant="Variant.Outlined"
+                              For="@(()=> Module.Version)"
+                              Required="true" />
+            </MudItem>
+        </MudGrid>
+
+        <MudTabs Elevation="1" Class="mt-10" Rounded="true" PanelClass="mt-6">
+
+            <MudTabPanel Text="Environment variables">
+                <ModuleDialogTab1 EnvironmentVariables="@Module.EnvironmentVariables" />
+            </MudTabPanel>
+
+            <MudTabPanel Text="Module identity twin settings">
+                <ModuleDialogTab2 ModuleIdentityTwinSettings="@Module.ModuleIdentityTwinSettings" />
+            </MudTabPanel>
+
+            <MudTabPanel Text="Commands">
+                <ModuleDialogTab3 Commands="@Module.Commands" />
+            </MudTabPanel>
+
+        </MudTabs>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public IoTEdgeModule Module { get; set; }
+
+    public bool IsLoading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        Console.Write(Module.EnvironmentVariables);
+        await Task.Delay(0);
+        IsLoading = false;
+    }
+
+    void Cancel() => MudDialog.Cancel();
+
+
+}

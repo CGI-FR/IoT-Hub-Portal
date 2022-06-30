@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
     using System.Linq;
     using System.Text.RegularExpressions;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.Azure.Devices;
     using Newtonsoft.Json.Linq;
 
@@ -152,12 +153,24 @@ namespace AzureIoTHub.Portal.Server.Helpers
 
             foreach (var item in GetEnvironmentVariables(module))
             {
-                result.EnvironmentVariables.Add(item.Key, item.Value);
+                //result.EnvironmentVariables.Add(item.Key, item.Value);
+                _ = result.EnvironmentVariables.Append(
+                    new IoTEdgeModuleEnvironmentVariable()
+                    {
+                        Name = item.Key,
+                        Value = item.Value
+                    });
             }
 
             foreach (var item in GetModuleIdentityTwinSettings(config, module))
             {
-                result.ModuleIdentityTwinSettings.Add(item.Key, item.Value);
+                //result.ModuleIdentityTwinSettings.Add(item.Key, item.Value);
+                _ = result.ModuleIdentityTwinSettings.Append(
+                new IoTEdgeModuleTwinSetting()
+                {
+                    Name = item.Key,
+                    Value = item.Value
+                });
             }
 
             return result;
