@@ -105,6 +105,32 @@ namespace AzureIoTHub.Portal.Server.Services
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }
 
+        public async Task RoullOutEdgeModelConfiguration(string modelId, Dictionary<string, object> EdgeModules)
+        {
+            var configurations = await this.registryManager.GetConfigurationsAsync(0);
+
+            var configurationNamePrefix = modelId?.Trim()
+                                                .ToLowerInvariant()
+                                                .Replace(" ", "-", StringComparison.OrdinalIgnoreCase);
+
+            foreach (var item in configurations)
+            {
+                if (!item.Id.StartsWith(configurationNamePrefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                await this.registryManager.RemoveConfigurationAsync(item.Id);
+            }
+
+            var newConfiguration = new Configuration($"{configurationNamePrefix}-{DateTime.UtcNow.Ticks}");
+            newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
+            newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'";
+            newConfiguration.Content.ModuleContent = EdgeModules;
+
+            _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
+        }
+
         public async Task RollOutDeviceConfiguration(
             string modelId,
             Dictionary<string, object> desiredProperties,

@@ -67,18 +67,23 @@
                                         <MudItem xs="12">
                                             <MudTable Items="@moduleCommands" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                                                 <ColGroup>
-                                                    <col style="width: 50%;" />
+                                                    <col style="width: 30%;" />
+                                                    <col style="width: 30%;" />
                                                     <col style="width: 10%;" />
                                                     <col style="width: 5%;" />
                                                 </ColGroup>
                                                 <HeaderContent>
                                                     <MudTh Style="text-align: center">Module Name</MudTh>
+                                                    <MudTh Style="text-align: center">Version</MudTh>
                                                     <MudTh Style="text-align: center">See detail</MudTh>
                                                     <MudTh Style="text-align: center">Delete</MudTh>
                                                 </HeaderContent>
                                                 <RowTemplate Context="CommandContext">
                                                     <MudTd DataLabel="odule Name" Style="word-break: break-all;">
                                                         <MudText >@CommandContext.ModuleName</MudText>
+                                                    </MudTd>
+                                                    <MudTd DataLabel="odule Name" Style="word-break: break-all;">
+                                                        <MudText >@CommandContext.Version</MudText>
                                                     </MudTd>
                                                     <MudTd DataLabel="See detail" Style="text-align: center;">
                                                         <MudButton Variant="Variant.Filled">Edit</MudButton>
@@ -88,7 +93,7 @@
                                                     </MudTd>
                                                 </RowTemplate>
                                                 <FooterContent>
-                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddCommand">Add new module</MudButton>
+                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="ShowAddEdgeModuleDialog">Add new module</MudButton>
                                                 </FooterContent>
                                             </MudTable>
                                         </MudItem>
@@ -104,12 +109,13 @@
         </MudItem>
     </MudGrid>
 
-
 </MudForm>
 
 @code {
     [CascadingParameter]
     public Error Error { get; set; }
+
+    readonly DialogOptions maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
 
     public List<IoTEdgeModule> moduleCommands { get; set; } = new List<IoTEdgeModule>();
 
@@ -146,14 +152,14 @@
         imageDataUrl = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
     }
 
+    private async Task ShowAddEdgeModuleDialog()
+    {
+        
+    }
+
     private void AddCommand()
     {
-        var last = moduleCommands.LastOrDefault();
 
-        if (moduleCommands.Count == 0 || (last.ModuleName is not null))
-        {
-            moduleCommands.Add(new IoTEdgeModule());
-        }
     }
 
     private void DeleteCommand(IoTEdgeModule item)

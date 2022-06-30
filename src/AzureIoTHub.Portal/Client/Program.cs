@@ -53,6 +53,7 @@ namespace AzureIoTHub.Portal.Client
             _ = builder.Services.AddScoped<ILayoutService, LayoutService>();
             _ = builder.Services.AddScoped<IDashboardLayoutService, DashboardLayoutService>();
 
+            _ = builder.Services.AddScoped<IEdgeDeviceModelClientService, EdgeDeviceModelClientService>();
             _ = builder.Services.AddScoped<IEdgeDeviceClientService, EdgeDeviceClientService>();
             _ = builder.Services.AddScoped<IDashboardMetricsClientService, DashboardMetricsClientService>();
 

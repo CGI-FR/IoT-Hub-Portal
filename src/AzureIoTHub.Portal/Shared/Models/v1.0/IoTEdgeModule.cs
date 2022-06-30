@@ -40,6 +40,6 @@ namespace AzureIoTHub.Portal.Models.v10
         /// </summary>
         public Dictionary<string, string> ModuleIdentityTwinSettings { get; set; } = new Dictionary<string, string>();
 
-        public List<ModuleCommand> Commands { get; set; } = new List<ModuleCommand>();
+        public Dictionary<string, string> Commands { get; set; } = new Dictionary<string, string>();
     }
 }

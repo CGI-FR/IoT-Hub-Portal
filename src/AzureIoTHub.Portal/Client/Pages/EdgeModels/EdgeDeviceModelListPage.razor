@@ -1,0 +1,127 @@
+﻿@page "/edge-device-model"
+
+@using Microsoft.AspNetCore.Authorization
+@using AzureIoTHub.Portal.Models.v10
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@attribute [Authorize]
+@inject IEdgeDeviceModelClientService EdgeModelService
+@inject NavigationManager NavigationManager
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudTable T="IoTEdgeModelListItem" Items="@EdgeModelList" Loading="IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
+            <ColGroup>
+                <col style="width: 5%;" />
+                <col style="width: 30%;" />
+                <col style="width: 30%;" />
+                <col style="width: 5%;" />
+                <col style="width: 5%;" />
+            </ColGroup>
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Edge Models</MudText>
+                <MudSpacer />
+                <MudTooltip Text="Refresh list">
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@LoadEdgeModels" Class="ma-2"></MudIconButton>
+                </MudTooltip>
+                <MudTooltip Text="Add device model">
+                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" OnClick="@ShowAddDialog" Size="Size.Medium" id="addDeviceModelButton" />
+                </MudTooltip>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh></MudTh>
+                <MudTh>Name</MudTh>
+                <MudTh Style="text-align: center">Description</MudTh>
+                <MudTh Style="text-align: center">Details</MudTh>
+                <MudTh Style="text-align: center">Delete</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd Style="text-align: center">
+                    <img height="25" src="@context.ImageUrl" />
+                </MudTd>
+                <MudTd DataLabel="Name" Style="word-break: break-all;">
+                    @context.Name
+                </MudTd>
+                <MudTd DataLabel="Description" Style="word-break: break-all; ">
+                    @context.Description
+                </MudTd>
+                <MudTd DataLabel="Details" Style="text-align: center">
+                    <MudTooltip Text="Go to the detail">
+                        <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                    </MudTooltip>
+                </MudTd>
+                <MudTd DataLabel="Delete" Style="text-align: center">
+                    <MudTooltip Text="Delete device model">
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" id="deleteButton"></MudIconButton>
+                    </MudTooltip>
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>No matching records found</MudText>
+            </NoRecordsContent>
+            <LoadingContent>
+                <MudText>Loading...</MudText>
+            </LoadingContent>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+            </PagerContent>
+        </MudTable>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [CascadingParameter]
+    public Error Error {get; set;}
+
+    private List<IoTEdgeModelListItem> EdgeModelList = new List<IoTEdgeModelListItem>();
+    //{
+    //    new IoTEdgeModelListItem(){ Name = "EdgeModelTest01", Description = "description test 01." },
+    //    new IoTEdgeModelListItem(){ Name = "EdgeModelTest02", Description = "description test 02." }
+    //};
+
+    private bool IsLoading { get; set; } = true;
+    private readonly int[] pageSizeOptions = { 2, 5, 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+         await LoadEdgeModels();
+    }
+
+    private async Task LoadEdgeModels()
+    {
+        try
+        {
+            IsLoading = true;
+            EdgeModelList = await EdgeModelService.GetIoTEdgeModelList();
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    public void ShowAddDialog()
+    {
+        
+    }
+
+    private async Task DeleteDeviceModel(IoTEdgeModelListItem ioTEdgeModel)
+    {
+        var result = await this.EdgeModelService.DeleteIoTEdgeModel(ioTEdgeModel.ModelId);
+
+        result.EnsureSuccessStatusCode();
+    }
+
+    private void GoToDetails(IoTEdgeModelListItem item)
+    {
+        NavigationManager.NavigateTo($"/edge/configurations/{item.ModelId}");
+    }
+}
