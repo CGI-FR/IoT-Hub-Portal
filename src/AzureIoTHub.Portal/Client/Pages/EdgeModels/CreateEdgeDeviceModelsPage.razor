@@ -34,7 +34,7 @@
                 </MudCardActions>
             </MudCard>
             <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" id="SaveButton">Save Changes</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Save())" id="SaveButton">Save Changes</MudButton>
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
@@ -122,7 +122,10 @@
 
     private MudForm form;
 
-    private IoTEdgeModel Model = new IoTEdgeModel();
+    private IoTEdgeModel Model = new IoTEdgeModel()
+    {
+            ModelId = Guid.NewGuid().ToString()
+    };
 
     // Used to manage the picture
     private MultipartFormDataContent content;
@@ -178,6 +181,27 @@
                 ModuleIdentityTwinSettings = new Dictionary<string, string>()
             }
         };
+
+        try
+        {
+
+            var result = await EdgeModelService.CreateIoTEdgeModel(Model);
+            result.EnsureSuccessStatusCode();
+
+            if (content is not null)
+            {
+                var response = EdgeModelService.ChangeAvatar(Model.ModelId, content);
+            }
+
+            DialogService.Close(processingDialog);
+            Snackbar.Add("Device model successfully created.", Severity.Success);
+        }
+        catch(ProblemDetailsException exception)
+        {
+            DialogService.Close(processingDialog);
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
 
     private void AddCommand()
     {
