@@ -152,6 +152,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 throw new ProblemDetailsException(validation);
             }
 
+            var existingDevice = await this.devicesService.GetDevice(device.DeviceID);
+            if (existingDevice != null)
+            {
+                throw new InternalServerErrorException($"The device with ID {device.DeviceID} already exists");
+            }
+
             // Create a new Twin from the form's fields.
             var newTwin = new Twin()
             {
