@@ -264,6 +264,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             }
 
             await this.configService.RollOutEdgeModelConfiguration(deviceModelObject.ModelId, desiredProperties);
-        }
     }
+}
 }

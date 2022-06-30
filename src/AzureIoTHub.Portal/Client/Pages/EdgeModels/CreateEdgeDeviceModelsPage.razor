@@ -68,7 +68,8 @@
                                         <MudItem xs="12">
                                             <MudTable Items="@moduleCommands" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                                                 <ColGroup>
-                                                    <col style="width: 50%;" />
+                                                    <col style="width: 30%;" />
+                                                    <col style="width: 30%;" />
                                                     <col style="width: 10%;" />
                                                     <col style="width: 5%;" />
                                                 </ColGroup>
@@ -93,7 +94,7 @@
                                                     </MudTd>
                                                 </RowTemplate>
                                                 <FooterContent>
-                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddCommand">Add new module</MudButton>
+                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="ShowAddEdgeModuleDialog">Add new module</MudButton>
                                                 </FooterContent>
                                             </MudTable>
                                         </MudItem>
@@ -108,7 +109,6 @@
             </MudTabs>
         </MudItem>
     </MudGrid>
-
 
 </MudForm>
 
@@ -181,12 +181,7 @@
 
     private void AddCommand()
     {
-        var last = moduleCommands.LastOrDefault();
 
-        if (moduleCommands.Count == 0 || (last.ModuleName is not null))
-        {
-            moduleCommands.Add(new IoTEdgeModule());
-        }
     }
 
     private void DeleteCommand(IoTEdgeModule item)
