@@ -105,7 +105,7 @@ namespace AzureIoTHub.Portal.Server.Services
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }
 
-        public async Task RoullOutEdgeModelConfiguration(string modelId, Dictionary<string, object> EdgeModules)
+        public async Task RollOutEdgeModelConfiguration(string modelId, Dictionary<string, object> EdgeModules)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 

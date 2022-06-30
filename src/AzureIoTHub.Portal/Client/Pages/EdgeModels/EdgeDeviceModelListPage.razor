@@ -25,7 +25,7 @@
                     <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@LoadEdgeModels" Class="ma-2"></MudIconButton>
                 </MudTooltip>
                 <MudTooltip Text="Add device model">
-                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" OnClick="@ShowAddDialog" Size="Size.Medium" id="addDeviceModelButton" />
+                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" OnClick="@RedirectToCreatePage" Size="Size.Medium" id="addDeviceModelButton" />
                 </MudTooltip>
             </ToolBarContent>
             <HeaderContent>
@@ -74,10 +74,6 @@
     public Error Error {get; set;}
 
     private List<IoTEdgeModelListItem> EdgeModelList = new List<IoTEdgeModelListItem>();
-    //{
-    //    new IoTEdgeModelListItem(){ Name = "EdgeModelTest01", Description = "description test 01." },
-    //    new IoTEdgeModelListItem(){ Name = "EdgeModelTest02", Description = "description test 02." }
-    //};
 
     private bool IsLoading { get; set; } = true;
     private readonly int[] pageSizeOptions = { 2, 5, 10 };
@@ -108,9 +104,9 @@
         }
     }
 
-    public void ShowAddDialog()
+    public void RedirectToCreatePage()
     {
-        
+        NavigationManager.NavigateTo("/edge-device-models/new");
     }
 
     private async Task DeleteDeviceModel(IoTEdgeModelListItem ioTEdgeModel)
