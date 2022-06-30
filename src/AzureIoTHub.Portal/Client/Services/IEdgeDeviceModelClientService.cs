@@ -19,5 +19,9 @@ namespace AzureIoTHub.Portal.Client.Services
         Task<HttpResponseMessage> UpdateIoTEdgeModel(IoTEdgeModel model);
 
         Task<HttpResponseMessage> DeleteIoTEdgeModel(string modelId);
+
+        Task<HttpResponseMessage> ChangeAvatar(string id, MultipartFormDataContent content);
+
+        Task<HttpResponseMessage> DeleteAvatar(string id);
     }
 }

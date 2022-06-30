@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Controllers.v1._0
+namespace AzureIoTHub.Portal.Server.Controllers.v10
 {
     using System;
     using System.Collections.Generic;
@@ -12,16 +12,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Logging;
+    //using Microsoft.Extensions.Logging;
 
     [Authorize]
-    [Route("api/edge-models")]
+    [Route("api/edge/models")]
     [ApiExplorerSettings(GroupName = "IoT Edge Devices Models")]
     [ApiController]
     public class EdgeDeviceModelsController : ControllerBase
@@ -36,7 +36,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0
         /// <summary>
         /// The logger.
         /// </summary>
-        private readonly ILogger log;
+        //private readonly ILogger log;
 
         /// <summary>
         /// The table client factory.
@@ -48,15 +48,23 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0
         /// </summary>
         private readonly IEdgeDeviceModelMapper edgeDeviceModelMapper;
 
-        public EdgeDeviceModelsController(IConfigService configService,
-            ILogger log,
+        /// <summary>
+        /// The device model image manager.
+        /// </summary>
+        private readonly IDeviceModelImageManager deviceModelImageManager;
+
+        public EdgeDeviceModelsController(
+            IConfigService configService,
+            //ILogger log,
             ITableClientFactory tableClientFactory,
+            IDeviceModelImageManager deviceModelImageManager,
             IEdgeDeviceModelMapper edgeDeviceModelMapper)
         {
             this.configService = configService;
-            this.log = log;
+            //this.log = log;
             this.tableClientFactory = tableClientFactory;
             this.edgeDeviceModelMapper = edgeDeviceModelMapper;
+            this.deviceModelImageManager = deviceModelImageManager;
         }
 
         [HttpGet]
@@ -99,7 +107,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0
                     return NotFound();
                 }
 
-                this.log.Log(LogLevel.Error, e.Message, e);
+                //this.log.Log(LogLevel.Error, e.Message, e);
 
                 throw new InternalServerErrorException($"Unable to get the device model with the id: {modelId}", e);
             }
@@ -122,7 +130,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0
                 {
                     if (e.Status != StatusCodes.Status404NotFound)
                     {
-                        this.log.Log(LogLevel.Error, e.Message, e);
+                        //this.log.Log(LogLevel.Error, e.Message, e);
 
                         throw new InternalServerErrorException($"Unable create the device model with id: {ioTEdgeModel?.ModelId}.", e);
                     }
@@ -140,6 +148,100 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0
             return Ok();
         }
 
+        /// <summary>
+        /// Gets the avatar.
+        /// </summary>
+        /// <param name="id">The model identifier.</param>
+        /// <returns>The avatar.</returns>
+        [HttpGet("{id}/avatar", Name = "GET edge Device model avatar URL")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public virtual async Task<ActionResult<string>> GetAvatar(string id)
+        {
+            try
+            {
+                _ = await this.tableClientFactory
+                            .GetEdgeDeviceTemplates()
+                            .GetEntityAsync<TableEntity>(DefaultPartitionKey, id);
+
+                return this.Ok(this.deviceModelImageManager.ComputeImageUri(id).ToString());
+            }
+            catch (RequestFailedException e)
+            {
+                if (e.Status == StatusCodes.Status404NotFound)
+                {
+                    return NotFound();
+                }
+
+                //this.log.Log(LogLevel.Error, e.Message, e);
+
+                throw new InternalServerErrorException("Unable to get the device model avatar.", e);
+            }
+        }
+
+        /// <summary>
+        /// Changes the avatar.
+        /// </summary>
+        /// <param name="id">The model identifier.</param>
+        /// <param name="file">The file.</param>
+        /// <returns>The avatar.</returns>
+        [HttpPost("{id}/avatar", Name = "POST Update the edge device model avatar")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public virtual async Task<ActionResult<string>> ChangeAvatar(string id, IFormFile file)
+        {
+            try
+            {
+                _ = await this.tableClientFactory
+                               .GetEdgeDeviceTemplates()
+                               .GetEntityAsync<TableEntity>(DefaultPartitionKey, id);
+
+                return Ok(await this.deviceModelImageManager.ChangeDeviceModelImageAsync(id, file?.OpenReadStream()));
+            }
+            catch (RequestFailedException e)
+            {
+                if (e.Status == StatusCodes.Status404NotFound)
+                {
+                    return NotFound();
+                }
+
+                //this.log.Log(LogLevel.Error, e.Message, e);
+
+                throw new InternalServerErrorException($"Unable to change the device model avatar with id:{id}.", e);
+            }
+        }
+
+        /// <summary>
+        /// Deletes the avatar.
+        /// </summary>
+        /// <param name="id">The model identifier.</param>
+        [HttpDelete("{id}/avatar", Name = "DELETE Remove the edge device model avatar")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public virtual async Task<IActionResult> DeleteAvatar(string id)
+        {
+            try
+            {
+                _ = await this.tableClientFactory
+                               .GetEdgeDeviceTemplates()
+                               .GetEntityAsync<TableEntity>(DefaultPartitionKey, id);
+
+                await this.deviceModelImageManager.DeleteDeviceModelImageAsync(id);
+
+                return NoContent();
+            }
+            catch (RequestFailedException e)
+            {
+                if (e.Status == StatusCodes.Status404NotFound)
+                {
+                    return NotFound();
+                }
+
+                //this.log.Log(LogLevel.Error, e.Message, e);
+
+                throw new InternalServerErrorException($"Unable to delete avatar of the device model with the id: {id}", e);
+            }
+        }
 
         /// <summary>
         /// Saves the entity.
@@ -153,20 +255,15 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0
             try
             {
                 _ = await this.tableClientFactory
-                    .GetDeviceTemplates()
+                    .GetEdgeDeviceTemplates()
                     .UpsertEntityAsync(entity);
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException("Unable to upsert the device model entity.", e);
+                throw new InternalServerErrorException("Unable to upsert the edge device model entity.", e);
             }
 
-            var deviceModelTwin = new TwinCollection();
-
-            _ = await this.deviceProvisioningServiceManager.CreateEnrollmentGroupFromModelAsync(deviceModelObject.ModelId, deviceModelObject.Name, deviceModelTwin);
-
-            await this.configService.RollOutDeviceModelConfiguration(deviceModelObject.ModelId, desiredProperties);
+            await this.configService.RollOutEdgeModelConfiguration(deviceModelObject.ModelId, desiredProperties);
         }
     }
-}
 }

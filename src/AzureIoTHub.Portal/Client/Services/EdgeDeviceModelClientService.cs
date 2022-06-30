@@ -12,7 +12,7 @@ namespace AzureIoTHub.Portal.Client.Services
     public class EdgeDeviceModelClientService : IEdgeDeviceModelClientService
     {
         private readonly HttpClient http;
-        private readonly string apiUrlBase = "api/edge-models";
+        private readonly string apiUrlBase = "api/edge/models";
 
         public EdgeDeviceModelClientService(HttpClient http)
         {
@@ -42,6 +42,17 @@ namespace AzureIoTHub.Portal.Client.Services
         public async Task<HttpResponseMessage> DeleteIoTEdgeModel(string modelId)
         {
             return await this.http.DeleteAsync($"{this.apiUrlBase}/{modelId}");
+        }
+
+
+        public async Task<HttpResponseMessage> ChangeAvatar(string id, MultipartFormDataContent content)
+        {
+            return await this.http.PostAsync($"{this.apiUrlBase}/{id}/avatar", content);
+        }
+
+        public async Task<HttpResponseMessage> DeleteAvatar(string id)
+        {
+            return await this.http.DeleteAsync($"{this.apiUrlBase}/{id}/avatar");
         }
     }
 }

@@ -63,7 +63,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             return EdgeModuleList;
         }
 
-        private void AddEdgeModule(string moduleName, object module, Dictionary<string, object> moduleList)
+        private static void AddEdgeModule(string moduleName, IoTEdgeModule module, Dictionary<string, object> moduleList)
         {
             moduleList.Add(moduleName, module);
         }
