@@ -27,6 +27,11 @@ namespace AzureIoTHub.Portal.Server.Factories
             return CreateClient(ITableClientFactory.DeviceTemplateTableName);
         }
 
+        public TableClient GetEdgeDeviceTemplates()
+        {
+            return CreateClient(ITableClientFactory.EdgeDeviceTemplateTableName);
+        }
+
         public TableClient GetDeviceTagSettings()
         {
             return CreateClient(ITableClientFactory.DeviceTagSettingTableName);
