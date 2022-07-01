@@ -87,10 +87,12 @@ namespace AzureIoTHub.Portal.Server
                     opts.MetadataAddress = configuration.OIDCMetadataUrl;
                     opts.Audience = configuration.OIDCApiClientId;
 
-                    opts.TokenValidationParameters.ValidateIssuer = true;
-                    opts.TokenValidationParameters.ValidateAudience = true;
-                    opts.TokenValidationParameters.ValidateLifetime = true;
-                    opts.TokenValidationParameters.ValidateIssuerSigningKey = true;
+                    opts.TokenValidationParameters.ValidateIssuer = configuration.OIDCValidateIssuer;
+                    opts.TokenValidationParameters.ValidateAudience = configuration.OIDCValidateAudience;
+                    opts.TokenValidationParameters.ValidateLifetime = configuration.OIDCValidateLifetime;
+                    opts.TokenValidationParameters.ValidateIssuerSigningKey = configuration.OIDCValidateIssuerSigningKey;
+                    opts.TokenValidationParameters.ValidateActor = configuration.OIDCValidateActor;
+                    opts.TokenValidationParameters.ValidateTokenReplay = configuration.OIDCValidateTokenReplay;
                 });
 
             _ = services.AddSingleton(configuration);
@@ -275,11 +277,24 @@ namespace AzureIoTHub.Portal.Server
             ArgumentNullException.ThrowIfNull(env, nameof(env));
             ArgumentNullException.ThrowIfNull(app, nameof(app));
 
+            var configuration = app.ApplicationServices.GetService<ConfigHandler>();
+
             // Use problem details
             _ = app.UseProblemDetails();
             app.UseIfElse(IsApiRequest, UseApiExceptionMiddleware, UseUIExceptionMiddleware);
 
-            _ = app.UseSecurityHeaders();
+            if (configuration.UseSecurityHeaders)
+            {
+                _ = app.UseSecurityHeaders(opts =>
+                {
+                    _ = opts.AddContentSecurityPolicy(csp =>
+                    {
+                        _ = csp.AddFrameAncestors()
+                            .Self()
+                            .From(configuration.OIDCMetadataUrl);
+                    });
+                });
+            }
 
             if (env.IsDevelopment())
             {
