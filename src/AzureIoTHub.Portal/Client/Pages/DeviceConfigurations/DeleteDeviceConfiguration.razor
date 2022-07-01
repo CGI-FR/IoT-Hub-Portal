@@ -1,5 +1,5 @@
-﻿@inject HttpClient Http
-@inject ISnackbar Snackbar
+﻿@inject ISnackbar Snackbar
+@inject IDeviceConfigurationsClientService DeviceConfigurationsClientService
 
 <MudDialog>
     <DialogContent>
@@ -38,7 +38,7 @@
     {
         try
         {
-            await Http.DeleteAsync($"/api/device-configurations/{configurationId}");
+            await DeviceConfigurationsClientService.DeleteDeviceConfiguration(configurationId);
 
             Snackbar.Add($"Device configuration {configurationName} has been successfully deleted!", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));
