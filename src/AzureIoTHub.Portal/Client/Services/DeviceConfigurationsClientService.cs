@@ -3,8 +3,11 @@
 
 namespace AzureIoTHub.Portal.Client.Services
 {
+    using System.Collections.Generic;
     using System.Net.Http;
+    using System.Net.Http.Json;
     using System.Threading.Tasks;
+    using Portal.Models.v10;
 
     public class DeviceConfigurationsClientService : IDeviceConfigurationsClientService
     {
@@ -13,6 +16,12 @@ namespace AzureIoTHub.Portal.Client.Services
         public DeviceConfigurationsClientService(HttpClient http)
         {
             this.http = http;
+        }
+
+        public async Task<IList<ConfigListItem>> GetDeviceConfigurations()
+        {
+            var configurations = await this.http.GetFromJsonAsync<List<ConfigListItem>>("api/device-configurations");
+            return configurations;
         }
 
         public Task DeleteDeviceConfiguration(string configurationId)

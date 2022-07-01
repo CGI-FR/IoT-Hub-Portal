@@ -1,11 +1,9 @@
 ﻿@page "/device-configurations"
-@using Microsoft.AspNetCore.Authorization
 @using AzureIoTHub.Portal.Models.v10
 
 @attribute [Authorize]
-@inject HttpClient Http
 @inject NavigationManager navigationManager
-
+@inject IDeviceConfigurationsClientService DeviceConfigurationsClientService
 
 <MudGrid>
     <MudItem xs="12">
@@ -87,7 +85,8 @@
             IsLoading = true;
 
             result.Clear();
-            result.AddRange(await Http.GetFromJsonAsync<ConfigListItem[]>("/api/device-configurations") ?? throw new InvalidOperationException());
+
+            result.AddRange(await DeviceConfigurationsClientService.GetDeviceConfigurations());
         }
         catch (ProblemDetailsException exception)
         {

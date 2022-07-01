@@ -3,15 +3,16 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 {
+    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Client.Services;
-    using Client.Exceptions;
-    using Client.Models;
     using FluentAssertions;
+    using Helpers;
     using Microsoft.Extensions.DependencyInjection;
+    using Models.v10;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
 
@@ -30,6 +31,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public async Task GetDeviceConfigurationsShouldReturnDeviceConfigurations()
+        {
+            // Arrange
+            var expectedConfigurations = Fixture.Build<ConfigListItem>().CreateMany(3).ToList();
+
+            _ = MockHttpClient.When(HttpMethod.Get, "/api/device-configurations")
+                .RespondJson(expectedConfigurations);
+
+            // Act
+            var result = await this.deviceConfigurationsClientService.GetDeviceConfigurations();
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedConfigurations);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
         public async Task DeleteDeviceConfigurationsShouldDeleteDeviceConfiguration()
         {
             // Arrange
@@ -44,22 +63,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             // Assert
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
-        }
-
-        [Test]
-        public async Task DeleteDeviceConfigurationsMustThrowProblemDetailsExceptionWhenErrorOccurs()
-        {
-            // Arrange
-            var configurationId = Fixture.Create<string>();
-
-            _ = MockHttpClient.When(HttpMethod.Delete, $"/api/device-configurations/{configurationId}")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
-
-            // Act
-            var act = () => this.deviceConfigurationsClientService.DeleteDeviceConfiguration(configurationId);
-
-            // Assert
-            _ = await act.Should().ThrowAsync<ProblemDetailsException>();
         }
     }
 }
