@@ -132,37 +132,46 @@ namespace AzureIoTHub.Portal.Server.Services
                 {
                     "$edgeAgent", new
                     {
-                        properties = new
+                        propertiesDesired = new
                         {
-                            desired = new
+                            module = new Dictionary<string, object>(),
+                            runtime = new
                             {
-                                module = new Dictionary<string, object>(),
-                                runtime = new
+                                settings = new
                                 {
-                                    settings = new
-                                    {
-                                        minDockerVersion = "v1.25"
-                                    },
-                                    type = "docker"
+                                    minDockerVersion = "v1.25"
                                 },
-                                schemaVersion = "v1.1",
-                                systemModules = new
-                                {
-
-                                }
-                            }
+                                type = "docker"
+                            },
+                            schemaVersion = "v1.1",
+                            systemModules = new{}
                         }
                     }
                 },
                 {
                     "edgeHub",new
                     {
-
+                        propertiesDesired = new
+                        {
+                                route = new {},
+                                schemaVersion = "1.1",
+                                storeAndForwardConfiguration = new
+                                {
+                                    timeToLiveSecs = 7200
+                                }
+                        }
                     }
                 }
             };
 
-            _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
+            try
+            {
+                _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to create configuration.", e);
+            }
         }
 
         public async Task RollOutDeviceConfiguration(
