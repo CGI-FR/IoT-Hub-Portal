@@ -30,6 +30,8 @@ namespace AzureIoTHub.Portal.Server
 
         internal override string StorageAccountConnectionString => this.config.GetConnectionString(StorageAccountConnectionStringKey);
 
+        internal override bool UseSecurityHeaders => this.config.GetValue(UseSecurityHeadersKey, true);
+
         internal override string OIDCScope => this.config[OIDCScopeKey];
 
         internal override string OIDCAuthority => this.config[OIDCAuthorityKey];
@@ -39,6 +41,18 @@ namespace AzureIoTHub.Portal.Server
         internal override string OIDCClientId => this.config[OIDCClientIdKey];
 
         internal override string OIDCApiClientId => this.config[OIDCApiClientIdKey];
+
+        internal override bool OIDCValidateIssuer => this.config.GetValue(OIDCValidateIssuerKey, true);
+
+        internal override bool OIDCValidateAudience => this.config.GetValue(OIDCValidateAudienceKey, true);
+
+        internal override bool OIDCValidateLifetime => this.config.GetValue(OIDCValidateLifetimeKey, true);
+
+        internal override bool OIDCValidateIssuerSigningKey => this.config.GetValue(OIDCValidateIssuerSigningKeyKey, true);
+
+        internal override bool OIDCValidateActor => this.config.GetValue(OIDCValidateActorKey, false);
+
+        internal override bool OIDCValidateTokenReplay => this.config.GetValue(OIDCValidateTokenReplayKey, false);
 
         internal override bool IsLoRaEnabled => bool.Parse(this.config[IsLoRaFeatureEnabledKey] ?? "true");
 

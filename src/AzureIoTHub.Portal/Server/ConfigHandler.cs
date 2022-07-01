@@ -15,12 +15,19 @@ namespace AzureIoTHub.Portal.Server
         internal const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
         internal const string DPSServiceEndpointKey = "IoTDPS:ServiceEndpoint";
         internal const string DPSIDScopeKey = "IoTDPS:IDScope";
+        internal const string UseSecurityHeadersKey = "UseSecurityHeaders";
 
         internal const string OIDCScopeKey = "OIDC:Scope";
         internal const string OIDCAuthorityKey = "OIDC:Authority";
         internal const string OIDCMetadataUrlKey = "OIDC:MetadataUrl";
         internal const string OIDCClientIdKey = "OIDC:ClientId";
         internal const string OIDCApiClientIdKey = "OIDC:ApiClientId";
+        internal const string OIDCValidateIssuerKey = "OIDC:ValidateIssuer";
+        internal const string OIDCValidateAudienceKey = "OIDC:ValidateAudience";
+        internal const string OIDCValidateLifetimeKey = "OIDC:ValidateLifetime";
+        internal const string OIDCValidateIssuerSigningKeyKey = "OIDC:ValidateIssuerSigningKey";
+        internal const string OIDCValidateActorKey = "OIDC:ValidateActor";
+        internal const string OIDCValidateTokenReplayKey = "OIDC:ValidateTokenReplay";
 
         internal const string IsLoRaFeatureEnabledKey = "LoRaFeature:Enabled";
 
@@ -57,6 +64,8 @@ namespace AzureIoTHub.Portal.Server
 
         internal abstract string StorageAccountConnectionString { get; }
 
+        internal abstract bool UseSecurityHeaders { get; }
+
         internal abstract string OIDCScope { get; }
 
         internal abstract string OIDCApiClientId { get; }
@@ -66,6 +75,18 @@ namespace AzureIoTHub.Portal.Server
         internal abstract string OIDCMetadataUrl { get; }
 
         internal abstract string OIDCAuthority { get; }
+
+        internal abstract bool OIDCValidateIssuer { get; }
+
+        internal abstract bool OIDCValidateAudience { get; }
+
+        internal abstract bool OIDCValidateLifetime { get; }
+
+        internal abstract bool OIDCValidateIssuerSigningKey { get; }
+
+        internal abstract bool OIDCValidateActor { get; }
+
+        internal abstract bool OIDCValidateTokenReplay { get; }
 
         internal abstract bool IsLoRaEnabled { get; }
 
