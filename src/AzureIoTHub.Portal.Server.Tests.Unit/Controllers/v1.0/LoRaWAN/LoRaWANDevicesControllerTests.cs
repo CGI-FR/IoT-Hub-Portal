@@ -396,6 +396,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
 
             Twin twin = null;
 
+            _ = this.mockDeviceService.Setup(c => c.GetDevice(It.IsAny<string>()))
+                .ReturnsAsync((Device)null);
+
             _ = this.mockDeviceTwinMapper.Setup(c => c.UpdateTwin(It.Is<Twin>(x => x.DeviceId == device.DeviceID), It.Is<LoRaDeviceDetails>(x => x == device)))
                 .Callback<Twin, LoRaDeviceDetails>((t, _) => twin = t);
 

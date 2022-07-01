@@ -191,6 +191,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             Twin twin = null;
 
+            _ = this.mockDeviceService.Setup(c => c.GetDevice(It.IsAny<string>()))
+                .ReturnsAsync((Device)null);
+
             _ = this.mockDeviceTwinMapper.Setup(c => c.UpdateTwin(It.Is<Twin>(x => x.DeviceId == device.DeviceID), It.Is<DeviceDetails>(x => x == device)))
                 .Callback<Twin, DeviceDetails>((t, _) => twin = t);
 
@@ -782,5 +785,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
 
             this.mockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task CreateDeviceAsyncDuplicatedDeviceIdShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var devicesController = CreateDevicesController();
+
+            _ = this.mockDeviceService.Setup(c => c.GetDevice(It.IsAny<string>()))
+                .ReturnsAsync(new Device());
+
+            // Act
+            //var result = await existingDevice.GetItem(deviceID);
+            var result = async () => await devicesController.CreateDeviceAsync(new DeviceDetails());
+
+            // Assert
+            //Assert.IsNotNull(result);
+            //Assert.IsAssignableFrom<OkResult>(result);
+            _ = await result.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
     }
 }
