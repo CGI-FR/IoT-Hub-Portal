@@ -67,6 +67,53 @@ Here are different connection strings that the user can configure:
 
 > Note: For a production environment, an Azure Key Vault is advised to store the connection strings.
 
+### Optional Security Settings
+
+There are several optional security settings that the user can configure. These settings are not required for the Portal to work. By default the Portal is configured to set security levels to ``Microsoft.IdentityModel.Tokens`` defaults but the user can override these settings.
+
+* UseSecurityHeaders
+  > This boolean adds the following headers to all responses :
+  > 
+  > `X-Content-Type-Options: nosniff`
+  > 
+  > `Strict-Transport-Security: max-age=31536000; includeSubDomains` - _only applied to HTTPS responses_
+  > 
+  > 
+  > `X-Frame-Options: Deny` - _only applied to text/html responses_
+  > 
+  > `X-XSS-Protection: 1; mode=block` - _only applied to text/html responses_
+  > 
+  > `Referrer-Policy: strict-origin-when-cross-origin `- _only applied to text/html responses_
+  > 
+  > `Content-Security-Policy: object-src 'none'; form-action 'self'; frame-ancestors 'none'` - _only applied to text/html responses_.
+  >
+  > The **default is true**.
+* OIDC__ValidateIssuer
+  > Validation of the issuer mitigates forwarding attacks that can occur when an IdentityProvider represents multiple tenants and signs tokens with the same keys. It is possible that a token issued for the same audience could be from a different tenant. For example an application could accept users from contoso.onmicrosoft.com but not fabrikam.onmicrosoft.com, both valid tenants. An application that accepts tokens from fabrikam could forward them to the application that accepts tokens for contoso. This boolean only applies to default issuer validation. If [IssuerValidator](https://docs.microsoft.com/en-us/dotnet/api/microsoft.identitymodel.tokens.tokenvalidationparameters.issuervalidator?view=azure-dotnet#microsoft-identitymodel-tokens-tokenvalidationparameters-issuervalidator) is set, it will be called regardless of whether this property is true or false.
+  >
+  > The **default is true**.
+* OIDC__ValidateAudience
+  > Validation of the audience, mitigates forwarding attacks. For example, a site that receives a token, could not replay it to another side. A forwarded token would contain the audience of the original site. This boolean only applies to default audience validation. If [AudienceValidator](https://docs.microsoft.com/en-us/dotnet/api/microsoft.identitymodel.tokens.tokenvalidationparameters.audiencevalidator?view=azure-dotnet#microsoft-identitymodel-tokens-tokenvalidationparameters-audiencevalidator) is set, it will be called regardless of whether this property is true or false.
+  >
+  > The **default is true**.
+* OIDC__ValidateLifetime
+  > This boolean only applies to default lifetime validation. If [LifetimeValidator](https://docs.microsoft.com/en-us/dotnet/api/microsoft.identitymodel.tokens.tokenvalidationparameters.lifetimevalidator?view=azure-dotnet#microsoft-identitymodel-tokens-tokenvalidationparameters-lifetimevalidator) is set, it will be called regardless of whether this property is true or false.
+  >
+  > The **default is true**.
+* OIDC__ValidateIssuerSigningKey
+  > It is possible for tokens to contain the public key needed to check the signature. For example, X509Data can be hydrated into an X509Certificate, which can be used to validate the signature. In these cases it is important to validate the SigningKey that was used to validate the signature. This boolean only applies to default signing key validation. If [IssuerSigningKeyValidator](https://docs.microsoft.com/en-us/dotnet/api/microsoft.identitymodel.tokens.tokenvalidationparameters.issuersigningkeyvalidator?view=azure-dotnet#microsoft-identitymodel-tokens-tokenvalidationparameters-issuersigningkeyvalidator) is set, it will be called regardless of whether this property is true or false.
+  >
+  > The **default is false**.
+* OIDC_ValidateActor
+  > If an actor token is detected, whether it should be validated.
+  >
+  > The **default is false**.
+* OIDC_ValidateTokenReplay
+  > This boolean only applies to default token replay validation. If [TokenReplayValidator](https://docs.microsoft.com/fr-fr/dotnet/api/microsoft.identitymodel.tokens.tokenvalidationparameters.tokenreplayvalidator?view=azure-dotnet#microsoft-identitymodel-tokens-tokenvalidationparameters-tokenreplayvalidator) is set, it will be called regardless of whether this property is true or false.
+  >
+  > The **default is false**.
+
+
 ## Device tags
 
 The IoT Hub portal uses some tags to configure the devices. The tags are stored in the Azure IoT Hub in Device Twins.
