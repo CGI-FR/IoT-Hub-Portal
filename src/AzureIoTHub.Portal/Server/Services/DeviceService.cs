@@ -61,7 +61,7 @@ namespace AzureIoTHub.Portal.Server.Services
             if (!string.IsNullOrWhiteSpace(searchText))
             {
 #pragma warning disable CA1308 // Normalize strings to uppercase
-                filter += $" AND (STARTSWITH(deviceId, '{searchText.ToLowerInvariant()}') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, '{searchText}')))";
+                filter += $" AND (STARTSWITH(deviceId, '{searchText}') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, '{searchText}')))";
 #pragma warning restore CA1308 // Normalize strings to uppercase
             }
 
@@ -159,7 +159,7 @@ namespace AzureIoTHub.Portal.Server.Services
             if (!string.IsNullOrWhiteSpace(searchText))
             {
 #pragma warning disable CA1308 // Normalize strings to uppercase
-                filter += $" AND (STARTSWITH(deviceId, '{searchText.ToLowerInvariant()}') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, '{searchText}')))";
+                filter += $" AND (STARTSWITH(deviceId, '{searchText}') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, '{searchText}')))";
 #pragma warning restore CA1308 // Normalize strings to uppercase
             }
 
