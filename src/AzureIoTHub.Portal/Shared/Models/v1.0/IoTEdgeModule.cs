@@ -41,6 +41,6 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The module commands.
         /// </summary>
-        public List<string> Commands { get; set; } = new List<string>();
+        public List<IoTEdgeModuleCommand> Commands { get; set; } = new List<IoTEdgeModuleCommand>();
     }
 }

@@ -28,20 +28,21 @@
         <MudTabs Elevation="1" Class="mt-10" Rounded="true" PanelClass="mt-6">
 
             <MudTabPanel Text="Environment variables">
-                <ModuleDialogTab1 EnvironmentVariables="@Module.EnvironmentVariables" />
+                <ModuleDialogTab1 EnvironmentVariables="@currentEnvironmentVariables" />
             </MudTabPanel>
 
             <MudTabPanel Text="Module identity twin settings">
-                <ModuleDialogTab2 ModuleIdentityTwinSettings="@Module.ModuleIdentityTwinSettings" />
+                <ModuleDialogTab2 ModuleIdentityTwinSettings="@currentModuleIdentityTwinSettings" />
             </MudTabPanel>
 
             <MudTabPanel Text="Commands">
-                <ModuleDialogTab3 Commands="@Module.Commands" />
+                <ModuleDialogTab3 Commands="@currentCommands" />
             </MudTabPanel>
 
         </MudTabs>
     </DialogContent>
     <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">Save</MudButton>
         <MudButton OnClick="Cancel">Cancel</MudButton>
     </DialogActions>
 </MudDialog>
@@ -53,14 +54,29 @@
     [Parameter]
     public IoTEdgeModule Module { get; set; }
 
+    private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables;
+    private List<IoTEdgeModuleTwinSetting> currentModuleIdentityTwinSettings;
+    private List<IoTEdgeModuleCommand> currentCommands;
+
+
     public bool IsLoading;
 
     protected override async Task OnInitializedAsync()
     {
         IsLoading = true;
-        Console.Write(Module.EnvironmentVariables);
+        currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
+        currentModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(Module.ModuleIdentityTwinSettings.ToArray());
+        currentCommands = new List<IoTEdgeModuleCommand>(Module.Commands.ToArray());
         await Task.Delay(0);
         IsLoading = false;
+    }
+
+    public void Submit()
+    {
+        Module.EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(currentEnvironmentVariables.ToArray());
+        Module.ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(currentModuleIdentityTwinSettings.ToArray());
+        Module.Commands = new List<IoTEdgeModuleCommand>(currentCommands.ToArray());
+        MudDialog.Close(DialogResult.Ok(true));
     }
 
     void Cancel() => MudDialog.Cancel();

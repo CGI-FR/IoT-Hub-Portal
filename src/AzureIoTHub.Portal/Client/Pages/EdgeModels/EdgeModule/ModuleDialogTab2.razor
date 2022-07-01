@@ -55,7 +55,6 @@
 
     public void AddRow()
     {
-        Console.Write(ModuleIdentityTwinSettings);
         var last = ModuleIdentityTwinSettings.LastOrDefault();
 
         if (ModuleIdentityTwinSettings.Count == 0 || (last.Name is not null && last.Value is not null))

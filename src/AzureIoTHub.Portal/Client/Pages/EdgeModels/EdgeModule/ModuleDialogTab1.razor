@@ -55,7 +55,6 @@
 
     public void AddRow()
     {
-        Console.Write(EnvironmentVariables);
         var last = EnvironmentVariables.LastOrDefault();
 
         if (EnvironmentVariables.Count == 0 || (last.Name is not null && last.Value is not null))
@@ -68,23 +67,4 @@
     {
         EnvironmentVariables.Remove(item);
     }
-
-    //private string _value;
-
-    //[Parameter]
-    //public string BindingValue
-    //{
-    //    get => _value;
-    //    set
-    //    {
-    //        if (_value == value ) return;
-    //        _value = value;
-    //        BindingValueChanged.InvokeAsync(value);
-    //    }
-    //}
-
-    //[Parameter]
-    //public EventCallback<string> BindingValueChanged { get; set; }   
-
-
 }

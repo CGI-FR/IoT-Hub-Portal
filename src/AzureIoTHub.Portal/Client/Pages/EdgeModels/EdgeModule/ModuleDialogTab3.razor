@@ -18,7 +18,7 @@
             </HeaderContent>
             <RowTemplate Context="Context">
                 <MudTd DataLabel="Key" Style="word-break: break-all;">
-                    <MudTextField @bind-Value="@Context"
+                    <MudTextField @bind-Value="@Context.Name"
                                   Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
                 </MudTd>
 
@@ -44,21 +44,20 @@
 
 @code {
     [Parameter]
-    public IList<string> Commands { get; set; }
+    public IList<IoTEdgeModuleCommand> Commands { get; set; }
     private bool IsLoading = false;
 
     public void AddRow()
     {
-        Console.Write(Commands);
         var last = Commands.LastOrDefault();
 
-        if (Commands.Count == 0 || !string.IsNullOrEmpty(last))
+        if (Commands.Count == 0 || (last.Name is not null))
         {
-            Commands.Add(string.Empty);
+            Commands.Add(new IoTEdgeModuleCommand());
         }
     }
 
-    public void DeleteRow(string item)
+    public void DeleteRow(IoTEdgeModuleCommand item)
     {
         Commands.Remove(item);
     }
