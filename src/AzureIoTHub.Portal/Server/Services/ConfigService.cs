@@ -126,7 +126,41 @@ namespace AzureIoTHub.Portal.Server.Services
             var newConfiguration = new Configuration($"{configurationNamePrefix}-{DateTime.UtcNow.Ticks}");
             newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
             newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'";
-            newConfiguration.Content.ModuleContent = EdgeModules;
+            //newConfiguration.Content.ModuleContent = EdgeModules;
+            newConfiguration.Content.ModuleContent = new Dictionary<string, object>()
+            {
+                {
+                    "$edgeAgent", new
+                    {
+                        properties = new
+                        {
+                            desired = new
+                            {
+                                module = new Dictionary<string, object>(),
+                                runtime = new
+                                {
+                                    settings = new
+                                    {
+                                        minDockerVersion = "v1.25"
+                                    },
+                                    type = "docker"
+                                },
+                                schemaVersion = "v1.1",
+                                systemModules = new
+                                {
+
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "edgeHub",new
+                    {
+
+                    }
+                }
+            };
 
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }
