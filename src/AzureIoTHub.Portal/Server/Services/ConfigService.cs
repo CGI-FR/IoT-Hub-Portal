@@ -105,6 +105,136 @@ namespace AzureIoTHub.Portal.Server.Services
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }
 
+        public async Task RollOutEdgeModelConfiguration(string modelId, Dictionary<string, object> EdgeModules)
+        {
+            var configurations = await this.registryManager.GetConfigurationsAsync(0);
+
+            var configurationNamePrefix = modelId?.Trim()
+                                                .ToLowerInvariant()
+                                                .Replace(" ", "-", StringComparison.OrdinalIgnoreCase);
+
+            foreach (var item in configurations)
+            {
+                if (!item.Id.StartsWith(configurationNamePrefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                await this.registryManager.RemoveConfigurationAsync(item.Id);
+            }
+
+            var newConfiguration = new Configuration($"{configurationNamePrefix}-{DateTime.UtcNow.Ticks}");
+            newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
+            newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'";
+            //newConfiguration.Content.ModuleContent = EdgeModules;
+            //newConfiguration.Priority = 2;
+            newConfiguration.Content.ModulesContent = new Dictionary<string, IDictionary<string, object>>()
+            {
+                {
+                    "modulesContent",
+                    new Dictionary<string, object>()
+                    {
+                        {
+                            "$edgeAgent",
+                            new Dictionary<string , object>()
+                            {
+                                {
+                                    "properties.desired",
+                                    new Dictionary<string , object>()
+                                    {
+                                        // Runtime
+                                        {
+                                            "runtime",
+                                            new Dictionary<string, object>()
+                                            {
+                                                {
+                                                    "settings",
+                                                    new Dictionary<string, object>()
+                                                    {
+                                                        { "minDockerVersion", "v1.25" }
+                                                    }
+                                                },
+                                                { "type", "docker" }
+                                            }
+                                        },
+                                        // SchemaVersion
+                                        { "schemaVersion", "1.1" },
+                                        // SystemModules
+                                        {
+                                            "systemModules",
+                                            new Dictionary<string, object>()
+                                            {
+                                                // edgeAgent
+                                                {
+                                                    "edgeAgent",
+                                                    new Dictionary<string, object>()
+                                                    {
+                                                        {
+                                                            "settings",
+                                                            new Dictionary<string, object>()
+                                                            {
+                                                                { "image", "mcr.microsoft.com/azureiotedge-agent:1.1" }
+                                                            }
+                                                        },
+                                                        { "type", "docker" }
+                                                    }
+                                                },
+                                                // edgeHub
+                                                {
+                                                    "edgeHub",
+                                                    new Dictionary<string, object>()
+                                                    {
+                                                        {
+                                                            "settings",
+                                                            new Dictionary<string, object>()
+                                                            {
+                                                                { "image", "mcr.microsoft.com/azureiotedge-hub:1.1" },
+                                                            }
+                                                        },
+                                                        { "type", "docker" },
+                                                        { "status", "running" },
+                                                        { "restartPolicy", "always" }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "modules",
+                                            new Dictionary<string, object>()
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "$edgeHub",
+                            new Dictionary<string, object>()
+                            {
+                                { "routes", "" },
+                                { "schemaVersion", "1.1" },
+                                {
+                                    "storeAndForwardConfiguration",
+                                    new Dictionary<string, object>()
+                                    {
+                                        { "timeToLiveSecs", 7200 }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            try
+            {
+                _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to create configuration.", e);
+            }
+        }
+
         public async Task RollOutDeviceConfiguration(
             string modelId,
             Dictionary<string, object> desiredProperties,
