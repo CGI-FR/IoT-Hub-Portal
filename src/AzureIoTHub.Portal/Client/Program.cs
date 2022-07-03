@@ -19,6 +19,7 @@ namespace AzureIoTHub.Portal.Client
     using MudBlazor;
     using MudBlazor.Services;
     using Tewr.Blazor.FileReader;
+    using Toolbelt.Blazor.Extensions.DependencyInjection;
 
     public static class Program
     {
@@ -29,10 +30,11 @@ namespace AzureIoTHub.Portal.Client
 
             _ = builder.Services.AddTransient<ProblemDetailsHandler>();
 
-            _ = builder.Services.AddHttpClient("api", client =>
+            _ = builder.Services.AddHttpClient("api", (sp, client) =>
             {
                 client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
                 client.DefaultRequestHeaders.Add("X-Version", "1.0");
+                _ = client.EnableIntercept(sp);
             }).AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>()
               .AddHttpMessageHandler<ProblemDetailsHandler>();
 
@@ -58,6 +60,10 @@ namespace AzureIoTHub.Portal.Client
 
             await ConfigureOidc(builder);
             await ConfigurePortalSettings(builder);
+
+            // Enable loading bar
+            builder.Services.AddLoadingBar();
+            _ = builder.UseLoadingBar();
 
             await builder.Build().RunAsync();
         }
