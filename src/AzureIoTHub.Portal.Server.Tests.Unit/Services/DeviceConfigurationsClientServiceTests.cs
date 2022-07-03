@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
     using Models.v10;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using Shared.Models.v10;
 
     [TestFixture]
     public class DeviceConfigurationsClientServiceTests : BlazorUnitTest
@@ -62,6 +63,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedConfiguration);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task GetDeviceConfigurationMetricsShouldReturnDeviceConfigurationMetrics()
+        {
+            // Arrange
+            var configuration = Fixture.Create<DeviceConfig>();
+            var expectedConfigurationMetrics = Fixture.Create<ConfigurationMetrics>();
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/device-configurations/{configuration.ConfigurationId}/metrics")
+                .RespondJson(expectedConfigurationMetrics);
+
+            // Act
+            var result = await this.deviceConfigurationsClientService.GetDeviceConfigurationMetrics(configuration.ConfigurationId);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedConfigurationMetrics);
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
