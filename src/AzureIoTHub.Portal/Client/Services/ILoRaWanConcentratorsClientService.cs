@@ -10,7 +10,11 @@ namespace AzureIoTHub.Portal.Client.Services
     {
         Task<PaginationResult<Concentrator>> GetConcentrators(string continuationUri);
 
+        Task<Concentrator> GetConcentrator(string deviceId);
+
         Task CreateConcentrator(Concentrator concentrator);
+
+        Task UpdateConcentrator(Concentrator concentrator);
 
         Task DeleteConcentrator(string deviceId);
     }

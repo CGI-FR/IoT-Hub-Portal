@@ -57,6 +57,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public async Task GetConcentratorShouldReturnConcentrator()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            var expectedConcentrator = new Concentrator();
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/concentrators/{deviceId}")
+                .RespondJson(expectedConcentrator);
+
+            // Act
+            var result = await this.loRaWanConcentratorsClientService.GetConcentrator(deviceId);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedConcentrator);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
         public async Task CreateConcentratorShouldCreateConcentrator()
         {
             // Arrange
@@ -74,6 +94,30 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             // Act
             await this.loRaWanConcentratorsClientService.CreateConcentrator(concentrator);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task UpdateConcentratorShouldUpdateConcentrator()
+        {
+            // Arrange
+            var concentrator = new Concentrator();
+
+            _ = MockHttpClient.When(HttpMethod.Put, "/api/lorawan/concentrators")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<Concentrator>>();
+                    var body = m.Content as ObjectContent<Concentrator>;
+                    _ = body.Value.Should().BeEquivalentTo(concentrator);
+                    return true;
+                })
+                .Respond(HttpStatusCode.Created);
+
+            // Act
+            await this.loRaWanConcentratorsClientService.UpdateConcentrator(concentrator);
 
             // Assert
             MockHttpClient.VerifyNoOutstandingRequest();
