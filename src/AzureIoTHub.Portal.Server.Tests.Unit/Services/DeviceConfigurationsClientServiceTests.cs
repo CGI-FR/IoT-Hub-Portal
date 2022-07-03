@@ -49,6 +49,69 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public async Task GetDeviceConfigurationShouldReturnDeviceConfiguration()
+        {
+            // Arrange
+            var expectedConfiguration = Fixture.Create<DeviceConfig>();
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/device-configurations/{expectedConfiguration.ConfigurationId}")
+                .RespondJson(expectedConfiguration);
+
+            // Act
+            var result = await this.deviceConfigurationsClientService.GetDeviceConfiguration(expectedConfiguration.ConfigurationId);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedConfiguration);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task CreateDeviceConfigurationShouldCreateDeviceConfiguration()
+        {
+            // Arrange
+            var configuration = Fixture.Create<DeviceConfig>();
+
+            _ = MockHttpClient.When(HttpMethod.Post,
+                    "/api/device-configurations")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceConfig>>();
+                    return true;
+                })
+                .Respond(HttpStatusCode.Created);
+
+            // Act
+            await this.deviceConfigurationsClientService.CreateDeviceConfiguration(configuration);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task UpdateDeviceConfigurationShouldUpdateDeviceConfiguration()
+        {
+            // Arrange
+            var configuration = Fixture.Create<DeviceConfig>();
+
+            _ = MockHttpClient.When(HttpMethod.Put,$"/api/device-configurations/{configuration.ConfigurationId}")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceConfig>>();
+                    return true;
+                })
+                .Respond(HttpStatusCode.Created);
+
+            // Act
+            await this.deviceConfigurationsClientService.UpdateDeviceConfiguration(configuration);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
         public async Task DeleteDeviceConfigurationsShouldDeleteDeviceConfiguration()
         {
             // Arrange
