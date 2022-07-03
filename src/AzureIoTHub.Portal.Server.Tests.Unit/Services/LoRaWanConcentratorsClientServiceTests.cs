@@ -4,8 +4,10 @@
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 {
     using System.Collections.Generic;
+    using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using AutoFixture;
     using AzureIoTHub.Portal.Client.Services;
     using FluentAssertions;
     using Helpers;
@@ -50,6 +52,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedConcentrators);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task DeleteConcentratorShouldDeleteConcentrator()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/concentrators/{deviceId}")
+                .Respond(HttpStatusCode.NoContent);
+
+            // Act
+            await this.loRaWanConcentratorsClientService.DeleteConcentrator(deviceId);
+
+            // Assert
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }

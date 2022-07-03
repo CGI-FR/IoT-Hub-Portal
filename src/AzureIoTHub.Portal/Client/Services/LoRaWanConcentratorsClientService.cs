@@ -21,5 +21,10 @@ namespace AzureIoTHub.Portal.Client.Services
         {
             return this.http.GetFromJsonAsync<PaginationResult<Concentrator>>(continuationUri);
         }
+
+        public Task DeleteConcentrator(string deviceId)
+        {
+            return this.http.DeleteAsync($"/api/lorawan/concentrators/{deviceId}");
+        }
     }
 }

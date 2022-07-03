@@ -9,5 +9,7 @@ namespace AzureIoTHub.Portal.Client.Services
     public interface ILoRaWanConcentratorsClientService
     {
         Task<PaginationResult<Concentrator>> GetConcentrators(string continuationUri);
+
+        Task DeleteConcentrator(string deviceId);
     }
 }
