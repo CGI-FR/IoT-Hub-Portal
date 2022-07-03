@@ -10,5 +10,7 @@ namespace AzureIoTHub.Portal.Client.Services
     public interface IDeviceTagSettingsClientService
     {
         Task<IList<DeviceTag>> GetDeviceTags();
+
+        Task UpdateDeviceTags(IList<DeviceTag> deviceTags);
     }
 }

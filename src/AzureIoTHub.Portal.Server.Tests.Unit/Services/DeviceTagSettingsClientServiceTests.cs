@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -43,6 +44,30 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceTags);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task UpdateDeviceTagsShouldUpdateDeviceTags()
+        {
+            // Arrange
+            var expectedDeviceTags = Fixture.Build<DeviceTag>().CreateMany(3).ToList();
+
+            _ = MockHttpClient.When(HttpMethod.Get, "/api/settings/device-tags")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<List<DeviceTag>>>();
+                    var tags = m.Content as ObjectContent<List<DeviceTag>>;
+                    _ = tags.Should().BeEquivalentTo(expectedDeviceTags);
+                    return true;
+                })
+                .RespondJson(expectedDeviceTags);
+
+            // Act
+            await this.deviceTagSettingsClientService.UpdateDeviceTags(expectedDeviceTags);
+
+            // Assert
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
