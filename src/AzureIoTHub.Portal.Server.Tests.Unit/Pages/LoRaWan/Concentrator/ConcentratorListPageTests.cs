@@ -5,27 +5,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
 {
     using System;
     using System.Collections.Generic;
-    using System.Net.Http;
     using AzureIoTHub.Portal.Client.Pages.LoRaWAN.Concentrator;
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Exceptions;
     using Client.Models;
+    using Client.Services;
     using FluentAssertions;
-    using Helpers;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
     using Models.v10.LoRaWAN;
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
 
     [TestFixture]
     public class ConcentratorListPageTests : BlazorUnitTest
     {
         private Mock<IDialogService> mockDialogService;
         private Mock<ISnackbar> mockSnackbarService;
+        private Mock<ILoRaWanConcentratorsClientService> mockLoRaWanConcentratorsClientService;
 
         public override void Setup()
         {
@@ -33,9 +32,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockSnackbarService = MockRepository.Create<ISnackbar>();
+            this.mockLoRaWanConcentratorsClientService = MockRepository.Create<ILoRaWanConcentratorsClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
+            _ = Services.AddSingleton(this.mockLoRaWanConcentratorsClientService.Object);
+
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
         }
 
@@ -43,10 +45,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
         public void ConcentratorListPageShouldLoadAndShowConcentrators()
         {
             // Arrange
+            var expectedUri = "api/lorawan/concentrators?pageSize=10";
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/lorawan/concentrators?pageSize=10")
-                .RespondJson(new PaginationResult<Concentrator>
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
+                    service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new PaginationResult<Concentrator>
                 {
                     Items = new List<Concentrator>
                     {
@@ -63,18 +66,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
 
             // Assert
             _ = cut.FindAll("tr").Count.Should().Be(4);
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void ConcentratorListPageShouldProcessProblemDetailsExceptionWhenIssueOccursOnLoadingConcentrators()
         {
             // Arrange
+            var expectedUri = "api/lorawan/concentrators?pageSize=10";
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/lorawan/concentrators?pageSize=10")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
+                    service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
             var cut = RenderComponent<ConcentratorListPage>();
@@ -92,10 +95,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
+            var expectedUri = "api/lorawan/concentrators?pageSize=10";
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/lorawan/concentrators?pageSize=10")
-                .RespondJson(new PaginationResult<Concentrator>
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
+                    service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new PaginationResult<Concentrator>
                 {
                     Items = new List<Concentrator>
                     {
