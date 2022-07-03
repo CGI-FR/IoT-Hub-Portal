@@ -4,16 +4,16 @@
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
 {
     using System;
-    using System.Net.Http;
+    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.LoRaWAN.Concentrator;
     using AzureIoTHub.Portal.Client.Shared;
     using Models.v10;
     using Models.v10.LoRaWAN;
-    using Helpers;
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Exceptions;
     using Client.Models;
+    using Client.Services;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Mocks;
@@ -21,13 +21,13 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
     using MudBlazor;
     using MudBlazor.Services;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
 
     [TestFixture]
     public class CreateConcentratorPageTest : BlazorUnitTest
     {
         private Mock<IDialogService> mockDialogService;
         private Mock<ISnackbar> mockSnackbarService;
+        private Mock<ILoRaWanConcentratorsClientService> mockLoRaWanConcentratorsClientService;
 
         private FakeNavigationManager mockNavigationManager;
 
@@ -37,9 +37,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockSnackbarService = MockRepository.Create<ISnackbar>();
+            this.mockLoRaWanConcentratorsClientService = MockRepository.Create<ILoRaWanConcentratorsClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
+            _ = Services.AddSingleton(this.mockLoRaWanConcentratorsClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
@@ -58,25 +60,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
                 LoraRegion = "CN_470_510_RP2"
             };
 
-            _ = MockHttpClient
-                .When(HttpMethod.Post, $"/api/lorawan/concentrators")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<Concentrator>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<Concentrator>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<Concentrator>(objectContent.Value);
-                    var concentrator = objectContent.Value as Concentrator;
-                    Assert.IsNotNull(concentrator);
-
-                    Assert.AreEqual(mockConcentrator.DeviceId, concentrator.DeviceId);
-                    Assert.AreEqual(mockConcentrator.DeviceName, concentrator.DeviceName);
-                    Assert.AreEqual(mockConcentrator.LoraRegion, concentrator.LoraRegion);
-
-                    return true;
-                })
-                .RespondText(string.Empty);
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
+                    service.CreateConcentrator(It.Is<Concentrator>(concentrator =>
+                        mockConcentrator.DeviceId.Equals(concentrator.DeviceId, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
 
@@ -99,9 +86,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
 
             // Assert            
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/lorawan/concentrators"));
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
-            MockRepository.VerifyAll();
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -115,25 +100,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
                 LoraRegion = "CN_470_510_RP2"
             };
 
-            _ = MockHttpClient
-                .When(HttpMethod.Post, $"/api/lorawan/concentrators")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<Concentrator>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<Concentrator>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<Concentrator>(objectContent.Value);
-                    var concentrator = objectContent.Value as Concentrator;
-                    Assert.IsNotNull(concentrator);
-
-                    Assert.AreEqual(mockConcentrator.DeviceId, concentrator.DeviceId);
-                    Assert.AreEqual(mockConcentrator.DeviceName, concentrator.DeviceName);
-                    Assert.AreEqual(mockConcentrator.LoraRegion, concentrator.LoraRegion);
-
-                    return true;
-                })
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
+                    service.CreateConcentrator(It.Is<Concentrator>(concentrator =>
+                        mockConcentrator.DeviceId.Equals(concentrator.DeviceId, StringComparison.Ordinal))))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
 
@@ -152,9 +122,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
             // Act
             cut.Find("#saveButton").Click();
 
-            // Assert            
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -177,9 +145,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
             // Act
             cut.Find("#saveButton").Click();
 
-            // Assert            
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }

@@ -57,12 +57,36 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public async Task CreateConcentratorShouldCreateConcentrator()
+        {
+            // Arrange
+            var concentrator = new Concentrator();
+
+            _ = MockHttpClient.When(HttpMethod.Post, "/api/lorawan/concentrators")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<Concentrator>>();
+                    var body = m.Content as ObjectContent<Concentrator>;
+                    _ = body.Value.Should().BeEquivalentTo(concentrator);
+                    return true;
+                })
+                .Respond(HttpStatusCode.Created);
+
+            // Act
+            await this.loRaWanConcentratorsClientService.CreateConcentrator(concentrator);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
         public async Task DeleteConcentratorShouldDeleteConcentrator()
         {
             // Arrange
             var deviceId = Fixture.Create<string>();
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/concentrators/{deviceId}")
+            _ = MockHttpClient.When(HttpMethod.Delete, $"/api/lorawan/concentrators/{deviceId}")
                 .Respond(HttpStatusCode.NoContent);
 
             // Act
