@@ -1,8 +1,5 @@
-﻿@using AzureIoTHub.Portal.Models.v10
-
-@inject HttpClient Http
-@inject IJSRuntime JS
-@inject ISnackbar Snackbar
+﻿@inject ISnackbar Snackbar
+@inject IDeviceClientService DeviceClientService
 
 <MudDialog>
     <DialogContent>
@@ -42,7 +39,7 @@
     {
         try
         {
-            await Http.DeleteAsync($"api/devices/{deviceID}");
+            await DeviceClientService.DeleteDevice(deviceID);
 
             Snackbar.Add($"Device {deviceName} has been successfully deleted!", Severity.Success);
         }

@@ -1,15 +1,14 @@
 ﻿@page "/devices"
 @using AzureIoTHub.Portal
 @using AzureIoTHub.Portal.Models.v10
-@using Microsoft.AspNetCore.Authorization
 @using System.Web
 
 @attribute [Authorize]
-@inject HttpClient Http
 @inject IDialogService DialogService
 @inject NavigationManager navigationManager
 @inject PortalSettings Portal
-
+@inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
+@inject IDeviceClientService DeviceClientService
 
 <MudGrid>
     <MudItem xs="12">
@@ -185,8 +184,8 @@
         try
         {
             // Gets the custom tags that can be searched via the panel
-            TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
-            foreach (DeviceTag tag in TagList)
+            TagList = await DeviceTagSettingsClientService.GetDeviceTags();
+            foreach (var tag in TagList)
             {
                 if (tag.Searchable)
                     searchTags.Add(tag.Name, "");
@@ -207,7 +206,7 @@
 
             if (Pages.Keys.Contains(state.Page))
             {
-                result = await Http.GetFromJsonAsync<PaginationResult<DeviceListItem>>(Pages[state.Page]);
+                result = await DeviceClientService.GetDevices(Pages[state.Page]);
             }
             else
             {
@@ -220,7 +219,7 @@
 
                 _ = Pages.TryAdd(state.Page, uri);
 
-                result = await Http.GetFromJsonAsync<PaginationResult<DeviceListItem>>(uri);
+                result = await DeviceClientService.GetDevices(uri);
             }
 
             _ = Pages.TryAdd(state.Page + 1, result.NextPage);

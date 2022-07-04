@@ -1,9 +1,9 @@
 ﻿@using AzureIoTHub.Portal.Client.Validators
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 
-@inject HttpClient Http
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
 
 <MudExpansionPanels MultiExpansion="true">
     <MudGrid>
@@ -178,7 +178,7 @@
 
         try
         {
-            await Http.PostAsJsonAsync($"api/lorawan/devices/{LoRaDevice.DeviceID}/_command/{method.Name}", method);
+            await LoRaWanDeviceClientService.ExecuteCommand(LoRaDevice.DeviceID, method.Name);
 
             Snackbar.Add($"{method.Name} has been successfully executed!", Severity.Success);
         }

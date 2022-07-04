@@ -1,10 +1,7 @@
-﻿@using AzureIoTHub.Portal.Client.Services
-@using Microsoft.AspNetCore.Authorization
-@using AzureIoTHub.Portal.Models.v10
+﻿@using AzureIoTHub.Portal.Models.v10
 
-@inject HttpClient Http
-@inject ISnackbar Snackbar
 @inject ClipboardService ClipboardService
+@inject IDeviceClientService DeviceClientService
 
 <div class="ConnectionString-dialog">
     <MudDialog>
@@ -62,7 +59,7 @@
         {
             await base.OnInitializedAsync();
 
-            Credentials = await this.Http.GetFromJsonAsync<EnrollmentCredentials>($"api/devices/{deviceId}/credentials");
+            Credentials = await DeviceClientService.GetEnrollmentCredentials(deviceId);
             loading = false;
         }
         catch (ProblemDetailsException exception)

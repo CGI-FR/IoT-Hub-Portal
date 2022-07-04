@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 {
     using System;
+    using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.Devices;
@@ -12,29 +13,33 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
     using Bunit.TestDoubles;
     using Client.Exceptions;
     using Client.Models;
+    using Client.Services;
     using FluentAssertions;
-    using Helpers;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
 
     [TestFixture]
     public class DevicesListPageTests : BlazorUnitTest
     {
         private Mock<IDialogService> mockDialogService;
+        private Mock<IDeviceTagSettingsClientService> mockDeviceTagSettingsClientService;
+        private Mock<IDeviceClientService> mockDeviceClientService;
 
-        private readonly string apiBaseUrl = "/api/devices";
-        private readonly string apiTagsBaseUrl = "/api/settings/device-tags";
+        private readonly string apiBaseUrl = "api/devices";
 
         public override void Setup()
         {
             base.Setup();
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
+            this.mockDeviceTagSettingsClientService = MockRepository.Create<IDeviceTagSettingsClientService>();
+            this.mockDeviceClientService = MockRepository.Create<IDeviceClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
+            _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
+            _ = Services.AddSingleton(this.mockDeviceClientService.Object);
         }
 
         [Test]
@@ -43,13 +48,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             // Arrange
             using var deviceResponseMock = new HttpResponseMessage();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, this.apiTagsBaseUrl)
-                .RespondJson(Array.Empty<object>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
-                .RespondJson(new PaginationResult<DeviceListItem>
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
                 });
@@ -63,26 +67,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             cut.WaitForAssertion(() => cut.Find(".mud-expansion-panels .mud-expand-panel .mud-expand-panel-header .mud-expand-panel-text").TextContent.Should().Be("Search panel"));
             cut.WaitForAssertion(() => cut.Find(".mud-expansion-panels .mud-expand-panel").ClassList.Should().NotContain("Search panel should be collapsed"));
 
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public async Task WhenResetFilterButtonClickShouldClearFilters()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
-                .RespondJson(new PaginationResult<DeviceListItem>
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
                 });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, this.apiTagsBaseUrl)
-                .RespondJson(Array.Empty<object>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
 
 
             // Act
@@ -109,18 +111,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
         public void WhenAddNewDeviceClickShouldNavigateToNewDevicePage()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
-                .RespondJson(new PaginationResult<DeviceListItem>
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
                 });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, this.apiTagsBaseUrl)
-                .RespondJson(Array.Empty<object>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
 
             var mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
 
@@ -139,18 +140,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
         public async Task WhenRefreshClickShouldReloadFromApi()
         {
             // Arrange
-            var apiCall = MockHttpClient
-                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
-                .RespondJson(new PaginationResult<DeviceListItem>
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
                 });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, this.apiTagsBaseUrl)
-                .RespondJson(Array.Empty<object>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
 
 
             // Act
@@ -164,8 +164,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             }
 
             // Assert
-            var matchCount = MockHttpClient.GetMatchCount(apiCall);
-            Assert.AreEqual(4, matchCount);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -175,18 +173,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
-                .RespondJson(new PaginationResult<DeviceListItem>
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new DeviceListItem[] { new DeviceListItem { DeviceID = deviceId } }
+                    Items = new[] { new DeviceListItem { DeviceID = deviceId } }
                 });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, this.apiTagsBaseUrl)
-                .RespondJson(Array.Empty<object>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
 
             var cut = RenderComponent<DeviceListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
@@ -204,18 +201,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
-                .RespondJson(new PaginationResult<DeviceListItem>
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new DeviceListItem[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
+                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
                 });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, this.apiTagsBaseUrl)
-                .RespondJson(Array.Empty<object>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
 
             var cut = RenderComponent<DeviceListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
@@ -231,18 +227,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
         public void OnInitializedAsyncShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceTags()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
-                .RespondJson(new PaginationResult<DeviceListItem>
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
                 });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, this.apiTagsBaseUrl)
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
             var cut = RenderComponent<DeviceListPage>();
@@ -251,22 +246,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             cut.WaitForAssertion(() => cut.Markup.Should().NotBeNullOrEmpty());
             cut.WaitForAssertion(() => cut.FindAll("tr").Count.Should().Be(2));
 
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void LoadItemsShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDevices()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState=")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState="))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, this.apiTagsBaseUrl)
-                .RespondJson(Array.Empty<object>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
 
             // Act
             var cut = RenderComponent<DeviceListPage>();
@@ -275,7 +269,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             cut.WaitForAssertion(() => cut.Markup.Should().NotBeNullOrEmpty());
             cut.WaitForAssertion(() => cut.FindAll("tr").Count.Should().Be(2));
 
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }

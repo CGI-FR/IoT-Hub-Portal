@@ -1,18 +1,20 @@
 ﻿@page "/devices/new"
+
 @using AzureIoTHub.Portal.Client.Pages.Devices.LoRaWAN
 @using AzureIoTHub.Portal.Client.Validators
 @using AzureIoTHub.Portal.Models
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using System.Text.RegularExpressions
 
 @attribute [Authorize]
-@inject HttpClient Http
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
 @inject IDialogService DialogService
+@inject IDeviceModelsClientService DeviceModelsClientService
+@inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
+@inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
+@inject IDeviceClientService DeviceClientService
+@inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device</MudText>
 <MudForm Model="@Device" @ref="form">
@@ -225,8 +227,7 @@
     public Error Error {get; set;}
 
     private MudForm form;
-
-    private string ApiUrlBase => this.IsLoRa ? "/api/lorawan/devices" : "api/devices";
+    
     private DeviceDetailsValidator standardValidator = new DeviceDetailsValidator();
     private LoRaDeviceDetailsValidator loraValidator = new LoRaDeviceDetailsValidator();
     private LoRaDeviceModel loRaDeviceModel { get; set; }
@@ -266,10 +267,10 @@
             Device.IsEnabled = true;
 
             // Gets a list of device model previously registered to Azure to allow autocomplete field in the form
-            DeviceModelList = await Http.GetFromJsonAsync<DeviceModel[]>("api/models");
+            DeviceModelList = await DeviceModelsClientService.GetDeviceModels();
 
             // Gets the custom tags that can be set when creating a device
-            TagList = await Http.GetFromJsonAsync<IEnumerable<DeviceTag>>($"/api/settings/device-tags");
+            TagList = await DeviceTagSettingsClientService.GetDeviceTags();
 
             foreach (DeviceTag tag in TagList)
             {
@@ -309,11 +310,11 @@
             }
 
             if (IsLoRa)
-                await Http.PostAsJsonAsync(ApiUrlBase, Device as LoRaDeviceDetails);
+                await LoRaWanDeviceClientService.CreateDevice(Device as LoRaDeviceDetails);
             else
             {
-                await Http.PostAsJsonAsync(ApiUrlBase, Device);
-                await Http.PostAsJsonAsync($"{ApiUrlBase}/{Device.DeviceID}/properties", Properties);
+                await DeviceClientService.CreateDevice(Device);
+                await DeviceClientService.SetDeviceProperties(Device.DeviceID, Properties);
             }
 
             // Prompts a snack bar to inform the action was successful
@@ -401,19 +402,17 @@
 
                 Device = device;
 
-                await Http.GetFromJsonAsync<LoRaDeviceModel>($"api/lorawan/models/{model.ModelId}")
-                    .ContinueWith(c =>
-                    {
-                        device.AppEUI = c.Result.AppEUI;
-                        device.SensorDecoder = c.Result.SensorDecoder;
-                        device.UseOTAA = c.Result.UseOTAA;
-                        loRaDeviceModel = c.Result;
-                    });
+                var loRaDeviceModelResult = await LoRaWanDeviceModelsClientService.GetDeviceModel(model.ModelId);
+
+                device.AppEUI = loRaDeviceModelResult.AppEUI;
+                device.SensorDecoder = loRaDeviceModelResult.SensorDecoder;
+                device.UseOTAA = loRaDeviceModelResult.UseOTAA;
+                loRaDeviceModel = loRaDeviceModelResult;
             }
             else
             {
-                var properties = await Http.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"api/models/{model.ModelId}/properties");
-
+                var properties = await DeviceModelsClientService.GetDeviceModelModelProperties(model.ModelId);
+                
                 Properties.AddRange(properties.Select(x => new DevicePropertyValue
                     {
                         DisplayName = x.DisplayName,
