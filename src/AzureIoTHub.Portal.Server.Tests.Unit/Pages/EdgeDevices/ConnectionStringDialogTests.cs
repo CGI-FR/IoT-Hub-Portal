@@ -4,7 +4,6 @@
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 {
     using System;
-    using System.Net.Http;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
     using Models.v10;
@@ -13,21 +12,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
     using Client.Models;
     using Client.Services;
     using FluentAssertions;
-    using Helpers;
     using Microsoft.Extensions.DependencyInjection;
+    using Moq;
     using MudBlazor;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
 
     [TestFixture]
     public class ConnectionStringDialogTests : BlazorUnitTest
     {
         private DialogService dialogService;
+        private Mock<IEdgeDeviceClientService> mockEdgeDeviceClientService;
 
         public override void Setup()
         {
             base.Setup();
 
+            this.mockEdgeDeviceClientService = MockRepository.Create<IEdgeDeviceClientService>();
+
+            _ = Services.AddSingleton(this.mockEdgeDeviceClientService.Object);
             _ = Services.AddSingleton<ClipboardService>();
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
@@ -40,9 +42,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/credentials")
-                .RespondJson(new EnrollmentCredentials());
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
+                .ReturnsAsync(new EnrollmentCredentials());
 
             var cut = RenderComponent<MudDialogProvider>();
 
@@ -59,8 +60,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             _ = cut.FindAll("div.mud-grid-item").Count.Should().Be(4);
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -69,9 +69,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/credentials")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<MudDialogProvider>();
 
@@ -90,8 +89,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             _ = result.Cancelled.Should().BeTrue();
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -100,9 +98,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/credentials")
-                .RespondJson(new EnrollmentCredentials());
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
+                .ReturnsAsync(new EnrollmentCredentials());
 
             var cut = RenderComponent<MudDialogProvider>();
 
@@ -123,8 +120,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             _ = result.Cancelled.Should().BeTrue();
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }

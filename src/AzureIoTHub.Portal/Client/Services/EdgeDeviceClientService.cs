@@ -5,11 +5,9 @@ namespace AzureIoTHub.Portal.Client.Services
 {
     using System.Collections.Generic;
     using System.Net.Http;
-    using System.Text;
+    using System.Net.Http.Json;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
-    using Newtonsoft.Json;
-    using static System.Net.Mime.MediaTypeNames;
 
     public class EdgeDeviceClientService : IEdgeDeviceClientService
     {
@@ -20,14 +18,48 @@ namespace AzureIoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public async Task<List<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule module)
+        public Task<PaginationResult<IoTEdgeListItem>> GetDevices(string continuationUri)
         {
-            var response = await this.http.PostAsync($"api/edge/devices/{deviceId}/logs", new StringContent(
-                JsonConvert.SerializeObject(module),
-                Encoding.UTF8,
-                Application.Json));
+            return this.http.GetFromJsonAsync<PaginationResult<IoTEdgeListItem>>(continuationUri);
+        }
 
-            return JsonConvert.DeserializeObject<List<IoTEdgeDeviceLog>>(await response.Content.ReadAsStringAsync());
+        public Task<IoTEdgeDevice> GetDevice(string deviceId)
+        {
+            return this.http.GetFromJsonAsync<IoTEdgeDevice>($"api/edge/devices/{deviceId}");
+        }
+
+        public Task CreateDevice(IoTEdgeDevice device)
+        {
+            return this.http.PostAsJsonAsync("api/edge/devices", device);
+        }
+
+        public Task UpdateDevice(IoTEdgeDevice device)
+        {
+            return this.http.PutAsJsonAsync($"api/edge/devices/{device.DeviceId}", device);
+        }
+
+        public Task DeleteDevice(string deviceId)
+        {
+            return this.http.DeleteAsync($"api/edge/devices/{deviceId}");
+        }
+
+        public Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId)
+        {
+            return this.http.GetFromJsonAsync<EnrollmentCredentials>($"api/edge/devices/{deviceId}/credentials");
+        }
+
+        public async Task<List<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule)
+        {
+            var response = await this.http.PostAsJsonAsync($"api/edge/devices/{deviceId}/logs", edgeModule);
+
+            return await response.Content.ReadFromJsonAsync<List<IoTEdgeDeviceLog>>();
+        }
+
+        public async Task<C2Dresult> ExecuteModuleMethod(string deviceId, IoTEdgeModule edgeModule, string methodName)
+        {
+            var response = await this.http.PostAsJsonAsync($"api/edge/devices/{deviceId}/{edgeModule.ModuleName}/{methodName}", edgeModule);
+
+            return await response.Content.ReadFromJsonAsync<C2Dresult>();
         }
     }
 }

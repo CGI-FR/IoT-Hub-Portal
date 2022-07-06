@@ -12,16 +12,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
     using MudBlazor;
     using NUnit.Framework;
     using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
+    using Moq;
 
     [TestFixture]
     public class CreateEdgeDeviceDialogTests : BlazorUnitTest
     {
         private DialogService dialogService;
+        private Mock<IEdgeDeviceClientService> mockEdgeDeviceClientService;
 
         public override void Setup()
         {
             base.Setup();
 
+            this.mockEdgeDeviceClientService = MockRepository.Create<IEdgeDeviceClientService>();
+
+            _ = Services.AddSingleton(this.mockEdgeDeviceClientService.Object);
             _ = Services.AddSingleton<ClipboardService>();
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
@@ -46,6 +51,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             _ = cut.FindAll("#environment").Count.Should().Be(1);
             _ = cut.FindAll("#cancel").Count.Should().Be(1);
             _ = cut.FindAll("#create").Count.Should().Be(1);
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -66,6 +72,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             _ = result.Cancelled.Should().BeTrue();
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }

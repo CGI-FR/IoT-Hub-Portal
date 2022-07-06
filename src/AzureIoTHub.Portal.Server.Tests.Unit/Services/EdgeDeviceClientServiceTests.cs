@@ -7,19 +7,74 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using AutoFixture;
     using AzureIoTHub.Portal.Client.Services;
     using Models.v10;
-    using Client.Exceptions;
-    using Client.Models;
     using FluentAssertions;
-    using Newtonsoft.Json;
+    using Helpers;
+    using Microsoft.Extensions.DependencyInjection;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
-    using static System.Net.Mime.MediaTypeNames;
 
     [TestFixture]
-    public class EdgeDeviceClientServiceTests
+    public class EdgeDeviceClientServiceTests : BlazorUnitTest
     {
+        private IEdgeDeviceClientService edgeDeviceClientService;
+
+        public override void Setup()
+        {
+            base.Setup();
+
+            _ = Services.AddSingleton<IEdgeDeviceClientService, EdgeDeviceClientService>();
+
+            this.edgeDeviceClientService = Services.GetRequiredService<IEdgeDeviceClientService>();
+        }
+
+        [Test]
+        public async Task GetConcentratorsShouldReturnConcentrators()
+        {
+            // Arrange
+            var expectedDevices = new PaginationResult<IoTEdgeListItem>
+            {
+                Items = new List<IoTEdgeListItem>()
+                {
+                    new ()
+                }
+            };
+
+            var expectedUri = "/api/edge/devices?pageSize=10";
+
+            _ = MockHttpClient.When(HttpMethod.Get, expectedUri)
+                .RespondJson(expectedDevices);
+
+            // Act
+            var result = await this.edgeDeviceClientService.GetDevices(expectedUri);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedDevices);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task GetEnrollmentCredentialsShouldReturnEnrollmentCredentials()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            var expectedEnrollmentCredentials = Fixture.Create<EnrollmentCredentials>();
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/credentials")
+                .RespondJson(expectedEnrollmentCredentials);
+
+            // Act
+            var result = await this.edgeDeviceClientService.GetEnrollmentCredentials(deviceId);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedEnrollmentCredentials);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
 
         [Test]
         public async Task GetEdgeDeviceLogsMustReturnLogsWhenNoError()
@@ -41,61 +96,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
                 TimeStamp = DateTime.UtcNow
             };
 
-            var expectedLogs = new List<IoTEdgeDeviceLog>()
+            var expectedLogs = new List<IoTEdgeDeviceLog>
             {
                 expectedLog
             };
 
-            using var mockHttp = new MockHttpMessageHandler();
-
-            _ = mockHttp.When(HttpMethod.Post, $"http://localhost/api/edge/devices/{deviceId}/logs")
-                .Respond(Application.Json, JsonConvert.SerializeObject(expectedLogs));
-
-            using var client = new HttpClient(mockHttp)
-            {
-                BaseAddress = new Uri("http://localhost")
-            };
-
-            var edgeDeviceClientService = new EdgeDeviceClientService(client);
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/devices/{deviceId}/logs")
+                .RespondJson(expectedLogs);
 
             // Act
-            var result = await edgeDeviceClientService.GetEdgeDeviceLogs(deviceId, edgeModule);
+            var result = await this.edgeDeviceClientService.GetEdgeDeviceLogs(deviceId, edgeModule);
 
             // Assert
             _ = result.Should().NotBeNull();
 
             _ = result.Count.Should().Be(1);
-        }
-
-        [Test]
-        public async Task GetEdgeDeviceLogsMustThrowProblemDetailsExceptionWhenErrorOccurs()
-        {
-            // Arrange
-            var deviceId = Guid.NewGuid().ToString();
-
-            var edgeModule = new IoTEdgeModule
-            {
-                Version = "1.0",
-                ModuleName = Guid.NewGuid().ToString()
-            };
-
-            using var mockHttp = new MockHttpMessageHandler();
-
-            _ = mockHttp.When(HttpMethod.Post, $"http://localhost/api/edge/devices/{deviceId}/logs")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
-
-            using var client = new HttpClient(mockHttp)
-            {
-                BaseAddress = new Uri("http://localhost")
-            };
-
-            var edgeDeviceClientService = new EdgeDeviceClientService(client);
-
-            // Act
-            var act = () => edgeDeviceClientService.GetEdgeDeviceLogs(deviceId, edgeModule);
-
-            // Assert
-            _ = await act.Should().ThrowAsync<ProblemDetailsException>();
         }
     }
 }

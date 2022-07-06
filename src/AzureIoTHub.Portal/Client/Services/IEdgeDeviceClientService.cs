@@ -9,6 +9,20 @@ namespace AzureIoTHub.Portal.Client.Services
 
     public interface IEdgeDeviceClientService
     {
-        Task<List<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule module);
+        Task<PaginationResult<IoTEdgeListItem>> GetDevices(string continuationUri);
+
+        Task<IoTEdgeDevice> GetDevice(string deviceId);
+
+        Task CreateDevice(IoTEdgeDevice device);
+
+        Task UpdateDevice(IoTEdgeDevice device);
+
+        Task DeleteDevice(string deviceId);
+
+        Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId);
+
+        Task<List<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule);
+
+        Task<C2Dresult> ExecuteModuleMethod(string deviceId, IoTEdgeModule edgeModule, string methodName);
     }
 }
