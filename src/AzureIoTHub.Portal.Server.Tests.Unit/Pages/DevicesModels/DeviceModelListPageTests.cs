@@ -4,48 +4,46 @@
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
 {
     using System;
-    using System.Net.Http;
     using System.Threading.Tasks;
+    using AutoFixture;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
     using Models.v10;
-    using Helpers;
     using Bunit;
     using Bunit.TestDoubles;
+    using Client.Services;
     using FluentAssertions;
-    using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
 
     [TestFixture]
     public class DeviceModelListPageTests : BlazorUnitTest
     {
         private Mock<IDialogService> mockDialogService;
-
-        private readonly string apiBaseUrl = "/api/models";
+        private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
 
         public override void Setup()
         {
             base.Setup();
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
+            this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
+            _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
         }
 
         [Test]
         public void WhenLoraFeatureDisableClickToItemShouldRedirectToDeviceDetailsPage()
         {
             // Arrange
-            var modelId = Guid.NewGuid().ToString();
+            var modelId = Fixture.Create<string>();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, this.apiBaseUrl)
-                .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = modelId, SupportLoRaFeatures = false } });
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new[] {new DeviceModel {ModelId = modelId, SupportLoRaFeatures = false}});
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -56,7 +54,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
 
             // Assert
-            cut.WaitForAssertion(() => Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/device-models/{modelId}"));
+            cut.WaitForAssertion(() => Services.GetService<FakeNavigationManager>()?.Uri.Should().EndWith($"/device-models/{modelId}"));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -65,9 +64,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             // Arrange
             var modelId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, this.apiBaseUrl)
-                .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = modelId, SupportLoRaFeatures = true } });
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new[] { new DeviceModel { ModelId = modelId, SupportLoRaFeatures = true } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -79,15 +77,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
 
             // Assert
             cut.WaitForAssertion(() => Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/device-models/{modelId}?isLora=true"));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void DeviceModelListPageRendersCorrectly()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, this.apiBaseUrl)
-                .RespondJson(new DeviceModel[] {
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new[] {
                     new DeviceModel { ModelId = Guid.NewGuid().ToString() },
                     new DeviceModel{  ModelId = Guid.NewGuid().ToString() }
                 });
@@ -105,7 +103,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             cut.WaitForAssertion(() => Assert.IsNotNull(cut.Find(".mud-table-container")));
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -115,9 +112,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, this.apiBaseUrl)
-                .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -127,7 +123,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             cut.WaitForState(() => Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("device-models/new", StringComparison.OrdinalIgnoreCase));
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -135,9 +130,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
         public void LoadDeviceModelsShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceModels()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"{this.apiBaseUrl}")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -146,28 +140,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             cut.WaitForAssertion(() => cut.FindAll("tr").Count.Should().Be(2));
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
-        }
-
-        [Test]
-        public void LoadDeviceModelsShouldDisplayAccessTokenNotAvailableExceptionWhenIssueOccursOnGettingDeviceModels()
-        {
-            // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
-
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"{this.apiBaseUrl}")
-                .Throw(new AccessTokenNotAvailableException(Services.GetRequiredService<FakeNavigationManager>(), new AccessTokenResult(AccessTokenResultStatus.Success, new AccessToken(), "redirectUrl"), null));
-
-            // Act
-            var cut = RenderComponent<DeviceModelListPage>();
-            cut.WaitForAssertion(() => Assert.IsNotEmpty(cut.Markup));
-            cut.WaitForState(() => Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/redirectUrl", StringComparison.OrdinalIgnoreCase));
-
-            // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -175,9 +148,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
-            var apiCall = MockHttpClient
-                .When(HttpMethod.Get, this.apiBaseUrl)
-                .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -191,20 +164,19 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
                 await Task.Delay(0);
             }
 
-            var matchCount = MockHttpClient.GetMatchCount(apiCall);
-            Assert.AreEqual(4, matchCount);
-
             // Assert
+            cut.WaitForAssertion(() => this.mockDeviceModelsClientService.Verify(service => service.GetDeviceModels(), Times.Exactly(4)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void ClickOnDeleteShouldDisplayConfirmationDialogAndReturnIfAborted()
         {
+            // Arrange
             var deviceId = Guid.NewGuid().ToString();
-            _ = MockHttpClient
-                .When(HttpMethod.Get, this.apiBaseUrl)
-                .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -220,7 +192,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             deleteButton.Click();
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -228,9 +199,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
         public void ClickOnDeleteShouldDisplayConfirmationDialogAndReloadDeviceModelIfConfirmed()
         {
             var deviceId = Guid.NewGuid().ToString();
-            var apiCall = MockHttpClient
-                .When(HttpMethod.Get, this.apiBaseUrl)
-                .RespondJson(new DeviceModel[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -245,11 +216,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             var deleteButton = cut.WaitForElement("#deleteButton");
             deleteButton.Click();
 
-            var matchCount = MockHttpClient.GetMatchCount(apiCall);
-            Assert.AreEqual(2, matchCount);
-
             // Assert            
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => this.mockDeviceModelsClientService.Verify(service => service.GetDeviceModels(), Times.Exactly(2)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }

@@ -23,9 +23,34 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.GetFromJsonAsync<LoRaDeviceModel>($"api/lorawan/models/{deviceModelId}");
         }
 
+        public Task CreateDeviceModel(LoRaDeviceModel deviceModel)
+        {
+            return this.http.PostAsJsonAsync("api/lorawan/models", deviceModel);
+        }
+
+        public Task UpdateDeviceModel(LoRaDeviceModel deviceModel)
+        {
+            return this.http.PutAsJsonAsync($"api/lorawan/models/{deviceModel.ModelId}", deviceModel);
+        }
+
+        public Task SetDeviceModelCommands(string deviceModelId, IList<DeviceModelCommand> commands)
+        {
+            return this.http.PostAsJsonAsync($"api/lorawan/models/{deviceModelId}/commands", commands);
+        }
+
         public async Task<IList<DeviceModelCommand>> GetDeviceModelCommands(string deviceModelId)
         {
             return await this.http.GetFromJsonAsync<List<DeviceModelCommand>>($"api/lorawan/models/{deviceModelId}/commands");
+        }
+
+        public Task<string> GetAvatarUrl(string deviceModelId)
+        {
+            return this.http.GetStringAsync($"api/lorawan/models/{deviceModelId}/avatar");
+        }
+
+        public Task ChangeAvatar(string deviceModelId, MultipartFormDataContent avatar)
+        {
+            return this.http.PostAsJsonAsync($"api/lorawan/models/{deviceModelId}/avatar", avatar);
         }
     }
 }

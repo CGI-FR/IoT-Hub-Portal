@@ -28,9 +28,39 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.GetFromJsonAsync<DeviceModel>($"api/models/{deviceModelId}");
         }
 
+        public Task CreateDeviceModel(DeviceModel deviceModel)
+        {
+            return this.http.PostAsJsonAsync("api/models", deviceModel);
+        }
+
+        public Task UpdateDeviceModel(DeviceModel deviceModel)
+        {
+            return this.http.PutAsJsonAsync($"api/models/{deviceModel.ModelId}", deviceModel);
+        }
+
+        public Task DeleteDeviceModel(string deviceModelId)
+        {
+            return this.http.DeleteAsync($"api/models/{deviceModelId}");
+        }
+
         public async Task<IList<DeviceProperty>> GetDeviceModelModelProperties(string deviceModelId)
         {
             return await this.http.GetFromJsonAsync<List<DeviceProperty>>($"api/models/{deviceModelId}/properties");
+        }
+
+        public Task SetDeviceModelModelProperties(string deviceModelId, IList<DeviceProperty> deviceProperties)
+        {
+            return this.http.PostAsJsonAsync($"api/models/{deviceModelId}/properties", deviceProperties);
+        }
+
+        public Task<string> GetAvatarUrl(string deviceModelId)
+        {
+            return this.http.GetStringAsync($"api/models/{deviceModelId}/avatar");
+        }
+
+        public Task ChangeAvatar(string deviceModelId, MultipartFormDataContent avatar)
+        {
+            return this.http.PostAsJsonAsync($"api/models/{deviceModelId}/avatar", avatar);
         }
     }
 }

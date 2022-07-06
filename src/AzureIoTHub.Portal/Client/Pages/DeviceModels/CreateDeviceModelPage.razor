@@ -1,25 +1,18 @@
 ﻿@page "/device-models/new"
-@using System.ComponentModel.DataAnnotations
-@using System.Net.Http.Json
 @using System.Net.Http.Headers
-@using System.IO
 @using AzureIoTHub.Portal.Client.Pages.DeviceModels.LoRaWAN
 @using AzureIoTHub.Portal.Client.Validators
 @using AzureIoTHub.Portal.Models
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
-@using Blazored.Modal
-@using Blazored.Modal.Services
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Newtonsoft.Json
 
 @attribute [Authorize]
-@inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 @inject PortalSettings Portal
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject IDeviceModelsClientService DeviceModelsClientService
+@inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device Model</MudText>
 
@@ -173,7 +166,6 @@
 
     private MudForm form;
 
-    private string ApiUrlBase => this.IsLoRa ? "/api/lorawan/models" : "api/models";
     private DeviceModelValidator standardValidator = new DeviceModelValidator();
     private LoRaDeviceModelValidator loraValidator = new LoRaDeviceModelValidator();
     private DevicePropertyValidator propertiesValidator = new DevicePropertyValidator();
@@ -300,8 +292,6 @@
             return;
         }
 
-        HttpResponseMessage result;
-
         try
         {
             if (IsLoRa)
@@ -315,27 +305,27 @@
 
                 loraDeviceModel.SupportLoRaFeatures = true;
 
+                await LoRaWanDeviceModelsClientService.CreateDeviceModel(loraDeviceModel);
 
-                result = await httpClient.PostAsJsonAsync(ApiUrlBase, loraDeviceModel);
-
-                result.EnsureSuccessStatusCode();
-
-                result = await httpClient.PostAsJsonAsync($"{ApiUrlBase}/{Model.ModelId}/commands", Commands);
+                await LoRaWanDeviceModelsClientService.SetDeviceModelCommands(Model.ModelId, Commands);
             }
             else
             {
-                result = await httpClient.PostAsJsonAsync(ApiUrlBase, Model);
+                await DeviceModelsClientService.CreateDeviceModel(Model);
 
-                result.EnsureSuccessStatusCode();
-
-                result = await httpClient.PostAsJsonAsync($"{ApiUrlBase}/{Model.ModelId}/properties", Properties);
+                await DeviceModelsClientService.SetDeviceModelModelProperties(Model.ModelId, Properties);
             }
-
-            result.EnsureSuccessStatusCode();
 
             if (content is not null)
             {
-                var response = await httpClient.PostAsync($"{ApiUrlBase}/{Model.ModelId}/avatar", content);
+                if (IsLoRa)
+                {
+                    await LoRaWanDeviceModelsClientService.ChangeAvatar(Model.ModelId, content);
+                }
+                else
+                {
+                    await DeviceModelsClientService.ChangeAvatar(Model.ModelId, content);
+                }
             }
 
 

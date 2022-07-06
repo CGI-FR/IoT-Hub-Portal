@@ -1,18 +1,11 @@
 ﻿@page "/device-models"
 @using AzureIoTHub.Portal.Models.v10
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using System.Net.Http.Json
-@using Blazored.Modal
-@using Blazored.Modal.Services
 
 @attribute [Authorize]
-@inject HttpClient httpClient
 @inject NavigationManager navigationManager
 @inject PortalSettings Portal
-@inject ISnackbar snackBar
 @inject IDialogService dialogService
-
+@inject IDeviceModelsClientService DeviceModelsClientService
 
 <MudGrid>
     @if (result == null)
@@ -112,16 +105,12 @@
     {
         try
         {
-            result = await httpClient.GetFromJsonAsync<List<DeviceModel>>("api/models");
+            result.Clear();
+            result.AddRange(await DeviceModelsClientService.GetDeviceModels());
         }
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
-        }
-
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
         }
     }
 

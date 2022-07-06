@@ -3,7 +3,9 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 {
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
     using AutoFixture;
@@ -66,6 +68,71 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public async Task CreateDeviceModelShouldCreateDeviceModel()
+        {
+            // Arrange
+            var expectedDeviceModel = Fixture.Create<DeviceModel>();
+
+            _ = MockHttpClient.When(HttpMethod.Post, "/api/models")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceModel>>();
+                    var body = m.Content as ObjectContent<DeviceModel>;
+                    _ = body.Value.Should().BeEquivalentTo(expectedDeviceModel);
+                    return true;
+                })
+                .Respond(HttpStatusCode.Created);
+
+            // Act
+            await this.deviceModelsClientService.CreateDeviceModel(expectedDeviceModel);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task UpdateDeviceModelShouldUpdateDeviceModel()
+        {
+            // Arrange
+            var expectedDeviceModel = Fixture.Create<DeviceModel>();
+
+            _ = MockHttpClient.When(HttpMethod.Put, $"/api/models/{expectedDeviceModel.ModelId}")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceModel>>();
+                    var body = m.Content as ObjectContent<DeviceModel>;
+                    _ = body.Value.Should().BeEquivalentTo(expectedDeviceModel);
+                    return true;
+                })
+                .Respond(HttpStatusCode.Created);
+
+            // Act
+            await this.deviceModelsClientService.UpdateDeviceModel(expectedDeviceModel);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task DeleteDeviceModelShouldDeleteDeviceModel()
+        {
+            // Arrange
+            var expectedDeviceModel = Fixture.Create<DeviceModel>();
+
+            _ = MockHttpClient.When(HttpMethod.Delete, $"/api/models/{expectedDeviceModel.ModelId}")
+                .Respond(HttpStatusCode.NoContent);
+
+            // Act
+            await this.deviceModelsClientService.DeleteDeviceModel(expectedDeviceModel.ModelId);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
         public async Task GetDeviceModelModelPropertiesShouldReturnDeviceModelModelProperties()
         {
             // Arrange
@@ -80,6 +147,74 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceModelProperties);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task SetDeviceModelModelPropertiesShouldSetDeviceModelModelProperties()
+        {
+            // Arrange
+            var deviceModel = Fixture.Create<DeviceModel>();
+            var expectedDeviceModelProperties = Fixture.Build<DeviceProperty>().CreateMany(3).ToList();
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{deviceModel.ModelId}/properties")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IList<DeviceProperty>>>();
+                    var body = m.Content as ObjectContent<IList<DeviceProperty>>;
+                    _ = body.Value.Should().BeEquivalentTo(expectedDeviceModelProperties);
+                    return true;
+                })
+                .Respond(HttpStatusCode.Created);
+
+            // Act
+            await this.deviceModelsClientService.SetDeviceModelModelProperties(deviceModel.ModelId, expectedDeviceModelProperties);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task GetAvatarUrlShouldReturnAvatarUrl()
+        {
+            // Arrange
+            var deviceModel = Fixture.Create<DeviceModel>();
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{deviceModel.ModelId}/avatar")
+                .RespondJson(deviceModel.ImageUrl.ToString());
+
+            // Act
+            var result = await this.deviceModelsClientService.GetAvatarUrl(deviceModel.ModelId);
+
+            // Assert
+            _ = result.Should().Contain(deviceModel.ImageUrl.ToString());
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task ChangeAvatarPropertiesShouldChangeAvatar()
+        {
+            // Arrange
+            var deviceModel = Fixture.Create<DeviceModel>();
+            var content = new MultipartFormDataContent();
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{deviceModel.ModelId}/properties")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<MultipartFormDataContent>>();
+                    var body = m.Content as ObjectContent<MultipartFormDataContent>;
+                    _ = body.Value.Should().BeEquivalentTo(content);
+                    return true;
+                })
+                .Respond(HttpStatusCode.Created);
+
+            // Act
+            await this.deviceModelsClientService.ChangeAvatar(deviceModel.ModelId, content);
+
+            // Assert
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
