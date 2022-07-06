@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
     using Microsoft.Extensions.DependencyInjection;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using System.Net;
 
     [TestFixture]
     public class EdgeDeviceClientServiceTests : BlazorUnitTest
@@ -31,7 +32,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
-        public async Task GetConcentratorsShouldReturnConcentrators()
+        public async Task GetDevicesShouldReturnDevices()
         {
             // Arrange
             var expectedDevices = new PaginationResult<IoTEdgeListItem>
@@ -52,6 +53,100 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDevices);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task GetDeviceShouldReturnDevice()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            var expectedDevice = new IoTEdgeDevice
+            {
+                DeviceId = deviceId
+            };
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/edge/devices/{deviceId}")
+                .RespondJson(expectedDevice);
+
+            // Act
+            var result = await this.edgeDeviceClientService.GetDevice(deviceId);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedDevice);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task CreateDeviceShouldCreateDevice()
+        {
+            // Arrange
+            var device = new IoTEdgeDevice
+            {
+                DeviceId = Fixture.Create<string>()
+            };
+
+            _ = MockHttpClient.When(HttpMethod.Post, "/api/edge/devices")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IoTEdgeDevice>>();
+                    var body = m.Content as ObjectContent<IoTEdgeDevice>;
+                    _ = body.Value.Should().BeEquivalentTo(device);
+                    return true;
+                })
+                .Respond(HttpStatusCode.Created);
+
+            // Act
+            await this.edgeDeviceClientService.CreateDevice(device);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task UpdateDeviceShouldUpdateDevice()
+        {
+            // Arrange
+            var device = new IoTEdgeDevice
+            {
+                DeviceId = Fixture.Create<string>()
+            };
+
+            _ = MockHttpClient.When(HttpMethod.Put, $"/api/edge/devices/{device.DeviceId}")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IoTEdgeDevice>>();
+                    var body = m.Content as ObjectContent<IoTEdgeDevice>;
+                    _ = body.Value.Should().BeEquivalentTo(device);
+                    return true;
+                })
+                .Respond(HttpStatusCode.Created);
+
+            // Act
+            await this.edgeDeviceClientService.UpdateDevice(device);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task DeleteDeviceShouldDeleteDevice()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            _ = MockHttpClient.When(HttpMethod.Delete, $"/api/edge/devices/{deviceId}")
+                .Respond(HttpStatusCode.NoContent);
+
+            // Act
+            await this.edgeDeviceClientService.DeleteDevice(deviceId);
+
+            // Assert
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
