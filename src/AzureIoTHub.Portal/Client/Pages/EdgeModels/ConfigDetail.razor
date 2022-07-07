@@ -1,13 +1,10 @@
 ﻿@page "/edge/configurations/{ConfigurationID}"
-@using Microsoft.AspNetCore.Authorization
 @using AzureIoTHub.Portal.Models.v10
 @using System.Text.RegularExpressions;
 @attribute [Authorize]
-@inject HttpClient Http
 @inject IDialogService DialogService
-@inject ISnackbar Snackbar
-@inject NavigationManager NavManager
-@inject NavigationManager navigationManager
+@inject NavigationManager NavigationManager
+@inject IEdgeDeviceConfigurationsClientService EdgeDeviceConfigurationsClientService
 
 <MudContainer MaxWidth="MaxWidth.False">
     <MudGrid>
@@ -123,19 +120,19 @@
     [Parameter]
     public string ConfigurationID { get; set; }
 
-    private ConfigListItem Config { get; set; } = new ConfigListItem();
+    private ConfigListItem Config { get; set; } = new();
 
     public string ConditionEnv { get; set; }
     public string ConditionType { get; set; }
     public string ConditionOwner { get; set; }
-    private void Return() => navigationManager.NavigateTo("edge/configurations");
+    private void Return() => NavigationManager.NavigateTo("edge/configurations");
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             // Sends a GET request to the ConfigController, to retrieve a specific deployment from Azure IoT Hub
-            Config = await Http.GetFromJsonAsync<ConfigListItem>($"api/edge/configurations/{ConfigurationID}");
+            Config = await EdgeDeviceConfigurationsClientService.GetDeviceConfiguration(ConfigurationID);
             ConditionOwner = RetrieveCondition("owner");
             ConditionEnv = RetrieveCondition("env");
             ConditionType = RetrieveCondition("type");

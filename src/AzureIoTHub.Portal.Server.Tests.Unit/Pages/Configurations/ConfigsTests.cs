@@ -5,30 +5,35 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
 {
     using System;
     using System.Collections.Generic;
-    using System.Net.Http;
     using AzureIoTHub.Portal.Client.Pages.EdgeModels;
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Exceptions;
     using Client.Models;
+    using Client.Services;
     using FluentAssertions;
-    using Helpers;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
+    using Moq;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
 
     [TestFixture]
     public class ConfigsTests : BlazorUnitTest
     {
+        private Mock<IEdgeDeviceConfigurationsClientService> mockEdgeDeviceConfigurationsClientService;
+
         public override void Setup()
         {
             base.Setup();
 
+            this.mockEdgeDeviceConfigurationsClientService = MockRepository.Create<IEdgeDeviceConfigurationsClientService>();
+
+
+            _ = Services.AddSingleton(this.mockEdgeDeviceConfigurationsClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
         }
 
-        [TestCase]
+        [Test]
         public void ConfigsPageMustLoadConfigurations()
         {
             // Arrange
@@ -38,34 +43,32 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
                 new()
             };
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/edge/configurations")
-                .RespondJson(configurations);
+            _ = this.mockEdgeDeviceConfigurationsClientService
+                .Setup(service => service.GetDeviceConfigurations())
+                .ReturnsAsync(configurations);
 
             // Act
             var cut = RenderComponent<Configs>();
-            cut.WaitForAssertion(() => cut.FindAll("tr").Count.Should().Be(3));
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(2));
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
-        [TestCase]
+        [Test]
         public void ConfigsPageShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingConfigurations()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/edge/configurations")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockEdgeDeviceConfigurationsClientService
+                .Setup(service => service.GetDeviceConfigurations())
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
             var cut = RenderComponent<Configs>();
             cut.WaitForAssertion(() => cut.FindAll("tr").Count.Should().Be(2));
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -76,15 +79,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
 
             var configurations = new List<ConfigListItem>
             {
-                new ConfigListItem
+                new()
                 {
                     ConfigurationID = configurationId
                 }
             };
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/edge/configurations")
-                .RespondJson(configurations);
+            _ = this.mockEdgeDeviceConfigurationsClientService
+                .Setup(service => service.GetDeviceConfigurations())
+                .ReturnsAsync(configurations);
 
             var cut = RenderComponent<Configs>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
@@ -93,7 +96,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
             cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
 
             // Assert
-            cut.WaitForAssertion(() => this.TestContext.Services.GetService<FakeNavigationManager>().Uri.Should().EndWith($"/edge/configurations/{configurationId}"));
+            cut.WaitForAssertion(() => Services.GetService<FakeNavigationManager>()?.Uri.Should().EndWith($"/edge/configurations/{configurationId}"));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }
