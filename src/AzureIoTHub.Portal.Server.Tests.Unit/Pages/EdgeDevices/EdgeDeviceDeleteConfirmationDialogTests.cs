@@ -4,8 +4,6 @@
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 {
     using System;
-    using System.Net;
-    using System.Net.Http;
     using System.Threading.Tasks;
     using Models.v10;
     using Bunit;
@@ -15,18 +13,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
     using Microsoft.Extensions.DependencyInjection;
     using MudBlazor;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
     using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
+    using Client.Services;
+    using Moq;
 
     [TestFixture]
     public class EdgeDeviceDeleteConfirmationDialogTests : BlazorUnitTest
     {
         private DialogService dialogService;
+        private Mock<IEdgeDeviceClientService> mockEdgeDeviceClientService;
 
         public override void Setup()
         {
             base.Setup();
 
+            this.mockEdgeDeviceClientService = MockRepository.Create<IEdgeDeviceClientService>();
+
+            _ = Services.AddSingleton(this.mockEdgeDeviceClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             this.dialogService = Services.GetService<IDialogService>() as DialogService;
@@ -38,9 +41,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Delete, $"/api/edge/devices/{deviceId}")
-                .Respond(HttpStatusCode.NoContent);
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.DeleteDevice(deviceId))
+                .Returns(Task.CompletedTask);
 
             var cut = RenderComponent<MudDialogProvider>();
 
@@ -60,6 +62,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             _ = result.Should().BeTrue();
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -68,9 +71,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Delete, $"/api/edge/devices/{deviceId}")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.DeleteDevice(deviceId))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<MudDialogProvider>();
 
@@ -87,6 +89,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             _ = cut.Find("#delete").TextContent.Should().Be("Delete");
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -94,10 +97,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
-
-            _ = MockHttpClient
-                .When(HttpMethod.Delete, $"/api/edge/devices/{deviceId}")
-                .Respond(HttpStatusCode.NoContent);
 
             var cut = RenderComponent<MudDialogProvider>();
 
@@ -117,6 +116,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             _ = result.Cancelled.Should().BeTrue();
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }

@@ -1,9 +1,8 @@
 ﻿@page "/edge/configurations"
-@using Microsoft.AspNetCore.Authorization
 @using AzureIoTHub.Portal.Models.v10
 @attribute [Authorize]
-@inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject IEdgeDeviceConfigurationsClientService EdgeDeviceConfigurationsClientService
 
 <MudGrid>
     <MudItem xs="12">
@@ -74,7 +73,7 @@
     [CascadingParameter]
     public Error Error {get; set;}
     
-    private ConfigListItem[] result;
+    private IList<ConfigListItem> result = new List<ConfigListItem>();
     private bool IsLoading { get; set; } = true;
     private readonly int[] pageSizeOptions = { 2, 5, 10 };
 
@@ -92,7 +91,7 @@
         try
         {
             IsLoading = true;
-            result = await Http.GetFromJsonAsync<ConfigListItem[]>("api/edge/configurations");
+            result = await EdgeDeviceConfigurationsClientService.GetDeviceConfigurations();
         }
         catch (ProblemDetailsException exception)
         {

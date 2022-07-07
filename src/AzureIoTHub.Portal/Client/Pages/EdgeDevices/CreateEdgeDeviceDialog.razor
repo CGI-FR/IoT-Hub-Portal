@@ -1,8 +1,8 @@
 ﻿@page "/edge/devices/add"
 @using AzureIoTHub.Portal.Models.v10;
 
-@inject HttpClient Http
 @inject ISnackbar Snackbar
+@inject IEdgeDeviceClientService EdgeDeviceClientService
 
 <MudDialog Class="d-flex align-center justify-center" style="width:fit-content;">
     <DialogContent>
@@ -80,7 +80,7 @@
         try
         {
             processingSave = true;
-            await Http.PostAsJsonAsync("api/edge/devices", gateway);
+            await EdgeDeviceClientService.CreateDevice(gateway);
 
             Snackbar.Add("Device has been successfully created !", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));

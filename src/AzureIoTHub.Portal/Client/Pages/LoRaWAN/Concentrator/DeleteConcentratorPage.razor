@@ -1,5 +1,5 @@
-﻿@inject HttpClient Http
-@inject ISnackbar Snackbar
+﻿@inject ISnackbar Snackbar
+@inject ILoRaWanConcentratorsClientService LoRaWanConcentratorsClientService
 
 <MudDialog>
     <DialogContent>
@@ -30,7 +30,7 @@
     {
         try
         {
-            await Http.DeleteAsync($"api/lorawan/concentrators/{deviceId}");
+            await LoRaWanConcentratorsClientService.DeleteConcentrator(deviceId);
 
             Snackbar.Add($"Device {deviceId} has been successfully deleted!", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));

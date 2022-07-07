@@ -17,6 +17,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
 
         protected virtual MockHttpMessageHandler MockHttpClient { get; set; }
 
+        protected virtual AutoFixture.Fixture Fixture { get; } = new();
+
         [SetUp]
         public virtual void Setup()
         {

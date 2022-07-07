@@ -57,6 +57,14 @@ namespace AzureIoTHub.Portal.Client
 
             _ = builder.Services.AddScoped<IEdgeDeviceClientService, EdgeDeviceClientService>();
             _ = builder.Services.AddScoped<IDashboardMetricsClientService, DashboardMetricsClientService>();
+            _ = builder.Services.AddScoped<IDeviceConfigurationsClientService, DeviceConfigurationsClientService>();
+            _ = builder.Services.AddScoped<IDeviceModelsClientService, DeviceModelsClientService>();
+            _ = builder.Services.AddScoped<IDeviceTagSettingsClientService, DeviceTagSettingsClientService>();
+            _ = builder.Services.AddScoped<ILoRaWanConcentratorsClientService, LoRaWanConcentratorsClientService>();
+            _ = builder.Services.AddScoped<IDeviceClientService, DeviceClientService>();
+            _ = builder.Services.AddScoped<ILoRaWanDeviceModelsClientService, LoRaWanDeviceModelsClientService>();
+            _ = builder.Services.AddScoped<ILoRaWanDeviceClientService, LoRaWanDeviceClientService>();
+            _ = builder.Services.AddScoped<IEdgeDeviceConfigurationsClientService, EdgeDeviceConfigurationsClientService>();
 
             await ConfigureOidc(builder);
             await ConfigurePortalSettings(builder);

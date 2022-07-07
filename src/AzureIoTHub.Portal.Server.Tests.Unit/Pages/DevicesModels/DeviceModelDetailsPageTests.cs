@@ -5,11 +5,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
-    using System.Net.Http;
+    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
-    using Helpers;
     using Models;
     using Models.v10;
     using Models.v10.LoRaWAN;
@@ -19,10 +17,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
     using AzureIoTHub.Portal.Client.Shared;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
+    using Client.Services;
+    using FluentAssertions;
     using Mocks;
     using MudBlazor.Services;
 
@@ -31,11 +30,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
     {
         private Mock<IDialogService> mockDialogService;
         private Mock<ISnackbar> mockSnackbarService;
-        private FakeNavigationManager mockNavigationManager;
+        private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
+        private Mock<ILoRaWanDeviceModelsClientService> mockLoRaWanDeviceModelsClientService;
 
         private readonly string mockModelId = Guid.NewGuid().ToString();
-        private string ApiBaseUrl => $"/api/models/{this.mockModelId}";
-        private string LorawanApiBaseUrl => $"/api/lorawan/models/{this.mockModelId}";
 
         public override void Setup()
         {
@@ -43,13 +41,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockSnackbarService = MockRepository.Create<ISnackbar>();
+            this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
+            this.mockLoRaWanDeviceModelsClientService = MockRepository.Create<ILoRaWanDeviceModelsClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
+            _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
+            _ = Services.AddSingleton(this.mockLoRaWanDeviceModelsClientService.Object);
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
-
-            this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
         }
 
         [Test]
@@ -67,53 +67,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
 
             var expectedModel = SetupMockDeviceModel(properties: expectedProperties);
 
-            _ = MockHttpClient.When(HttpMethod.Put, $"{ApiBaseUrl}")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<DeviceModel>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<DeviceModel>;
-                    Assert.IsNotNull(objectContent);
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.UpdateDeviceModel(It.Is<DeviceModel>(model =>
+                        expectedModel.ModelId.Equals(model.ModelId, StringComparison.Ordinal) && expectedModel.Name.Equals(model.Name, StringComparison.Ordinal) && expectedModel.Description.Equals(model.Description, StringComparison.Ordinal) && !model.SupportLoRaFeatures && !model.IsBuiltin)))
+                .Returns(Task.CompletedTask);
 
-                    Assert.IsAssignableFrom<DeviceModel>(objectContent.Value);
-                    var deviceModel = objectContent.Value as DeviceModel;
-                    Assert.IsNotNull(deviceModel);
-
-                    Assert.AreEqual(expectedModel.ModelId, deviceModel.ModelId);
-                    Assert.AreEqual(expectedModel.Name, deviceModel.Name);
-                    Assert.AreEqual(expectedModel.Description, deviceModel.Description);
-                    Assert.AreEqual(expectedModel.SupportLoRaFeatures, false);
-                    Assert.AreEqual(expectedModel.IsBuiltin, false);
-
-                    return true;
-                })
-                .RespondText(string.Empty);
-
-            _ = MockHttpClient
-                .When(HttpMethod.Post, $"{ApiBaseUrl}/properties")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<List<DeviceProperty>>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<List<DeviceProperty>>(objectContent.Value);
-                    var properties = objectContent.Value as IEnumerable<DeviceProperty>;
-                    Assert.IsNotNull(properties);
-
-                    Assert.AreEqual(expectedProperties.Length, properties?.Count());
-
-                    foreach (var expectedProperty in expectedProperties)
-                    {
-                        var property = properties?.Single(x => x.Name == expectedProperty.Name);
-
-                        Assert.AreEqual(expectedProperty.Name, property.Name);
-                        Assert.AreEqual(expectedProperty.DisplayName, property.DisplayName);
-                        Assert.AreEqual(expectedProperty.PropertyType, property.PropertyType);
-                    }
-
-                    return true;
-                })
-                .RespondText(string.Empty);
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(list => list.Count.Equals(expectedProperties.Length))))
+                .Returns(Task.CompletedTask);
 
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
@@ -129,10 +90,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             var saveButton = cut.WaitForElement("#saveButton");
 
             saveButton.Click();
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-models"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -151,54 +111,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
 
             var expectedModel = SetupMockDeviceModel(properties: expectedProperties);
 
-            _ = MockHttpClient.When(HttpMethod.Put, $"{ApiBaseUrl}")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<DeviceModel>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<DeviceModel>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<DeviceModel>(objectContent.Value);
-                    var deviceModel = objectContent.Value as DeviceModel;
-                    Assert.IsNotNull(deviceModel);
-
-                    Assert.AreEqual(expectedModel.ModelId, deviceModel.ModelId);
-                    Assert.AreEqual(expectedModel.Name, deviceModel.Name);
-                    Assert.AreEqual(expectedModel.Description, deviceModel.Description);
-                    Assert.AreEqual(expectedModel.SupportLoRaFeatures, false);
-                    Assert.AreEqual(expectedModel.IsBuiltin, false);
-
-                    return true;
-                })
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
-
-            _ = MockHttpClient
-                .When(HttpMethod.Post, $"{ApiBaseUrl}/properties")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<List<DeviceProperty>>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<List<DeviceProperty>>(objectContent.Value);
-                    var properties = objectContent.Value as IEnumerable<DeviceProperty>;
-                    Assert.IsNotNull(properties);
-
-                    Assert.AreEqual(expectedProperties.Length, properties?.Count());
-
-                    foreach (var expectedProperty in expectedProperties)
-                    {
-                        var property = properties?.Single(x => x.Name == expectedProperty.Name);
-
-                        Assert.AreEqual(expectedProperty.Name, property.Name);
-                        Assert.AreEqual(expectedProperty.DisplayName, property.DisplayName);
-                        Assert.AreEqual(expectedProperty.PropertyType, property.PropertyType);
-                    }
-
-                    return true;
-                })
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
-
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                        service.UpdateDeviceModel(It.Is<DeviceModel>(model =>
+                            expectedModel.ModelId.Equals(model.ModelId, StringComparison.Ordinal) && expectedModel.Name.Equals(model.Name, StringComparison.Ordinal) && expectedModel.Description.Equals(model.Description, StringComparison.Ordinal) && !model.SupportLoRaFeatures && !model.IsBuiltin)))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
@@ -212,10 +128,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             var saveButton = cut.WaitForElement("#saveButton");
             saveButton.Click();
 
-            cut.WaitForState(() => !this.mockNavigationManager.Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
-
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().NotEndWith("/device-models"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -232,55 +146,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
                     PropertyType = DevicePropertyType.Double
                 }).ToArray();
 
-            var expectedModel = SetupMockDeviceModel(properties: expectedProperties);
-
-            _ = MockHttpClient.When(HttpMethod.Put, $"{ApiBaseUrl}")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<DeviceModel>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<DeviceModel>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<DeviceModel>(objectContent.Value);
-                    var deviceModel = objectContent.Value as DeviceModel;
-                    Assert.IsNotNull(deviceModel);
-
-                    Assert.AreEqual(expectedModel.ModelId, deviceModel.ModelId);
-                    Assert.AreEqual(expectedModel.Name, deviceModel.Name);
-                    Assert.AreEqual(expectedModel.Description, deviceModel.Description);
-                    Assert.AreEqual(expectedModel.SupportLoRaFeatures, false);
-                    Assert.AreEqual(expectedModel.IsBuiltin, false);
-
-                    return true;
-                })
-                .RespondText(string.Empty);
-
-            _ = MockHttpClient
-                .When(HttpMethod.Post, $"{ApiBaseUrl}/properties")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<List<DeviceProperty>>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<List<DeviceProperty>>(objectContent.Value);
-                    var properties = objectContent.Value as IEnumerable<DeviceProperty>;
-                    Assert.IsNotNull(properties);
-
-                    Assert.AreEqual(expectedProperties.Length, properties?.Count());
-
-                    foreach (var expectedProperty in expectedProperties)
-                    {
-                        var property = properties?.Single(x => x.Name == expectedProperty.Name);
-
-                        Assert.AreEqual(expectedProperty.Name, property.Name);
-                        Assert.AreEqual(expectedProperty.DisplayName, property.DisplayName);
-                        Assert.AreEqual(expectedProperty.PropertyType, property.PropertyType);
-                    }
-
-                    return true;
-                })
-                .RespondText(string.Empty);
+            _ = SetupMockDeviceModel(properties: expectedProperties);
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
@@ -298,7 +164,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             saveButton.Click();
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().NotEndWith("/device-models"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -309,46 +175,29 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             var propertyName = Guid.NewGuid().ToString();
             var displayName = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
-                .RespondJson(new DeviceModel
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(this.mockModelId))
+                .ReturnsAsync(new DeviceModel
                 {
                     ModelId = this.mockModelId,
                     Name = Guid.NewGuid().ToString()
                 });
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/avatar")
-                .RespondText(string.Empty);
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(this.mockModelId))
+                .ReturnsAsync(new List<DeviceProperty>());
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/properties")
-                .RespondJson(Array.Empty<DeviceProperty>());
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetAvatarUrl(this.mockModelId))
+                .ReturnsAsync(string.Empty);
 
-            _ = MockHttpClient.When(HttpMethod.Put, $"{ApiBaseUrl}")
-                .RespondText(string.Empty);
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.UpdateDeviceModel(It.IsAny<DeviceModel>()))
+                .Returns(Task.CompletedTask);
 
-            _ = MockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/properties")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<List<DeviceProperty>>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<List<DeviceProperty>>(objectContent.Value);
-                    var properties = objectContent.Value as IEnumerable<DeviceProperty>;
-                    Assert.IsNotNull(properties);
-
-                    Assert.AreEqual(1, properties.Count());
-
-                    var property = properties.Single(x => x.Name == propertyName);
-
-                    Assert.AreEqual(propertyName, property.Name);
-                    Assert.AreEqual(displayName, property.DisplayName);
-                    Assert.AreEqual(DevicePropertyType.Boolean, property.PropertyType);
-                    Assert.IsTrue(property.IsWritable);
-
-                    return true;
-                })
-                .RespondText(string.Empty);
-
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(properties => properties.Count.Equals(1))))
+                .Returns(Task.CompletedTask);
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
@@ -374,10 +223,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             cut.WaitForElement($"{propertyCssSelector} #{nameof(DeviceProperty.IsWritable)}").Change(true);
 
             saveButton.Click();
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-models"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -385,42 +233,32 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
         public void ClickOnRemovePropertyShouldRemoveTheProperty()
         {
             // Arrange
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
-                .RespondJson(new DeviceModel
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(this.mockModelId))
+                .ReturnsAsync(new DeviceModel
                 {
                     ModelId = this.mockModelId,
                     Name = Guid.NewGuid().ToString()
                 });
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/avatar")
-                .RespondText(string.Empty);
-
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/properties")
-                .RespondJson(new DeviceProperty[]
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(this.mockModelId))
+                .ReturnsAsync(new[]
                 {
                     new DeviceProperty()
                 });
 
-            _ = MockHttpClient.When(HttpMethod.Put, $"{ApiBaseUrl}")
-                .RespondText(string.Empty);
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetAvatarUrl(this.mockModelId))
+                .ReturnsAsync(string.Empty);
 
-            _ = MockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}/properties")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<List<DeviceProperty>>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<List<DeviceProperty>>;
-                    Assert.IsNotNull(objectContent);
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.UpdateDeviceModel(It.IsAny<DeviceModel>()))
+                .Returns(Task.CompletedTask);
 
-                    Assert.IsAssignableFrom<List<DeviceProperty>>(objectContent.Value);
-                    var properties = objectContent.Value as IEnumerable<DeviceProperty>;
-                    Assert.IsNotNull(properties);
-
-                    Assert.AreEqual(0, properties.Count());
-
-                    return true;
-                })
-                .RespondText(string.Empty);
-
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(properties => properties.Count.Equals(0))))
+                .Returns(Task.CompletedTask);
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
@@ -438,10 +276,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             removePropertyButton.Click();
 
             saveButton.Click();
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-models"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -478,7 +315,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             }
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -500,7 +336,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             Assert.AreEqual("General", tabs.Single().TextContent);
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -523,7 +358,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             Assert.AreEqual("LoRaWAN", tabs[1].TextContent);
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -542,7 +376,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             Assert.IsNotEmpty(loading);
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -558,19 +391,22 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
                 SupportLoRaFeatures = false
             };
 
-            _ = MockHttpClient.When(HttpMethod.Get, ApiBaseUrl)
-                                .RespondJson(deviceModel);
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(this.mockModelId))
+                .ReturnsAsync(deviceModel);
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/avatar")
-                    .RespondText($"http://fake.local/{this.mockModelId}");
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(this.mockModelId))
+                .ReturnsAsync(properties ?? Array.Empty<DeviceProperty>());
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}/properties")
-                .RespondJson(properties ?? Array.Empty<DeviceProperty>());
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetAvatarUrl(this.mockModelId))
+                .ReturnsAsync(deviceModel.ImageUrl.ToString());
 
             return deviceModel;
         }
 
-        private LoRaDeviceModel SetupMockLoRaWANDeviceModel(DeviceProperty[] properties = null, DeviceModelCommand[] commands = null)
+        private LoRaDeviceModel SetupMockLoRaWANDeviceModel(DeviceModelCommand[] commands = null)
         {
             var deviceModel = new LoRaDeviceModel
             {
@@ -582,24 +418,17 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
                 SupportLoRaFeatures = true
             };
 
-            _ = MockHttpClient.When(HttpMethod.Get, LorawanApiBaseUrl)
-                    .RespondJson(deviceModel);
+            _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(this.mockModelId))
+                .ReturnsAsync(deviceModel);
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"{LorawanApiBaseUrl}/avatar")
-                    .RespondText($"http://fake.local/{this.mockModelId}");
+            _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelCommands(this.mockModelId))
+                .ReturnsAsync(commands ?? Array.Empty<DeviceModelCommand>());
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"{LorawanApiBaseUrl}/commands")
-                .RespondJson(commands ?? Array.Empty<DeviceModelCommand>());
-
-            _ = MockHttpClient.When(HttpMethod.Get, $"{LorawanApiBaseUrl}/properties")
-                    .RespondJson(properties ?? Array.Empty<DeviceProperty>());
-
-            _ = MockHttpClient.Fallback
-                .With(_ =>
-                {
-                    Debugger.Break();
-                    return true;
-                });
+            _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
+                    service.GetAvatarUrl(this.mockModelId))
+                .ReturnsAsync(deviceModel.ImageUrl.ToString());
 
             return deviceModel;
         }
@@ -616,24 +445,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
                 SupportLoRaFeatures = true
             };
 
-            _ = MockHttpClient.When(HttpMethod.Get, LorawanApiBaseUrl)
-                    .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
-
-            _ = MockHttpClient.When(HttpMethod.Get, $"{LorawanApiBaseUrl}/avatar")
-                    .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
-
-            _ = MockHttpClient.When(HttpMethod.Get, $"{LorawanApiBaseUrl}/commands")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
-
-            _ = MockHttpClient.When(HttpMethod.Get, $"{LorawanApiBaseUrl}/properties")
-                    .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
-
-            _ = MockHttpClient.Fallback
-                .With(_ =>
-                {
-                    Debugger.Break();
-                    return true;
-                });
+            _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(this.mockModelId))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             return deviceModel;
         }
@@ -643,27 +457,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
         {
 
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"{ApiBaseUrl}/properties")
-                .RespondJson(new List<DeviceProperty>());
-
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"{ApiBaseUrl}")
-                .RespondJson(new DeviceModel());
-
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"{ApiBaseUrl}/avatar")
-                .RespondText(string.Empty);
+            _ = SetupMockDeviceModel();
 
             // Act
             var cut = RenderComponent<DeviceModelDetailPage>(ComponentParameter.CreateParameter("ModelId", this.mockModelId ));
             var returnButton = cut.WaitForElement("#returnButton");
 
             returnButton.Click();
-            cut.WaitForState(() => Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-models"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -687,7 +490,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             deleteButton.Click();
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -709,10 +511,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             var deleteButton = cut.WaitForElement("#deleteButton");
             deleteButton.Click();
 
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/device-models", StringComparison.OrdinalIgnoreCase));
-
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-models"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }

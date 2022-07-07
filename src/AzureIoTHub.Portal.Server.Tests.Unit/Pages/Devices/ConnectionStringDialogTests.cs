@@ -4,7 +4,6 @@
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 {
     using System;
-    using System.Net.Http;
     using System.Threading.Tasks;
     using Bunit;
     using Client.Exceptions;
@@ -12,20 +11,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
     using Client.Pages.Devices;
     using Client.Services;
     using FluentAssertions;
-    using Helpers;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
+    using Moq;
     using MudBlazor;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
 
     [TestFixture]
     public class ConnectionStringDialogTests : BlazorUnitTest
     {
+        private Mock<IDeviceClientService> mockDeviceClientService;
+
         public override void Setup()
         {
             base.Setup();
 
+            this.mockDeviceClientService = MockRepository.Create<IDeviceClientService>();
+
+            _ = Services.AddSingleton(this.mockDeviceClientService.Object);
             _ = Services.AddSingleton<ClipboardService>();
         }
 
@@ -35,8 +38,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"/api/devices/{deviceId}/credentials")
-                .RespondJson(new EnrollmentCredentials());
+            _ = this.mockDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
+                .ReturnsAsync(new EnrollmentCredentials());
 
             var cut = RenderComponent<MudDialogProvider>();
             var service = Services.GetService<IDialogService>() as DialogService;
@@ -53,7 +56,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 
             // Assert
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -62,8 +65,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"/api/devices/{deviceId}/credentials")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockDeviceClientService.Setup(service => service.GetEnrollmentCredentials(deviceId))
+                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<MudDialogProvider>();
             var service = Services.GetService<IDialogService>() as DialogService;
@@ -84,7 +87,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 
             // Assert
             cut.WaitForAssertion(() => result.Cancelled.Should().BeFalse());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }

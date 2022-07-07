@@ -1,14 +1,12 @@
 ﻿@page "/lorawan/concentrators/{DeviceID}"
 @using AzureIoTHub.Portal.Client.Validators
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
-@using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
-@inject HttpClient Http
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@inject NavigationManager NavManager
-@inject NavigationManager navigationManager
+@inject NavigationManager NavigationManager
+@inject ILoRaWanConcentratorsClientService LoRaWanConcentratorsClientService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
     <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id = "returnButton" />       
@@ -126,7 +124,7 @@
     private Concentrator concentrator { get; set; } = new();
     private MudForm form;
     private ConcentratorValidator concentratorValidator = new();
-    private void Return() => navigationManager.NavigateTo("/lorawan/concentrators");
+    private void Return() => NavigationManager.NavigateTo("/lorawan/concentrators");
 
     public PatternMask maskThumbprint = new PatternMask("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
     {
@@ -142,7 +140,7 @@
         try
         {
             // Sends a GET request to the DevicesController, to retrieve the specific device from Azure IoT Hub
-            concentrator = await Http.GetFromJsonAsync<Concentrator>($"api/lorawan/concentrators/{DeviceID}");
+            concentrator = await LoRaWanConcentratorsClientService.GetConcentrator(DeviceID);
         }
         catch (ProblemDetailsException exception)
         {
@@ -168,13 +166,13 @@
                 return;
             }
 
-            await Http.PutAsJsonAsync($"api/lorawan/concentrators", concentrator);
+            await LoRaWanConcentratorsClientService.UpdateConcentrator(concentrator);
 
             // Prompts a snack bar to inform the action was successful
             Snackbar.Add($"Device {concentrator.DeviceId} has been successfully updated!", Severity.Success);
 
             // Go back to the list of device
-            NavManager.NavigateTo("lorawan/concentrators");
+            NavigationManager.NavigateTo("lorawan/concentrators");
         }
         catch (ProblemDetailsException exception)
         {
@@ -202,6 +200,6 @@
         }
 
         // Go back to the list of devices after the deletion
-        NavManager.NavigateTo("lorawan/concentrators");
+        NavigationManager.NavigateTo("lorawan/concentrators");
     }
 }

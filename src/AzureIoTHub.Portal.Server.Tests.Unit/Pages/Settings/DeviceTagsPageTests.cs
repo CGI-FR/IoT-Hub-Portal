@@ -6,28 +6,27 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net.Http;
+    using System.Threading.Tasks;
+    using AutoFixture;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.Settings;
     using AzureIoTHub.Portal.Client.Shared;
     using Models.v10;
-    using Helpers;
     using Bunit;
+    using Client.Services;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
 
     [TestFixture]
     public class DeviceTagsPageTests : BlazorUnitTest
     {
         private Mock<IDialogService> mockDialogService;
         private Mock<ISnackbar> mockSnackbarService;
-
-        private static string ApiBaseUrl => "/api/settings/device-tags";
+        private Mock<IDeviceTagSettingsClientService> mockDeviceTagSettingsClientService;
 
         public override void Setup()
         {
@@ -35,24 +34,31 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockSnackbarService = MockRepository.Create<ISnackbar>();
+            this.mockDeviceTagSettingsClientService = MockRepository.Create<IDeviceTagSettingsClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
-
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
         }
 
         [Test]
         public void DeviceListPageRendersCorrectly()
         {
             // Arrange
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
-                .RespondJson(new List<DeviceTag>(){
-                    new DeviceTag
-                        { Label =  Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString(), Required = false, Searchable = false },
-                    new DeviceTag
-                        { Label = Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString(), Required = false, Searchable = false }
-                    });
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>
+                {
+                    new()
+                    {
+                        Label = Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString(), Required = false,
+                        Searchable = false
+                    },
+                    new()
+                    {
+                        Label = Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString(), Required = false,
+                        Searchable = false
+                    }
+                });
 
             // Act
             var cut = RenderComponent<DeviceTagsPage>();
@@ -66,8 +72,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
             Assert.AreEqual(4, cut.FindAll("tr").Count);
             Assert.IsNotNull(cut.Find(".mud-table-container"));
 
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -75,8 +79,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
         public void OnclickOnReloadShouldReloadTags()
         {
             // Arrange
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<DeviceTagsPage>();
 
@@ -85,12 +89,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
 
             MockHttpClient.Clear();
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
-                .RespondJson(new List<DeviceTag>{
-                    new(),
-                    new(),
-                    new()
-                });
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(Fixture.Build<DeviceTag>().CreateMany(3).ToList());
 
             // Act
             cut.WaitForElement("#reload-tags").Click();
@@ -100,8 +100,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("No matching records found"));
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(3));
 
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -109,8 +107,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
         public void OnInitializedAsyncShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceTags()
         {
             // Arrange
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
             var cut = RenderComponent<DeviceTagsPage>();
@@ -126,8 +124,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
             Assert.IsNotNull(cut.Find(".mud-table-container"));
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -135,42 +131,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
         [Test]
         public void ClickOnSaveShouldUpdateTagList()
         {
-            var mockTag = new DeviceTag
+            var expectedTags = new List<DeviceTag>
             {
-                Label = "Label",
-                Name = "Name",
-                Required = false,
-                Searchable = false
+                new() {
+                    Label = "Label",
+                    Name = "Name",
+                    Required = false,
+                    Searchable = false
+                }
             };
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
-                .RespondJson(new List<DeviceTag>(){
-                    mockTag
-                });
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(expectedTags);
 
-            _ = MockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<List<DeviceTag>>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<List<DeviceTag>>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<List<DeviceTag>>(objectContent.Value);
-                    var tags = objectContent.Value as IEnumerable<DeviceTag>;
-                    Assert.IsNotNull(tags);
-
-                    Assert.AreEqual(1, tags.Count());
-
-                    var tag = tags.Single(x => x.Name == mockTag.Name);
-
-                    Assert.AreEqual(mockTag.Name, tag.Name);
-                    Assert.AreEqual(mockTag.Label, tag.Label);
-                    Assert.AreEqual(mockTag.Required, tag.Required);
-                    Assert.AreEqual(mockTag.Searchable, tag.Searchable);
-
-                    return true;
-                })
-                .RespondText(string.Empty);
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.UpdateDeviceTags(It.IsAny<List<DeviceTag>>()))
+                .Returns(Task.CompletedTask);
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
@@ -187,7 +162,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
             // Act
             cut.Find("#saveButton").Click();
 
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -202,35 +176,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
                 Searchable = false
             };
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
-                .RespondJson(new List<DeviceTag>(){
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>
+                {
                     mockTag,
                     mockTag
                 });
-
-            _ = MockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<List<DeviceTag>>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<List<DeviceTag>>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<List<DeviceTag>>(objectContent.Value);
-                    var tags = objectContent.Value as IEnumerable<DeviceTag>;
-                    Assert.IsNotNull(tags);
-
-                    Assert.AreEqual(1, tags.Count());
-
-                    var tag = tags.Single(x => x.Name == mockTag.Name);
-
-                    Assert.AreEqual(mockTag.Name, tag.Name);
-                    Assert.AreEqual(mockTag.Label, tag.Label);
-                    Assert.AreEqual(mockTag.Required, tag.Required);
-                    Assert.AreEqual(mockTag.Searchable, tag.Searchable);
-
-                    return true;
-                })
-                .RespondText(string.Empty);
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
@@ -249,7 +200,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
             // Act
             saveButton.Click();
 
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -264,35 +214,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
                 Searchable = false
             };
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
-                .RespondJson(new List<DeviceTag>(){
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>
+                {
                     mockTag,
                     mockTag
                 });
-
-            _ = MockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<List<DeviceTag>>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<List<DeviceTag>>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<List<DeviceTag>>(objectContent.Value);
-                    var tags = objectContent.Value as IEnumerable<DeviceTag>;
-                    Assert.IsNotNull(tags);
-
-                    Assert.AreEqual(1, tags.Count());
-
-                    var tag = tags.Single(x => x.Name == mockTag.Name);
-
-                    Assert.AreEqual(mockTag.Name, tag.Name);
-                    Assert.AreEqual(mockTag.Label, tag.Label);
-                    Assert.AreEqual(mockTag.Required, tag.Required);
-                    Assert.AreEqual(mockTag.Searchable, tag.Searchable);
-
-                    return true;
-                })
-                .RespondText(string.Empty);
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
@@ -311,7 +238,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
             // Act
             saveButton.Click();
 
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -319,14 +245,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
         public void ClickOnSaveShouldProcessProblemDetailsExceptionIfIssueOccursWhenUpdatingDeviceTags()
         {
             // Arrange
-            _ = MockHttpClient.When(HttpMethod.Get, $"{ApiBaseUrl}")
-                .RespondJson(new List<DeviceTag>(){
-                    new DeviceTag
-                        { Label = "Label", Name = "Name", Required = false, Searchable = false }
-                    });
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>
+                {
+                    new () { Label = "Label", Name = "Name", Required = false, Searchable = false }
+                });
 
-            _ = MockHttpClient.When(HttpMethod.Post, $"{ApiBaseUrl}")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.UpdateDeviceTags(It.IsAny<List<DeviceTag>>()))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
             _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
@@ -339,8 +265,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
             var saveButton = cut.Find("#saveButton");
             saveButton.Click();
 
-            // Assert            
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
+            // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }

@@ -1,12 +1,11 @@
 ﻿@page "/lorawan/concentrators"
 @using AzureIoTHub.Portal
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
-@using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
-@inject HttpClient Http
 @inject IDialogService DialogService
 @inject NavigationManager navigationManager
+@inject ILoRaWanConcentratorsClientService LoRaWanConcentratorsClientService
 
 <MudGrid>
 
@@ -112,7 +111,7 @@
 
             if (Pages.Keys.Contains(state.Page))
             {
-                result = await Http.GetFromJsonAsync<PaginationResult<Concentrator>>(Pages[state.Page]);
+                result = await LoRaWanConcentratorsClientService.GetConcentrators(Pages[state.Page]);
             }
             else
             {
@@ -120,7 +119,7 @@
 
                 _ = Pages.TryAdd(state.Page, uri);
 
-                result = await Http.GetFromJsonAsync<PaginationResult<Concentrator>>(uri);
+                result = await LoRaWanConcentratorsClientService.GetConcentrators(uri);
             }
 
             _ = Pages.TryAdd(state.Page + 1, result.NextPage);

@@ -1,8 +1,7 @@
 @page "/edge/devices/logs"
 @using AzureIoTHub.Portal.Models.v10
 
-@inject IEdgeDeviceClientService EdgeDeviceService
-
+@inject IEdgeDeviceClientService EdgeDeviceClientService
 
 <MudDialog Style="max-width:fit-content;">
     <DialogContent>
@@ -76,7 +75,7 @@
     {
         try
         {
-            logs = await EdgeDeviceService.GetEdgeDeviceLogs(deviceId, edgeModule);
+            logs = await EdgeDeviceClientService.GetEdgeDeviceLogs(deviceId, edgeModule);
         }
         catch (ProblemDetailsException exception)
         {

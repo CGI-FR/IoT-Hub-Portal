@@ -1,5 +1,5 @@
-﻿@inject HttpClient Http
-@inject ISnackbar Snackbar
+﻿@inject ISnackbar Snackbar
+@inject IEdgeDeviceClientService EdgeDeviceClientService
 
 <MudDialog>
     <DialogContent>
@@ -33,7 +33,7 @@
     {
         try
         {
-            await Http.DeleteAsync($"api/edge/devices/{DeviceId}");
+            await EdgeDeviceClientService.DeleteDevice(DeviceId);
 
             Snackbar.Add($"Device {DeviceId} has been successfully deleted!", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));

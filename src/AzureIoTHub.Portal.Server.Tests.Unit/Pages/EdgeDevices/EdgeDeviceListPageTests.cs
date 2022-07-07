@@ -5,27 +5,30 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 {
     using System;
     using System.Collections.Generic;
-    using System.Net.Http;
     using Models.v10;
     using Bunit;
     using Client.Exceptions;
     using Client.Models;
     using Client.Services;
     using FluentAssertions;
-    using Helpers;
     using Microsoft.Extensions.DependencyInjection;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
     using Bunit.TestDoubles;
     using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
+    using Moq;
 
     [TestFixture]
     public class EdgeDeviceListPageTests : BlazorUnitTest
     {
+        private Mock<IEdgeDeviceClientService> mockEdgeDeviceClientService;
+
         public override void Setup()
         {
             base.Setup();
 
+            this.mockEdgeDeviceClientService = MockRepository.Create<IEdgeDeviceClientService>();
+
+            _ = Services.AddSingleton(this.mockEdgeDeviceClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
             _ = Services.AddSingleton<ClipboardService>();
         }
@@ -34,9 +37,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
         public void EdgeDeviceListPageShouldShowEdgeDevices()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/edge/devices?pageSize=10&searchText=&searchStatus=&searchType=")
-                .RespondJson(new PaginationResult<IoTEdgeListItem>
+            var expectedUrl = "api/edge/devices?pageSize=10&searchText=&searchStatus=&searchType=";
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
+                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
                 {
                     Items = new List<IoTEdgeListItem>
                     {
@@ -51,56 +54,53 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
-            _ = cut.FindAll("tr").Count.Should().Be(4);
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            _ = cut.FindAll("table tbody tr").Count.Should().Be(3);
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void EdgeDeviceListPageShouldShowNoContentWhenNoEdgeDevices()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/edge/devices?pageSize=10&searchText=&searchStatus=&searchType=")
-                .RespondJson(new PaginationResult<IoTEdgeListItem>());
+            var expectedUrl = "api/edge/devices?pageSize=10&searchText=&searchStatus=&searchType=";
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
+                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>());
 
             // Act
             var cut = RenderComponent<EdgeDeviceListPage>();
 
             // Assert
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
-            _ = cut.FindAll("tr").Count.Should().Be(2);
+            _ = cut.FindAll("table tbody tr").Count.Should().Be(1);
             _ = cut.Markup.Should().Contain("No matching records found");
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void EdgeDeviceListPageShouldShowNoContentWhenProblemDetailsExceptionOccurs()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/edge/devices?pageSize=10&searchText=&searchStatus=&searchType=")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            var expectedUrl = "api/edge/devices?pageSize=10&searchText=&searchStatus=&searchType=";
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
             var cut = RenderComponent<EdgeDeviceListPage>();
 
             // Assert
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
-            _ = cut.FindAll("tr").Count.Should().Be(2);
+            _ = cut.FindAll("table tbody tr").Count.Should().Be(1);
             _ = cut.Markup.Should().Contain("No matching records found");
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void EdgeDeviceListPageShouldResetOnClickOnReset()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/edge/devices?pageSize=10&searchText=&searchStatus=&searchType=")
-                .RespondJson(new PaginationResult<IoTEdgeListItem>
+            var expectedUrl = "api/edge/devices?pageSize=10&searchText=&searchStatus=&searchType=";
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
+                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
                 {
                     Items = new List<IoTEdgeListItem>
                     {
@@ -109,6 +109,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
                         new()
                     }
                 });
+
             var cut = RenderComponent<EdgeDeviceListPage>();
             cut.WaitForAssertion(() => cut.Find("#reset"));
 
@@ -117,9 +118,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
-            _ = cut.FindAll("tr").Count.Should().Be(4);
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            _ = cut.FindAll("table tbody tr").Count.Should().Be(3);
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -128,9 +128,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/edge/devices?pageSize=10&searchText=&searchStatus=&searchType=")
-                .RespondJson(new PaginationResult<IoTEdgeListItem>
+            var expectedUrl = "api/edge/devices?pageSize=10&searchText=&searchStatus=&searchType=";
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
+                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
                 {
                     Items = new List<IoTEdgeListItem>
                     {
@@ -150,6 +150,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             cut.WaitForAssertion(() => Services.GetService<FakeNavigationManager>()?.Uri.Should().EndWith($"/edge/devices/{deviceId}"));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }

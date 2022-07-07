@@ -5,26 +5,32 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 {
     using System;
     using System.Collections.Generic;
-    using System.Net.Http;
+    using System.Linq;
+    using AutoFixture;
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Exceptions;
     using Client.Models;
     using Client.Pages.DeviceConfigurations;
+    using Client.Services;
     using FluentAssertions;
-    using Helpers;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
+    using Moq;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
 
     [TestFixture]
     public class DeviceConfigurationListPageTests : BlazorUnitTest
     {
+        private Mock<IDeviceConfigurationsClientService> mockDeviceConfigurationsClientService;
+
         public override void Setup()
         {
             base.Setup();
 
+            this.mockDeviceConfigurationsClientService = MockRepository.Create<IDeviceConfigurationsClientService>();
+
+            _ = Services.AddSingleton(this.mockDeviceConfigurationsClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
         }
 
@@ -32,15 +38,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
         public void DeviceConfigurationListPageShouldLoadAndShowConfigurations()
         {
             // Arrange
+            var expectedConfigurations = Fixture.Build<ConfigListItem>().CreateMany(3).ToList();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/device-configurations")
-                .RespondJson(new List<ConfigListItem>
-                {
-                    new(),
-                    new(),
-                    new()
-                });
+            _ = this.mockDeviceConfigurationsClientService.Setup(service => service.GetDeviceConfigurations())
+                .ReturnsAsync(expectedConfigurations);
 
             // Act
             var cut = RenderComponent<DeviceConfigurationListPage>();
@@ -48,9 +49,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
             // Assert
-            _ = cut.FindAll("tr").Count.Should().Be(4);
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            _ = cut.FindAll("table tbody tr").Count.Should().Be(3);
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -58,9 +58,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
         {
             // Arrange
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/device-configurations")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockDeviceConfigurationsClientService.Setup(service => service.GetDeviceConfigurations())
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
             var cut = RenderComponent<DeviceConfigurationListPage>();
@@ -68,9 +67,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
             // Assert
-            _ = cut.FindAll("tr").Count.Should().Be(2);
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            _ = cut.FindAll("table tbody tr").Count.Should().Be(1);
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -81,15 +79,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 
             var configurations = new List<ConfigListItem>
             {
-                new ConfigListItem
+                new()
                 {
                     ConfigurationID = configurationId
                 }
             };
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/device-configurations")
-                .RespondJson(configurations);
+            _ = this.mockDeviceConfigurationsClientService.Setup(service => service.GetDeviceConfigurations())
+                .ReturnsAsync(configurations);
 
             var cut = RenderComponent<DeviceConfigurationListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));

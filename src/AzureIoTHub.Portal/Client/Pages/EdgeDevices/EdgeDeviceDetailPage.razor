@@ -1,14 +1,11 @@
 ﻿@page "/edge/devices/{deviceId}"
-@using Microsoft.AspNetCore.Authorization
 @using AzureIoTHub.Portal.Models.v10
 
 @attribute [Authorize]
-@inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
-@inject NavigationManager navigationManager
-
+@inject IEdgeDeviceClientService EdgeDeviceClientService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
     <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id = "returnButton"/>       
@@ -181,7 +178,7 @@ else
     public string deviceId { get; set; }
     private bool loading = true;
     private bool btn_disable = false;
-    private void Return() => navigationManager.NavigateTo("edge/devices");
+    private void Return() => NavigationManager.NavigateTo("edge/devices");
 
     private IoTEdgeDevice Gateway;
 
@@ -195,9 +192,8 @@ else
     {
         try
         {
-            Gateway = await Http.GetFromJsonAsync<IoTEdgeDevice>($"api/edge/devices/{deviceId}");
-
-
+            Gateway = await EdgeDeviceClientService.GetDevice(deviceId);
+            
             if (Gateway.ConnectionState == "Disconnected")
             {
                 btn_disable = true;
@@ -221,7 +217,7 @@ else
 
         try
         {
-            await Http.PutAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}", Gateway);
+            await EdgeDeviceClientService.UpdateDevice(Gateway);
 
             Snackbar.Add($"Device {Gateway.DeviceId} has been successfully updated!", Severity.Success);
         }
@@ -243,9 +239,9 @@ else
 
         try
         {
-            var result = await Http.PostAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}/{module.ModuleName}/{methodName}", module);
+            //var result = await Http.PostAsJsonAsync($"api/edge/devices/{Gateway.DeviceId}/{module.ModuleName}/{methodName}", module);
 
-            var c2dResult = result.Content.ReadFromJsonAsync<C2Dresult>().Result;
+            var c2dResult = await EdgeDeviceClientService.ExecuteModuleMethod(Gateway.DeviceId, module, methodName);
 
             if (c2dResult.Status == 200)
             {

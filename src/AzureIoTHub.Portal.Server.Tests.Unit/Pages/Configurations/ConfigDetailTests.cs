@@ -4,10 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
 {
     using System;
-    using System.Net.Http;
-    using System.Threading;
     using Models.v10;
-    using Helpers;
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Exceptions;
@@ -17,13 +14,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
     using AzureIoTHub.Portal.Client.Pages.EdgeModels;
+    using Client.Services;
 
     [TestFixture]
     public class ConfigDetailTests : BlazorUnitTest
     {
         private Mock<IDialogService> mockDialogService;
+        private Mock<IEdgeDeviceConfigurationsClientService> mockEdgeDeviceConfigurationsClientService;
+
         private readonly string mockConfigurationId = Guid.NewGuid().ToString();
 
         public override void Setup()
@@ -31,42 +30,41 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
             base.Setup();
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
+            this.mockEdgeDeviceConfigurationsClientService = MockRepository.Create<IEdgeDeviceConfigurationsClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
+            _ = Services.AddSingleton(this.mockEdgeDeviceConfigurationsClientService.Object);
         }
 
-        [TestCase]
+        [Test]
         public void ReturnButtonMustNavigateToPreviousPage()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/configurations/{this.mockConfigurationId}")
-                .RespondJson(new ConfigListItem());
+            _ = this.mockEdgeDeviceConfigurationsClientService
+                .Setup(service => service.GetDeviceConfiguration(this.mockConfigurationId))
+                .ReturnsAsync(new ConfigListItem());
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             var cut = RenderComponent<ConfigDetail>(ComponentParameter.CreateParameter("ConfigurationID", this.mockConfigurationId));
-            Thread.Sleep(500);
 
             var returnButton = cut.WaitForElement("#returnButton");
-
-            var mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
 
             // Act
             returnButton.Click();
 
             // Assert
-            cut.WaitForState(() => mockNavigationManager.Uri.EndsWith("/edge/configurations", StringComparison.OrdinalIgnoreCase));
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/edge/configurations"));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
-        [TestCase]
+        [Test]
         public void ConfigDetailShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingConfiguration()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/configurations/{this.mockConfigurationId}")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockEdgeDeviceConfigurationsClientService
+                .Setup(service => service.GetDeviceConfiguration(this.mockConfigurationId))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
@@ -76,7 +74,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations
 
             // Assert
             _ = cut.Markup.Should().NotBeEmpty();
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }

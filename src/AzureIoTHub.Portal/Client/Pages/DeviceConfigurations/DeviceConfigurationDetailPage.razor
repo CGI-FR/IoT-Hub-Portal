@@ -1,14 +1,15 @@
 @page "/device-configurations/{ConfigId}"
 @using AzureIoTHub.Portal.Models.v10
-@using Microsoft.AspNetCore.Authorization
 @using AzureIoTHub.Portal.Models
 @using AzureIoTHub.Portal.Shared.Models.v10
 
 @attribute [Authorize]
-@inject HttpClient HttpClient
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject NavigationManager navigationManager
+@inject IDeviceConfigurationsClientService DeviceConfigurationsClientService
+@inject IDeviceModelsClientService DeviceModelsClientService
+@inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
     <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id = "returnButton" />       
@@ -246,12 +247,12 @@
         try
         {
             IsLoading = true;
-            Configuration = await HttpClient.GetFromJsonAsync<DeviceConfig>($"/api/device-configurations/{ConfigId}");
-            Metrics = await HttpClient.GetFromJsonAsync<ConfigurationMetrics>($"/api/device-configurations/{ConfigId}/metrics");
-            DeviceModel = await HttpClient.GetFromJsonAsync<DeviceModel>($"/api/models/{Configuration.ModelId}");
+            Configuration = await DeviceConfigurationsClientService.GetDeviceConfiguration(ConfigId);
+            Metrics = await DeviceConfigurationsClientService.GetDeviceConfigurationMetrics(ConfigId);
+            DeviceModel = await DeviceModelsClientService.GetDeviceModel(Configuration.ModelId);
 
-            AvailableProperties = await HttpClient.GetFromJsonAsync<IEnumerable<DeviceProperty>>($"/api/models/{Configuration.ModelId}/properties");
-            AvailableTags = await HttpClient.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
+            AvailableProperties = await DeviceModelsClientService.GetDeviceModelModelProperties(DeviceModel.ModelId);
+            AvailableTags = await DeviceTagSettingsClientService.GetDeviceTags();
 
             IsLoading = false;
         }
@@ -297,7 +298,7 @@
     {
         try
         {
-            await HttpClient.PutAsJsonAsync($"/api/device-configurations/{ConfigId}", Configuration);
+            await DeviceConfigurationsClientService.UpdateDeviceConfiguration(Configuration);
 
             // Prompts a snack bar to inform the action was successful
             Snackbar.Add($"{Configuration.ConfigurationId} has been successfully updated!", Severity.Success);

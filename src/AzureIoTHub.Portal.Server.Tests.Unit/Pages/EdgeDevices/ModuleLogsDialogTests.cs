@@ -72,6 +72,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             _ = cut.FindAll("tr").Count.Should().Be(4);
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -107,6 +108,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             _ = cut.FindAll("tr").Count.Should().Be(2);
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -151,6 +153,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             _ = result.Cancelled.Should().BeTrue();
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }

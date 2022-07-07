@@ -5,33 +5,30 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 {
     using System;
     using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Net.Mime;
-    using System.Text;
-    using System.Threading;
+    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
     using AzureIoTHub.Portal.Client.Shared;
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Exceptions;
     using Client.Models;
+    using Client.Services;
     using FluentAssertions;
-    using Helpers;
     using Microsoft.Extensions.DependencyInjection;
     using Mocks;
     using Models.v10;
     using Moq;
     using MudBlazor;
     using MudBlazor.Services;
-    using Newtonsoft.Json;
     using NUnit.Framework;
-    using RichardSzalay.MockHttp;
 
     [TestFixture]
     public class EdgeDeviceDetailPageTests : BlazorUnitTest
     {
         private Mock<IDialogService> mockDialogService;
         private Mock<ISnackbar> mockSnackbarService;
+        private Mock<IEdgeDeviceClientService> mockEdgeDeviceClientService;
+
         private readonly string mockdeviceId = Guid.NewGuid().ToString();
 
         private FakeNavigationManager mockNavigationManager;
@@ -42,7 +39,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockSnackbarService = MockRepository.Create<ISnackbar>();
+            this.mockEdgeDeviceClientService = MockRepository.Create<IEdgeDeviceClientService>();
 
+            _ = Services.AddSingleton(this.mockEdgeDeviceClientService.Object);
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
 
@@ -57,18 +56,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
         public void ReturnButtonMustNavigateToPreviousPage()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
-                .RespondJson(new IoTEdgeDevice() { ConnectionState = "false" });
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
+                .ReturnsAsync(new IoTEdgeDevice {ConnectionState = "false"});
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
-            var returnButton = cut.WaitForElement("#returnButton");
+            _ = cut.WaitForElement("#saveButton");
 
             // Act
-            returnButton.Click();
+            cut.WaitForElement("#returnButton").Click();
 
             // Assert
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/edge/devices"));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -76,40 +75,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
         {
             var mockIoTEdgeDevice = new IoTEdgeDevice()
             {
-                DeviceId = mockdeviceId,
+                DeviceId = this.mockdeviceId,
                 ConnectionState = "Connected",
                 Type = "Other"
             };
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
-                .RespondJson(mockIoTEdgeDevice);
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
+                .ReturnsAsync(mockIoTEdgeDevice);
 
-            _ = MockHttpClient
-                .When(HttpMethod.Put, $"/api/edge/devices/{this.mockdeviceId}")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<IoTEdgeDevice>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<IoTEdgeDevice>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<IoTEdgeDevice>(objectContent.Value);
-                    var edgeDevice = objectContent.Value as IoTEdgeDevice;
-                    Assert.IsNotNull(edgeDevice);
-
-                    Assert.AreEqual(mockIoTEdgeDevice.DeviceId, edgeDevice.DeviceId);
-                    Assert.AreEqual(mockIoTEdgeDevice.ConnectionState, edgeDevice.ConnectionState);
-                    Assert.AreEqual(mockIoTEdgeDevice.Type, edgeDevice.Type);
-
-                    return true;
-                })
-                .RespondText(string.Empty);
-
-
-            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
-            Thread.Sleep(2500);
-
-            var saveButton = cut.WaitForElement("#saveButton");
+            _ = this.mockEdgeDeviceClientService.Setup(service =>
+                    service.UpdateDevice(It.Is<IoTEdgeDevice>(device =>
+                        mockIoTEdgeDevice.DeviceId.Equals(device.DeviceId, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
 
@@ -120,30 +97,28 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             _ = this.mockSnackbarService.Setup(c => c.Add($"Device {this.mockdeviceId} has been successfully updated!", Severity.Success, null)).Returns((Snackbar)null);
 
-            // Act
-            saveButton.Click();
-            Thread.Sleep(2500);
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
 
-            // Assert            
-            MockHttpClient.VerifyNoOutstandingExpectation();
-            MockRepository.VerifyAll();
+            // Act
+            cut.WaitForElement("#saveButton").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void EdgeDeviceDetailPageShouldProcessProblemDetailsExceptionWhenIssueOccursOnLoadDevice()
         {
             // Arrange
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+            _ = cut.WaitForElement("form");
 
             // Assert
-            cut.WaitForAssertion(() => cut.Find("form").Should().NotBeNull());
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -152,34 +127,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             // Arrange
             var mockIoTEdgeDevice = new IoTEdgeDevice()
             {
-                DeviceId = mockdeviceId,
+                DeviceId = this.mockdeviceId,
                 ConnectionState = "Connected",
                 Type = "Other"
             };
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
-                .RespondJson(mockIoTEdgeDevice);
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
+                .ReturnsAsync(mockIoTEdgeDevice);
 
-            _ = MockHttpClient
-                .When(HttpMethod.Put, $"/api/edge/devices/{this.mockdeviceId}")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<IoTEdgeDevice>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<IoTEdgeDevice>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<IoTEdgeDevice>(objectContent.Value);
-                    var edgeDevice = objectContent.Value as IoTEdgeDevice;
-                    Assert.IsNotNull(edgeDevice);
-
-                    Assert.AreEqual(mockIoTEdgeDevice.DeviceId, edgeDevice.DeviceId);
-                    Assert.AreEqual(mockIoTEdgeDevice.ConnectionState, edgeDevice.ConnectionState);
-                    Assert.AreEqual(mockIoTEdgeDevice.Type, edgeDevice.Type);
-
-                    return true;
-                })
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockEdgeDeviceClientService.Setup(service =>
+                    service.UpdateDevice(It.Is<IoTEdgeDevice>(device =>
+                        mockIoTEdgeDevice.DeviceId.Equals(device.DeviceId, StringComparison.Ordinal))))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
 
@@ -197,8 +156,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         [Test]
@@ -211,46 +168,22 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             var mockIoTEdgeDevice = new IoTEdgeDevice()
             {
-                DeviceId = mockdeviceId,
+                DeviceId = this.mockdeviceId,
                 ConnectionState = "Connected",
                 Type = "Other",
                 Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule}
             };
 
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
-                .RespondJson(mockIoTEdgeDevice);
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
+                .ReturnsAsync(mockIoTEdgeDevice);
 
-            _ = MockHttpClient
-                .When(HttpMethod.Post, $"/api/edge/devices/{mockIoTEdgeDevice.DeviceId}/{mockIoTEdgeModule.ModuleName}/RestartModule")
-                .With(m =>
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<IoTEdgeModule>(module => mockIoTEdgeModule.ModuleName.Equals(module.ModuleName, StringComparison.Ordinal)), "RestartModule"))
+                .ReturnsAsync(new C2Dresult()
                 {
-                    Assert.IsAssignableFrom<ObjectContent<IoTEdgeModule>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<IoTEdgeModule>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<IoTEdgeModule>(objectContent.Value);
-                    var edgeModule = objectContent.Value as IoTEdgeModule;
-                    Assert.IsNotNull(edgeModule);
-
-                    Assert.AreEqual(mockIoTEdgeModule.ModuleName, edgeModule.ModuleName);
-
-                    return true;
-                })
-                .Respond(System.Net.HttpStatusCode.OK, new StringContent(
-                    JsonConvert.SerializeObject(new C2Dresult()
-                    {
-                        Payload = "ABC",
-                        Status = 200
-                    }),
-                    Encoding.UTF8,
-                    MediaTypeNames.Application.Json));
-
-            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
-            Thread.Sleep(2500);
-
-            var rebootButton = cut.WaitForElement("#rebootModule");
+                    Payload = "ABC",
+                    Status = 200
+                });
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
 
@@ -261,13 +194,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             _ = this.mockSnackbarService.Setup(c => c.Add("Command successfully executed.", Severity.Success, null)).Returns((Snackbar)null);
 
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+
+            var rebootButton = cut.WaitForElement("#rebootModule");
+
             // Act
             rebootButton.Click();
-            Thread.Sleep(2500);
 
-            // Assert            
-            MockHttpClient.VerifyNoOutstandingExpectation();
-            MockRepository.VerifyAll();
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -286,40 +221,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
                 Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule}
             };
 
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
+                .ReturnsAsync(mockIoTEdgeDevice);
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
-                .RespondJson(mockIoTEdgeDevice);
-
-            _ = MockHttpClient
-                .When(HttpMethod.Post, $"/api/edge/devices/{mockIoTEdgeDevice.DeviceId}/{mockIoTEdgeModule.ModuleName}/RestartModule")
-                .With(m =>
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<IoTEdgeModule>(module => mockIoTEdgeModule.ModuleName.Equals(module.ModuleName, StringComparison.Ordinal)), "RestartModule"))
+                .ReturnsAsync(new C2Dresult()
                 {
-                    Assert.IsAssignableFrom<ObjectContent<IoTEdgeModule>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<IoTEdgeModule>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<IoTEdgeModule>(objectContent.Value);
-                    var edgeModule = objectContent.Value as IoTEdgeModule;
-                    Assert.IsNotNull(edgeModule);
-
-                    Assert.AreEqual(mockIoTEdgeModule.ModuleName, edgeModule.ModuleName);
-
-                    return true;
-                })
-                .Respond(System.Net.HttpStatusCode.InternalServerError, new StringContent(
-                    JsonConvert.SerializeObject(new C2Dresult()
-                    {
-                        Payload = "ABC",
-                        Status = 500
-                    }),
-                    Encoding.UTF8,
-                    MediaTypeNames.Application.Json));
-
-            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
-            Thread.Sleep(2500);
-
-            var rebootButton = cut.WaitForElement("#rebootModule");
+                    Payload = "ABC",
+                    Status = 500
+                });
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
 
@@ -330,13 +240,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>())).Returns((Snackbar)null);
 
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+
+            var rebootButton = cut.WaitForElement("#rebootModule");
+
             // Act
             rebootButton.Click();
-            Thread.Sleep(2500);
 
-            // Assert            
-            MockHttpClient.VerifyNoOutstandingExpectation();
-            MockRepository.VerifyAll();
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -356,28 +268,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
                 Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule}
             };
 
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
+                .ReturnsAsync(mockIoTEdgeDevice);
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
-                .RespondJson(mockIoTEdgeDevice);
-
-            _ = MockHttpClient
-                .When(HttpMethod.Post, $"/api/edge/devices/{mockIoTEdgeDevice.DeviceId}/{mockIoTEdgeModule.ModuleName}/RestartModule")
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<IoTEdgeModule>>(m.Content);
-                    var objectContent = m.Content as ObjectContent<IoTEdgeModule>;
-                    Assert.IsNotNull(objectContent);
-
-                    Assert.IsAssignableFrom<IoTEdgeModule>(objectContent.Value);
-                    var edgeModule = objectContent.Value as IoTEdgeModule;
-                    Assert.IsNotNull(edgeModule);
-
-                    Assert.AreEqual(mockIoTEdgeModule.ModuleName, edgeModule.ModuleName);
-
-                    return true;
-                })
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<IoTEdgeModule>(module => mockIoTEdgeModule.ModuleName.Equals(module.ModuleName, StringComparison.Ordinal)), "RestartModule"))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
 
@@ -387,15 +282,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
-            cut.WaitForAssertion(() => cut.Find("form").Should().NotBeNull());
 
             // Act
-            cut.Find("#rebootModule").Click();
+            cut.WaitForElement("#rebootModule").Click();
 
-            // Assert            
+            // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
         }
 
         [Test]
@@ -413,26 +305,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
                 Type = "Other",
                 Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule}
             };
-
-
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
-                .RespondJson(mockIoTEdgeDevice);
-
-            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
-
-            var logsButton = cut.WaitForElement("#showLogs");
+            
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
+                .ReturnsAsync(mockIoTEdgeDevice);
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
 
             _ = this.mockDialogService.Setup(c => c.Show<ModuleLogsDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference);
 
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+
+            var logsButton = cut.WaitForElement("#showLogs");
+
             // Act
             logsButton.Click();
 
-            // Assert            
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -446,10 +335,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
                 Type = "Other",
             };
 
-
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
-                .RespondJson(mockIoTEdgeDevice);
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
+                .ReturnsAsync(mockIoTEdgeDevice);
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
             cut.WaitForAssertion(() => cut.Find("#connectButton"));
@@ -465,8 +352,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             connectButton.Click();
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -480,13 +365,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
                 Type = "Other",
             };
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
-                .RespondJson(mockIoTEdgeDevice);
-
-            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
-
-            var deleteButton = cut.WaitForElement("#deleteButton");
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
+                .ReturnsAsync(mockIoTEdgeDevice);
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
@@ -494,12 +374,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             _ = this.mockDialogService.Setup(c => c.Show<EdgeDeviceDeleteConfirmationDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference.Object);
 
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+
+            var deleteButton = cut.WaitForElement("#deleteButton");
+
             // Act
             deleteButton.Click();
 
-            // Assert            
-            MockHttpClient.VerifyNoOutstandingExpectation();
-            MockRepository.VerifyAll();
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -512,13 +395,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
                 Type = "Other",
             };
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/edge/devices/{this.mockdeviceId}")
-                .RespondJson(mockIoTEdgeDevice);
-
-            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
-
-            var deleteButton = cut.WaitForElement("#deleteButton");
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
+                .ReturnsAsync(mockIoTEdgeDevice);
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
@@ -526,14 +404,16 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             _ = this.mockDialogService.Setup(c => c.Show<EdgeDeviceDeleteConfirmationDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference.Object);
 
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+
+            var deleteButton = cut.WaitForElement("#deleteButton");
+
             // Act
             deleteButton.Click();
 
-            // Assert            
-            MockHttpClient.VerifyNoOutstandingExpectation();
-            MockRepository.VerifyAll();
-
-            cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/edge/devices", StringComparison.OrdinalIgnoreCase));
+            // Assert
+            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/edge/devices"));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }

@@ -4,14 +4,17 @@
 @using AzureIoTHub.Portal.Models
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
-@using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
-@inject HttpClient Http
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
 @inject IDialogService DialogService
 @inject NavigationManager navigationManager
+@inject IDeviceModelsClientService DeviceModelsClientService
+@inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
+@inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
+@inject IDeviceClientService DeviceClientService
+@inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
     <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton"/>       
@@ -213,7 +216,6 @@
         set;
     }
 
-    private string ApiUrlBase => this.IsLoRa ? "/api/lorawan/devices" : "api/devices";
     private DeviceDetailsValidator standardValidator = new DeviceDetailsValidator();
     private LoRaDeviceDetailsValidator loraValidator = new LoRaDeviceDetailsValidator();
 
@@ -240,18 +242,18 @@
         {
             if (IsLoRa)
             {
-                Device = await Http.GetFromJsonAsync<LoRaDeviceDetails>($"{ApiUrlBase}/{DeviceID}");
-                Commands = await Http.GetFromJsonAsync<DeviceModelCommand[]>($"/api/lorawan/models/{Device.ModelId}/commands");
-                DeviceModel = await Http.GetFromJsonAsync<LoRaDeviceModel>($"api/lorawan/models/{Device.ModelId}");
+                Device = await LoRaWanDeviceClientService.GetDevice(DeviceID);
+                Commands = await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(Device.DeviceID);
+                DeviceModel = await LoRaWanDeviceModelsClientService.GetDeviceModel(Device.ModelId);
             }
             else
             {
-                Device = await Http.GetFromJsonAsync<DeviceDetails>($"{ApiUrlBase}/{DeviceID}");
-                Properties = await Http.GetFromJsonAsync<List<DevicePropertyValue>>($"{ApiUrlBase}/{DeviceID}/properties");
-                DeviceModel = await Http.GetFromJsonAsync<DeviceModel>($"api/models/{Device.ModelId}");
+                Device = await DeviceClientService.GetDevice(DeviceID);
+                Properties = await DeviceClientService.GetDeviceProperties(DeviceID);
+                DeviceModel = await DeviceModelsClientService.GetDeviceModel(Device.ModelId);
             }
 
-            TagList = await Http.GetFromJsonAsync<List<DeviceTag>>($"/api/settings/device-tags");
+            TagList = await DeviceTagSettingsClientService.GetDeviceTags();
 
             isLoaded = true;
         }
@@ -286,13 +288,13 @@
 
             if (IsLoRa)
             {
-                await Http.PutAsJsonAsync(ApiUrlBase, Device as LoRaDeviceDetails);
+                await LoRaWanDeviceClientService.UpdateDevice(Device as LoRaDeviceDetails);
             }
             else
             {
-                await Http.PutAsJsonAsync(ApiUrlBase, Device);
+                await DeviceClientService.UpdateDevice(Device);
 
-                await Http.PostAsJsonAsync($"{ApiUrlBase}/{DeviceID}/properties", Properties);
+                await DeviceClientService.SetDeviceProperties(DeviceID, Properties.ToList());
             }
 
             // Prompts a snack bar to inform the action was successful

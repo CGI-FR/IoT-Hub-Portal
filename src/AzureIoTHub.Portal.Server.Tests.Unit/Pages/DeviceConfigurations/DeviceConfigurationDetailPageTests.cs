@@ -6,13 +6,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
+    using System.Threading.Tasks;
     using Bunit;
     using Bunit.TestDoubles;
     using Client.Exceptions;
     using Client.Models;
     using Client.Pages.DeviceConfigurations;
+    using Client.Services;
     using FluentAssertions;
-    using Helpers;
     using Microsoft.Extensions.DependencyInjection;
     using Models;
     using Models.v10;
@@ -20,70 +21,78 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
     using MudBlazor;
     using NUnit.Framework;
     using Portal.Shared.Models.v10;
-    using RichardSzalay.MockHttp;
 
     [TestFixture]
     public class DeviceConfigurationDetailPageTests : BlazorUnitTest
     {
         private Mock<IDialogService> mockDialogService;
-        private readonly string mockConfigId = Guid.NewGuid().ToString();
+        private Mock<IDeviceConfigurationsClientService> mockDeviceConfigurationsClientService;
+        private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
+        private Mock<IDeviceTagSettingsClientService> mockDeviceTagSettingsClientService;
 
         public override void Setup()
         {
             base.Setup();
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
+            this.mockDeviceConfigurationsClientService = MockRepository.Create<IDeviceConfigurationsClientService>();
+            this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
+            this.mockDeviceTagSettingsClientService = MockRepository.Create<IDeviceTagSettingsClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
+            _ = Services.AddSingleton(this.mockDeviceConfigurationsClientService.Object);
+            _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
+            _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
         }
 
         [Test]
         public void DeviceConfigurationDetailPageShouldRenderCorrectly()
         {
             // Arrange
-            using var deviceResponseMock = new HttpResponseMessage();
-
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}")
-                .RespondJson(new DeviceConfig
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfiguration(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceConfig
                 {
                     Priority = 100,
                     ConfigurationId = "test",
                     ModelId = modelId
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
-                .RespondJson(new ConfigurationMetrics
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new ConfigurationMetrics
                 {
                     CreationDate = DateTime.MinValue
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}")
-                .RespondJson(new DeviceModel
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceModel
                 {
+                    ModelId = modelId,
                     Name = Guid.NewGuid().ToString()
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
-                .RespondJson(Array.Empty<DeviceProperty>());
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                        modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new List<DeviceProperty>());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/settings/device-tags")
-                .RespondJson(Array.Empty<DeviceTag>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service =>
+                    service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
 
             // Act
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
 
             // Assert
             cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -92,25 +101,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             // Arrange
             var configurationId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfiguration(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
 
             // Assert
             cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void DeviceConfigurationDetailPageShouldRenderCardCorrectly()
         {
             // Arrange
-            using var deviceResponseMock = new HttpResponseMessage();
-
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
@@ -129,34 +136,37 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 MetricsTargeted = Random.Shared.Next()
             };
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}")
-                .RespondJson(new DeviceConfig
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfiguration(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceConfig
                 {
                     Priority = 100,
                     ConfigurationId = "test",
                     ModelId = modelId
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
-                .RespondJson(metrics);
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(metrics);
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}")
-                .RespondJson(model);
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(model);
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
-                .RespondJson(Array.Empty<DeviceProperty>());
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                        modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new List<DeviceProperty>());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/settings/device-tags")
-                .RespondJson(Array.Empty<DeviceTag>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service =>
+                    service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
 
             // Act
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForState(() => !cut.Instance.IsLoading);
+            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
 
             // Assert
             cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
@@ -170,20 +180,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 
             cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(5) > p")
                 .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsApplied} devices applied</p>");
+
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void DeviceConfigurationDetailPageShouldRenderTags()
         {
             // Arrange
-            using var deviceResponseMock = new HttpResponseMessage();
-
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}")
-                .RespondJson(new DeviceConfig
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfiguration(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceConfig
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -195,24 +206,27 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                     }
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
-                .RespondJson(new ConfigurationMetrics());
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new ConfigurationMetrics());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}")
-                .RespondJson(new DeviceModel
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceModel
                 {
+                    ModelId = modelId,
                     Name = Guid.NewGuid().ToString()
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
-                .RespondJson(Array.Empty<DeviceProperty>());
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                        modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new List<DeviceProperty>());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/settings/device-tags")
-                .RespondJson(new DeviceTag[]
+            _ = this.mockDeviceTagSettingsClientService.Setup(service =>
+                    service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>
                 {
                     new () { Name = "tag0" },
                     new () { Name = "tag1" }
@@ -225,22 +239,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             // Assert
             _ = cut.WaitForElement("#tag-tag0");
             _ = cut.WaitForElement("#tag-tag1");
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void WhenClickToDeleteTagShouldRemoveTheSelectedTag()
         {
             // Arrange
-            using var deviceResponseMock = new HttpResponseMessage();
-
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}")
-                .RespondJson(new DeviceConfig
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfiguration(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceConfig
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -252,24 +264,27 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                     }
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
-                .RespondJson(new ConfigurationMetrics());
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new ConfigurationMetrics());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}")
-                .RespondJson(new DeviceModel
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceModel
                 {
+                    ModelId = modelId,
                     Name = Guid.NewGuid().ToString()
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
-                .RespondJson(Array.Empty<DeviceProperty>());
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                        modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new List<DeviceProperty>());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/settings/device-tags")
-                .RespondJson(new DeviceTag[]
+            _ = this.mockDeviceTagSettingsClientService.Setup(service =>
+                    service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>
                 {
                     new () { Name = "tag0" },
                     new () { Name = "tag1" }
@@ -285,8 +300,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 
             // Assert
             Assert.AreEqual(1, cut.Instance.Configuration.Tags.Count);
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -298,9 +312,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}")
-                .RespondJson(new DeviceConfig
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfiguration(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceConfig
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -311,24 +326,27 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                     }
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
-                .RespondJson(new ConfigurationMetrics());
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new ConfigurationMetrics());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}")
-                .RespondJson(new DeviceModel
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceModel
                 {
+                    ModelId = modelId,
                     Name = Guid.NewGuid().ToString()
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
-                .RespondJson(Array.Empty<DeviceProperty>());
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                        modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new List<DeviceProperty>());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/settings/device-tags")
-                .RespondJson(new DeviceTag[]
+            _ = this.mockDeviceTagSettingsClientService.Setup(service =>
+                    service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>
                 {
                     new () { Name = "tag0" },
                     new () { Name = "tag1" }
@@ -345,22 +363,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             // Assert
             _ = cut.WaitForElement("#tag-tag1");
             Assert.AreEqual(2, cut.Instance.Configuration.Tags.Count);
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void DeviceConfigurationDetailPageShouldRenderProperties()
         {
             // Arrange
-            using var deviceResponseMock = new HttpResponseMessage();
-
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}")
-                .RespondJson(new DeviceConfig
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfiguration(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceConfig
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -377,20 +393,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                     }
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
-                .RespondJson(new ConfigurationMetrics());
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new ConfigurationMetrics());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}")
-                .RespondJson(new DeviceModel
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceModel
                 {
+                    ModelId = modelId,
                     Name = Guid.NewGuid().ToString()
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
-                .RespondJson(new DeviceProperty[]
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                        modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new List<DeviceProperty>
                 {
                     new() {
                         Name = "prop1",
@@ -418,9 +437,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                     }
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/settings/device-tags")
-                .RespondJson(Array.Empty<DeviceTag>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service =>
+                    service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
 
             // Act
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
@@ -433,22 +452,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             _ = cut.WaitForElement("#property-prop4");
             _ = cut.WaitForElement("#property-prop5");
             _ = cut.WaitForElement("#property-prop6");
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void WhenClickToDeletePropertyShouldRemoveTheSelectedProperty()
         {
             // Arrange
-            using var deviceResponseMock = new HttpResponseMessage();
-
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}")
-                .RespondJson(new DeviceConfig
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfiguration(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceConfig
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -461,20 +478,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                     }
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
-                .RespondJson(new ConfigurationMetrics());
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new ConfigurationMetrics());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}")
-                .RespondJson(new DeviceModel
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceModel
                 {
+                    ModelId = modelId,
                     Name = Guid.NewGuid().ToString()
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
-                .RespondJson(new DeviceProperty[]
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                        modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new List<DeviceProperty>
                 {
                     new() {
                         Name = "prop1",
@@ -502,9 +522,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                     }
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/settings/device-tags")
-                .RespondJson(Array.Empty<DeviceTag>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service =>
+                    service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
 
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
             cut.WaitForState(() => !cut.Instance.IsLoading);
@@ -515,22 +535,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 
             // Assert
             Assert.AreEqual(1, cut.Instance.Configuration.Properties.Count);
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void WhenClickToAddPropertyShouldAddTheSelectedProperty()
         {
             // Arrange
-            using var deviceResponseMock = new HttpResponseMessage();
-
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}")
-                .RespondJson(new DeviceConfig
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfiguration(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceConfig
                 {
                     Priority = 100,
                     ConfigurationId = "test",
@@ -543,20 +561,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                     }
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
-                .RespondJson(new ConfigurationMetrics());
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new ConfigurationMetrics());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}")
-                .RespondJson(new DeviceModel
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceModel
                 {
+                    ModelId = modelId,
                     Name = Guid.NewGuid().ToString()
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
-                .RespondJson(new DeviceProperty[]
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                        modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new List<DeviceProperty>
                 {
                     new() {
                         Name = "prop1",
@@ -584,9 +605,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                     }
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/settings/device-tags")
-                .RespondJson(Array.Empty<DeviceTag>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service =>
+                    service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
 
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
             cut.WaitForState(() => !cut.Instance.IsLoading);
@@ -599,25 +620,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             // Assert
             _ = cut.WaitForElement("#property-prop2");
             Assert.AreEqual(2, cut.Instance.Configuration.Properties.Count);
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void WhenClickToSaveShouldSendPutToTheEndpoint()
         {
             // Arrange
-            using var deviceResponseMock = new HttpResponseMessage();
-
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}")
-                .RespondJson(new DeviceConfig
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfiguration(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceConfig
                 {
                     Priority = 100,
-                    ConfigurationId = "test",
+                    ConfigurationId = configurationId,
                     ModelId = modelId,
                     Tags = new Dictionary<string, string>()
                     {
@@ -630,20 +649,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                     }
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
-                .RespondJson(new ConfigurationMetrics());
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new ConfigurationMetrics());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}")
-                .RespondJson(new DeviceModel
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceModel
                 {
+                    ModelId = modelId,
                     Name = Guid.NewGuid().ToString()
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
-                .RespondJson(new DeviceProperty[]
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                        modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new List<DeviceProperty>
                 {
                     new() {
                         Name = "prop1",
@@ -671,56 +693,44 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                     }
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/settings/device-tags")
-                .RespondJson(new DeviceTag[]
+            _ = this.mockDeviceTagSettingsClientService.Setup(service =>
+                    service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>
                 {
                     new () { Name = "tag0" },
                     new () { Name = "tag1" }
                 });
 
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.UpdateDeviceConfiguration(It.Is<DeviceConfig>(config =>
+                        configurationId.Equals(config.ConfigurationId, StringComparison.Ordinal) && modelId.Equals(config.ModelId, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
+
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
             cut.WaitForState(() => !cut.Instance.IsLoading);
 
-            _ = MockHttpClient.When(HttpMethod.Put, $"/api/device-configurations/{configurationId}")
-                .RespondText(string.Empty)
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<DeviceConfig>>(m.Content);
-                    var jsonContent = m.Content as ObjectContent<DeviceConfig>;
-
-                    Assert.IsAssignableFrom<DeviceConfig>(jsonContent.Value);
-                    Assert.AreEqual(cut.Instance.Configuration, jsonContent.Value);
-
-                    return true;
-                });
-
-            cut.WaitForAssertion(() => cut.Find("#saveButton"));
-
             // Act
-            cut.Find("#saveButton").Click();
+            cut.WaitForElement("#saveButton").Click();
 
             // Assert
             cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-configurations"));
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
         public void DeviceConfigurationDetailPageShouldProcessProblemDetailsExceptionWhenIssueOccursOnSavingConfiguration()
         {
             // Arrange
-            using var deviceResponseMock = new HttpResponseMessage();
-
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}")
-                .RespondJson(new DeviceConfig
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfiguration(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceConfig
                 {
                     Priority = 100,
-                    ConfigurationId = "test",
+                    ConfigurationId = configurationId,
                     ModelId = modelId,
                     Tags = new Dictionary<string, string>()
                     {
@@ -733,20 +743,23 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                     }
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{configurationId}/metrics")
-                .RespondJson(new ConfigurationMetrics());
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new ConfigurationMetrics());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}")
-                .RespondJson(new DeviceModel
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceModel
                 {
+                    ModelId = modelId,
                     Name = Guid.NewGuid().ToString()
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
-                .RespondJson(new DeviceProperty[]
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                        modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new List<DeviceProperty>
                 {
                     new() {
                         Name = "prop1",
@@ -774,29 +787,22 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                     }
                 });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, "/api/settings/device-tags")
-                .RespondJson(new DeviceTag[]
+            _ = this.mockDeviceTagSettingsClientService.Setup(service =>
+                    service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>
                 {
                     new () { Name = "tag0" },
                     new () { Name = "tag1" }
                 });
 
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.UpdateDeviceConfiguration(It.Is<DeviceConfig>(config =>
+                        configurationId.Equals(config.ConfigurationId, StringComparison.Ordinal) &&
+                        modelId.Equals(config.ModelId, StringComparison.Ordinal))))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
             cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
-
-            _ = MockHttpClient.When(HttpMethod.Put, $"/api/device-configurations/{configurationId}")
-                .Throw(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()))
-                .With(m =>
-                {
-                    Assert.IsAssignableFrom<ObjectContent<DeviceConfig>>(m.Content);
-                    var jsonContent = m.Content as ObjectContent<DeviceConfig>;
-
-                    Assert.IsAssignableFrom<DeviceConfig>(jsonContent.Value);
-                    Assert.AreEqual(cut.Instance.Configuration, jsonContent.Value);
-
-                    return true;
-                });
 
             cut.WaitForAssertion(() => cut.Find("#saveButton"));
 
@@ -804,8 +810,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             cut.Find("#saveButton").Click();
 
             // Assert
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
@@ -813,32 +818,45 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
         {
 
             // Arrange
+            var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfiguration(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceConfig
+                {
+                    Priority = 100,
+                    ConfigurationId = "test",
+                    ModelId = modelId
+                });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{this.mockConfigId}")
-                .RespondJson(new DeviceConfig() { ModelId = modelId, ConfigurationId = this.mockConfigId });
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new ConfigurationMetrics
+                {
+                    CreationDate = DateTime.MinValue
+                });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/device-configurations/{this.mockConfigId}/metrics")
-                .RespondJson(new ConfigurationMetrics());
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceModel
+                {
+                    ModelId = modelId,
+                    Name = Guid.NewGuid().ToString()
+                });
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}/properties")
-                .RespondJson(new List<DeviceProperty>());
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                        modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new List<DeviceProperty>());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/models/{modelId}")
-                .RespondJson(new DeviceModel());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service =>
+                    service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
 
-            _ = MockHttpClient
-                .When(HttpMethod.Get, $"/api/settings/device-tags")
-                .RespondJson(new List<DeviceTag>());
-
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
-
-            var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", this.mockConfigId));
+            var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
             cut.WaitForAssertion(() => cut.Find("#returnButton"));
 
             // Act
@@ -846,8 +864,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 
             // Assert
             cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-configurations"));
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingRequest());
-            cut.WaitForAssertion(() => MockHttpClient.VerifyNoOutstandingExpectation());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }

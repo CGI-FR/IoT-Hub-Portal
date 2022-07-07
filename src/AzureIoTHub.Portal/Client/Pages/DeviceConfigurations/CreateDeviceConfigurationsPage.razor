@@ -1,12 +1,13 @@
 ﻿@page "/device-configurations/new"
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Models
-@using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
-@inject HttpClient HttpClient
 @inject ISnackbar Snackbar
 @inject NavigationManager navigationManager
+@inject IDeviceConfigurationsClientService DeviceConfigurationsClientService
+@inject IDeviceModelsClientService DeviceModelsClientService
+@inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device Configuration</MudText>
 
@@ -245,11 +246,11 @@
         try
         {
             IsLoading = true;
-            
-            var models  = await HttpClient.GetFromJsonAsync<IEnumerable<DeviceModel>>("/api/models");
+
+            var models = await DeviceModelsClientService.GetDeviceModels();
             AvailableModels = models.Where(c => !c.SupportLoRaFeatures).ToArray();
 
-            AvailableTags = await HttpClient.GetFromJsonAsync<IEnumerable<DeviceTag>>("/api/settings/device-tags");
+            AvailableTags = await DeviceTagSettingsClientService.GetDeviceTags();
 
             IsLoading = false;
         }
@@ -267,7 +268,7 @@
     {
         try
         {
-            await HttpClient.PostAsJsonAsync("/api/device-configurations", Configuration);
+            await DeviceConfigurationsClientService.CreateDeviceConfiguration(Configuration);
 
             // Prompts a snack bar to inform the action was successful
             Snackbar.Add($"{Configuration.ConfigurationId} has been successfully created!", Severity.Success);
@@ -282,10 +283,15 @@
 
     public async Task SelectModel(DeviceModel model)
     {
+        if (model == null)
+        {
+            Configuration.ModelId = string.Empty;
+            return;
+        }
         try
         {
             Configuration.ModelId = model.ModelId;
-            AvailableProperties = await HttpClient.GetFromJsonAsync<IEnumerable<DevicePropertyValue>>($"/api/models/{model.ModelId}/properties");
+            AvailableProperties = await DeviceModelsClientService.GetDeviceModelModelProperties(model.ModelId);
         }
         catch (ProblemDetailsException exception)
         {

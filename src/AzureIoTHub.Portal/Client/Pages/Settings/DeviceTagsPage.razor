@@ -2,9 +2,9 @@
 @using AzureIoTHub.Portal.Models.v10
 
 @attribute [Authorize]
-@inject HttpClient HttpClient
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 
 <MudGrid>
 <MudItem xs="12">
@@ -95,7 +95,8 @@
         try
         {
             IsLoading = true;
-            Tags = await HttpClient.GetFromJsonAsync<List<DeviceTag>>("/api/settings/device-tags");
+            Tags.Clear();
+            Tags.AddRange(await DeviceTagSettingsClientService.GetDeviceTags());
         }
         catch (ProblemDetailsException exception)
         {
@@ -126,7 +127,7 @@
     {
 
         var parameters = new DialogParameters{{ "ContentText", "Processing" }};
-        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+        DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
 
         // Checks empty field and regex validation
         await FormLabel.Validate();
@@ -148,7 +149,7 @@
         {
             try
             {
-                var response = await HttpClient.PostAsJsonAsync($"/api/settings/device-tags", Tags);
+                await DeviceTagSettingsClientService.UpdateDeviceTags(Tags);
 
                 // Prompts a snack bar to inform the action was successful
                 Snackbar.Add($"Settings have been successfully updated!", Severity.Success);   
@@ -166,7 +167,6 @@
         {
             DialogService.Close(processingDialog);
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
-            return;
         }
     }
 }

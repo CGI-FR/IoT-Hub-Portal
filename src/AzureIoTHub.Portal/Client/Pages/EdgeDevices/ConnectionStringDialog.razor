@@ -1,7 +1,7 @@
 ﻿@using AzureIoTHub.Portal.Models.v10
 
-@inject HttpClient Http
 @inject ClipboardService ClipboardService
+@inject IEdgeDeviceClientService EdgeDeviceClientService
 
 <MudDialog>
         <DialogContent>
@@ -56,8 +56,7 @@
         try
         {
             await base.OnInitializedAsync();
-
-            Credentials = await Http.GetFromJsonAsync<EnrollmentCredentials>($"api/edge/devices/{deviceId}/credentials");
+            Credentials = await EdgeDeviceClientService.GetEnrollmentCredentials(deviceId);
         }
         catch (ProblemDetailsException exception)
         {

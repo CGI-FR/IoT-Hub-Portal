@@ -1,13 +1,12 @@
 ﻿@page "/edge/devices"
 @using AzureIoTHub.Portal
-@using Microsoft.AspNetCore.Authorization
 @using AzureIoTHub.Portal.Models.v10
 @using System.Web
 
 @attribute [Authorize]
-@inject HttpClient Http
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject IEdgeDeviceClientService EdgeDeviceClientService
 
 <MudGrid>
     <MudItem xs="12">
@@ -146,7 +145,7 @@
 
             if (Pages.Keys.Contains(state.Page))
             {
-                result = await Http.GetFromJsonAsync<PaginationResult<IoTEdgeListItem>>(Pages[state.Page]);
+                result = await EdgeDeviceClientService.GetDevices(Pages[state.Page]);
             }
             else
             {
@@ -154,7 +153,7 @@
 
                 _ = Pages.TryAdd(state.Page, uri);
 
-                result = await Http.GetFromJsonAsync<PaginationResult<IoTEdgeListItem>>(uri);
+                result = await EdgeDeviceClientService.GetDevices(uri);
             }
 
             _ = Pages.TryAdd(state.Page + 1, result.NextPage);
