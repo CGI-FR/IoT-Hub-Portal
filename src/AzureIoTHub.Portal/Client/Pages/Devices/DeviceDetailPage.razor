@@ -243,7 +243,7 @@
             if (IsLoRa)
             {
                 Device = await LoRaWanDeviceClientService.GetDevice(DeviceID);
-                Commands = await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(Device.DeviceID);
+                Commands = await LoRaWanDeviceModelsClientService.GetDeviceModelCommands(Device.ModelId);
                 DeviceModel = await LoRaWanDeviceModelsClientService.GetDeviceModel(Device.ModelId);
             }
             else
