@@ -9,8 +9,9 @@
         <MudText Typo="Typo.h6">Send your idea to Iot Hub Portal community</MudText>
     </TitleContent>
     <DialogContent>
-        <MudForm @ref="form" @bind-IsValid="@formIsValid">
-            <MudTextField T="string"
+        <MudForm id="idea-form" @ref="form" @bind-IsValid="@formIsValid" >
+            <MudTextField id="idea-title"
+                          T="string"
                           @bind-Value="@ideaRequest.Title"
                           Label="Title"
                           Variant="Variant.Outlined"
@@ -18,7 +19,8 @@
                           ErrorText="Title is required"
                           HelperText="Title to summarize your idea"
                           HelperTextOnFocus="true"/>
-            <MudTextField T="string"
+            <MudTextField id="idea-description"
+                          T="string"
                           @bind-Value="@ideaRequest.Body"
                           Label="Idea"
                           Variant="Variant.Outlined"
@@ -33,8 +35,8 @@
         </MudForm> 
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Disabled="@(isSubmitting || !formIsValid)" Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">
+        <MudButton id="idea-cancel" OnClick="Cancel">Cancel</MudButton>
+        <MudButton id="idea-submit" Type="Submit" Disabled="@(isSubmitting || !formIsValid)" Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">
             @if (isSubmitting)
             {
                 <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
@@ -54,7 +56,6 @@
     [CascadingParameter] Error Error { get; set; }
 
     bool formIsValid;
-    string[] errors = { };
     private bool isSubmitting;
     MudForm form;
 
@@ -84,7 +85,7 @@
         }
         catch (ProblemDetailsException exception)
         {
-            Error.ProcessProblemDetails(exception);
+            Error?.ProcessProblemDetails(exception);
         }
         finally
         {
