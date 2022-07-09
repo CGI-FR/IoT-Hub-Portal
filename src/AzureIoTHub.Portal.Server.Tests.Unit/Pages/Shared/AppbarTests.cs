@@ -6,34 +6,35 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
     using System;
     using Bunit;
     using Bunit.TestDoubles;
+    using Client.Pages.Ideas;
     using Client.Services;
     using Client.Shared;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
+    using Moq;
+    using MudBlazor;
     using NUnit.Framework;
 
     [TestFixture]
     public class AppbarTests : BlazorUnitTest
     {
+        private Mock<IDialogService> mockDialogService;
+
         private TestAuthorizationContext authContext;
-        private FakeNavigationManager fakeNavigationManager;
 
         public override void Setup()
         {
             base.Setup();
 
+            this.mockDialogService = MockRepository.Create<IDialogService>();
+
+            _ = Services.AddSingleton(this.mockDialogService.Object);
+
             this.authContext = TestContext?.AddTestAuthorization();
             _ = TestContext.AddBlazoredLocalStorage();
 
             _ = Services.AddScoped<ILayoutService, LayoutService>();
-            _ = Services.AddSingleton(new PortalSettings
-            {
-                PortalName = "TEST",
-                IsLoRaSupported = false
-            });
-
-            this.fakeNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
         }
 
         [Test]
@@ -41,6 +42,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            _ = Services.AddSingleton(new PortalSettings
+            {
+                PortalName = "TEST",
+                IsLoRaSupported = false
+            });
 
             // Act
             var cut = RenderComponent<Appbar>();
@@ -58,6 +64,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            _ = Services.AddSingleton(new PortalSettings
+            {
+                PortalName = "TEST",
+                IsLoRaSupported = false
+            });
+
             var cut = RenderComponent<Appbar>();
             cut.WaitForAssertion(() => cut.Find("div.mud-menu-activator"));
 
@@ -73,6 +85,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            _ = Services.AddSingleton(new PortalSettings
+            {
+                PortalName = "TEST",
+                IsLoRaSupported = false
+            });
+
             var cut = RenderComponent<Appbar>();
             cut.WaitForAssertion(() => cut.Find("div.mud-menu-activator"));
             cut.Find("div.mud-menu-activator").Click();
@@ -90,6 +108,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            _ = Services.AddSingleton(new PortalSettings
+            {
+                PortalName = "TEST",
+                IsLoRaSupported = false
+            });
+
             var cut = RenderComponent<Appbar>();
             cut.WaitForAssertion(() => cut.Find("#dark_light_switch button"));
 
@@ -105,6 +129,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            _ = Services.AddSingleton(new PortalSettings
+            {
+                PortalName = "TEST",
+                IsLoRaSupported = false
+            });
+
             var cut = RenderComponent<Appbar>();
             cut.WaitForAssertion(() => cut.Find("#dark_light_switch button"));
 
@@ -121,6 +151,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            _ = Services.AddSingleton(new PortalSettings
+            {
+                PortalName = "TEST",
+                IsLoRaSupported = false
+            });
 
             // Act
             var cut = RenderComponent<Appbar>();
@@ -135,6 +170,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetNotAuthorized();
+            _ = Services.AddSingleton(new PortalSettings
+            {
+                PortalName = "TEST",
+                IsLoRaSupported = false
+            });
 
             // Act
             var cut = RenderComponent<Appbar>();
@@ -149,6 +189,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
         {
             // Arrange
             _ = this.authContext.SetNotAuthorized();
+            _ = Services.AddSingleton(new PortalSettings
+            {
+                PortalName = "TEST",
+                IsLoRaSupported = false
+            });
 
             // Act
             var cut = RenderComponent<Appbar>();
@@ -156,7 +201,52 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
 
             // Assert
             _ = cut.Markup.Should().NotBeNullOrEmpty();
-            cut.WaitForState(() => this.fakeNavigationManager.Uri.EndsWith("authentication/login", StringComparison.OrdinalIgnoreCase));
+            cut.WaitForState(() => Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("authentication/login", StringComparison.OrdinalIgnoreCase));
+        }
+
+        [Test]
+        public void AppBarShouldRenderIdeaButtonWhenIdeaFeatureIsEnabled()
+        {
+            // Arrange
+            _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            _ = Services.AddSingleton(new PortalSettings
+            {
+                PortalName = "TEST",
+                IsLoRaSupported = false,
+                IsIdeasFeatureEnabled = true
+            });
+
+            // Act
+            var cut = RenderComponent<Appbar>();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Find("#ideas"));
+        }
+
+        [Test]
+        public void OnCLickOnNewIdeaShouldShowIdeaDialog()
+        {
+            // Arrange
+            _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            _ = Services.AddSingleton(new PortalSettings
+            {
+                PortalName = "TEST",
+                IsLoRaSupported = false,
+                IsIdeasFeatureEnabled = true
+            });
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<SubmitIdeaDialog>(string.Empty, It.IsAny<DialogOptions>()))
+                .Returns(mockDialogReference);
+
+            var cut = RenderComponent<Appbar>();
+
+            // Act
+            cut.WaitForElement("#ideas button").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }
