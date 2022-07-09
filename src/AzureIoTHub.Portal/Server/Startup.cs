@@ -11,19 +11,14 @@ namespace AzureIoTHub.Portal.Server
     using AutoMapper;
     using Azure;
     using Azure.Storage.Blobs;
-    using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Exceptions;
-    using AzureIoTHub.Portal.Server.Extensions;
-    using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Server.Identity;
-    using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Server.ServicesHealthCheck;
-    using AzureIoTHub.Portal.Server.Wrappers;
+    using Exceptions;
+    using Extensions;
+    using Factories;
     using Hellang.Middleware.ProblemDetails;
     using Hellang.Middleware.ProblemDetails.Mvc;
+    using Identity;
+    using Managers;
+    using Mappers;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -38,11 +33,16 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Primitives;
     using Microsoft.OpenApi.Models;
+    using Models.v10;
+    using Models.v10.LoRaWAN;
     using MudBlazor.Services;
     using Polly;
     using Polly.Extensions.Http;
     using Prometheus;
+    using Services;
+    using ServicesHealthCheck;
     using Shared.Models.v1._0;
+    using Wrappers;
 
     public class Startup
     {
@@ -144,6 +144,8 @@ namespace AzureIoTHub.Portal.Server
             })
                 .AddPolicyHandler(transientHttpErrorPolicy);
 
+            ConfigureIdeasFeature(services, configuration);
+
             // Add problem details support
             _ = services.AddProblemDetails(setup =>
             {
@@ -203,7 +205,7 @@ namespace AzureIoTHub.Portal.Server
 
                 opts.DescribeAllParametersInCamelCase();
 
-                var securityDefinition = new OpenApiSecurityScheme()
+                var securityDefinition = new OpenApiSecurityScheme
                 {
                     Name = "Bearer",
                     BearerFormat = "JWT",
@@ -216,8 +218,8 @@ namespace AzureIoTHub.Portal.Server
                     Type = SecuritySchemeType.Http,
                 };
 
-                var securityRequirements = new OpenApiSecurityRequirement()
-                  {
+                var securityRequirements = new OpenApiSecurityRequirement
+                {
                     { securityDefinition, Array.Empty<string>() },
                   };
 
@@ -265,6 +267,19 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddHostedService<DeviceMetricExporterService>();
             _ = services.AddHostedService<EdgeDeviceMetricExporterService>();
             _ = services.AddHostedService<ConcentratorMetricExporterService>();
+        }
+
+        private static void ConfigureIdeasFeature(IServiceCollection services, ConfigHandler configuration)
+        {
+            _ = services.AddTransient<IIdeaService, IdeaService>();
+
+            _ = services.AddHttpClient<IIdeaService, IdeaService>(client =>
+            {
+                if (!configuration.IdeasEnabled) return;
+                client.BaseAddress = new Uri(configuration.IdeasUrl);
+                client.DefaultRequestHeaders.Add(configuration.IdeasAuthenticationHeader,
+                    configuration.IdeasAuthenticationToken);
+            });
         }
 
         /// <summary>
@@ -356,7 +371,7 @@ namespace AzureIoTHub.Portal.Server
 
         private static bool IsApiRequest(HttpContext httpContext)
         {
-            return httpContext.Request.Path.StartsWithSegments($"/api", StringComparison.OrdinalIgnoreCase);
+            return httpContext.Request.Path.StartsWithSegments("/api", StringComparison.OrdinalIgnoreCase);
         }
 
         private Task HandleApiFallback(HttpContext context)

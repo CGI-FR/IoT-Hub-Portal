@@ -27,5 +27,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// Copyright Year
         /// </summary>
         public string CopyrightYear { get; set; }
+
+        public bool IsIdeasFeatureEnabled { get; set; }
     }
 }

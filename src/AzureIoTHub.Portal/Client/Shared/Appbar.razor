@@ -1,9 +1,11 @@
 ﻿@using AzureIoTHub.Portal.Models.v10
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using AzureIoTHub.Portal.Client.Pages.Ideas
 
 @inject PortalSettings Portal
 @inject SignOutSessionStateManager SignOutManager
 @inject NavigationManager Navigation
+@inject IDialogService DialogService
 @inject ILayoutService LayoutService
 
 <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@LayoutService.ToggleDrawer" />
@@ -11,6 +13,12 @@
 <MudSpacer />
 <AuthorizeView>
     <Authorized>
+        @if (Portal.IsIdeasFeatureEnabled)
+        {
+            <MudTooltip id="ideas" Duration="1000" Text="New Ideas ?">
+                <MudIconButton Icon="@Icons.Filled.Lightbulb" Color="Color.Inherit" OnClick="@OpenSubmitIdeaDialog"/>
+            </MudTooltip>
+        }
         <MudTooltip id="dark_light_switch" Duration="1000" Text="@(LayoutService.IsDarkMode ? "Switch to Light Theme" : "Switch to Dark Theme")">
             <MudIconButton Icon="@(LayoutService.IsDarkMode ? @Icons.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@LayoutService.ToggleDarkMode"/>
         </MudTooltip>
@@ -48,5 +56,17 @@
     private void BeginLogin(MouseEventArgs args)
     {
         Navigation.NavigateTo("authentication/login");
+    }
+
+    private void OpenSubmitIdeaDialog()
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true,
+            DisableBackdropClick = true
+        };
+
+        DialogService.Show<SubmitIdeaDialog>(string.Empty, options);
     }
 }

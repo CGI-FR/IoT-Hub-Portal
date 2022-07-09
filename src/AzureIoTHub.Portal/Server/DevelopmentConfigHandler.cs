@@ -63,5 +63,10 @@ namespace AzureIoTHub.Portal.Server
         internal override string LoRaKeyManagementUrl => this.config[LoRaKeyManagementUrlKey];
 
         internal override string LoRaKeyManagementCode => this.config[LoRaKeyManagementCodeKey];
+
+        internal override bool IdeasEnabled => this.config.GetValue(IdeasEnabledKey, false);
+        internal override string IdeasUrl => this.config.GetValue(IdeasUrlKey, string.Empty);
+        internal override string IdeasAuthenticationHeader => this.config.GetValue(IdeasAuthenticationHeaderKey, "Ocp-Apim-Subscription-Key");
+        internal override string IdeasAuthenticationToken => this.config.GetValue(IdeasAuthenticationTokenKey, string.Empty);
     }
 }

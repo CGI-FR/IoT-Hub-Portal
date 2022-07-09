@@ -146,5 +146,45 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
             // Assert
             _ = productionConfigHandler.MetricLoaderRefreshIntervalInMinutes.Should().Be(10);
         }
+
+        [Test]
+        public void IdeasEnabledMustHaveDefaultValue()
+        {
+            // Arrange
+            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = productionConfigHandler.IdeasEnabled.Should().BeFalse();
+        }
+
+        [Test]
+        public void IdeasUrlMustHaveDefaultValue()
+        {
+            // Arrange
+            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = productionConfigHandler.IdeasUrl.Should().BeEmpty();
+        }
+
+        [Test]
+        public void IdeasAuthenticationHeaderMustHaveDefaultValue()
+        {
+            // Arrange
+            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = productionConfigHandler.IdeasAuthenticationHeader.Should().Be("Ocp-Apim-Subscription-Key");
+        }
+
+        [Test]
+        public void IdeasAuthenticationTokenMustHaveDefaultValue()
+        {
+            // Arrange
+            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = productionConfigHandler.IdeasAuthenticationToken.Should().BeEmpty();
+        }
     }
 }
