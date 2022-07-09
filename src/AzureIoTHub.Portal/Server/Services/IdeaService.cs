@@ -32,16 +32,24 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new InternalServerErrorException("Ideas feature is not enabled. Please check Iot Hub Portal documentation");
             }
 
-            var content = new StringContent(JsonConvert.SerializeObject(ideaRequest), Encoding.UTF8, "application/json");
+            var ideaAsJson = JsonConvert.SerializeObject(ideaRequest);
+
+            this.logger.LogInformation($"Begin submitting a user idea: {ideaAsJson}");
+
+            using var content = new StringContent(ideaAsJson, Encoding.UTF8, "application/json");
 
             var response = await this.http.PostAsync("ideas", content);
 
-            this.logger.LogInformation(await response.Content.ReadAsStringAsync());
-
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<IdeaResponse>();
+                var responseBody = await response.Content.ReadFromJsonAsync<IdeaResponse>();
+
+                this.logger.LogInformation($"User idea has been successfully submitted: {responseBody?.Url}");
+
+                return responseBody;
             }
+
+            this.logger.LogError($"Unable to submit user idea. (Status: {response.StatusCode}, ErrorBody: {await response.Content.ReadAsStringAsync()})");
 
             throw new InternalServerErrorException($"Unable to submit your idea. Reason: {response.ReasonPhrase}");
         }
