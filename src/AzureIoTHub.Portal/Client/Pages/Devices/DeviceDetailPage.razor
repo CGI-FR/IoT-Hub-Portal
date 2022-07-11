@@ -47,8 +47,8 @@
             </MudCard>
 
             <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice" id="deleteButton">Delete device</MudButton>
-                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton">Save Changes</MudButton>
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice" id="deleteButton" Disabled="isProcessing">Delete device</MudButton>
+                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
@@ -228,6 +228,8 @@
 
     private bool isLoaded = false;
 
+    private bool isProcessing;
+
     private void Return() => navigationManager.NavigateTo("devices");
 
     private IEnumerable<DeviceModelCommand> Commands { get; set; }
@@ -240,6 +242,8 @@
     {
         try
         {
+            isProcessing = true;
+
             if (IsLoRa)
             {
                 Device = await LoRaWanDeviceClientService.GetDevice(DeviceID);
@@ -256,6 +260,7 @@
             TagList = await DeviceTagSettingsClientService.GetDeviceTags();
 
             isLoaded = true;
+            isProcessing = false;
         }
         catch (ProblemDetailsException exception)
         {
@@ -268,11 +273,10 @@
     /// </summary>
     public async void Save()
     {
-        var parameters = new DialogParameters {{"ContentText", "Processing"}};
-        DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
-        
         try
         {
+            isProcessing = true;
+
             await form.Validate();
             bool tagValidationError = CheckTagsError();
 
@@ -280,8 +284,9 @@
                 || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid)
                 || tagValidationError)
             {
-                DialogService.Close(processingDialog);
                 Snackbar.Add("One or more validation errors occurred", Severity.Error);
+
+                isProcessing = false;
 
                 return;
             }
@@ -309,7 +314,7 @@
         }
         finally
         {
-            DialogService.Close(processingDialog);            
+            isProcessing = false;           
         }
     }
     public async Task ShowConnectionString()
@@ -341,10 +346,16 @@
     /// <returns></returns>
     private async Task DeleteDevice()
     {
-        var parameters = new DialogParameters();
-        parameters.Add("deviceID", Device.DeviceID);
-        parameters.Add("deviceName", Device.DeviceName);
+        isProcessing = true;
+
+        var parameters = new DialogParameters
+        {
+            {"deviceID", Device.DeviceID},
+            {"deviceName", Device.DeviceName}
+        };
         var result = await DialogService.Show<DeleteDevicePage>("Confirm Deletion", parameters).Result;
+
+        isProcessing = false;
 
         if (result.Cancelled)
         {
