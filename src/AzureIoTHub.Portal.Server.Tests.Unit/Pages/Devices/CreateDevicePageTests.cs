@@ -104,11 +104,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
                 .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValue>>()))
                 .Returns(Task.CompletedTask);
 
-            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
-                .Returns(mockDialogReference);
-            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
-
             var cut = RenderComponent<CreateDevicePage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
@@ -208,11 +203,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             _ = this.mockDeviceModelsClientService
                 .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
                 .ReturnsAsync(new List<DeviceProperty>());
-
-            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
-                .Returns(mockDialogReference);
-            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
             // Act
             var cut = RenderComponent<CreateDevicePage>();
