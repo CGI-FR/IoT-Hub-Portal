@@ -3,12 +3,11 @@
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
-@inject IDialogService DialogService
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 
 <MudGrid>
 <MudItem xs="12">
-    <MudTable Items=@Tags Loading="IsLoading" Dense=true Hover=true Bordered=true Striped=true>
+    <MudTable Items=@Tags Loading="isProcessing" Dense=true Hover=true Bordered=true Striped=true>
 
         <ToolBarContent>
             <MudText Typo="Typo.h6">Tags</MudText>
@@ -71,7 +70,7 @@
         </LoadingContent>
     </MudTable>
     <MudCardActions Class="pb-4 pl-4">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save" id="saveButton">Save Changes</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
     </MudCardActions>
 </MudItem>
 </MudGrid>
@@ -83,7 +82,8 @@
     List<DeviceTag> Tags { get; set; } = new();
     private MudForm FormName { get; set; }
     private MudForm FormLabel { get; set; }
-    private bool IsLoading { get; set; }
+
+    private bool isProcessing;
 
     protected override async Task OnInitializedAsync()
     {
@@ -94,7 +94,7 @@
     {
         try
         {
-            IsLoading = true;
+            isProcessing = true;
             Tags.Clear();
             Tags.AddRange(await DeviceTagSettingsClientService.GetDeviceTags());
         }
@@ -104,7 +104,7 @@
         }
         finally
         {
-            IsLoading = false;            
+            isProcessing = false;
         }
     }
 
@@ -125,9 +125,7 @@
 
     private async Task Save()
     {
-
-        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
-        DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+        isProcessing = true;
 
         // Checks empty field and regex validation
         await FormLabel.Validate();
@@ -158,15 +156,12 @@
             {
                 Error?.ProcessProblemDetails(exception);
             }
-            finally
-            {
-                DialogService.Close(processingDialog);                
-            }
         }
         else
         {
-            DialogService.Close(processingDialog);
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
         }
+
+        isProcessing = false;
     }
 }
