@@ -1130,6 +1130,55 @@
         }
       }
     },
+    "/api/ideas": {
+      "post": {
+        "tags": [
+          "Ideas"
+        ],
+        "operationId": "Submit Idea to Iot Hub Portal community",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdeaRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdeaRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdeaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdeaResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdeaResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdeaResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/lorawan/concentrators": {
       "get": {
         "tags": [
@@ -3612,6 +3661,32 @@
         "additionalProperties": false,
         "description": "Enrollment credentials."
       },
+      "IdeaRequest": {
+        "required": [
+          "body",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IdeaResponse": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "IoTEdgeDevice": {
         "required": [
           "deviceId",
@@ -4228,6 +4303,9 @@
             "type": "string",
             "description": "Copyright Year",
             "nullable": true
+          },
+          "isIdeasFeatureEnabled": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false,

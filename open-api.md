@@ -1380,6 +1380,56 @@ To perform this operation, you must be authenticated by means of one of the foll
 None
 </aside>
 
+<h1 id="azure-iot-hub-portal-api-ideas">Ideas</h1>
+
+## Submit Idea to Iot Hub Portal community
+
+<a id="opIdSubmit Idea to Iot Hub Portal community"></a>
+
+> Code samples
+
+`POST /api/ideas`
+
+> Body parameter
+
+```json
+{
+  "title": "string",
+  "body": "string"
+}
+```
+
+<h3 id="submit-idea-to-iot-hub-portal-community-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[IdeaRequest](#schemaidearequest)|false|none|
+
+> Example responses
+
+> 200 Response
+
+```
+{"url":"string"}
+```
+
+```json
+{
+  "url": "string"
+}
+```
+
+<h3 id="submit-idea-to-iot-hub-portal-community-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[IdeaResponse](#schemaidearesponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+None
+</aside>
+
 <h1 id="azure-iot-hub-portal-api-lora-wan">LoRa WAN</h1>
 
 ## GET LoRaWAN Concentrator list
@@ -3471,7 +3521,8 @@ None
   "isLoRaSupported": true,
   "version": "string",
   "portalName": "string",
-  "copyrightYear": "string"
+  "copyrightYear": "string",
+  "isIdeasFeatureEnabled": true
 }
 ```
 
@@ -4159,6 +4210,48 @@ Enrollment credentials.
 |scopeID|string¦null|false|none|The scope identifier.|
 |provisioningEndpoint|string¦null|false|none|The provisioning endpoint.|
 
+<h2 id="tocS_IdeaRequest">IdeaRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaidearequest"></a>
+<a id="schema_IdeaRequest"></a>
+<a id="tocSidearequest"></a>
+<a id="tocsidearequest"></a>
+
+```json
+{
+  "title": "string",
+  "body": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|title|string|true|none|none|
+|body|string|true|none|none|
+
+<h2 id="tocS_IdeaResponse">IdeaResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaidearesponse"></a>
+<a id="schema_IdeaResponse"></a>
+<a id="tocSidearesponse"></a>
+<a id="tocsidearesponse"></a>
+
+```json
+{
+  "url": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|url|string¦null|false|none|none|
+
 <h2 id="tocS_IoTEdgeDevice">IoTEdgeDevice</h2>
 <!-- backwards compatibility -->
 <a id="schemaiotedgedevice"></a>
@@ -4568,7 +4661,8 @@ LoRa Device model.
   "isLoRaSupported": true,
   "version": "string",
   "portalName": "string",
-  "copyrightYear": "string"
+  "copyrightYear": "string",
+  "isIdeasFeatureEnabled": true
 }
 
 ```
@@ -4583,6 +4677,7 @@ Portal Settings.
 |version|string¦null|false|none|The portal version.|
 |portalName|string¦null|false|none|The poral name.|
 |copyrightYear|string¦null|false|none|Copyright Year|
+|isIdeasFeatureEnabled|boolean|false|none|none|
 
 <h2 id="tocS_ProblemDetails">ProblemDetails</h2>
 <!-- backwards compatibility -->
