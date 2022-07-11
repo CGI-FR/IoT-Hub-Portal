@@ -2,7 +2,6 @@
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 
 @inject ISnackbar Snackbar
-@inject IDialogService DialogService
 @inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
 
 <MudExpansionPanels MultiExpansion="true">
@@ -143,7 +142,7 @@
                             </MudTd>
                             <MudTd Style="text-align: center">
                                 <MudTooltip Text="Send command">
-                                    <MudIconButton Title="Execute" Color="Color.Default" Disabled="!LoRaDevice.AlreadyLoggedInOnce" Icon="@Icons.Material.Filled.Send" Size="Size.Medium" OnClick="@(() => ExecuteMethod(CommandContext))"></MudIconButton>
+                                    <MudIconButton Title="Execute" Color="Color.Default" Disabled="@(!LoRaDevice.AlreadyLoggedInOnce || isProcessing)" Icon="@Icons.Material.Filled.Send" Size="Size.Medium" OnClick="@(() => ExecuteMethod(CommandContext))"></MudIconButton>
                                 </MudTooltip>
                             </MudTd>
                         </RowTemplate>
@@ -171,13 +170,14 @@
     [Parameter]
     public IEnumerable<DeviceModelCommand> Commands { get; set; }
 
+    private bool isProcessing;
+
     private async Task ExecuteMethod(DeviceModelCommand method)
     {
-        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
-        var processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
-
         try
         {
+            isProcessing = true;
+
             await LoRaWanDeviceClientService.ExecuteCommand(LoRaDevice.DeviceID, method.Name);
 
             Snackbar.Add($"{method.Name} has been successfully executed!", Severity.Success);
@@ -188,7 +188,7 @@
         }
         finally
         {
-            DialogService.Close(processingDialog);
+            isProcessing = false;
         }
     }
 }
