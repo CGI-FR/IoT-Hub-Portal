@@ -11,11 +11,6 @@
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Device Configuration</MudText>
 
-@if (IsLoading)
-{
-    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
-}
-
 <MudForm Model="Configuration">
     <MudGrid>
         <MudItem xs="12" sm="4" md="3">
@@ -59,7 +54,7 @@
                 </MudCardContent>
             </MudCard>
             <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton">Save Changes</MudButton>
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
             </MudItem>
         </MudItem>
 
@@ -239,20 +234,18 @@
     public string SelectedTag { get; set; }
     public string SelectedProperty { get; set; }
 
-    public bool IsLoading { get; set; }
+    private bool isProcessing;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            IsLoading = true;
+            isProcessing = true;
 
             var models = await DeviceModelsClientService.GetDeviceModels();
             AvailableModels = models.Where(c => !c.SupportLoRaFeatures).ToArray();
 
             AvailableTags = await DeviceTagSettingsClientService.GetDeviceTags();
-
-            IsLoading = false;
         }
         catch (ProblemDetailsException exception)
         {
@@ -260,7 +253,7 @@
         }
         finally
         {
-            IsLoading = false;
+            isProcessing = false;
         }
     }
 
@@ -268,6 +261,8 @@
     {
         try
         {
+            isProcessing = true;
+
             await DeviceConfigurationsClientService.CreateDeviceConfiguration(Configuration);
 
             // Prompts a snack bar to inform the action was successful
@@ -278,6 +273,10 @@
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;
         }
     }
 

@@ -61,7 +61,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             var cut = RenderComponent<CreateDeviceConfigurationsPage>();
 
             // Assert
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -91,7 +90,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 .Returns(Task.CompletedTask);
 
             var cut = RenderComponent<CreateDeviceConfigurationsPage>();
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
             cut.Instance.Configuration = configuration;
 
 
@@ -128,7 +126,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<CreateDeviceConfigurationsPage>();
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
             cut.Instance.Configuration = configuration;
 
 
@@ -151,7 +148,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             var cut = RenderComponent<CreateDeviceConfigurationsPage>();
 
             // Assert
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -171,7 +167,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             var cut = RenderComponent<CreateDeviceConfigurationsPage>();
 
             // Assert
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -192,7 +187,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 });
 
             var cut = RenderComponent<CreateDeviceConfigurationsPage>();
-            cut.WaitForState(() => !cut.Instance.IsLoading);
 
             cut.Instance.SelectedTag = "tag0";
             cut.Render();
@@ -240,7 +234,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 });
 
             var cut = RenderComponent<CreateDeviceConfigurationsPage>();
-            cut.WaitForState(() => !cut.Instance.IsLoading);
 
             // Act
             cut.Instance.SelectedTag = "tag1";
