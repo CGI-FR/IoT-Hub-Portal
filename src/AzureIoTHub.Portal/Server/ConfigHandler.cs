@@ -41,6 +41,11 @@ namespace AzureIoTHub.Portal.Server
         internal const string MetricExporterRefreshIntervalKey = "Metrics:ExporterRefreshIntervalInSeconds";
         internal const string MetricLoaderRefreshIntervalKey = "Metrics:LoaderRefreshIntervalInMinutes";
 
+        internal const string IdeasEnabledKey = "Ideas:Enabled";
+        internal const string IdeasUrlKey = "Ideas:Url";
+        internal const string IdeasAuthenticationHeaderKey = "Ideas:Authentication:Header";
+        internal const string IdeasAuthenticationTokenKey = "Ideas:Authentication:Token";
+
         internal static ConfigHandler Create(IWebHostEnvironment env, IConfiguration config)
         {
             ArgumentNullException.ThrowIfNull(env, nameof(env));
@@ -103,5 +108,10 @@ namespace AzureIoTHub.Portal.Server
         internal abstract int MetricExporterRefreshIntervalInSeconds { get; }
 
         internal abstract int MetricLoaderRefreshIntervalInMinutes { get; }
+
+        internal abstract bool IdeasEnabled { get; }
+        internal abstract string IdeasUrl { get; }
+        internal abstract string IdeasAuthenticationHeader { get; }
+        internal abstract string IdeasAuthenticationToken { get; }
     }
 }

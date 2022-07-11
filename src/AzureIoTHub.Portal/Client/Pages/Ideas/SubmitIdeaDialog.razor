@@ -1,0 +1,97 @@
+﻿@using AzureIoTHub.Portal.Shared.Models.v1._0
+
+@inject ISnackbar SnackBar
+@inject IJSRuntime JsRuntime
+@inject IIdeaClientService IdeaClientService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Send your idea to Iot Hub Portal community</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm id="idea-form" @ref="form" @bind-IsValid="@formIsValid" >
+            <MudTextField id="idea-title"
+                          T="string"
+                          @bind-Value="@ideaRequest.Title"
+                          Label="Title"
+                          Variant="Variant.Outlined"
+                          Required="true"
+                          ErrorText="Title is required"
+                          HelperText="Title to summarize your idea"
+                          HelperTextOnFocus="true"/>
+            <MudTextField id="idea-description"
+                          T="string"
+                          @bind-Value="@ideaRequest.Body"
+                          Label="Idea"
+                          Variant="Variant.Outlined"
+                          Required="true"
+                          ErrorText="Description is required"
+                          HelperText="Description of your idea"
+                          HelperTextOnFocus="true"
+                          Lines="10"
+                          Placeholder="Please do not include any confidential or personal information in your comment"/>
+
+        <MudText Typo="Typo.caption" Class="mt-12">By clicking on submit, your idea will be published to <MudLink Href="https://github.com/CGI-FR/IoT-Hub-Portal/discussions/categories/ideas" Target="_blank" Underline="Underline.Always">Iot Hub Portal Discussions</MudLink> and will be viewed publicly by the community</MudText>
+        </MudForm> 
+    </DialogContent>
+    <DialogActions>
+        <MudButton id="idea-cancel" OnClick="Cancel">Cancel</MudButton>
+        <MudButton id="idea-submit" Type="Submit" Disabled="@(isSubmitting || !formIsValid)" Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">
+            @if (isSubmitting)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                <MudText Class="ms-2">Submitting</MudText>
+            }
+            else
+            {
+                <MudText>Submit Idea</MudText>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    
+    [CascadingParameter] Error Error { get; set; }
+
+    bool formIsValid;
+    private bool isSubmitting;
+    MudForm form;
+
+    private readonly IdeaRequest ideaRequest = new();
+
+    private async Task Submit()
+    {
+        try
+        {
+            isSubmitting = true;
+
+            var response = await IdeaClientService.SubmitIdea(ideaRequest);
+
+            MudDialog.Close(DialogResult.Ok(true));
+
+            SnackBar.Add("Your idea has been submitted", Severity.Success, config =>
+            {
+                config.Action = "Go see it 🚀";
+                config.ActionColor = Color.Primary;
+                config.RequireInteraction = true;
+                config.Onclick = _ =>
+                {
+                    JsRuntime.InvokeAsync<object>("open", response.Url, "_blank");
+                    return Task.CompletedTask;
+                };
+            });
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    void Cancel() => MudDialog.Cancel();
+}

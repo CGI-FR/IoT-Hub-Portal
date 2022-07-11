@@ -69,7 +69,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 IsLoRaSupported = this.configHandler.IsLoRaEnabled,
                 PortalName = this.configHandler.PortalName ?? "Azure IoT Hub Portal",
                 Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
-                CopyrightYear = DateTime.Now.Year.ToString(CultureInfo.InvariantCulture)
+                CopyrightYear = DateTime.Now.Year.ToString(CultureInfo.InvariantCulture),
+                IsIdeasFeatureEnabled = this.configHandler.IdeasEnabled
             });
         }
     }

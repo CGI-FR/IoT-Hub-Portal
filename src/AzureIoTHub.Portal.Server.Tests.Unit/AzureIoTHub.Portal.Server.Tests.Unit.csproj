@@ -50,6 +50,7 @@
     <Folder Include="Factories\" />
     <Folder Include="Handlers\" />
     <Folder Include="Mocks\" />
+    <Folder Include="Pages\Ideas\" />
   </ItemGroup>
 
 </Project>
