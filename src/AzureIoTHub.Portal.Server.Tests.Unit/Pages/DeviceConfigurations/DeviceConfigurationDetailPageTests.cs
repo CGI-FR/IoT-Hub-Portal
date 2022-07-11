@@ -91,7 +91,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
 
             // Assert
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -110,7 +109,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
 
             // Assert
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -166,7 +164,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 
             // Act
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
 
             // Assert
             cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
@@ -234,7 +231,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 
             // Act
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
 
             // Assert
             _ = cut.WaitForElement("#tag-tag0");
@@ -291,7 +287,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 });
 
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForState(() => !cut.Instance.IsLoading);
 
             // Act
             var deleteTagButton = cut.WaitForElement("#tag-tag1 #deleteTagButton");
@@ -353,7 +348,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 });
 
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForState(() => !cut.Instance.IsLoading);
 
             // Act
             cut.Instance.SelectedTag = "tag1";
@@ -443,7 +437,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 
             // Act
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForState(() => !cut.Instance.IsLoading);
 
             // Assert
             _ = cut.WaitForElement("#property-prop1");
@@ -527,7 +520,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 .ReturnsAsync(new List<DeviceTag>());
 
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForState(() => !cut.Instance.IsLoading);
 
             // Act
             cut.WaitForElement("#property-prop2 #deletePropertyButton").Click();
@@ -610,7 +602,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 .ReturnsAsync(new List<DeviceTag>());
 
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForState(() => !cut.Instance.IsLoading);
 
             // Act
             cut.Instance.SelectedTag = "prop2";
@@ -707,7 +698,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 .Returns(Task.CompletedTask);
 
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForState(() => !cut.Instance.IsLoading);
 
             // Act
             cut.WaitForElement("#saveButton").Click();
@@ -802,7 +792,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
 
             cut.WaitForAssertion(() => cut.Find("#saveButton"));
 
