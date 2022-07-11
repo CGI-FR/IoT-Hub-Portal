@@ -40,8 +40,8 @@
                 </MudCardHeader>
             </MudCard>
             <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice">Delete device</MudButton>
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="SaveDevice" id="saveButton">Save Changes</MudButton>
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice" Disabled="isProcessing">Delete device</MudButton>
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="SaveDevice" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
@@ -124,6 +124,9 @@
     private Concentrator concentrator { get; set; } = new();
     private MudForm form;
     private ConcentratorValidator concentratorValidator = new();
+
+    private bool isProcessing;
+
     private void Return() => NavigationManager.NavigateTo("/lorawan/concentrators");
 
     public PatternMask maskThumbprint = new PatternMask("XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX")
@@ -153,16 +156,17 @@
     /// </summary>
     public async void SaveDevice()
     {
-        var parameters = new DialogParameters {{"ContentText", "Processing"}};
-        var processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
+        isProcessing = true;
 
         try
         {
             await form.Validate();
             if (!this.concentratorValidator.Validate(this.concentrator).IsValid)
             {
-                DialogService.Close(processingDialog);
                 Snackbar.Add($"One or more validation errors occurred", Severity.Error);
+
+                isProcessing = false;
+
                 return;
             }
 
@@ -180,7 +184,7 @@
         }
         finally
         {
-            DialogService.Close(processingDialog);
+            isProcessing = false;
         }
     }
 
@@ -190,9 +194,12 @@
     /// <returns></returns>
     private async Task DeleteDevice()
     {
-        var parameters = new DialogParameters();
-        parameters.Add("deviceId", concentrator.DeviceId);
+        isProcessing = true;
+
+        var parameters = new DialogParameters {{"deviceId", concentrator.DeviceId}};
         var result = await DialogService.Show<DeleteConcentratorPage>("Confirm Deletion", parameters).Result;
+
+        isProcessing = false;
 
         if (result.Cancelled)
         {

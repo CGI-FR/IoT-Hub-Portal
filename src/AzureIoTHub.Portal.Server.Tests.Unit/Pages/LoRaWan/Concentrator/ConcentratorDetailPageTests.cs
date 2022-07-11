@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
     using System;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.LoRaWAN.Concentrator;
-    using AzureIoTHub.Portal.Client.Shared;
     using Models.v10;
     using Models.v10.LoRaWAN;
     using Bunit;
@@ -99,13 +98,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
                 .Setup(service => service.UpdateConcentrator(mockConcentrator))
                 .Returns(Task.CompletedTask);
 
-            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
-            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
-                .Returns(mockDialogReference);
-
-            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
-
             var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockConcentrator.DeviceId));
             cut.WaitForAssertion(() => cut.Find("#saveButton"));
 
@@ -134,13 +126,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
             _ = this.mockLoRaWanConcentratorsClientService
                 .Setup(service => service.UpdateConcentrator(mockConcentrator))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
-
-            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
-            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
-                .Returns(mockDialogReference);
-
-            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
             var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockConcentrator.DeviceId));
             cut.WaitForAssertion(() => cut.Find("#saveButton"));
