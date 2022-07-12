@@ -142,12 +142,17 @@
     {
         try
         {
-            // Sends a GET request to the DevicesController, to retrieve the specific device from Azure IoT Hub
+            isProcessing = true;
+    // Sends a GET request to the DevicesController, to retrieve the specific device from Azure IoT Hub
             concentrator = await LoRaWanConcentratorsClientService.GetConcentrator(DeviceID);
         }
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;
         }
     }
 
