@@ -110,6 +110,30 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
         }
 
         [Test]
+        public void ConcentratorShouldNotBeUpdatedWhenModelIsNotValid()
+        {
+            // Arrange
+            var mockConcentrator = new Concentrator()
+            {
+                DeviceId = string.Empty,
+                DeviceName = Guid.NewGuid().ToString(),
+                LoraRegion = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetConcentrator(mockConcentrator.DeviceId))
+                .ReturnsAsync(mockConcentrator);
+
+            var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockConcentrator.DeviceId));
+            cut.WaitForAssertion(() => cut.Find("#saveButton"));
+
+            // Act
+            cut.Find("#saveButton").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
         public void ClickOnSaveShouldProcessProblemDetailsExceptionWhenIssueOccursOnUpdatingConcentratorDetails()
         {
             // Arrange
