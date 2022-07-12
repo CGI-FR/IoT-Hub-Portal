@@ -13,7 +13,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
     using Client.Exceptions;
     using Client.Models;
     using Client.Services;
-    using Client.Shared;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Mocks;
@@ -117,6 +116,53 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/devices"));
+        }
+
+        [Test]
+        public async Task DeviceShouldNotBeCreatedWhenModelIsNotValid()
+        {
+            var mockDeviceModel = new DeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                SupportLoRaFeatures = false,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModel>
+                {
+                    mockDeviceModel
+                });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>
+                {
+                    new()
+                    {
+                        Label = Guid.NewGuid().ToString(),
+                        Name = Guid.NewGuid().ToString(),
+                        Required = false,
+                        Searchable = false
+                    }
+                });
+
+            _ = this.mockDeviceModelsClientService
+                .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+                .ReturnsAsync(new List<DeviceProperty>());
+
+            var cut = RenderComponent<CreateDevicePage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            // Act
+            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(string.Empty);
+            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(string.Empty);
+            await cut.Instance.ChangeModel(mockDeviceModel);
+
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
         [Test]
