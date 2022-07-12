@@ -113,6 +113,62 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
         }
 
         [Test]
+        public void ClickOnDeleteDeviceConfigurationShouldShowDeleteDialog()
+        {
+            // Arrange
+            var configurationId = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
+
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfiguration(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceConfig
+                {
+                    Priority = 100,
+                    ConfigurationId = "test",
+                    ModelId = modelId
+                });
+
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new ConfigurationMetrics
+                {
+                    CreationDate = DateTime.MinValue
+                });
+
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceModel
+                {
+                    ModelId = modelId,
+                    Name = Guid.NewGuid().ToString()
+                });
+
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                        modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new List<DeviceProperty>());
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service =>
+                    service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
+
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
+            _ = this.mockDialogService.Setup(c => c.Show<DeleteDeviceConfiguration>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference.Object);
+
+            var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
+
+            // Act
+            cut.WaitForElement("#delete-device-configuration").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
         public void DeviceConfigurationDetailPageShouldRenderCardCorrectly()
         {
             // Arrange
