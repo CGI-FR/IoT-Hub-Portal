@@ -14,161 +14,150 @@
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Edge Device Details</MudText>
 </MudTooltip>
 
-@if (loading)
-{
+<MudForm Model="@Gateway">
     <MudGrid>
-        <MudItem xs="12">
-            <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+        <MudItem xs="12" sm="4" md="3">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center">@Gateway.DeviceId</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardActions Class="pb-4 pl-4 justify-center">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
+                </MudCardActions>
+            </MudCard>
+            <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="ShowDeleteModal" id="deleteButton" Disabled="isProcessing">Delete edge device</MudButton>
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="UpdateDevice" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
+            </MudItem>
+        </MudItem>
+        <MudItem xs="12" sm="8" md="9">
+            <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
+                <MudTabPanel Text="General">
+                    <MudExpansionPanels MultiExpansion="true">
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Edge Device Details" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">Edge Device Details</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudGrid>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField @bind-Value="@Gateway.Type" Label="Type" Variant="Variant.Outlined" ReadOnly="true" Required="true" />
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudSelect T="string" @bind-Value="@Gateway.Environment" Label="Environment" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
+                                                    <MudSelectItem Value="@("Development")" />
+                                                    <MudSelectItem Value="@("Production")" />
+                                                    <MudSelectItem Value="@("Industry")" />
+                                                </MudSelect>
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudText>
+                                                    <b>Status</b>
+                                                </MudText>
+                                                <MudRadioGroup @bind-SelectedOption="@Gateway.Status">
+                                                    <MudRadio Option=@("Enabled") Color="Color.Primary">
+                                                        Enabled
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
+                                                    </MudRadio>
+                                                    <MudRadio Option=@("Disabled") Color="Color.Primary">
+                                                        Disabled
+                                                        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
+                                                    </MudRadio>
+                                                </MudRadioGroup>
+                                            </MudItem>
+
+                                            <MudItem xs="12" md="6">
+                                                <MudText>
+                                                    <b>Runtime response</b>
+                                                </MudText>
+                                                @if (Gateway.RuntimeResponse == "running")
+                                                {
+                                                    <MudTooltip Text="Runtime is running well">
+                                                        <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                                                    </MudTooltip>
+                                                }
+                                                else
+                                                {
+                                                    <MudItem>
+                                                        <MudTooltip Text="Runtime has an error">
+                                                            <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                                                        </MudTooltip>
+                                                    </MudItem>
+                                                }
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField @bind-Value="@Gateway.NbDevices" Label="Nbr of connected devices" Variant="Variant.Outlined" ReadOnly="true" />
+                                            </MudItem>
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField @bind-Value="@Gateway.NbModules" Label="Nbr of desired modules" Variant="Variant.Outlined" ReadOnly="true" />
+                                            </MudItem>
+                                        </MudGrid>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Tags">
+                                    <TitleContent><MudText Typo="Typo.h6">Last deployment</MudText></TitleContent>
+                                    <ChildContent>
+                                    @if (Gateway.LastDeployment != null){                                                                                   
+                                        <MudGrid>
+                                            <MudItem xs="12" md="4">
+                                                <MudTextField @bind-Value="@Gateway.LastDeployment.Name" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                                            </MudItem>
+                                            <MudItem xs="12" md="4">
+                                                <MudTextField @bind-Value="@Gateway.LastDeployment.DateCreation" Label="Date" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                                            </MudItem>
+                                            <MudItem xs="12" md="4">
+                                                <MudTextField @bind-Value="@Gateway.LastDeployment.Status" Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                                            </MudItem>
+                                        </MudGrid>
+                                     }
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Modules" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">Modules</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudTable Items="@Gateway.Modules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                            <ColGroup>
+                                                <col style="width: 40%;" />
+                                                <col style="width: 10%;" />
+                                                <col style="width: 10%;" />
+                                                <col style="width: 20%;" />
+                                            </ColGroup>
+                                            <HeaderContent>
+                                                <MudTh Style="text-align: center">Module Name</MudTh>
+                                                <MudTh Style="text-align: center">Version</MudTh>
+                                                <MudTh Style="text-align: center">Status</MudTh>
+                                                <MudTh Style="text-align: center"></MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd DataLabel="Module Name" Style="word-break: break-all;">@context.ModuleName</MudTd>
+                                                <MudTd DataLabel="Version" Style="text-align: center">@context.Version</MudTd>
+                                                <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
+                                                <MudTd DataLabel="Device" Style="text-align: center">
+                                                    <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" Disabled="btn_disable" id="showLogs" OnClick="@(async () => await ShowEdgeDeviceLogs(context) )">logs</MudButton>
+                                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="btn_disable" id="rebootModule" OnClick="@(async () => await OnMethod(context,"RestartModule") )">reboot</MudButton>
+                                                </MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                    </MudExpansionPanels>
+                </MudTabPanel>
+            </MudTabs>
         </MudItem>
     </MudGrid>
-}
-else
-{
-    <MudForm Model="@Gateway">
-        <MudGrid>
-            <MudItem xs="12" sm="4" md="3">
-                <MudCard>
-                    <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.h5" Align="Align.Center">@Gateway.DeviceId</MudText>
-                        </CardHeaderContent>
-                    </MudCardHeader>
-                    <MudCardActions Class="pb-4 pl-4 justify-center">
-                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
-                    </MudCardActions>
-                </MudCard>
-                <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="ShowDeleteModal" id="deleteButton">Delete edge device</MudButton>
-                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="UpdateDevice" id="saveButton">Save Changes</MudButton>
-                </MudItem>
-            </MudItem>
-            <MudItem xs="12" sm="8" md="9">
-                <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
-                    <MudTabPanel Text="General">
-                        <MudExpansionPanels MultiExpansion="true">
-                            <MudGrid>
-                                <MudItem xs="12">
-                                    <MudExpansionPanel Text="Edge Device Details" IsInitiallyExpanded="true">
-                                        <TitleContent><MudText Typo="Typo.h6">Edge Device Details</MudText></TitleContent>
-                                        <ChildContent>
-                                            <MudGrid>
-                                                <MudItem xs="12" md="6">
-                                                    <MudTextField @bind-Value="@Gateway.Type" Label="Type" Variant="Variant.Outlined" ReadOnly="true" Required="true" />
-                                                </MudItem>
-                                                <MudItem xs="12" md="6">
-                                                    <MudSelect T="string" @bind-Value="@Gateway.Environment" Label="Environment" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
-                                                        <MudSelectItem Value="@("Development")" />
-                                                        <MudSelectItem Value="@("Production")" />
-                                                        <MudSelectItem Value="@("Industry")" />
-                                                    </MudSelect>
-                                                </MudItem>
-                                                <MudItem xs="12" md="6">
-                                                    <MudText>
-                                                        <b>Status</b>
-                                                    </MudText>
-                                                    <MudRadioGroup @bind-SelectedOption="@Gateway.Status">
-                                                        <MudRadio Option=@("Enabled") Color="Color.Primary">
-                                                            Enabled
-                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>can</b> connect to the platform.</MudText>
-                                                        </MudRadio>
-                                                        <MudRadio Option=@("Disabled") Color="Color.Primary">
-                                                            Disabled
-                                                            <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">The device <b>cannot</b> connect to the platform.</MudText>
-                                                        </MudRadio>
-                                                    </MudRadioGroup>
-                                                </MudItem>
-
-                                                <MudItem xs="12" md="6">
-                                                    <MudText>
-                                                        <b>Runtime response</b>
-                                                    </MudText>
-                                                    @if (Gateway.RuntimeResponse == "running")
-                                                    {
-                                                        <MudTooltip Text="Runtime is running well">
-                                                            <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
-                                                        </MudTooltip>
-                                                    }
-                                                    else
-                                                    {
-                                                        <MudItem>
-                                                            <MudTooltip Text="Runtime has an error">
-                                                                <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
-                                                            </MudTooltip>
-                                                        </MudItem>
-                                                    }
-                                                </MudItem>
-                                                <MudItem xs="12" md="6">
-                                                    <MudTextField @bind-Value="@Gateway.NbDevices" Label="Nbr of connected devices" Variant="Variant.Outlined" ReadOnly="true" />
-                                                </MudItem>
-                                                <MudItem xs="12" md="6">
-                                                    <MudTextField @bind-Value="@Gateway.NbModules" Label="Nbr of desired modules" Variant="Variant.Outlined" ReadOnly="true" />
-                                                </MudItem>
-                                            </MudGrid>
-                                        </ChildContent>
-                                    </MudExpansionPanel>
-                                </MudItem>
-                            </MudGrid>
-                            <MudGrid>
-                                <MudItem xs="12">
-                                    <MudExpansionPanel Text="Tags">
-                                        <TitleContent><MudText Typo="Typo.h6">Last deployment</MudText></TitleContent>
-                                        <ChildContent>
-                                        @if (Gateway.LastDeployment != null){                                                                                   
-                                            <MudGrid>
-                                                <MudItem xs="12" md="4">
-                                                    <MudTextField @bind-Value="@Gateway.LastDeployment.Name" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
-                                                </MudItem>
-                                                <MudItem xs="12" md="4">
-                                                    <MudTextField @bind-Value="@Gateway.LastDeployment.DateCreation" Label="Date" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
-                                                </MudItem>
-                                                <MudItem xs="12" md="4">
-                                                    <MudTextField @bind-Value="@Gateway.LastDeployment.Status" Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
-                                                </MudItem>
-                                            </MudGrid>
-                                         }
-                                        </ChildContent>
-                                    </MudExpansionPanel>
-                                </MudItem>
-                            </MudGrid>
-                            <MudGrid>
-                                <MudItem xs="12">
-                                    <MudExpansionPanel Text="Modules" IsInitiallyExpanded="true">
-                                        <TitleContent><MudText Typo="Typo.h6">Modules</MudText></TitleContent>
-                                        <ChildContent>
-                                            <MudTable Items="@Gateway.Modules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
-                                                <ColGroup>
-                                                    <col style="width: 40%;" />
-                                                    <col style="width: 10%;" />
-                                                    <col style="width: 10%;" />
-                                                    <col style="width: 20%;" />
-                                                </ColGroup>
-                                                <HeaderContent>
-                                                    <MudTh Style="text-align: center">Module Name</MudTh>
-                                                    <MudTh Style="text-align: center">Version</MudTh>
-                                                    <MudTh Style="text-align: center">Status</MudTh>
-                                                    <MudTh Style="text-align: center"></MudTh>
-                                                </HeaderContent>
-                                                <RowTemplate>
-                                                    <MudTd DataLabel="Module Name" Style="word-break: break-all;">@context.ModuleName</MudTd>
-                                                    <MudTd DataLabel="Version" Style="text-align: center">@context.Version</MudTd>
-                                                    <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
-                                                    <MudTd DataLabel="Device" Style="text-align: center">
-                                                        <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" Disabled="btn_disable" id="showLogs" OnClick="@(async () => await ShowEdgeDeviceLogs(context) )">logs</MudButton>
-                                                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="btn_disable" id="rebootModule" OnClick="@(async () => await OnMethod(context,"RestartModule") )">reboot</MudButton>
-                                                    </MudTd>
-                                                </RowTemplate>
-                                            </MudTable>
-                                        </ChildContent>
-                                    </MudExpansionPanel>
-                                </MudItem>
-                            </MudGrid>
-                        </MudExpansionPanels>
-                    </MudTabPanel>
-                </MudTabs>
-            </MudItem>
-        </MudGrid>
-    </MudForm>
-}
+</MudForm>
 
 @code {
     [CascadingParameter]
@@ -176,11 +165,12 @@ else
     
     [Parameter]
     public string deviceId { get; set; }
-    private bool loading = true;
     private bool btn_disable = false;
     private void Return() => NavigationManager.NavigateTo("edge/devices");
 
     private IoTEdgeDevice Gateway;
+
+    private bool isProcessing;
 
     protected override async Task OnInitializedAsync()
     {
@@ -192,6 +182,8 @@ else
     {
         try
         {
+            isProcessing = true;
+
             Gateway = await EdgeDeviceClientService.GetDevice(deviceId);
             
             if (Gateway.ConnectionState == "Disconnected")
@@ -205,15 +197,13 @@ else
         }
         finally
         {
-            loading = false;
+            isProcessing = false;
         }
     }
 
     public async Task UpdateDevice()
     {
-
-        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
-        var processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
+        isProcessing = true;
 
         try
         {
@@ -227,15 +217,13 @@ else
         }
         finally
         {
-            DialogService.Close(processingDialog);
+            isProcessing = false;
         }
     }
 
     public async Task OnMethod(IoTEdgeModule module, string methodName)
     {
-
-        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
-        var processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as DialogReference;
+        isProcessing = true;
 
         try
         {
@@ -262,7 +250,7 @@ else
         }
         finally
         {
-            DialogService.Close(processingDialog);
+            isProcessing = false;
         }
     }
 
@@ -287,9 +275,13 @@ else
 
     public async Task ShowDeleteModal()
     {
+        isProcessing = true;
+
         var parameter = new DialogParameters {{nameof(Gateway.DeviceId), Gateway.DeviceId}};
 
         var result = await DialogService.Show<EdgeDeviceDeleteConfirmationDialog>("Edge device deletion confirmation", parameter).Result;
+
+        isProcessing = false;
 
         if (result.Cancelled)
         {

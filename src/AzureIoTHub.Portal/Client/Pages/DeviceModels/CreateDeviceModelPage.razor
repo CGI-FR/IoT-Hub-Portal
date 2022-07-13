@@ -10,7 +10,6 @@
 @inject NavigationManager NavigationManager
 @inject PortalSettings Portal
 @inject ISnackbar Snackbar
-@inject IDialogService DialogService
 @inject IDeviceModelsClientService DeviceModelsClientService
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
 
@@ -38,7 +37,7 @@
                 </MudCardActions>
             </MudCard>
             <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="SaveButton">Save Changes</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="SaveButton" Disabled="isProcessing">Save Changes</MudButton>
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
@@ -173,6 +172,8 @@
     private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
     private List<MudForm> CommandValidation { get; set; }
 
+    private bool isProcessing;
+
     private bool IsLoRa
     {
         get
@@ -250,8 +251,7 @@
 
     private async Task Save()
     {
-        var parameters = new DialogParameters{{ "ContentText", "Processing" }};
-        MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
+        isProcessing = true;
 
         // Displays validation error message for each field
         await form.Validate();
@@ -287,8 +287,10 @@
                            duplicated ||
                            cmdValidationError)))
         {
-            DialogService.Close(processingDialog);
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
+            
+            isProcessing = false;
+
             return;
         }
 
@@ -328,18 +330,19 @@
                 }
             }
 
-
-            DialogService.Close(processingDialog);
             Snackbar.Add("Device model successfully created.", Severity.Success);
 
             // Go back to the list of devices
             NavigationManager.NavigateTo("device-models");
         }
 
-        catch(ProblemDetailsException exception)
+        catch (ProblemDetailsException exception)
         {
-            DialogService.Close(processingDialog);
             Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;
         }
     }
  }

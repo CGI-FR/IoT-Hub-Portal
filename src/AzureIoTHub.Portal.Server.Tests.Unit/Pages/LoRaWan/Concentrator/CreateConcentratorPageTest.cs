@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
     using System;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.LoRaWAN.Concentrator;
-    using AzureIoTHub.Portal.Client.Shared;
     using Models.v10;
     using Models.v10.LoRaWAN;
     using Bunit;
@@ -65,12 +64,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
                         mockConcentrator.DeviceId.Equals(concentrator.DeviceId, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
-            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
-            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
-                .Returns(mockDialogReference);
-            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
-
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns((Snackbar)null);
 
             var cut = RenderComponent<CreateConcentratorPage>();
@@ -105,12 +98,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
                         mockConcentrator.DeviceId.Equals(concentrator.DeviceId, StringComparison.Ordinal))))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
-            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
-            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
-                .Returns(mockDialogReference);
-            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
-
             var cut = RenderComponent<CreateConcentratorPage>();
             cut.WaitForAssertion(() => cut.Find("#saveButton"));
 
@@ -130,13 +117,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
         public void ClickOnSaveShouldNotCreateConcentratorWhenModelIsNotValid()
         {
             // Arrange
-
-            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-
-            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
-                .Returns(mockDialogReference);
-            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
-
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, null)).Returns((Snackbar)null);
 
             var cut = RenderComponent<CreateConcentratorPage>();

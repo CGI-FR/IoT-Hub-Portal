@@ -91,7 +91,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
 
             // Assert
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -110,7 +109,62 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
 
             // Assert
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnDeleteDeviceConfigurationShouldShowDeleteDialog()
+        {
+            // Arrange
+            var configurationId = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
+
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfiguration(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceConfig
+                {
+                    Priority = 100,
+                    ConfigurationId = "test",
+                    ModelId = modelId
+                });
+
+            _ = this.mockDeviceConfigurationsClientService.Setup(service =>
+                    service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
+                        configurationId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new ConfigurationMetrics
+                {
+                    CreationDate = DateTime.MinValue
+                });
+
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new DeviceModel
+                {
+                    ModelId = modelId,
+                    Name = Guid.NewGuid().ToString()
+                });
+
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModelModelProperties(It.Is<string>(s =>
+                        modelId.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new List<DeviceProperty>());
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service =>
+                    service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
+
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
+            _ = this.mockDialogService.Setup(c => c.Show<DeleteDeviceConfiguration>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference.Object);
+
+            var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
+
+            // Act
+            cut.WaitForElement("#delete-device-configuration").Click();
+
+            // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -166,7 +220,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 
             // Act
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
 
             // Assert
             cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
@@ -234,7 +287,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 
             // Act
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
 
             // Assert
             _ = cut.WaitForElement("#tag-tag0");
@@ -291,7 +343,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 });
 
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForState(() => !cut.Instance.IsLoading);
 
             // Act
             var deleteTagButton = cut.WaitForElement("#tag-tag1 #deleteTagButton");
@@ -353,7 +404,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 });
 
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForState(() => !cut.Instance.IsLoading);
 
             // Act
             cut.Instance.SelectedTag = "tag1";
@@ -443,7 +493,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
 
             // Act
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForState(() => !cut.Instance.IsLoading);
 
             // Assert
             _ = cut.WaitForElement("#property-prop1");
@@ -527,7 +576,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 .ReturnsAsync(new List<DeviceTag>());
 
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForState(() => !cut.Instance.IsLoading);
 
             // Act
             cut.WaitForElement("#property-prop2 #deletePropertyButton").Click();
@@ -610,7 +658,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 .ReturnsAsync(new List<DeviceTag>());
 
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForState(() => !cut.Instance.IsLoading);
 
             // Act
             cut.Instance.SelectedTag = "prop2";
@@ -707,7 +754,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 .Returns(Task.CompletedTask);
 
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForState(() => !cut.Instance.IsLoading);
 
             // Act
             cut.WaitForElement("#saveButton").Click();
@@ -802,7 +848,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DeviceConfigurations
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
-            cut.WaitForAssertion(() => cut.Instance.IsLoading.Should().BeFalse());
 
             cut.WaitForAssertion(() => cut.Find("#saveButton"));
 

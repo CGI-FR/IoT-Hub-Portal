@@ -7,7 +7,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Pages.Devices;
-    using AzureIoTHub.Portal.Client.Shared;
     using Models.v10;
     using Bunit;
     using Bunit.TestDoubles;
@@ -151,11 +150,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
                 .Setup(service => service.SetDeviceProperties(mockDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValue>>()))
                 .Returns(Task.CompletedTask);
 
-            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
-                .Returns(mockDialogReference);
-            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
-
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns((Snackbar)null);
 
             // Act
@@ -220,11 +214,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
                 .Setup(service => service.GetDeviceProperties(mockDeviceDetails.DeviceID))
                 .ReturnsAsync(new List<DevicePropertyValue>());
 
-            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
-                .Returns(mockDialogReference);
-            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
-
             // Act
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
 
@@ -282,11 +271,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             _ = this.mockDeviceClientService
                 .Setup(service => service.GetDeviceProperties(mockDeviceDetails.DeviceID))
                 .ReturnsAsync(new List<DevicePropertyValue>());
-
-            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
-            _ = this.mockDialogService.Setup(c => c.Show<ProcessingDialog>("Processing", It.IsAny<DialogParameters>()))
-                .Returns(mockDialogReference);
-            _ = this.mockDialogService.Setup(c => c.Close(It.Is<DialogReference>(x => x == mockDialogReference)));
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, null)).Returns((Snackbar)null);
 
