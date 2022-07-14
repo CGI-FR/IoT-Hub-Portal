@@ -71,7 +71,10 @@ namespace AzureIoTHub.Portal.Client
             await ConfigurePortalSettings(builder);
 
             // Enable loading bar
-            builder.Services.AddLoadingBar();
+            builder.Services.AddLoadingBar(options =>
+            {
+                options.LoadingBarColor = "#D3E24A";
+            });
             _ = builder.UseLoadingBar();
 
             await builder.Build().RunAsync();
