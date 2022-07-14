@@ -3100,15 +3100,18 @@
         "type": "object",
         "properties": {
           "deviceId": {
+            "minLength": 1,
             "pattern": "^[A-F0-9]{16}$",
             "type": "string",
             "description": "The device identifier."
           },
           "deviceName": {
+            "minLength": 1,
             "type": "string",
             "description": "The name of the device."
           },
           "loraRegion": {
+            "minLength": 1,
             "type": "string",
             "description": "The lora region."
           },
@@ -3174,6 +3177,7 @@
         "type": "object",
         "properties": {
           "name": {
+            "minLength": 1,
             "type": "string",
             "description": "The IoT Edge configuration name."
           },
@@ -3329,15 +3333,18 @@
         "properties": {
           "deviceID": {
             "maxLength": -1,
+            "minLength": 1,
             "pattern": "^[a-zA-Z0-9\\-.+%_#*?!(),:=@$']{1,128}$",
             "type": "string",
             "description": "The device identifier."
           },
           "deviceName": {
+            "minLength": 1,
             "type": "string",
             "description": "The name of the device."
           },
           "modelId": {
+            "minLength": 1,
             "type": "string",
             "description": "The model identifier."
           },
@@ -3456,6 +3463,7 @@
             "nullable": true
           },
           "name": {
+            "minLength": 1,
             "type": "string",
             "description": "The device model name."
           },
@@ -3485,10 +3493,12 @@
         "type": "object",
         "properties": {
           "name": {
+            "minLength": 1,
             "type": "string",
             "description": "The command name."
           },
           "frame": {
+            "minLength": 1,
             "type": "string",
             "description": "The command frame in hexa."
           },
@@ -3522,11 +3532,13 @@
         "type": "object",
         "properties": {
           "name": {
+            "minLength": 1,
             "pattern": "^([\\w]+\\.)+[\\w]+|[\\w]+$",
             "type": "string",
             "description": "The property name"
           },
           "displayName": {
+            "minLength": 1,
             "type": "string",
             "description": "The property display name"
           },
@@ -3566,11 +3578,13 @@
         "type": "object",
         "properties": {
           "name": {
+            "minLength": 1,
             "pattern": "^([\\w]+\\.)+[\\w]+|[\\w]+$",
             "type": "string",
             "description": "The property name"
           },
           "displayName": {
+            "minLength": 1,
             "type": "string",
             "description": "The property display name"
           },
@@ -3612,11 +3626,13 @@
         "type": "object",
         "properties": {
           "name": {
+            "minLength": 1,
             "pattern": "^[a-zA-Z0-9]*$",
             "type": "string",
             "description": "The registered name in the device twin."
           },
           "label": {
+            "minLength": 1,
             "type": "string",
             "description": "The label shown to the user."
           },
@@ -3669,9 +3685,11 @@
         "type": "object",
         "properties": {
           "title": {
+            "minLength": 1,
             "type": "string"
           },
           "body": {
+            "minLength": 1,
             "type": "string"
           }
         },
@@ -3695,6 +3713,7 @@
         "type": "object",
         "properties": {
           "deviceId": {
+            "minLength": 1,
             "type": "string",
             "description": "The IoT Edge identifier."
           },
@@ -3709,6 +3728,7 @@
             "nullable": true
           },
           "type": {
+            "minLength": 1,
             "type": "string",
             "description": "The IoT Edge device type."
           },
@@ -3781,6 +3801,7 @@
         "type": "object",
         "properties": {
           "deviceId": {
+            "minLength": 1,
             "type": "string",
             "description": "The device identifier."
           },
@@ -3835,6 +3856,7 @@
         "type": "object",
         "properties": {
           "moduleName": {
+            "minLength": 1,
             "type": "string",
             "description": "The module name."
           },
@@ -3881,10 +3903,12 @@
         "type": "object",
         "properties": {
           "deviceName": {
+            "minLength": 1,
             "type": "string",
             "description": "The name of the device."
           },
           "modelId": {
+            "minLength": 1,
             "type": "string",
             "description": "The model identifier."
           },
@@ -3918,6 +3942,7 @@
           },
           "deviceID": {
             "maxLength": -1,
+            "minLength": 1,
             "pattern": "^[A-Z0-9]{16}$",
             "type": "string",
             "description": "The device identifier."
@@ -4116,6 +4141,7 @@
             "nullable": true
           },
           "name": {
+            "minLength": 1,
             "type": "string",
             "description": "The device model name."
           },
