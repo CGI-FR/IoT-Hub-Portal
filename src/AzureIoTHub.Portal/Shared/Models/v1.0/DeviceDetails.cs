@@ -56,5 +56,10 @@ namespace AzureIoTHub.Portal.Models.v10
         /// List of custom device tags and their values.
         /// </summary>
         public Dictionary<string, string> Tags { get; set; } = new();
+
+        /// <summary>
+        ///   <c>true</c> if this instance is lorawan; otherwise, <c>false</c>.
+        /// </summary>
+        public virtual bool IsLoraWan { get; private set; }
     }
 }

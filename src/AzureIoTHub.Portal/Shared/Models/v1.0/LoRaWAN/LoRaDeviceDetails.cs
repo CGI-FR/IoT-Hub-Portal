@@ -68,5 +68,7 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// The Device Current RXDelay.
         /// </summary>
         public string ReportedRXDelay { get; set; }
+
+        public override bool IsLoraWan => true;
     }
 }
