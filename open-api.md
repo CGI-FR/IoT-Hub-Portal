@@ -519,7 +519,7 @@ None
 > 200 Response
 
 ```
-{"deviceID":"","deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"}}
+{"deviceID":"","deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"isLoraWan":true}
 ```
 
 ```json
@@ -534,7 +534,8 @@ None
   "tags": {
     "property1": "string",
     "property2": "string"
-  }
+  },
+  "isLoraWan": true
 }
 ```
 
@@ -2077,7 +2078,7 @@ None
 > 200 Response
 
 ```
-{"deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"deviceID":"","classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":1,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"supports32BitFCnt":true,"fCntResetCounter":0,"keepAliveTimeout":null,"appKey":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string"}
+{"deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"deviceID":"","classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":1,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"supports32BitFCnt":true,"fCntResetCounter":0,"keepAliveTimeout":null,"appKey":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string","isLoraWan":true}
 ```
 
 ```json
@@ -2120,7 +2121,8 @@ None
   "nbRep": "string",
   "reportedRX2DataRate": "string",
   "reportedRX1DROffset": "string",
-  "reportedRXDelay": "string"
+  "reportedRXDelay": "string",
+  "isLoraWan": true
 }
 ```
 
@@ -3917,7 +3919,8 @@ IoT Edge configuration list item.
   "tags": {
     "property1": "string",
     "property2": "string"
-  }
+  },
+  "isLoraWan": true
 }
 
 ```
@@ -3937,6 +3940,7 @@ Device details.
 |statusUpdatedTime|string(date-time)|false|none|The status updated time.|
 |tags|object¦null|false|none|List of custom device tags and their values.|
 |» **additionalProperties**|string¦null|false|none|none|
+|isLoraWan|boolean|false|read-only|`true` if this instance is lorawan; otherwise, `false`.|
 
 <h2 id="tocS_DeviceListItem">DeviceListItem</h2>
 <!-- backwards compatibility -->
@@ -4484,7 +4488,8 @@ IoT Edge module.
   "nbRep": "string",
   "reportedRX2DataRate": "string",
   "reportedRX1DROffset": "string",
-  "reportedRXDelay": "string"
+  "reportedRXDelay": "string",
+  "isLoraWan": true
 }
 
 ```
@@ -4532,6 +4537,7 @@ LoRa WAN Device details.
 |reportedRX2DataRate|string¦null|false|none|The Device Current Rx2Datarate.|
 |reportedRX1DROffset|string¦null|false|none|The Device Current RX1DROffset.|
 |reportedRXDelay|string¦null|false|none|The Device Current RXDelay.|
+|isLoraWan|boolean|false|read-only|none|
 
 #### Enumerated Values
 
