@@ -13,15 +13,20 @@ namespace AzureIoTHub.Portal.Server.Services
     using Extensions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Extensions;
+    using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
 
     public class ConfigService : IConfigService
     {
         private readonly RegistryManager registryManager;
+        private readonly ILogger<ConfigService> logger;
 
         public ConfigService(
-            RegistryManager registry)
+            RegistryManager registry,
+            ILogger<ConfigService> logger)
         {
             this.registryManager = registry;
+            this.logger = logger;
         }
 
         public async Task<IEnumerable<Configuration>> GetIoTEdgeConfigurations()
@@ -127,14 +132,10 @@ namespace AzureIoTHub.Portal.Server.Services
             newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
             newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'";
             //newConfiguration.Content.ModuleContent = EdgeModules;
-            //newConfiguration.Priority = 2;
+            newConfiguration.Priority = 10;
             newConfiguration.Content.ModulesContent = new Dictionary<string, IDictionary<string, object>>()
             {
-                {
-                    "modulesContent",
-                    new Dictionary<string, object>()
-                    {
-                        {
+                                        {
                             "$edgeAgent",
                             new Dictionary<string , object>()
                             {
@@ -173,7 +174,8 @@ namespace AzureIoTHub.Portal.Server.Services
                                                             "settings",
                                                             new Dictionary<string, object>()
                                                             {
-                                                                { "image", "mcr.microsoft.com/azureiotedge-agent:1.1" }
+                                                                { "image", "mcr.microsoft.com/azureiotedge-agent:1.1" },
+                                                                { "createOptions", "" }
                                                             }
                                                         },
                                                         { "type", "docker" }
@@ -189,6 +191,7 @@ namespace AzureIoTHub.Portal.Server.Services
                                                             new Dictionary<string, object>()
                                                             {
                                                                 { "image", "mcr.microsoft.com/azureiotedge-hub:1.1" },
+                                                                { "createOptions", "\\{\"HostConfig\":{\"PortBindings\":{\"443/tcp\":[{\"HostPort\":\"443\"}],\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}]}}}" }
                                                             }
                                                         },
                                                         { "type", "docker" },
@@ -210,7 +213,7 @@ namespace AzureIoTHub.Portal.Server.Services
                             "$edgeHub",
                             new Dictionary<string, object>()
                             {
-                                { "routes", "" },
+                                { "routes", new Dictionary<string, object>() },
                                 { "schemaVersion", "1.1" },
                                 {
                                     "storeAndForwardConfiguration",
@@ -221,8 +224,6 @@ namespace AzureIoTHub.Portal.Server.Services
                                 }
                             }
                         }
-                    }
-                }
             };
 
             try
@@ -231,6 +232,8 @@ namespace AzureIoTHub.Portal.Server.Services
             }
             catch (Exception e)
             {
+                this.logger.LogError("Unable to create configuration.");
+                this.logger.LogWarning(JsonConvert.SerializeObject(newConfiguration));
                 throw new InternalServerErrorException("Unable to create configuration.", e);
             }
         }
