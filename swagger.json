@@ -3375,6 +3375,11 @@
             },
             "description": "List of custom device tags and their values.",
             "nullable": true
+          },
+          "isLoraWan": {
+            "type": "boolean",
+            "description": "`true` if this instance is lorawan; otherwise, `false`.",
+            "readOnly": true
           }
         },
         "additionalProperties": false,
@@ -4118,6 +4123,10 @@
             "type": "string",
             "description": "The Device Current RXDelay.",
             "nullable": true
+          },
+          "isLoraWan": {
+            "type": "boolean",
+            "readOnly": true
           }
         },
         "additionalProperties": false,
