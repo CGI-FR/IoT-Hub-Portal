@@ -3,6 +3,10 @@
 
 namespace AzureIoTHub.Portal.Client.Validators
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
     using FluentValidation;
 
@@ -35,5 +39,13 @@ namespace AzureIoTHub.Portal.Client.Validators
                 .WithMessage("DeviceID is required. It should be a case-sensitive string (up to 128 characters long) of ASCII 7-bit alphanumeric characters plus certain special characters: - . + % _ # * ? ! ( ) , : = @ $ '.");
             });
         }
+
+        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+        {
+            var result = await ValidateAsync(ValidationContext<DeviceDetails>.CreateWithOptions((DeviceDetails)model, x => x.IncludeProperties(propertyName)));
+            if (result.IsValid)
+                return Array.Empty<string>();
+            return result.Errors.Select(e => e.ErrorMessage);
+        };
     }
 }
