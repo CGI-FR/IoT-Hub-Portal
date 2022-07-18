@@ -54,9 +54,9 @@
     [Parameter]
     public IoTEdgeModule Module { get; set; }
 
-    private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables;
-    private List<IoTEdgeModuleTwinSetting> currentModuleIdentityTwinSettings;
-    private List<IoTEdgeModuleCommand> currentCommands;
+    private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables = new();
+    private List<IoTEdgeModuleTwinSetting> currentModuleIdentityTwinSettings = new();
+    private List<IoTEdgeModuleCommand> currentCommands = new();
 
 
     public bool IsLoading;
@@ -80,6 +80,4 @@
     }
 
     void Cancel() => MudDialog.Cancel();
-
-
 }
