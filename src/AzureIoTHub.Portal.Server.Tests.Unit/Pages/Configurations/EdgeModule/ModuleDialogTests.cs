@@ -45,17 +45,103 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Configurations.EdgeModule
                 }
             };
 
+            // Act
             await cut.InvokeAsync(() => service?.Show<ModuleDialog>(string.Empty, parameters));
 
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
             cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ModuleName)}").OuterHtml.Should().Contain(moduleName));
             cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.Version)}").OuterHtml.Should().Contain(moduleVersion));
 
+            // Assert
             var tabs = cut.WaitForElements(".mud-tabs .mud-tab");
             Assert.AreEqual(3, tabs.Count);
             Assert.AreEqual("Environment variables", tabs[0].TextContent);
             Assert.AreEqual("Module identity twin settings", tabs[1].TextContent);
             Assert.AreEqual("Commands", tabs[2].TextContent);
+        }
+
+        [Test]
+        public async Task ClickOnSubmitShouldUpdateModuleValues()
+        {
+            //Arrange
+            var moduleName = Guid.NewGuid().ToString();
+            var moduleVersion = Guid.NewGuid().ToString();
+
+            var module = new IoTEdgeModule()
+            {
+                ModuleName = moduleName,
+                Version = moduleVersion,
+                Status = "running",
+                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
+                ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
+                Commands = new List<IoTEdgeModuleCommand>()
+            };
+
+            var cut = RenderComponent<MudDialogProvider>();
+            var service = Services.GetService<IDialogService>() as DialogService;
+
+            var parameters = new DialogParameters
+            {
+                {
+                    "module", module
+                }
+            };
+
+            // Act
+            await cut.InvokeAsync(() => service?.Show<ModuleDialog>(string.Empty, parameters));
+
+            cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
+
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ModuleName)}").Change("newModuleNameValue"));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.Version)}").Change("newModuleVersionValue"));
+
+            var submitButton = cut.WaitForElement("#SubmitButton");
+            submitButton.Click();
+
+            cut.WaitForAssertion(() => module.ModuleName.Should().Be("newModuleNameValue"));
+            cut.WaitForAssertion(() => module.Version.Should().Be("newModuleVersionValue"));
+        }
+
+        [Test]
+        public async Task ClickOnCancelShouldNotChangeModuleValues()
+        {
+            //Arrange
+            var moduleName = Guid.NewGuid().ToString();
+            var moduleVersion = Guid.NewGuid().ToString();
+
+            var module = new IoTEdgeModule()
+            {
+                ModuleName = moduleName,
+                Version = moduleVersion,
+                Status = "running",
+                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
+                ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
+                Commands = new List<IoTEdgeModuleCommand>()
+            };
+
+            var cut = RenderComponent<MudDialogProvider>();
+            var service = Services.GetService<IDialogService>() as DialogService;
+
+            var parameters = new DialogParameters
+            {
+                {
+                    "module", module
+                }
+            };
+
+            // Act
+            await cut.InvokeAsync(() => service?.Show<ModuleDialog>(string.Empty, parameters));
+
+            cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
+
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ModuleName)}").Change("newModuleNameValue"));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.Version)}").Change("newModuleVersionValue"));
+
+            var cancelButton = cut.WaitForElement("#CancelButton");
+            cancelButton.Click();
+
+            cut.WaitForAssertion(() => module.ModuleName.Should().Be(moduleName));
+            cut.WaitForAssertion(() => module.Version.Should().Be(moduleVersion));
         }
     }
 }
