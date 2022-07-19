@@ -8,7 +8,7 @@
     <DialogContent>
         <MudGrid>
             <MudItem xs="12" md="6">
-                <MudTextField @bind-Value="@Module.ModuleName"
+                <MudTextField @bind-Value="@currentModuleName"
                               id=@nameof(IoTEdgeModule.ModuleName)
                               Label="Module Name"
                               Variant="Variant.Outlined"
@@ -16,7 +16,7 @@
                               Required="true" />
             </MudItem>
             <MudItem xs="12" md="6">
-                <MudTextField @bind-Value="@Module.Version"
+                <MudTextField @bind-Value="@currentVersion"
                               id=@nameof(IoTEdgeModule.Version)
                               Label="Image URI"
                               Variant="Variant.Outlined"
@@ -54,6 +54,9 @@
     [Parameter]
     public IoTEdgeModule Module { get; set; }
 
+    private string currentModuleName;
+    private string currentVersion;
+
     private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables = new();
     private List<IoTEdgeModuleTwinSetting> currentModuleIdentityTwinSettings = new();
     private List<IoTEdgeModuleCommand> currentCommands = new();
@@ -64,6 +67,8 @@
     protected override async Task OnInitializedAsync()
     {
         IsLoading = true;
+        currentModuleName = Module.ModuleName;
+        currentVersion = Module.Version;
         currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
         currentModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(Module.ModuleIdentityTwinSettings.ToArray());
         currentCommands = new List<IoTEdgeModuleCommand>(Module.Commands.ToArray());
@@ -73,6 +78,8 @@
 
     public void Submit()
     {
+        Module.ModuleName = currentModuleName;
+        Module.Version = currentVersion;
         Module.EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(currentEnvironmentVariables.ToArray());
         Module.ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(currentModuleIdentityTwinSettings.ToArray());
         Module.Commands = new List<IoTEdgeModuleCommand>(currentCommands.ToArray());
