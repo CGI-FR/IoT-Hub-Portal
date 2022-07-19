@@ -30,7 +30,7 @@
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
                     <MudTooltip Text="Delete">
-                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteRow(Context))"></MudIconButton>
+                        <MudIconButton id="removeButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteRow(Context))"></MudIconButton>
                     </MudTooltip>
                 </MudTd>
             </RowTemplate>
