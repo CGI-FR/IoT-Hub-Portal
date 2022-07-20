@@ -8,7 +8,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels.LoRaWAN
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Bunit;
     using FluentAssertions;
-    using MudBlazor;
     using NUnit.Framework;
 
     public class EditLoraDeviceModelPageTests : BlazorUnitTest
@@ -24,12 +23,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels.LoRaWAN
             // Arrange
             var model = new LoRaDeviceModel();
             var commands = new List<DeviceModelCommand>();
-            var commandValidation = new List<MudForm>()
-            {
-                new MudForm(),
-                new MudForm(),
-                new MudForm()
-            };
 
             var cut = RenderComponent<EditLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
@@ -45,12 +38,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels.LoRaWAN
             // Arrange
             var model = new LoRaDeviceModel();
             var commands = new List<DeviceModelCommand>();
-            var commandValidation = new List<MudForm>()
-            {
-                new MudForm(),
-                new MudForm(),
-                new MudForm()
-            };
 
             var cut = RenderComponent<EditLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
@@ -69,12 +56,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels.LoRaWAN
             // Arrange
             var model = new LoRaDeviceModel();
             var commands = new List<DeviceModelCommand>();
-            var commandValidation = new List<MudForm>()
-            {
-                new MudForm(),
-                new MudForm(),
-                new MudForm()
-            };
 
             var cut = RenderComponent<EditLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
