@@ -52,7 +52,7 @@
     <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.17.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="6.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
