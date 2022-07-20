@@ -154,10 +154,10 @@
                                 </HeaderContent>
                                 <RowTemplate Context="CommandContext">
                                     <MudTd DataLabel="Name" Style="word-break: break-all;">
-                                        <MudTextField @bind-Value="@CommandContext.Name" Label="Name" For="@(() => CommandContext.Name)" Variant="Variant.Outlined" Required="true" Disabled="CommandContext.IsBuiltin"></MudTextField>
+                                        <MudTextField id="@nameof(DeviceModelCommand.Name)" @bind-Value="@CommandContext.Name" Label="Name" For="@(() => CommandContext.Name)" Variant="Variant.Outlined" Required="true" Disabled="CommandContext.IsBuiltin"></MudTextField>
                                     </MudTd>
                                     <MudTd DataLabel="Frame" Style="word-break: break-all; ">
-                                        <MudTextField @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Variant="Variant.Outlined" Required="true" Disabled="CommandContext.IsBuiltin" Mask="@maskCommandFrame"></MudTextField>
+                                        <MudTextField id="@nameof(DeviceModelCommand.Frame)" @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Variant="Variant.Outlined" Required="true" Disabled="CommandContext.IsBuiltin" Mask="@maskCommandFrame"></MudTextField>
                                     </MudTd>
                                     <MudTd DataLabel="Confirmed" Style="text-align: center; ">
                                         <MudCheckBox @bind-Checked="@CommandContext.Confirmed" For="@(() => CommandContext.Confirmed)" Color="Color.Primary" Disabled="CommandContext.IsBuiltin"></MudCheckBox>
@@ -166,11 +166,11 @@
                                         <MudNumericField @bind-Value="@CommandContext.Port" Label="Port" For="@(() => CommandContext.Port)" Variant="Variant.Outlined" Disabled="CommandContext.IsBuiltin"></MudNumericField>
                                     </MudTd>
                                     <MudTd DataLabel="Delete" Style="text-align: center">
-                                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" Disabled="@CommandContext.IsBuiltin" OnClick="@(() => DeleteCommand(CommandContext))"></MudIconButton>
+                                        <MudIconButton id="removeButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" Disabled="@CommandContext.IsBuiltin" OnClick="@(() => DeleteCommand(CommandContext))"></MudIconButton>
                                     </MudTd>
                                 </RowTemplate>
                                 <FooterContent>
-                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddCommand">Add Command</MudButton>
+                                    <MudButton id="addButton" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddCommand">Add Command</MudButton>
                                 </FooterContent>
                             </MudTable>
                         </MudItem>
