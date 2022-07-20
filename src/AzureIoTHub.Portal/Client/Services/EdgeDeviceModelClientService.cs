@@ -44,6 +44,10 @@ namespace AzureIoTHub.Portal.Client.Services
             return await this.http.DeleteAsync($"{this.apiUrlBase}/{modelId}");
         }
 
+        public async Task<string> GetAvatarUrl(string modelId)
+        {
+            return await this.http.GetStringAsync($"{this.apiUrlBase}/{modelId}/avatar");
+        }
 
         public async Task<HttpResponseMessage> ChangeAvatar(string id, MultipartFormDataContent content)
         {

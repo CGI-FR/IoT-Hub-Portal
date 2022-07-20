@@ -135,7 +135,7 @@ namespace AzureIoTHub.Portal.Server.Services
             newConfiguration.Priority = 10;
             newConfiguration.Content.ModulesContent = new Dictionary<string, IDictionary<string, object>>()
             {
-                                        {
+                        {
                             "$edgeAgent",
                             new Dictionary<string , object>()
                             {
@@ -143,6 +143,10 @@ namespace AzureIoTHub.Portal.Server.Services
                                     "properties.desired",
                                     new Dictionary<string , object>()
                                     {
+                                        {
+                                            "modules",
+                                            new Dictionary<string, object>()
+                                        },
                                         // Runtime
                                         {
                                             "runtime",
@@ -200,10 +204,6 @@ namespace AzureIoTHub.Portal.Server.Services
                                                     }
                                                 }
                                             }
-                                        },
-                                        {
-                                            "modules",
-                                            new Dictionary<string, object>()
                                         }
                                     }
                                 }
@@ -213,15 +213,21 @@ namespace AzureIoTHub.Portal.Server.Services
                             "$edgeHub",
                             new Dictionary<string, object>()
                             {
-                                { "routes", new Dictionary<string, object>() },
-                                { "schemaVersion", "1.1" },
                                 {
-                                    "storeAndForwardConfiguration",
-                                    new Dictionary<string, object>()
+                                    "properties.desired", new Dictionary<string, object>()
                                     {
-                                        { "timeToLiveSecs", 7200 }
+                                        { "routes", new Dictionary<string, object>() },
+                                        { "schemaVersion", "1.1" },
+                                        {
+                                            "storeAndForwardConfiguration",
+                                            new Dictionary<string, object>()
+                                            {
+                                                { "timeToLiveSecs", 7200 }
+                                            }
+                                        }
                                     }
                                 }
+
                             }
                         }
             };
@@ -232,8 +238,8 @@ namespace AzureIoTHub.Portal.Server.Services
             }
             catch (Exception e)
             {
-                this.logger.LogError("Unable to create configuration.");
-                this.logger.LogWarning(JsonConvert.SerializeObject(newConfiguration));
+                this.logger.LogWarning("Unable to create Configuration.");
+                this.logger.LogError(JsonConvert.SerializeObject(newConfiguration));
                 throw new InternalServerErrorException("Unable to create configuration.", e);
             }
         }

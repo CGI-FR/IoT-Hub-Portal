@@ -6,6 +6,7 @@
 
 @attribute [Authorize]
 @inject IEdgeDeviceModelClientService EdgeModelService
+@inject IDialogService dialogService
 @inject NavigationManager NavigationManager
 
 <MudGrid>
@@ -52,7 +53,7 @@
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
                     <MudTooltip Text="Delete device model">
-                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" id="deleteButton"></MudIconButton>
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" OnClick="@(async () => await DeleteDeviceModel(context))" Size="Size.Medium" id="deleteButton"></MudIconButton>
                     </MudTooltip>
                 </MudTd>
             </RowTemplate>
@@ -80,7 +81,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-         await LoadEdgeModels();
+        await LoadEdgeModels();
     }
 
     private async Task LoadEdgeModels()
@@ -111,13 +112,21 @@
 
     private async Task DeleteDeviceModel(IoTEdgeModelListItem ioTEdgeModel)
     {
-        var result = await this.EdgeModelService.DeleteIoTEdgeModel(ioTEdgeModel.ModelId);
+        var parameters = new DialogParameters();
+        parameters.Add("deviceModelID", ioTEdgeModel.ModelId);
+        parameters.Add("deviceModelName", ioTEdgeModel.Name);
+        var result = await dialogService.Show<DeleteEdgeDeviceModelDialog>("Confirm Deletion", parameters).Result;
 
-        result.EnsureSuccessStatusCode();
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+        await this.LoadEdgeModels();
     }
 
     private void GoToDetails(IoTEdgeModelListItem item)
     {
-        NavigationManager.NavigateTo($"/edge/configurations/{item.ModelId}");
+        NavigationManager.NavigateTo($"/edge-device-model/{item.ModelId}");
     }
 }
