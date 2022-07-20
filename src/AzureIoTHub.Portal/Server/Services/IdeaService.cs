@@ -32,7 +32,13 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new InternalServerErrorException("Ideas feature is not enabled. Please check Iot Hub Portal documentation");
             }
 
-            var ideaAsJson = JsonConvert.SerializeObject(ideaRequest);
+            var submitIdea = new SubmitIdeaRequest
+            {
+                Title = ideaRequest.Title,
+                Description = ideaRequest.Body
+            };
+
+            var ideaAsJson = JsonConvert.SerializeObject(submitIdea);
 
             this.logger.LogInformation($"Begin submitting a user idea: {ideaAsJson}");
 
