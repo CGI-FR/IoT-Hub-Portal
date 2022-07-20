@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
 {
-    using System;
     using System.Collections.Generic;
     using AzureIoTHub.Portal.Client.Pages.DeviceModels.LoRaWAN;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
@@ -47,7 +46,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
                 ComponentParameter.CreateParameter("CommandValidation", commandValidation)
             );
 
-            var panels = cut.WaitForElements(".mud-expand-panel");
             cut.WaitForAssertion(() => cut.FindAll(".mud-expand-panel").Count.Should().Be(3));
         }
 
@@ -103,6 +101,5 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             removeButton.Click();
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(0));
         }
-
     }
 }
