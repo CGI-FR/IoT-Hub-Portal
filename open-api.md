@@ -79,7 +79,7 @@ None
 > 200 Response
 
 ```
-[{"configurationID":"string","conditions":"string","metricsTargeted":0,"metricsApplied":0,"metricsSuccess":0,"metricsFailure":0,"priority":0,"creationDate":"2019-08-24T14:15:22Z","modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":{"property1":"string","property2":"string"},"moduleIdentityTwinSettings":{"property1":"string","property2":"string"}}]}]
+[{"configurationID":"string","conditions":"string","metricsTargeted":0,"metricsApplied":0,"metricsSuccess":0,"metricsFailure":0,"priority":0,"creationDate":"2019-08-24T14:15:22Z","modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":[{"name":"string","value":"string"}],"moduleIdentityTwinSettings":[{"name":"string","value":"string"}],"commands":[{"name":"string"}]}]}]
 ```
 
 ```json
@@ -98,14 +98,23 @@ None
         "moduleName": "string",
         "version": "string",
         "status": "string",
-        "environmentVariables": {
-          "property1": "string",
-          "property2": "string"
-        },
-        "moduleIdentityTwinSettings": {
-          "property1": "string",
-          "property2": "string"
-        }
+        "environmentVariables": [
+          {
+            "name": "string",
+            "value": "string"
+          }
+        ],
+        "moduleIdentityTwinSettings": [
+          {
+            "name": "string",
+            "value": "string"
+          }
+        ],
+        "commands": [
+          {
+            "name": "string"
+          }
+        ]
       }
     ]
   }
@@ -137,10 +146,14 @@ Status Code **200**
 |»» moduleName|string|true|none|The module name.|
 |»» version|string¦null|false|none|The module configuration version.|
 |»» status|string¦null|false|none|The module status.|
-|»» environmentVariables|object¦null|false|read-only|The module environment variables.|
-|»»» **additionalProperties**|string¦null|false|none|none|
-|»» moduleIdentityTwinSettings|object¦null|false|read-only|The module identity twin settings.|
-|»»» **additionalProperties**|string¦null|false|none|none|
+|»» environmentVariables|[[IoTEdgeModuleEnvironmentVariable](#schemaiotedgemoduleenvironmentvariable)]¦null|false|none|The module environment variables.|
+|»»» name|string¦null|false|none|The module environment variable name|
+|»»» value|string¦null|false|none|The module environment variable value|
+|»» moduleIdentityTwinSettings|[[IoTEdgeModuleTwinSetting](#schemaiotedgemoduletwinsetting)]¦null|false|none|The module identity twin settings.|
+|»»» name|string¦null|false|none|The module identity twin setting name|
+|»»» value|string¦null|false|none|The module identity twin setting value|
+|»» commands|[[IoTEdgeModuleCommand](#schemaiotedgemodulecommand)]¦null|false|none|The module commands.|
+|»»» name|string¦null|false|none|The command name|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -800,7 +813,7 @@ None
 > 200 Response
 
 ```
-[{"configurationID":"string","conditions":"string","metricsTargeted":0,"metricsApplied":0,"metricsSuccess":0,"metricsFailure":0,"priority":0,"creationDate":"2019-08-24T14:15:22Z","modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":{"property1":"string","property2":"string"},"moduleIdentityTwinSettings":{"property1":"string","property2":"string"}}]}]
+[{"configurationID":"string","conditions":"string","metricsTargeted":0,"metricsApplied":0,"metricsSuccess":0,"metricsFailure":0,"priority":0,"creationDate":"2019-08-24T14:15:22Z","modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":[{"name":"string","value":"string"}],"moduleIdentityTwinSettings":[{"name":"string","value":"string"}],"commands":[{"name":"string"}]}]}]
 ```
 
 ```json
@@ -819,14 +832,23 @@ None
         "moduleName": "string",
         "version": "string",
         "status": "string",
-        "environmentVariables": {
-          "property1": "string",
-          "property2": "string"
-        },
-        "moduleIdentityTwinSettings": {
-          "property1": "string",
-          "property2": "string"
-        }
+        "environmentVariables": [
+          {
+            "name": "string",
+            "value": "string"
+          }
+        ],
+        "moduleIdentityTwinSettings": [
+          {
+            "name": "string",
+            "value": "string"
+          }
+        ],
+        "commands": [
+          {
+            "name": "string"
+          }
+        ]
       }
     ]
   }
@@ -858,10 +880,14 @@ Status Code **200**
 |»» moduleName|string|true|none|The module name.|
 |»» version|string¦null|false|none|The module configuration version.|
 |»» status|string¦null|false|none|The module status.|
-|»» environmentVariables|object¦null|false|read-only|The module environment variables.|
-|»»» **additionalProperties**|string¦null|false|none|none|
-|»» moduleIdentityTwinSettings|object¦null|false|read-only|The module identity twin settings.|
-|»»» **additionalProperties**|string¦null|false|none|none|
+|»» environmentVariables|[[IoTEdgeModuleEnvironmentVariable](#schemaiotedgemoduleenvironmentvariable)]¦null|false|none|The module environment variables.|
+|»»» name|string¦null|false|none|The module environment variable name|
+|»»» value|string¦null|false|none|The module environment variable value|
+|»» moduleIdentityTwinSettings|[[IoTEdgeModuleTwinSetting](#schemaiotedgemoduletwinsetting)]¦null|false|none|The module identity twin settings.|
+|»»» name|string¦null|false|none|The module identity twin setting name|
+|»»» value|string¦null|false|none|The module identity twin setting value|
+|»» commands|[[IoTEdgeModuleCommand](#schemaiotedgemodulecommand)]¦null|false|none|The module commands.|
+|»»» name|string¦null|false|none|The command name|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -889,7 +915,7 @@ None
 > 200 Response
 
 ```
-{"configurationID":"string","conditions":"string","metricsTargeted":0,"metricsApplied":0,"metricsSuccess":0,"metricsFailure":0,"priority":0,"creationDate":"2019-08-24T14:15:22Z","modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":{"property1":"string","property2":"string"},"moduleIdentityTwinSettings":{"property1":"string","property2":"string"}}]}
+{"configurationID":"string","conditions":"string","metricsTargeted":0,"metricsApplied":0,"metricsSuccess":0,"metricsFailure":0,"priority":0,"creationDate":"2019-08-24T14:15:22Z","modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":[{"name":"string","value":"string"}],"moduleIdentityTwinSettings":[{"name":"string","value":"string"}],"commands":[{"name":"string"}]}]}
 ```
 
 ```json
@@ -907,14 +933,23 @@ None
       "moduleName": "string",
       "version": "string",
       "status": "string",
-      "environmentVariables": {
-        "property1": "string",
-        "property2": "string"
-      },
-      "moduleIdentityTwinSettings": {
-        "property1": "string",
-        "property2": "string"
-      }
+      "environmentVariables": [
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ],
+      "moduleIdentityTwinSettings": [
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ],
+      "commands": [
+        {
+          "name": "string"
+        }
+      ]
     }
   ]
 }
@@ -1017,7 +1052,24 @@ None
     {
       "moduleName": "string",
       "version": "string",
-      "status": "string"
+      "status": "string",
+      "environmentVariables": [
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ],
+      "moduleIdentityTwinSettings": [
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ],
+      "commands": [
+        {
+          "name": "string"
+        }
+      ]
     }
   ]
 }
@@ -1082,7 +1134,7 @@ None
 > 200 Response
 
 ```
-{"deviceId":"string","connectionState":"string","scope":"string","type":"string","status":"string","runtimeResponse":"string","nbDevices":0,"nbModules":0,"environment":"string","lastDeployment":{"name":"string","dateCreation":"2019-08-24T14:15:22Z","status":"string"},"modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":{"property1":"string","property2":"string"},"moduleIdentityTwinSettings":{"property1":"string","property2":"string"}}]}
+{"deviceId":"string","connectionState":"string","scope":"string","type":"string","status":"string","runtimeResponse":"string","nbDevices":0,"nbModules":0,"environment":"string","lastDeployment":{"name":"string","dateCreation":"2019-08-24T14:15:22Z","status":"string"},"modules":[{"moduleName":"string","version":"string","status":"string","environmentVariables":[{"name":"string","value":"string"}],"moduleIdentityTwinSettings":[{"name":"string","value":"string"}],"commands":[{"name":"string"}]}]}
 ```
 
 ```json
@@ -1106,14 +1158,23 @@ None
       "moduleName": "string",
       "version": "string",
       "status": "string",
-      "environmentVariables": {
-        "property1": "string",
-        "property2": "string"
-      },
-      "moduleIdentityTwinSettings": {
-        "property1": "string",
-        "property2": "string"
-      }
+      "environmentVariables": [
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ],
+      "moduleIdentityTwinSettings": [
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ],
+      "commands": [
+        {
+          "name": "string"
+        }
+      ]
     }
   ]
 }
@@ -1162,7 +1223,24 @@ None
     {
       "moduleName": "string",
       "version": "string",
-      "status": "string"
+      "status": "string",
+      "environmentVariables": [
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ],
+      "moduleIdentityTwinSettings": [
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ],
+      "commands": [
+        {
+          "name": "string"
+        }
+      ]
     }
   ]
 }
@@ -1229,7 +1307,24 @@ None
 {
   "moduleName": "string",
   "version": "string",
-  "status": "string"
+  "status": "string",
+  "environmentVariables": [
+    {
+      "name": "string",
+      "value": "string"
+    }
+  ],
+  "moduleIdentityTwinSettings": [
+    {
+      "name": "string",
+      "value": "string"
+    }
+  ],
+  "commands": [
+    {
+      "name": "string"
+    }
+  ]
 }
 ```
 
@@ -1328,7 +1423,24 @@ None
 {
   "moduleName": "string",
   "version": "string",
-  "status": "string"
+  "status": "string",
+  "environmentVariables": [
+    {
+      "name": "string",
+      "value": "string"
+    }
+  ],
+  "moduleIdentityTwinSettings": [
+    {
+      "name": "string",
+      "value": "string"
+    }
+  ],
+  "commands": [
+    {
+      "name": "string"
+    }
+  ]
 }
 ```
 
@@ -3806,14 +3918,23 @@ IoT Edge configuration
       "moduleName": "string",
       "version": "string",
       "status": "string",
-      "environmentVariables": {
-        "property1": "string",
-        "property2": "string"
-      },
-      "moduleIdentityTwinSettings": {
-        "property1": "string",
-        "property2": "string"
-      }
+      "environmentVariables": [
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ],
+      "moduleIdentityTwinSettings": [
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ],
+      "commands": [
+        {
+          "name": "string"
+        }
+      ]
     }
   ]
 }
@@ -4284,14 +4405,23 @@ Enrollment credentials.
       "moduleName": "string",
       "version": "string",
       "status": "string",
-      "environmentVariables": {
-        "property1": "string",
-        "property2": "string"
-      },
-      "moduleIdentityTwinSettings": {
-        "property1": "string",
-        "property2": "string"
-      }
+      "environmentVariables": [
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ],
+      "moduleIdentityTwinSettings": [
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ],
+      "commands": [
+        {
+          "name": "string"
+        }
+      ]
     }
   ]
 }
@@ -4415,14 +4545,23 @@ Class representing the page results.
   "moduleName": "string",
   "version": "string",
   "status": "string",
-  "environmentVariables": {
-    "property1": "string",
-    "property2": "string"
-  },
-  "moduleIdentityTwinSettings": {
-    "property1": "string",
-    "property2": "string"
-  }
+  "environmentVariables": [
+    {
+      "name": "string",
+      "value": "string"
+    }
+  ],
+  "moduleIdentityTwinSettings": [
+    {
+      "name": "string",
+      "value": "string"
+    }
+  ],
+  "commands": [
+    {
+      "name": "string"
+    }
+  ]
 }
 
 ```
@@ -4436,10 +4575,73 @@ IoT Edge module.
 |moduleName|string|true|none|The module name.|
 |version|string¦null|false|none|The module configuration version.|
 |status|string¦null|false|none|The module status.|
-|environmentVariables|object¦null|false|read-only|The module environment variables.|
-|» **additionalProperties**|string¦null|false|none|none|
-|moduleIdentityTwinSettings|object¦null|false|read-only|The module identity twin settings.|
-|» **additionalProperties**|string¦null|false|none|none|
+|environmentVariables|[[IoTEdgeModuleEnvironmentVariable](#schemaiotedgemoduleenvironmentvariable)]¦null|false|none|The module environment variables.|
+|moduleIdentityTwinSettings|[[IoTEdgeModuleTwinSetting](#schemaiotedgemoduletwinsetting)]¦null|false|none|The module identity twin settings.|
+|commands|[[IoTEdgeModuleCommand](#schemaiotedgemodulecommand)]¦null|false|none|The module commands.|
+
+<h2 id="tocS_IoTEdgeModuleCommand">IoTEdgeModuleCommand</h2>
+<!-- backwards compatibility -->
+<a id="schemaiotedgemodulecommand"></a>
+<a id="schema_IoTEdgeModuleCommand"></a>
+<a id="tocSiotedgemodulecommand"></a>
+<a id="tocsiotedgemodulecommand"></a>
+
+```json
+{
+  "name": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string¦null|false|none|The command name|
+
+<h2 id="tocS_IoTEdgeModuleEnvironmentVariable">IoTEdgeModuleEnvironmentVariable</h2>
+<!-- backwards compatibility -->
+<a id="schemaiotedgemoduleenvironmentvariable"></a>
+<a id="schema_IoTEdgeModuleEnvironmentVariable"></a>
+<a id="tocSiotedgemoduleenvironmentvariable"></a>
+<a id="tocsiotedgemoduleenvironmentvariable"></a>
+
+```json
+{
+  "name": "string",
+  "value": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string¦null|false|none|The module environment variable name|
+|value|string¦null|false|none|The module environment variable value|
+
+<h2 id="tocS_IoTEdgeModuleTwinSetting">IoTEdgeModuleTwinSetting</h2>
+<!-- backwards compatibility -->
+<a id="schemaiotedgemoduletwinsetting"></a>
+<a id="schema_IoTEdgeModuleTwinSetting"></a>
+<a id="tocSiotedgemoduletwinsetting"></a>
+<a id="tocsiotedgemoduletwinsetting"></a>
+
+```json
+{
+  "name": "string",
+  "value": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string¦null|false|none|The module identity twin setting name|
+|value|string¦null|false|none|The module identity twin setting value|
 
 <h2 id="tocS_LoRaDeviceDetails">LoRaDeviceDetails</h2>
 <!-- backwards compatibility -->

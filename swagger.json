@@ -3876,28 +3876,75 @@
             "nullable": true
           },
           "environmentVariables": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string",
-              "nullable": true
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeModuleEnvironmentVariable"
             },
             "description": "The module environment variables.",
-            "nullable": true,
-            "readOnly": true
+            "nullable": true
           },
           "moduleIdentityTwinSettings": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string",
-              "nullable": true
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeModuleTwinSetting"
             },
             "description": "The module identity twin settings.",
-            "nullable": true,
-            "readOnly": true
+            "nullable": true
+          },
+          "commands": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeModuleCommand"
+            },
+            "description": "The module commands.",
+            "nullable": true
           }
         },
         "additionalProperties": false,
         "description": "IoT Edge module."
+      },
+      "IoTEdgeModuleCommand": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The command name",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IoTEdgeModuleEnvironmentVariable": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The module environment variable name",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "description": "The module environment variable value",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IoTEdgeModuleTwinSetting": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The module identity twin setting name",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "description": "The module identity twin setting value",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "LoRaDeviceDetails": {
         "required": [
