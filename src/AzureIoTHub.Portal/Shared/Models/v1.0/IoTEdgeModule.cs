@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Models.v10
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     /// <summary>
     /// IoT Edge module.
@@ -30,11 +31,16 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The module environment variables.
         /// </summary>
-        public Dictionary<string, string> EnvironmentVariables { get; } = new Dictionary<string, string>();
+        public List<IoTEdgeModuleEnvironmentVariable> EnvironmentVariables { get; set; } = new List<IoTEdgeModuleEnvironmentVariable>();
 
         /// <summary>
         /// The module identity twin settings.
         /// </summary>
-        public Dictionary<string, string> ModuleIdentityTwinSettings { get; } = new Dictionary<string, string>();
+        public List<IoTEdgeModuleTwinSetting> ModuleIdentityTwinSettings { get; set; } = new List<IoTEdgeModuleTwinSetting>();
+
+        /// <summary>
+        /// The module commands.
+        /// </summary>
+        public List<IoTEdgeModuleCommand> Commands { get; set; } = new List<IoTEdgeModuleCommand>();
     }
 }
