@@ -3503,7 +3503,9 @@
             "description": "The command name."
           },
           "frame": {
+            "maxLength": 255,
             "minLength": 1,
+            "pattern": "^[0-9a-fA-F]{0,255}$",
             "type": "string",
             "description": "The command frame in hexa."
           },
