@@ -21,7 +21,7 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// </summary>
         [Required(ErrorMessage = "The frame is required.")]
         [MaxLength(255, ErrorMessage = "The frame should be up to 255 characters long.")]
-        [RegularExpression("^[0-9a-fA-F]{0, 255}$", ErrorMessage = "The frame should only contain hexadecimal characters")]
+        [RegularExpression("^[0-9a-fA-F]{0,255}$", ErrorMessage = "The frame should only contain hexadecimal characters")]
         public string Frame { get; set; }
 
         /// <summary>
