@@ -201,12 +201,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             var deviceModel = Fixture.Create<DeviceModel>();
             var content = new MultipartFormDataContent();
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{deviceModel.ModelId}/properties")
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/models/{deviceModel.ModelId}/avatar")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<MultipartFormDataContent>>();
-                    var body = m.Content as ObjectContent<MultipartFormDataContent>;
-                    _ = body.Value.Should().BeEquivalentTo(content);
+                    _ = m.Content.Should().BeEquivalentTo(content);
                     return true;
                 })
                 .Respond(HttpStatusCode.Created);

@@ -48,9 +48,11 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.GetStringAsync($"api/lorawan/models/{deviceModelId}/avatar");
         }
 
-        public Task ChangeAvatar(string deviceModelId, MultipartFormDataContent avatar)
+        public async Task ChangeAvatar(string deviceModelId, MultipartFormDataContent avatar)
         {
-            return this.http.PostAsJsonAsync($"api/lorawan/models/{deviceModelId}/avatar", avatar);
+            var result = await this.http.PostAsync($"api/lorawan/models/{deviceModelId}/avatar", avatar);
+
+            _ = result.EnsureSuccessStatusCode();
         }
     }
 }
