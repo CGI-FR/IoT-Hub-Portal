@@ -13,12 +13,12 @@
                                     <MudSwitch @bind-Checked="@LoRaDeviceModel.UseOTAA" Disabled="true" Label="Support OTAA/ABP setting"></MudSwitch>
                                     <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">@(LoRaDeviceModel.UseOTAA ? "OTAA setting" : "ABP setting") <b>is</b> used</MudText>
                                 </MudItem>
-                                @if (!LoRaDeviceModel.UseOTAA)
-                                {
                                     <MudItem md="6" xs="12">
+                                        @if (!LoRaDeviceModel.UseOTAA)
+                                        {
                                         <MudCheckBox id="@nameof(LoRaDeviceModel.ABPRelaxMode)" @bind-Checked="@LoRaDeviceModel.ABPRelaxMode" For="@(() => LoRaDeviceModel.ABPRelaxMode)" Label="Disable ABP relax mode" Color="Color.Primary"></MudCheckBox>
+                                        }
                                     </MudItem>
-                                }
                                 <MudItem md="3" xs="6">
                                     <MudSelect id="@nameof(LoRaDeviceModel.ClassType)"
                                                @bind-Value="@LoRaDeviceModel.ClassType"
@@ -44,12 +44,6 @@
                         </MudItem>
                         <MudItem md="6" xs=12>
                             <MudGrid>
-                                @if (LoRaDeviceModel.UseOTAA)
-                                {
-                                    <MudItem xs="12">
-                                        <MudTextField @bind-Value="@LoRaDeviceModel.AppEUI" Label="OTAA AppEUI" For="@(() => LoRaDeviceModel.AppEUI)" Variant="Variant.Outlined" Required="true"></MudTextField>
-                                    </MudItem>
-                                }
                                 <MudItem xs="12">
                                     <MudTextField @bind-Value="@LoRaDeviceModel.SensorDecoder" Label="Sensor Decoder URL" For="@(() => LoRaDeviceModel.SensorDecoder)" Variant="Variant.Outlined"></MudTextField>
                                 </MudItem>

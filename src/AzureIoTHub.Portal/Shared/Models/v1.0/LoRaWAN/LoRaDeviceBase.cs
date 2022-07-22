@@ -36,12 +36,6 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         public bool UseOTAA { get; set; }
 
         /// <summary>
-        /// The device OTAA Application eui.
-        /// </summary>
-        // [Required(ErrorMessage = "The OTAA App EUI is required.")]
-        public string AppEUI { get; set; }
-
-        /// <summary>
         /// The sensor decoder API Url.
         /// </summary>
         public string SensorDecoder { get; set; }

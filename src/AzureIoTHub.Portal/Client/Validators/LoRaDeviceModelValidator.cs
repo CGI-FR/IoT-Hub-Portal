@@ -8,13 +8,5 @@ namespace AzureIoTHub.Portal.Client.Validators
 
     public class LoRaDeviceModelValidator : AbstractValidator<LoRaDeviceModel>
     {
-        public LoRaDeviceModelValidator()
-        {
-            _ = RuleFor(x => x.AppEUI)
-                .NotEmpty()
-                //.Length(1, 100)
-                .When(x => x.UseOTAA)
-                .WithMessage("AppEUI is required.");
-        }
     }
 }

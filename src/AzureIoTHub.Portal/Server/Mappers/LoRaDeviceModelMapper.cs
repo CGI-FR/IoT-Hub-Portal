@@ -47,7 +47,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey),
                 Name = entity[nameof(LoRaDeviceModel.Name)]?.ToString(),
                 Description = entity[nameof(LoRaDeviceModel.Description)]?.ToString(),
-                AppEUI = entity[nameof(LoRaDeviceModel.AppEUI)]?.ToString(),
                 SensorDecoder = entity[nameof(LoRaDeviceModel.SensorDecoder)]?.ToString(),
                 SupportLoRaFeatures = true,
                 UseOTAA = bool.Parse(entity[nameof(LoRaDeviceModel.UseOTAA)]?.ToString() ?? "true"),
@@ -78,11 +77,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
             entity[nameof(LoRaDeviceModel.UseOTAA)] = model.UseOTAA;
 
             var desiredProperties = new Dictionary<string, object>();
-
-            if (model.UseOTAA)
-            {
-                AddOptionnalProperties(entity, nameof(LoRaDeviceModel.AppEUI), model.AppEUI, desiredProperties);
-            }
 
             AddOptionnalProperties(entity, nameof(LoRaDeviceModel.SensorDecoder), model.SensorDecoder, desiredProperties);
             AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Supports32BitFCnt), model.Supports32BitFCnt, desiredProperties);

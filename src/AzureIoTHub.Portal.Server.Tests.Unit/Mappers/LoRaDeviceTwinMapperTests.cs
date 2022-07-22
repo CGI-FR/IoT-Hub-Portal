@@ -226,6 +226,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
                 Assert.AreEqual(item.Tags[tagName], DeviceHelper.RetrieveTagValue(twin, tagName));
             }
 
+            Assert.AreEqual(item.AppEUI, twin.Properties.Desired[nameof(LoRaDeviceDetails.AppEUI)].ToString());
             Assert.AreEqual(item.AppKey, twin.Properties.Desired[nameof(LoRaDeviceDetails.AppKey)].ToString());
 
             this.mockRepository.VerifyAll();

@@ -86,7 +86,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)] = supportLora;
             entity[nameof(LoRaDeviceModel.Name)] = "FAKE DEVICE";
             entity[nameof(LoRaDeviceModel.Description)] = "FAKE DESCRIPTION";
-            entity[nameof(LoRaDeviceModel.AppEUI)] = "FAKE APP EUI";
             entity[nameof(LoRaDeviceModel.SensorDecoder)] = "FAKE SENSORDECODERURL";
 
             // Act
@@ -98,7 +97,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             Assert.AreEqual(entity.RowKey, result.ModelId);
             Assert.AreEqual(entity[nameof(LoRaDeviceModel.Name)], result.Name);
             Assert.AreEqual(entity[nameof(LoRaDeviceModel.Description)], result.Description);
-            Assert.AreEqual(entity[nameof(LoRaDeviceModel.AppEUI)], result.AppEUI);
             Assert.AreEqual(entity[nameof(LoRaDeviceModel.SensorDecoder)], result.SensorDecoder);
             Assert.AreEqual(entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)], supportLora);
             Assert.AreEqual(entity[nameof(LoRaDeviceModel.IsBuiltin)], isBuiltin);
@@ -118,7 +116,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             {
                 ModelId = entity.RowKey,
                 Name = Guid.NewGuid().ToString(),
-                AppEUI = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
                 ImageUrl = new Uri("http://fake.local"),
                 SensorDecoder = Guid.NewGuid().ToString(),
@@ -138,7 +135,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Mappers
             Assert.AreEqual(model.Description, entity[nameof(LoRaDeviceModel.Description)]);
             Assert.AreEqual(supportLora, entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)]);
             Assert.AreEqual(isBuiltin, entity[nameof(LoRaDeviceModel.IsBuiltin)]);
-            Assert.AreEqual(model.AppEUI, entity[nameof(LoRaDeviceModel.AppEUI)]);
             Assert.AreEqual(model.SensorDecoder, entity[nameof(LoRaDeviceModel.SensorDecoder)]);
             this.mockRepository.VerifyAll();
         }
