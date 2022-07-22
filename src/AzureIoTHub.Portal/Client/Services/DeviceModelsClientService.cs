@@ -58,9 +58,11 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.GetStringAsync($"api/models/{deviceModelId}/avatar");
         }
 
-        public Task ChangeAvatar(string deviceModelId, MultipartFormDataContent avatar)
+        public async Task ChangeAvatar(string deviceModelId, MultipartFormDataContent avatar)
         {
-            return this.http.PostAsJsonAsync($"api/models/{deviceModelId}/avatar", avatar);
+            var result = await this.http.PostAsync($"api/models/{deviceModelId}/avatar", avatar);
+
+            _ = result.EnsureSuccessStatusCode();
         }
     }
 }
