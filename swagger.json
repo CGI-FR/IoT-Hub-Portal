@@ -4015,11 +4015,6 @@
             "description": "A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP",
             "default": true
           },
-          "appEUI": {
-            "type": "string",
-            "description": "The device OTAA Application eui.",
-            "nullable": true
-          },
           "sensorDecoder": {
             "type": "string",
             "description": "The sensor decoder API Url.",
@@ -4122,6 +4117,11 @@
           "appKey": {
             "type": "string",
             "description": "The OTAA App Key.",
+            "nullable": true
+          },
+          "appEUI": {
+            "type": "string",
+            "description": "The device OTAA Application EUI.",
             "nullable": true
           },
           "appSKey": {
@@ -4229,11 +4229,6 @@
             "type": "boolean",
             "description": "A value indicating whether the device uses OTAA to authenticate to LoRaWAN network. Otherwise ABP.\r\nDefault is true.",
             "default": true
-          },
-          "appEUI": {
-            "type": "string",
-            "description": "The device OTAA Application eui.",
-            "nullable": true
           },
           "sensorDecoder": {
             "type": "string",

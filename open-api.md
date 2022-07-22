@@ -2050,7 +2050,6 @@ None
   "deviceID": "",
   "classType": "A",
   "useOTAA": true,
-  "appEUI": "string",
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
@@ -2066,6 +2065,7 @@ None
   "fCntResetCounter": 0,
   "keepAliveTimeout": null,
   "appKey": "string",
+  "appEUI": "string",
   "appSKey": "string",
   "nwkSKey": "string",
   "devAddr": "string",
@@ -2123,7 +2123,6 @@ None
   "deviceID": "",
   "classType": "A",
   "useOTAA": true,
-  "appEUI": "string",
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
@@ -2139,6 +2138,7 @@ None
   "fCntResetCounter": 0,
   "keepAliveTimeout": null,
   "appKey": "string",
+  "appEUI": "string",
   "appSKey": "string",
   "nwkSKey": "string",
   "devAddr": "string",
@@ -2190,7 +2190,7 @@ None
 > 200 Response
 
 ```
-{"deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"deviceID":"","classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":1,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"supports32BitFCnt":true,"fCntResetCounter":0,"keepAliveTimeout":null,"appKey":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string","isLoraWan":true}
+{"deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"deviceID":"","classType":"A","useOTAA":true,"sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":1,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"supports32BitFCnt":true,"fCntResetCounter":0,"keepAliveTimeout":null,"appKey":"string","appEUI":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string","isLoraWan":true}
 ```
 
 ```json
@@ -2208,7 +2208,6 @@ None
   "deviceID": "",
   "classType": "A",
   "useOTAA": true,
-  "appEUI": "string",
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
@@ -2224,6 +2223,7 @@ None
   "fCntResetCounter": 0,
   "keepAliveTimeout": null,
   "appKey": "string",
+  "appEUI": "string",
   "appSKey": "string",
   "nwkSKey": "string",
   "devAddr": "string",
@@ -2382,7 +2382,6 @@ None
   "supportLoRaFeatures": true,
   "classType": "A",
   "useOTAA": true,
-  "appEUI": "string",
   "sensorDecoder": "string",
   "downlink": true,
   "preferredWindow": 1,
@@ -2458,7 +2457,7 @@ None
 > 200 Response
 
 ```
-{"modelId":"string","imageUrl":"http://example.com","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true,"classType":"A","useOTAA":true,"appEUI":"string","sensorDecoder":"string","downlink":true,"preferredWindow":1,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"fCntResetCounter":0,"supports32BitFCnt":true,"keepAliveTimeout":null}
+{"modelId":"string","imageUrl":"http://example.com","name":"string","description":"string","isBuiltin":true,"supportLoRaFeatures":true,"classType":"A","useOTAA":true,"sensorDecoder":"string","downlink":true,"preferredWindow":1,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"fCntResetCounter":0,"supports32BitFCnt":true,"keepAliveTimeout":null}
 ```
 
 ```json
@@ -2471,7 +2470,6 @@ None
   "supportLoRaFeatures": true,
   "classType": "A",
   "useOTAA": true,
-  "appEUI": "string",
   "sensorDecoder": "string",
   "downlink": true,
   "preferredWindow": 1,
@@ -2522,7 +2520,6 @@ None
   "supportLoRaFeatures": true,
   "classType": "A",
   "useOTAA": true,
-  "appEUI": "string",
   "sensorDecoder": "string",
   "downlink": true,
   "preferredWindow": 1,
@@ -4665,7 +4662,6 @@ IoT Edge module.
   "deviceID": "",
   "classType": "A",
   "useOTAA": true,
-  "appEUI": "string",
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
@@ -4681,6 +4677,7 @@ IoT Edge module.
   "fCntResetCounter": 0,
   "keepAliveTimeout": null,
   "appKey": "string",
+  "appEUI": "string",
   "appSKey": "string",
   "nwkSKey": "string",
   "devAddr": "string",
@@ -4713,7 +4710,6 @@ LoRa WAN Device details.
 |deviceID|string|true|none|The device identifier.|
 |classType|string|false|none|The LoRa device class type. (default A)|
 |useOTAA|boolean|false|none|A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP|
-|appEUI|string¦null|false|none|The device OTAA Application eui.|
 |sensorDecoder|string¦null|false|none|The sensor decoder API Url.|
 |gatewayID|string¦null|false|none|The GatewayID of the device.|
 |downlink|boolean¦null|false|none|A value indicating whether the downlinks are enabled (True if not provided)|
@@ -4729,6 +4725,7 @@ LoRa WAN Device details.
 |fCntResetCounter|integer(int32)¦null|false|none|Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.<br>Default is 0.|
 |keepAliveTimeout|integer(int32)¦null|false|none|Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.<br>The default is none, which causes the connection to not be dropped.|
 |appKey|string¦null|false|none|The OTAA App Key.|
+|appEUI|string¦null|false|none|The device OTAA Application EUI.|
 |appSKey|string¦null|false|none|The ABP AppSKey.|
 |nwkSKey|string¦null|false|none|The ABP NwkSKey.|
 |devAddr|string¦null|false|none|Unique identifier that allows<br>the device to be recognized.|
@@ -4768,7 +4765,6 @@ LoRa WAN Device details.
   "supportLoRaFeatures": true,
   "classType": "A",
   "useOTAA": true,
-  "appEUI": "string",
   "sensorDecoder": "string",
   "downlink": true,
   "preferredWindow": 1,
@@ -4800,7 +4796,6 @@ LoRa Device model.
 |supportLoRaFeatures|boolean|false|none|A value indicating whether the LoRa features is supported on this model.|
 |classType|string|false|none|The LoRa device class.<br>Default is A.|
 |useOTAA|boolean|false|none|A value indicating whether the device uses OTAA to authenticate to LoRaWAN network. Otherwise ABP.<br>Default is true.|
-|appEUI|string¦null|false|none|The device OTAA Application eui.|
 |sensorDecoder|string¦null|false|none|The sensor decoder API Url.|
 |downlink|boolean¦null|false|none|Allows disabling the downstream (cloud to device) for a device.<br>By default downstream messages are enabled.|
 |preferredWindow|integer(int32)|false|none|Allows setting the device preferred receive window (RX1 or RX2).<br>The default preferred receive window is 1.|
