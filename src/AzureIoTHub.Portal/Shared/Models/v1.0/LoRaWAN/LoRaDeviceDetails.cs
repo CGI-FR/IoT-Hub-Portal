@@ -15,6 +15,12 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         public string AppKey { get; set; }
 
         /// <summary>
+        /// The device OTAA Application EUI.
+        /// </summary>
+        // [Required(ErrorMessage = "The OTAA App EUI is required.")]
+        public string AppEUI { get; set; }
+
+        /// <summary>
         ///  The ABP AppSKey.
         /// </summary>
         public string AppSKey { get; set; }

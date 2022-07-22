@@ -405,7 +405,6 @@
 
                 var loRaDeviceModelResult = await LoRaWanDeviceModelsClientService.GetDeviceModel(model.ModelId);
 
-                device.AppEUI = loRaDeviceModelResult.AppEUI;
                 device.SensorDecoder = loRaDeviceModelResult.SensorDecoder;
                 device.UseOTAA = loRaDeviceModelResult.UseOTAA;
                 loRaDeviceModel = loRaDeviceModelResult;

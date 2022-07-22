@@ -16,9 +16,7 @@
                                           Label="OTAA AppEUI"
                                           Variant="Variant.Outlined"
                                           For="@(()=> LoRaDevice.AppEUI)"
-                                          ReadOnly="true"
-                                          Required="true"
-                                          HelperText="OTAA AppEUI is automatically set from the selected model" />
+                                          Required="true" />
                             </MudItem>
                             <MudItem xs="12" md="6">
                                 <MudTextField @bind-Value="@LoRaDevice.AppKey"

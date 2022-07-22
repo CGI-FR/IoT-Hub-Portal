@@ -300,11 +300,6 @@
             {
                 var loraDeviceModel = Model as LoRaDeviceModel;
 
-                if (!loraDeviceModel.UseOTAA)
-                {
-                    loraDeviceModel.AppEUI = null;
-                }
-
                 loraDeviceModel.SupportLoRaFeatures = true;
 
                 await LoRaWanDeviceModelsClientService.CreateDeviceModel(loraDeviceModel);

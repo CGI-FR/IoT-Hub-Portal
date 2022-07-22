@@ -279,7 +279,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
 
             cut.WaitForElement($"#{nameof(DeviceModel.Name)}").Change(modelName);
             cut.WaitForElement($"#{nameof(DeviceModel.Description)}").Change(description);
-            (cut.Instance.Model as LoRaDeviceModel).AppEUI = "AppEUI";
 
             saveButton.Click();
 

@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
 {
-    using System;
     using AzureIoTHub.Portal.Client.Validators;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using NUnit.Framework;
@@ -19,7 +18,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
             var loraModel = new LoRaDeviceModel()
             {
                 UseOTAA = true,
-                AppEUI = Guid.NewGuid().ToString(),
+                //AppEUI = Guid.NewGuid().ToString(),
             };
 
             // Act
@@ -30,26 +29,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
             Assert.AreEqual(0, loraModelValidation.Errors.Count);
         }
 
-        [Test]
-        public void ValidateMissingAppEUIFieldShouldReturnError()
-        {
+        //[Test]
+        //public void ValidateMissingAppEUIFieldShouldReturnError()
+        //{
 
-            // Arrange
-            var loraModelValidator = new LoRaDeviceModelValidator();
-            var loraModel = new LoRaDeviceModel()
-            {
-                UseOTAA = true,
-                AppEUI = "",
-            };
+        //    // Arrange
+        //    var loraModelValidator = new LoRaDeviceModelValidator();
+        //    var loraModel = new LoRaDeviceModel()
+        //    {
+        //        UseOTAA = true,
+        //        //AppEUI = "",
+        //    };
 
-            // Act
-            var loraModelValidation = loraModelValidator.Validate(loraModel);
+        //    // Act
+        //    var loraModelValidation = loraModelValidator.Validate(loraModel);
 
-            // Assert
-            Assert.IsFalse(loraModelValidation.IsValid);
-            Assert.AreEqual(1, loraModelValidation.Errors.Count);
-            Assert.AreEqual(loraModelValidation.Errors[0].ErrorMessage, "AppEUI is required.");
+        //    // Assert
+        //    Assert.IsFalse(loraModelValidation.IsValid);
+        //    Assert.AreEqual(1, loraModelValidation.Errors.Count);
+        //    Assert.AreEqual(loraModelValidation.Errors[0].ErrorMessage, "AppEUI is required.");
 
-        }
+        //}
     }
 }
