@@ -43,7 +43,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels
             var modelId = Fixture.Create<string>();
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new[] {new DeviceModel {ModelId = modelId, SupportLoRaFeatures = false}});
+                .ReturnsAsync(new[] { new DeviceModel { ModelId = modelId, SupportLoRaFeatures = false } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 

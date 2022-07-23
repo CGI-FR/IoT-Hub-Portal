@@ -69,7 +69,6 @@ csharp_style_inlined_variable_declaration = true:suggestion
 csharp_style_deconstructed_variable_declaration = true:suggestion
 csharp_style_var_when_type_is_apparent = true:suggestion
 csharp_space_around_declaration_statements = ignore
-dotnet_diagnostic.IDE0055.severity = warning
 
 [*.md]
 charset = utf-8

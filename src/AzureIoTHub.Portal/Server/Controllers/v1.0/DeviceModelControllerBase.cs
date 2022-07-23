@@ -24,10 +24,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         where TListItemModel : DeviceModel
         where TModel : DeviceModel
     {
+#pragma warning disable RCS1158 // Static member in generic type should use a type parameter.
         /// <summary>
         /// The default partition key.
         /// </summary>
-#pragma warning disable RCS1158 // Static member in generic type should use a type parameter.
         public const string DefaultPartitionKey = "0";
 #pragma warning restore RCS1158 // Static member in generic type should use a type parameter.
 
