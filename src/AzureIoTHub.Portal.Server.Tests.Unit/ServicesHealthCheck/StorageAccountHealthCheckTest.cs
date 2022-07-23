@@ -19,7 +19,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.ServicesHealthCheck
     {
         private MockRepository mockRepository;
         private Mock<BlobServiceClient> mockBlobServiceClient;
-        private Mock<ConfigHandler> mockConfigHandler;
 
         [SetUp]
         public void SetUp()
@@ -27,12 +26,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.ServicesHealthCheck
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockBlobServiceClient = this.mockRepository.Create<BlobServiceClient>();
-            this.mockConfigHandler = this.mockRepository.Create<ConfigHandler>();
         }
 
         private StorageAccountHealthCheck CreateHealthService()
         {
-            return new StorageAccountHealthCheck(this.mockBlobServiceClient.Object, this.mockConfigHandler.Object);
+            return new StorageAccountHealthCheck(this.mockBlobServiceClient.Object);
         }
 
         [Test]
@@ -51,8 +49,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.ServicesHealthCheck
             var blobContainerClient = this.mockRepository.Create<BlobContainerClient>();
             var responseContainerExist = this.mockRepository.Create<Azure.Response<bool>>();
             var responseGetPropertiesAsync = this.mockRepository.Create<Azure.Response<BlobContainerProperties>>();
-
-            _ = this.mockConfigHandler.SetupGet(c => c.StorageAccountBlobContainerName).Returns(Guid.NewGuid().ToString());
 
             _ = responseContainerExist
                 .SetupGet(c => c.Value)
@@ -96,8 +92,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.ServicesHealthCheck
             var blobContainerClient = this.mockRepository.Create<BlobContainerClient>();
             var responseContainerExist = this.mockRepository.Create<Azure.Response<bool>>();
             var responseGetPropertiesAsync = this.mockRepository.Create<Azure.Response<BlobContainerProperties>>();
-
-            _ = this.mockConfigHandler.SetupGet(c => c.StorageAccountBlobContainerName).Returns(Guid.NewGuid().ToString());
 
             _ = responseContainerExist
                 .SetupGet(c => c.Value)

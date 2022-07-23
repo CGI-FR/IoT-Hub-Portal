@@ -40,8 +40,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
         [TestCase(ConfigHandler.OIDCMetadataUrlKey, nameof(ConfigHandler.OIDCMetadataUrl))]
         [TestCase(ConfigHandler.OIDCClientIdKey, nameof(ConfigHandler.OIDCClientId))]
         [TestCase(ConfigHandler.OIDCApiClientIdKey, nameof(ConfigHandler.OIDCApiClientId))]
-        [TestCase(ConfigHandler.StorageAccountBlobContainerNameKey, nameof(ConfigHandler.StorageAccountBlobContainerName))]
-        [TestCase(ConfigHandler.StorageAccountBlobContainerPartitionKeyKey, nameof(ConfigHandler.StorageAccountBlobContainerPartitionKey))]
         [TestCase(ConfigHandler.LoRaKeyManagementUrlKey, nameof(ConfigHandler.LoRaKeyManagementUrl))]
         [TestCase(ConfigHandler.LoRaKeyManagementCodeKey, nameof(ConfigHandler.LoRaKeyManagementCode))]
         [TestCase(ConfigHandler.IoTHubConnectionStringKey, nameof(ConfigHandler.IoTHubConnectionString))]

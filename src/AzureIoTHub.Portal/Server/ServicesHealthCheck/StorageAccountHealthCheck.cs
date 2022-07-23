@@ -12,31 +12,25 @@ namespace AzureIoTHub.Portal.Server.ServicesHealthCheck
     public class StorageAccountHealthCheck : IHealthCheck
     {
         private readonly BlobServiceClient blobServiceClient;
-        private readonly ConfigHandler configHandler;
 
-        public StorageAccountHealthCheck(BlobServiceClient blobServiceClient,
-            ConfigHandler configHandler)
+        private const string BlobContainerName = "Health";
+
+        public StorageAccountHealthCheck(BlobServiceClient blobServiceClient)
         {
             this.blobServiceClient = blobServiceClient;
-            this.configHandler = configHandler;
         }
 
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             try
             {
+                var containerClient = this.blobServiceClient.GetBlobContainerClient(BlobContainerName);
 
-                if (this.configHandler.StorageAccountBlobContainerName != null)
-                {
-                    var containerClient = this.blobServiceClient.GetBlobContainerClient(this.configHandler.StorageAccountBlobContainerName);
+                // Try to create the container
+                _ = await containerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
 
-                    if (!await containerClient.ExistsAsync(cancellationToken))
-                    {
-                        return new HealthCheckResult(context.Registration.FailureStatus, description: $"Container '{this.configHandler.StorageAccountBlobContainerName}' not exists");
-                    }
-
-                    _ = await containerClient.GetPropertiesAsync(cancellationToken: cancellationToken);
-                }
+                // Try to delete the container
+                _ = await containerClient.DeleteAsync(cancellationToken: cancellationToken);
 
                 return HealthCheckResult.Healthy();
             }
