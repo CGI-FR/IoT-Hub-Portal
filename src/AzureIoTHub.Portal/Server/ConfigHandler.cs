@@ -32,8 +32,6 @@ namespace AzureIoTHub.Portal.Server
         internal const string IsLoRaFeatureEnabledKey = "LoRaFeature:Enabled";
 
         internal const string StorageAccountConnectionStringKey = "StorageAccount:ConnectionString";
-        internal const string StorageAccountBlobContainerNameKey = "StorageAccount:BlobContainerName";
-        internal const string StorageAccountBlobContainerPartitionKeyKey = "StorageAccount:BlobContainerPartitionKey";
 
         internal const string LoRaKeyManagementUrlKey = "LoRaKeyManagement:Url";
         internal const string LoRaKeyManagementCodeKey = "LoRaKeyManagement:Code";
@@ -95,10 +93,6 @@ namespace AzureIoTHub.Portal.Server
 
         internal abstract bool IsLoRaEnabled { get; }
 
-        internal abstract string StorageAccountBlobContainerName { get; }
-
-        internal abstract string StorageAccountBlobContainerPartitionKey { get; }
-
         internal abstract string LoRaKeyManagementUrl { get; }
 
         internal abstract string LoRaKeyManagementCode { get; }
@@ -110,8 +104,11 @@ namespace AzureIoTHub.Portal.Server
         internal abstract int MetricLoaderRefreshIntervalInMinutes { get; }
 
         internal abstract bool IdeasEnabled { get; }
+
         internal abstract string IdeasUrl { get; }
+
         internal abstract string IdeasAuthenticationHeader { get; }
+
         internal abstract string IdeasAuthenticationToken { get; }
     }
 }

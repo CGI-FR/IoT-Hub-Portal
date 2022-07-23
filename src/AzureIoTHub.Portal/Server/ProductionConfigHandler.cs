@@ -56,10 +56,6 @@ namespace AzureIoTHub.Portal.Server
 
         internal override bool IsLoRaEnabled => bool.Parse(this.config[IsLoRaFeatureEnabledKey] ?? "true");
 
-        internal override string StorageAccountBlobContainerName => this.config[StorageAccountBlobContainerNameKey];
-
-        internal override string StorageAccountBlobContainerPartitionKey => this.config[StorageAccountBlobContainerPartitionKeyKey];
-
         internal override string LoRaKeyManagementUrl => this.config[LoRaKeyManagementUrlKey];
 
         internal override string LoRaKeyManagementCode => this.config.GetConnectionString(LoRaKeyManagementCodeKey);

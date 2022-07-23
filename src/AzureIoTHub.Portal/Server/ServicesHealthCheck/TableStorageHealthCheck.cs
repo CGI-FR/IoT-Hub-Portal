@@ -21,14 +21,15 @@ namespace AzureIoTHub.Portal.Server.ServicesHealthCheck
 
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
+            const string partitionKey = "0";
+            const string rowKey = "1";
+
             try
             {
                 var tableClient = this.tableClientFactory.GetTemplatesHealthCheck();
 
                 _ = await tableClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-                var partitionKey = "0";
-                var rowKey = "1";
-                var entity = new TableEntity(partitionKey,rowKey)
+                var entity = new TableEntity(partitionKey, rowKey)
                 {
                     {"key","value" }
                 };
