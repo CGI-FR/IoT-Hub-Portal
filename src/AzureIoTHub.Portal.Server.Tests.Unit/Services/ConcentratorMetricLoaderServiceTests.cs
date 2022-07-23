@@ -99,7 +99,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             _ = this.mockDeviceService.Setup(service => service.GetConcentratorsCount()).ReturnsAsync(10);
             _ = this.mockDeviceService.Setup(service => service.GetConnectedConcentratorsCount()).ThrowsAsync(new InternalServerErrorException("test"));
 
-            using var cancellationToken = new CancellationTokenSource(); 
+            using var cancellationToken = new CancellationTokenSource();
 
             // Act
             _ = this.concentratorMetricLoaderService.StartAsync(cancellationToken.Token);

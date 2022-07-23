@@ -56,7 +56,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
         {
             // Arrange
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
-                .ReturnsAsync(new IoTEdgeDevice {ConnectionState = "false"});
+                .ReturnsAsync(new IoTEdgeDevice { ConnectionState = "false" });
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
             _ = cut.WaitForElement("#saveButton");
@@ -269,7 +269,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
                 Type = "Other",
                 Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule}
             };
-            
+
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
                 .ReturnsAsync(mockIoTEdgeDevice);
 

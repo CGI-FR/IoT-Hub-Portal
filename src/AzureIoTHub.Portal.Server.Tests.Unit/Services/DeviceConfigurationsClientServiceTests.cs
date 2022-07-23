@@ -115,7 +115,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             // Arrange
             var configuration = Fixture.Create<DeviceConfig>();
 
-            _ = MockHttpClient.When(HttpMethod.Put,$"/api/device-configurations/{configuration.ConfigurationId}")
+            _ = MockHttpClient.When(HttpMethod.Put, $"/api/device-configurations/{configuration.ConfigurationId}")
                 .With(m =>
                 {
                     _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceConfig>>();

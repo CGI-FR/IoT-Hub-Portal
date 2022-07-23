@@ -70,7 +70,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             // Arrange
             var loraDeviceMethodManager = new LoraDeviceMethodManager(this.mockHttpClient);
             var deviceId = Guid.NewGuid().ToString();
-            var command = new DeviceModelCommand {
+            var command = new DeviceModelCommand
+            {
                 Frame = Guid.NewGuid().ToString()
             };
 
