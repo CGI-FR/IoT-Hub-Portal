@@ -50,18 +50,18 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 SensorDecoder = entity[nameof(LoRaDeviceModel.SensorDecoder)]?.ToString(),
                 SupportLoRaFeatures = true,
                 UseOTAA = bool.Parse(entity[nameof(LoRaDeviceModel.UseOTAA)]?.ToString() ?? "true"),
-                PreferredWindow = int.TryParse(entity[nameof(LoRaDeviceBase.PreferredWindow)]?.ToString(), out var intResult) ? intResult : 1,
-                Supports32BitFCnt = bool.TryParse(entity[nameof(LoRaDeviceBase.Supports32BitFCnt)]?.ToString(), out var boolResult) ? boolResult : null,
-                ABPRelaxMode = bool.TryParse(entity[nameof(LoRaDeviceBase.ABPRelaxMode)]?.ToString(), out boolResult) ? boolResult : null,
-                KeepAliveTimeout = int.TryParse(entity[nameof(LoRaDeviceBase.KeepAliveTimeout)]?.ToString(), out intResult) ? intResult : null,
-                Deduplication = Enum.TryParse<DeduplicationMode>(entity[nameof(LoRaDeviceBase.Deduplication)]?.ToString(), out var deduplication) ? deduplication : DeduplicationMode.None,
-                Downlink = bool.TryParse(entity[nameof(LoRaDeviceBase.Downlink)]?.ToString(), out boolResult) ? boolResult : null,
-                FCntDownStart = int.TryParse(entity[nameof(LoRaDeviceBase.FCntDownStart)]?.ToString(), out intResult) ? intResult : null,
-                FCntResetCounter = int.TryParse(entity[nameof(LoRaDeviceBase.FCntResetCounter)]?.ToString(), out intResult) ? intResult : null,
-                FCntUpStart = int.TryParse(entity[nameof(LoRaDeviceBase.FCntUpStart)]?.ToString(), out intResult) ? intResult : null,
-                RX1DROffset = int.TryParse(entity[nameof(LoRaDeviceBase.RX1DROffset)]?.ToString(), out intResult) ? intResult : null,
-                RX2DataRate = int.TryParse(entity[nameof(LoRaDeviceBase.RX2DataRate)]?.ToString(), out intResult) ? intResult : null,
-                RXDelay = int.TryParse(entity[nameof(LoRaDeviceBase.RXDelay)]?.ToString(), out intResult) ? intResult : null
+                PreferredWindow = int.TryParse(entity[nameof(LoRaDeviceModelBase.PreferredWindow)]?.ToString(), out var intResult) ? intResult : 1,
+                Supports32BitFCnt = bool.TryParse(entity[nameof(LoRaDeviceModelBase.Supports32BitFCnt)]?.ToString(), out var boolResult) ? boolResult : null,
+                ABPRelaxMode = bool.TryParse(entity[nameof(LoRaDeviceModelBase.ABPRelaxMode)]?.ToString(), out boolResult) ? boolResult : null,
+                KeepAliveTimeout = int.TryParse(entity[nameof(LoRaDeviceModelBase.KeepAliveTimeout)]?.ToString(), out intResult) ? intResult : null,
+                Deduplication = Enum.TryParse<DeduplicationMode>(entity[nameof(LoRaDeviceModelBase.Deduplication)]?.ToString(), out var deduplication) ? deduplication : DeduplicationMode.None,
+                Downlink = bool.TryParse(entity[nameof(LoRaDeviceModelBase.Downlink)]?.ToString(), out boolResult) ? boolResult : null,
+                FCntDownStart = int.TryParse(entity[nameof(LoRaDeviceModelBase.FCntDownStart)]?.ToString(), out intResult) ? intResult : null,
+                FCntResetCounter = int.TryParse(entity[nameof(LoRaDeviceModelBase.FCntResetCounter)]?.ToString(), out intResult) ? intResult : null,
+                FCntUpStart = int.TryParse(entity[nameof(LoRaDeviceModelBase.FCntUpStart)]?.ToString(), out intResult) ? intResult : null,
+                RX1DROffset = int.TryParse(entity[nameof(LoRaDeviceModelBase.RX1DROffset)]?.ToString(), out intResult) ? intResult : null,
+                RX2DataRate = int.TryParse(entity[nameof(LoRaDeviceModelBase.RX2DataRate)]?.ToString(), out intResult) ? intResult : null,
+                RXDelay = int.TryParse(entity[nameof(LoRaDeviceModelBase.RXDelay)]?.ToString(), out intResult) ? intResult : null
             };
         }
 
@@ -79,18 +79,18 @@ namespace AzureIoTHub.Portal.Server.Mappers
             var desiredProperties = new Dictionary<string, object>();
 
             AddOptionnalProperties(entity, nameof(LoRaDeviceModel.SensorDecoder), model.SensorDecoder, desiredProperties);
-            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Supports32BitFCnt), model.Supports32BitFCnt, desiredProperties);
-            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.ABPRelaxMode), model.ABPRelaxMode, desiredProperties);
-            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.KeepAliveTimeout), model.KeepAliveTimeout, desiredProperties);
-            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.PreferredWindow), model.PreferredWindow, desiredProperties);
-            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Downlink), model.Downlink, desiredProperties);
-            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.Deduplication), model.Deduplication.ToString(), desiredProperties);
-            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntDownStart), model.FCntDownStart, desiredProperties);
-            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntResetCounter), model.FCntResetCounter, desiredProperties);
-            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.FCntUpStart), model.FCntUpStart, desiredProperties);
-            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.RX1DROffset), model.RX1DROffset, desiredProperties);
-            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.RX2DataRate), model.RX2DataRate, desiredProperties);
-            AddOptionnalProperties(entity, nameof(LoRaDeviceBase.RXDelay), model.RXDelay, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceModelBase.Supports32BitFCnt), model.Supports32BitFCnt, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceModelBase.ABPRelaxMode), model.ABPRelaxMode, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceModelBase.KeepAliveTimeout), model.KeepAliveTimeout, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceModelBase.PreferredWindow), model.PreferredWindow, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceModelBase.Downlink), model.Downlink, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceModelBase.Deduplication), model.Deduplication.ToString(), desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceModelBase.FCntDownStart), model.FCntDownStart, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceModelBase.FCntResetCounter), model.FCntResetCounter, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceModelBase.FCntUpStart), model.FCntUpStart, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceModelBase.RX1DROffset), model.RX1DROffset, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceModelBase.RX2DataRate), model.RX2DataRate, desiredProperties);
+            AddOptionnalProperties(entity, nameof(LoRaDeviceModelBase.RXDelay), model.RXDelay, desiredProperties);
 
             return desiredProperties;
         }
