@@ -22,7 +22,8 @@
             <col style="width: 40%;" />
             <col style="width: 5%;" />
             <col style="width: 5%;" />
-            <col style="width: 10%;" />
+            <col style="width: 5%;" />
+            <col style="width: 5%;" />
         </ColGroup>
         <HeaderContent>
             <MudTh>Name</MudTh>
@@ -30,6 +31,7 @@
             <MudTh Style="text-align: center">Required</MudTh>
             <MudTh Style="text-align: center">Searchable</MudTh>
             <MudTh Style="text-align: center">Delete</MudTh>
+            <MudTh Style="text-align: center">Validate</MudTh>
         </HeaderContent>
         <RowTemplate Context="TagContexte">
             <MudTd DataLabel="Name" Style="word-break: break-all;">
@@ -57,6 +59,11 @@
                     <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteTag(TagContexte))"></MudIconButton>
                 </MudTooltip>
             </MudTd>
+            <MudTd DataLabel="Validate" Style="text-align: center;">
+                <MudTooltip Text="Validate device">
+                    <MudIconButton Color="Color.Default" Icon="@Icons.Filled.CheckCircle" Size="Size.Medium" OnClick="@(() => Save())"></MudIconButton>
+                </MudTooltip>
+            </MudTd>
         </RowTemplate>
         <FooterContent>
             <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddTag" id="addTagButton">Add a new Tag</MudButton>
@@ -69,9 +76,6 @@
             <MudText>Loading...</MudText>
         </LoadingContent>
     </MudTable>
-    <MudCardActions Class="pb-4 pl-4">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
-    </MudCardActions>
 </MudItem>
 </MudGrid>
 
