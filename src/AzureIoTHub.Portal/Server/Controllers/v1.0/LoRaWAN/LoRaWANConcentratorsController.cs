@@ -7,10 +7,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using System.Linq;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Filters;
-    using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Server.Services;
+    using Filters;
+    using Managers;
+    using Mappers;
+    using Services;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -72,10 +72,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         [HttpGet(Name = "GET LoRaWAN Concentrator list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginationResult<Concentrator>>> GetAllDeviceConcentrator()
+        public async Task<ActionResult<PaginationResult<Concentrator>>> GetAllDeviceConcentrator(
+            string continuationToken = null,
+            int pageSize = 10)
         {
             // Gets all the twins from this devices
-            var result = await this.devicesService.GetAllDevice(filterDeviceType: "LoRa Concentrator");
+            var result = await this.devicesService.GetAllDevice(
+                continuationToken: continuationToken,
+                filterDeviceType: "LoRa Concentrator",
+                pageSize: pageSize);
+
             string nextPage = null;
 
             if (!string.IsNullOrEmpty(result.NextPage))

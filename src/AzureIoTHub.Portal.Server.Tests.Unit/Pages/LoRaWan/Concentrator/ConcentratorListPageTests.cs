@@ -120,5 +120,34 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
             // Assert
             cut.WaitForAssertion(() => Services.GetService<FakeNavigationManager>()?.Uri.Should().EndWith($"/lorawan/concentrators/{deviceId}"));
         }
+
+        [Test]
+        public void ClickOnAddNewDeviceShouldNavigateToNewDevicePage()
+        {
+            // Arrange
+            const string expectedUri = "api/lorawan/concentrators?pageSize=10";
+
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
+                    service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new PaginationResult<Concentrator>
+                {
+                    Items = new List<Concentrator>
+                    {
+                        new(),
+                        new(),
+                        new()
+                    }
+                });
+
+            // Act
+            var cut = RenderComponent<ConcentratorListPage>();
+            cut.WaitForAssertion(() => cut.Find("#concentrators-listing"));
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            cut.WaitForElement("#add-concentrator").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+            cut.WaitForAssertion(() => Services.GetService<FakeNavigationManager>()?.Uri.Should().EndWith("/lorawan/concentrators/new"));
+        }
     }
 }
