@@ -188,7 +188,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             {
                 ModelId = Fixture.Create<string>()
             };
-            var content = new MultipartFormDataContent();
+
+            using var content = new MultipartFormDataContent();
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/lorawan/models/{deviceModel.ModelId}/avatar")
                 .With(m =>

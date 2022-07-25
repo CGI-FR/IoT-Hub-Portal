@@ -199,7 +199,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         {
             // Arrange
             var deviceModel = Fixture.Create<DeviceModel>();
-            var content = new MultipartFormDataContent();
+            using var content = new MultipartFormDataContent();
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/models/{deviceModel.ModelId}/avatar")
                 .With(m =>
