@@ -2048,8 +2048,20 @@ None
     "property2": "string"
   },
   "deviceID": "",
-  "classType": "A",
   "useOTAA": true,
+  "classType": "A",
+  "appKey": "string",
+  "appEUI": "string",
+  "appSKey": "string",
+  "nwkSKey": "string",
+  "devAddr": "string",
+  "alreadyLoggedInOnce": true,
+  "dataRate": "string",
+  "txPower": "string",
+  "nbRep": "string",
+  "reportedRX2DataRate": "string",
+  "reportedRX1DROffset": "string",
+  "reportedRXDelay": "string",
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
@@ -2063,19 +2075,7 @@ None
   "fCntDownStart": 0,
   "supports32BitFCnt": true,
   "fCntResetCounter": 0,
-  "keepAliveTimeout": null,
-  "appKey": "string",
-  "appEUI": "string",
-  "appSKey": "string",
-  "nwkSKey": "string",
-  "devAddr": "string",
-  "alreadyLoggedInOnce": true,
-  "dataRate": "string",
-  "txPower": "string",
-  "nbRep": "string",
-  "reportedRX2DataRate": "string",
-  "reportedRX1DROffset": "string",
-  "reportedRXDelay": "string"
+  "keepAliveTimeout": null
 }
 ```
 
@@ -2121,8 +2121,20 @@ None
     "property2": "string"
   },
   "deviceID": "",
-  "classType": "A",
   "useOTAA": true,
+  "classType": "A",
+  "appKey": "string",
+  "appEUI": "string",
+  "appSKey": "string",
+  "nwkSKey": "string",
+  "devAddr": "string",
+  "alreadyLoggedInOnce": true,
+  "dataRate": "string",
+  "txPower": "string",
+  "nbRep": "string",
+  "reportedRX2DataRate": "string",
+  "reportedRX1DROffset": "string",
+  "reportedRXDelay": "string",
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
@@ -2136,19 +2148,7 @@ None
   "fCntDownStart": 0,
   "supports32BitFCnt": true,
   "fCntResetCounter": 0,
-  "keepAliveTimeout": null,
-  "appKey": "string",
-  "appEUI": "string",
-  "appSKey": "string",
-  "nwkSKey": "string",
-  "devAddr": "string",
-  "alreadyLoggedInOnce": true,
-  "dataRate": "string",
-  "txPower": "string",
-  "nbRep": "string",
-  "reportedRX2DataRate": "string",
-  "reportedRX1DROffset": "string",
-  "reportedRXDelay": "string"
+  "keepAliveTimeout": null
 }
 ```
 
@@ -2190,7 +2190,7 @@ None
 > 200 Response
 
 ```
-{"deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"deviceID":"","classType":"A","useOTAA":true,"sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":1,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"supports32BitFCnt":true,"fCntResetCounter":0,"keepAliveTimeout":null,"appKey":"string","appEUI":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string","isLoraWan":true}
+{"deviceName":"string","modelId":"string","imageUrl":"http://example.com","isConnected":true,"isEnabled":true,"statusUpdatedTime":"2019-08-24T14:15:22Z","tags":{"property1":"string","property2":"string"},"deviceID":"","useOTAA":true,"classType":"A","appKey":"string","appEUI":"string","appSKey":"string","nwkSKey":"string","devAddr":"string","alreadyLoggedInOnce":true,"dataRate":"string","txPower":"string","nbRep":"string","reportedRX2DataRate":"string","reportedRX1DROffset":"string","reportedRXDelay":"string","sensorDecoder":"string","gatewayID":"string","downlink":true,"preferredWindow":1,"deduplication":"None","rX1DROffset":0,"rX2DataRate":0,"rxDelay":0,"abpRelaxMode":true,"fCntUpStart":0,"fCntDownStart":0,"supports32BitFCnt":true,"fCntResetCounter":0,"keepAliveTimeout":null,"isLoraWan":true}
 ```
 
 ```json
@@ -2206,8 +2206,20 @@ None
     "property2": "string"
   },
   "deviceID": "",
-  "classType": "A",
   "useOTAA": true,
+  "classType": "A",
+  "appKey": "string",
+  "appEUI": "string",
+  "appSKey": "string",
+  "nwkSKey": "string",
+  "devAddr": "string",
+  "alreadyLoggedInOnce": true,
+  "dataRate": "string",
+  "txPower": "string",
+  "nbRep": "string",
+  "reportedRX2DataRate": "string",
+  "reportedRX1DROffset": "string",
+  "reportedRXDelay": "string",
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
@@ -2222,18 +2234,6 @@ None
   "supports32BitFCnt": true,
   "fCntResetCounter": 0,
   "keepAliveTimeout": null,
-  "appKey": "string",
-  "appEUI": "string",
-  "appSKey": "string",
-  "nwkSKey": "string",
-  "devAddr": "string",
-  "alreadyLoggedInOnce": true,
-  "dataRate": "string",
-  "txPower": "string",
-  "nbRep": "string",
-  "reportedRX2DataRate": "string",
-  "reportedRX1DROffset": "string",
-  "reportedRXDelay": "string",
   "isLoraWan": true
 }
 ```
@@ -4660,8 +4660,20 @@ IoT Edge module.
     "property2": "string"
   },
   "deviceID": "",
-  "classType": "A",
   "useOTAA": true,
+  "classType": "A",
+  "appKey": "string",
+  "appEUI": "string",
+  "appSKey": "string",
+  "nwkSKey": "string",
+  "devAddr": "string",
+  "alreadyLoggedInOnce": true,
+  "dataRate": "string",
+  "txPower": "string",
+  "nbRep": "string",
+  "reportedRX2DataRate": "string",
+  "reportedRX1DROffset": "string",
+  "reportedRXDelay": "string",
   "sensorDecoder": "string",
   "gatewayID": "string",
   "downlink": true,
@@ -4676,18 +4688,6 @@ IoT Edge module.
   "supports32BitFCnt": true,
   "fCntResetCounter": 0,
   "keepAliveTimeout": null,
-  "appKey": "string",
-  "appEUI": "string",
-  "appSKey": "string",
-  "nwkSKey": "string",
-  "devAddr": "string",
-  "alreadyLoggedInOnce": true,
-  "dataRate": "string",
-  "txPower": "string",
-  "nbRep": "string",
-  "reportedRX2DataRate": "string",
-  "reportedRX1DROffset": "string",
-  "reportedRXDelay": "string",
   "isLoraWan": true
 }
 
@@ -4708,8 +4708,20 @@ LoRa WAN Device details.
 |tags|object¦null|false|none|List of custom device tags and their values.|
 |» **additionalProperties**|string¦null|false|none|none|
 |deviceID|string|true|none|The device identifier.|
-|classType|string|false|none|The LoRa device class type. (default A)|
 |useOTAA|boolean|false|none|A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP|
+|classType|string|false|none|The LoRa device class type. (default A)|
+|appKey|string¦null|false|none|The OTAA App Key.|
+|appEUI|string¦null|false|none|The device OTAA Application EUI.|
+|appSKey|string¦null|false|none|The ABP AppSKey.|
+|nwkSKey|string¦null|false|none|The ABP NwkSKey.|
+|devAddr|string¦null|false|none|Unique identifier that allows<br>the device to be recognized.|
+|alreadyLoggedInOnce|boolean|false|none|A value indicating whether the device has already joined the platform.|
+|dataRate|string¦null|false|none|The Device Current Datarate,<br>This value will be only reported if you are using Adaptive Data Rate.|
+|txPower|string¦null|false|none|The Device Current Transmit Power,<br>This value will be only reported if you are using Adaptive Data Rate.|
+|nbRep|string¦null|false|none|The Device Current repetition when transmitting.<br>E.g. if set to two, the device will transmit twice his upstream messages.<br>This value will be only reported if you are using Adaptive Data Rate.|
+|reportedRX2DataRate|string¦null|false|none|The Device Current Rx2Datarate.|
+|reportedRX1DROffset|string¦null|false|none|The Device Current RX1DROffset.|
+|reportedRXDelay|string¦null|false|none|The Device Current RXDelay.|
 |sensorDecoder|string¦null|false|none|The sensor decoder API Url.|
 |gatewayID|string¦null|false|none|The GatewayID of the device.|
 |downlink|boolean¦null|false|none|A value indicating whether the downlinks are enabled (True if not provided)|
@@ -4724,18 +4736,6 @@ LoRa WAN Device details.
 |supports32BitFCnt|boolean¦null|false|none|Allow the usage of 32bit counters on your device.<br>Default is true.|
 |fCntResetCounter|integer(int32)¦null|false|none|Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.<br>Default is 0.|
 |keepAliveTimeout|integer(int32)¦null|false|none|Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.<br>The default is none, which causes the connection to not be dropped.|
-|appKey|string¦null|false|none|The OTAA App Key.|
-|appEUI|string¦null|false|none|The device OTAA Application EUI.|
-|appSKey|string¦null|false|none|The ABP AppSKey.|
-|nwkSKey|string¦null|false|none|The ABP NwkSKey.|
-|devAddr|string¦null|false|none|Unique identifier that allows<br>the device to be recognized.|
-|alreadyLoggedInOnce|boolean|false|none|A value indicating whether the device has already joined the platform.|
-|dataRate|string¦null|false|none|The Device Current Datarate,<br>This value will be only reported if you are using Adaptive Data Rate.|
-|txPower|string¦null|false|none|The Device Current Transmit Power,<br>This value will be only reported if you are using Adaptive Data Rate.|
-|nbRep|string¦null|false|none|The Device Current repetition when transmitting.<br>E.g. if set to two, the device will transmit twice his upstream messages.<br>This value will be only reported if you are using Adaptive Data Rate.|
-|reportedRX2DataRate|string¦null|false|none|The Device Current Rx2Datarate.|
-|reportedRX1DROffset|string¦null|false|none|The Device Current RX1DROffset.|
-|reportedRXDelay|string¦null|false|none|The Device Current RXDelay.|
 |isLoraWan|boolean|false|read-only|none|
 
 #### Enumerated Values

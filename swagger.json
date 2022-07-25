@@ -4001,6 +4001,11 @@
             "type": "string",
             "description": "The device identifier."
           },
+          "useOTAA": {
+            "type": "boolean",
+            "description": "A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP",
+            "default": true
+          },
           "classType": {
             "enum": [
               "A",
@@ -4010,10 +4015,64 @@
             "description": "The LoRa device class type. (default A)",
             "default": "A"
           },
-          "useOTAA": {
+          "appKey": {
+            "type": "string",
+            "description": "The OTAA App Key.",
+            "nullable": true
+          },
+          "appEUI": {
+            "type": "string",
+            "description": "The device OTAA Application EUI.",
+            "nullable": true
+          },
+          "appSKey": {
+            "type": "string",
+            "description": "The ABP AppSKey.",
+            "nullable": true
+          },
+          "nwkSKey": {
+            "type": "string",
+            "description": "The ABP NwkSKey.",
+            "nullable": true
+          },
+          "devAddr": {
+            "type": "string",
+            "description": "Unique identifier that allows\r\nthe device to be recognized.",
+            "nullable": true
+          },
+          "alreadyLoggedInOnce": {
             "type": "boolean",
-            "description": "A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP",
-            "default": true
+            "description": "A value indicating whether the device has already joined the platform."
+          },
+          "dataRate": {
+            "type": "string",
+            "description": "The Device Current Datarate,\r\nThis value will be only reported if you are using Adaptive Data Rate.",
+            "nullable": true
+          },
+          "txPower": {
+            "type": "string",
+            "description": "The Device Current Transmit Power,\r\nThis value will be only reported if you are using Adaptive Data Rate.",
+            "nullable": true
+          },
+          "nbRep": {
+            "type": "string",
+            "description": "The Device Current repetition when transmitting.\r\nE.g. if set to two, the device will transmit twice his upstream messages.\r\nThis value will be only reported if you are using Adaptive Data Rate.",
+            "nullable": true
+          },
+          "reportedRX2DataRate": {
+            "type": "string",
+            "description": "The Device Current Rx2Datarate.",
+            "nullable": true
+          },
+          "reportedRX1DROffset": {
+            "type": "string",
+            "description": "The Device Current RX1DROffset.",
+            "nullable": true
+          },
+          "reportedRXDelay": {
+            "type": "string",
+            "description": "The Device Current RXDelay.",
+            "nullable": true
           },
           "sensorDecoder": {
             "type": "string",
@@ -4112,65 +4171,6 @@
             "description": "Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.\r\nThe default is none, which causes the connection to not be dropped.",
             "format": "int32",
             "default": null,
-            "nullable": true
-          },
-          "appKey": {
-            "type": "string",
-            "description": "The OTAA App Key.",
-            "nullable": true
-          },
-          "appEUI": {
-            "type": "string",
-            "description": "The device OTAA Application EUI.",
-            "nullable": true
-          },
-          "appSKey": {
-            "type": "string",
-            "description": "The ABP AppSKey.",
-            "nullable": true
-          },
-          "nwkSKey": {
-            "type": "string",
-            "description": "The ABP NwkSKey.",
-            "nullable": true
-          },
-          "devAddr": {
-            "type": "string",
-            "description": "Unique identifier that allows\r\nthe device to be recognized.",
-            "nullable": true
-          },
-          "alreadyLoggedInOnce": {
-            "type": "boolean",
-            "description": "A value indicating whether the device has already joined the platform."
-          },
-          "dataRate": {
-            "type": "string",
-            "description": "The Device Current Datarate,\r\nThis value will be only reported if you are using Adaptive Data Rate.",
-            "nullable": true
-          },
-          "txPower": {
-            "type": "string",
-            "description": "The Device Current Transmit Power,\r\nThis value will be only reported if you are using Adaptive Data Rate.",
-            "nullable": true
-          },
-          "nbRep": {
-            "type": "string",
-            "description": "The Device Current repetition when transmitting.\r\nE.g. if set to two, the device will transmit twice his upstream messages.\r\nThis value will be only reported if you are using Adaptive Data Rate.",
-            "nullable": true
-          },
-          "reportedRX2DataRate": {
-            "type": "string",
-            "description": "The Device Current Rx2Datarate.",
-            "nullable": true
-          },
-          "reportedRX1DROffset": {
-            "type": "string",
-            "description": "The Device Current RX1DROffset.",
-            "nullable": true
-          },
-          "reportedRXDelay": {
-            "type": "string",
-            "description": "The Device Current RXDelay.",
             "nullable": true
           },
           "isLoraWan": {
