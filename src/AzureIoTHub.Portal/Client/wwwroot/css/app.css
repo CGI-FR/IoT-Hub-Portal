@@ -1,4 +1,12 @@
-﻿.validation-error-message {
+﻿#blazor-error-ui {
+    color: black;
+}
+
+#blazor-error-ui a {
+    color: black;
+}
+
+.validation-error-message {
     color: var(--mud-palette-error) !important;
     margin: 0;
     font-size: .75rem;
