@@ -4,7 +4,7 @@
 
 @attribute [Authorize]
 @inject IDialogService DialogService
-@inject NavigationManager navigationManager
+@inject NavigationManager NavigationManager
 @inject ILoRaWanConcentratorsClientService LoRaWanConcentratorsClientService
 
 <MudGrid>
@@ -25,7 +25,7 @@
                     <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="Search" Class="ma-2"></MudIconButton>
                 </MudTooltip>
                 <MudTooltip Text="Add LoRaWAN concentrator">
-                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" />
+                    <MudFab id="add-concentrator" Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" />
                 </MudTooltip>
             </ToolBarContent>
             <HeaderContent>
@@ -99,7 +99,7 @@
     
     private MudTable<Concentrator> table;
 
-    private Dictionary<int, string> Pages { get; set; } = new();
+    private Dictionary<int, string> Pages { get; } = new();
 
     private bool IsLoading { get; set; } = true;
 
@@ -141,7 +141,7 @@
 
     private void AddDevice()
     {
-        navigationManager.NavigateTo("lorawan/concentrators/new");
+        NavigationManager.NavigateTo("lorawan/concentrators/new");
     }
 
     private async Task DeleteDevice(Concentrator device)
@@ -168,6 +168,6 @@
 
     private void GoToDetails(Concentrator item)
     {
-        navigationManager.NavigateTo($"/lorawan/concentrators/{item.DeviceId}");
+        NavigationManager.NavigateTo($"/lorawan/concentrators/{item.DeviceId}");
     }
 }

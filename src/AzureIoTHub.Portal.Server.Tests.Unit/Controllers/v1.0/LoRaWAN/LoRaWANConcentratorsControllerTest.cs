@@ -32,7 +32,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
         private Mock<IDeviceService> mockDeviceService;
         private Mock<IRouterConfigManager> mockRouterConfigManager;
         private Mock<IConcentratorTwinMapper> mockConcentratorTwinMapper;
-        private Mock<ConfigHandler> mockConfigHandler;
         private Mock<IUrlHelper> mockUrlHelper;
 
         [SetUp]
@@ -43,7 +42,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
             this.mockRouterConfigManager = this.mockRepository.Create<IRouterConfigManager>();
             this.mockConcentratorTwinMapper = this.mockRepository.Create<IConcentratorTwinMapper>();
-            this.mockConfigHandler = this.mockRepository.Create<ConfigHandler>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
         }
 
@@ -303,10 +301,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             };
 
             var routerConfig = new RouterConfig();
-            var mockResult = new BulkRegistryOperationResult
-            {
-                IsSuccessful = true
-            };
 
             var twin = new Twin
             {
@@ -401,8 +395,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
             {
                 DeviceId = concentrator.DeviceId,
             };
-
-            var device = new Device(concentrator.DeviceId);
 
             _ = this.mockDeviceService.Setup(x => x.GetDevice(It.Is<string>(c => c == concentrator.DeviceId)))
                 .ThrowsAsync(new InternalServerErrorException(""));
