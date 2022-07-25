@@ -1555,6 +1555,13 @@ None
 
 *Gets all device concentrators.*
 
+<h3 id="get-lorawan-concentrator-list-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|continuationToken|query|string|false|none|
+|pageSize|query|integer(int32)|false|none|
+
 > Example responses
 
 > 200 Response
