@@ -1186,6 +1186,24 @@
         ],
         "summary": "Gets all device concentrators.",
         "operationId": "GET LoRaWAN Concentrator list",
+        "parameters": [
+          {
+            "name": "continuationToken",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
