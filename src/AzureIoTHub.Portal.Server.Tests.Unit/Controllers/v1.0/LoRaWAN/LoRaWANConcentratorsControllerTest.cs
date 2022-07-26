@@ -391,11 +391,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                 RouterConfig = new RouterConfig()
             };
 
-            var twin = new Twin
-            {
-                DeviceId = concentrator.DeviceId,
-            };
-
             _ = this.mockDeviceService.Setup(x => x.GetDevice(It.Is<string>(c => c == concentrator.DeviceId)))
                 .ThrowsAsync(new InternalServerErrorException(""));
 
@@ -419,11 +414,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
                 LoraRegion = Guid.NewGuid().ToString(),
                 IsEnabled = true,
                 RouterConfig = new RouterConfig()
-            };
-
-            var twin = new Twin
-            {
-                DeviceId = concentrator.DeviceId,
             };
 
             var device = new Device(concentrator.DeviceId);
