@@ -55,6 +55,10 @@ Here are different settings that the user can configure:
   * `Production`: Default value if ASPNETCORE_ENVIRONMENT is not set. On this environment, logs are produced up to `Information` level.
 * **Metrics__ExporterRefreshIntervalInSeconds**: (Optional, default value `30`) The refresh interval in `seconds` to collect custom metrics and expose them to the exporter endpoint.
 * **Metrics__LoaderRefreshIntervalInMinutes**: (Optional, default value `10`) The refresh interval in `minutes` to calculate/refresh custom metrics values.
+* **Ideas__Enabled**: (Optional, default value `false`) To enable Ideas feature when set to `true`.
+* **Ideas__Url**: Url of `Awesome-Ideas`, to publish ideas submitted by users.
+* **Ideas__Authentication__Header**: (Optional, default value `Ocp-Apim-Subscription-Key`) Authentication header name.
+* **Ideas__Authentication__Token**: Authentication token.
 
 #### Connection strings
 
