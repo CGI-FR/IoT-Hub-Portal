@@ -15,6 +15,7 @@
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 @inject IDeviceClientService DeviceClientService
 @inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
+@inject IDeviceLayoutService DeviceLayoutService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
     <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton"/>       
@@ -47,8 +48,14 @@
             </MudCard>
 
             <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
-                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice" id="deleteButton" Disabled="isProcessing">Delete device</MudButton>
-                    <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="Save" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
+                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="DeleteDevice" id="deleteButton" Disabled="isProcessing">Delete device</MudButton>
+                <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                    <MudButton id="SaveButton" OnClick="ProcessActionOnDevice" Disabled="isProcessing">@saveButtonText</MudButton>
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                        <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Save)">Save</MudMenuItem>
+                        <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Duplicate)">Duplicate</MudMenuItem>
+                    </MudMenu>
+                </MudButtonGroup>
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
@@ -230,6 +237,9 @@
 
     private bool isProcessing;
 
+    private DeviceSaveAction deviceSaveAction = DeviceSaveAction.Save;
+    private string saveButtonText = "Save";
+
     private void Return() => navigationManager.NavigateTo("devices");
 
     private IEnumerable<DeviceModelCommand> Commands { get; set; }
@@ -265,6 +275,21 @@
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    private void ProcessActionOnDevice()
+    {
+        switch (deviceSaveAction)
+        {
+            case DeviceSaveAction.Save:
+                Save();
+                break;
+            case DeviceSaveAction.Duplicate:
+                DeviceLayoutService.DuplicateSharedDevice(Device);
+                DeviceLayoutService.DuplicateSharedDeviceModel(DeviceModel);
+                NavManager.NavigateTo("devices/new");
+                break;
         }
     }
 
@@ -305,7 +330,6 @@
             // Prompts a snack bar to inform the action was successful
             Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!", Severity.Success, null);
 
-            // Go back to the list of devices
             NavManager.NavigateTo("devices");
         }
         catch (ProblemDetailsException exception)
@@ -314,9 +338,11 @@
         }
         finally
         {
-            isProcessing = false;           
+            isProcessing = false;
+            StateHasChanged();          
         }
     }
+
     public async Task ShowConnectionString()
     {
         var parameters = new DialogParameters();
@@ -364,5 +390,16 @@
 
         // Go back to the list of devices
         NavManager.NavigateTo("devices");
+    }
+
+    private void SetSaveButtonText(DeviceSaveAction saveAction)
+    {
+        deviceSaveAction = saveAction;
+        saveButtonText = deviceSaveAction switch
+        {
+            DeviceSaveAction.Save => "Save",
+            DeviceSaveAction.Duplicate => "Duplicate",
+            _ => saveButtonText
+        };
     }
 }
