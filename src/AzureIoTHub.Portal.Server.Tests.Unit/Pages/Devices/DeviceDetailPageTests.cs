@@ -55,6 +55,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             _ = Services.AddSingleton(this.mockDeviceClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceClientService.Object);
 
+            _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
+
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));

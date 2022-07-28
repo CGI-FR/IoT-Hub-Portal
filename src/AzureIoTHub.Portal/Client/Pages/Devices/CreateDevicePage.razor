@@ -503,8 +503,7 @@
         }
         finally
         {
-            
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
         }
     }
 }
