@@ -45,9 +45,9 @@ The template will deploy the following resources in your Azure subscription:
 
 1. Press on the button below to start your Azure Deployment.
 
-    [![Deploy](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Fmain%2Ftemplates%2Fazuredeploy.json)
+    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Fmain%2Ftemplates%2Fazuredeploy.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Fmain%2Ftemplates%2FazuredeployUI.json)
 
-1. You will get to a page asking you to fill the following fields:
+2. You will get to a page asking you to fill the following fields:
     * **Resource Group**: A logical "folder" where all the template resource would be put into, just choose a meaningful name.
     * **Location**: In which data center the resources should be deployed. Make sure to choose a location where IoT Hub is available.
     * **Unique Solution Prefix**: A string that would be used as prefix for all the resources name to ensure their uniqueness.
