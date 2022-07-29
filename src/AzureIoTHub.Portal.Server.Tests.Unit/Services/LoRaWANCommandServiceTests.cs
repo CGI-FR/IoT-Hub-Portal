@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 {
     using System;
     using System.Collections.Generic;
@@ -11,18 +11,18 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
+    using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
-    using Server.Exceptions;
 
     [TestFixture]
-    public class DeviceModelCommandsControllerTests
+    public class LoRaWANCommandServiceTests
     {
         private MockRepository mockRepository;
 
@@ -30,14 +30,14 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         private Mock<ITableClientFactory> mockTableClientFactory;
         private Mock<TableClient> mockDeviceTemplatesTableClient;
         private Mock<TableClient> mockCommandsTableClient;
-        private Mock<ILogger<LoRaWANCommandsController>> mockLogger;
+        private Mock<ILogger<LoRaWANCommandService>> mockLogger;
 
         [SetUp]
         public void SetUp()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockLogger = this.mockRepository.Create<ILogger<LoRaWANCommandsController>>();
+            this.mockLogger = this.mockRepository.Create<ILogger<LoRaWANCommandService>>();
             this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockDeviceTemplatesTableClient = this.mockRepository.Create<TableClient>();
@@ -48,7 +48,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         public async Task PostShouldCreateCommand()
         {
             // Arrange
-            var deviceModelCommandsController = CreateDeviceModelCommandsController();
+            var deviceModelCommandsService = CreateDeviceModelCommandsService();
             var entity = SetupMockDeviceModel();
 
             var command = new DeviceModelCommand
@@ -91,12 +91,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 .Returns(this.mockCommandsTableClient.Object);
 
             // Act
-            var result = await deviceModelCommandsController.Post(entity.RowKey, new[] { command });
+            await deviceModelCommandsService.PostDeviceModelCommands(entity.RowKey, new[] { command });
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<OkResult>(result);
-
             this.mockTableClientFactory.Verify(c => c.GetDeviceTemplates(), Times.Once());
             this.mockDeviceTemplatesTableClient.Verify(c => c.GetEntityAsync<TableEntity>(
                         It.Is<string>(p => p == LoRaWANDeviceModelsController.DefaultPartitionKey),
@@ -112,10 +109,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task PostShouldInternalServerErrorExceptionWhenQueryingExistingCommands()
+        public async Task PostShouldThrowInternalServerErrorExceptionWhenFailQueryingExistingCommands()
         {
             // Arrange
-            var deviceModelCommandsController = CreateDeviceModelCommandsController();
+            var deviceModelCommandsService = CreateDeviceModelCommandsService();
 
             var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
             var modelId = Guid.NewGuid().ToString();
@@ -147,7 +144,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 .Returns(this.mockCommandsTableClient.Object);
 
             // Act
-            var act = () => deviceModelCommandsController.Post(entity.RowKey, new[] { command });
+            var act = () => deviceModelCommandsService.PostDeviceModelCommands(entity.RowKey, new[] { command });
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
@@ -155,10 +152,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task PostShouldInternalServerErrorExceptionWhenDeletingExistingCommands()
+        public async Task PostShouldThrowInternalServerErrorExceptionWhenFailDeletingExistingCommands()
         {
             // Arrange
-            var deviceModelCommandsController = CreateDeviceModelCommandsController();
+            var deviceModelCommandsService = CreateDeviceModelCommandsService();
 
             var mockResponseTableEntity = this.mockRepository.Create<Response<TableEntity>>();
             var mockResponse = this.mockRepository.Create<Response>();
@@ -204,7 +201,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 .Returns(this.mockCommandsTableClient.Object);
 
             // Act
-            var act = () => deviceModelCommandsController.Post(entity.RowKey, new[] { command });
+            var act = () => deviceModelCommandsService.PostDeviceModelCommands(entity.RowKey, new[] { command });
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
@@ -212,10 +209,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task PostShouldInternalServerErrorExceptionWhenAddingNewCommands()
+        public async Task PostShouldThrowInternalServerErrorExceptionWhenFailAddingNewCommands()
         {
             // Arrange
-            var deviceModelCommandsController = CreateDeviceModelCommandsController();
+            var deviceModelCommandsService = CreateDeviceModelCommandsService();
 
             var mockResponseTableEntity = this.mockRepository.Create<Response<TableEntity>>();
             var mockResponse = this.mockRepository.Create<Response>();
@@ -270,7 +267,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 .Returns(this.mockCommandsTableClient.Object);
 
             // Act
-            var act = () => deviceModelCommandsController.Post(entity.RowKey, new[] { command });
+            var act = () => deviceModelCommandsService.PostDeviceModelCommands(entity.RowKey, new[] { command });
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
@@ -278,37 +275,35 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
         }
 
         [Test]
-        public async Task WhenModelNotExistsPostShouldReturn404()
+        public async Task PostShouldThrowInternalServerErrorExceptionWhenModelDoesNotExist()
         {
             // Arrange
-            var deviceModelCommandsController = CreateDeviceModelCommandsController();
+            var deviceModelCommandsService = CreateDeviceModelCommandsService();
 
             SetupNotFoundDeviceModel();
 
             // Act
-            var result = await deviceModelCommandsController.Post(Guid.NewGuid().ToString(), new[] { new DeviceModelCommand() });
+            var act = () => deviceModelCommandsService.PostDeviceModelCommands(Guid.NewGuid().ToString(), new[] { new DeviceModelCommand() });
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<NotFoundResult>(result);
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
 
         [Test]
-        public async Task WhenModelNotExistsGetShouldReturn404()
+        public async Task GetShouldThrowInternalServerErrorExceptionWhenModelDoesNotExist()
         {
             // Arrange
-            var deviceModelCommandsController = CreateDeviceModelCommandsController();
+            var deviceModelCommandsService = CreateDeviceModelCommandsService();
 
             SetupNotFoundDeviceModel();
 
             // Act
-            var result = await deviceModelCommandsController.Get(Guid.NewGuid().ToString());
+            var act = () =>  deviceModelCommandsService.GetDeviceModelCommandsFromModel(Guid.NewGuid().ToString());
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<NotFoundResult>(result.Result);
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
 
             this.mockRepository.VerifyAll();
         }
@@ -319,7 +314,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             // Arrange
             var deviceModel = SetupMockDeviceModel();
             var deviceModelId = deviceModel.RowKey;
-            var deviceModelCommandsController = CreateDeviceModelCommandsController();
+            var deviceModelCommandsService = CreateDeviceModelCommandsService();
             var mockResponse = this.mockRepository.Create<Response>();
 
             _ = this.mockCommandsTableClient.Setup(c => c.Query<TableEntity>(
@@ -343,18 +338,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 .Returns(new DeviceModelCommand());
 
             // Act
-            var response = await deviceModelCommandsController.Get(deviceModelId);
+            var result = await deviceModelCommandsService.GetDeviceModelCommandsFromModel(deviceModelId);
 
             // Assert
-            Assert.IsNotNull(response);
-            Assert.IsAssignableFrom<OkObjectResult>(response.Result);
-
-            var okResult = (OkObjectResult)response.Result;
-
-            Assert.IsNotNull(okResult);
-            Assert.IsAssignableFrom<DeviceModelCommand[]>(okResult.Value);
-
-            var result = (DeviceModelCommand[])okResult.Value;
+            Assert.IsAssignableFrom<DeviceModelCommand[]>(result);
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Length);
         }
@@ -376,7 +363,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
             _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
                 .Returns(this.mockDeviceTemplatesTableClient.Object);
 
-            var deviceModelCommandsController = CreateDeviceModelCommandsController();
+            var deviceModelCommandsService = CreateDeviceModelCommandsService();
 
             _ = this.mockCommandsTableClient.Setup(c => c.Query<TableEntity>(
                     It.Is<string>(x => x == $"PartitionKey eq '{deviceModelId}'"),
@@ -389,7 +376,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 .Returns(this.mockCommandsTableClient.Object);
 
             // Act
-            var act = () =>  deviceModelCommandsController.Get(deviceModelId);
+            var act = () =>  deviceModelCommandsService.GetDeviceModelCommandsFromModel(deviceModelId);
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
@@ -431,9 +418,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
                 .Returns(this.mockDeviceTemplatesTableClient.Object);
         }
 
-        private LoRaWANCommandsController CreateDeviceModelCommandsController()
+        private LoRaWANCommandService CreateDeviceModelCommandsService()
         {
-            return new LoRaWANCommandsController(
+            return new LoRaWANCommandService(
                 this.mockLogger.Object,
                 this.mockDeviceModelCommandMapper.Object,
                 this.mockTableClientFactory.Object);
