@@ -8,6 +8,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
     using AutoFixture;
     using AzureIoTHub.Portal.Client.Services;
     using Bunit;
+    using Client.Exceptions;
+    using Client.Models;
     using Client.Pages.Devices;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
@@ -70,6 +72,29 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
                         }
                     }
                 });
+
+            var cut = RenderComponent<DeviceToDuplicateSelector>();
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItem>>();
+
+            // Act
+            autocompleteComponent.Find(TagNames.Input).Click();
+            autocompleteComponent.Find(TagNames.Input).Input(query);
+
+
+            // Assert
+            cut.WaitForAssertion(() => autocompleteComponent.Instance.IsOpen.Should().BeTrue());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void TypingOnMudAutocompleteShouldProcessProblemDetailsExceptionWhenTriggerSearch()
+        {
+            // Arrange
+            var query = Fixture.Create<string>();
+
+            var url = $"api/devices?pageSize=10&searchText={query}";
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevices(url))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<DeviceToDuplicateSelector>();
             var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItem>>();
