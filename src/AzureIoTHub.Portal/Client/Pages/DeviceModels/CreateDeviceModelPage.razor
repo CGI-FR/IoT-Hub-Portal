@@ -150,8 +150,7 @@
                 {
                     <MudTabPanel Class="LoRaWANTab" Text="LoRaWAN" Style=@(loraValidator.Validate(Model as LoRaDeviceModel).IsValid ? "" : "color: red")>
                         <CreateLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)"
-                                           Commands="Commands"
-                                           CommandValidation="@CommandValidation" />
+                                           Commands="Commands"/>
                     </MudTabPanel>
                 }
             </MudTabs>
@@ -170,7 +169,8 @@
     private DevicePropertyValidator propertiesValidator = new DevicePropertyValidator();
     private List<DeviceModelCommand> Commands { get; set; }
     private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
-    private List<MudForm> CommandValidation { get; set; }
+
+    private LoRaModelCommandValidator CommandValidator = new LoRaModelCommandValidator();
 
     private bool isProcessing;
 
@@ -196,12 +196,6 @@
     {
         Model = new LoRaDeviceModel(Model);
         Commands = new List<DeviceModelCommand>();
-        CommandValidation = new List<MudForm>()
-        {
-            new MudForm(),
-            new MudForm(),
-            new MudForm()
-        };
     }
 
     private void SetStandardDeviceModel()
@@ -274,10 +268,9 @@
             }
 
             // Check validation error in commands
-            foreach (var field in CommandValidation)
+            foreach(var cmd in Commands)
             {
-                await field.Validate();
-                if (!field.IsValid)
+                if (!CommandValidator.Validate(cmd).IsValid)
                     cmdValidationError = true;
             }
         }

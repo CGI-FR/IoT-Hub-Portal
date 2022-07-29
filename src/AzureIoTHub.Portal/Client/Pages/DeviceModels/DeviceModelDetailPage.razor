@@ -138,7 +138,8 @@
                 @if (IsLoRa)
                 {
                     <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Model as LoRaDeviceModel).IsValid ? "" : "color: red")>
-                        <EditLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)" Commands="Commands" />
+                        <EditLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)"
+                                             Commands="Commands"/>
                     </MudTabPanel>
                 }
             </MudTabs>
@@ -165,6 +166,8 @@
 
     private List<DeviceModelCommand> Commands { get; set; } = new List<DeviceModelCommand>();
     private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
+
+    private LoRaModelCommandValidator CommandValidator = new LoRaModelCommandValidator();
 
     [Parameter]
     [SupplyParameterFromQuery]
@@ -269,9 +272,36 @@
     {
         isProcessing = true;
 
+        // Used to check commands
+        bool duplicated = false;
+        bool cmdValidationError = false;
+
+        if (IsLoRa)
+        {
+            // Check duplicates in command name
+            var query = Commands.GroupBy(x => x.Name)
+                        .Where(x => x.Count() > 1)
+                        .Select(x => x.Key)
+                        .ToList();
+            foreach (var item in query)
+            {
+                Snackbar.Add($"The command '{item}' appears more than once!", Severity.Warning);
+                duplicated = true;
+            }
+
+            // Check validation error in commands
+            foreach(var cmd in Commands)
+            {
+                if (!CommandValidator.Validate(cmd).IsValid)
+                    cmdValidationError = true;
+            }
+        }
+
         if (!standardValidator.Validate(Model).IsValid
             || !propertiesValidator.Validate(Properties).IsValid
-            || (IsLoRa && !this.loraValidator.Validate(this.Model as LoRaDeviceModel).IsValid))
+            || (IsLoRa && (!this.loraValidator.Validate(this.Model as LoRaDeviceModel).IsValid
+            || duplicated
+            || cmdValidationError)))
         {
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
