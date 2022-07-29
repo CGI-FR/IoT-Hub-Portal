@@ -10,8 +10,8 @@
 
 <MudAutocomplete id="search-device"
                  T="DeviceListItem"
-                 Label="Device to Duplicate"
-                 SearchFunc="@SearchDevicesToClone"
+                 Label="Search a device to duplicate"
+                 SearchFunc="@SearchDevicesToDuplicate"
                  ToStringFunc="@(x => x?.DeviceName)"
                  DebounceInterval="300"
                  ValueChanged="OnDeviceSelected"
@@ -41,7 +41,7 @@
     [CascadingParameter]
     public Error Error {get; set;}
 
-    private async Task<IEnumerable<DeviceListItem>> SearchDevicesToClone(string query)
+    private async Task<IEnumerable<DeviceListItem>> SearchDevicesToDuplicate(string query)
     {
         try
         {

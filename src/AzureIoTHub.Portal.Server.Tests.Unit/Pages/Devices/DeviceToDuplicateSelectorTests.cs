@@ -80,7 +80,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             autocompleteComponent.Find(TagNames.Input).Click();
             autocompleteComponent.Find(TagNames.Input).Input(query);
 
-
             // Assert
             cut.WaitForAssertion(() => autocompleteComponent.Instance.IsOpen.Should().BeTrue());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
@@ -102,7 +101,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             // Act
             autocompleteComponent.Find(TagNames.Input).Click();
             autocompleteComponent.Find(TagNames.Input).Input(query);
-
 
             // Assert
             cut.WaitForAssertion(() => autocompleteComponent.Instance.IsOpen.Should().BeTrue());
