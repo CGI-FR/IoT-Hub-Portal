@@ -8,7 +8,8 @@
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
 @inject IDeviceLayoutService DeviceLayoutService
 
-<MudAutocomplete T="DeviceListItem"
+<MudAutocomplete id="search-device"
+                 T="DeviceListItem"
                  Label="Device to Duplicate"
                  SearchFunc="@SearchDevicesToClone"
                  ToStringFunc="@(x => x?.DeviceName)"
