@@ -167,7 +167,7 @@
     private List<DeviceModelCommand> Commands { get; set; } = new List<DeviceModelCommand>();
     private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
 
-    private LoRaModelCommandValidator CommandValidator = new LoRaModelCommandValidator();
+    private LoRaDeviceModelCommandValidator CommandValidator = new LoRaDeviceModelCommandValidator();
 
     [Parameter]
     [SupplyParameterFromQuery]

@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Validators
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using NUnit.Framework;
 
-    internal class ConcentratorValidatorTest
+    internal class ConcentratorValidatorTests
     {
         [Test]
         public void ValidateValidConcentrator()
