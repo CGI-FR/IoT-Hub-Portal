@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
+    using Models.v10.LoRaWAN;
     using NUnit.Framework;
 
     [TestFixture]
@@ -64,6 +65,30 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
         }
 
         [Test]
+        public void DuplicateSharedDeviceShouldReturnDuplicatedLoraWanDevice()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+            var deviceName = Fixture.Create<string>();
+            var appKey = Fixture.Create<string>();
+
+            // Act
+            var result = this.deviceLayoutService.DuplicateSharedDevice(new LoRaDeviceDetails
+            {
+                DeviceID = deviceId,
+                DeviceName = deviceName,
+                AppKey = appKey
+            });
+
+            // Assert
+            var loraWanDevice = (LoRaDeviceDetails) result;
+
+            _ = loraWanDevice.DeviceID.Should().BeEmpty();
+            _ = loraWanDevice.DeviceName.Should().Be($"{deviceName} - copy");
+            _ = loraWanDevice.AppKey.Should().BeEmpty();
+        }
+
+        [Test]
         public void DuplicateSharedDeviceModelShouldReturnDuplicatedDeviceModel()
         {
             // Arrange
@@ -84,6 +109,26 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 
             // Act
             var result = this.deviceLayoutService.ResetSharedDevice();
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedDevice);
+        }
+
+        [Test]
+        public void ResetSharedDeviceShouldReturnNewDeviceWithExpectedTags()
+        {
+            // Arrange
+            var expectedTags = Fixture.CreateMany<DeviceTag>(2).ToList();
+
+            var expectedDevice = new DeviceDetails();
+
+            foreach (var tag in expectedTags)
+            {
+                _ = expectedDevice.Tags.TryAdd(tag.Name, string.Empty);
+            }
+
+            // Act
+            var result = this.deviceLayoutService.ResetSharedDevice(expectedTags);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDevice);

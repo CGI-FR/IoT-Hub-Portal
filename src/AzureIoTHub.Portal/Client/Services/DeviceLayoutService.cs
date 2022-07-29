@@ -54,7 +54,7 @@ namespace AzureIoTHub.Portal.Client.Services
             deviceToDuplicate.DeviceID = string.Empty;
             deviceToDuplicate.DeviceName = $"{deviceToDuplicate.DeviceName} - copy";
 
-            if (this.sharedDevice.IsLoraWan)
+            if (deviceToDuplicate.IsLoraWan)
             {
                 var loRaDeviceDetails = (LoRaDeviceDetails)deviceToDuplicate;
                 loRaDeviceDetails.AppKey = string.Empty;
