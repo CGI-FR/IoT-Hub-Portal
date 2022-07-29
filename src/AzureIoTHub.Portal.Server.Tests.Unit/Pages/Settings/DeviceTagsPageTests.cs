@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading.Tasks;
+    //using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
@@ -19,6 +19,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using System.Threading.Tasks;
 
     [TestFixture]
     public class DeviceTagsPageTests : BlazorUnitTest
@@ -125,33 +126,56 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
 
 
         [Test]
-        public void ClickOnSaveShouldUpdateTagList()
+        public void ClickOnSaveShouldCreateUpdateTag()
         {
-            var expectedTags = new List<DeviceTag>
-            {
-                new() {
-                    Label = "Label",
-                    Name = "Name",
-                    Required = false,
-                    Searchable = false
-                }
-            };
-
+            //Arrange
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(expectedTags);
-
-            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.UpdateDeviceTags(It.IsAny<List<DeviceTag>>()))
+                .ReturnsAsync(new List<DeviceTag>
+                {
+                    new()
+                    {
+                        Label = "tagLabel", Name = "tagName", Required = false,
+                        Searchable = false
+                    }
+                });
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.CreateOrUpdateDeviceTag(It.IsAny<DeviceTag>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns((Snackbar)null);
 
 
             var cut = RenderComponent<DeviceTagsPage>();
-            cut.WaitForAssertion(() => cut.Find("#saveButton"));
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
             // Act
-            cut.Find("#saveButton").Click();
+            cut.WaitForElement("#saveButton").Click();
+
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnDeleteShouldDeleteTag()
+        {
+            //Arrange
+            const string deviceTagName = "tagName";
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>
+                {
+                    new()
+                    {
+                        Label = "tagLabel", Name = deviceTagName, Required = false,
+                        Searchable = false
+                    }
+                });
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.DeleteDeviceTagByName(deviceTagName))
+                .Returns(Task.CompletedTask);
+
+            var cut = RenderComponent<DeviceTagsPage>();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+
+            // Act
+            cut.WaitForElement("#deleteButton").Click();
 
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
@@ -232,7 +256,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
                     new () { Label = "Label", Name = "Name", Required = false, Searchable = false }
                 });
 
-            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.UpdateDeviceTags(It.IsAny<List<DeviceTag>>()))
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.CreateOrUpdateDeviceTag(It.IsAny<DeviceTag>()))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act

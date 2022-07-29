@@ -3,9 +3,9 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
 {
-    using System.Collections.Generic;
+    //using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
+    //using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
     using AutoFixture;
@@ -49,28 +49,28 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
 
-        [Test]
-        public async Task UpdateDeviceTagsShouldUpdateDeviceTags()
-        {
-            // Arrange
-            var expectedDeviceTags = Fixture.Build<DeviceTag>().CreateMany(3).ToList();
+        //[Test]
+        //public async Task UpdateDeviceTagsShouldUpdateDeviceTags()
+        //{
+        //    // Arrange
+        //    var expectedDeviceTags = Fixture.Build<DeviceTag>().CreateMany(3).ToList();
 
-            _ = MockHttpClient.When(HttpMethod.Post, "/api/settings/device-tags")
-                .With(m =>
-                {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IList<DeviceTag>>>();
-                    var tags = m.Content as ObjectContent<IList<DeviceTag>>;
-                    _ = tags.Value.Should().BeEquivalentTo(expectedDeviceTags);
-                    return true;
-                })
-                .Respond(HttpStatusCode.Created);
+        //    _ = MockHttpClient.When(HttpMethod.Post, "/api/settings/device-tags")
+        //        .With(m =>
+        //        {
+        //            _ = m.Content.Should().BeAssignableTo<ObjectContent<IList<DeviceTag>>>();
+        //            var tags = m.Content as ObjectContent<IList<DeviceTag>>;
+        //            _ = tags.Value.Should().BeEquivalentTo(expectedDeviceTags);
+        //            return true;
+        //        })
+        //        .Respond(HttpStatusCode.Created);
 
-            // Act
-            await this.deviceTagSettingsClientService.UpdateDeviceTags(expectedDeviceTags);
+        //    // Act
+        //    await this.deviceTagSettingsClientService.UpdateDeviceTags(expectedDeviceTags);
 
-            // Assert
-            MockHttpClient.VerifyNoOutstandingRequest();
-            MockHttpClient.VerifyNoOutstandingExpectation();
-        }
+        //    // Assert
+        //    MockHttpClient.VerifyNoOutstandingRequest();
+        //    MockHttpClient.VerifyNoOutstandingExpectation();
+        //}
     }
 }

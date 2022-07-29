@@ -56,7 +56,7 @@
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
                     <MudTooltip Text="Delete device">
-                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteTag(TagContexte))"></MudIconButton>
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteTag(TagContexte))" id="deleteButton"></MudIconButton>
                     </MudTooltip>
                 </MudTd>
                 <MudTd DataLabel="Validate" Style="text-align: center;">
@@ -135,7 +135,7 @@
         }
     }
 
-    private async Task Save(DeviceTag item)
+    private async Task Save(DeviceTag deviceTag)
     {
         try
         {
@@ -144,7 +144,19 @@
             await FormLabel.Validate();
             await FormName.Validate();
 
-            if (!FormLabel.IsValid || !FormName.IsValid)
+            // Checks duplicate
+            bool duplicated = false;
+            var query = Tags.GroupBy(x => x.Name)
+                        .Where(x => x.Count() > 1)
+                        .Select(x => x.Key)
+                        .ToList();
+            foreach (var item in query)
+            {
+                Snackbar.Add($"The name '{item}' appears more than once!", Severity.Warning);
+                duplicated = true;
+            }
+
+            if (!FormLabel.IsValid || !FormName.IsValid || duplicated)
             {
                 Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
@@ -154,7 +166,7 @@
             }         
             else
             {
-                await DeviceTagSettingsClientService.CreateOrUpdateDeviceTag(item);
+                await DeviceTagSettingsClientService.CreateOrUpdateDeviceTag(deviceTag);
             }
 
             Snackbar.Add($"Settings have been successfully updated!", Severity.Success);
