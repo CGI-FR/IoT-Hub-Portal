@@ -6,7 +6,9 @@ namespace AzureIoTHub.Portal.Client.Services
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Net.Http.Json;
+    using System.Text;
     using System.Threading.Tasks;
+    using Newtonsoft.Json;
     using Portal.Models.v10;
 
     public class DeviceTagSettingsClientService : IDeviceTagSettingsClientService
@@ -18,14 +20,22 @@ namespace AzureIoTHub.Portal.Client.Services
             this.http = http;
         }
 
+        public Task CreateOrUpdateDeviceTag(DeviceTag deviceTag)
+        {
+            var deviceTagAsJson = JsonConvert.SerializeObject(deviceTag);
+            using var content = new StringContent(deviceTagAsJson, Encoding.UTF8, "application/json");
+            return this.http.PatchAsync("api/settings/device-tags", content);
+        }
+
+        public Task DeleteDeviceTagByName(string deviceTagName)
+        {
+            return this.http.DeleteAsync($"api/settings/device-tags/{deviceTagName}");
+        }
+
         public async Task<IList<DeviceTag>> GetDeviceTags()
         {
             return await this.http.GetFromJsonAsync<List<DeviceTag>>("api/settings/device-tags");
         }
 
-        public Task UpdateDeviceTags(IList<DeviceTag> deviceTags)
-        {
-            return this.http.PostAsJsonAsync("api/settings/device-tags", deviceTags);
-        }
     }
 }

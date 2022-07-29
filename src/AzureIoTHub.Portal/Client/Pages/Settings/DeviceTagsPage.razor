@@ -6,83 +6,87 @@
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 
 <MudGrid>
-<MudItem xs="12">
-    <MudTable Items=@Tags Loading="isProcessing" Dense=true Hover=true Bordered=true Striped=true>
+    <MudItem xs="12">
+        <MudTable Items=@Tags Loading="isProcessing" Dense=true Hover=true Bordered=true Striped=true>
 
-        <ToolBarContent>
-            <MudText Typo="Typo.h6">Tags</MudText>
-            <MudSpacer />
-            <MudTooltip Text="Refresh list">
-                <MudIconButton id="reload-tags" Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadTags" Class="ma-2"></MudIconButton>
-            </MudTooltip>
-        </ToolBarContent>
-
-        <ColGroup>
-            <col style="width: 40%;" />
-            <col style="width: 40%;" />
-            <col style="width: 5%;" />
-            <col style="width: 5%;" />
-            <col style="width: 10%;" />
-        </ColGroup>
-        <HeaderContent>
-            <MudTh>Name</MudTh>
-            <MudTh>Label</MudTh>
-            <MudTh Style="text-align: center">Required</MudTh>
-            <MudTh Style="text-align: center">Searchable</MudTh>
-            <MudTh Style="text-align: center">Delete</MudTh>
-        </HeaderContent>
-        <RowTemplate Context="TagContexte">
-            <MudTd DataLabel="Name" Style="word-break: break-all;">
-                <MudForm @ref="FormName" Model="TagContexte">
-                    <MudTextField @bind-Value="@TagContexte.Name" Label="Name"
-                                  HelperText="Name that will be registered in the device twin" HelperTextOnFocus="true"
-                                  For="@(() => TagContexte.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
-                </MudForm>
-            </MudTd>
-            <MudTd DataLabel="Label" Style="word-break: break-all; ">
-                <MudForm @ref="FormLabel" Model="TagContexte">
-                    <MudTextField @bind-Value="@TagContexte.Label" Label="Label"
-                                  HelperText="The label shown to the user" HelperTextOnFocus="true"
-                                  For="@(() => TagContexte.Label)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
-                </MudForm>
-            </MudTd>
-            <MudTd DataLabel="Required" Style="text-align: center;">
-                <MudCheckBox @bind-Checked="@TagContexte.Required"></MudCheckBox>
-            </MudTd>
-            <MudTd DataLabel="Searchable" Style="text-align: center;">
-                <MudCheckBox @bind-Checked="@TagContexte.Searchable"></MudCheckBox>
-            </MudTd>
-            <MudTd DataLabel="Delete" Style="text-align: center">
-                <MudTooltip Text="Delete device">
-                    <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteTag(TagContexte))"></MudIconButton>
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Tags</MudText>
+                <MudSpacer />
+                <MudTooltip Text="Refresh list">
+                    <MudIconButton id="reload-tags" Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="LoadTags" Class="ma-2"></MudIconButton>
                 </MudTooltip>
-            </MudTd>
-        </RowTemplate>
-        <FooterContent>
-            <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddTag" id="addTagButton">Add a new Tag</MudButton>
-        </FooterContent>
+            </ToolBarContent>
 
-        <NoRecordsContent>
-            <MudText>No matching records found</MudText>
-        </NoRecordsContent>
-        <LoadingContent>
-            <MudText>Loading...</MudText>
-        </LoadingContent>
-    </MudTable>
-    <MudCardActions Class="pb-4 pl-4">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="Save" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
-    </MudCardActions>
-</MudItem>
+            <ColGroup>
+                <col style="width: 40%;" />
+                <col style="width: 40%;" />
+                <col style="width: 5%;" />
+                <col style="width: 5%;" />
+                <col style="width: 5%;" />
+                <col style="width: 5%;" />
+            </ColGroup>
+            <HeaderContent>
+                <MudTh>Name</MudTh>
+                <MudTh>Label</MudTh>
+                <MudTh Style="text-align: center">Required</MudTh>
+                <MudTh Style="text-align: center">Searchable</MudTh>
+                <MudTh Style="text-align: center">Delete</MudTh>
+                <MudTh Style="text-align: center">Validate</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="TagContexte">
+                <MudTd DataLabel="Name" Style="word-break: break-all;">
+                    <MudForm @ref="FormName" Model="TagContexte">
+                        <MudTextField @bind-Value="@TagContexte.Name" Label="Name"
+                                      HelperText="Name that will be registered in the device twin" HelperTextOnFocus="true"
+                                      For="@(() => TagContexte.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                    </MudForm>
+                </MudTd>
+                <MudTd DataLabel="Label" Style="word-break: break-all; ">
+                    <MudForm @ref="FormLabel" Model="TagContexte">
+                        <MudTextField @bind-Value="@TagContexte.Label" Label="Label"
+                                      HelperText="The label shown to the user" HelperTextOnFocus="true"
+                                      For="@(() => TagContexte.Label)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
+                    </MudForm>
+                </MudTd>
+                <MudTd DataLabel="Required" Style="text-align: center;">
+                    <MudCheckBox @bind-Checked="@TagContexte.Required"></MudCheckBox>
+                </MudTd>
+                <MudTd DataLabel="Searchable" Style="text-align: center;">
+                    <MudCheckBox @bind-Checked="@TagContexte.Searchable"></MudCheckBox>
+                </MudTd>
+                <MudTd DataLabel="Delete" Style="text-align: center">
+                    <MudTooltip Text="Delete device">
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteTag(TagContexte))" id="deleteButton"></MudIconButton>
+                    </MudTooltip>
+                </MudTd>
+                <MudTd DataLabel="Validate" Style="text-align: center;">
+                    <MudTooltip Text="Validate device">
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Filled.CheckCircle" Size="Size.Medium" OnClick="@(() => Save(TagContexte))" id="saveButton" Disabled="isProcessing">Save Changes></MudIconButton>
+                    </MudTooltip>
+                </MudTd>
+            </RowTemplate>
+            <FooterContent>
+                <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddTag" id="addTagButton">Add a new Tag</MudButton>
+            </FooterContent>
+
+            <NoRecordsContent>
+                <MudText>No matching records found</MudText>
+            </NoRecordsContent>
+            <LoadingContent>
+                <MudText>Loading...</MudText>
+            </LoadingContent>
+        </MudTable>
+    </MudItem>
 </MudGrid>
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; }
 
     List<DeviceTag> Tags { get; set; } = new();
     private MudForm FormName { get; set; }
     private MudForm FormLabel { get; set; }
-
+    
     private bool isProcessing;
 
     protected override async Task OnInitializedAsync()
@@ -120,48 +124,60 @@
 
     private void DeleteTag(DeviceTag item)
     {
-        Tags.Remove(item);
+        try
+        {
+            DeviceTagSettingsClientService.DeleteDeviceTagByName(item.Name);
+            Tags.Remove(item);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
     }
 
-    private async Task Save()
+    private async Task Save(DeviceTag deviceTag)
     {
-        isProcessing = true;
+        try
+        {
+            isProcessing = true;
 
-        // Checks empty field and regex validation
-        await FormLabel.Validate();
-        await FormName.Validate();
+            await FormLabel.Validate();
+            await FormName.Validate();
 
-        // Checks duplicate
-        bool duplicated = false;
-        var query = Tags.GroupBy(x => x.Name)
+            // Checks duplicate
+            bool duplicated = false;
+            var query = Tags.GroupBy(x => x.Name)
                         .Where(x => x.Count() > 1)
                         .Select(x => x.Key)
                         .ToList();
-        foreach (var item in query)
-        {
-            Snackbar.Add($"The name '{item}' appears more than once!", Severity.Warning);
-            duplicated = true;
-        }
-
-        if (FormLabel.IsValid && FormName.IsValid && !duplicated)
-        {
-            try
+            foreach (var item in query)
             {
-                await DeviceTagSettingsClientService.UpdateDeviceTags(Tags);
-
-                // Prompts a snack bar to inform the action was successful
-                Snackbar.Add($"Settings have been successfully updated!", Severity.Success);   
+                Snackbar.Add($"The name '{item}' appears more than once!", Severity.Warning);
+                duplicated = true;
             }
-            catch (ProblemDetailsException exception)
+
+            if (!FormLabel.IsValid || !FormName.IsValid || duplicated)
             {
-                Error?.ProcessProblemDetails(exception);
-            }
-        }
-        else
-        {
-            Snackbar.Add("One or more validation errors occurred", Severity.Error);
-        }
+                Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
-        isProcessing = false;
+                isProcessing = false;
+
+                return;
+            }         
+            else
+            {
+                await DeviceTagSettingsClientService.CreateOrUpdateDeviceTag(deviceTag);
+            }
+
+            Snackbar.Add($"Settings have been successfully updated!", Severity.Success);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;            
+        }
     }
 }
