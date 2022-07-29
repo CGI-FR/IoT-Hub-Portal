@@ -3,12 +3,17 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 {
+    using System.Collections.Generic;
+    using AngleSharp.Dom;
+    using AutoFixture;
     using AzureIoTHub.Portal.Client.Services;
     using Bunit;
     using Client.Pages.Devices;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
+    using Models.v10;
     using Moq;
+    using MudBlazor;
     using NUnit.Framework;
 
     [TestFixture]
@@ -44,6 +49,38 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
 
             // Assert
             cut.WaitForAssertion(() => cut.FindAll("#search-device").Count.Should().Be(1));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void TypingOnMudAutocompleteShouldTriggerSearch()
+        {
+            // Arrange
+            var query = Fixture.Create<string>();
+
+            var url = $"api/devices?pageSize=10&searchText={query}";
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevices(url))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>()
+                {
+                    Items = new List<DeviceListItem>
+                    {
+                        new()
+                        {
+                            DeviceID = Fixture.Create<string>()
+                        }
+                    }
+                });
+
+            var cut = RenderComponent<DeviceToDuplicateSelector>();
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItem>>();
+
+            // Act
+            autocompleteComponent.Find(TagNames.Input).Click();
+            autocompleteComponent.Find(TagNames.Input).Input(query);
+
+
+            // Assert
+            cut.WaitForAssertion(() => autocompleteComponent.Instance.IsOpen.Should().BeTrue());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
