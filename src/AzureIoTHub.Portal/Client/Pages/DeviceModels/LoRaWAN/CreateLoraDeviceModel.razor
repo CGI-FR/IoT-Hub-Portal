@@ -150,7 +150,7 @@
                                         <MudTextField id="@nameof(DeviceModelCommand.Name)" @bind-Value="@CommandContext.Name" Label="Name" For="@(() => CommandContext.Name)" Variant="Variant.Outlined" Required="true" Disabled="CommandContext.IsBuiltin"></MudTextField>
                                     </MudTd>
                                     <MudTd DataLabel="Frame" Style="word-break: break-all; ">
-                                        <MudTextField id="@nameof(DeviceModelCommand.Frame)" @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Variant="Variant.Outlined" Required="true" Disabled="CommandContext.IsBuiltin" Mask="@maskCommandFrame"></MudTextField>
+                                        <MudTextField id="@nameof(DeviceModelCommand.Frame)" @bind-Value="@CommandContext.Frame" Label="Frame" For="@(() => CommandContext.Frame)" Variant="Variant.Outlined" Required="true" Disabled="CommandContext.IsBuiltin" Mask="@(new RegexMask(@"^[0-9a-fA-F]{0,255}$"))"></MudTextField>
                                     </MudTd>
                                     <MudTd DataLabel="Confirmed" Style="text-align: center; ">
                                         <MudCheckBox @bind-Checked="@CommandContext.Confirmed" For="@(() => CommandContext.Confirmed)" Color="Color.Primary" Disabled="CommandContext.IsBuiltin"></MudCheckBox>
@@ -181,14 +181,9 @@
     [Parameter]
     public IList<DeviceModelCommand> Commands { get; set; }
 
-    [Parameter]
-    public IList<MudForm> CommandValidation { get; set; }
-
     private bool loraProperty { get; set; }
 
     private DeviceModelCommand DeviceModelCommand { get; set; } = new DeviceModelCommand();
-
-    public IMask maskCommandFrame = new RegexMask(@"^[0-9a-fA-F]{0,255}$");
 
     private void AddCommand()
     {

@@ -8,7 +8,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels.LoRaWAN
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Bunit;
     using FluentAssertions;
-    using MudBlazor;
     using NUnit.Framework;
 
     [TestFixture]
@@ -25,17 +24,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels.LoRaWAN
             // Arrange
             var model = new LoRaDeviceModel();
             var commands = new List<DeviceModelCommand>();
-            var commandValidation = new List<MudForm>()
-            {
-                new MudForm(),
-                new MudForm(),
-                new MudForm()
-            };
 
             var cut = RenderComponent<CreateLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
-                ComponentParameter.CreateParameter("Commands", commands),
-                ComponentParameter.CreateParameter("CommandValidation", commandValidation)
+                ComponentParameter.CreateParameter("Commands", commands)
             );
 
             cut.WaitForAssertion(() => cut.FindAll(".mud-expand-panel").Count.Should().Be(3));
@@ -47,17 +39,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels.LoRaWAN
             // Arrange
             var model = new LoRaDeviceModel();
             var commands = new List<DeviceModelCommand>();
-            var commandValidation = new List<MudForm>()
-            {
-                new MudForm(),
-                new MudForm(),
-                new MudForm()
-            };
 
             var cut = RenderComponent<CreateLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
-                ComponentParameter.CreateParameter("Commands", commands),
-                ComponentParameter.CreateParameter("CommandValidation", commandValidation)
+                ComponentParameter.CreateParameter("Commands", commands)
             );
 
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(0));
@@ -72,17 +57,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.DevicesModels.LoRaWAN
             // Arrange
             var model = new LoRaDeviceModel();
             var commands = new List<DeviceModelCommand>();
-            var commandValidation = new List<MudForm>()
-            {
-                new MudForm(),
-                new MudForm(),
-                new MudForm()
-            };
 
             var cut = RenderComponent<CreateLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
-                ComponentParameter.CreateParameter("Commands", commands),
-                ComponentParameter.CreateParameter("CommandValidation", commandValidation)
+                ComponentParameter.CreateParameter("Commands", commands)
             );
 
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(0));
