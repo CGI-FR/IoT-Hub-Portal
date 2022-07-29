@@ -42,7 +42,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <returns>The action result.</returns>
         [HttpPost(Name = "POST Set device model commands")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Post(string id, DeviceModelCommand[] commands)
         {
             ArgumentNullException.ThrowIfNull(id, nameof(id));
@@ -60,7 +59,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <returns>The action result.</returns>
         [HttpGet(Name = "GET Device model commands")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<DeviceModelCommand[]>> Get(string id)
         {
 
