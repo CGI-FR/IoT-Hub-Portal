@@ -240,7 +240,7 @@
 							"visible": true,
 							"options": {
 								"icon": "Info",
-								"text": "Awesome-Ideas allows users to submit ideas using Iot Portal Hub Ideas. By this feature is disabled",
+								"text": "Awesome-Ideas allows users to submit ideas using Iot Portal Hub. By this feature is disabled",
 								"uri": "https://github.com/CGI-FR/IoT-Hub-Portal/discussions/categories/ideas"
 							}
 						},
