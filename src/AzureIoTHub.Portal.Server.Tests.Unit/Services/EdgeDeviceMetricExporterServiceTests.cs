@@ -10,9 +10,9 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
     using Moq;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
-    using Constants;
     using FluentAssertions;
     using Prometheus;
+    using Server.Constants;
 
     [TestFixture]
     public class EdgeDeviceMetricExporterServiceTests : IDisposable

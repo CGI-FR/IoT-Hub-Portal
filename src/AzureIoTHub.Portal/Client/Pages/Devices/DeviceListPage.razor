@@ -104,7 +104,7 @@
                     <img height="25" src="@context.ImageUrl" />
                 </MudTd>
                 <MudTd DataLabel="Device" Style="word-break: break-all;">
-                    <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText><MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{mudTheme.Palette.GrayLight};")" Inline="true">@context.DeviceID</MudText>
+                    <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText><MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceID</MudText>
                 </MudTd>
 
                 <MudTd DataLabel="Allowed" Style="text-align: center">
@@ -178,8 +178,6 @@
     private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
 
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
-
-    private readonly MudTheme mudTheme = new();
 
     protected override async Task OnInitializedAsync()
     {

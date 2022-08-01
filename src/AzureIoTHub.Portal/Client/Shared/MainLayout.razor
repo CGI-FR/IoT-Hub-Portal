@@ -8,7 +8,7 @@
 
 @implements IDisposable
 
-<MudThemeProvider Theme="currentTheme" IsDarkMode="@LayoutService.IsDarkMode" IsDarkModeChanged="LayoutService.SetDarkMode" />
+<MudThemeProvider Theme="@Theme.CurrentTheme" IsDarkMode="@LayoutService.IsDarkMode" IsDarkModeChanged="LayoutService.SetDarkMode" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
@@ -36,16 +36,6 @@
 </MudLayout>
 
 @code {
-
-    readonly MudTheme currentTheme = new()
-    {
-        Palette = new Palette
-        {
-
-            Background = "#efefef"
-        }
-    };
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
