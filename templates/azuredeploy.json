@@ -92,6 +92,32 @@
             "metadata": {
                 "description": "Enable LoRaWAN feature?"
             }
+        },
+        "ideasEnabled": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "To enable Awesome-Ideas feature when set to true"
+            }
+        },
+        "ideasUrl": {
+            "type": "string",
+            "metadata": {
+                "description": "Url of Awesome-Ideas, to publish ideas submitted by users"
+            }
+        },
+        "ideasAuthenticationHeader": {
+            "type": "string",
+            "defaultValue": "Ocp-Apim-Subscription-Key",
+            "metadata": {
+                "description": "Authentication header to interact with Awesome-Ideas"
+            }
+        },
+        "ideasAuthenticationToken": {
+            "type": "string",
+            "metadata": {
+                "description": "Authentication token to interact with Awesome-Ideas"
+            }
         }
     },
     "variables": {
@@ -100,7 +126,7 @@
         "portalWithoutLoRaDeploymentName": "iothub-portal-without-lora"
     },
     "resources": [
-                {
+        {
             "condition": "[parameters('isLoRaFeatureEnabled')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
@@ -168,6 +194,18 @@
                     },
                     "clientId": {
                         "value": "[parameters('clientId')]"
+                    },
+                    "ideasEnabled": {
+                        "value": "[parameters('ideasEnabled')]"
+                    },
+                    "ideasUrl": {
+                        "value": "[parameters('ideasUrl')]"
+                    },
+                    "ideasAuthenticationHeader": {
+                        "value": "[parameters('ideasAuthenticationHeader')]"
+                    },
+                    "ideasAuthenticationToken": {
+                        "value": "[parameters('ideasAuthenticationToken')]"
                     }
                 }
             }
@@ -201,6 +239,18 @@
                     },
                     "clientId": {
                         "value": "[parameters('clientId')]"
+                    },
+                    "ideasEnabled": {
+                        "value": "[parameters('ideasEnabled')]"
+                    },
+                    "ideasUrl": {
+                        "value": "[parameters('ideasUrl')]"
+                    },
+                    "ideasAuthenticationHeader": {
+                        "value": "[parameters('ideasAuthenticationHeader')]"
+                    },
+                    "ideasAuthenticationToken": {
+                        "value": "[parameters('ideasAuthenticationToken')]"
                     }
                 }
             }

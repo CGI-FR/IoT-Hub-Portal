@@ -37,6 +37,32 @@
       "metadata": {
         "description": "The API client ID for the B2C tenant"
       }
+    },
+    "ideasEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "To enable Awesome-Ideas feature when set to true"
+      }
+    },
+    "ideasUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Url of Awesome-Ideas, to publish ideas submitted by users"
+      }
+    },
+    "ideasAuthenticationHeader": {
+      "type": "string",
+      "defaultValue": "Ocp-Apim-Subscription-Key",
+      "metadata": {
+        "description": "Authentication header to interact with Awesome-Ideas"
+      }
+    },
+    "ideasAuthenticationToken": {
+      "type": "string",
+      "metadata": {
+        "description": "Authentication token to interact with Awesome-Ideas"
+      }
     }
   },
   "variables": {
@@ -202,6 +228,22 @@
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
               "value": "[reference(resourceId('Microsoft.Insights/components', variables('appInsightName')), '2020-02-02', 'Full').properties.InstrumentationKey]"
+            },
+            {
+              "name": "Ideas__Enabled",
+              "value": "[parameters('ideasEnabled')]"
+            },
+            {
+              "name": "Ideas__Url",
+              "value": "[parameters('ideasUrl')]"
+            },
+            {
+              "name": "Ideas__Authentication__Header",
+              "value": "[parameters('ideasAuthenticationHeader')]"
+            },
+            {
+              "name": "Ideas__Authentication__Token",
+              "value": "[parameters('ideasAuthenticationToken')]"
             }
           ]
         },

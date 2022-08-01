@@ -229,6 +229,74 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "awesomeIdeasStep",
+					"label": "Awesome-Ideas",
+					"elements": [
+						{
+							"name": "ideasInfo",
+							"type": "Microsoft.Common.InfoBox",
+							"visible": true,
+							"options": {
+								"icon": "Info",
+								"text": "Awesome-Ideas allows users to submit ideas using Iot Portal Hub Ideas. By this feature is disabled",
+								"uri": "https://github.com/CGI-FR/IoT-Hub-Portal/discussions/categories/ideas"
+							}
+						},
+						{
+							"name": "ideasEnabled",
+							"type": "Microsoft.Common.OptionsGroup",
+							"label": "Do you want to enable Awesome-Ideas feature?",
+							"defaultValue": "No",
+							"toolTip": "Enable Awesome-Ideas feature",
+							"constraints": {
+								"allowedValues": [
+									{
+										"label": "No",
+										"value": false
+									},
+									{
+										"label": "Yes",
+										"value": true
+									}
+								],
+								"required": true
+							},
+							"visible": true
+						},
+						{
+							"name": "ideasUrl",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Awesome-Ideas url",
+							"toolTip": "Url of Awesome-Ideas, to publish ideas submitted by users",
+							"visible": "[equals(steps('awesomeIdeasStep').ideasEnabled,true)]",
+							"constraints": {
+								"required": true
+							}
+						},
+						{
+							"name": "ideasAuthenticationHeader",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Awesome-Ideas authentication header",
+							"toolTip": "Authentication header to interact with Awesome-Ideas",
+							"visible": "[equals(steps('awesomeIdeasStep').ideasEnabled,true)]",
+							"defaultValue": "Ocp-Apim-Subscription-Key",
+							"constraints": {
+								"required": true
+							}
+						},
+						{
+							"name": "ideasAuthenticationToken",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Awesome-Ideas authentication token",
+							"toolTip": "Authentication token to interact with Awesome-Ideas",
+							"visible": "[equals(steps('awesomeIdeasStep').ideasEnabled,true)]",
+							"constraints": {
+								"required": true
+							}
+						}
+					]
 				}
             ]
         },
@@ -245,7 +313,11 @@
 				"resetPin": "[steps('lorawanStep').lorawanSection.resetPin]",
 				"region": "[steps('lorawanStep').lorawanSection.region]",
 				"spiSpeed": "[steps('lorawanStep').lorawanSection.spiSpeed]",
-				"spiDev": "[steps('lorawanStep').lorawanSection.spiDev]"
+				"spiDev": "[steps('lorawanStep').lorawanSection.spiDev]",
+				"ideasEnabled": "[steps('awesomeIdeasStep').ideasEnabled]",
+				"ideasUrl": "[steps('awesomeIdeasStep').ideasUrl]",
+				"ideasAuthenticationHeader": "[steps('awesomeIdeasStep').ideasAuthenticationHeader]",
+				"ideasAuthenticationToken": "[steps('awesomeIdeasStep').ideasAuthenticationToken]"
             },
             "kind": "ResourceGroup",
             "location": "[steps('basics').resourceScope.location.name]",
