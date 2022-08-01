@@ -84,7 +84,7 @@
                 <MudText Typo="Typo.h6">Devices</MudText>
                 <MudSpacer />
                 <MudTooltip Text="Refresh list">
-                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick=@Search Size="Size.Medium" id="tableRefreshButton" Class="ma-2"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick="@Refresh" Size="Size.Medium" id="tableRefreshButton" Class="ma-2"></MudIconButton>
                 </MudTooltip>
                 <MudTooltip Text="Add device">
                     <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="addDeviceButton" />
@@ -173,7 +173,7 @@
 
     private bool IsLoading { get; set; } = true;
 
-    private Dictionary<int, string> Pages { get; set; } = new();
+    private readonly Dictionary<int, string> pages = new();
 
     private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
 
@@ -204,9 +204,9 @@
         {
             PaginationResult<DeviceListItem> result;
 
-            if (Pages.Keys.Contains(state.Page))
+            if (pages.Keys.Contains(state.Page))
             {
-                result = await DeviceClientService.GetDevices(Pages[state.Page]);
+                result = await DeviceClientService.GetDevices(pages[state.Page]);
             }
             else
             {
@@ -217,12 +217,12 @@
                     uri += $"&tag.{searchTag.Key}={searchTag.Value}";
                 }
 
-                _ = Pages.TryAdd(state.Page, uri);
+                _ = pages.TryAdd(state.Page, uri);
 
                 result = await DeviceClientService.GetDevices(uri);
             }
 
-            _ = Pages.TryAdd(state.Page + 1, result.NextPage);
+            _ = pages.TryAdd(state.Page + 1, result.NextPage);
 
             return new TableData<DeviceListItem>
                 {
@@ -263,8 +263,13 @@
 
     private void Search()
     {
-        Pages.Clear();
+        pages.Clear();
 
+        table.ReloadServerData();
+    }
+
+    private void Refresh()
+    {
         table.ReloadServerData();
     }
 
