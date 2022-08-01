@@ -149,5 +149,27 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
             cut.WaitForAssertion(() => Services.GetService<FakeNavigationManager>()?.Uri.Should().EndWith("/lorawan/concentrators/new"));
         }
+
+        [Test]
+        public void ClickOnRefreshShouldReloadConcentrators()
+        {
+            // Arrange
+            var expectedUri = "api/lorawan/concentrators?pageSize=10";
+
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
+                    service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new PaginationResult<Concentrator>
+                {
+                    Items = Array.Empty<Concentrator>()
+                });
+
+            var cut = RenderComponent<ConcentratorListPage>();
+
+            // Act
+            cut.WaitForElement("#tableRefreshButton").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
     }
 }

@@ -137,7 +137,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
         }
 
         [Test]
-        public async Task WhenRefreshClickShouldReloadFromApi()
+        public void ClickOnRefreshShouldReloadDevices()
         {
             // Arrange
             _ = this.mockDeviceClientService.Setup(service =>
@@ -152,16 +152,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Devices
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTag>());
 
+            var cut = RenderComponent<DeviceListPage>();
 
             // Act
-            var cut = RenderComponent<DeviceListPage>();
-            cut.WaitForAssertion(() => cut.Find("#tableRefreshButton"));
-
-            for (var i = 0; i < 3; i++)
-            {
-                cut.Find("#tableRefreshButton").Click();
-                await Task.Delay(100);
-            }
+            cut.WaitForElement("#tableRefreshButton").Click();
 
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());

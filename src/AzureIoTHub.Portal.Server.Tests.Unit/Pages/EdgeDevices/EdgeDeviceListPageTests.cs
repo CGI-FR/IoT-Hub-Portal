@@ -152,5 +152,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.EdgeDevices
             cut.WaitForAssertion(() => Services.GetService<FakeNavigationManager>()?.Uri.Should().EndWith($"/edge/devices/{deviceId}"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
+
+        [Test]
+        public void ClickOnRefreshShouldReloadEdgeDevices()
+        {
+            // Arrange
+            var expectedUrl = "api/edge/devices?pageSize=10&searchText=&searchStatus=&searchType=";
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
+                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
+                {
+                    Items = Array.Empty<IoTEdgeListItem>()
+                });
+
+            var cut = RenderComponent<EdgeDeviceListPage>();
+
+            // Act
+            cut.WaitForElement("#tableRefreshButton").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
     }
 }

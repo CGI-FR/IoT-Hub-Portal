@@ -22,7 +22,7 @@
                 <MudText Typo="Typo.h6">LoRaWAN Concentrators</MudText>
                 <MudSpacer />
                 <MudTooltip Text="Refresh list">
-                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="Search" Class="ma-2"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@Refresh" id="tableRefreshButton" Class="ma-2"></MudIconButton>
                 </MudTooltip>
                 <MudTooltip Text="Add LoRaWAN concentrator">
                     <MudFab id="add-concentrator" Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" />
@@ -99,7 +99,7 @@
     
     private MudTable<Concentrator> table;
 
-    private Dictionary<int, string> Pages { get; } = new();
+    private readonly Dictionary<int, string> pages = new();
 
     private bool IsLoading { get; set; } = true;
 
@@ -109,20 +109,20 @@
         {
             PaginationResult<Concentrator> result;
 
-            if (Pages.Keys.Contains(state.Page))
+            if (pages.Keys.Contains(state.Page))
             {
-                result = await LoRaWanConcentratorsClientService.GetConcentrators(Pages[state.Page]);
+                result = await LoRaWanConcentratorsClientService.GetConcentrators(pages[state.Page]);
             }
             else
             {
                 var uri = $"api/lorawan/concentrators?pageSize={state.PageSize}";
 
-                _ = Pages.TryAdd(state.Page, uri);
+                _ = pages.TryAdd(state.Page, uri);
 
                 result = await LoRaWanConcentratorsClientService.GetConcentrators(uri);
             }
 
-            _ = Pages.TryAdd(state.Page + 1, result.NextPage);
+            _ = pages.TryAdd(state.Page + 1, result.NextPage);
 
             IsLoading = false;
 
@@ -161,8 +161,13 @@
 
     private void Search()
     {
-        Pages.Clear();
+        pages.Clear();
 
+        table.ReloadServerData();
+    }
+
+    private void Refresh()
+    {
         table.ReloadServerData();
     }
 
