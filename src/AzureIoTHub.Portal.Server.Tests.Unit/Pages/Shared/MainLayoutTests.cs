@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
     using System;
     using Bunit;
     using Bunit.TestDoubles;
+    using Client.Constants;
     using Client.Services;
     using Client.Shared;
     using FluentAssertions;
@@ -62,6 +63,20 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Shared
             _ = cut.FindAll("div.mud-layout").Count.Should().Be(1);
             _ = cut.FindAll("div.mud-main-content").Count.Should().Be(1);
             _ = cut.FindAll("#footer").Count.Should().Be(1);
+        }
+
+        [Test]
+        public void MainLayoutShouldUseApplicationTheme()
+        {
+            // Arrange
+            _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+
+            // Act
+            var cut = RenderComponent<MainLayout>();
+            cut.WaitForAssertion(() => cut.Find("div.mud-main-content"));
+
+            // Assert
+            _ = cut.FindComponent<MudThemeProvider>().Instance.Theme.Should().BeEquivalentTo(Theme.CurrentTheme);
         }
     }
 }
