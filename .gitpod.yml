@@ -1,8 +1,10 @@
+image: python:latest
+
 tasks:
-  - name: Jekyll
-    init: bundle install
-    command: bundle exec jekyll serve
+  - name: mkdocs-material
+    init: pip install -r requirements.txt
+    command: mkdocs serve
 
 ports: 
-  - port: 4000
+  - port: 8000
     onOpen: open-preview

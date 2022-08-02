@@ -16,7 +16,7 @@ The code is organized into the following directory structure:
 
 This schema represent the various components and how they interact to have a better understanding of the various solution elements.
 
-![./images/overall-architecture.png](./images/overall-architecture.png)
+![images/overall-architecture.png](images/overall-architecture.png)
 
 1. The user is authenticated by the OpenID Connect server.
 1. The user access to the IoT Hub Portal with the OAuth2.0 token.

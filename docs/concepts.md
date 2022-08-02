@@ -15,7 +15,7 @@ It relies on the following concepts:
 By using this capability, the application can create logical representations of IoT devices. This feature is designed to configure a set of sharable properties between devices.
 When creating a device, the user is asked to specify the device model. The application will then apply the properties of the device model to the device.
 
-![./assets/images/device-model.png](./assets/images/device-model.png)
+![images/device-model.png](images/device-model.png)
 
 ### Parameters
 
@@ -31,13 +31,13 @@ This functionality is exactly the same as standard device models except that **t
 
   > Note: Creating and updating built-in models is not available in the portal. They can be managed using the Azure IoT Hub portal APIs.
   >
-  > See [Device Model API reference]( ./open-api.html#tocS_DeviceModel)for more information.
+  > See [Device Model API reference](open-api) for more information.
 
 ## Devices
 
 Devices are the physical IoT devices that are provisioned by the application. They are represented by an object that is stored in the Azure IoT Hub as the device twin.
 
-![./assets/images/device-twin.png](./assets/images/device-twin.png)
+![images/device-twin.png](images/device-twin.png)
 
 ### Parameters
 
@@ -67,7 +67,7 @@ To store additional information about the device, the application uses device tw
 IoT Edge is fully herited from Azure IoT Hub concepts. In the portal, the user can mangage the IoT Edge devices stored in Azure IoT Hub.
 For more information about Azure IoT Edge, see [Azure IoT Edge documentation](https://docs.microsoft.com/en-us/azure/iot-edge/).
 
-![./assets/images/iot-edge.png](./assets/images/iot-edge.png)
+![images/iot-edge.png](images/iot-edge.png)
 
 ### Parameters
 
@@ -111,7 +111,7 @@ When clicking on "*Connect*" in the IoT Edge details page, the user can access t
 
 By using the portal, users can manage the device configuration and deploy to devices that are targeted by the configuration.
 
-![./assets/images/device-configuration.png](./assets/images/device-configuration.png)
+![images/device-configuration.png](images/device-configuration.png)
 
 It relies on the Device Model to define the configuration parameters that can be deployed to the devices.
 
@@ -148,7 +148,7 @@ The portal can be used to see the details of the configurations.
 
 > Note: At this time the portal cannot be used to update the configurations.
 
-![./assets/images/edge-configuration.png](./assets/images/edge-configuration.png)
+![images/edge-configuration.png](images/edge-configuration.png)
 
 ### Target
 
@@ -194,11 +194,11 @@ Internally, the LoRaWAN connectivity is expected to be provided by [IoTEdge LoRa
 For regular Device Models the IoT hub portal provides the possibility to manage LoRaWAN device models.
 To activate the LoRaWAN features on the device model, the user have to enable the option in the `LoRa Device` section
 
-![./assets/images/lora-feature-device-model-toggle.png](./assets/images/lora-feature-device-model-toggle.png)
+![images/lora-feature-device-model-toggle.png](images/lora-feature-device-model-toggle.png)
 
 > Note: once activated, the device model detail adds a new tab called "LORAWAN" that adds new settings to the device model.
 
-![./assets/images/lora-device-model.png](./assets/images/lora-device-model.png)
+![images/lora-device-model.png](images/lora-device-model.png)
 
 ### Parameters
 
@@ -237,13 +237,13 @@ The devices commands are pre-stored frames that the user can add to the device m
 LoRaWAN devices are accessible from the IoT Hub portal for devices that inherits from the LoRaWAN device model.
 The LoRaWAN tab shows the device details.
 
-![./assets/images/lora-device-details.png](./assets/images/lora-device-details.png)
+![images/lora-device-details.png](images/lora-device-details.png)
 
 > Note: By selecting the correct device model on the first tab, the portal will automatically take LoRaWAN settings from the device model to apply on the device.
 
 ## Concentrators
 
-![./assets/images/lora-concentrator.png](./assets/images/lora-concentrator.png)
+![images/lora-concentrator.png](images/lora-concentrator.png)
 
 ### Parameters
 
@@ -266,7 +266,7 @@ To store additional information about the concentrator, the application will use
 
 To execute the command, the device should have joined the network. The message below explains that the device have to be connected to the network ant commands are disabled until the device is connected to the network.
 
-![./assets/images/lorawan-device-not-joined-message.png](./assets/images/lorawan-device-not-joined-message.png)
+![images/lorawan-device-not-joined-message.png](images/lorawan-device-not-joined-message.png)
 
 #### Command execution flow
 
