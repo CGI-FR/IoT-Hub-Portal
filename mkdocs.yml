@@ -50,8 +50,7 @@ theme:
     text: Roboto
     code: Roboto Mono
   favicon: assets/images/favicon.svg
-  icon:
-    logo: logo
+  logo: assets/images/logo.svg
 
 # Extensions
 markdown_extensions:
