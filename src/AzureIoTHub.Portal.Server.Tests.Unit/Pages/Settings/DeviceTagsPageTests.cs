@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    //using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
@@ -266,6 +265,25 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.Settings
             saveButton.Click();
 
             // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnAddNewTagShouldAddNewTag()
+        {
+            //Arrange
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(Array.Empty<DeviceTag>());
+
+            var cut = RenderComponent<DeviceTagsPage>();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+
+            // Act
+            cut.WaitForElement("#addTagButton").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("No matching records found"));
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(1));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
