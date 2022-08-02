@@ -75,19 +75,9 @@ jobs:
         with: 
           ref: 'docs/main'
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '14'
-        
-      - name: Install widdershins
-        run: npm install -g widdershins
-
       - uses: actions/download-artifact@v3
         with:
           name: swagger-doc
-
-      - name: Generate Open API Markdown
-        run: widdershins --environment widdershins.json swagger.json -o open-api.md
 
       - name: Push Open API Markdown to GitHub
         uses: peter-evans/create-pull-request@v4
