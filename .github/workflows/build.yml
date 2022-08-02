@@ -78,6 +78,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: swagger-doc
+          path: docs
 
       - name: Push Open API Markdown to GitHub
         uses: peter-evans/create-pull-request@v4
