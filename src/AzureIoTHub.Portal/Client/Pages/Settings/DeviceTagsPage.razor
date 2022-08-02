@@ -1,5 +1,4 @@
 ﻿@page "/settings/device-tag"
-@using AzureIoTHub.Portal.Models.v10
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
@@ -7,7 +6,7 @@
 
 <MudGrid>
     <MudItem xs="12">
-        <MudTable Items=@Tags Loading="isProcessing" Dense=true Hover=true Bordered=true Striped=true>
+        <MudTable Items="@Tags" Loading="isProcessing" Dense=true Hover=true Bordered=true Striped=true>
 
             <ToolBarContent>
                 <MudText Typo="Typo.h6">Tags</MudText>
@@ -37,6 +36,7 @@
                 <MudTd DataLabel="Name" Style="word-break: break-all;">
                     <MudForm @ref="FormName" Model="TagContexte">
                         <MudTextField @bind-Value="@TagContexte.Name" Label="Name"
+                                      Disabled="@(!TagContexte.IsNewTag)"
                                       HelperText="Name that will be registered in the device twin" HelperTextOnFocus="true"
                                       For="@(() => TagContexte.Name)" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true"></MudTextField>
                     </MudForm>
@@ -66,7 +66,7 @@
                 </MudTd>
             </RowTemplate>
             <FooterContent>
-                <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddTag" id="addTagButton">Add a new Tag</MudButton>
+                <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="@AddTag" id="addTagButton">Add a new Tag</MudButton>
             </FooterContent>
 
             <NoRecordsContent>
@@ -83,7 +83,7 @@
     [CascadingParameter]
     public Error Error { get; set; }
 
-    List<DeviceTag> Tags { get; set; } = new();
+    List<DeviceTagModel> Tags { get; } = new();
     private MudForm FormName { get; set; }
     private MudForm FormLabel { get; set; }
     
@@ -100,7 +100,10 @@
         {
             isProcessing = true;
             Tags.Clear();
-            Tags.AddRange(await DeviceTagSettingsClientService.GetDeviceTags());
+
+            var result = await DeviceTagSettingsClientService.GetDeviceTags();
+
+            Tags.AddRange(result.Select(tag => new DeviceTagModel(tag)).ToList());
         }
         catch (ProblemDetailsException exception)
         {
@@ -118,16 +121,16 @@
 
         if (Tags.Count == 0 || (last.Name is not null && last.Label is not null))
         {
-            Tags.Add(new DeviceTag());
+            Tags.Add(new DeviceTagModel());
         }
     }
 
-    private void DeleteTag(DeviceTag item)
+    private void DeleteTag(DeviceTagModel deviceTagModel)
     {
         try
         {
-            DeviceTagSettingsClientService.DeleteDeviceTagByName(item.Name);
-            Tags.Remove(item);
+            DeviceTagSettingsClientService.DeleteDeviceTagByName(deviceTagModel.Name);
+            Tags.Remove(deviceTagModel);
         }
         catch (ProblemDetailsException exception)
         {
@@ -135,7 +138,7 @@
         }
     }
 
-    private async Task Save(DeviceTag deviceTag)
+    private async Task Save(DeviceTagModel deviceTagModel)
     {
         try
         {
@@ -166,7 +169,9 @@
             }         
             else
             {
-                await DeviceTagSettingsClientService.CreateOrUpdateDeviceTag(deviceTag);
+                await DeviceTagSettingsClientService.CreateOrUpdateDeviceTag(deviceTagModel);
+
+                deviceTagModel.IsNewTag = false;
             }
 
             Snackbar.Add($"Settings have been successfully updated!", Severity.Success);
