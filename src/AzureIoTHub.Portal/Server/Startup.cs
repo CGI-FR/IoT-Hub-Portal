@@ -316,7 +316,11 @@ namespace AzureIoTHub.Portal.Server
             {
                 app.UseWebAssemblyDebugging();
                 _ = app.UseSwagger();
-                _ = app.UseSwaggerUI();
+                _ = app.UseSwaggerUI(options =>
+                {
+                    // Disable swagger "Try It Out" feature
+                    options.SupportedSubmitMethods();
+                });
             }
             else
             {
