@@ -5,6 +5,7 @@ site_description: IoT Hub Portal for device management
 # Repository
 repo_name: CGI-FR/IoT-Hub-Portal
 repo_url: https://github.com/CGI-FR/IoT-Hub-Portal
+edit_uri: edit/docs/main/docs/
 
 # Copyright
 copyright: Copyright &copy; 2022 CGI France
