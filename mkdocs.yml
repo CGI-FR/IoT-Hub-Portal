@@ -93,7 +93,9 @@ plugins:
   - search:
       lang: en
   - macros
-  - render_swagger
+  - swagger-ui-tag:
+      supportedSubmitMethods: []
+      filter: true
 
 # Navigation
 nav:

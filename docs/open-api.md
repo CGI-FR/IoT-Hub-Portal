@@ -1,1 +1,1 @@
-!!swagger swagger.json!!
+<swagger-ui src="./swagger.json"/>
