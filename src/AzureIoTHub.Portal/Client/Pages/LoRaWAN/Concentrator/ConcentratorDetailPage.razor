@@ -75,7 +75,12 @@
                                             </MudItem>
                                             <MudItem xs="12" md="6">
                                                 <MudSelect T="string" Label="Region" Variant="Variant.Outlined" @bind-Value="@concentrator.LoraRegion" Required="true">
+                                                    <MudSelectItem Value="@("AS_923_925_1")">Asia 923-925 MHz, Group 1</MudSelectItem>
+                                                    <MudSelectItem Value="@("AS_923_925_2")">Asia 923-925 MHz, Group 2</MudSelectItem>
+                                                    <MudSelectItem Value="@("AS_923_925_3")">Asia 923-925 MHz, Group 3</MudSelectItem>
                                                     <MudSelectItem Value="@("EU_863_870")">Europe 863-870 MHz</MudSelectItem>
+                                                    <MudSelectItem Value="@("CN_470_510_RP1")">China 470-510 MHz, RP 1</MudSelectItem>
+                                                    <MudSelectItem Value="@("CN_470_510_RP2")">China 470-510 MHz, RP 2</MudSelectItem>
                                                     <MudSelectItem Value="@("US_902_928_FSB_1")">United States 902-928 MHz, FSB 1</MudSelectItem>
                                                     <MudSelectItem Value="@("US_902_928_FSB_2")">United States 902-928 MHz, FSB 2</MudSelectItem>
                                                     <MudSelectItem Value="@("US_902_928_FSB_3")">United States 902-928 MHz, FSB 3</MudSelectItem>
@@ -83,8 +88,6 @@
                                                     <MudSelectItem Value="@("US_902_928_FSB_5")">United States 902-928 MHz, FSB 5</MudSelectItem>
                                                     <MudSelectItem Value="@("US_902_928_FSB_6")">United States 902-928 MHz, FSB 6</MudSelectItem>
                                                     <MudSelectItem Value="@("US_902_928_FSB_7")">United States 902-928 MHz, FSB 7</MudSelectItem>
-                                                    <MudSelectItem Value="@("CN_470_510_RP1")">China 470-510 MHz, RP 1</MudSelectItem>
-                                                    <MudSelectItem Value="@("CN_470_510_RP2")">China 470-510 MHz, RP 2</MudSelectItem>
                                                 </MudSelect>
                                             </MudItem>
                                             <MudItem xs="12">
