@@ -1,9 +1,9 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Constants
+namespace AzureIoTHub.Portal.Server.Tests.Unit.Client.Constants
 {
-    using Client.Constants;
+    using AzureIoTHub.Portal.Client.Constants;
     using FluentAssertions;
     using NUnit.Framework;
 

@@ -50,7 +50,7 @@
     <Folder Include="Factories\" />
     <Folder Include="Handlers\" />
     <Folder Include="Mocks\" />
-    <Folder Include="Constants\" />
+    <Folder Include="Client\Constants\" />
     <Folder Include="Pages\Ideas\" />
   </ItemGroup>
 
