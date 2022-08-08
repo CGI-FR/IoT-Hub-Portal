@@ -1,6 +1,6 @@
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/CGI-FR/IoT-Hub-Portal/tree/docs/main)
-
 # IoT Hub Portal
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/CGI-FR/IoT-Hub-Portal/tree/docs/main)
 
 This project aims to provide a solution for handling IoT Devices easily.
 It relies on Azure IoT Hub for connectivity and device management.
@@ -10,7 +10,7 @@ It relies on Azure IoT Hub for connectivity and device management.
 The following should be completed before proceeding with the IoT Hub Portal development or deployment in your environment.
 
 * You must have an Azure subscription. Get an [Azure Free account](https://azure.microsoft.com/en-us/offers/ms-azr-0044p/) to get started.
-* You must have an Identity Provider supporting OpenId protocol. 
+* You must have an Identity Provider supporting OpenId protocol.
     > If you don't have existing Identity Provider, you can follow our dedicated page to setup an Azure AD B2C Tenant with its applications.
     > See [Azure AD B2C applications configuration](b2c-applications) page.
 * Understand how IoTEdge LoraWAN StarterKit work. Have a look at [https://azure.github.io/iotedge-lorawan-starterkit](https://azure.github.io/iotedge-lorawan-starterkit) to get started.
@@ -21,7 +21,7 @@ The following should be completed before proceeding with the IoT Hub Portal deve
 
 ## Step-By-Step instructions
 
-#### Deployed Azure Resources
+### Deployed Azure Resources
 
 The template will deploy the following resources in your Azure subscription:
 
@@ -32,16 +32,15 @@ The template will deploy the following resources in your Azure subscription:
 * Log Analytics (when opted in to use Azure Monitor)
 * Azure WebApp and Service Plan
 
-#### Instructions
+### Instructions
 
 1. Choose a solution prefix for your deployment.
 
-2. Use the [Portal AD applications configuration](b2c-applications) page to configure your AD B2C Tenant.
-    > You should save the following information:
-    > * OpenID authority: `<your-openid-authority>`
-    > * OpenID metadata URL: `<your-openid-provider-metadata-url>`
-    > * Client ID: `<your-client-id>`
-    > * API Client ID: `<your-client-id>`
+2. Use the [Portal AD applications configuration](b2c-applications) page to configure your AD B2C Tenant. You should save the following information:
+    * OpenID authority: `<your-openid-authority>`
+    * OpenID metadata URL: `<your-openid-provider-metadata-url>`
+    * Client ID: `<your-client-id>`
+    * API Client ID: `<your-client-id>`
 
 3. Press on the button below to start your Azure Deployment.
 
@@ -60,4 +59,4 @@ The template will deploy the following resources in your Azure subscription:
     * **Reset pin**:  The reset pin of your gateway (the value should be 7 for the Seed Studio LoRaWan, 25 for the IC880A)
     * **Region**:  In what region are you operating your device (currently only EU868 and US915 is supported)
 
-    > see: [https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure](https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure) for more information about the LoRaWan IoT Hub and Azure deployment.
+    > See: [https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure](https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure) for more information about the LoRaWan IoT Hub and Azure deployment.

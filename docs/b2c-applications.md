@@ -1,5 +1,4 @@
-
-## Azure AD B2C Tenant with applications
+# Azure AD B2C Tenant with applications
 
 This solution uses Azure AD B2C to authenticate the portal.
 In this page you will configure the B2C tenant and two applications (API and Web UI).
@@ -23,7 +22,7 @@ By the end, you should have recorded the following information:
         * Select **Register**.
         * Record the **Application (client) ID** for use in your web API's code.
         * Under **Manage**, select **Certificates & Secrets**.
-        * Under **Client secret**, select **New client secret**. 
+        * Under **Client secret**, select **New client secret**.
         * Enter a name for the secret.
         * Record the **Client secret** for use in your web API's code.
         * Under **Manage**, select **API permissions**.
@@ -31,13 +30,13 @@ By the end, you should have recorded the following information:
         * Select the **Microsoft APIs** tab.
         * Under **Commonly used Microsoft APIs**, select **Microsoft Graph**.
         * Select **Application permissions**.
-        * Under **Application permissions**, expand **User**, then select: 
+        * Under **Application permissions**, expand **User**, then select:
             * ``User.Invite.All``
             * ``User.ManageIdentities.All``
             * ``User.Read.All``
             * ``User.ReadWrite.All``
         * Select **Add permission**.
-        * If you're prompted to select an account, select your currently signed-in administrator account, or sign in      * with an account in your Azure AD B2C tenant that's been assigned at least the Cloud application administrator       * role.
+        * If you're prompted to select an account, select your currently signed-in administrator account, or sign in **with an account in your Azure AD B2C tenant that's been assigned at least the Cloud application administrator** role.
         * Under **Manage**, select **Expose an API**.
         * Next to **Application ID URI**, select the **Set** link.
         * Under **Scopes defined by this API**, select **Add a scope**.
@@ -46,7 +45,7 @@ By the end, you should have recorded the following information:
             * **Admin consent display name**: ``Access to the Portal API``
             * **Admin consent description**: ``Allows the application to get access to the Portal API``
 
-    1. Create the **IoT Hub Portal Client** Application:
+    2. Create the **IoT Hub Portal Client** Application:
         * Select **App registrations**, and then select **New registration**.
         * Enter a Name for the application. For example, **IoT Hub Portal Client**.
         * Under **Redirect URI**, select **Web**, and then enter an expected endpoint for your portal (ex: _https://**solutionPrefix**portal.azurewebsites.net/authentication/login-callback_)
@@ -60,11 +59,11 @@ By the end, you should have recorded the following information:
         * Under **Permission**, expand **API**, and then select the scope that you defined earlier.
         * Select **Add permissions**.
         * Select **Grant admin consent for (your tenant name)**.
-        * If you're prompted to select an account, select your currently signed-in administrator account, or sign in      * with an account in your Azure AD B2C tenant that's been assigned at least the Cloud application administrator       * role.
+        * If you're prompted to select an account, select your currently signed-in administrator account, or sign in **with an account in your Azure AD B2C tenant that's been assigned at least the Cloud application administrator** role.
         * Select **Yes**.
         * Select **Refresh**, and then verify that "Granted for ..." appears under **Status** for both scopes.
 
 1. Configure the required User flow:
     1. Select **User flows**, and then select **New user flow**.
-    1. Under *Select a user flow type**, select **Sign in**, then select **Create**.
-    1. Enter a name for the flow **SignIn**, then select **Create**.
+    2. Under **Select a user flow type**, select **Sign in**, then select **Create**.
+    3. Enter a name for the flow **SignIn**, then select **Create**.

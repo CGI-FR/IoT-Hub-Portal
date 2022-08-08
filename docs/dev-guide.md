@@ -35,7 +35,7 @@ By deploying the IoT Hub Portal, the user can configure the IoT Hub and the LoRa
 
 Since the IoT Hub Portal is deployed as a Docker container, the application settings can be configured with environment variables.
 
-#### Application settings
+### Application settings
 
 Here are different settings that the user can configure:
 
@@ -60,7 +60,7 @@ Here are different settings that the user can configure:
 * **Ideas__Authentication__Header**: (Optional, default value `Ocp-Apim-Subscription-Key`) Authentication header name.
 * **Ideas__Authentication__Token**: Authentication token.
 
-#### Connection strings
+### Connection strings
 
 Here are different connection strings that the user can configure:
 
@@ -77,18 +77,18 @@ There are several optional security settings that the user can configure. These 
 
 * UseSecurityHeaders
   > This boolean adds the following headers to all responses :
-  > 
+  >
   > `X-Content-Type-Options: nosniff`
-  > 
+  >
   > `Strict-Transport-Security: max-age=31536000; includeSubDomains` - _only applied to HTTPS responses_
-  > 
-  > 
+  >
+  >
   > `X-Frame-Options: Deny` - _only applied to text/html responses_
-  > 
+  >
   > `X-XSS-Protection: 1; mode=block` - _only applied to text/html responses_
-  > 
-  > `Referrer-Policy: strict-origin-when-cross-origin `- _only applied to text/html responses_
-  > 
+  >
+  > `Referrer-Policy: strict-origin-when-cross-origin` - _only applied to text/html responses_
+  >
   > `Content-Security-Policy: object-src 'none'; form-action 'self'; frame-ancestors 'none'` - _only applied to text/html responses_.
   >
   > The **default is true**.
@@ -117,7 +117,6 @@ There are several optional security settings that the user can configure. These 
   >
   > The **default is false**.
 
-
 ## Device tags
 
 The IoT Hub portal uses some tags to configure the devices. The tags are stored in the Azure IoT Hub in Device Twins.
@@ -131,7 +130,7 @@ The IoT Hub portal uses some tags to configure the devices. The tags are stored 
 The Storage Account is used to store the device models configuration. You can use the same Storage Account that is used by the LoRa Key Management Facade.
 This solution will use tables and blob storage to store its data. There is no need to create the tables and containers, the application will do it for you.
 
-#### Tables
+### Tables
 
 The application uses the following tables:
 
@@ -144,7 +143,7 @@ The application uses the following blob storage:
 
 * **device-images**: The blob storage that contains the device images.
 
-# Working with the documentation
+## Working with the documentation
 
 This documentation site is build using Github Pages.
 
@@ -176,7 +175,7 @@ If you'd like to add your own custom styles:
 1. Update the `assets/css/style.scss` file from the documentation repository.
 1. Add any custom CSS (or Sass, including imports) you'd like immediately after the `@import` line
 
-*Note: If you'd like to change the theme's Sass variables, you must set new values before the `@import` line in your stylesheet.*
+**Note: If you'd like to change the theme's Sass variables, you must set new values before the `@import` line in your stylesheet.**
 
 #### Layouts
 
@@ -205,7 +204,7 @@ On frontend, http client uses a delegating handler [ProblemDetailsHandler](https
 * Execute the http request and wait the response
 * If the response is not successful:
   * The body of the response is deserialized to `ProblemDetailsWithExceptionDetails`
-  * An exception with type `ProblemDetailsException` (including the error response) is thrown. 
+  * An exception with type `ProblemDetailsException` (including the error response) is thrown.
 
 On Blazor views, http calls must be catched to capture any exceptions of type `ProblemDetailsException` to be able to execute any business code to process them.
 

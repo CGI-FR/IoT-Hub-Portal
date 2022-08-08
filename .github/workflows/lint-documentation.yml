@@ -1,0 +1,13 @@
+name: Lint Documentation
+on:
+  pull_request:
+    branches: [ docs/main ]
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: DavidAnson/markdownlint-cli2-action@v6
+        with:
+          globs: 'docs/**/*.md'
