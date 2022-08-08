@@ -3,48 +3,41 @@
 
 namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
 {
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Managers;
     using FluentAssertions;
-    using Moq;
-    using Moq.Protected;
     using NUnit.Framework;
     using System;
+    using System.Net;
     using System.Net.Http;
+    using System.Net.Http.Json;
     using System.Text;
-    using System.Threading;
     using System.Threading.Tasks;
+    using AutoFixture;
+    using Microsoft.Extensions.DependencyInjection;
+    using RichardSzalay.MockHttp;
 
     [TestFixture]
-    public class LoraDeviceMethodManagerTests : IDisposable
+    public class LoraDeviceMethodManagerTests : BackendUnitTest
     {
-#pragma warning disable CA2213 // Disposable fields should be disposed
-        private HttpClient mockHttpClient;
-#pragma warning restore CA2213 // Disposable fields should be disposed
-        private MockRepository mockRepository;
+        private ILoraDeviceMethodManager loraDeviceMethodManager;
 
-        private Mock<HttpMessageHandler> httpMessageHandlerMock;
-
-        [SetUp]
-        public void SetUp()
+        public override void Setup()
         {
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
+            base.Setup();
 
-            this.httpMessageHandlerMock = this.mockRepository.Create<HttpMessageHandler>();
-            this.mockHttpClient = new HttpClient(this.httpMessageHandlerMock.Object)
-            {
-                BaseAddress = new Uri("http://fake.local")
-            };
+            _ = ServiceCollection.AddSingleton<ILoraDeviceMethodManager, LoraDeviceMethodManager>();
+
+            Services = ServiceCollection.BuildServiceProvider();
+
+            this.loraDeviceMethodManager = Services.GetRequiredService<ILoraDeviceMethodManager>();
         }
 
         [Test]
         public async Task ExecuteLoRaDeviceMessageThrowsArgumentNullExceptionWhenDeviceIdIsNull()
         {
-            // Arrange
-            var loraDeviceMethodManager = new LoraDeviceMethodManager(this.mockHttpClient);
-
             // Act
-            var act = () => loraDeviceMethodManager.ExecuteLoRaDeviceMessage(null, null);
+            var act = () => this.loraDeviceMethodManager.ExecuteLoRaDeviceMessage(null, null);
 
             // Assert
             _ = await act.Should().ThrowAsync<ArgumentNullException>();
@@ -54,11 +47,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         public async Task ExecuteLoRaDeviceMessageThrowsArgumentNullExceptionWhenCommandIsNull()
         {
             // Arrange
-            var loraDeviceMethodManager = new LoraDeviceMethodManager(this.mockHttpClient);
-            var deviceId = Guid.NewGuid().ToString();
+            var deviceId = Fixture.Create<string>();
 
             // Act
-            var act = () => loraDeviceMethodManager.ExecuteLoRaDeviceMessage(deviceId, null);
+            var act = () => this.loraDeviceMethodManager.ExecuteLoRaDeviceMessage(deviceId, null);
 
             // Assert
             _ = await act.Should().ThrowAsync<ArgumentNullException>();
@@ -68,39 +60,38 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         public async Task ExecuteLoRaDeviceMessageMustBeSuccessfullWhenParametersAreProvided()
         {
             // Arrange
-            var loraDeviceMethodManager = new LoraDeviceMethodManager(this.mockHttpClient);
-            var deviceId = Guid.NewGuid().ToString();
+            var deviceId = Fixture.Create<string>();
             var command = new DeviceModelCommand
             {
-                Frame = Guid.NewGuid().ToString()
+                Frame = Fixture.Create<string>(),
+                Confirmed = Fixture.Create<bool>(),
+                Port = Fixture.Create<int>()
             };
 
-            using var deviceResponseMock = new HttpResponseMessage();
+            var expectedRawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(command.Frame));
 
-            deviceResponseMock.Content = new StringContent("{}", Encoding.UTF8, "application/json");
-
-            this.httpMessageHandlerMock
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.RequestUri.LocalPath.Equals($"/api/cloudtodevicemessage/{deviceId}", StringComparison.OrdinalIgnoreCase) && req.Method == HttpMethod.Post), ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync((HttpRequestMessage _, CancellationToken _) => deviceResponseMock)
-                .Verifiable();
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/cloudtodevicemessage/{deviceId}")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<JsonContent>();
+                    var body = (JsonContent) m.Content;
+                    var loRaCloudToDeviceMessage = (LoRaCloudToDeviceMessage)body?.Value;
+                    _ = loRaCloudToDeviceMessage.Should().NotBeNull();
+                    _ = loRaCloudToDeviceMessage?.Fport.Should().Be(command.Port);
+                    _ = loRaCloudToDeviceMessage?.Confirmed.Should().Be(command.Confirmed);
+                    _ = loRaCloudToDeviceMessage?.RawPayload.Should().Be(expectedRawPayload);
+                    return true;
+                })
+                .Respond(HttpStatusCode.Created);
 
             // Act
-            var result = await loraDeviceMethodManager.ExecuteLoRaDeviceMessage(deviceId, command);
+            var result = await this.loraDeviceMethodManager.ExecuteLoRaDeviceMessage(deviceId, command);
 
             // Assert
             _ = result.Should().NotBeNull();
             _ = result.IsSuccessStatusCode.Should().BeTrue();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
         }
     }
 }
