@@ -9,5 +9,3 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: DavidAnson/markdownlint-cli2-action@v6
-        with:
-          globs: 'docs/**/*.md'
