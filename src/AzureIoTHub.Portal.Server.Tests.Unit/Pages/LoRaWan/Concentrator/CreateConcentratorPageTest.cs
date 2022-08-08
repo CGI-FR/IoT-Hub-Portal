@@ -20,6 +20,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
     using MudBlazor;
     using MudBlazor.Services;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN;
 
     [TestFixture]
     public class CreateConcentratorPageTest : BlazorUnitTest
@@ -59,6 +60,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
                 LoraRegion = "CN_470_510_RP2"
             };
 
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetFrequencyPlans())
+                .ReturnsAsync(new[]
+                {
+                    new FrequencyPlan()
+                });
+
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
                     service.CreateConcentrator(It.Is<Concentrator>(concentrator =>
                         mockConcentrator.DeviceId.Equals(concentrator.DeviceId, StringComparison.Ordinal))))
@@ -93,6 +100,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
                 LoraRegion = "CN_470_510_RP2"
             };
 
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetFrequencyPlans())
+                .ReturnsAsync(new[]
+                {
+                    new FrequencyPlan()
+                });
+
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
                     service.CreateConcentrator(It.Is<Concentrator>(concentrator =>
                         mockConcentrator.DeviceId.Equals(concentrator.DeviceId, StringComparison.Ordinal))))
@@ -118,6 +131,11 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
         {
             // Arrange
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, null)).Returns((Snackbar)null);
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetFrequencyPlans())
+                .ReturnsAsync(new[]
+                {
+                    new FrequencyPlan()
+                });
 
             var cut = RenderComponent<CreateConcentratorPage>();
             cut.WaitForAssertion(() => cut.Find("#saveButton"));

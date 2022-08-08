@@ -20,6 +20,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
     using MudBlazor;
     using MudBlazor.Services;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN;
 
     [TestFixture]
     public class ConcentratorDetailPageTests : BlazorUnitTest
@@ -54,6 +55,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetConcentrator(this.mockDeviceId))
                 .ReturnsAsync(new Concentrator());
 
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetFrequencyPlans())
+                .ReturnsAsync(new[]
+                {
+                    new FrequencyPlan()
+                });
+
             var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceID", this.mockDeviceId));
             cut.WaitForAssertion(() => cut.Find("#returnButton"));
 
@@ -71,6 +78,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
             // Arrange
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetConcentrator(this.mockDeviceId))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetFrequencyPlans())
+                .ReturnsAsync(new[]
+                {
+                    new FrequencyPlan()
+                });
 
             // Act
             var cut = RenderComponent<ConcentratorDetailPage>(ComponentParameter.CreateParameter("DeviceID", this.mockDeviceId));
@@ -90,6 +103,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
                 DeviceName = Guid.NewGuid().ToString(),
                 LoraRegion = Guid.NewGuid().ToString()
             };
+
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetFrequencyPlans())
+                .ReturnsAsync(new[]
+                {
+                    new FrequencyPlan()
+                });
 
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetConcentrator(mockConcentrator.DeviceId))
                 .ReturnsAsync(mockConcentrator);
@@ -120,6 +139,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
                 LoraRegion = Guid.NewGuid().ToString()
             };
 
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetFrequencyPlans())
+                .ReturnsAsync(new[]
+                {
+                                new FrequencyPlan()
+                });
+
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetConcentrator(mockConcentrator.DeviceId))
                 .ReturnsAsync(mockConcentrator);
 
@@ -143,6 +168,12 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Pages.LoRaWan.Concentrator
                 DeviceName = Guid.NewGuid().ToString(),
                 LoraRegion = Guid.NewGuid().ToString()
             };
+
+            _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetFrequencyPlans())
+                .ReturnsAsync(new[]
+                {
+                    new FrequencyPlan()
+                });
 
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetConcentrator(mockConcentrator.DeviceId))
                 .ReturnsAsync(mockConcentrator);

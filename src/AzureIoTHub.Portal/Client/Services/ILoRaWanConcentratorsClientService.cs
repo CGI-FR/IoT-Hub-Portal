@@ -3,7 +3,9 @@
 
 namespace AzureIoTHub.Portal.Client.Services
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN;
     using Portal.Models.v10.LoRaWAN;
 
     public interface ILoRaWanConcentratorsClientService
@@ -17,5 +19,7 @@ namespace AzureIoTHub.Portal.Client.Services
         Task UpdateConcentrator(Concentrator concentrator);
 
         Task DeleteConcentrator(string deviceId);
+
+        Task<IEnumerable<FrequencyPlan>> GetFrequencyPlans();
     }
 }
