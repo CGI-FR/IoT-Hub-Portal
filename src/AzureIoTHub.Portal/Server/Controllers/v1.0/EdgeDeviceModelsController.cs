@@ -108,7 +108,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
                             .GetEdgeDeviceTemplates()
                             .GetEntityAsync<TableEntity>(DefaultPartitionKey, modelId);
 
-                return Ok(this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, new List<IoTEdgeModule>()));
+                var modules = new List<IoTEdgeModule>();
+
+                var configs = await this.configService.GetIoTEdgeConfigurations();
+                var configItem = configs.FirstOrDefault(x => x.Id.StartsWith(modelId));
+
+                return Ok(this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules));
             }
             catch (RequestFailedException e)
             {

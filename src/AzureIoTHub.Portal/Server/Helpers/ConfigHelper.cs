@@ -153,7 +153,6 @@ namespace AzureIoTHub.Portal.Server.Helpers
 
             foreach (var item in GetEnvironmentVariables(module))
             {
-                //result.EnvironmentVariables.Add(item.Key, item.Value);
                 result.EnvironmentVariables.Add(
                     new IoTEdgeModuleEnvironmentVariable()
                     {
@@ -164,7 +163,6 @@ namespace AzureIoTHub.Portal.Server.Helpers
 
             foreach (var item in GetModuleIdentityTwinSettings(config, module))
             {
-                //result.ModuleIdentityTwinSettings.Add(item.Key, item.Value);
                 result.ModuleIdentityTwinSettings.Add(
                 new IoTEdgeModuleTwinSetting()
                 {

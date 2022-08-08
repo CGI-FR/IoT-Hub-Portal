@@ -1,5 +1,6 @@
 ﻿@page "/edge-device-models/new"
 
+@using AzureIoTHub.Portal.Client.Pages.EdgeModels.EdgeModule
 @using AzureIoTHub.Portal.Models
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Shared.Models.v10
@@ -80,22 +81,24 @@
                                                     <MudTh Style="text-align: center">See detail</MudTh>
                                                     <MudTh Style="text-align: center">Delete</MudTh>
                                                 </HeaderContent>
-                                                <RowTemplate Context="CommandContext">
-                                                    <MudTd DataLabel="odule Name" Style="word-break: break-all;">
-                                                        <MudText >@CommandContext.ModuleName</MudText>
+                                                <RowTemplate Context="moduleContext">
+                                                    <MudTd DataLabel="module Name" Style="word-break: break-all;">
+                                                        @*<MudText >@CommandContext.ModuleName</MudText>*@
+                                                        <MudTextField @bind-Value="@moduleContext.ModuleName" Margin="Margin.Dense" Label="Name" For="@(() => moduleContext.ModuleName )" Variant="Variant.Outlined" Required="true"></MudTextField>
                                                     </MudTd>
-                                                    <MudTd DataLabel="odule Name" Style="word-break: break-all;">
-                                                        <MudText >@CommandContext.Version</MudText>
+                                                    <MudTd DataLabel="module Version" Style="word-break: break-all;">
+                                                        @*<MudText >@moduleContext.Version</MudText>*@
+                                                        <MudTextField T="string" Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="@moduleContext.Version" Label="Version" />
                                                     </MudTd>
                                                     <MudTd DataLabel="See detail" Style="text-align: center;">
-                                                        <MudButton Variant="Variant.Filled">Edit</MudButton>
+                                                        <MudButton Variant="Variant.Filled" OnClick="@(async () => await ShowAddEdgeModuleDialog(moduleContext))">Edit</MudButton>
                                                     </MudTd>
                                                     <MudTd DataLabel="Delete" Style="text-align: center">
-                                                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteCommand(CommandContext))"></MudIconButton>
+                                                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteCommand(moduleContext))"></MudIconButton>
                                                     </MudTd>
                                                 </RowTemplate>
                                                 <FooterContent>
-                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="ShowAddEdgeModuleDialog">Add new module</MudButton>
+                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddModule">Add new module</MudButton>
                                                 </FooterContent>
                                             </MudTable>
                                         </MudItem>
@@ -125,7 +128,7 @@
 
     private IoTEdgeModel Model = new IoTEdgeModel()
     {
-            ModelId = Guid.NewGuid().ToString()
+        ModelId = Guid.NewGuid().ToString()
     };
 
     // Used to manage the picture
@@ -157,34 +160,38 @@
         imageDataUrl = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
     }
 
-    private async Task ShowAddEdgeModuleDialog()
+    private void AddModule()
     {
+        moduleCommands.Add(new IoTEdgeModule());
+    }
 
+    private async Task ShowAddEdgeModuleDialog(IoTEdgeModule module)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("module", module);
+
+        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+
+        if (!string.IsNullOrWhiteSpace( module.ModuleName))
+        {
+            var result = await DialogService.Show<ModuleDialog>(module.ModuleName, parameters, options).Result;
+
+            if (result.Cancelled)
+            {
+                return;
+            }
+        }
     }
 
     private async Task Save()
     {
-        //var parameters = new DialogParameters { { "ContentText", "Processing" } };
-        //MudBlazor.DialogReference processingDialog = DialogService.Show<ProcessingDialog>("Processing", parameters) as MudBlazor.DialogReference;
 
         // Displays validation error message for each field
         await form.Validate();
 
-        Model.EdgeModules = new List<IoTEdgeModule>()
-        {
-            new IoTEdgeModule()
-            {
-                ModuleName = Guid.NewGuid().ToString(),
-                Version = "1",
-                ImageURI = Guid.NewGuid().ToString(),
-                Status = "in test",
-                EnvironmentVariables = new Dictionary<string, string>(),
-                ModuleIdentityTwinSettings = new Dictionary<string, string>()
-            }
-        };
-
         try
         {
+            this.Model.EdgeModules = moduleCommands;
 
             var result = await EdgeModelService.CreateIoTEdgeModel(Model);
             result.EnsureSuccessStatusCode();
@@ -194,13 +201,11 @@
                 var response = EdgeModelService.ChangeAvatar(Model.ModelId, content);
             }
 
-            //DialogService.Close(processingDialog);
             this.Snackbar.Add("Device model successfully created.", Severity.Success);
             this.NavigationManager.NavigateTo("/edge-device-model");
         }
         catch(ProblemDetailsException exception)
         {
-            //DialogService.Close(processingDialog);
             Error?.ProcessProblemDetails(exception);
         }
     }

@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Text;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Exceptions;
+    using AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
     using Extensions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Extensions;
@@ -131,105 +132,30 @@ namespace AzureIoTHub.Portal.Server.Services
             var newConfiguration = new Configuration($"{configurationNamePrefix}-{DateTime.UtcNow.Ticks}");
             newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
             newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'";
-            //newConfiguration.Content.ModuleContent = EdgeModules;
             newConfiguration.Priority = 10;
+            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
+            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
+
             newConfiguration.Content.ModulesContent = new Dictionary<string, IDictionary<string, object>>()
             {
+                {
+                    "$edgeAgent",
+                    new Dictionary<string , object>()
+                    {
                         {
-                            "$edgeAgent",
-                            new Dictionary<string , object>()
-                            {
-                                {
-                                    "properties.desired",
-                                    new Dictionary<string , object>()
-                                    {
-                                        {
-                                            "modules",
-                                            new Dictionary<string, object>()
-                                        },
-                                        // Runtime
-                                        {
-                                            "runtime",
-                                            new Dictionary<string, object>()
-                                            {
-                                                {
-                                                    "settings",
-                                                    new Dictionary<string, object>()
-                                                    {
-                                                        { "minDockerVersion", "v1.25" }
-                                                    }
-                                                },
-                                                { "type", "docker" }
-                                            }
-                                        },
-                                        // SchemaVersion
-                                        { "schemaVersion", "1.1" },
-                                        // SystemModules
-                                        {
-                                            "systemModules",
-                                            new Dictionary<string, object>()
-                                            {
-                                                // edgeAgent
-                                                {
-                                                    "edgeAgent",
-                                                    new Dictionary<string, object>()
-                                                    {
-                                                        {
-                                                            "settings",
-                                                            new Dictionary<string, object>()
-                                                            {
-                                                                { "image", "mcr.microsoft.com/azureiotedge-agent:1.1" },
-                                                                { "createOptions", "" }
-                                                            }
-                                                        },
-                                                        { "type", "docker" }
-                                                    }
-                                                },
-                                                // edgeHub
-                                                {
-                                                    "edgeHub",
-                                                    new Dictionary<string, object>()
-                                                    {
-                                                        {
-                                                            "settings",
-                                                            new Dictionary<string, object>()
-                                                            {
-                                                                { "image", "mcr.microsoft.com/azureiotedge-hub:1.1" },
-                                                                { "createOptions", "\\{\"HostConfig\":{\"PortBindings\":{\"443/tcp\":[{\"HostPort\":\"443\"}],\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}]}}}" }
-                                                            }
-                                                        },
-                                                        { "type", "docker" },
-                                                        { "status", "running" },
-                                                        { "restartPolicy", "always" }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        {
-                            "$edgeHub",
-                            new Dictionary<string, object>()
-                            {
-                                {
-                                    "properties.desired", new Dictionary<string, object>()
-                                    {
-                                        { "routes", new Dictionary<string, object>() },
-                                        { "schemaVersion", "1.1" },
-                                        {
-                                            "storeAndForwardConfiguration",
-                                            new Dictionary<string, object>()
-                                            {
-                                                { "timeToLiveSecs", 7200 }
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }
+                            "properties.desired", edgeAgentPropertiesDesired
                         }
+                    }
+                },
+                {
+                    "$edgeHub",
+                    new Dictionary<string , object>()
+                    {
+                        {
+                            "properties.desired", edgeHubPropertiesDesired
+                        }
+                    }
+                }
             };
 
             try

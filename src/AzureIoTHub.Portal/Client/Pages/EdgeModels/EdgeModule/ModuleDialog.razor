@@ -16,11 +16,11 @@
                               Required="true" />
             </MudItem>
             <MudItem xs="12" md="6">
-                <MudTextField @bind-Value="@currentVersion"
-                              id=@nameof(IoTEdgeModule.Version)
+                <MudTextField @bind-Value="@currentImageUri"
+                              id=@nameof(IoTEdgeModule.ImageURI)
                               Label="Image URI"
                               Variant="Variant.Outlined"
-                              For="@(()=> Module.Version)"
+                              For="@(()=> Module.ImageURI)"
                               Required="true" />
             </MudItem>
         </MudGrid>
@@ -56,6 +56,7 @@
 
     private string currentModuleName;
     private string currentVersion;
+    private string currentImageUri;
 
     private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables = new();
     private List<IoTEdgeModuleTwinSetting> currentModuleIdentityTwinSettings = new();
@@ -67,8 +68,10 @@
     protected override async Task OnInitializedAsync()
     {
         IsLoading = true;
+
         currentModuleName = Module.ModuleName;
         currentVersion = Module.Version;
+        currentImageUri = Module.ImageURI;
         currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
         currentModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(Module.ModuleIdentityTwinSettings.ToArray());
         currentCommands = new List<IoTEdgeModuleCommand>(Module.Commands.ToArray());
@@ -80,6 +83,7 @@
     {
         Module.ModuleName = currentModuleName;
         Module.Version = currentVersion;
+        Module.ImageURI = currentImageUri;
         Module.EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(currentEnvironmentVariables.ToArray());
         Module.ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(currentModuleIdentityTwinSettings.ToArray());
         Module.Commands = new List<IoTEdgeModuleCommand>(currentCommands.ToArray());
