@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Client.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN;
     using FluentAssertions;
     using Helpers;
     using Microsoft.Extensions.DependencyInjection;
@@ -137,6 +138,29 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Services
             await this.loRaWanConcentratorsClientService.DeleteConcentrator(deviceId);
 
             // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task GetLoRaWANFrequencyPlansShouldQueryTheController()
+        {
+            // Arrange
+            var expectedFrequencyPlans = new []
+            {
+                    new FrequencyPlan(),
+                    new FrequencyPlan(),
+                    new FrequencyPlan()
+            };
+
+            _ = MockHttpClient.When(HttpMethod.Get, "/api/lorawan/freqencyplans")
+                .RespondJson(expectedFrequencyPlans);
+
+            // Act
+            var result = await this.loRaWanConcentratorsClientService.GetFrequencyPlans();
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedFrequencyPlans);
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }

@@ -3,9 +3,11 @@
 
 namespace AzureIoTHub.Portal.Client.Services
 {
+    using System.Collections.Generic;
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN;
     using Portal.Models.v10.LoRaWAN;
 
     public class LoRaWanConcentratorsClientService : ILoRaWanConcentratorsClientService
@@ -40,6 +42,11 @@ namespace AzureIoTHub.Portal.Client.Services
         public Task DeleteConcentrator(string deviceId)
         {
             return this.http.DeleteAsync($"api/lorawan/concentrators/{deviceId}");
+        }
+
+        public Task<IEnumerable<FrequencyPlan>> GetFrequencyPlans()
+        {
+            return this.http.GetFromJsonAsync<IEnumerable<FrequencyPlan>>("api/lorawan/freqencyplans");
         }
     }
 }
