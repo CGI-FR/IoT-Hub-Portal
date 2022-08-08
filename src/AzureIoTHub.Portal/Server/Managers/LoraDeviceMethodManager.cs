@@ -26,11 +26,11 @@ namespace AzureIoTHub.Portal.Server.Managers
             ArgumentNullException.ThrowIfNull(deviceId, nameof(deviceId));
             ArgumentNullException.ThrowIfNull(command, nameof(command));
 
-            var body = new
+            var body = new LoRaCloudToDeviceMessage
             {
-                rawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(command.Frame)),
-                fport = command.Port,
-                confirmed = command.Confirmed
+                RawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(command.Frame)),
+                Fport = command.Port,
+                Confirmed = command.Confirmed
             };
 
             using var commandContent = JsonContent.Create(body);
