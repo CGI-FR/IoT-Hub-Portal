@@ -1635,6 +1635,46 @@
         }
       }
     },
+    "/api/lorawan/freqencyplans": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "summary": "Get LoRaWAN supported frequency plans.",
+        "operationId": "GET LoRaWAN Frequency plans",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FrequencyPlan"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FrequencyPlan"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FrequencyPlan"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/lorawan/models": {
       "get": {
         "tags": [
@@ -3661,6 +3701,20 @@
         },
         "additionalProperties": false,
         "description": "Enrollment credentials."
+      },
+      "FrequencyPlan": {
+        "type": "object",
+        "properties": {
+          "frequencyPlanID": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "IdeaRequest": {
         "required": [
