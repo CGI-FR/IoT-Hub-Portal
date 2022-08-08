@@ -39,7 +39,7 @@ Devices are the physical IoT devices that are provisioned by the application. Th
 
 ![images/device-twin.png](images/device-twin.png)
 
-### Parameters
+### Device Parameters
 
 - ``Device Id``: The ID of the device.
     > Note: It is the device id stored in the Azure IoT Hub. It is asked to the user when creating a device and is not editable after the device is created.
@@ -69,7 +69,7 @@ For more information about Azure IoT Edge, see [Azure IoT Edge documentation](ht
 
 ![images/iot-edge.png](images/iot-edge.png)
 
-### Parameters
+### IoT Edge Parameters
 
 - ``Type``: The type of the IoT Edge device.
     > Note: related to the IoT Edge purpose tag value that might be used to create deployment manifests.
@@ -90,19 +90,19 @@ The last deployment section shows information about the deployment manifest that
 The IoT Edge module section represents the modules that are currently deployed on the IoT Edge device. It doesn't include the system modules of IoT Edge (edgeAgent and edgeHub).
 With the portal, the user can interact with these modules and manage them (Get last module logs, restart module, etc.).
 
-### Device Twin tags
+### IoT Edge Device Twin tags
 
 To store additional information about the device, the application uses device twin tags.
 
 | Name    | Position     | Description                                                                                                                                 |
 |---------|--------------|---------------------------------------------------------------------------------------------------------------------------------------------|
 | Environment | ``tags.env`` | Field that contains the Device Environment value.<br>_**note**: this tag may be used to target deployment manifests for the IoT Edge_ |
-| Type 	| ``tags.type`` | Field that contains The type of the IoT Edge device.<br>_**note**: this tag may be used to target deployment manifests for the IoT Edge_ |
+| Type | ``tags.type`` | Field that contains The type of the IoT Edge device.<br>_**note**: this tag may be used to target deployment manifests for the IoT Edge_ |
 
 ### DPS Enrollment groups
 
 The IoT Hub portal relies on Azure Device Provisioning Enrollement groups to manage IoT Edge device connection strings.
-When clicking on "*Connect*" in the IoT Edge details page, the user can access the device unique credentials in the enrollment group.
+When clicking on "**Connect**" in the IoT Edge details page, the user can access the device unique credentials in the enrollment group.
 
 > Note: see [Provision the device with its cloud identity
 ](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-provision-devices-at-scale-linux-symmetric?view=iotedge-2020-11&tabs=individual-enrollment%2Cubuntu#provision-the-device-with-its-cloud-identity) to know how to configure the IoT Edge to use these credentials to connect to the platform.
@@ -144,7 +144,7 @@ Please note that the ``created-by`` label is used to identify the configuration 
 ## IoT Edge Configuration
 
 The IoT Edge configuration concerns the IoT Edge deployment manifests that are currently present in the IoT Hub.
-The portal can be used to see the details of the configurations. 
+The portal can be used to see the details of the configurations.
 
 > Note: At this time the portal cannot be used to update the configurations.
 
@@ -182,14 +182,14 @@ Furthermore, the enrollment group is configured to provide initial device twin s
 
 For more information, see [Azure Device Provisioning Enrollement groups](https://docs.microsoft.com/en-us/azure/iot-dps/concepts-symmetric-key-attestation?tabs=windows#group-enrollments).
 
-# LoRaWAN
+## LoRaWAN
 
 LoRaWAN features are activated by default, providing a way to configure IoT Devices that supports LoRaWAN connectivity in the Portal.
 Internally, the LoRaWAN connectivity is expected to be provided by [IoTEdge LoRaWAN StarterKit](https://github.com/Azure/iotedge-lorawan-starterkit/). The IoT Hub portal will manage devices by modifying their twin properties to make them working with this solution.
 
 > Note: to disable LoRa Features, change the value of ``LoRaFeature__Enabled`` to false in the Portal App Settings.
 
-## LoRaWAN Device models
+### LoRaWAN Device Models
 
 For regular Device Models the IoT hub portal provides the possibility to manage LoRaWAN device models.
 To activate the LoRaWAN features on the device model, the user have to enable the option in the `LoRa Device` section
@@ -200,12 +200,12 @@ To activate the LoRaWAN features on the device model, the user have to enable th
 
 ![images/lora-device-model.png](images/lora-device-model.png)
 
-### Parameters
+#### LoRaWAN Device Model Parameters
 
 The parameters for the device models are parameters that are stored in the IoT Hub portal and retrieved for devices that inherits from this device model.
 
-    > Note: When changing the value of a parameter, the device will be updated with the new value.
-    > In that case, user should then modify each device and re-save it to get the correct properties.
+> Note: When changing the value of a parameter, the device will be updated with the new value.
+> In that case, user should then modify each device and re-save it to get the correct properties.
 
 - ``Support OTAA/ABP setting``: The device model supports OTAA/ABP connectivity.
 - ``Type``: The LoRaWAN device class type (A or C).
@@ -225,14 +225,14 @@ The parameters for the device models are parameters that are stored in the IoT H
 
 > Note: for more information about LoRaWAN properties, please refer to the [LoRaWAN StarterKit Documentation](https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#optional-device-properties)
 
-### Commands
+#### Commands
 
 The devices commands are pre-stored frames that the user can add to the device model and then will be able to use on the device detail page to launch to the device.
 
 - ``Name``: The command name. This name is only a friendly name that the user can set to understand what the command is supposed to do.
 - ```Frame```: The LoRaWAN frame (in hex) to be sent to the device.
 
-## LoRaWAN Devices
+### LoRaWAN Devices
 
 LoRaWAN devices are accessible from the IoT Hub portal for devices that inherits from the LoRaWAN device model.
 The LoRaWAN tab shows the device details.
@@ -245,7 +245,7 @@ The LoRaWAN tab shows the device details.
 
 ![images/lora-concentrator.png](images/lora-concentrator.png)
 
-### Parameters
+### Concentrator Parameters
 
 - ``Device ID``: The Station EUI for the LoRaWan Basic station.
 - ``Device Name``: The friendly name for the device.
@@ -259,7 +259,7 @@ To store additional information about the concentrator, the application will use
 | Name    | Position     | Description                                                                                                                                 |
 |---------|--------------|---------------------------------------------------------------------------------------------------------------------------------------------|
 | Device Name | ``tags.deviceName`` | Field that contains the Device name. |
-| Region | ``tags.loraRegion`` | Field that contains the Device region.	|
+| Region | ``tags.loraRegion`` | Field that contains the Device region. |
 | deviceType | ``tags.deviceType`` | Field that contains The type of device. Expected value is `LoRa Concentrator`  |
 
 ## Command Execution
@@ -268,7 +268,7 @@ To execute the command, the device should have joined the network. The message b
 
 ![images/lorawan-device-not-joined-message.png](images/lorawan-device-not-joined-message.png)
 
-#### Command execution flow
+### Command execution flow
 
 The schema below explain how the command execution flow works.
 
