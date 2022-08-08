@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
+namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
     using System;
     using System.Collections.Generic;
@@ -10,19 +10,21 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
+    using Models.v10;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Entities;
+    using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Models.v10;
     using FluentAssertions;
     using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Controllers;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
@@ -30,8 +32,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
     using Microsoft.Extensions.Primitives;
     using Moq;
     using NUnit.Framework;
-    using Microsoft.AspNetCore.Mvc.Routing;
-    using Server.Exceptions;
 
     [TestFixture]
     public class DevicesControllerTests

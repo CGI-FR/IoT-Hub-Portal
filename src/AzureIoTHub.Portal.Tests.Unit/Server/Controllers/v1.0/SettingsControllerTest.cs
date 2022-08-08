@@ -1,18 +1,19 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
+namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
     using System;
     using System.Globalization;
-    using AzureIoTHub.Portal.Server.Controllers.V10;
-    using FluentAssertions;
-    using Identity;
     using Models.v10;
+    using AzureIoTHub.Portal.Server.Controllers.V10;
+    using AzureIoTHub.Portal.Server.Identity;
+    using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
     using Moq;
     using NUnit.Framework;
+    using Portal.Server;
 
     [TestFixture]
     public class SettingsControllerTest

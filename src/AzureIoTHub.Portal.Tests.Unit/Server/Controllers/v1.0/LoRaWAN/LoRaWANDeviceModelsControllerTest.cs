@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
+namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
 {
     using System;
     using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Models.v10;
+    using Models.v10;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;

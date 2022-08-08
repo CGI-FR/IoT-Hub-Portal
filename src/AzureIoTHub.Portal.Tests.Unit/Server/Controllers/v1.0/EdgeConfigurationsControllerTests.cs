@@ -1,19 +1,19 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10
+namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Security.Cryptography;
+    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Services;
     using Microsoft.Azure.Devices;
     using Moq;
     using Newtonsoft.Json.Linq;
     using NUnit.Framework;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Security.Cryptography;
-    using System.Threading.Tasks;
 
     [TestFixture]
     public class EdgeConfigurationsControllerTests

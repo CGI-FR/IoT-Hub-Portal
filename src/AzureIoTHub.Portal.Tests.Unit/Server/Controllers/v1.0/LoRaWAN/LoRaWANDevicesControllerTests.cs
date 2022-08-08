@@ -1,23 +1,8 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
+namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
 {
-    using Azure;
-    using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Server.Controllers.V10;
-    using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Logging;
-    using Moq;
-    using NUnit.Framework;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -25,9 +10,24 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
+    using Azure;
+    using Azure.Data.Tables;
+    using Models.v10;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Server.Controllers.V10;
+    using AzureIoTHub.Portal.Server.Exceptions;
+    using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;
     using Hellang.Middleware.ProblemDetails;
-    using Server.Exceptions;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using NUnit.Framework;
 
     [TestFixture]
     public class LoRaWANDevicesControllerTests

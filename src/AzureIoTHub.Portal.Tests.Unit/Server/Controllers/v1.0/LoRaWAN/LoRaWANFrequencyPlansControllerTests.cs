@@ -1,11 +1,12 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Tests.Unit.Controllers.V10.LoRaWAN
+namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
 {
     using System.Collections.Generic;
     using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
     using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN;
+    using UnitTests.Bases;
     using Microsoft.AspNetCore.Mvc;
     using NUnit.Framework;
 
