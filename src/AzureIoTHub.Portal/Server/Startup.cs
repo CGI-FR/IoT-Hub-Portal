@@ -359,9 +359,11 @@ namespace AzureIoTHub.Portal.Server
                 });
             });
 
-            await app?.ApplicationServices
-                    .GetService<IDeviceModelImageManager>()
-                    .InitializeDefaultImageBlob();
+
+            var deviceModelImageManager = app.ApplicationServices.GetService<IDeviceModelImageManager>();
+
+            await deviceModelImageManager?.InitializeDefaultImageBlob()!;
+            await deviceModelImageManager?.SyncImagesCacheControl()!;
         }
 
         private static void UseApiExceptionMiddleware(IApplicationBuilder app)

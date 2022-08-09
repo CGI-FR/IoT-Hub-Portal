@@ -160,5 +160,15 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit
             // Assert
             _ = developmentConfigHandler.IdeasAuthenticationToken.Should().BeEmpty();
         }
+
+        [Test]
+        public void StorageAccountDeviceModelImageMaxAgeMustHaveDefaultValue()
+        {
+            // Arrange
+            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = developmentConfigHandler.StorageAccountDeviceModelImageMaxAge.Should().Be(86400);
+        }
     }
 }

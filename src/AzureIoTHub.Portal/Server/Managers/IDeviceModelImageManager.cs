@@ -16,5 +16,7 @@ namespace AzureIoTHub.Portal.Server.Managers
         Uri ComputeImageUri(string deviceModelId);
 
         Task InitializeDefaultImageBlob();
+
+        Task SyncImagesCacheControl();
     }
 }
