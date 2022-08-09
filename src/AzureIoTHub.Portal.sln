@@ -36,7 +36,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		..\.github\workflows\publish.yml = ..\.github\workflows\publish.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Server.Tests.Unit", "AzureIoTHub.Portal.Server.Tests.Unit\AzureIoTHub.Portal.Server.Tests.Unit.csproj", "{51FD5B90-B422-47BF-83F2-516520CFB124}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Tests.Unit", "AzureIoTHub.Portal.Tests.Unit\AzureIoTHub.Portal.Tests.Unit.csproj", "{51FD5B90-B422-47BF-83F2-516520CFB124}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{3F7A2982-4F0B-45F9-9FCA-923D5A7A1511}"
 	ProjectSection(SolutionItems) = preProject
