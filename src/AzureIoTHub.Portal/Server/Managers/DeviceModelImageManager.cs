@@ -39,9 +39,11 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             var blobClient = blobContainer.GetBlobClient(deviceModelId);
 
+            _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = "max-age=86400, must-revalidate" });
+
             this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
 
-            _ = await blobClient.UploadAsync(stream, overwrite: true);
+            _ = await blobClient.UploadAsync(stream, true);
 
             return blobClient.Uri.ToString();
         }
