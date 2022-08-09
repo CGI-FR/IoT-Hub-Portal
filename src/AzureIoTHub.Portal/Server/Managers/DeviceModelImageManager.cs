@@ -21,11 +21,13 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         private readonly BlobServiceClient blobService;
         private readonly ILogger<DeviceModelImageManager> logger;
+        private readonly ConfigHandler configHandler;
 
-        public DeviceModelImageManager(ILogger<DeviceModelImageManager> logger, BlobServiceClient blobService)
+        public DeviceModelImageManager(ILogger<DeviceModelImageManager> logger, BlobServiceClient blobService, ConfigHandler configHandler)
         {
             this.logger = logger;
             this.blobService = blobService;
+            this.configHandler = configHandler;
 
             var blobClient = this.blobService.GetBlobContainerClient(ImageContainerName);
 
@@ -39,7 +41,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             var blobClient = blobContainer.GetBlobClient(deviceModelId);
 
-            _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = "max-age=86400, must-revalidate" });
+            _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
 
             this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
 
@@ -112,7 +114,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             {
                 var blobClient = container.GetBlobClient(blob.Name);
 
-                _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = "max-age=86400, must-revalidate" });
+                _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
             }
         }
     }

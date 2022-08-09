@@ -26,6 +26,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
         private Mock<BlobServiceClient> mockBlobServiceClient;
         private Mock<BlobContainerClient> mockBlobContainerClient;
         private Mock<BlobClient> mockBlobClient;
+        private Mock<ConfigHandler> mockConfigHandler;
 
         private IDeviceModelImageManager deviceModelImageManager;
 
@@ -36,8 +37,10 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             this.mockBlobServiceClient = MockRepository.Create<BlobServiceClient>();
             this.mockBlobContainerClient = MockRepository.Create<BlobContainerClient>();
             this.mockBlobClient = MockRepository.Create<BlobClient>();
+            this.mockConfigHandler = MockRepository.Create<ConfigHandler>();
 
             _ = ServiceCollection.AddSingleton(this.mockBlobServiceClient.Object);
+            _ = ServiceCollection.AddSingleton(this.mockConfigHandler.Object);
             _ = ServiceCollection.AddSingleton<IDeviceModelImageManager, DeviceModelImageManager>();
 
             Services = ServiceCollection.BuildServiceProvider();
@@ -90,6 +93,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             _ = this.mockBlobClient
                 .Setup(client => client.Uri)
                 .Returns(expectedImageUri);
+
+            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(3600);
 
             // Act
             var result = await this.deviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
@@ -156,6 +161,8 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
                 .Setup(client =>
                     client.SetHttpHeadersAsync(It.IsAny<BlobHttpHeaders>(), It.IsAny<BlobRequestConditions>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Response.FromValue(BlobsModelFactory.BlobInfo(ETag.All, DateTimeOffset.Now), Mock.Of<Response>()));
+
+            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(3600);
 
             // Act
             await this.deviceModelImageManager.SyncImagesCacheControl();

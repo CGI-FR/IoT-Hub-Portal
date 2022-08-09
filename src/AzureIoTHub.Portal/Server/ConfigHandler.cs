@@ -32,6 +32,7 @@ namespace AzureIoTHub.Portal.Server
         internal const string IsLoRaFeatureEnabledKey = "LoRaFeature:Enabled";
 
         internal const string StorageAccountConnectionStringKey = "StorageAccount:ConnectionString";
+        internal const string StorageAccountDeviceModelImageMaxAgeKey = "StorageAccount:DeviceModel:Image:MaxAgeInSeconds";
 
         internal const string LoRaKeyManagementUrlKey = "LoRaKeyManagement:Url";
         internal const string LoRaKeyManagementCodeKey = "LoRaKeyManagement:Code";
@@ -66,6 +67,8 @@ namespace AzureIoTHub.Portal.Server
         internal abstract string DPSScopeID { get; }
 
         internal abstract string StorageAccountConnectionString { get; }
+
+        internal abstract int StorageAccountDeviceModelImageMaxAge { get; }
 
         internal abstract bool UseSecurityHeaders { get; }
 
