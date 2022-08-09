@@ -108,9 +108,7 @@ namespace AzureIoTHub.Portal.Server.Managers
         {
             var container = this.blobService.GetBlobContainerClient(ImageContainerName);
 
-            var blobs = container.GetBlobsAsync();
-
-            await foreach (var blob in blobs)
+            await foreach (var blob in container.GetBlobsAsync())
             {
                 var blobClient = container.GetBlobClient(blob.Name);
 
