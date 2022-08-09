@@ -97,6 +97,11 @@ plugins:
       supportedSubmitMethods: []
       filter: true
 
+# Extra
+extra:
+  version:
+    provider: mike
+
 # Navigation
 nav:
   - index.md
