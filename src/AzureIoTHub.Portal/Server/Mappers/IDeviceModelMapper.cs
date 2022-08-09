@@ -4,12 +4,12 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models;
     using System.Collections.Generic;
 
     public interface IDeviceModelMapper<TListItem, TModel>
-        where TListItem : DeviceModel
-        where TModel : DeviceModel
+        where TListItem : class, IDeviceModel
+        where TModel : class, IDeviceModel
     {
         public TListItem CreateDeviceModelListItem(TableEntity entity);
 

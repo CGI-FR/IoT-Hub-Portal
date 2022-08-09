@@ -5,6 +5,7 @@
 @using AzureIoTHub.Portal.Models
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
+@using AzureIoTHub.Portal.Shared.Models
 
 @attribute [Authorize]
 @inject NavigationManager NavigationManager
@@ -48,7 +49,7 @@
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
             <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
-                <MudTabPanel Text="General" Style=@(standardValidator.Validate(Model).IsValid ? "" : "color: red")>
+                <MudTabPanel Text="General" Style=@(standardValidator.Validate(Model as DeviceModel).IsValid ? "" : "color: red")>
                     <MudExpansionPanels MultiExpansion="true" id="general">
                         <MudGrid>
                             <MudItem xs="12">
@@ -189,23 +190,17 @@
         }
     }
 
-    private void SetLoRaDeviceModel()
-    {
-        Model = new LoRaDeviceModel(Model);
-    }
+    private void SetLoRaDeviceModel() => Model = new LoRaDeviceModel(Model);
 
-    private void SetStandardDeviceModel()
-    {
-        Model = new DeviceModel
-            {
-                ModelId = Model.ModelId,
-                Name = Model.Name,
-                IsBuiltin = Model.IsBuiltin,
-                Description = Model.Description
-            };
-    }
+    private void SetStandardDeviceModel() => Model = new DeviceModel
+        {
+            ModelId = Model.ModelId,
+            Name = Model.Name,
+            IsBuiltin = Model.IsBuiltin,
+            Description = Model.Description
+        };
 
-    private DeviceModel Model { get; set; } = new DeviceModel
+    private IDeviceModel Model { get; set; } = new DeviceModel
         {
             ModelId = Guid.NewGuid().ToString()
         };
@@ -297,7 +292,7 @@
             }
         }
 
-        if (!standardValidator.Validate(Model).IsValid
+        if (!standardValidator.Validate(Model as DeviceModel).IsValid
             || !propertiesValidator.Validate(Properties).IsValid
             || (IsLoRa && (!this.loraValidator.Validate(this.Model as LoRaDeviceModel).IsValid
             || duplicated
@@ -324,7 +319,7 @@
             }
             else
             {
-                await DeviceModelsClientService.UpdateDeviceModel(Model);
+                await DeviceModelsClientService.UpdateDeviceModel(Model as DeviceModel);
 
                 await DeviceModelsClientService.SetDeviceModelModelProperties(Model.ModelId, Properties);
             }

@@ -1,4 +1,5 @@
 ﻿@using AzureIoTHub.Portal.Models.v10
+@using AzureIoTHub.Portal.Shared.Models
 @using Microsoft.AspNetCore.Components
 @using System.Web
 
@@ -64,8 +65,8 @@
     {
         try
         {
-            DeviceDetails device;
-            DeviceModel deviceModel;
+            IDeviceDetails device;
+            IDeviceModel deviceModel;
 
             if (deviceToDuplicate.SupportLoRaFeatures)
             {

@@ -74,7 +74,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             var appKey = Fixture.Create<string>();
 
             // Act
-            var result = this.deviceLayoutService.DuplicateSharedDevice(new LoRaDeviceDetails
+            var loraWanDevice = this.deviceLayoutService.DuplicateSharedDevice(new LoRaDeviceDetails
             {
                 DeviceID = deviceId,
                 DeviceName = deviceName,
@@ -82,8 +82,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             });
 
             // Assert
-            var loraWanDevice = (LoRaDeviceDetails) result;
-
             _ = loraWanDevice.DeviceID.Should().BeEmpty();
             _ = loraWanDevice.DeviceName.Should().Be($"{deviceName} - copy");
             _ = loraWanDevice.AppKey.Should().BeEmpty();
@@ -109,7 +107,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             var expectedDevice = new DeviceDetails();
 
             // Act
-            var result = this.deviceLayoutService.ResetSharedDevice();
+            var result = this.deviceLayoutService.ResetSharedDevice<DeviceDetails>();
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDevice);
@@ -129,7 +127,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             }
 
             // Act
-            var result = this.deviceLayoutService.ResetSharedDevice(expectedTags);
+            var result = this.deviceLayoutService.ResetSharedDevice<DeviceDetails>(expectedTags);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDevice);
@@ -142,7 +140,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             var expectedDeviceModel = new DeviceModel();
 
             // Act
-            var result = this.deviceLayoutService.ResetSharedDeviceModel();
+            var result = this.deviceLayoutService.ResetSharedDeviceModel<DeviceModel>();
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceModel);
@@ -155,7 +153,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             var expectedDevice = new DeviceDetails();
 
             // Act
-            var result = this.deviceLayoutService.GetSharedDevice();
+            var result = this.deviceLayoutService.GetSharedDevice<DeviceDetails>();
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDevice);
@@ -168,7 +166,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             var expectedDeviceModel = new DeviceModel();
 
             // Act
-            var result = this.deviceLayoutService.GetSharedDeviceModel();
+            var result = this.deviceLayoutService.GetSharedDeviceModel<DeviceModel>();
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceModel);

@@ -5,6 +5,7 @@
 @using AzureIoTHub.Portal.Models
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
+@using AzureIoTHub.Portal.Shared.Models
 @using Microsoft.AspNetCore.Components
 
 @attribute [Authorize]
@@ -48,7 +49,7 @@
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
             <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
-                <MudTabPanel Text="General" Style=@(standardValidator.Validate(Device).IsValid ? "" : "color: red")>
+                <MudTabPanel Text="General" Style=@(standardValidator.Validate(Device as DeviceDetails).IsValid ? "" : "color: red")>
                     <MudExpansionPanels MultiExpansion="true">
                         <MudGrid>
                             <MudItem xs="12">
@@ -246,7 +247,7 @@
     [CascadingParameter]
     public Error Error {get; set;}
 
-    private DeviceDetails Device;
+    private IDeviceDetails Device;
 
     private MudForm form;
     
@@ -290,8 +291,8 @@
         try
         {
             DeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred;
-            Device = DeviceLayoutService.GetSharedDevice();
-            DeviceModel = DeviceLayoutService.GetSharedDeviceModel();
+            Device = DeviceLayoutService.GetSharedDevice<DeviceDetails>();
+            DeviceModel = DeviceLayoutService.GetSharedDeviceModel<DeviceModel>();
 
             // Enable device by default
             Device.IsEnabled = true;
@@ -315,8 +316,8 @@
 
     public void Dispose()
     {
-        DeviceLayoutService.ResetSharedDevice();
-        DeviceLayoutService.ResetSharedDeviceModel();
+        DeviceLayoutService.ResetSharedDevice<DeviceDetails>();
+        DeviceLayoutService.ResetSharedDeviceModel<DeviceModel>();
         DeviceLayoutService.RefreshDeviceOccurred -= DeviceServiceOnRefreshDeviceOccurred;
     }
 
@@ -332,7 +333,7 @@
             await form.Validate();
             bool tagValidationError = CheckTagsError();
 
-            if (!standardValidator.Validate(Device).IsValid
+            if (!standardValidator.Validate(Device as DeviceDetails).IsValid
                 || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid)
                 || tagValidationError)
             {
@@ -350,7 +351,7 @@
                 await LoRaWanDeviceClientService.CreateDevice(Device as LoRaDeviceDetails);
             else
             {
-                await DeviceClientService.CreateDevice(Device);
+                await DeviceClientService.CreateDevice(Device as DeviceDetails);
                 await DeviceClientService.SetDeviceProperties(Device.DeviceID, Properties);
             }
 
@@ -377,8 +378,8 @@
                 NavManager.NavigateTo("devices");
                 break;
             case DeviceSaveAction.SaveAndAddNew:
-                Device = DeviceLayoutService.ResetSharedDevice(TagList.ToList());
-                DeviceModel = DeviceLayoutService.ResetSharedDeviceModel();
+                Device = DeviceLayoutService.ResetSharedDevice<DeviceDetails>(TagList.ToList());
+                DeviceModel = DeviceLayoutService.ResetSharedDeviceModel<DeviceModel>();
                 break;
             case DeviceSaveAction.SaveAndDuplicate:
                 Device = DeviceLayoutService.DuplicateSharedDevice(Device);
@@ -389,8 +390,8 @@
 
     private void DeviceServiceOnRefreshDeviceOccurred(object sender, EventArgs e)
     {
-        Device = DeviceLayoutService.GetSharedDevice();
-        DeviceModel = DeviceLayoutService.GetSharedDeviceModel();
+        Device = DeviceLayoutService.GetSharedDevice<DeviceDetails>();
+        DeviceModel = DeviceLayoutService.GetSharedDeviceModel<DeviceModel>();
         StateHasChanged();
     }
 
@@ -475,7 +476,7 @@
                     Tags = this.Device.Tags
                 };
 
-                this.Device = device;
+                this.Device = device as IDeviceDetails;
 
                 var loRaDeviceModelResult = await LoRaWanDeviceModelsClientService.GetDeviceModel(model.ModelId);
 

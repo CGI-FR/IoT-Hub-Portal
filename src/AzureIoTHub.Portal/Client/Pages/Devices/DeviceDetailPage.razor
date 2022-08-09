@@ -4,6 +4,7 @@
 @using AzureIoTHub.Portal.Models
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
+@using AzureIoTHub.Portal.Shared.Models
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
@@ -61,7 +62,7 @@
         <MudItem xs="12" sm="8" md="9">
 
             <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
-                <MudTabPanel Text="General" Style=@(standardValidator.Validate(Device).IsValid && !CheckTagsError() ? "" : "color: red")>
+                <MudTabPanel Text="General" Style=@(standardValidator.Validate(Device as DeviceDetails).IsValid && !CheckTagsError() ? "" : "color: red")>
                     <MudExpansionPanels MultiExpansion="true">
                         <MudGrid>
                             <MudItem xs="12">
@@ -229,9 +230,9 @@
     [Parameter]
     public string DeviceID { get; set; }
 
-    private DeviceDetails Device { get; set; } = new DeviceDetails();
+    private IDeviceDetails Device { get; set; } = new DeviceDetails();
 
-    private DeviceModel DeviceModel { get;set; } = new DeviceModel();
+    private IDeviceModel DeviceModel { get;set; } = new DeviceModel();
 
     private bool isLoaded = false;
 
@@ -305,7 +306,7 @@
             await form.Validate();
             bool tagValidationError = CheckTagsError();
 
-            if (!standardValidator.Validate(Device).IsValid
+            if (!standardValidator.Validate(Device as DeviceDetails).IsValid
                 || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid)
                 || tagValidationError)
             {
@@ -322,7 +323,7 @@
             }
             else
             {
-                await DeviceClientService.UpdateDevice(Device);
+                await DeviceClientService.UpdateDevice(Device as DeviceDetails);
 
                 await DeviceClientService.SetDeviceProperties(DeviceID, Properties.ToList());
             }

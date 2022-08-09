@@ -119,9 +119,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
                 Description = Guid.NewGuid().ToString(),
                 ImageUrl = new Uri("http://fake.local"),
                 SensorDecoder = Guid.NewGuid().ToString(),
-                IsBuiltin = isBuiltin,
-                SupportLoRaFeatures = supportLora,
-                UseOTAA = true
+                IsBuiltin = isBuiltin
             };
 
             // Act

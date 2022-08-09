@@ -13,16 +13,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using AzureIoTHub.Portal.Server.Exceptions;
+    using AzureIoTHub.Portal.Shared.Models;
 
     public abstract class DeviceModelsControllerBase<TListItemModel, TModel> : ControllerBase
-        where TListItemModel : DeviceModel
-        where TModel : DeviceModel
+        where TListItemModel : class, IDeviceModel
+        where TModel : class, IDeviceModel
     {
 #pragma warning disable RCS1158 // Static member in generic type should use a type parameter.
         /// <summary>

@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Client.Services
 {
     using System;
     using System.Collections.Generic;
+    using AzureIoTHub.Portal.Shared.Models;
     using Portal.Models.v10;
 
     public interface IDeviceLayoutService
@@ -13,11 +14,17 @@ namespace AzureIoTHub.Portal.Client.Services
 
         void RefreshDevice();
 
-        DeviceDetails GetSharedDevice();
-        DeviceModel GetSharedDeviceModel();
-        DeviceDetails ResetSharedDevice(List<DeviceTag> tags = null);
-        DeviceModel ResetSharedDeviceModel();
-        DeviceDetails DuplicateSharedDevice(DeviceDetails deviceToDuplicate);
-        DeviceModel DuplicateSharedDeviceModel(DeviceModel deviceModelToDuplicate);
+        TDevice GetSharedDevice<TDevice>()
+            where TDevice : class, IDeviceDetails;
+        TDeviceModel GetSharedDeviceModel<TDeviceModel>()
+            where TDeviceModel : class, IDeviceModel;
+        TDevice ResetSharedDevice<TDevice>(List<DeviceTag> tags = null)
+            where TDevice : class, IDeviceDetails, new();
+        TDeviceModel ResetSharedDeviceModel<TDeviceModel>()
+            where TDeviceModel : class, IDeviceModel, new();
+        TDevice DuplicateSharedDevice<TDevice>(TDevice deviceToDuplicate)
+            where TDevice : class, IDeviceDetails;
+        TDeviceModel DuplicateSharedDeviceModel<TDeviceModel>(TDeviceModel deviceModelToDuplicate)
+            where TDeviceModel : class, IDeviceModel;
     }
 }
