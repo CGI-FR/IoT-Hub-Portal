@@ -101,5 +101,19 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             _ = await blobClient.UploadAsync(defaultImageStream, overwrite: true);
         }
+
+        public async Task SyncImagesCacheControl()
+        {
+            var container = this.blobService.GetBlobContainerClient(ImageContainerName);
+
+            var blobs = container.GetBlobsAsync();
+
+            await foreach (var blob in blobs)
+            {
+                var blobClient = container.GetBlobClient(blob.Name);
+
+                _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = "max-age=86400, must-revalidate" });
+            }
+        }
     }
 }
