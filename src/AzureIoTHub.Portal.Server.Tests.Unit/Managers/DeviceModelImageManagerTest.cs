@@ -66,6 +66,7 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
             // Arrange
             var deviceModelId = Fixture.Create<string>();
             var expectedImageUri = Fixture.Create<Uri>();
+            using var imageAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<string>()));
 
             _ = this.mockBlobServiceClient
                 .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
@@ -91,7 +92,6 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
                 .Returns(expectedImageUri);
 
             // Act
-            using var imageAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<string>()));
             var result = await this.deviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
 
             // Assert
@@ -127,6 +127,40 @@ namespace AzureIoTHub.Portal.Server.Tests.Unit.Managers
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task SyncImagesCacheControlShouldUpdateBlobsCacheControls()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+
+            var blob = BlobsModelFactory.BlobItem(name:deviceModelId);
+            var blobsPage = Page<BlobItem>.FromValues(new[] { blob }, default, new Mock<Response>().Object);
+            var blobsPageable = AsyncPageable<BlobItem>.FromPages(new[] { blobsPage });
+
+            _ = this.mockBlobServiceClient
+                .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
+                .Returns(this.mockBlobContainerClient.Object);
+
+            _ = this.mockBlobContainerClient
+                .Setup(x => x.GetBlobsAsync(It.IsAny<BlobTraits>(), It.IsAny<BlobStates>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(blobsPageable);
+
+            _ = this.mockBlobContainerClient
+                .Setup(x => x.GetBlobClient(deviceModelId))
+                .Returns(this.mockBlobClient.Object);
+
+            _ = this.mockBlobClient
+                .Setup(client =>
+                    client.SetHttpHeadersAsync(It.IsAny<BlobHttpHeaders>(), It.IsAny<BlobRequestConditions>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Response.FromValue(BlobsModelFactory.BlobInfo(ETag.All, DateTimeOffset.Now), Mock.Of<Response>()));
+
+            // Act
+            await this.deviceModelImageManager.SyncImagesCacheControl();
+
+            // Assert
             MockRepository.VerifyAll();
         }
     }
