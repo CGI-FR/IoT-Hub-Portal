@@ -216,7 +216,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
             // Only exists if the module contains environment variables
             if (moduleProperties.TryGetValue("env", out var environmentVariables))
             {
-                foreach (JProperty val in environmentVariables)
+                foreach (var val in environmentVariables.Cast<JProperty>())
                 {
                     envVariables.Add(val.Name, val.Value["value"].Value<string>());
                 }
