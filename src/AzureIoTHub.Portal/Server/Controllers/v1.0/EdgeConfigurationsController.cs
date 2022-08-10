@@ -67,7 +67,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the specified configuration.
         /// </summary>
         /// <param name="configurationID">The configuration identifier.</param>
-        /// <exception cref="System.InvalidOperationException">Could not parse properties.desired.</exception>
+        /// <exception cref="InvalidOperationException">Could not parse properties.desired.</exception>
         [HttpGet("{configurationID}", Name = "GET IoT Edge configuration")]
         public async Task<ConfigListItem> Get(string configurationID)
         {

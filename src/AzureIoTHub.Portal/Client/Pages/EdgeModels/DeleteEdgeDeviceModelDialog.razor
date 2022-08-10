@@ -28,8 +28,8 @@
     {
         try
         {
-            var result = await this.EdgeModelService.DeleteIoTEdgeModel(deviceModelID);
-            result.EnsureSuccessStatusCode();
+            await this.EdgeModelService.DeleteIoTEdgeModel(deviceModelID);
+            //result.EnsureSuccessStatusCode();
 
             Snackbar.Add($"Device model {deviceModelName} has been successfully deleted!", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));

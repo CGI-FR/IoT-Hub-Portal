@@ -9,13 +9,16 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Exceptions;
+    using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
     using Extensions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Extensions;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     public class ConfigService : IConfigService
     {
@@ -70,6 +73,54 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
+        public async Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId)
+        {
+            var configList = await GetIoTEdgeConfigurations();
+
+            var config = configList.FirstOrDefault((x) => x.Id.StartsWith(modelId));
+
+            if (config == null)
+            {
+                throw new InternalServerErrorException("Config does not exist.");
+            }
+
+            var moduleList = new List<IoTEdgeModule>();
+
+            // Details of every modules are stored within the EdgeAgent module data
+            if (config.Content.ModulesContent != null
+                && config.Content.ModulesContent.TryGetValue("$edgeAgent", out var edgeAgentModule)
+                && edgeAgentModule.TryGetValue("properties.desired", out var edgeAgentDesiredProperties))
+            {
+                // Converts the object to a JObject to access its properties more easily
+                if (edgeAgentDesiredProperties is not JObject modObject)
+                {
+                    throw new InvalidOperationException($"Could not parse properties.desired for the configuration id {config.Id}");
+                }
+
+                // Adds regular modules to the list of modules
+                if (modObject.TryGetValue("modules", out var modules))
+                {
+                    foreach (var m in modules.Values<JProperty>())
+                    {
+                        var newModule = ConfigHelper.CreateGatewayModule(config, m);
+                        moduleList.Add(newModule);
+                    }
+                }
+
+                // Adds system modules to the list of modules
+                if (modObject.TryGetValue("systemModules", out var systemModulesToken))
+                {
+                    foreach (var sm in systemModulesToken.Values<JProperty>())
+                    {
+                        var newModule = ConfigHelper.CreateGatewayModule(config, sm);
+                        moduleList.Add(newModule);
+                    }
+                }
+            }
+
+            return moduleList;
+        }
+
         public async Task DeleteConfiguration(string configId)
         {
             try
@@ -111,7 +162,7 @@ namespace AzureIoTHub.Portal.Server.Services
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }
 
-        public async Task RollOutEdgeModelConfiguration(string modelId, Dictionary<string, object> EdgeModules)
+        public async Task RollOutEdgeModelConfiguration(string modelId, Dictionary<string, IoTEdgeModule> EdgeModules)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
@@ -135,6 +186,30 @@ namespace AzureIoTHub.Portal.Server.Services
             newConfiguration.Priority = 10;
             var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
             var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
+
+
+            foreach (var item in EdgeModules)
+            {
+                var configModule = new ConfigModule
+                {
+                    Type = "docker",
+                    Status = item.Value.Status,
+                    Settings = new ModuleSettings()
+                    {
+                        Image = item.Value.ImageURI
+                    },
+                    Version = item.Value.Version,
+                    RestarPolicy = "always",
+                    EnvironmentVariables = new Dictionary<string, EnvironmentVariable>()
+                };
+
+                foreach (var env in item.Value.EnvironmentVariables)
+                {
+                    configModule.EnvironmentVariables.Add(env.Name, new EnvironmentVariable() { EnvValue = env.Value });
+                }
+
+                edgeAgentPropertiesDesired.Modules.Add(item.Key, configModule);
+            }
 
             newConfiguration.Content.ModulesContent = new Dictionary<string, IDictionary<string, object>>()
             {

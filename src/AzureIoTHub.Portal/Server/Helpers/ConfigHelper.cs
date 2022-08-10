@@ -147,8 +147,9 @@ namespace AzureIoTHub.Portal.Server.Helpers
             var result = new IoTEdgeModule
             {
                 ModuleName = module.Name,
-                Version = module.Value["settings"]["image"]?.Value<string>(),
+                ImageURI = module.Value["settings"]["image"]?.Value<string>(),
                 Status = module.Value["status"]?.Value<string>(),
+                Version = module.Value["version"]?.Value<string>(),
             };
 
             foreach (var item in GetEnvironmentVariables(module))

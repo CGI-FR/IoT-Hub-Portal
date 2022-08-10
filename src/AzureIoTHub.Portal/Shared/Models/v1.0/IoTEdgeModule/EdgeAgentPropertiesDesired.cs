@@ -22,10 +22,10 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
         public EdgeAgentPropertiesDesired()
         {
-            this.Modules = new Dictionary<string, ConfigModule>();
-            this.Runtime = new Runtime();
-            this.SystemModules = new SystemModules();
-            this.SchemaVersion = "1.1";
+            Modules = new Dictionary<string, ConfigModule>();
+            Runtime = new Runtime();
+            SystemModules = new SystemModules();
+            SchemaVersion = "1.1";
         }
     }
 
@@ -39,8 +39,8 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
         public Runtime()
         {
-            this.Settings = new RuntimeSettings();
-            this.Type = "docker";
+            Settings = new RuntimeSettings();
+            Type = "docker";
         }
     }
 
@@ -51,7 +51,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
         public RuntimeSettings()
         {
-            this.MinDockerVersion = "v1.25";
+            MinDockerVersion = "v1.25";
         }
     }
 
@@ -65,13 +65,13 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
         public SystemModules()
         {
-            this.EdgeAgent = new ConfigModule()
+            EdgeAgent = new ConfigModule()
             {
                 Settings = new ModuleSettings { Image = "mcr.microsoft.com/azureiotedge-agent:1.1" },
                 Type = "docker"
             };
 
-            this.EdgeHub = new ConfigModule()
+            EdgeHub = new ConfigModule()
             {
                 Type = "docker",
                 Status = "running",

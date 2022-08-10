@@ -1,4 +1,4 @@
-﻿@page "/edge-device-models/new"
+﻿@page "/edge/models/new"
 
 @using AzureIoTHub.Portal.Client.Pages.EdgeModels.EdgeModule
 @using AzureIoTHub.Portal.Models
@@ -193,8 +193,8 @@
         {
             this.Model.EdgeModules = moduleCommands;
 
-            var result = await EdgeModelService.CreateIoTEdgeModel(Model);
-            result.EnsureSuccessStatusCode();
+            await EdgeModelService.CreateIoTEdgeModel(Model);
+            //result.EnsureSuccessStatusCode();
 
             if (content is not null)
             {
@@ -202,7 +202,7 @@
             }
 
             this.Snackbar.Add("Device model successfully created.", Severity.Success);
-            this.NavigationManager.NavigateTo("/edge-device-model");
+            this.NavigationManager.NavigateTo("/edge/models");
         }
         catch(ProblemDetailsException exception)
         {

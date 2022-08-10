@@ -14,16 +14,16 @@ namespace AzureIoTHub.Portal.Client.Services
 
         Task<IoTEdgeModel> GetIoTEdgeModel(string modelId);
 
-        Task<HttpResponseMessage> CreateIoTEdgeModel(IoTEdgeModel model);
+        Task CreateIoTEdgeModel(IoTEdgeModel model);
 
-        Task<HttpResponseMessage> UpdateIoTEdgeModel(IoTEdgeModel model);
+        Task UpdateIoTEdgeModel(IoTEdgeModel model);
 
-        Task<HttpResponseMessage> DeleteIoTEdgeModel(string modelId);
+        Task DeleteIoTEdgeModel(string modelId);
 
         Task<string> GetAvatarUrl(string modelId);
 
-        Task<HttpResponseMessage> ChangeAvatar(string id, MultipartFormDataContent content);
+        Task ChangeAvatar(string id, MultipartFormDataContent content);
 
-        Task<HttpResponseMessage> DeleteAvatar(string id);
+        Task DeleteAvatar(string id);
     }
 }

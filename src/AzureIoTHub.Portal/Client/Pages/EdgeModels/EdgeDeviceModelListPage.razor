@@ -1,4 +1,4 @@
-﻿@page "/edge-device-model"
+﻿@page "/edge/models"
 
 @using Microsoft.AspNetCore.Authorization
 @using AzureIoTHub.Portal.Models.v10
@@ -107,7 +107,7 @@
 
     public void RedirectToCreatePage()
     {
-        NavigationManager.NavigateTo("/edge-device-models/new");
+        NavigationManager.NavigateTo("/edge/models/new");
     }
 
     private async Task DeleteDeviceModel(IoTEdgeModelListItem ioTEdgeModel)
@@ -127,6 +127,6 @@
 
     private void GoToDetails(IoTEdgeModelListItem item)
     {
-        NavigationManager.NavigateTo($"/edge-device-model/{item.ModelId}");
+        NavigationManager.NavigateTo($"/edge/models/{item.ModelId}");
     }
 }

@@ -29,19 +29,19 @@ namespace AzureIoTHub.Portal.Client.Services
             return await this.http.GetFromJsonAsync<List<IoTEdgeModelListItem>>(this.apiUrlBase);
         }
 
-        public async Task<HttpResponseMessage> CreateIoTEdgeModel(IoTEdgeModel model)
+        public Task CreateIoTEdgeModel(IoTEdgeModel model)
         {
-            return await this.http.PostAsJsonAsync(this.apiUrlBase, model);
+            return this.http.PostAsJsonAsync(this.apiUrlBase, model);
         }
 
-        public async Task<HttpResponseMessage> UpdateIoTEdgeModel(IoTEdgeModel model)
+        public Task UpdateIoTEdgeModel(IoTEdgeModel model)
         {
-            return await this.http.PutAsJsonAsync(this.apiUrlBase, model);
+            return this.http.PutAsJsonAsync(this.apiUrlBase, model);
         }
 
-        public async Task<HttpResponseMessage> DeleteIoTEdgeModel(string modelId)
+        public Task DeleteIoTEdgeModel(string modelId)
         {
-            return await this.http.DeleteAsync($"{this.apiUrlBase}/{modelId}");
+            return this.http.DeleteAsync($"{this.apiUrlBase}/{modelId}");
         }
 
         public async Task<string> GetAvatarUrl(string modelId)
@@ -49,14 +49,14 @@ namespace AzureIoTHub.Portal.Client.Services
             return await this.http.GetStringAsync($"{this.apiUrlBase}/{modelId}/avatar");
         }
 
-        public async Task<HttpResponseMessage> ChangeAvatar(string id, MultipartFormDataContent content)
+        public Task ChangeAvatar(string id, MultipartFormDataContent content)
         {
-            return await this.http.PostAsync($"{this.apiUrlBase}/{id}/avatar", content);
+            return this.http.PostAsync($"{this.apiUrlBase}/{id}/avatar", content);
         }
 
-        public async Task<HttpResponseMessage> DeleteAvatar(string id)
+        public Task DeleteAvatar(string id)
         {
-            return await this.http.DeleteAsync($"{this.apiUrlBase}/{id}/avatar");
+            return this.http.DeleteAsync($"{this.apiUrlBase}/{id}/avatar");
         }
     }
 }

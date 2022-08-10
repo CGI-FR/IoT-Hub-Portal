@@ -1,4 +1,4 @@
-﻿@page "/edge-device-model/{ModelID}"
+﻿@page "/edge/models/{ModelID}"
 
 @using Microsoft.AspNetCore.Authorization
 @using System.Net.Http.Headers
@@ -133,7 +133,7 @@
 
     private MudForm form;
 
-    private void Return() => NavigationManager.NavigateTo("/edge-device-model");
+    private void Return() => NavigationManager.NavigateTo("/edge/models");
 
     // Used to manage the picture
     private MultipartFormDataContent content;
@@ -144,6 +144,7 @@
         try
         {
             isProcessing = true;
+            EdgeModel = new IoTEdgeModel();
 
             await loadModel();
             this.imageDataUrl = await this.EdgeModelService.GetAvatarUrl(this.ModelID);
@@ -210,6 +211,6 @@
             return;
         }
 
-        this.NavigationManager.NavigateTo("/edge-device-model");
+        this.NavigationManager.NavigateTo("/edge/models");
     }
 }

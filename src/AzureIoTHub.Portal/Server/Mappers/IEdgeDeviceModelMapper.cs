@@ -13,6 +13,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
         IoTEdgeModel CreateEdgeDeviceModel(TableEntity entity, List<IoTEdgeModule> ioTEdgeModules);
 
-        Dictionary<string, object> UpdateTableEntity(TableEntity entity, IoTEdgeModel model);
+        Dictionary<string, IoTEdgeModule> UpdateTableEntity(TableEntity entity, IoTEdgeModel model);
     }
 }

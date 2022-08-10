@@ -45,7 +45,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             };
         }
 
-        public Dictionary<string, object> UpdateTableEntity(TableEntity entity, IoTEdgeModel model)
+        public Dictionary<string, IoTEdgeModule> UpdateTableEntity(TableEntity entity, IoTEdgeModel model)
         {
             ArgumentNullException.ThrowIfNull(entity, nameof(entity));
             ArgumentNullException.ThrowIfNull(model, nameof(model));
@@ -53,7 +53,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             entity[nameof(IoTEdgeModel.Name)] = model.Name;
             entity[nameof(IoTEdgeModel.Description)] = model.Description;
 
-            var EdgeModuleList = new Dictionary<string, object>();
+            var EdgeModuleList = new Dictionary<string, IoTEdgeModule>();
 
             foreach (var module in model.EdgeModules)
             {
@@ -63,7 +63,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             return EdgeModuleList;
         }
 
-        private static void AddEdgeModule(string moduleName, IoTEdgeModule module, Dictionary<string, object> moduleList)
+        private static void AddEdgeModule(string moduleName, IoTEdgeModule module, Dictionary<string, IoTEdgeModule> moduleList)
         {
             moduleList.Add(moduleName, module);
         }

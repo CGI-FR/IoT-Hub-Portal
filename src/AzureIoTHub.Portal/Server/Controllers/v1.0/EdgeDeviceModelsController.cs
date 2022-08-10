@@ -109,9 +109,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
                             .GetEntityAsync<TableEntity>(DefaultPartitionKey, modelId);
 
                 var modules = new List<IoTEdgeModule>();
-
-                var configs = await this.configService.GetIoTEdgeConfigurations();
-                var configItem = configs.FirstOrDefault(x => x.Id.StartsWith(modelId));
+                modules = await this.configService.GetConfigModuleList(modelId);
 
                 return Ok(this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules));
             }
@@ -229,7 +227,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
                             .GetEdgeDeviceTemplates()
                             .GetEntityAsync<TableEntity>(DefaultPartitionKey, id);
 
-                return this.Ok(this.deviceModelImageManager.ComputeImageUri(id).ToString());
+                return Ok(this.deviceModelImageManager.ComputeImageUri(id).ToString());
             }
             catch (RequestFailedException e)
             {
@@ -329,6 +327,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             }
 
             await this.configService.RollOutEdgeModelConfiguration(deviceModelObject.ModelId, desiredProperties);
+        }
     }
-}
 }
