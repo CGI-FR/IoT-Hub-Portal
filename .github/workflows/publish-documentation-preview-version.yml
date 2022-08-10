@@ -1,11 +1,11 @@
-name: Publish Preview Documentation
+name: Publish Documentation with Preview Version
 on:
   push:
     branches: [ docs/main ]
   workflow_dispatch:
 jobs:
-  deploy-preview-documentation-version:
-    name: Publish Preview Documentation Version
+  deploy-documentation-preview-version:
+    name: Publish Documentation with Preview Version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
