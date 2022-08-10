@@ -147,29 +147,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         }
 
         [Test]
-        public void GetSharedDeviceShouldReturnDevice()
+        public void GetSharedDeviceShouldReturnNull()
         {
-            // Arrange
-            var expectedDevice = new DeviceDetails();
-
-            // Act
-            var result = this.deviceLayoutService.GetSharedDevice<DeviceDetails>();
-
             // Assert
-            _ = result.Should().BeEquivalentTo(expectedDevice);
+            Assert.IsNull(this.deviceLayoutService.GetSharedDevice());
         }
 
         [Test]
-        public void GetSharedDeviceModelShouldReturnDeviceModel()
+        public void GetSharedDeviceModelShouldReturnNull()
         {
-            // Arrange
-            var expectedDeviceModel = new DeviceModel();
-
-            // Act
-            var result = this.deviceLayoutService.GetSharedDeviceModel<DeviceModel>();
-
             // Assert
-            _ = result.Should().BeEquivalentTo(expectedDeviceModel);
+            Assert.IsNull(this.deviceLayoutService.GetSharedDeviceModel());
         }
     }
 }

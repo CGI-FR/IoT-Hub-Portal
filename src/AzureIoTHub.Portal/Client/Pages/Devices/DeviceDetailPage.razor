@@ -7,10 +7,9 @@
 @using AzureIoTHub.Portal.Shared.Models
 
 @attribute [Authorize]
-@inject ISnackbar Snackbar
 @inject NavigationManager NavManager
+@inject ISnackbar Snackbar
 @inject IDialogService DialogService
-@inject NavigationManager navigationManager
 @inject IDeviceModelsClientService DeviceModelsClientService
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
@@ -62,7 +61,7 @@
         <MudItem xs="12" sm="8" md="9">
 
             <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
-                <MudTabPanel Text="General" Style=@(standardValidator.Validate(Device as DeviceDetails).IsValid && !CheckTagsError() ? "" : "color: red")>
+                <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red": "")>
                     <MudExpansionPanels MultiExpansion="true">
                         <MudGrid>
                             <MudItem xs="12">
@@ -202,7 +201,7 @@
                 </MudTabPanel>
                 @if (IsLoRa && Device != null && Commands != null)
                 {
-                    <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Device as LoRaDeviceDetails).IsValid ? "" : "color: red")>
+                    <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
                         <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" LoRaDeviceModel="@(DeviceModel as LoRaDeviceModel)" Commands="@Commands" />
                     </MudTabPanel>
                 }
@@ -232,7 +231,7 @@
 
     private IDeviceDetails Device { get; set; } = new DeviceDetails();
 
-    private IDeviceModel DeviceModel { get;set; } = new DeviceModel();
+    private IDeviceModel DeviceModel { get; set; } = new DeviceModel();
 
     private bool isLoaded = false;
 
@@ -241,7 +240,7 @@
     private DeviceSaveAction deviceSaveAction = DeviceSaveAction.Save;
     private string saveButtonText = "Save";
 
-    private void Return() => navigationManager.NavigateTo("devices");
+    private void Return() => NavManager.NavigateTo("devices");
 
     private IEnumerable<DeviceModelCommand> Commands { get; set; }
 
@@ -287,8 +286,8 @@
                 Save();
                 break;
             case DeviceSaveAction.Duplicate:
-                DeviceLayoutService.DuplicateSharedDevice(Device as DeviceDetails);
-                DeviceLayoutService.DuplicateSharedDeviceModel(DeviceModel as DeviceModel);
+                DeviceLayoutService.DuplicateSharedDevice(Device);
+                DeviceLayoutService.DuplicateSharedDeviceModel(DeviceModel);
                 NavManager.NavigateTo("devices/new");
                 break;
         }
@@ -304,11 +303,8 @@
             isProcessing = true;
 
             await form.Validate();
-            bool tagValidationError = CheckTagsError();
 
-            if (!standardValidator.Validate(Device as DeviceDetails).IsValid
-                || (IsLoRa && !this.loraValidator.Validate(this.Device as LoRaDeviceDetails).IsValid)
-                || tagValidationError)
+            if (CheckTagsError() || CheckGeneralValidation() || CheckLoRaValidation())
             {
                 Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
@@ -364,6 +360,31 @@
             }
         }
         return tagValidationError;
+    }
+
+    private bool CheckLoRaValidation()
+    {
+        if(!IsLoRa)
+        {
+           return false;
+        }
+
+        if (this.Device is LoRaDeviceDetails loRaDeviceDetails)
+        {
+            return !this.loraValidator.Validate(loRaDeviceDetails).IsValid;
+        }
+
+        return true;
+    }
+
+    private bool CheckGeneralValidation()
+    {
+        if (!IsLoRa && this.Device is DeviceDetails deviceDetails)
+        {
+            return !this.standardValidator.Validate(deviceDetails).IsValid;
+        }
+
+        return CheckLoRaValidation();
     }
 
     /// <summary>

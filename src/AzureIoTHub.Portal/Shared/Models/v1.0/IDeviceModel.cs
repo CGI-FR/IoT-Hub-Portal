@@ -33,5 +33,10 @@ namespace AzureIoTHub.Portal.Shared.Models
         /// A value indicating whether this instance is builtin.
         /// </summary>
         public bool IsBuiltin { get; set; }
+
+        /// <summary>
+        /// A value indicating whether the device model supports LoRa features.
+        /// </summary>
+        public bool SupportLoRaFeatures { get; }
     }
 }

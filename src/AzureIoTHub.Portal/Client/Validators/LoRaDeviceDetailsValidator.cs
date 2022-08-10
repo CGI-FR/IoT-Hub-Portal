@@ -3,8 +3,12 @@
 
 namespace AzureIoTHub.Portal.Client.Validators
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using System;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using FluentValidation;
+    using System.Linq;
 
     public class LoRaDeviceDetailsValidator : AbstractValidator<LoRaDeviceDetails>
     {
@@ -43,5 +47,15 @@ namespace AzureIoTHub.Portal.Client.Validators
                 .When(x => !x.UseOTAA)
                 .WithMessage("DevAddr is required.");
         }
+
+        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+        {
+            var result = await ValidateAsync(ValidationContext<LoRaDeviceDetails>.CreateWithOptions((LoRaDeviceDetails)model, x => x.IncludeProperties(propertyName)));
+
+            if (result.IsValid)
+                return Array.Empty<string>();
+
+            return result.Errors.Select(e => e.ErrorMessage);
+        };
     }
 }

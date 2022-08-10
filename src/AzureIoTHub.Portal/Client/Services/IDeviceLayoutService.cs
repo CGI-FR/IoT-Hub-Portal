@@ -14,17 +14,15 @@ namespace AzureIoTHub.Portal.Client.Services
 
         void RefreshDevice();
 
-        TDevice GetSharedDevice<TDevice>()
-            where TDevice : class, IDeviceDetails, new();
-        TDeviceModel GetSharedDeviceModel<TDeviceModel>()
-            where TDeviceModel : class, IDeviceModel, new();
+        IDeviceDetails GetSharedDevice();
+        IDeviceModel GetSharedDeviceModel();
         TDevice ResetSharedDevice<TDevice>(List<DeviceTag> tags = null)
             where TDevice : class, IDeviceDetails, new();
         TDeviceModel ResetSharedDeviceModel<TDeviceModel>()
             where TDeviceModel : class, IDeviceModel, new();
         TDevice DuplicateSharedDevice<TDevice>(TDevice deviceToDuplicate)
-            where TDevice : class, IDeviceDetails, new();
+            where TDevice : IDeviceDetails;
         TDeviceModel DuplicateSharedDeviceModel<TDeviceModel>(TDeviceModel deviceModelToDuplicate)
-            where TDeviceModel : class, IDeviceModel, new();
+            where TDeviceModel : IDeviceModel;
     }
 }

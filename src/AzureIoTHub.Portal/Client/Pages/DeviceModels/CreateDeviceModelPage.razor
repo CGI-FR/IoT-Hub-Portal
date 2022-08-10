@@ -43,7 +43,7 @@
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
             <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content" id="tabs">
-                <MudTabPanel Text="General" Style=@(standardValidator.Validate(Model as DeviceModel ?? new DeviceModel()).IsValid ? "" : "color: red")>
+                <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red": "")>
                     <MudExpansionPanels MultiExpansion="true" id="general">
                         <MudGrid>
                             <MudItem xs="12">
@@ -149,7 +149,7 @@
                 </MudTabPanel>
                 @if (IsLoRa)
                 {
-                    <MudTabPanel Class="LoRaWANTab" Text="LoRaWAN" Style=@(loraValidator.Validate(Model as LoRaDeviceModel ?? new LoRaDeviceModel()).IsValid ? "" : "color: red")>
+                    <MudTabPanel Class="LoRaWANTab" Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
                         <CreateLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)"
                                            Commands="Commands" />
                     </MudTabPanel>
@@ -218,6 +218,26 @@
     // Used to manage the picture
     private MultipartFormDataContent content;
     private string imageDataUrl;
+
+    private bool CheckLoRaValidation()
+    {
+        if (IsLoRa && this.Model is LoRaDeviceModel loRaDeviceModel)
+        {
+            return !this.loraValidator.Validate(loRaDeviceModel).IsValid;
+        }
+
+        return true;
+    }
+
+    private bool CheckGeneralValidation()
+    {
+        if (!IsLoRa && this.Model is DeviceModel deviceModel)
+        {
+            return !this.standardValidator.Validate(deviceModel).IsValid;
+        }
+
+        return CheckLoRaValidation();
+    }
 
     private void DeleteAvatar()
     {
