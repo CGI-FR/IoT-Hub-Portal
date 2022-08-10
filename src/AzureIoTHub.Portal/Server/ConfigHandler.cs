@@ -35,6 +35,7 @@ namespace AzureIoTHub.Portal.Server
 
         internal const string LoRaKeyManagementUrlKey = "LoRaKeyManagement:Url";
         internal const string LoRaKeyManagementCodeKey = "LoRaKeyManagement:Code";
+        internal const string LoRaKeyManagementApiVersionKey = "LoRaKeyManagement:ApiVersion";
 
         internal const string MetricExporterRefreshIntervalKey = "Metrics:ExporterRefreshIntervalInSeconds";
         internal const string MetricLoaderRefreshIntervalKey = "Metrics:LoaderRefreshIntervalInMinutes";
@@ -96,6 +97,8 @@ namespace AzureIoTHub.Portal.Server
         internal abstract string LoRaKeyManagementUrl { get; }
 
         internal abstract string LoRaKeyManagementCode { get; }
+
+        internal abstract string LoRaKeyManagementApiVersion { get; }
 
         internal abstract string PortalName { get; }
 
