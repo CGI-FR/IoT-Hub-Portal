@@ -21,4 +21,5 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-      - run: mike deploy --push preview
+      - name: Deploy docs
+        run: mike deploy --push preview
