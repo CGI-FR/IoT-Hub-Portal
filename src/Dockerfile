@@ -26,10 +26,10 @@ COPY ["AzureIoTHub.Portal/Client/AzureIoTHub.Portal.Client.csproj", "AzureIoTHub
 RUN dotnet restore "AzureIoTHub.Portal/Server/AzureIoTHub.Portal.Server.csproj"
 COPY . .
 WORKDIR "/src/AzureIoTHub.Portal/Server"
-RUN dotnet build "AzureIoTHub.Portal.Server.csproj" -c Release -o /app/build -p:Version="${BUILD_VERSION}.${GITHUB_RUN_NUMBER}"
+RUN dotnet build "AzureIoTHub.Portal.Server.csproj" -c Release -o /app/build -p:Version="${BUILD_VERSION}.${GITHUB_RUN_NUMBER}" -p:ClientAssetsRestoreCommand="npm ci"
 
 FROM builder AS publish
-RUN dotnet publish "AzureIoTHub.Portal.Server.csproj" -c Release -o /app/publish  -p:Version="${BUILD_VERSION}.${GITHUB_RUN_NUMBER}"
+RUN dotnet publish "AzureIoTHub.Portal.Server.csproj" -c Release -o /app/publish  -p:Version="${BUILD_VERSION}.${GITHUB_RUN_NUMBER}" -p:ClientAssetsRestoreCommand="npm ci"
 
 FROM base AS final
 WORKDIR /app
