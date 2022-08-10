@@ -24,7 +24,7 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// </summary>
         [DefaultValue(1)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public int? PreferredWindow { get; set; }
+        public int PreferredWindow { get; set; }
 
         /// <summary>
         /// Allows controlling the handling of duplicate messages received by multiple gateways.

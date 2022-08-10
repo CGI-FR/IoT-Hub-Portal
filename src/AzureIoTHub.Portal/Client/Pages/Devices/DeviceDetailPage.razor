@@ -287,8 +287,8 @@
                 Save();
                 break;
             case DeviceSaveAction.Duplicate:
-                DeviceLayoutService.DuplicateSharedDevice(Device);
-                DeviceLayoutService.DuplicateSharedDeviceModel(DeviceModel);
+                DeviceLayoutService.DuplicateSharedDevice(Device as DeviceDetails);
+                DeviceLayoutService.DuplicateSharedDeviceModel(DeviceModel as DeviceModel);
                 NavManager.NavigateTo("devices/new");
                 break;
         }

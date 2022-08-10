@@ -78,8 +78,8 @@
                 device = await DeviceClientService.GetDevice(deviceToDuplicate.DeviceID);
                 deviceModel = await DeviceModelsClientService.GetDeviceModel(device.ModelId);
             }
-            DeviceLayoutService.DuplicateSharedDevice(device);
-            DeviceLayoutService.DuplicateSharedDeviceModel(deviceModel);
+            DeviceLayoutService.DuplicateSharedDevice(device as DeviceDetails);
+            DeviceLayoutService.DuplicateSharedDeviceModel(deviceModel as DeviceModel);
             DeviceLayoutService.RefreshDevice();
         }
         catch (ProblemDetailsException exception)

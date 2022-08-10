@@ -22,15 +22,15 @@ namespace AzureIoTHub.Portal.Client.Services
         }
 
         public TDevice GetSharedDevice<TDevice>()
-            where TDevice : class, IDeviceDetails
+            where TDevice : class, IDeviceDetails, new()
         {
-            return this.sharedDevice as TDevice;
+            return this.sharedDevice as TDevice ?? new TDevice();
         }
 
         public TDeviceModel GetSharedDeviceModel<TDeviceModel>()
-            where TDeviceModel : class, IDeviceModel
+            where TDeviceModel : class, IDeviceModel, new()
         {
-            return this.sharedDeviceModel as TDeviceModel;
+            return this.sharedDeviceModel as TDeviceModel ?? new TDeviceModel();
         }
 
         public TDevice ResetSharedDevice<TDevice>(List<DeviceTag> tags = null)
@@ -55,7 +55,7 @@ namespace AzureIoTHub.Portal.Client.Services
         }
 
         public TDevice DuplicateSharedDevice<TDevice>(TDevice deviceToDuplicate)
-            where TDevice : class, IDeviceDetails
+            where TDevice : class, IDeviceDetails, new()
         {
             deviceToDuplicate.DeviceID = string.Empty;
             deviceToDuplicate.DeviceName = $"{deviceToDuplicate.DeviceName} - copy";
@@ -74,7 +74,7 @@ namespace AzureIoTHub.Portal.Client.Services
         }
 
         public TDeviceModel DuplicateSharedDeviceModel<TDeviceModel>(TDeviceModel deviceModelToDuplicate)
-            where TDeviceModel : class, IDeviceModel
+            where TDeviceModel : class, IDeviceModel, new()
         {
             this.sharedDeviceModel = deviceModelToDuplicate;
 
