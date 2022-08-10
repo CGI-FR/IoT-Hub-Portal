@@ -1,0 +1,24 @@
+name: Publish Preview Documentation
+on:
+  push:
+    branches: [ docs/main ]
+  workflow_dispatch:
+jobs:
+  deploy-preview-documentation-version:
+    name: Publish Preview Documentation Version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Setup doc deploy
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+      - run: mike deploy --push preview
