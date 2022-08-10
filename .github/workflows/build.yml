@@ -32,7 +32,7 @@ jobs:
       working-directory: src/
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore -p:ClientAssetsRestoreCommand="npm ci"
       working-directory: src/
     
     - name: Generate Open API documentation

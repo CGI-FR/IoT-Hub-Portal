@@ -52,10 +52,6 @@
     <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="13.1.2" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <ClientAssetsRestoreCommand Condition="'$(ClientAssetsRestoreCommand)' == ''">npm ci</ClientAssetsRestoreCommand>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Shared\AzureIoTHub.Portal.Shared.csproj" />
   </ItemGroup>
