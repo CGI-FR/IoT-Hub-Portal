@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Client.Services
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
 
-    public interface IEdgeDeviceModelClientService
+    public interface IEdgeModelClientService
     {
         Task<List<IoTEdgeModelListItem>> GetIoTEdgeModelList();
 

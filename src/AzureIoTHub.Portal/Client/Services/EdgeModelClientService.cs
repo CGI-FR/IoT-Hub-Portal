@@ -9,12 +9,12 @@ namespace AzureIoTHub.Portal.Client.Services
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
 
-    public class EdgeDeviceModelClientService : IEdgeDeviceModelClientService
+    public class EdgeModelClientService : IEdgeModelClientService
     {
         private readonly HttpClient http;
         private readonly string apiUrlBase = "api/edge/models";
 
-        public EdgeDeviceModelClientService(HttpClient http)
+        public EdgeModelClientService(HttpClient http)
         {
             this.http = http;
         }
