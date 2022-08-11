@@ -69,6 +69,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server
         [TestCase(ConfigHandler.OIDCClientIdKey, nameof(ConfigHandler.OIDCClientId))]
         [TestCase(ConfigHandler.OIDCApiClientIdKey, nameof(ConfigHandler.OIDCApiClientId))]
         [TestCase(ConfigHandler.LoRaKeyManagementUrlKey, nameof(ConfigHandler.LoRaKeyManagementUrl))]
+        [TestCase(ConfigHandler.LoRaKeyManagementApiVersionKey, nameof(ConfigHandler.LoRaKeyManagementApiVersion))]
         public void SettingsShouldGetValueFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange
