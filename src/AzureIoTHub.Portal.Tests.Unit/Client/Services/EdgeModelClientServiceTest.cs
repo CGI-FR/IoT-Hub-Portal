@@ -81,8 +81,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
                 .With(m =>
                 {
                     _ = m.Content.Should().BeAssignableTo<ObjectContent<IoTEdgeModel>>();
-                    var body = m.Content as ObjectContent<IoTEdgeModel>;
-                    _ = body.Value.Should().BeEquivalentTo(expectedEdgeModel);
+
+                    if (m.Content is ObjectContent<IoTEdgeModel> body)
+                    {
+                        _ = body.Value.Should().BeEquivalentTo(expectedEdgeModel);
+                    }
+
                     return true;
                 })
                 .Respond(HttpStatusCode.Created);
@@ -105,8 +109,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
                 .With(m =>
                 {
                     _ = m.Content.Should().BeAssignableTo<ObjectContent<IoTEdgeModel>>();
-                    var body = m.Content as ObjectContent<IoTEdgeModel>;
-                    _ = body.Value.Should().BeEquivalentTo(expectedEdgeModel);
+
+                    if (m.Content is ObjectContent<IoTEdgeModel> body)
+                    {
+                        _ = body.Value.Should().BeEquivalentTo(expectedEdgeModel);
+                    }
                     return true;
                 })
                 .Respond(HttpStatusCode.Created);
