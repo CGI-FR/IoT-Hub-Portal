@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
     using System.Text.RegularExpressions;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
     using Microsoft.Azure.Devices;
     using Newtonsoft.Json.Linq;
 
@@ -222,6 +223,57 @@ namespace AzureIoTHub.Portal.Server.Helpers
             }
 
             return envVariables;
+        }
+
+        public static Dictionary<string, IDictionary<string, object>> GenerateModulesContent(IoTEdgeModel edgeModel)
+        {
+            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
+            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
+
+            foreach (var module in edgeModel.EdgeModules)
+            {
+                var configModule = new ConfigModule
+                {
+                    Type = "docker",
+                    Status = module.Status,
+                    Settings = new ModuleSettings()
+                    {
+                        Image = module.ImageURI
+                    },
+                    Version = module.Version,
+                    RestarPolicy = "always",
+                    EnvironmentVariables = new Dictionary<string, EnvironmentVariable>()
+                };
+
+                foreach (var env in module.EnvironmentVariables)
+                {
+                    configModule.EnvironmentVariables.Add(env.Name, new EnvironmentVariable() { EnvValue = env.Value });
+                }
+
+                edgeAgentPropertiesDesired.Modules.Add(module.ModuleName, configModule);
+            }
+
+            return new Dictionary<string, IDictionary<string, object>>
+            {
+                {
+                    "$edgeAgent",
+                    new Dictionary<string , object>()
+                    {
+                        {
+                            "properties.desired", edgeAgentPropertiesDesired
+                        }
+                    }
+                },
+                {
+                    "$edgeHub",
+                    new Dictionary<string , object>()
+                    {
+                        {
+                            "properties.desired", edgeHubPropertiesDesired
+                        }
+                    }
+                }
+            };
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿@page "/edge/models/{ModelID}"
 
 @using Microsoft.AspNetCore.Authorization
+@using AzureIoTHub.Portal.Client.Pages.EdgeModels.EdgeModule
 @using System.Net.Http.Headers
 @using AzureIoTHub.Portal.Models.v10
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
@@ -94,14 +95,14 @@
                                                         <MudText >@CommandContext.Version</MudText>
                                                     </MudTd>
                                                     <MudTd DataLabel="See detail" Style="text-align: center;">
-                                                        <MudButton Variant="Variant.Filled">Edit</MudButton>
+                                                        <MudButton Variant="Variant.Filled" OnClick="(async () => await ShowEditEdgeModuleDialog(CommandContext))">Edit</MudButton>
                                                     </MudTd>
                                                     <MudTd DataLabel="Delete" Style="text-align: center">
-                                                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" ></MudIconButton>
+                                                        <MudIconButton Color="Color.Default" OnClick="( () => DeleteModule(CommandContext))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" ></MudIconButton>
                                                     </MudTd>
                                                 </RowTemplate>
                                                 <FooterContent>
-                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" >Add new module</MudButton>
+                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddModule" Color="Color.Success" >Add new module</MudButton>
                                                 </FooterContent>
                                             </MudTable>
                                         </MudItem>
@@ -192,6 +193,38 @@
     private async Task Save()
     {
         isProcessing = true;
+
+        // Displays validation error message for each field
+        await form.Validate();
+
+    }
+
+    private void AddModule()
+    {
+        EdgeModel.EdgeModules.Add(new IoTEdgeModule());
+    }
+
+    private async Task ShowEditEdgeModuleDialog(IoTEdgeModule module)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("module", module);
+
+        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+
+        if (!string.IsNullOrWhiteSpace(module.ModuleName))
+        {
+            var result = await DialogService.Show<ModuleDialog>(module.ModuleName, parameters, options).Result;
+
+            if (result.Cancelled)
+            {
+                return;
+            }
+        }
+    }
+
+    private void DeleteModule(IoTEdgeModule module)
+    {
+        EdgeModel.EdgeModules.Remove(module);
     }
 
     private async Task DeleteDeviceModel()

@@ -12,7 +12,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Helpers;
-    using AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
     using Extensions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Extensions;
@@ -108,14 +107,14 @@ namespace AzureIoTHub.Portal.Server.Services
                 }
 
                 // Adds system modules to the list of modules
-                if (modObject.TryGetValue("systemModules", out var systemModulesToken))
-                {
-                    foreach (var sm in systemModulesToken.Values<JProperty>())
-                    {
-                        var newModule = ConfigHelper.CreateGatewayModule(config, sm);
-                        moduleList.Add(newModule);
-                    }
-                }
+                //if (modObject.TryGetValue("systemModules", out var systemModulesToken))
+                //{
+                //    foreach (var sm in systemModulesToken.Values<JProperty>())
+                //    {
+                //        var newModule = ConfigHelper.CreateGatewayModule(config, sm);
+                //        moduleList.Add(newModule);
+                //    }
+                //}
             }
 
             return moduleList;
@@ -162,11 +161,11 @@ namespace AzureIoTHub.Portal.Server.Services
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }
 
-        public async Task RollOutEdgeModelConfiguration(string modelId, Dictionary<string, IoTEdgeModule> EdgeModules)
+        public async Task RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
-            var configurationNamePrefix = modelId?.Trim()
+            var configurationNamePrefix = edgeModel.ModelId?.Trim()
                                                 .ToLowerInvariant()
                                                 .Replace(" ", "-", StringComparison.OrdinalIgnoreCase);
 
@@ -182,56 +181,10 @@ namespace AzureIoTHub.Portal.Server.Services
 
             var newConfiguration = new Configuration($"{configurationNamePrefix}-{DateTime.UtcNow.Ticks}");
             newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
-            newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'";
+            newConfiguration.TargetCondition = $"tags.modelId = '{edgeModel.ModelId}'";
             newConfiguration.Priority = 10;
-            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
-            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
 
-
-            foreach (var item in EdgeModules)
-            {
-                var configModule = new ConfigModule
-                {
-                    Type = "docker",
-                    Status = item.Value.Status,
-                    Settings = new ModuleSettings()
-                    {
-                        Image = item.Value.ImageURI
-                    },
-                    Version = item.Value.Version,
-                    RestarPolicy = "always",
-                    EnvironmentVariables = new Dictionary<string, EnvironmentVariable>()
-                };
-
-                foreach (var env in item.Value.EnvironmentVariables)
-                {
-                    configModule.EnvironmentVariables.Add(env.Name, new EnvironmentVariable() { EnvValue = env.Value });
-                }
-
-                edgeAgentPropertiesDesired.Modules.Add(item.Key, configModule);
-            }
-
-            newConfiguration.Content.ModulesContent = new Dictionary<string, IDictionary<string, object>>()
-            {
-                {
-                    "$edgeAgent",
-                    new Dictionary<string , object>()
-                    {
-                        {
-                            "properties.desired", edgeAgentPropertiesDesired
-                        }
-                    }
-                },
-                {
-                    "$edgeHub",
-                    new Dictionary<string , object>()
-                    {
-                        {
-                            "properties.desired", edgeHubPropertiesDesired
-                        }
-                    }
-                }
-            };
+            newConfiguration.Content.ModulesContent = ConfigHelper.GenerateModulesContent(edgeModel);
 
             try
             {

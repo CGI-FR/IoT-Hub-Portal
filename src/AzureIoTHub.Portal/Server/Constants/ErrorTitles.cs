@@ -6,5 +6,9 @@ namespace AzureIoTHub.Portal.Server.Constants
     public static class ErrorTitles
     {
         public const string InternalServerError = "Internal Server Error";
+
+        public const string ResourceNotFound = "Resource Not Found";
+
+        public const string ResourceAlreadyExists = "Resource Already Exists";
     }
 }

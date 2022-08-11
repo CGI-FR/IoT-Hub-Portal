@@ -94,7 +94,7 @@
                                                         <MudButton Variant="Variant.Filled" OnClick="@(async () => await ShowAddEdgeModuleDialog(moduleContext))">Edit</MudButton>
                                                     </MudTd>
                                                     <MudTd DataLabel="Delete" Style="text-align: center">
-                                                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteCommand(moduleContext))"></MudIconButton>
+                                                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteModule(moduleContext))"></MudIconButton>
                                                     </MudTd>
                                                 </RowTemplate>
                                                 <FooterContent>
@@ -210,13 +210,8 @@
         }
     }
 
-    private void AddCommand()
+    private void DeleteModule(IoTEdgeModule module)
     {
-
-    }
-
-    private void DeleteCommand(IoTEdgeModule item)
-    {
-        moduleCommands.Remove(item);
+        moduleCommands.Remove(module);
     }
 }
