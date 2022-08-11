@@ -3988,266 +3988,6 @@
         ],
         "type": "object",
         "properties": {
-          "deviceName": {
-            "minLength": 1,
-            "type": "string",
-            "description": "The name of the device."
-          },
-          "modelId": {
-            "minLength": 1,
-            "type": "string",
-            "description": "The model identifier."
-          },
-          "imageUrl": {
-            "type": "string",
-            "description": "The device model image Url.",
-            "format": "uri",
-            "nullable": true
-          },
-          "isConnected": {
-            "type": "boolean",
-            "description": "`true` if this instance is connected; otherwise, `false`."
-          },
-          "isEnabled": {
-            "type": "boolean",
-            "description": "`true` if this instance is enabled; otherwise, `false`."
-          },
-          "statusUpdatedTime": {
-            "type": "string",
-            "description": "The status updated time.",
-            "format": "date-time"
-          },
-          "tags": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string",
-              "nullable": true
-            },
-            "description": "List of custom device tags and their values.",
-            "nullable": true
-          },
-          "deviceID": {
-            "maxLength": -1,
-            "minLength": 1,
-            "pattern": "^[A-Z0-9]{16}$",
-            "type": "string",
-            "description": "The device identifier."
-          },
-          "useOTAA": {
-            "type": "boolean",
-            "description": "A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP",
-            "default": true
-          },
-          "classType": {
-            "enum": [
-              "A",
-              "C"
-            ],
-            "type": "string",
-            "description": "The LoRa device class type. (default A)",
-            "default": "A"
-          },
-          "appKey": {
-            "type": "string",
-            "description": "The OTAA App Key.",
-            "nullable": true
-          },
-          "appEUI": {
-            "type": "string",
-            "description": "The device OTAA Application EUI.",
-            "nullable": true
-          },
-          "appSKey": {
-            "type": "string",
-            "description": "The ABP AppSKey.",
-            "nullable": true
-          },
-          "nwkSKey": {
-            "type": "string",
-            "description": "The ABP NwkSKey.",
-            "nullable": true
-          },
-          "devAddr": {
-            "type": "string",
-            "description": "Unique identifier that allows\r\nthe device to be recognized.",
-            "nullable": true
-          },
-          "alreadyLoggedInOnce": {
-            "type": "boolean",
-            "description": "A value indicating whether the device has already joined the platform."
-          },
-          "dataRate": {
-            "type": "string",
-            "description": "The Device Current Datarate,\r\nThis value will be only reported if you are using Adaptive Data Rate.",
-            "nullable": true
-          },
-          "txPower": {
-            "type": "string",
-            "description": "The Device Current Transmit Power,\r\nThis value will be only reported if you are using Adaptive Data Rate.",
-            "nullable": true
-          },
-          "nbRep": {
-            "type": "string",
-            "description": "The Device Current repetition when transmitting.\r\nE.g. if set to two, the device will transmit twice his upstream messages.\r\nThis value will be only reported if you are using Adaptive Data Rate.",
-            "nullable": true
-          },
-          "reportedRX2DataRate": {
-            "type": "string",
-            "description": "The Device Current Rx2Datarate.",
-            "nullable": true
-          },
-          "reportedRX1DROffset": {
-            "type": "string",
-            "description": "The Device Current RX1DROffset.",
-            "nullable": true
-          },
-          "reportedRXDelay": {
-            "type": "string",
-            "description": "The Device Current RXDelay.",
-            "nullable": true
-          },
-          "sensorDecoder": {
-            "type": "string",
-            "description": "The sensor decoder API Url.",
-            "nullable": true
-          },
-          "gatewayID": {
-            "type": "string",
-            "description": "The GatewayID of the device.",
-            "nullable": true
-          },
-          "downlink": {
-            "type": "boolean",
-            "description": "A value indicating whether the downlinks are enabled (True if not provided)",
-            "default": true,
-            "nullable": true
-          },
-          "preferredWindow": {
-            "type": "integer",
-            "description": "Allows setting the device preferred receive window (RX1 or RX2).\r\nThe default preferred receive window is 1.",
-            "format": "int32",
-            "default": 1,
-            "nullable": true
-          },
-          "deduplication": {
-            "enum": [
-              "None",
-              "Drop",
-              "Mark"
-            ],
-            "type": "string",
-            "description": "Allows controlling the handling of duplicate messages received by multiple gateways.\r\nThe default is Drop.",
-            "default": "Drop"
-          },
-          "rX1DROffset": {
-            "type": "integer",
-            "description": "Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0.",
-            "format": "int32",
-            "default": 0,
-            "nullable": true
-          },
-          "rX2DataRate": {
-            "type": "integer",
-            "description": "Allows setting a custom Datarate for second receive windows.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0 (DR0).",
-            "format": "int32",
-            "default": 0,
-            "nullable": true
-          },
-          "rxDelay": {
-            "type": "integer",
-            "description": "Allows setting a custom wait time between receiving and transmission as specified in the specification.",
-            "format": "int32",
-            "nullable": true
-          },
-          "abpRelaxMode": {
-            "type": "boolean",
-            "description": "Allows to disable the relax mode when using ABP.\r\nBy default relaxed mode is enabled.",
-            "default": true,
-            "nullable": true
-          },
-          "fCntUpStart": {
-            "maximum": 4294967295,
-            "minimum": 0,
-            "type": "integer",
-            "description": "Allows to explicitly specify a frame counter up start value.\r\nIf the device joins, this value will be used to validate the first frame and initialize the server state for the device.\r\nDefault is 0.",
-            "format": "int32",
-            "default": 0,
-            "nullable": true
-          },
-          "fCntDownStart": {
-            "maximum": 4294967295,
-            "minimum": 0,
-            "type": "integer",
-            "description": "Allows to explicitly specify a frame counter down start value.\r\nDefault is 0.",
-            "format": "int32",
-            "default": 0,
-            "nullable": true
-          },
-          "supports32BitFCnt": {
-            "type": "boolean",
-            "description": "Allow the usage of 32bit counters on your device.\r\nDefault is true.",
-            "default": true,
-            "nullable": true
-          },
-          "fCntResetCounter": {
-            "maximum": 4294967295,
-            "minimum": 0,
-            "type": "integer",
-            "description": "Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.\r\nDefault is 0.",
-            "format": "int32",
-            "default": 0,
-            "nullable": true
-          },
-          "keepAliveTimeout": {
-            "type": "integer",
-            "description": "Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.\r\nThe default is none, which causes the connection to not be dropped.",
-            "format": "int32",
-            "default": null,
-            "nullable": true
-          },
-          "isLoraWan": {
-            "type": "boolean",
-            "readOnly": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "LoRa WAN Device details."
-      },
-      "LoRaDeviceModel": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "modelId": {
-            "type": "string",
-            "description": "The device model identifier.",
-            "nullable": true
-          },
-          "imageUrl": {
-            "type": "string",
-            "description": "The device model image Url.",
-            "format": "uri",
-            "nullable": true
-          },
-          "name": {
-            "minLength": 1,
-            "type": "string",
-            "description": "The device model name."
-          },
-          "description": {
-            "type": "string",
-            "description": "The device model description.",
-            "nullable": true
-          },
-          "isBuiltin": {
-            "type": "boolean",
-            "description": "A value indicating whether this instance is builtin."
-          },
-          "supportLoRaFeatures": {
-            "type": "boolean",
-            "description": "A value indicating whether the LoRa features is supported on this model."
-          },
           "classType": {
             "enum": [
               "A",
@@ -4256,22 +3996,6 @@
             "type": "string",
             "description": "The LoRa device class.\r\nDefault is A.",
             "default": "A"
-          },
-          "useOTAA": {
-            "type": "boolean",
-            "description": "A value indicating whether the device uses OTAA to authenticate to LoRaWAN network. Otherwise ABP.\r\nDefault is true.",
-            "default": true
-          },
-          "sensorDecoder": {
-            "type": "string",
-            "description": "The sensor decoder API Url.",
-            "nullable": true
-          },
-          "downlink": {
-            "type": "boolean",
-            "description": "Allows disabling the downstream (cloud to device) for a device.\r\nBy default downstream messages are enabled.",
-            "default": true,
-            "nullable": true
           },
           "preferredWindow": {
             "type": "integer",
@@ -4353,6 +4077,278 @@
             "description": "Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.\r\nThe default is none, which causes the connection to not be dropped.",
             "format": "int32",
             "default": null,
+            "nullable": true
+          },
+          "sensorDecoder": {
+            "type": "string",
+            "description": "The sensor decoder API Url.",
+            "nullable": true
+          },
+          "deviceName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The name of the device."
+          },
+          "modelId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The model identifier."
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "The device model image Url.",
+            "format": "uri",
+            "nullable": true
+          },
+          "isConnected": {
+            "type": "boolean",
+            "description": "`true` if this instance is connected; otherwise, `false`."
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "description": "`true` if this instance is enabled; otherwise, `false`."
+          },
+          "statusUpdatedTime": {
+            "type": "string",
+            "description": "The status updated time.",
+            "format": "date-time"
+          },
+          "tags": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "nullable": true
+            },
+            "description": "List of custom device tags and their values.",
+            "nullable": true
+          },
+          "deviceID": {
+            "maxLength": -1,
+            "minLength": 1,
+            "pattern": "^[A-Z0-9]{16}$",
+            "type": "string",
+            "description": "The device identifier."
+          },
+          "useOTAA": {
+            "type": "boolean",
+            "description": "A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP",
+            "default": true
+          },
+          "appKey": {
+            "type": "string",
+            "description": "The OTAA App Key.",
+            "nullable": true
+          },
+          "appEUI": {
+            "type": "string",
+            "description": "The device OTAA Application EUI.",
+            "nullable": true
+          },
+          "appSKey": {
+            "type": "string",
+            "description": "The ABP AppSKey.",
+            "nullable": true
+          },
+          "nwkSKey": {
+            "type": "string",
+            "description": "The ABP NwkSKey.",
+            "nullable": true
+          },
+          "devAddr": {
+            "type": "string",
+            "description": "Unique identifier that allows\r\nthe device to be recognized.",
+            "nullable": true
+          },
+          "alreadyLoggedInOnce": {
+            "type": "boolean",
+            "description": "A value indicating whether the device has already joined the platform."
+          },
+          "dataRate": {
+            "type": "string",
+            "description": "The Device Current Datarate,\r\nThis value will be only reported if you are using Adaptive Data Rate.",
+            "nullable": true
+          },
+          "txPower": {
+            "type": "string",
+            "description": "The Device Current Transmit Power,\r\nThis value will be only reported if you are using Adaptive Data Rate.",
+            "nullable": true
+          },
+          "nbRep": {
+            "type": "string",
+            "description": "The Device Current repetition when transmitting.\r\nE.g. if set to two, the device will transmit twice his upstream messages.\r\nThis value will be only reported if you are using Adaptive Data Rate.",
+            "nullable": true
+          },
+          "reportedRX2DataRate": {
+            "type": "string",
+            "description": "The Device Current Rx2Datarate.",
+            "nullable": true
+          },
+          "reportedRX1DROffset": {
+            "type": "string",
+            "description": "The Device Current RX1DROffset.",
+            "nullable": true
+          },
+          "reportedRXDelay": {
+            "type": "string",
+            "description": "The Device Current RXDelay.",
+            "nullable": true
+          },
+          "gatewayID": {
+            "type": "string",
+            "description": "The GatewayID of the device.",
+            "nullable": true
+          },
+          "downlink": {
+            "type": "boolean",
+            "description": "A value indicating whether the downlinks are enabled (True if not provided)",
+            "default": true,
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "LoRa WAN Device details."
+      },
+      "LoRaDeviceModel": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "classType": {
+            "enum": [
+              "A",
+              "C"
+            ],
+            "type": "string",
+            "description": "The LoRa device class.\r\nDefault is A.",
+            "default": "A"
+          },
+          "preferredWindow": {
+            "type": "integer",
+            "description": "Allows setting the device preferred receive window (RX1 or RX2).\r\nThe default preferred receive window is 1.",
+            "format": "int32",
+            "default": 1
+          },
+          "deduplication": {
+            "enum": [
+              "None",
+              "Drop",
+              "Mark"
+            ],
+            "type": "string",
+            "description": "Allows controlling the handling of duplicate messages received by multiple gateways.\r\nThe default is Drop.",
+            "default": "Drop"
+          },
+          "rX1DROffset": {
+            "type": "integer",
+            "description": "Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0.",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "rX2DataRate": {
+            "type": "integer",
+            "description": "Allows setting a custom Datarate for second receive windows.\r\nValid for OTAA devices.\r\nIf an invalid value is provided the network server will use default value 0 (DR0).",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "rxDelay": {
+            "type": "integer",
+            "description": "Allows setting a custom wait time between receiving and transmission as specified in the specification.",
+            "format": "int32",
+            "nullable": true
+          },
+          "abpRelaxMode": {
+            "type": "boolean",
+            "description": "Allows to disable the relax mode when using ABP.\r\nBy default relaxed mode is enabled.",
+            "default": true,
+            "nullable": true
+          },
+          "fCntUpStart": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Allows to explicitly specify a frame counter up start value.\r\nIf the device joins, this value will be used to validate the first frame and initialize the server state for the device.\r\nDefault is 0.",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "fCntDownStart": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Allows to explicitly specify a frame counter down start value.\r\nDefault is 0.",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "fCntResetCounter": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.\r\nDefault is 0.",
+            "format": "int32",
+            "default": 0,
+            "nullable": true
+          },
+          "supports32BitFCnt": {
+            "type": "boolean",
+            "description": "Allow the usage of 32bit counters on your device.",
+            "default": true,
+            "nullable": true
+          },
+          "keepAliveTimeout": {
+            "type": "integer",
+            "description": "Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.\r\nThe default is none, which causes the connection to not be dropped.",
+            "format": "int32",
+            "default": null,
+            "nullable": true
+          },
+          "sensorDecoder": {
+            "type": "string",
+            "description": "The sensor decoder API Url.",
+            "nullable": true
+          },
+          "modelId": {
+            "type": "string",
+            "description": "The device model identifier.",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "The device model image Url.",
+            "format": "uri",
+            "nullable": true
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The device model name."
+          },
+          "description": {
+            "type": "string",
+            "description": "The device model description.",
+            "nullable": true
+          },
+          "isBuiltin": {
+            "type": "boolean",
+            "description": "A value indicating whether this instance is builtin."
+          },
+          "supportLoRaFeatures": {
+            "type": "boolean",
+            "description": "A value indicating whether the LoRa features is supported on this model.",
+            "readOnly": true
+          },
+          "useOTAA": {
+            "type": "boolean",
+            "description": "A value indicating whether the device uses OTAA to authenticate to LoRaWAN network. Otherwise ABP.\r\nDefault is true.",
+            "default": true
+          },
+          "downlink": {
+            "type": "boolean",
+            "description": "Allows disabling the downstream (cloud to device) for a device.\r\nBy default downstream messages are enabled.",
+            "default": true,
             "nullable": true
           }
         },
