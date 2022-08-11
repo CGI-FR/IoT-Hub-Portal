@@ -92,7 +92,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", deviceId));
 
             // Assert
-            var returnButton = cut.WaitForElement("#returnButton");
+            _ = cut.WaitForElement("#returnButton");
         }
 
         [Test]
@@ -122,7 +122,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     ComponentParameter.CreateParameter(nameof(DeviceModelDetailPage.IsLoRa), true));
 
             // Assert
-            var returnButton = cut.WaitForElement("#returnButton");
+            _ = cut.WaitForElement("#returnButton");
         }
 
         [Test]
