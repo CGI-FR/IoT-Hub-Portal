@@ -9,11 +9,11 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Managers;
 
-    public class EdgeDeviceModelMapper : IEdgeDeviceModelMapper
+    public class EdgeModelMapper : IEdgeDeviceModelMapper
     {
         private readonly IDeviceModelImageManager deviceModelImageManager;
 
-        public EdgeDeviceModelMapper(IDeviceModelImageManager deviceModelImageManager)
+        public EdgeModelMapper(IDeviceModelImageManager deviceModelImageManager)
         {
             this.deviceModelImageManager = deviceModelImageManager;
         }
