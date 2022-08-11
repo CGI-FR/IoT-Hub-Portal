@@ -53,13 +53,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Assert
             Assert.IsNotNull(response);
             Assert.IsAssignableFrom<OkObjectResult>(response.Result);
-            var okResponse = response.Result as OkObjectResult;
 
-            Assert.AreEqual(200, okResponse.StatusCode);
+            if (response.Result is OkObjectResult okResponse)
+            {
+                Assert.AreEqual(200, okResponse.StatusCode);
 
-            Assert.IsNotNull(okResponse.Value);
-            var result = okResponse.Value as List<IoTEdgeModelListItem>;
-            Assert.AreEqual(1, result.Count);
+                Assert.IsNotNull(okResponse.Value);
+                if (okResponse.Value is List<IoTEdgeModelListItem> result)
+                {
+                    Assert.AreEqual(1, result.Count);
+                }
+            }
+            else
+            {
+                Assert.Fail("Cannot inspect the result.");
+            }
 
             this.mockRepository.VerifyAll();
         }
@@ -161,12 +169,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Assert
             Assert.IsNotNull(response);
             Assert.IsAssignableFrom<OkObjectResult>(response.Result);
-            var okResponse = response.Result as OkObjectResult;
 
-            Assert.AreEqual(200, okResponse.StatusCode);
+            if (response.Result is OkObjectResult okResponse)
+            {
+                Assert.AreEqual(200, okResponse.StatusCode);
 
-            Assert.IsNotNull(okResponse.Value);
-            Assert.AreEqual(expectedUrl, okResponse.Value.ToString());
+                Assert.IsNotNull(okResponse.Value);
+                Assert.AreEqual(expectedUrl, okResponse.Value.ToString());
+            }
 
             this.mockRepository.VerifyAll();
         }
@@ -190,12 +200,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Assert
             Assert.IsNotNull(response);
             Assert.IsAssignableFrom<OkObjectResult>(response.Result);
-            var okResponse = response.Result as OkObjectResult;
 
-            Assert.AreEqual(200, okResponse.StatusCode);
+            if (response.Result is OkObjectResult okResponse)
+            {
+                Assert.AreEqual(200, okResponse.StatusCode);
 
-            Assert.IsNotNull(okResponse.Value);
-            Assert.AreEqual(expectedUrl, okResponse.Value.ToString());
+                Assert.IsNotNull(okResponse.Value);
+                Assert.AreEqual(expectedUrl, okResponse.Value.ToString());
+            }
 
             this.mockRepository.VerifyAll();
         }
