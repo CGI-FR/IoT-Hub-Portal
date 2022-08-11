@@ -21,5 +21,7 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-      - name: Deploy docs
+      - name: Deploy docs with stable version
+        run: mike deploy --push stable
+      - name: Deploy docs with latest version
         run: mike deploy --push --update-aliases ${GITHUB_REF_NAME} latest
