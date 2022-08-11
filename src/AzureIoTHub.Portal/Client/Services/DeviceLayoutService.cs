@@ -5,13 +5,14 @@ namespace AzureIoTHub.Portal.Client.Services
 {
     using System;
     using System.Collections.Generic;
+    using AzureIoTHub.Portal.Shared.Models;
     using Portal.Models.v10;
     using Portal.Models.v10.LoRaWAN;
 
     public class DeviceLayoutService : IDeviceLayoutService
     {
-        private DeviceDetails sharedDevice = new();
-        private DeviceModel sharedDeviceModel = new();
+        private IDeviceDetails sharedDevice;
+        private IDeviceModel sharedDeviceModel;
 
         public event EventHandler RefreshDeviceOccurred;
 
@@ -20,60 +21,62 @@ namespace AzureIoTHub.Portal.Client.Services
             OnRefreshDeviceOccurred();
         }
 
-        public DeviceDetails GetSharedDevice()
+        public IDeviceDetails GetSharedDevice()
         {
             return this.sharedDevice;
         }
 
-        public DeviceModel GetSharedDeviceModel()
+        public IDeviceModel GetSharedDeviceModel()
         {
             return this.sharedDeviceModel;
         }
 
-        public DeviceDetails ResetSharedDevice(List<DeviceTag> tags = null)
+        public TDevice ResetSharedDevice<TDevice>(List<DeviceTag> tags = null)
+            where TDevice : class, IDeviceDetails, new()
         {
-            this.sharedDevice = new DeviceDetails();
+            this.sharedDevice = new TDevice();
 
             foreach (var tag in tags ?? new List<DeviceTag>())
             {
                 _ = this.sharedDevice.Tags.TryAdd(tag.Name, string.Empty);
             }
 
-            return this.sharedDevice;
+            return this.sharedDevice as TDevice;
         }
 
-        public DeviceModel ResetSharedDeviceModel()
+        public TDeviceModel ResetSharedDeviceModel<TDeviceModel>()
+            where TDeviceModel : class, IDeviceModel, new()
         {
-            this.sharedDeviceModel = new DeviceModel();
+            this.sharedDeviceModel = new TDeviceModel();
 
-            return this.sharedDeviceModel;
+            return this.sharedDeviceModel as TDeviceModel;
         }
 
-        public DeviceDetails DuplicateSharedDevice(DeviceDetails deviceToDuplicate)
+        public TDevice DuplicateSharedDevice<TDevice>(TDevice deviceToDuplicate)
+            where TDevice : IDeviceDetails
         {
             deviceToDuplicate.DeviceID = string.Empty;
             deviceToDuplicate.DeviceName = $"{deviceToDuplicate.DeviceName} - copy";
 
-            if (deviceToDuplicate.IsLoraWan)
+            if (deviceToDuplicate is LoRaDeviceDetails loRaDevice)
             {
-                var loRaDeviceDetails = (LoRaDeviceDetails)deviceToDuplicate;
-                loRaDeviceDetails.AppKey = string.Empty;
-
-                this.sharedDevice = loRaDeviceDetails;
+                loRaDevice.AppKey = string.Empty;
+                this.sharedDevice = loRaDevice;
             }
             else
             {
                 this.sharedDevice = deviceToDuplicate;
             }
 
-            return this.sharedDevice;
+            return (TDevice)this.sharedDevice;
         }
 
-        public DeviceModel DuplicateSharedDeviceModel(DeviceModel deviceModelToDuplicate)
+        public TDeviceModel DuplicateSharedDeviceModel<TDeviceModel>(TDeviceModel deviceModelToDuplicate)
+            where TDeviceModel : IDeviceModel
         {
             this.sharedDeviceModel = deviceModelToDuplicate;
 
-            return this.sharedDeviceModel;
+            return (TDeviceModel)this.sharedDeviceModel;
         }
 
         private void OnRefreshDeviceOccurred() => RefreshDeviceOccurred?.Invoke(this, EventArgs.Empty);

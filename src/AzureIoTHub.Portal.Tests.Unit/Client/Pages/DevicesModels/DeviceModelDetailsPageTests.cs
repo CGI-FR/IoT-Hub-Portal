@@ -385,8 +385,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 Name = this.mockModelId,
                 Description = Guid.NewGuid().ToString(),
                 IsBuiltin = false,
-                ImageUrl = new Uri($"http://fake.local/{this.mockModelId}"),
-                SupportLoRaFeatures = true
+                ImageUrl = new Uri($"http://fake.local/{this.mockModelId}")
             };
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
@@ -412,8 +411,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 Name = this.mockModelId,
                 Description = Guid.NewGuid().ToString(),
                 IsBuiltin = false,
-                ImageUrl = new Uri($"http://fake.local/{this.mockModelId}"),
-                SupportLoRaFeatures = true
+                ImageUrl = new Uri($"http://fake.local/{this.mockModelId}")
             };
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>

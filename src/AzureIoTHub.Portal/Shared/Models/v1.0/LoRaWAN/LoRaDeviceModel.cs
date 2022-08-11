@@ -6,20 +6,44 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
     using System;
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
+    using AzureIoTHub.Portal.Shared.Models;
     using Newtonsoft.Json;
 
     /// <summary>
     /// LoRa Device model.
     /// </summary>
-    public class LoRaDeviceModel : DeviceModel
+    public class LoRaDeviceModel : LoRaDeviceBase, IDeviceModel
     {
         /// <summary>
-        /// The LoRa device class.
-        /// Default is A.
+        /// The device model identifier.
         /// </summary>
-        [DefaultValue(ClassType.A)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public ClassType ClassType { get; set; }
+        public string ModelId { get; set; }
+
+        /// <summary>
+        /// The device model image Url.
+        /// </summary>
+        public Uri ImageUrl { get; set; }
+
+        /// <summary>
+        /// The device model name.
+        /// </summary>
+        [Required(ErrorMessage = "The device model name is required.")]
+        public string Name { get; set; }
+
+        /// <summary>
+        /// The device model description.
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// A value indicating whether this instance is builtin.
+        /// </summary>
+        public bool IsBuiltin { get; set; }
+
+        /// <summary>
+        /// A value indicating whether the LoRa features is supported on this model.
+        /// </summary>
+        public bool SupportLoRaFeatures { get; } = true;
 
         /// <summary>
         /// A value indicating whether the device uses OTAA to authenticate to LoRaWAN network. Otherwise ABP.
@@ -30,11 +54,6 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         public bool UseOTAA { get; set; }
 
         /// <summary>
-        /// The sensor decoder API Url.
-        /// </summary>
-        public string SensorDecoder { get; set; }
-
-        /// <summary>
         /// Allows disabling the downstream (cloud to device) for a device.
         /// By default downstream messages are enabled.
         /// </summary>
@@ -43,101 +62,10 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         public bool? Downlink { get; set; }
 
         /// <summary>
-        /// Allows setting the device preferred receive window (RX1 or RX2).
-        /// The default preferred receive window is 1.
-        /// </summary>
-        [DefaultValue(1)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public int PreferredWindow { get; set; }
-
-        /// <summary>
-        /// Allows controlling the handling of duplicate messages received by multiple gateways.
-        /// The default is Drop.
-        /// </summary>
-        [DefaultValue(DeduplicationMode.Drop)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public DeduplicationMode Deduplication { get; set; }
-
-        /// <summary>
-        /// Allows setting an offset between received Datarate and retransmit datarate as specified in the LoRa Specifiations.
-        /// Valid for OTAA devices.
-        /// If an invalid value is provided the network server will use default value 0.
-        /// </summary>
-        [DefaultValue(0)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public int? RX1DROffset { get; set; }
-
-        /// <summary>
-        /// Allows setting a custom Datarate for second receive windows.
-        /// Valid for OTAA devices.
-        /// If an invalid value is provided the network server will use default value 0 (DR0).
-        /// </summary>
-        [DefaultValue(0)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public int? RX2DataRate { get; set; }
-
-        /// <summary>
-        /// Allows setting a custom wait time between receiving and transmission as specified in the specification.
-        /// </summary>
-        public int? RXDelay { get; set; }
-
-        /// <summary>
-        /// Allows to disable the relax mode when using ABP.
-        /// By default relaxed mode is enabled.
-        /// </summary>
-        [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public bool? ABPRelaxMode { get; set; }
-
-        /// <summary>
-        /// Allows to explicitly specify a frame counter up start value.
-        /// If the device joins, this value will be used to validate the first frame and initialize the server state for the device.
-        /// Default is 0.
-        /// </summary>
-        [Range(0, 4294967295)]
-        [DefaultValue(0)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public int? FCntUpStart { get; set; }
-
-        /// <summary>
-        /// Allows to explicitly specify a frame counter down start value.
-        /// Default is 0.
-        /// </summary>
-        [Range(0, 4294967295)]
-        [DefaultValue(0)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public int? FCntDownStart { get; set; }
-
-        /// <summary>
-        /// Allows to reset the frame counters to the FCntUpStart/FCntDownStart values respectively.
-        /// Default is 0.
-        /// </summary>
-        [Range(0, 4294967295)]
-        [DefaultValue(0)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public int? FCntResetCounter { get; set; }
-
-        /// <summary>
-        /// Allow the usage of 32bit counters on your device.
-        /// </summary>
-        [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public bool? Supports32BitFCnt { get; set; }
-
-        /// <summary>
-        /// Allows defining a sliding expiration to the connection between the leaf device and IoT/Edge Hub.
-        /// The default is none, which causes the connection to not be dropped.
-        /// </summary>
-        [DefaultValue(null)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public int? KeepAliveTimeout { get; set; }
-
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="LoRaDeviceModel"/> class.
         /// </summary>
         /// <param name="from">The device model taht the LoRa Device model should herit.</param>
-        public LoRaDeviceModel(DeviceModel from)
+        public LoRaDeviceModel(IDeviceModel from)
         {
             ArgumentNullException.ThrowIfNull(from, nameof(from));
 

@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models;
     using Exceptions;
     using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
@@ -27,7 +28,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
     public abstract class DevicesControllerBase<TListItem, TModel> : ControllerBase
         where TListItem : DeviceListItem
-        where TModel : DeviceDetails
+        where TModel : IDeviceDetails
     {
         private readonly IDeviceService devicesService;
         private readonly IDeviceTagService deviceTagService;

@@ -4,7 +4,7 @@
 namespace AzureIoTHub.Portal.Client.Services
 {
     using System.Threading.Tasks;
-    using Portal.Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
     public interface ILoRaWanDeviceClientService
     {

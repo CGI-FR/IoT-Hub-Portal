@@ -5,6 +5,7 @@
 @using AzureIoTHub.Portal.Models
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
+@using AzureIoTHub.Portal.Shared.Models
 
 @attribute [Authorize]
 @inject NavigationManager NavigationManager
@@ -48,7 +49,7 @@
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
             <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6 scrollable-tab-content">
-                <MudTabPanel Text="General" Style=@(standardValidator.Validate(Model).IsValid ? "" : "color: red")>
+                <MudTabPanel Text="General" Style=@(this.CheckGeneralValidation() ? "color: red": "")>
                     <MudExpansionPanels MultiExpansion="true" id="general">
                         <MudGrid>
                             <MudItem xs="12">
@@ -137,7 +138,7 @@
                 </MudTabPanel>
                 @if (IsLoRa)
                 {
-                    <MudTabPanel Text="LoRaWAN" Style=@(loraValidator.Validate(Model as LoRaDeviceModel).IsValid ? "" : "color: red")>
+                    <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
                         <EditLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)"
                                              Commands="Commands"/>
                     </MudTabPanel>
@@ -189,23 +190,17 @@
         }
     }
 
-    private void SetLoRaDeviceModel()
-    {
-        Model = new LoRaDeviceModel(Model);
-    }
+    private void SetLoRaDeviceModel() => Model = new LoRaDeviceModel(Model);
 
-    private void SetStandardDeviceModel()
-    {
-        Model = new DeviceModel
-            {
-                ModelId = Model.ModelId,
-                Name = Model.Name,
-                IsBuiltin = Model.IsBuiltin,
-                Description = Model.Description
-            };
-    }
+    private void SetStandardDeviceModel() => Model = new DeviceModel
+        {
+            ModelId = Model.ModelId,
+            Name = Model.Name,
+            IsBuiltin = Model.IsBuiltin,
+            Description = Model.Description
+        };
 
-    private DeviceModel Model { get; set; } = new DeviceModel
+    private IDeviceModel Model { get; set; } = new DeviceModel
         {
             ModelId = Guid.NewGuid().ToString()
         };
@@ -213,6 +208,26 @@
     // Used to manage the picture
     private MultipartFormDataContent content;
     private string imageDataUrl;
+
+    private bool CheckLoRaValidation()
+    {
+        if (IsLoRa && this.Model is LoRaDeviceModel loRaDeviceModel)
+        {
+            return !this.loraValidator.Validate(loRaDeviceModel).IsValid;
+        }
+
+        return true;
+    }
+
+    private bool CheckGeneralValidation()
+    {
+        if (!IsLoRa && this.Model is DeviceModel deviceModel)
+        {
+            return !this.standardValidator.Validate(deviceModel).IsValid;
+        }
+
+        return CheckLoRaValidation();
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -297,11 +312,10 @@
             }
         }
 
-        if (!standardValidator.Validate(Model).IsValid
-            || !propertiesValidator.Validate(Properties).IsValid
-            || (IsLoRa && (!this.loraValidator.Validate(this.Model as LoRaDeviceModel).IsValid
+        if (!IsLoRa ? !standardValidator.Validate(Model as DeviceModel).IsValid :
+            (!this.loraValidator.Validate(this.Model as LoRaDeviceModel).IsValid
             || duplicated
-            || cmdValidationError)))
+            || cmdValidationError))
         {
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
 
@@ -324,7 +338,7 @@
             }
             else
             {
-                await DeviceModelsClientService.UpdateDeviceModel(Model);
+                await DeviceModelsClientService.UpdateDeviceModel(Model as DeviceModel);
 
                 await DeviceModelsClientService.SetDeviceModelModelProperties(Model.ModelId, Properties);
             }

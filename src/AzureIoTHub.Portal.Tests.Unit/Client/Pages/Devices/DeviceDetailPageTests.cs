@@ -22,6 +22,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using MudBlazor.Services;
     using NUnit.Framework;
     using UnitTests.Mocks;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Client.Pages.DeviceModels;
 
     [TestFixture]
     public class DeviceDetailPageTests : BlazorUnitTest
@@ -42,10 +44,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockSnackbarService = MockRepository.Create<ISnackbar>();
-            this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
-            this.mockLoRaWanDeviceModelsClientService = MockRepository.Create<ILoRaWanDeviceModelsClientService>();
             this.mockDeviceTagSettingsClientService = MockRepository.Create<IDeviceTagSettingsClientService>();
             this.mockDeviceClientService = MockRepository.Create<IDeviceClientService>();
+            this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
+            this.mockLoRaWanDeviceModelsClientService = MockRepository.Create<ILoRaWanDeviceModelsClientService>();
             this.mockLoRaWanDeviceClientService = MockRepository.Create<ILoRaWanDeviceClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
@@ -63,6 +65,64 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
+        }
+
+        [Test]
+        public void ShouldLoadDeviceDetails()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
+
+            _ = this.mockDeviceClientService
+                .Setup(service => service.GetDevice(deviceId))
+                .ReturnsAsync(new DeviceDetails() { ModelId = modelId });
+
+            _ = this.mockDeviceClientService
+                .Setup(service => service.GetDeviceProperties(deviceId))
+                .ReturnsAsync(new List<DevicePropertyValue>());
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModel(modelId))
+                .ReturnsAsync(new DeviceModel());
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
+
+            // Act
+            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", deviceId));
+
+            // Assert
+            _ = cut.WaitForElement("#returnButton");
+        }
+
+        [Test]
+        public void ShouldLoadLoRaDeviceDetails()
+        {
+
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
+
+            _ = this.mockLoRaWanDeviceClientService
+                .Setup(service => service.GetDevice(deviceId))
+                .ReturnsAsync(new LoRaDeviceDetails() { ModelId = modelId });
+
+            _ = this.mockLoRaWanDeviceModelsClientService.Setup(service => service.GetDeviceModel(modelId))
+                .ReturnsAsync(new LoRaDeviceModel());
+
+            _ = this.mockLoRaWanDeviceModelsClientService.Setup(service => service.GetDeviceModelCommands(modelId))
+                .ReturnsAsync(new List<DeviceModelCommand>());
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>());
+
+            // Act
+            var cut = RenderComponent<DeviceDetailPage>(
+                    ComponentParameter.CreateParameter("DeviceID", deviceId),
+                    ComponentParameter.CreateParameter(nameof(DeviceModelDetailPage.IsLoRa), true));
+
+            // Assert
+            _ = cut.WaitForElement("#returnButton");
         }
 
         [Test]
@@ -157,7 +217,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             // Act
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModel.Name)}>b").InnerHtml.Should().NotBeEmpty());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModel.Name)}").InnerHtml.Should().NotBeEmpty());
 
             var saveButton = cut.WaitForElement("#saveButton");
             saveButton.Click();

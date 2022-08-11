@@ -1,16 +1,12 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Models.v10
+namespace AzureIoTHub.Portal.Shared.Models
 {
     using System;
     using System.ComponentModel.DataAnnotations;
-    using AzureIoTHub.Portal.Shared.Models;
 
-    /// <summary>
-    /// Device model.
-    /// </summary>
-    public class DeviceModel : IDeviceModel
+    public interface IDeviceModel
     {
         /// <summary>
         /// The device model identifier.
@@ -39,15 +35,8 @@ namespace AzureIoTHub.Portal.Models.v10
         public bool IsBuiltin { get; set; }
 
         /// <summary>
-        /// A value indicating whether the LoRa features is supported on this model.
+        /// A value indicating whether the device model supports LoRa features.
         /// </summary>
-        public bool SupportLoRaFeatures { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceModel"/> class.
-        /// </summary>
-        public DeviceModel()
-        {
-        }
+        public bool SupportLoRaFeatures { get; }
     }
 }

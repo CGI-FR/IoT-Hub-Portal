@@ -1,4 +1,5 @@
 ﻿@using AzureIoTHub.Portal.Models.v10
+@using AzureIoTHub.Portal.Shared.Models
 @using Microsoft.AspNetCore.Components
 @using System.Web
 
@@ -64,8 +65,8 @@
     {
         try
         {
-            DeviceDetails device;
-            DeviceModel deviceModel;
+            IDeviceDetails device;
+            IDeviceModel deviceModel;
 
             if (deviceToDuplicate.SupportLoRaFeatures)
             {
@@ -77,8 +78,8 @@
                 device = await DeviceClientService.GetDevice(deviceToDuplicate.DeviceID);
                 deviceModel = await DeviceModelsClientService.GetDeviceModel(device.ModelId);
             }
-            DeviceLayoutService.DuplicateSharedDevice(device);
-            DeviceLayoutService.DuplicateSharedDeviceModel(deviceModel);
+            DeviceLayoutService.DuplicateSharedDevice(device as DeviceDetails);
+            DeviceLayoutService.DuplicateSharedDeviceModel(deviceModel as DeviceModel);
             DeviceLayoutService.RefreshDevice();
         }
         catch (ProblemDetailsException exception)

@@ -48,7 +48,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 Name = entity[nameof(LoRaDeviceModel.Name)]?.ToString(),
                 Description = entity[nameof(LoRaDeviceModel.Description)]?.ToString(),
                 SensorDecoder = entity[nameof(LoRaDeviceModel.SensorDecoder)]?.ToString(),
-                SupportLoRaFeatures = true,
                 UseOTAA = bool.Parse(entity[nameof(LoRaDeviceModel.UseOTAA)]?.ToString() ?? "true"),
                 PreferredWindow = int.TryParse(entity[nameof(LoRaDeviceModel.PreferredWindow)]?.ToString(), out var intResult) ? intResult : 1,
                 Supports32BitFCnt = bool.TryParse(entity[nameof(LoRaDeviceModel.Supports32BitFCnt)]?.ToString(), out var boolResult) ? boolResult : null,
