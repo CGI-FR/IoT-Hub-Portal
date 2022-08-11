@@ -16,11 +16,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
     [Route("api/edge/models")]
     [ApiExplorerSettings(GroupName = "IoT Edge Devices Models")]
     [ApiController]
-    public class EdgeDeviceModelsController : ControllerBase
+    public class EdgeModelsController : ControllerBase
     {
         private readonly IEdgeModelService edgeModelService;
 
-        public EdgeDeviceModelsController(
+        public EdgeModelsController(
             IEdgeModelService edgeModelService)
         {
             this.edgeModelService = edgeModelService;
