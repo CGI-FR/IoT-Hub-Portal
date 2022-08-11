@@ -1,1 +1,1 @@
-import './AuthenticationService.ts'
+import './AuthenticationService';
