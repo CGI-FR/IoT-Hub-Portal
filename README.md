@@ -10,7 +10,7 @@
 This project aims to provide a solution for handling IoT Devices easyly.
 It leverages on Azure IoT Hub for connectivity and device management.
 
-![https://cgi-fr.github.io/IoT-Hub-Portal/images/architecture.png](https://cgi-fr.github.io/IoT-Hub-Portal/images/architecture.png)
+![IoT Hub Portal Architecture](https://cgi-fr.github.io/IoT-Hub-Portal/stable/images/architecture.png)
 
 ## Features
 
@@ -25,7 +25,7 @@ It leverages on Azure IoT Hub for connectivity and device management.
 The following should be completed before proceeding with the IoT Hub Portal development or deployment in your environment.
 
 * You must have an Azure subscription. Get an [Azure Free account](https://azure.microsoft.com/en-us/offers/ms-azr-0044p/) to get started.
-* You must have configured an Azure AD B2C Tenant with applications. See [Portal AD applications configuration](https://cgi-fr.github.io/IoT-Hub-Portal/docs/b2c-applications.html) page.
+* You must have configured an Azure AD B2C Tenant with applications. See [Portal AD applications configuration](https://cgi-fr.github.io/IoT-Hub-Portal/stable/b2c-applications) page.
 * Understandr how IoTEdge LoraWAN StarterKit work. Have a look at [https://azure.github.io/iotedge-lorawan-starterkit](https://azure.github.io/iotedge-lorawan-starterkit) to get started.
 
 ## Quick Start
@@ -44,7 +44,7 @@ The template will deploy in your Azure subscription the Following resources:
 ### Instructions 
 
 1. Choose a solution prefix for your deployment.
-1. Use [Portal AD applications configuration](https://cgi-fr.github.io/IoT-Hub-Portal/docs/b2c-applications.html) page to configure your AD B2C Tenant.
+1. Use [Portal AD applications configuration](https://cgi-fr.github.io/IoT-Hub-Portal/stable/b2c-applications) page to configure your AD B2C Tenant.
     > You should have recorded the following information:
     > * OpenID authority: `<your-openid-authority>`
     > * OpenID metadata URL: `<your-openid-provider-metadata-url>`
