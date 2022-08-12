@@ -46,6 +46,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
             return Ok();
         }
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateEdgeModel(IoTEdgeModel EdgeModel)
+        {
+            await this.edgeModelService.UpdateEdgeModel(EdgeModel);
+
+            return Ok();
+        }
+
         /// <summary>
         /// Delete the edge device model.
         /// </summary>

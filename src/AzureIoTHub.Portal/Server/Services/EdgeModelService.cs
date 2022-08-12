@@ -123,6 +123,31 @@ namespace AzureIoTHub.Portal.Server.Services
             await SaveEntity(entity, edgeModel);
         }
 
+        public async Task UpdateEdgeModel(IoTEdgeModel edgeModel)
+        {
+            if (!string.IsNullOrEmpty(edgeModel?.ModelId))
+            {
+                throw new ResourceNotFoundException("");
+            }
+
+            try
+            {
+                var entity = await this.tableClientFactory
+                                   .GetEdgeDeviceTemplates()
+                                   .GetEntityAsync<TableEntity>(DefaultPartitionKey, edgeModel.ModelId);
+
+                await SaveEntity(entity, edgeModel);
+
+            }
+            catch (RequestFailedException e)
+            {
+                if (e.Status != StatusCodes.Status404NotFound)
+                {
+                    throw new InternalServerErrorException($"Unable create the device model with id: {edgeModel?.ModelId}.", e);
+                }
+            }
+        }
+
         public async Task DeleteEdgeModel(string edgeModelId)
         {
             try

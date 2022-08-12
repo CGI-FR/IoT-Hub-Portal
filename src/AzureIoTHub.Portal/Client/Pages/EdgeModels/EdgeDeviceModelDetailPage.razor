@@ -197,6 +197,21 @@
         // Displays validation error message for each field
         await form.Validate();
 
+        try
+        {
+            await this.EdgeModelService.UpdateIoTEdgeModel(EdgeModel);
+
+            Snackbar.Add("Edge model successfully updated.", Severity.Success);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+
     }
 
     private void AddModule()
