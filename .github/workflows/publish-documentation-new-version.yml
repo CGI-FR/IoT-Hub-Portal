@@ -21,7 +21,12 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-      - name: Deploy docs with stable version
+      - name: Deploy docs with pre-release version on pre-release event
+        if: "github.event.release.prerelease"
+        run: mike deploy --push ${GITHUB_REF_NAME}
+      - name: Deploy docs with stable version on release event
+        if: "!github.event.release.prerelease"
         run: mike deploy --push stable
-      - name: Deploy docs with latest version
+      - name: Deploy docs with latest version on release event
+        if: "!github.event.release.prerelease"
         run: mike deploy --push --update-aliases ${GITHUB_REF_NAME} latest
