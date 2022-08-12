@@ -5,8 +5,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
 {
     using System;
     using System.Collections.Generic;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using FluentAssertions;
     using Microsoft.Azure.Devices;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using NUnit.Framework;
 
     [TestFixture]
@@ -73,6 +78,107 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
             var invalidOperationException =  Assert.Throws<InvalidOperationException>(() => ConfigHelper.CreateDeviceConfig(config));
             Assert.IsNotNull(invalidOperationException);
             Assert.IsInstanceOf<InvalidOperationException>(invalidOperationException);
+        }
+
+        [Test]
+        public void CreateGatewayModuleShouldReturnValue()
+        {
+            // Arrange
+            var config = new Configuration("config_test");
+
+            var jPropModule = new Dictionary<string, object>()
+            {
+                { "status", "running" },
+                { "version", "1.0" },
+                { "settings", new Dictionary<string, object>()
+                    {
+                        { "image", "image_test" }
+                    }
+                },
+                { "env", new Dictionary<string, object>()
+                    {
+                        {
+                            "envVariable", new Dictionary<string, object>()
+                            {
+                                { "value", "test" }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var module = new JProperty("moduleTest", JObject.Parse(JsonConvert.SerializeObject(jPropModule)));
+
+            // Act
+            var result = ConfigHelper.CreateGatewayModule(config, module);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("running", result.Status);
+            Assert.AreEqual("1.0", result.Version);
+            Assert.AreEqual("image_test", result.ImageURI);
+            Assert.AreEqual(1, result.EnvironmentVariables.Count);
+        }
+
+        [Test]
+        public void CreateGatewayModuleWithNullConfigShouldThrowException()
+        {
+            // Arrange
+            JProperty module = new("");
+
+            // Act
+            var result = () => ConfigHelper.CreateGatewayModule(null, module);
+
+            // Assert
+            _ = result.Should().Throw<ArgumentNullException>();
+        }
+
+        [Test]
+        public void CreateGatewayModuleWithNullModuleShouldThrowException()
+        {
+            // Arrange
+            var config = new Configuration("config_test");
+
+            // Act
+            var result = () => ConfigHelper.CreateGatewayModule(config, null);
+
+            // Assert
+            _ = result.Should().Throw<ArgumentNullException>();
+        }
+
+        [Test]
+        public void GenerateModulesContentShouldReturnValue()
+        {
+            // Arrange
+            var edgeModel = new IoTEdgeModel()
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Name = "Model test",
+                Description = "Description Test",
+                EdgeModules = new List<IoTEdgeModule>()
+                {
+                    new IoTEdgeModule()
+                    {
+                        ModuleName = "ModuleTest",
+                        Status = "running",
+                        Version = "1.0",
+                        ImageURI = "image",
+                        EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
+                        {
+                            new IoTEdgeModuleEnvironmentVariable(){ Name = "envTest01", Value = "test" }
+                        },
+                        ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>()
+                    }
+                }
+            };
+
+            // Act
+            var result = ConfigHelper.GenerateModulesContent(edgeModel);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<Dictionary<string, IDictionary<string, object>>>(result);
+            Assert.AreEqual(2, result.Count);
         }
     }
 }
