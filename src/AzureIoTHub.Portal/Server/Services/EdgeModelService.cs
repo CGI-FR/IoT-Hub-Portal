@@ -77,8 +77,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     .GetEdgeDeviceTemplates()
                     .GetEntityAsync<TableEntity>(DefaultPartitionKey, modelId);
 
-                var modules = new List<IoTEdgeModule>();
-                modules = await this.configService.GetConfigModuleList(modelId);
+                var modules = await this.configService.GetConfigModuleList(modelId);
 
                 return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules);
             }
@@ -125,9 +124,9 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task UpdateEdgeModel(IoTEdgeModel edgeModel)
         {
-            if (!string.IsNullOrEmpty(edgeModel?.ModelId))
+            if (string.IsNullOrEmpty(edgeModel?.ModelId))
             {
-                throw new ResourceNotFoundException("");
+                throw new RequestFailedException("edge model id is null.");
             }
 
             try
