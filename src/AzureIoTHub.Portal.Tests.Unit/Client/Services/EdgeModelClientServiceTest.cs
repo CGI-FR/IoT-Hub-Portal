@@ -183,5 +183,22 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
+
+        [Test]
+        public async Task DeleteAvatarPropertiesShouldChangeAvatar()
+        {
+            // Arrange
+            var deviceModel = Fixture.Create<IoTEdgeModel>();
+
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/models/{deviceModel.ModelId}/avatar")
+                .Respond(HttpStatusCode.NoContent);
+
+            // Act
+            await this.edgeModelClientService.DeleteAvatar(deviceModel.ModelId);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
     }
 }
