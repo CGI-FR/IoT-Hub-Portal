@@ -470,12 +470,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task DeleteEdgeModelShouldDeleteEdgeModelTemplate()
-        {
-            Assert.Fail();
-        }
-
-        [Test]
         public async Task GetEdgeModelAvatarShouldReturnValue()
         {
             // Arrange
