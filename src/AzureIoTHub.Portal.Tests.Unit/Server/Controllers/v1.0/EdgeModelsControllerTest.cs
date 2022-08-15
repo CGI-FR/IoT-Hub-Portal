@@ -132,6 +132,30 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         }
 
         [Test]
+        public async Task UpdateEdgeModelShouldReturnOkResult()
+        {
+            // Arrange
+            var edgeModelController = CreateController();
+
+            var expectedEdgeModel = new IoTEdgeModel
+            {
+                ModelId = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockEdgeModelService
+                .Setup(x => x.UpdateEdgeModel(It.IsAny<IoTEdgeModel>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var response = await edgeModelController.UpdateEdgeModel(expectedEdgeModel);
+
+            // Assert
+            Assert.IsNotNull(response);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task DeleteModelAsyncShouldDelete()
         {
             // Arrange
