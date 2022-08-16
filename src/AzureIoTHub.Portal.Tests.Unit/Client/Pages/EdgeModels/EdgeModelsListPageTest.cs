@@ -94,7 +94,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList())
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
-                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
+                    new IoTEdgeModelListItem() { ModelId = deviceId },
                 });
 
             // Act
@@ -131,7 +131,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList())
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
-                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
+                    new IoTEdgeModelListItem() { ModelId = deviceId },
                 });
 
             // Act
@@ -157,7 +157,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList())
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
-                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
+                    new IoTEdgeModelListItem() { ModelId = deviceId },
                 });
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
@@ -185,7 +185,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList())
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
-                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
+                    new IoTEdgeModelListItem() { ModelId = deviceId },
                 });
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();

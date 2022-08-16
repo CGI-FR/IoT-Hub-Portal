@@ -309,8 +309,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 ModelId = Guid.NewGuid().ToString()
             };
 
-            var mockResponse = this.mockRepository.Create<Response>();
-
             _ = this.mockEdgeModelMapper
                 .Setup(x => x.UpdateTableEntity(It.IsAny<TableEntity>(), It.IsAny<IoTEdgeModel>()));
 
@@ -440,8 +438,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
             _ = mockResponse.Setup(c => c.Value).Returns(new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
-
-            var mockResponseUpdate = this.mockRepository.Create<Response>();
 
             _ = this.mockEdgeDeviceTemplatesTableClient
                 .Setup(c => c.GetEntityAsync<TableEntity>(
