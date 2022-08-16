@@ -6,10 +6,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
     using FluentAssertions;
     using Microsoft.Azure.Devices;
     using Microsoft.Extensions.Logging;
     using Moq;
+    using Newtonsoft.Json.Linq;
+    using Newtonsoft.Json;
     using NUnit.Framework;
     using System;
     using System.Collections.Generic;
@@ -490,7 +493,50 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task GetConfigModuleListShouldReturnAList()
         {
             // Arrange
-            //var configService = CreateConfigsServices();
+            var configService = CreateConfigsServices();
+
+            var configTest = new Configuration(Guid.NewGuid().ToString());
+            var listConfig = new List<Configuration>()
+            {
+                configTest
+            };
+
+            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
+            var modules = new Dictionary<string, ConfigModule>()
+            {
+                {"module test 01", new ConfigModule() },
+                {"module test 02", new ConfigModule() }
+            };
+
+            edgeAgentPropertiesDesired.Modules = modules;
+
+            var mockConfigEnumerator = this.mockRepository.Create<IEnumerable<Configuration>>();
+
+            configTest.Content.ModulesContent = new Dictionary<string, IDictionary<string, object>>()
+            {
+                {
+                    "$edgeAgent", new Dictionary<string, object>()
+                    {
+                        {
+                            "properties.desired", JObject.Parse(JsonConvert.SerializeObject(edgeAgentPropertiesDesired))
+                        }
+                    }
+                }
+            };
+
+            _ = mockConfigEnumerator.Setup(x => x.GetEnumerator()).Returns(listConfig.GetEnumerator);
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ReturnsAsync(mockConfigEnumerator.Object);
+
+            // Act
+            var result = await configService.GetConfigModuleList(configTest.Id);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count);
+
+            this.mockRepository.VerifyAll();
         }
 
         [TestCase("aaa", "aaa")]
@@ -564,6 +610,34 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Assert
             this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());
             this.mockRegistryManager.Verify(c => c.RemoveConfigurationAsync(It.IsAny<string>()), Times.Once());
+        }
+
+        [TestCase("aaa", "aaa")]
+        [TestCase("AAA", "aaa")]
+        [TestCase("AAA AAA", "aaa-aaa")]
+        public void WhenAddGonfigurationFailedRollOutEdgeModelConfigurationShouldThrowInternalServerErrorException(string modelId, string configurationPrefix)
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+            var edgeModel = new IoTEdgeModel()
+            {
+                ModelId = modelId
+            };
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.IsAny<int>()))
+                .ReturnsAsync(Array.Empty<Configuration>());
+
+            _ = this.mockRegistryManager.Setup(c => c.AddConfigurationAsync(It.Is<Configuration>(x => x.Id.StartsWith(configurationPrefix))))
+                .ThrowsAsync(new InvalidOperationException(""));
+
+            // Act
+            var result = async () => await configsServices.RollOutEdgeModelConfiguration(edgeModel);
+
+            // Assert
+            _ = result.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+            this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());
         }
     }
 }
