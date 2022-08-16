@@ -23,10 +23,10 @@
                 <MudText Typo="Typo.h6">Edge Models</MudText>
                 <MudSpacer />
                 <MudTooltip Text="Refresh list">
-                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@LoadEdgeModels" Class="ma-2"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" id="tableRefreshButton" OnClick="@LoadEdgeModels" Class="ma-2"></MudIconButton>
                 </MudTooltip>
                 <MudTooltip Text="Add device model">
-                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" OnClick="@RedirectToCreatePage" Size="Size.Medium" id="addDeviceModelButton" />
+                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" OnClick="@RedirectToCreatePage" Size="Size.Medium" id="addEdgeModelButton" />
                 </MudTooltip>
             </ToolBarContent>
             <HeaderContent>
