@@ -5,12 +5,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 {
     using System;
     using System.Collections.Generic;
+    using AutoFixture;
+    using AzureIoTHub.Portal.Client.Exceptions;
+    using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.EdgeModels;
     using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Bunit;
     using Bunit.TestDoubles;
+    using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
@@ -44,7 +48,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                 });
 
             // Act
-            var cut = RenderComponent<EdgeDeviceModelListPage>();
+            var cut = RenderComponent<EdgeModelListPage>();
             var grid = cut.WaitForElement("div.mud-grid");
 
             // Assert
@@ -55,6 +59,29 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             cut.WaitForAssertion(() => Assert.AreEqual(2, cut.FindAll("tr").Count));
             cut.WaitForAssertion(() => Assert.IsNotNull(cut.Find(".mud-table-container")));
 
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void WhenClickToItemShouldRedirectToDetailsPage()
+        {
+            // Arrange
+            var modelId = Fixture.Create<string>();
+
+            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList())
+                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+                {
+                    new IoTEdgeModelListItem() { ModelId = modelId},
+                });
+
+            var cut = RenderComponent<EdgeModelListPage>();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+
+            // Act
+            cut.WaitForAssertion(() => cut.Find("table tbody tr").Click());
+
+            // Assert
+            cut.WaitForAssertion(() => Services.GetService<FakeNavigationManager>()?.Uri.Should().EndWith($"/edge/models/{modelId}"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -71,12 +98,27 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                 });
 
             // Act
-            var cut = RenderComponent<EdgeDeviceModelListPage>();
+            var cut = RenderComponent<EdgeModelListPage>();
 
             cut.WaitForElement("#addEdgeModelButton").Click();
             cut.WaitForState(() => Services.GetRequiredService<FakeNavigationManager>().Uri.EndsWith("edge/models/new", StringComparison.OrdinalIgnoreCase));
 
             // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void LoadDeviceModelsShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceModels()
+        {
+            // Arrange
+            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList())
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            // Act
+            var cut = RenderComponent<EdgeModelListPage>();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.FindAll("tr").Count.Should().Be(2));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -93,7 +135,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                 });
 
             // Act
-            var cut = RenderComponent<EdgeDeviceModelListPage>();
+            var cut = RenderComponent<EdgeModelListPage>();
             cut.WaitForAssertion(() => cut.Find("#tableRefreshButton"));
 
             for (var i = 0; i < 3; i++)
@@ -125,7 +167,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                 .Returns(mockDialogReference.Object);
 
             // Act
-            var cut = RenderComponent<EdgeDeviceModelListPage>();
+            var cut = RenderComponent<EdgeModelListPage>();
 
             var deleteButton = cut.WaitForElement("#deleteButton");
             deleteButton.Click();
@@ -153,7 +195,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                 .Returns(mockDialogReference.Object);
 
             // Act
-            var cut = RenderComponent<EdgeDeviceModelListPage>();
+            var cut = RenderComponent<EdgeModelListPage>();
 
             var deleteButton = cut.WaitForElement("#deleteButton");
             deleteButton.Click();

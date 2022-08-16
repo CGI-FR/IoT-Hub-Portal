@@ -11,7 +11,7 @@
 
 <MudGrid>
     <MudItem xs="12">
-        <MudTable T="IoTEdgeModelListItem" Items="@EdgeModelList" Loading="IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
+        <MudTable T="IoTEdgeModelListItem" Items="@EdgeModelList" Loading="IsLoading" Dense=true Breakpoint="Breakpoint.Sm" OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
             <ColGroup>
                 <col style="width: 5%;" />
                 <col style="width: 30%;" />
@@ -57,15 +57,15 @@
                     </MudTooltip>
                 </MudTd>
             </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
+            </PagerContent>
             <NoRecordsContent>
                 <MudText>No matching records found</MudText>
             </NoRecordsContent>
             <LoadingContent>
                 <MudText>Loading...</MudText>
             </LoadingContent>
-            <PagerContent>
-                <MudTablePager PageSizeOptions="@pageSizeOptions"></MudTablePager>
-            </PagerContent>
         </MudTable>
     </MudItem>
 </MudGrid>
@@ -115,7 +115,7 @@
         var parameters = new DialogParameters();
         parameters.Add("deviceModelID", ioTEdgeModel.ModelId);
         parameters.Add("deviceModelName", ioTEdgeModel.Name);
-        var result = await dialogService.Show<DeleteEdgeDeviceModelDialog>("Confirm Deletion", parameters).Result;
+        var result = await dialogService.Show<DeleteEdgeModelDialog>("Confirm Deletion", parameters).Result;
 
         if (result.Cancelled)
         {

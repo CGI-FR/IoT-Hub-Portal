@@ -250,7 +250,7 @@
         parameters.Add("deviceModelID", EdgeModel.ModelId);
         parameters.Add("deviceModelName", EdgeModel.Name);
 
-        var result = await this.DialogService.Show<DeleteEdgeDeviceModelDialog>("Confirm Deletion", parameters).Result;
+        var result = await this.DialogService.Show<DeleteEdgeModelDialog>("Confirm Deletion", parameters).Result;
 
         isProcessing = false;
 
