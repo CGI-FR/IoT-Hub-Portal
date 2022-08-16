@@ -539,6 +539,82 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public void WhenGetConfigIsNullConfigModuleListShouldReturnAList()
+        {
+            // Arrange
+            var configService = CreateConfigsServices();
+
+            var configTest = new Configuration(Guid.NewGuid().ToString());
+            var listConfig = new List<Configuration>()
+            {
+            };
+
+            var mockConfigEnumerator = this.mockRepository.Create<IEnumerable<Configuration>>();
+
+            _ = mockConfigEnumerator.Setup(x => x.GetEnumerator()).Returns(listConfig.GetEnumerator);
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ReturnsAsync(mockConfigEnumerator.Object);
+
+            // Act
+            var result = async () => await configService.GetConfigModuleList(configTest.Id);
+
+            // Assert
+            _ = result.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void WhenPropertiesDesiredIsInWrongFormatGetConfigModuleListShouldReturnAList()
+        {
+            // Arrange
+            var configService = CreateConfigsServices();
+
+            var configTest = new Configuration(Guid.NewGuid().ToString());
+            var listConfig = new List<Configuration>()
+            {
+                configTest
+            };
+
+            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
+            var modules = new Dictionary<string, ConfigModule>()
+            {
+                {"module test 01", new ConfigModule() },
+                {"module test 02", new ConfigModule() }
+            };
+
+            edgeAgentPropertiesDesired.Modules = modules;
+
+            var mockConfigEnumerator = this.mockRepository.Create<IEnumerable<Configuration>>();
+
+            configTest.Content.ModulesContent = new Dictionary<string, IDictionary<string, object>>()
+            {
+                {
+                    "$edgeAgent", new Dictionary<string, object>()
+                    {
+                        {
+                            "properties.desired", edgeAgentPropertiesDesired
+                        }
+                    }
+                }
+            };
+
+            _ = mockConfigEnumerator.Setup(x => x.GetEnumerator()).Returns(listConfig.GetEnumerator);
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ReturnsAsync(mockConfigEnumerator.Object);
+
+            // Act
+            var result = async () => await configService.GetConfigModuleList(configTest.Id);
+
+            // Assert
+            _ = result.Should().ThrowAsync<InvalidOperationException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
         [TestCase("aaa", "aaa")]
         [TestCase("AAA", "aaa")]
         [TestCase("AAA AAA", "aaa-aaa")]
@@ -628,7 +704,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(Array.Empty<Configuration>());
 
             _ = this.mockRegistryManager.Setup(c => c.AddConfigurationAsync(It.Is<Configuration>(x => x.Id.StartsWith(configurationPrefix))))
-                .ThrowsAsync(new InvalidOperationException(""));
+                .ThrowsAsync(new Exception(""));
 
             // Act
             var result = async () => await configsServices.RollOutEdgeModelConfiguration(edgeModel);
