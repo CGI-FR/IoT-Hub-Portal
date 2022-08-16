@@ -163,7 +163,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
 
-            _ = this.mockDialogService.Setup(c => c.Show<DeleteEdgeDeviceModelDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+            _ = this.mockDialogService.Setup(c => c.Show<DeleteEdgeModelDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference.Object);
 
             // Act
@@ -191,7 +191,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
 
-            _ = this.mockDialogService.Setup(c => c.Show<DeleteEdgeDeviceModelDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+            _ = this.mockDialogService.Setup(c => c.Show<DeleteEdgeModelDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
                 .Returns(mockDialogReference.Object);
 
             // Act
