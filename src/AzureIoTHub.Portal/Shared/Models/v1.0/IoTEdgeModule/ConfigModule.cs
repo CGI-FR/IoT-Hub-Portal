@@ -28,7 +28,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
         public ConfigModule()
         {
-            this.Settings = new ModuleSettings();
+            Settings = new ModuleSettings();
         }
     }
 
@@ -39,6 +39,11 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
         [JsonProperty(PropertyName = "createOptions")]
         public string CreateOptions { get; set; }
+
+        public ModuleSettings()
+        {
+            CreateOptions = "{ }";
+        }
     }
 
     public class EnvironmentVariable

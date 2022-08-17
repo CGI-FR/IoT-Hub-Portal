@@ -4,6 +4,7 @@
 @using AzureIoTHub.Portal.Client.Pages.EdgeModels.EdgeModule
 @using System.Net.Http.Headers
 @using AzureIoTHub.Portal.Models.v10
+@using AzureIoTHub.Portal.Client.Validators
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @attribute [Authorize]
@@ -83,16 +84,16 @@
                                                 </ColGroup>
                                                 <HeaderContent>
                                                     <MudTh Style="text-align: center">Module Name</MudTh>
-                                                    <MudTh Style="text-align: center">Version</MudTh>
+                                                    <MudTh Style="text-align: center">Image uri</MudTh>
                                                     <MudTh Style="text-align: center">See detail</MudTh>
                                                     <MudTh Style="text-align: center">Delete</MudTh>
                                                 </HeaderContent>
                                                 <RowTemplate Context="CommandContext">
-                                                    <MudTd DataLabel="odule Name" Style="word-break: break-all;">
+                                                    <MudTd DataLabel="Module Name" Style="word-break: break-all;">
                                                         <MudText >@CommandContext.ModuleName</MudText>
                                                     </MudTd>
-                                                    <MudTd DataLabel="odule Name" Style="word-break: break-all;">
-                                                        <MudText >@CommandContext.Version</MudText>
+                                                    <MudTd DataLabel="Image Uri" Style="word-break: break-all;">
+                                                        <MudText >@CommandContext.ImageURI</MudText>
                                                     </MudTd>
                                                     <MudTd DataLabel="See detail" Style="text-align: center;">
                                                         <MudButton Variant="Variant.Filled" OnClick="(async () => await ShowEditEdgeModuleDialog(CommandContext))">Edit</MudButton>
@@ -129,6 +130,8 @@
     public string ModelID { get; set; }
 
     private IoTEdgeModel EdgeModel { get; set; }
+    public EdgeModelValidator edgeModelValidator = new EdgeModelValidator();
+    public IoTEdgeModuleValidator edgeModuleValidator = new IoTEdgeModuleValidator();
 
     private bool isProcessing;
 

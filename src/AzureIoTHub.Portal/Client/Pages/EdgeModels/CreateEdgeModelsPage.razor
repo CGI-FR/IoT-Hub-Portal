@@ -87,7 +87,7 @@
                                                         <MudTextField id="@(nameof(IoTEdgeModule.ModuleName))" @bind-Value="@moduleContext.ModuleName" Margin="Margin.Dense" Label="Name" For="@(() => moduleContext.ModuleName )" Variant="Variant.Outlined" Required="true"></MudTextField>
                                                     </MudTd>
                                                     <MudTd DataLabel="module Image URI" Style="word-break: break-all;">
-                                                        <MudTextField id="@(nameof(IoTEdgeModule.ImageURI))" T="string" Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="@moduleContext.ImageURI" Label="ImageURI" Required="true"/>
+                                                        <MudTextField id="@(nameof(IoTEdgeModule.ImageURI))" @bind-Value="@moduleContext.ImageURI" Margin="Margin.Dense" Label="ImageURI" For="@(() => moduleContext.ImageURI )" Variant="Variant.Outlined" Required="true" />
                                                     </MudTd>
                                                     <MudTd DataLabel="See detail" Style="text-align: center;">
                                                         <MudButton Variant="Variant.Filled" id="editButton" OnClick="@(async () => await ShowAddEdgeModuleDialog(moduleContext))">Edit</MudButton>
@@ -201,7 +201,9 @@
             return;
         }
 
-        if (Model.EdgeModules.Any() && !edgeModuleValidator.Validate(moduleCommands).IsValid)
+        Console.WriteLine("Model.EdgeModules.Count : " + Model.EdgeModules.Count);
+        Console.WriteLine("edgeModuleValidator.Validate(moduleCommands).IsValid : " + edgeModuleValidator.Validate(moduleCommands).IsValid);
+        if (moduleCommands.Count > 0 && !edgeModuleValidator.Validate(moduleCommands).IsValid)
         {
             Snackbar.Add("One or more validation errors occurred with the module.", Severity.Error);
 
