@@ -135,15 +135,15 @@
                             <MudTable Items="@Commands" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                                 <ColGroup>
                                     <col style="width: 30%;" />
-                                    <col style="width: 50%;" />
+                                    <col style="max-width: 50%;" />
                                     <col style="width: 5%;" />
-                                    <col style="width: 10%;" />
+                                    <col style="min-width: 10%;" />
                                     <col style="width: 5%;" />
                                 </ColGroup>
                                 <HeaderContent>
                                     <MudTh>Name</MudTh>
                                     <MudTh Style="text-align: center">Frame</MudTh>
-                                    <MudTh Style="text-align: center">Confirmed</MudTh>
+                                    <MudTh Style="text-align: center">Ack</MudTh>
                                     <MudTh Style="text-align: center">Port</MudTh>
                                     <MudTh Style="text-align: center">Delete</MudTh>
                                 </HeaderContent>
