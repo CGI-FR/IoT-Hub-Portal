@@ -4,6 +4,7 @@
 @using AzureIoTHub.Portal.Models
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Shared.Models.v10
+@using AzureIoTHub.Portal.Client.Validators
 @using System.Net.Http.Headers
 
 @attribute [Authorize]
@@ -36,7 +37,7 @@
                 </MudCardActions>
             </MudCard>
             <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Save())" id="SaveButton">Save Changes</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="isProcessing" OnClick="@(async () => await Save())" id="SaveButton">Save Changes</MudButton>
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
@@ -71,34 +72,32 @@
                                             <MudTable Items="@moduleCommands" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                                                 <ColGroup>
                                                     <col style="width: 30%;" />
-                                                    <col style="width: 30%;" />
+                                                    <col style="width: 40%;" />
                                                     <col style="width: 10%;" />
                                                     <col style="width: 5%;" />
                                                 </ColGroup>
                                                 <HeaderContent>
                                                     <MudTh Style="text-align: center">Module Name</MudTh>
-                                                    <MudTh Style="text-align: center">Version</MudTh>
+                                                    <MudTh Style="text-align: center">Image URI</MudTh>
                                                     <MudTh Style="text-align: center">See detail</MudTh>
                                                     <MudTh Style="text-align: center">Delete</MudTh>
                                                 </HeaderContent>
                                                 <RowTemplate Context="moduleContext">
                                                     <MudTd DataLabel="module Name" Style="word-break: break-all;">
-                                                        @*<MudText >@CommandContext.ModuleName</MudText>*@
-                                                        <MudTextField @bind-Value="@moduleContext.ModuleName" Margin="Margin.Dense" Label="Name" For="@(() => moduleContext.ModuleName )" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                                        <MudTextField id="@(nameof(IoTEdgeModule.ModuleName))" @bind-Value="@moduleContext.ModuleName" Margin="Margin.Dense" Label="Name" For="@(() => moduleContext.ModuleName )" Variant="Variant.Outlined" Required="true"></MudTextField>
                                                     </MudTd>
-                                                    <MudTd DataLabel="module Version" Style="word-break: break-all;">
-                                                        @*<MudText >@moduleContext.Version</MudText>*@
-                                                        <MudTextField T="string" Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="@moduleContext.Version" Label="Version" />
+                                                    <MudTd DataLabel="module Image URI" Style="word-break: break-all;">
+                                                        <MudTextField id="@(nameof(IoTEdgeModule.ImageURI))" T="string" Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="@moduleContext.ImageURI" Label="ImageURI" Required="true"/>
                                                     </MudTd>
                                                     <MudTd DataLabel="See detail" Style="text-align: center;">
-                                                        <MudButton Variant="Variant.Filled" OnClick="@(async () => await ShowAddEdgeModuleDialog(moduleContext))">Edit</MudButton>
+                                                        <MudButton Variant="Variant.Filled" id="editButton" OnClick="@(async () => await ShowAddEdgeModuleDialog(moduleContext))">Edit</MudButton>
                                                     </MudTd>
                                                     <MudTd DataLabel="Delete" Style="text-align: center">
-                                                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteModule(moduleContext))"></MudIconButton>
+                                                        <MudIconButton Class="deleteModuleButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteModule(moduleContext))"></MudIconButton>
                                                     </MudTd>
                                                 </RowTemplate>
                                                 <FooterContent>
-                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddModule">Add new module</MudButton>
+                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" id="addModuleButton" OnClick="AddModule">Add new module</MudButton>
                                                 </FooterContent>
                                             </MudTable>
                                         </MudItem>
@@ -123,8 +122,11 @@
     readonly DialogOptions maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
 
     public List<IoTEdgeModule> moduleCommands { get; set; } = new List<IoTEdgeModule>();
+    public EdgeModelValidator edgeModelValidator = new EdgeModelValidator();
+    public IoTEdgeModuleValidator edgeModuleValidator = new IoTEdgeModuleValidator();
 
     private MudForm form;
+    private bool isProcessing;
 
     private IoTEdgeModel Model = new IoTEdgeModel()
     {
@@ -185,9 +187,28 @@
 
     private async Task Save()
     {
+        isProcessing = true;
 
         // Displays validation error message for each field
         await form.Validate();
+
+        if (!edgeModelValidator.Validate(Model).IsValid)
+        {
+            Snackbar.Add("One or more validation errors occurred", Severity.Error);
+
+            isProcessing = false;
+
+            return;
+        }
+
+        if (Model.EdgeModules.Any() && !edgeModuleValidator.Validate(moduleCommands).IsValid)
+        {
+            Snackbar.Add("One or more validation errors occurred with the module.", Severity.Error);
+
+            isProcessing = false;
+
+            return;
+        }
 
         try
         {
