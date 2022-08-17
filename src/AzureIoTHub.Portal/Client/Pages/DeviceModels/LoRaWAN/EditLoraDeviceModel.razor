@@ -51,8 +51,8 @@
                         </MudItem>
                         <MudItem md="6" xs=12>
                             <MudGrid>
-                                <MudItem md="6" xs="12">
-                                    <MudNumericField @bind-Value="@LoRaDeviceModel.KeepAliveTimeout" For="@(() => LoRaDeviceModel.KeepAliveTimeout)" Min=1 Label="Connection Timeout" Variant="Variant.Outlined"></MudNumericField>
+                                <MudItem lg="6" xs="12">
+                                    <MudNumericField @bind-Value="@LoRaDeviceModel.KeepAliveTimeout" For="@(() => LoRaDeviceModel.KeepAliveTimeout)" Min=1 Label="Device Connection Timeout" Variant="Variant.Outlined"></MudNumericField>
                                 </MudItem>
 
                             </MudGrid>
