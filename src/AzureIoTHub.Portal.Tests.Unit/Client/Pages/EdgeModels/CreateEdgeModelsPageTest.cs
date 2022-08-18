@@ -71,6 +71,55 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         }
 
         [Test]
+        public void WhenEdgeModelRequiredFieldEmptyClickOnSaveShouldProssessValidationError()
+        {
+            // Arrange
+
+            _ = this.mockSnackbarService
+                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>()))
+                .Returns((Snackbar)null);
+
+            // Act
+            var cut = RenderComponent<CreateEdgeModelsPage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void WhenModulesRequiredFieldEmptyClickOnSaveShouldProssessValidationError()
+        {
+            // Arrange
+            var edgeModel = new IoTEdgeModel()
+            {
+                Name = Guid.NewGuid().ToString(),
+            };
+
+            _ = this.mockSnackbarService
+                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>()))
+                .Returns((Snackbar)null);
+
+            // Act
+            var cut = RenderComponent<CreateEdgeModelsPage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            cut.WaitForElement($"#{nameof(IoTEdgeModel.Name)}").Change(edgeModel.Name);
+
+            var addModuleButton = cut.WaitForElement("#addModuleButton");
+            addModuleButton.Click();
+
+            cut.WaitForElement($"#{nameof(IoTEdgeModule.ModuleName)}").Change("module_test");
+
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
         public void ClickOnSaveShouldPostProcessProblemDetailsExceptionWhenIssueOccurs()
         {
             // Arrange

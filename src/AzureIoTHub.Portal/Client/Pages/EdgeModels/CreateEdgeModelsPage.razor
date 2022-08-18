@@ -21,13 +21,13 @@
             <MudCard>
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
-                        <MudAvatar Image="@imageDataUrl" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                        <MudAvatar Image="@imageDataUrl" id="@(nameof(IoTEdgeModel.ImageUrl))" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
                     </div>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
                     @if (imageDataUrl != null)
                     {
-                        <MudButton OnClick="DeleteAvatar" Color="Color.Error">Delete Picture</MudButton>
+                        <MudButton OnClick="DeleteAvatar" id="deleteAvatarBtn" Color="Color.Error">Delete Picture</MudButton>
                     }
                     else
                     {
@@ -201,9 +201,7 @@
             return;
         }
 
-        Console.WriteLine("Model.EdgeModules.Count : " + Model.EdgeModules.Count);
-        Console.WriteLine("edgeModuleValidator.Validate(moduleCommands).IsValid : " + edgeModuleValidator.Validate(moduleCommands).IsValid);
-        if (moduleCommands.Count > 0 && !edgeModuleValidator.Validate(moduleCommands).IsValid)
+        if (moduleCommands.Any() && !edgeModuleValidator.Validate(moduleCommands).IsValid)
         {
             Snackbar.Add("One or more validation errors occurred with the module.", Severity.Error);
 
