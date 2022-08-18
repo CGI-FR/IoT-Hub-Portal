@@ -26,13 +26,13 @@
             <MudCard>
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
-                        <MudAvatar Image="@imageDataUrl" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                        <MudAvatar Image="@imageDataUrl" id="@(nameof(IoTEdgeModel.ImageUrl))" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
                     </div>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
                     @if (imageDataUrl != null)
                     {
-                        <MudButton OnClick="DeleteAvatar" Color="Color.Error">Delete Picture</MudButton>
+                        <MudButton OnClick="DeleteAvatar" id="deleteAvatarButton" Color="Color.Error">Delete Picture</MudButton>
                     }
                     else
                     {
@@ -96,14 +96,14 @@
                                                         <MudText >@CommandContext.ImageURI</MudText>
                                                     </MudTd>
                                                     <MudTd DataLabel="See detail" Style="text-align: center;">
-                                                        <MudButton Variant="Variant.Filled" OnClick="(async () => await ShowEditEdgeModuleDialog(CommandContext))">Edit</MudButton>
+                                                        <MudButton Variant="Variant.Filled" id="editButton" OnClick="(async () => await ShowEditEdgeModuleDialog(CommandContext))">Edit</MudButton>
                                                     </MudTd>
                                                     <MudTd DataLabel="Delete" Style="text-align: center">
-                                                        <MudIconButton Color="Color.Default" OnClick="( () => DeleteModule(CommandContext))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" ></MudIconButton>
+                                                        <MudIconButton Color="Color.Default" Class="deleteModuleButton" OnClick="( () => DeleteModule(CommandContext))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
                                                     </MudTd>
                                                 </RowTemplate>
                                                 <FooterContent>
-                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddModule" Color="Color.Success" >Add new module</MudButton>
+                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" id="addModuleButton" OnClick="AddModule" Color="Color.Success">Add new module</MudButton>
                                                 </FooterContent>
                                             </MudTable>
                                         </MudItem>
