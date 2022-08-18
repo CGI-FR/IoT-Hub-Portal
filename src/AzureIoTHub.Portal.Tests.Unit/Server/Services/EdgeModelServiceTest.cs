@@ -22,6 +22,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.IO;
     using FluentAssertions;
     using AzureIoTHub.Portal.Server.Exceptions;
+    using Microsoft.Azure.Devices;
 
     [TestFixture]
     public class EdgeModelServiceTest
@@ -459,6 +460,64 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Act
             var result = async () => await edgeModelService.UpdateEdgeModel(edgeModel);
+
+            // Assert
+            _ = result.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteEdgeModelShouldDeleteEdgeModelTemplate()
+        {
+            // Arrange
+            var edgeModelService = CreateEdgeModelService();
+            var config = new Configuration(Guid.NewGuid().ToString());
+
+            var listEdgeModels = new List<Configuration>()
+            {
+                config
+            };
+
+            var mockResponseUpdate = this.mockRepository.Create<Response>();
+
+            _ = this.mockEdgeDeviceTemplatesTableClient
+                .Setup(x => x.DeleteEntityAsync(It.IsAny<string>(), It.Is<string>(c => c.Equals(config.Id, StringComparison.Ordinal)), It.IsAny<ETag>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockResponseUpdate.Object);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeDeviceTemplates())
+                .Returns(this.mockEdgeDeviceTemplatesTableClient.Object);
+
+            _ = this.mockConfigService
+                .Setup(x => x.GetIoTEdgeConfigurations())
+                .ReturnsAsync(listEdgeModels);
+
+            _ = this.mockConfigService
+                .Setup(x => x.DeleteConfiguration(It.Is<string>(c => c.Equals(config.Id, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await edgeModelService.DeleteEdgeModel(config.Id);
+
+            // Assert
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void WhenDeleteEntityAsyncFailedDeleteEdgeModelShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var edgeModelService = CreateEdgeModelService();
+            var modelId = Guid.NewGuid().ToString();
+
+            _ = this.mockEdgeDeviceTemplatesTableClient
+                .Setup(x => x.DeleteEntityAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ETag>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new RequestFailedException(""));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeDeviceTemplates())
+                .Returns(this.mockEdgeDeviceTemplatesTableClient.Object);
+
+            // Act
+            var result = async () => await edgeModelService.DeleteEdgeModel(modelId);
 
             // Assert
             _ = result.Should().ThrowAsync<InternalServerErrorException>();
