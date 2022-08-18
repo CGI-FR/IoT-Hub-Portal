@@ -182,15 +182,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         }
 
         [Test]
-        public void ClickOnShowAddEdgeModuleDialog()
+        public void ClickOnShowAddEdgeModuleDialogShouldShowDialog()
         {
             // Arrange
 
-            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
 
             _ = this.mockDialogService
                 .Setup(c => c.Show<ModuleDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsAny<DialogOptions>()))
-                .Returns(mockDialogReference);
+                .Returns(mockDialogReference.Object);
 
             // Act
             var cut = RenderComponent<CreateEdgeModelsPage>();
@@ -211,6 +212,34 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
+        [Test]
+        public void ClickShowAddEdgeModuleDialogShouldDisplayAddModuleDialogAndReturnIfAborted()
+        {
+            // Arrange
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
 
+            _ = this.mockDialogService
+                .Setup(c => c.Show<ModuleDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsAny<DialogOptions>()))
+                .Returns(mockDialogReference.Object);
+
+            var cut = RenderComponent<CreateEdgeModelsPage>();
+
+            // Act
+            var addModuleButton = cut.WaitForElement("#addModuleButton");
+
+            addModuleButton.Click();
+            cut.WaitForAssertion(() => Assert.AreEqual(1, cut.FindAll(".deleteModuleButton").Count));
+
+            var editButton = cut.WaitForElement("#editButton");
+
+            cut.WaitForElement($"#{nameof(IoTEdgeModule.ModuleName)}").Change("module test");
+            cut.WaitForElement($"#{nameof(IoTEdgeModule.ImageURI)}").Change("image test");
+
+            editButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
     }
 }
