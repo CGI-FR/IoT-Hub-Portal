@@ -37,7 +37,7 @@
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="Device" Style="word-break: break-all;">
-                    @context.DeviceName
+                    <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText><MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceId</MudText>
                 </MudTd>
                 <MudTd DataLabel="Status" Style="text-align: center">
                     @if (context.IsEnabled)
