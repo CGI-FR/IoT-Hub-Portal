@@ -145,7 +145,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
             ArgumentNullException.ThrowIfNull(config, nameof(config));
             ArgumentNullException.ThrowIfNull(module, nameof(module));
 
-            var result = new IoTEdgeModule
+            var edgeModule = new IoTEdgeModule
             {
                 ModuleName = module.Name,
                 ImageURI = module.Value["settings"]["image"]?.Value<string>(),
@@ -155,7 +155,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
 
             foreach (var item in GetEnvironmentVariables(module))
             {
-                result.EnvironmentVariables.Add(
+                edgeModule.EnvironmentVariables.Add(
                     new IoTEdgeModuleEnvironmentVariable()
                     {
                         Name = item.Key,
@@ -163,39 +163,32 @@ namespace AzureIoTHub.Portal.Server.Helpers
                     });
             }
 
-            foreach (var item in GetModuleIdentityTwinSettings(config, module))
-            {
-                result.ModuleIdentityTwinSettings.Add(
-                new IoTEdgeModuleTwinSetting()
-                {
-                    Name = item.Key,
-                    Value = item.Value
-                });
-            }
-
-            return result;
+            return edgeModule;
         }
 
         /// <summary>
-        /// Gets the module's identity twin settings from an Azure Configuration.
+        /// Retreive and return the module twin settings.
         /// </summary>
-        /// <param name="config">Configuration object from Azure IoT Hub.</param>
-        /// <param name="module">Dictionnary containing the module's name and its properties.</param>
-        /// <returns>A dictionnary containing the settings and their corresponding values.</returns>
-        private static Dictionary<string, string> GetModuleIdentityTwinSettings(Configuration config, JToken module)
+        /// <param name="modulesContent">the configuration modules content.</param>
+        /// <param name="moduleName">the module name.</param>
+        /// <returns>List of IoTEdgeModuleTwinSetting.</returns>
+        public static List<IoTEdgeModuleTwinSetting> CreateModuleTwinSettings(IDictionary<string, IDictionary<string, object>> modulesContent, string moduleName)
         {
-            var twinSettings = new Dictionary<string, string>();
+            var moduleTwinSettings = new List<IoTEdgeModuleTwinSetting>();
 
-            if (config.Content.ModulesContent != null
-                && config.Content.ModulesContent.TryGetValue(module.Path, out var modulesContent))
+            if (modulesContent.TryGetValue(moduleName, out var twinSettings))
             {
-                foreach (var setting in modulesContent)
+                foreach (var desiredProperty in twinSettings)
                 {
-                    twinSettings.Add(setting.Key, setting.Value.ToString());
+                    moduleTwinSettings.Add(new IoTEdgeModuleTwinSetting()
+                    {
+                        Name = desiredProperty.Key.Replace("properties.desired.", "", StringComparison.Ordinal),
+                        Value = desiredProperty.Value.ToString()
+                    });
                 }
             }
 
-            return twinSettings;
+            return moduleTwinSettings;
         }
 
         /// <summary>
@@ -225,10 +218,28 @@ namespace AzureIoTHub.Portal.Server.Helpers
             return envVariables;
         }
 
+        /// <summary>
+        /// Create the modules content for the new configuration.
+        /// </summary>
+        /// <param name="edgeModel">the IoT edge model.</param>
+        /// <returns>new Dictionary.</returns>
         public static Dictionary<string, IDictionary<string, object>> GenerateModulesContent(IoTEdgeModel edgeModel)
         {
             var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
             var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
+
+            var modulesContent =  new Dictionary<string, IDictionary<string, object>>
+            {
+                {
+                    "$edgeHub",
+                    new Dictionary<string , object>()
+                    {
+                        {
+                            "properties.desired", edgeHubPropertiesDesired
+                        }
+                    }
+                }
+            };
 
             foreach (var module in edgeModel.EdgeModules)
             {
@@ -251,29 +262,27 @@ namespace AzureIoTHub.Portal.Server.Helpers
                 }
 
                 edgeAgentPropertiesDesired.Modules.Add(module.ModuleName, configModule);
+
+                var twinSettings = new Dictionary<string, object>();
+
+                foreach (var setting in module.ModuleIdentityTwinSettings)
+                {
+                    twinSettings.Add($"properties.desired.{setting.Name}", setting.Value);
+                }
+
+                modulesContent.Add(module.ModuleName, twinSettings);
             }
 
-            return new Dictionary<string, IDictionary<string, object>>
-            {
-                {
-                    "$edgeAgent",
-                    new Dictionary<string , object>()
+            modulesContent.Add("$edgeAgent",
+                new Dictionary<string, object>()
                     {
                         {
                             "properties.desired", edgeAgentPropertiesDesired
                         }
-                    }
-                },
-                {
-                    "$edgeHub",
-                    new Dictionary<string , object>()
-                    {
-                        {
-                            "properties.desired", edgeHubPropertiesDesired
-                        }
-                    }
-                }
-            };
+                    });
+
+
+            return modulesContent;
         }
     }
 }

@@ -15,21 +15,16 @@ namespace AzureIoTHub.Portal.Server.Services
     using Extensions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Extensions;
-    using Microsoft.Extensions.Logging;
-    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
     public class ConfigService : IConfigService
     {
         private readonly RegistryManager registryManager;
-        private readonly ILogger<ConfigService> logger;
 
         public ConfigService(
-            RegistryManager registry,
-            ILogger<ConfigService> logger)
+            RegistryManager registry)
         {
             this.registryManager = registry;
-            this.logger = logger;
         }
 
         public async Task<IEnumerable<Configuration>> GetIoTEdgeConfigurations()
@@ -76,7 +71,7 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             var configList = await GetIoTEdgeConfigurations();
 
-            var config = configList.FirstOrDefault((x) => x.Id.StartsWith(modelId));
+            var config = configList.FirstOrDefault((x) => x.Id.StartsWith(modelId, StringComparison.Ordinal));
 
             if (config == null)
             {
@@ -99,9 +94,9 @@ namespace AzureIoTHub.Portal.Server.Services
                 // Adds regular modules to the list of modules
                 if (modObject.TryGetValue("modules", out var modules))
                 {
-                    foreach (var m in modules.Values<JProperty>())
+                    foreach (var newModule in modules.Values<JProperty>().Select(module => ConfigHelper.CreateGatewayModule(config, module)))
                     {
-                        var newModule = ConfigHelper.CreateGatewayModule(config, m);
+                        newModule.ModuleIdentityTwinSettings = ConfigHelper.CreateModuleTwinSettings(config.Content.ModulesContent, newModule.ModuleName);
                         moduleList.Add(newModule);
                     }
                 }
@@ -192,8 +187,6 @@ namespace AzureIoTHub.Portal.Server.Services
             }
             catch (Exception e)
             {
-                this.logger.LogWarning("Unable to create Configuration.");
-                this.logger.LogError(JsonConvert.SerializeObject(newConfiguration));
                 throw new InternalServerErrorException("Unable to create configuration.", e);
             }
         }

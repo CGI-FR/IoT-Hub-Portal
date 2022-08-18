@@ -180,5 +180,32 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
             Assert.IsAssignableFrom<Dictionary<string, IDictionary<string, object>>>(result);
             Assert.AreEqual(2, result.Count);
         }
+
+        [Test]
+        public void CreateModuleTwinSettingsShouldReturnAList()
+        {
+            // Arrange
+            var moduleName = "moduleTest";
+            var modulesContent = new Dictionary<string, IDictionary<string, object>>()
+            {
+                { "$edgeAgent", new Dictionary<string, object>() },
+                { "$edgeHub", new Dictionary<string, object>() },
+                {
+                    moduleName, new Dictionary<string, object>()
+                    {
+                        { "properties.desired.setting01","test" },
+                        { "properties.desired.setting02","test02" },
+                    }
+                },
+            };
+
+            // Act
+            var result = ConfigHelper.CreateModuleTwinSettings(modulesContent, moduleName);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual("setting01", result[0].Name);
+        }
     }
 }

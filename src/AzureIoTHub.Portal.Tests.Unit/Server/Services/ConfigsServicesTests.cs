@@ -26,20 +26,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
         private Mock<RegistryManager> mockRegistryManager;
 
-        private Mock<ILogger<ConfigService>> mockLogger;
-
         [SetUp]
         public void SetUp()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockRegistryManager = this.mockRepository.Create<RegistryManager>();
-            this.mockLogger = this.mockRepository.Create<ILogger<ConfigService>>();
         }
 
         private ConfigService CreateConfigsServices()
         {
-            return new ConfigService(this.mockRegistryManager.Object, this.mockLogger.Object);
+            return new ConfigService(this.mockRegistryManager.Object);
         }
 
         [Test]
