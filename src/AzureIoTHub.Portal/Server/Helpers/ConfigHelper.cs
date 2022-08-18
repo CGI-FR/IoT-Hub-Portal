@@ -263,14 +263,18 @@ namespace AzureIoTHub.Portal.Server.Helpers
 
                 edgeAgentPropertiesDesired.Modules.Add(module.ModuleName, configModule);
 
-                var twinSettings = new Dictionary<string, object>();
-
-                foreach (var setting in module.ModuleIdentityTwinSettings)
+                if (module.ModuleIdentityTwinSettings.Any())
                 {
-                    twinSettings.Add($"properties.desired.{setting.Name}", setting.Value);
+                    var twinSettings = new Dictionary<string, object>();
+
+                    foreach (var setting in module.ModuleIdentityTwinSettings)
+                    {
+                        twinSettings.Add($"properties.desired.{setting.Name}", setting.Value);
+                    }
+
+                    modulesContent.Add(module.ModuleName, twinSettings);
                 }
 
-                modulesContent.Add(module.ModuleName, twinSettings);
             }
 
             modulesContent.Add("$edgeAgent",
