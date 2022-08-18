@@ -452,7 +452,7 @@
             return DeviceModelList;
 
         return DeviceModelList
-                    .Where(x => x.Name.StartsWith(value, StringComparison.InvariantCultureIgnoreCase));
+                    .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
     private void SetSaveButtonText(DeviceSaveAction saveAction)
