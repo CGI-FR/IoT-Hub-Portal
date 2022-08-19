@@ -264,3 +264,6 @@ __pycache__/
 *.pyc
 
 swagger.json
+
+**/Client/assets/src/*.js
+**/Client/assets/src/*.js.map
