@@ -28,3 +28,16 @@
 #loading-bar .peg {
     height: 4px !important;
 }
+#MudCardHeader {
+    white-space: nowrap;
+    overflow: scroll;
+}
+.DeviceCardHeader .mud-card-header-content {
+    display: inline-grid;
+}
+.overflow-ellipsis {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+}
+

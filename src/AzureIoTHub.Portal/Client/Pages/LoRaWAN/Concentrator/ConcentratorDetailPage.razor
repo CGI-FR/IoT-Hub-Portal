@@ -20,9 +20,9 @@
     <MudGrid>
         <MudItem xs="12" sm="4" md="3">
             <MudCard>
-                <MudCardHeader>
+                <MudCardHeader Class="DeviceCardHeader">
                     <CardHeaderContent>
-                        <MudText Typo="Typo.h5" Align="Align.Center">@(string.IsNullOrEmpty(concentrator.DeviceName) ? concentrator.DeviceId : concentrator.DeviceName)</MudText>
+                        <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(concentrator.DeviceName) ? concentrator.DeviceId : concentrator.DeviceName)</MudText>
                         </CardHeaderContent>
                         <CardHeaderAvatar>
                         @if (concentrator.IsConnected)
