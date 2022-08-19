@@ -102,7 +102,7 @@ namespace AzureIoTHub.Portal.Server.Services
                                    .GetEdgeDeviceTemplates()
                                    .GetEntityAsync<TableEntity>(DefaultPartitionKey, edgeModel.ModelId);
 
-                    throw new ResourceAlreadyExistsException($"The edge model with id {edgeModel.ModelId} already exists");
+                    throw new ResourceAlreadyExistsException($"The edge model with id {edgeModel?.ModelId} already exists");
                 }
                 catch (RequestFailedException e)
                 {
@@ -116,7 +116,7 @@ namespace AzureIoTHub.Portal.Server.Services
             var entity = new TableEntity()
             {
                 PartitionKey = DefaultPartitionKey,
-                RowKey = string.IsNullOrEmpty(edgeModel.ModelId) ? Guid.NewGuid().ToString() : edgeModel.ModelId
+                RowKey = string.IsNullOrEmpty(edgeModel?.ModelId) ? Guid.NewGuid().ToString() : edgeModel.ModelId
             };
 
             await SaveEntity(entity, edgeModel);
@@ -155,7 +155,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     .GetEdgeDeviceTemplates()
                     .DeleteEntityAsync(DefaultPartitionKey, edgeModelId);
 
-                var config = this.configService.GetIoTEdgeConfigurations().Result.FirstOrDefault(x => x.Id.StartsWith(edgeModelId));
+                var config = this.configService.GetIoTEdgeConfigurations().Result.FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
 
                 if (config != null)
                 {

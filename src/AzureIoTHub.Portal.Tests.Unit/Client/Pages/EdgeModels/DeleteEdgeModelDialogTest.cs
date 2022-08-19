@@ -44,7 +44,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                 .Setup(x => x.DeleteIoTEdgeModel(It.Is<string>(c => c.Equals(edgeModelId, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns((Snackbar)null);
+            _ = this.mockSnackbarService
+                .Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null))
+                .Returns(value: null);
 
             var cut = RenderComponent<MudDialogProvider>();
             var service = Services.GetService<IDialogService>() as DialogService;

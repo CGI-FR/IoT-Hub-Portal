@@ -88,18 +88,18 @@
                                                     <MudTh Style="text-align: center">See detail</MudTh>
                                                     <MudTh Style="text-align: center">Delete</MudTh>
                                                 </HeaderContent>
-                                                <RowTemplate Context="CommandContext">
+                                                <RowTemplate Context="ModuleContext">
                                                     <MudTd DataLabel="Module Name" Style="word-break: break-all;">
-                                                        <MudText >@CommandContext.ModuleName</MudText>
+                                                        <MudTextField id="@(nameof(IoTEdgeModule.ModuleName))" @bind-Value="@ModuleContext.ModuleName" Margin="Margin.Dense" Label="Name" For="@(() => ModuleContext.ModuleName )" Variant="Variant.Outlined" Required="true"></MudTextField>
                                                     </MudTd>
                                                     <MudTd DataLabel="Image Uri" Style="word-break: break-all;">
-                                                        <MudText >@CommandContext.ImageURI</MudText>
+                                                        <MudTextField id="@(nameof(IoTEdgeModule.ImageURI))" @bind-Value="@ModuleContext.ImageURI" Margin="Margin.Dense" Label="ImageURI" For="@(() => ModuleContext.ImageURI )" Variant="Variant.Outlined" Required="true" />
                                                     </MudTd>
                                                     <MudTd DataLabel="See detail" Style="text-align: center;">
-                                                        <MudButton Variant="Variant.Filled" id="editButton" OnClick="(async () => await ShowEditEdgeModuleDialog(CommandContext))">Edit</MudButton>
+                                                        <MudButton Variant="Variant.Filled" id="editButton" OnClick="(async () => await ShowEditEdgeModuleDialog(ModuleContext))">Edit</MudButton>
                                                     </MudTd>
                                                     <MudTd DataLabel="Delete" Style="text-align: center">
-                                                        <MudIconButton Color="Color.Default" Class="deleteModuleButton" OnClick="( () => DeleteModule(CommandContext))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
+                                                        <MudIconButton Color="Color.Default" Class="deleteModuleButton" OnClick="( () => DeleteModule(ModuleContext))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
                                                     </MudTd>
                                                 </RowTemplate>
                                                 <FooterContent>
@@ -199,6 +199,24 @@
 
         // Displays validation error message for each field
         await form.Validate();
+
+        if (!edgeModelValidator.Validate(this.EdgeModel).IsValid)
+        {
+            Snackbar.Add("One or more validation errors occurred", Severity.Error);
+
+            isProcessing = false;
+
+            return;
+        }
+
+        if (this.EdgeModel.EdgeModules.Any() && !edgeModuleValidator.Validate(this.EdgeModel.EdgeModules).IsValid)
+        {
+            Snackbar.Add("One or more validation errors occurred with the module.", Severity.Error);
+
+            isProcessing = false;
+
+            return;
+        }
 
         try
         {

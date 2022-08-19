@@ -55,7 +55,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             _ = this.mockSnackbarService
                 .Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>()))
-                .Returns((Snackbar)null);
+                .Returns(value: null);
 
             // Act
             var cut = RenderComponent<CreateEdgeModelsPage>();
@@ -77,7 +77,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             _ = this.mockSnackbarService
                 .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>()))
-                .Returns((Snackbar)null);
+                .Returns(value: null);
 
             // Act
             var cut = RenderComponent<CreateEdgeModelsPage>();

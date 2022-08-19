@@ -8,16 +8,12 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
     public class EdgeAgentPropertiesDesired
     {
-        [JsonProperty(PropertyName = "modules")]
         public IDictionary<string, ConfigModule> Modules { get; set; }
 
-        [JsonProperty(PropertyName = "runtime")]
         public Runtime Runtime { get; set; }
 
-        [JsonProperty(PropertyName = "schemaVersion")]
         public string SchemaVersion { get; set; }
 
-        [JsonProperty(PropertyName = "systemModules")]
         public SystemModules SystemModules { get; set; }
 
         public EdgeAgentPropertiesDesired()
@@ -31,10 +27,8 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
     public class Runtime
     {
-        [JsonProperty(PropertyName = "settings")]
         public RuntimeSettings Settings { get; set; }
 
-        [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
 
         public Runtime()
@@ -46,7 +40,6 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
     public class RuntimeSettings
     {
-        [JsonProperty(PropertyName = "minDockerVersion")]
         public string MinDockerVersion { get; set; }
 
         public RuntimeSettings()

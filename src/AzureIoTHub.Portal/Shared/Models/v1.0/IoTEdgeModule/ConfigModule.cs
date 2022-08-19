@@ -8,22 +8,17 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
     public class ConfigModule
     {
-        [JsonProperty(PropertyName = "settings")]
         public ModuleSettings Settings { get; set; }
 
-        [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
 
         [JsonProperty(PropertyName = "env")]
         public IDictionary<string, EnvironmentVariable>? EnvironmentVariables { get; set; }
 
-        [JsonProperty(PropertyName = "status")]
         public string? Status { get; set; }
 
-        [JsonProperty(PropertyName = "restarPolicy")]
         public string? RestarPolicy { get; set; }
 
-        [JsonProperty(PropertyName = "version")]
         public string? Version { get; set; }
 
         public ConfigModule()
@@ -34,10 +29,8 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
 
     public class ModuleSettings
     {
-        [JsonProperty(PropertyName = "image")]
         public string Image { get; set; }
 
-        [JsonProperty(PropertyName = "createOptions")]
         public string CreateOptions { get; set; }
 
         public ModuleSettings()
