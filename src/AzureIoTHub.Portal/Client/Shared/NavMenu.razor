@@ -45,7 +45,7 @@
                          Expanded="@LayoutService.GetNavGroupExpanded("IoTEdge")"
                          ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("IoTEdge", b))">
                 <MudNavLink Href="/edge/devices">Devices</MudNavLink>
-                <MudNavLink Href="/edge/configurations">Edge Models</MudNavLink>
+                <MudNavLink Href="/edge/models">Edge Models</MudNavLink>
             </MudNavGroup>
 
             @if (Portal.IsLoRaSupported)

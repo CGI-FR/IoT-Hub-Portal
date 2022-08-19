@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices;
 
     public interface IConfigService
@@ -15,6 +16,8 @@ namespace AzureIoTHub.Portal.Server.Services
 
         Task RollOutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties);
 
+        Task RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel);
+
         Task RollOutDeviceConfiguration(string modelId, Dictionary<string, object> desiredProperties, string configurationId, Dictionary<string, string> targetTags, int priority = 0);
 
         Task<Configuration> GetConfigItem(string id);
@@ -22,5 +25,7 @@ namespace AzureIoTHub.Portal.Server.Services
         Task DeleteConfiguration(string configId);
 
         Task<int> GetFailedDeploymentsCount();
+
+        Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId);
     }
 }

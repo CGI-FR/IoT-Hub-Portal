@@ -24,13 +24,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
         {
             //Arrange
             var moduleName = Guid.NewGuid().ToString();
-            var moduleVersion = Guid.NewGuid().ToString();
+            var moduleImageUri = Guid.NewGuid().ToString();
 
             var module = new IoTEdgeModule()
             {
                 ModuleName = moduleName,
-                Version = moduleVersion,
+                Version = "1.0",
                 Status = "running",
+                ImageURI = moduleImageUri,
                 EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
                 ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
                 Commands = new List<IoTEdgeModuleCommand>()
@@ -51,7 +52,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
 
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
             cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ModuleName)}").OuterHtml.Should().Contain(moduleName));
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.Version)}").OuterHtml.Should().Contain(moduleVersion));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ImageURI)}").OuterHtml.Should().Contain(moduleImageUri));
 
             // Assert
             var tabs = cut.WaitForElements(".mud-tabs .mud-tab");
@@ -67,12 +68,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             //Arrange
             var moduleName = Guid.NewGuid().ToString();
             var moduleVersion = Guid.NewGuid().ToString();
+            var moduleImageUri = Guid.NewGuid().ToString();
 
             var module = new IoTEdgeModule()
             {
                 ModuleName = moduleName,
                 Version = moduleVersion,
                 Status = "running",
+                ImageURI = moduleImageUri,
                 EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
                 ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
                 Commands = new List<IoTEdgeModuleCommand>()
@@ -94,13 +97,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
 
             cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ModuleName)}").Change("newModuleNameValue"));
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.Version)}").Change("newModuleVersionValue"));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ImageURI)}").Change("newModuleImageUriValue"));
 
             var submitButton = cut.WaitForElement("#SubmitButton");
             submitButton.Click();
 
             cut.WaitForAssertion(() => module.ModuleName.Should().Be("newModuleNameValue"));
-            cut.WaitForAssertion(() => module.Version.Should().Be("newModuleVersionValue"));
+            cut.WaitForAssertion(() => module.ImageURI.Should().Be("newModuleImageUriValue"));
         }
 
         [Test]
@@ -109,12 +112,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             //Arrange
             var moduleName = Guid.NewGuid().ToString();
             var moduleVersion = Guid.NewGuid().ToString();
+            var moduleImageUri = Guid.NewGuid().ToString();
 
             var module = new IoTEdgeModule()
             {
                 ModuleName = moduleName,
                 Version = moduleVersion,
                 Status = "running",
+                ImageURI = moduleImageUri,
                 EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
                 ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
                 Commands = new List<IoTEdgeModuleCommand>()
@@ -136,13 +141,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
 
             cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ModuleName)}").Change("newModuleNameValue"));
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.Version)}").Change("newModuleVersionValue"));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ImageURI)}").Change("newModuleImageUriValue"));
 
             var cancelButton = cut.WaitForElement("#CancelButton");
             cancelButton.Click();
 
             cut.WaitForAssertion(() => module.ModuleName.Should().Be(moduleName));
-            cut.WaitForAssertion(() => module.Version.Should().Be(moduleVersion));
+            cut.WaitForAssertion(() => module.ImageURI.Should().Be(moduleImageUri));
         }
     }
 }

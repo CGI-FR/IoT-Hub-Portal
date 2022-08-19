@@ -9,10 +9,13 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Exceptions;
+    using AzureIoTHub.Portal.Server.Helpers;
     using Extensions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Extensions;
+    using Newtonsoft.Json.Linq;
 
     public class ConfigService : IConfigService
     {
@@ -64,6 +67,44 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
+        public async Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId)
+        {
+            var configList = await GetIoTEdgeConfigurations();
+
+            var config = configList.FirstOrDefault((x) => x.Id.StartsWith(modelId, StringComparison.Ordinal));
+
+            if (config == null)
+            {
+                throw new InternalServerErrorException("Config does not exist.");
+            }
+
+            var moduleList = new List<IoTEdgeModule>();
+
+            // Details of every modules are stored within the EdgeAgent module data
+            if (config.Content.ModulesContent != null
+                && config.Content.ModulesContent.TryGetValue("$edgeAgent", out var edgeAgentModule)
+                && edgeAgentModule.TryGetValue("properties.desired", out var edgeAgentDesiredProperties))
+            {
+                // Converts the object to a JObject to access its properties more easily
+                if (edgeAgentDesiredProperties is not JObject modObject)
+                {
+                    throw new InvalidOperationException($"Could not parse properties.desired for the configuration id {config.Id}");
+                }
+
+                // Adds regular modules to the list of modules
+                if (modObject.TryGetValue("modules", out var modules))
+                {
+                    foreach (var newModule in modules.Values<JProperty>().Select(module => ConfigHelper.CreateGatewayModule(config, module)))
+                    {
+                        newModule.ModuleIdentityTwinSettings = ConfigHelper.CreateModuleTwinSettings(config.Content.ModulesContent, newModule.ModuleName);
+                        moduleList.Add(newModule);
+                    }
+                }
+            }
+
+            return moduleList;
+        }
+
         public async Task DeleteConfiguration(string configId)
         {
             try
@@ -103,6 +144,41 @@ namespace AzureIoTHub.Portal.Server.Services
             newConfiguration.Content.DeviceContent = desiredProperties;
 
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
+        }
+
+        public async Task RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)
+        {
+            var configurations = await this.registryManager.GetConfigurationsAsync(0);
+
+            var configurationNamePrefix = edgeModel.ModelId?.Trim()
+                                                .ToLowerInvariant()
+                                                .Replace(" ", "-", StringComparison.OrdinalIgnoreCase);
+
+            foreach (var item in configurations)
+            {
+                if (!item.Id.StartsWith(configurationNamePrefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                await this.registryManager.RemoveConfigurationAsync(item.Id);
+            }
+
+            var newConfiguration = new Configuration($"{configurationNamePrefix}-{DateTime.UtcNow.Ticks}");
+            newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
+            newConfiguration.TargetCondition = $"tags.modelId = '{edgeModel.ModelId}'";
+            newConfiguration.Priority = 10;
+
+            newConfiguration.Content.ModulesContent = ConfigHelper.GenerateModulesContent(edgeModel);
+
+            try
+            {
+                _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException("Unable to create configuration.", e);
+            }
         }
 
         public async Task RollOutDeviceConfiguration(
