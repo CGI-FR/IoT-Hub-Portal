@@ -621,88 +621,6 @@
         }
       }
     },
-    "/api/edge/configurations": {
-      "get": {
-        "tags": [
-          "IoT Edge Devices"
-        ],
-        "summary": "Gets the IoT Edge deployment configurations.",
-        "operationId": "GET IoT Edge config list",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ConfigListItem"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ConfigListItem"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ConfigListItem"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/edge/configurations/{configurationID}": {
-      "get": {
-        "tags": [
-          "IoT Edge Devices"
-        ],
-        "summary": "Gets the specified configuration.",
-        "operationId": "GET IoT Edge configuration",
-        "parameters": [
-          {
-            "name": "configurationID",
-            "in": "path",
-            "description": "The configuration identifier.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConfigListItem"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConfigListItem"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConfigListItem"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/edge/devices": {
       "get": {
         "tags": [
@@ -1123,6 +1041,348 @@
                   "items": {
                     "$ref": "#/components/schemas/IoTEdgeDeviceLog"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/models": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeModelListItem"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeModelListItem"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IoTEdgeModelListItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/IoTEdgeModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/edge/models/{edgeModelId}": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "parameters": [
+          {
+            "name": "edgeModelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IoTEdgeModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IoTEdgeModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IoTEdgeModel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "summary": "Delete the edge device model.",
+        "parameters": [
+          {
+            "name": "edgeModelId",
+            "in": "path",
+            "description": "the model id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/edge/models/{edgeModelId}/avatar": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "summary": "Gets the avatar.",
+        "operationId": "GET edge Device model avatar URL",
+        "parameters": [
+          {
+            "name": "edgeModelId",
+            "in": "path",
+            "description": "The model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "summary": "Changes the avatar.",
+        "operationId": "POST Update the edge device model avatar",
+        "parameters": [
+          {
+            "name": "edgeModelId",
+            "in": "path",
+            "description": "The model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "IoT Edge Devices Models"
+        ],
+        "summary": "Deletes the avatar.",
+        "operationId": "DELETE Remove the edge device model avatar",
+        "parameters": [
+          {
+            "name": "edgeModelId",
+            "in": "path",
+            "description": "The model identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -3888,8 +4148,75 @@
         "additionalProperties": false,
         "description": "Class representing the page results."
       },
+      "IoTEdgeModel": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "description": "The device model identifier.",
+            "nullable": true
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The IoT Edge device model name."
+          },
+          "description": {
+            "type": "string",
+            "description": "The device model description.",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "edgeModules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeModule"
+            },
+            "description": "The device model module list.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IoTEdgeModelListItem": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "description": "The device model identifier.",
+            "nullable": true
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The IoT Edge device model name."
+          },
+          "description": {
+            "type": "string",
+            "description": "The device model description.",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "IoTEdgeModule": {
         "required": [
+          "imageURI",
           "moduleName"
         ],
         "type": "object",
@@ -3903,6 +4230,10 @@
             "type": "string",
             "description": "The module configuration version.",
             "nullable": true
+          },
+          "imageURI": {
+            "minLength": 1,
+            "type": "string"
           },
           "status": {
             "type": "string",
