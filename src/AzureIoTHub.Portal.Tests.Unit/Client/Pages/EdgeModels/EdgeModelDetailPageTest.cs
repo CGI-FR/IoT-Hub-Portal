@@ -75,7 +75,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             _ = this.mockSnackbarService
                 .Setup(c => c.Add($"Edge model successfully updated.", Severity.Success, null))
-                .Returns((Snackbar)null);
+                .Returns(value: null);
 
             var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
 

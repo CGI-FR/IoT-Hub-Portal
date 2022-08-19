@@ -100,16 +100,6 @@ namespace AzureIoTHub.Portal.Server.Services
                         moduleList.Add(newModule);
                     }
                 }
-
-                // Adds system modules to the list of modules
-                //if (modObject.TryGetValue("systemModules", out var systemModulesToken))
-                //{
-                //    foreach (var sm in systemModulesToken.Values<JProperty>())
-                //    {
-                //        var newModule = ConfigHelper.CreateGatewayModule(config, sm);
-                //        moduleList.Add(newModule);
-                //    }
-                //}
             }
 
             return moduleList;

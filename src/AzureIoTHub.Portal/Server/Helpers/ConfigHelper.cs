@@ -246,12 +246,12 @@ namespace AzureIoTHub.Portal.Server.Helpers
                 var configModule = new ConfigModule
                 {
                     Type = "docker",
-                    Status = module.Status,
+                    Status = "running",
                     Settings = new ModuleSettings()
                     {
                         Image = module.ImageURI
                     },
-                    Version = module.Version,
+                    Version = "1.0",
                     RestarPolicy = "always",
                     EnvironmentVariables = new Dictionary<string, EnvironmentVariable>()
                 };

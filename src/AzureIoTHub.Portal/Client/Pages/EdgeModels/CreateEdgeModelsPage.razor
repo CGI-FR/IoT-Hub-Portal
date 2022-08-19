@@ -77,20 +77,20 @@
                                                     <col style="width: 5%;" />
                                                 </ColGroup>
                                                 <HeaderContent>
-                                                    <MudTh Style="text-align: center">Module Name</MudTh>
+                                                    <MudTh Style="text-align: center">Module name</MudTh>
                                                     <MudTh Style="text-align: center">Image URI</MudTh>
                                                     <MudTh Style="text-align: center">See detail</MudTh>
                                                     <MudTh Style="text-align: center">Delete</MudTh>
                                                 </HeaderContent>
                                                 <RowTemplate Context="moduleContext">
                                                     <MudTd DataLabel="module Name" Style="word-break: break-all;">
-                                                        <MudTextField id="@(nameof(IoTEdgeModule.ModuleName))" @bind-Value="@moduleContext.ModuleName" Margin="Margin.Dense" Label="Name" For="@(() => moduleContext.ModuleName )" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                                        <MudTextField id="@(nameof(IoTEdgeModule.ModuleName))" @bind-Value="@moduleContext.ModuleName" Margin="Margin.Dense" Label="Module name" For="@(() => moduleContext.ModuleName )" Variant="Variant.Outlined" Required="true"></MudTextField>
                                                     </MudTd>
                                                     <MudTd DataLabel="module Image URI" Style="word-break: break-all;">
-                                                        <MudTextField id="@(nameof(IoTEdgeModule.ImageURI))" @bind-Value="@moduleContext.ImageURI" Margin="Margin.Dense" Label="ImageURI" For="@(() => moduleContext.ImageURI )" Variant="Variant.Outlined" Required="true" />
+                                                        <MudTextField id="@(nameof(IoTEdgeModule.ImageURI))" @bind-Value="@moduleContext.ImageURI" Margin="Margin.Dense" Label="Image URI" For="@(() => moduleContext.ImageURI )" Variant="Variant.Outlined" Required="true" />
                                                     </MudTd>
                                                     <MudTd DataLabel="See detail" Style="text-align: center;">
-                                                        <MudButton Variant="Variant.Filled" id="editButton" OnClick="@(async () => await ShowAddEdgeModuleDialog(moduleContext))">Edit</MudButton>
+                                                        <MudButton Variant="Variant.Filled" id="editButton" OnClick="@(async () => await ShowAddEdgeModuleDialog(moduleContext))">Detail</MudButton>
                                                     </MudTd>
                                                     <MudTd DataLabel="Delete" Style="text-align: center">
                                                         <MudIconButton Class="deleteModuleButton" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(() => DeleteModule(moduleContext))"></MudIconButton>
