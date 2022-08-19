@@ -4,8 +4,8 @@
 @inject IJSRuntime JS
 @inject ISnackbar Snackbar
 
-<MudDialog>
-    <DialogContent>
+<MudDialog ContentStyle="overflow:auto;max-height:600px;">
+    <DialogContent >
         <MudGrid>
             <MudItem xs="12" md="6">
                 <MudTextField @bind-Value="@currentModuleName"
