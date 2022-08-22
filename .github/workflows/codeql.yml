@@ -1,10 +1,10 @@
 name: "Code Scanning"
 
-on:  
+on:
   pull_request:
-    branches: [ main ]
+    branches: [ main, v3-dev ]
   push:
-    branches: [main]
+    branches: [ main, v3-dev ]
   schedule:
     #        ┌───────────── minute (0 - 59)
     #        │  ┌───────────── hour (0 - 23)
