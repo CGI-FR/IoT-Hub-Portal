@@ -66,6 +66,9 @@
     }
   },
   "variables": {
+    "pgsqlServerName": "[concat(parameters('uniqueSolutionPrefix'), 'pgsql')]",
+    "pgsqlAdminLogin": "[concat(uniqueString(resourceGroup().id, newGuid()))]",
+    "pgsqlAdminPassword": "[concat(uniqueString(resourceGroup().id, newGuid()), 'x', '!')]",
     "iotHubName": "[concat(parameters('uniqueSolutionPrefix'), 'hub')]",
     "dpsName": "[concat(parameters('uniqueSolutionPrefix'), 'dps')]",
     "siteName": "[concat(parameters('uniqueSolutionPrefix'), 'portal')]",
@@ -81,17 +84,17 @@
   },
   "resources": [
     {
-        "type": "Microsoft.Devices/IotHubs",
-        "apiVersion": "2021-07-02",
-        "sku": {
-            "name": "S1",
-            "tier": "Standard",
-            "capacity": 1
-        },
-        "name": "[variables('iotHubName')]",
-        "location": "[parameters('location')]",
-        "properties": {},
-        "dependsOn": []
+      "type": "Microsoft.Devices/IotHubs",
+      "apiVersion": "2021-07-02",
+      "sku": {
+        "name": "S1",
+        "tier": "Standard",
+        "capacity": 1
+      },
+      "name": "[variables('iotHubName')]",
+      "location": "[parameters('location')]",
+      "properties": {},
+      "dependsOn": []
     },
     {
       "type": "Microsoft.Devices/provisioningServices",
@@ -118,38 +121,62 @@
       ]
     },
     {
-        "type": "Microsoft.Storage/storageAccounts",
-        "name": "[variables('storageAccountName')]",
-        "apiVersion": "2021-09-01",
-        "location": "[parameters('location')]",
-        "sku": {
-          "name": "Standard_LRS",
-          "tier": "Standard"
-        },
-        "properties": {
-            "accountType": "[variables('storageAccountType')]"
-        },
-        "dependsOn": []
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('storageAccountName')]",
+      "apiVersion": "2021-09-01",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "properties": {
+        "accountType": "[variables('storageAccountType')]"
+      },
+      "dependsOn": []
     },
     {
       "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
       "apiVersion": "2021-09-01",
       "name": "[format('{0}/default/{1}', variables('storageAccountName'), variables('deviceImageContainerName'))]",
-       "dependsOn": [
-          "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
-        ]
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ]
     },
     {
-        "type": "Microsoft.Insights/components",
-        "kind": "web",
-        "name": "[variables('appInsightName')]",
-        "apiVersion": "2020-02-02",
-        "location": "[parameters('location')]",
-        "scale": null,
-        "properties": {
-            "Application_Type": "web"
-        },
-        "dependsOn": []
+      "type": "Microsoft.DBforPostgreSQL/servers",
+      "apiVersion": "2017-12-01",
+      "name": "[variables('pgsqlServerName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "B_Gen5_1",
+        "tier": "Basic",
+        "capacity": "2",
+        "size": "5120",
+        "family": "Gen5"
+      },
+      "properties": {
+        "createMode": "Default",
+        "version": "11",
+        "administratorLogin": "[variables('pgsqlAdminLogin')]",
+        "administratorLoginPassword": "[variables('pgsqlAdminPassword')]",
+        "storageProfile": {
+          "storageMB": "2048",
+          "backupRetentionDays": "7",
+          "geoRedundantBackup": "false"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "kind": "web",
+      "name": "[variables('appInsightName')]",
+      "apiVersion": "2020-02-02",
+      "location": "[parameters('location')]",
+      "scale": null,
+      "properties": {
+        "Application_Type": "web"
+      },
+      "dependsOn": []
     },
     {
       "type": "Microsoft.Web/serverfarms",
@@ -223,6 +250,11 @@
               "name": "StorageAccount__ConnectionString",
               "type": "Custom",
               "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountId'),'2015-05-01-preview').key1)]"
+            },
+            {
+              "name": "PostgreSQL__ConnectionString",
+              "type": "Custom",
+              "connectionString": "[concat('User ID=', variables('pgsqlAdminLogin'), ';Password=', variables('pgsqlAdminPassword'), ';Host=', concat(variables('pgsqlServerName'), '.postgres.database.azure.com') ,';Port=5432;Database=', variables('siteName') ,';Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;"
             }
           ],
           "appSettings": [
