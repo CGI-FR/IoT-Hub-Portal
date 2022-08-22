@@ -15,6 +15,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
+    using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Azure.Devices;
 
     [TestFixture]
     public class EdgeDevicesControllerTests
@@ -46,6 +48,169 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             {
                 Url = this.mockUrlHelper.Object
             };
+        }
+
+        [Test]
+        public async Task GetAllDeviceShouldReturnOkResult()
+        {
+            // Arrange
+            var edgeDeviceController = CreateEdgeDevicesController();
+
+            var deviceTwinListPage = new PaginationResult<Twin>();
+
+            _ = this.mockDeviceService
+                .Setup(x => x.GetAllEdgeDevice(It.Is<string>(c => c.Equals("aaa", StringComparison.Ordinal)),
+                It.Is<string>(c => c.Equals("bbb", StringComparison.Ordinal)),
+                It.Is<bool>(c => c.Equals(true)), It.IsAny<string>(), It.IsAny<int>()))
+                .ReturnsAsync(deviceTwinListPage);
+
+            _ = this.mockEdgeDeviceService
+                .Setup(x => x.GetEdgeDevicesPage(deviceTwinListPage, It.IsAny<IUrlHelper>(),
+                It.Is<string>(c => c.Equals("bbb", StringComparison.Ordinal)), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()))
+                .Returns(new PaginationResult<IoTEdgeListItem>()
+                {
+                    Items = Enumerable.Range(0, 10).Select(x => new IoTEdgeListItem()
+                    {
+                        DeviceId = FormattableString.Invariant($"{x}"),
+                    }),
+                    NextPage = Guid.NewGuid().ToString(),
+                    TotalItems = 100
+                });
+
+            // Act
+            var result = await edgeDeviceController.Get(continuationToken: "aaa",
+                searchText: "bbb",
+                searchStatus: true,
+                pageSize: 2);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<OkObjectResult>(result);
+
+            var okObjectResult = result as ObjectResult;
+
+            Assert.IsNotNull(okObjectResult);
+            Assert.AreEqual(200, okObjectResult.StatusCode);
+            Assert.IsNotNull(okObjectResult.Value);
+
+            Assert.IsAssignableFrom<PaginationResult<IoTEdgeListItem>>(okObjectResult.Value);
+
+            var paginationResult = okObjectResult.Value as PaginationResult<IoTEdgeListItem>;
+
+            Assert.IsNotNull(paginationResult);
+            Assert.AreEqual(10, paginationResult.Items.Count());
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenSpecifyingIdGetShouldReturnTheEdgeDevice()
+        {
+            // Arrange
+            var edgeDeviceController = CreateEdgeDevicesController();
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockEdgeDeviceService
+                .Setup(x => x.GetEdgeDevice(It.IsAny<string>()))
+                .ReturnsAsync(new IoTEdgeDevice()
+                {
+                    DeviceId = deviceId,
+                });
+
+            // Act
+            var result = await edgeDeviceController.Get(deviceId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<OkObjectResult>(result);
+
+            var okObjectResult = result as ObjectResult;
+
+            Assert.IsAssignableFrom<IoTEdgeDevice>(okObjectResult.Value);
+
+            var iotEdge = okObjectResult.Value as IoTEdgeDevice;
+
+            Assert.IsNotNull(iotEdge);
+            Assert.AreEqual(deviceId, iotEdge.DeviceId);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task CreateEdgeDeviceAsyncShouldReturnOk()
+        {
+            // Arrange
+            var edgeDeviceController = CreateEdgeDevicesController();
+
+            var edgeDevice = new IoTEdgeDevice()
+            {
+                DeviceId = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockEdgeDeviceService
+                .Setup(x => x.CreateEdgeDevice(It.Is<IoTEdgeDevice>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(new BulkRegistryOperationResult() { IsSuccessful = true });
+
+            // Act
+            var result = await edgeDeviceController.CreateEdgeDeviceAsync(edgeDevice);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<OkObjectResult>(result);
+
+            var okObjectResult = result as ObjectResult;
+
+            Assert.IsNotNull(okObjectResult);
+            Assert.AreEqual(200, okObjectResult.StatusCode);
+
+            Assert.IsNotNull(okObjectResult.Value);
+            Assert.IsAssignableFrom<BulkRegistryOperationResult>(okObjectResult.Value);
+
+            var bulkOperationResult = okObjectResult.Value as BulkRegistryOperationResult;
+            Assert.IsNotNull(bulkOperationResult);
+            Assert.AreEqual(true, bulkOperationResult.IsSuccessful);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDeviceAsyncShouldReturnOkResult()
+        {
+            // Arrange
+            var edgeDeviceController = CreateEdgeDevicesController();
+
+            var edgeDevice = new IoTEdgeDevice()
+            {
+                DeviceId = Guid.NewGuid().ToString(),
+                Environment = "fake"
+            };
+
+            var deviceTwin = new Twin(edgeDevice.DeviceId);
+            deviceTwin.Tags["env"] = "dev";
+
+            _ = this.mockEdgeDeviceService
+                .Setup(x => x.UpdateEdgeDevice(It.Is<IoTEdgeDevice>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(deviceTwin);
+
+            // Act
+            var result = await edgeDeviceController.UpdateDeviceAsync(edgeDevice);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<OkObjectResult>(result);
+
+            var okObjectResult = result as ObjectResult;
+
+            Assert.IsNotNull(okObjectResult);
+            Assert.AreEqual(200, okObjectResult.StatusCode);
+
+            Assert.IsNotNull(okObjectResult.Value);
+
+            Assert.IsAssignableFrom<Twin>(okObjectResult.Value);
+            Assert.AreEqual(deviceTwin, okObjectResult.Value);
+
+            this.mockRepository.VerifyAll();
         }
 
         [Test]
