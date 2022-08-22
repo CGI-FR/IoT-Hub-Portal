@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server
     using AutoMapper;
     using Azure;
     using Azure.Storage.Blobs;
+    using AzureIoTHub.Portal.Server.Model;
     using Exceptions;
     using Extensions;
     using Factories;
@@ -28,6 +29,7 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.AspNetCore.Mvc.Versioning;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Provisioning.Service;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -94,6 +96,9 @@ namespace AzureIoTHub.Portal.Server
                     opts.TokenValidationParameters.ValidateActor = configuration.OIDCValidateActor;
                     opts.TokenValidationParameters.ValidateTokenReplay = configuration.OIDCValidateTokenReplay;
                 });
+
+            _ = services
+                .AddDbContext<PortalDbContext>(opts => opts.UseNpgsql(configuration.PostgreSQLConnectionString));
 
             _ = services.AddSingleton(configuration);
             _ = services.AddSingleton(new PortalMetric());
@@ -255,6 +260,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddSingleton(mapper);
 
             _ = services.AddHealthChecks()
+                .AddDbContextCheck<PortalDbContext>()
                 .AddCheck<IoTHubHealthCheck>("iothubHealth")
                 .AddCheck<StorageAccountHealthCheck>("storageAccountHealth")
                 .AddCheck<TableStorageHealthCheck>("tableStorageHealth")
@@ -361,11 +367,12 @@ namespace AzureIoTHub.Portal.Server
                 });
             });
 
-
             var deviceModelImageManager = app.ApplicationServices.GetService<IDeviceModelImageManager>();
 
             await deviceModelImageManager?.InitializeDefaultImageBlob()!;
             await deviceModelImageManager?.SyncImagesCacheControl()!;
+
+            await EnsureDatabaseCreatedAndUpToDate(app)!;
         }
 
         private static void UseApiExceptionMiddleware(IApplicationBuilder app)
@@ -387,6 +394,16 @@ namespace AzureIoTHub.Portal.Server
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             return Task.CompletedTask;
+        }
+
+        private static async Task EnsureDatabaseCreatedAndUpToDate(IApplicationBuilder app)
+        {
+            using var scope = app.ApplicationServices.CreateScope();
+
+            using var context = scope.ServiceProvider.GetRequiredService<PortalDbContext>();
+
+            // Create the database if not exists and migrate it using the database bigration scripts.
+            await context.Database.MigrateAsync();
         }
     }
 }
