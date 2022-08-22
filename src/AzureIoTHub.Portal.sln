@@ -30,9 +30,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{3CA1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{9EF190B3-41E2-48E1-BA4E-E129589DD250}"
 	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\arm-ttk.yml = ..\.github\workflows\arm-ttk.yml
 		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
 		..\.github\workflows\codeql.yml = ..\.github\workflows\codeql.yml
 		..\.github\workflows\deploy_staging.yml = ..\.github\workflows\deploy_staging.yml
+		..\.github\workflows\publish-documentation-new-version.yml = ..\.github\workflows\publish-documentation-new-version.yml
 		..\.github\workflows\publish.yml = ..\.github\workflows\publish.yml
 	EndProjectSection
 EndProject
