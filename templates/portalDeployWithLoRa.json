@@ -66,6 +66,9 @@
     }
   },
   "variables": {
+    "pgsqlServerName": "[concat(parameters('uniqueSolutionPrefix'), 'pgsql')]",
+    "pgsqlAdminLogin": "[concat(uniqueString(resourceGroup().id, newGuid()))]",
+    "pgsqlAdminPassword": "[concat(uniqueString(resourceGroup().id, newGuid()), 'x', '!')]",
     "iotHubName": "[concat(parameters('uniqueSolutionPrefix'), 'hub')]",
     "dpsName": "[concat(parameters('uniqueSolutionPrefix'), 'dps')]",
     "siteName": "[concat(parameters('uniqueSolutionPrefix'), 'portal')]",
@@ -105,6 +108,30 @@
           }
         ],
         "allocationPolicy": "Hashed"
+      }
+    },
+    {
+      "type": "Microsoft.DBforPostgreSQL/servers",
+      "apiVersion": "2017-12-01",
+      "name": "[variables('pgsqlServerName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "B_Gen5_1",
+        "tier": "Basic",
+        "capacity": "2",
+        "size": "5120",
+        "family": "Gen5"
+      },
+      "properties": {
+        "createMode": "Default",
+        "version": "11",
+        "administratorLogin": "[variables('pgsqlAdminLogin')]",
+        "administratorLoginPassword": "[variables('pgsqlAdminPassword')]",
+        "storageProfile": {
+          "storageMB": "2048",
+          "backupRetentionDays": "7",
+          "geoRedundantBackup": "false"
+        }
       }
     },
     {
@@ -182,6 +209,11 @@
               "name": "LoRaKeyManagement__Code",
               "type": "Custom",
               "connectionString": "[listkeys(variables('functionAppDefaultHost'),'2021-02-01').masterKey]"
+            },
+            {
+              "name": "PostgreSQL__ConnectionString",
+              "type": "Custom",
+              "connectionString": "[concat('User ID=', variables('pgsqlAdminLogin'), ';Password=', variables('pgsqlAdminPassword'), ';Host=', concat(variables('pgsqlServerName'), '.postgres.database.azure.com') ,';Port=5432;Database=', variables('siteName') ,';Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;"
             }
           ],
           "appSettings": [

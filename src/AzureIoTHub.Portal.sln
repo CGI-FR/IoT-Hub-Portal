@@ -41,7 +41,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{3F7A2982-4F0B-45F9-9FCA-923D5A7A1511}"
 	ProjectSection(SolutionItems) = preProject
 		..\templates\azuredeploy.json = ..\templates\azuredeploy.json
-		..\templates\portalDeploy.json = ..\templates\portalDeploy.json
+		..\templates\azuredeployUI.json = ..\templates\azuredeployUI.json
+		..\templates\portalDeployWithLoRa.json = ..\templates\portalDeployWithLoRa.json
+		..\templates\portalDeployWithoutLoRa.json = ..\templates\portalDeployWithoutLoRa.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATES", "ISSUE_TEMPLATES", "{4B89F192-EA33-4121-9809-D99621C40F3B}"
