@@ -951,7 +951,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var service = CreateService();
             var deviceId = Guid.NewGuid().ToString();
 
-            var twin = new Twin()
+            var twin = new Twin(deviceId)
             {
                 ETag = Guid.NewGuid().ToString(),
             };
@@ -978,7 +978,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var service = CreateService();
             var deviceId = Guid.NewGuid().ToString();
 
-            var twin = new Twin()
+            var twin = new Twin(deviceId)
             {
                 ETag = Guid.NewGuid().ToString(),
             };
