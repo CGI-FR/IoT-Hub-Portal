@@ -2,7 +2,7 @@ name: Validate ARM templates
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ main, v3-dev ]
     paths:
       - 'templates/**'
   push:
