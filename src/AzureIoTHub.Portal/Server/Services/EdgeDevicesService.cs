@@ -31,6 +31,9 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         private readonly IDeviceService devicesService;
 
+        /// <summary>
+        /// The edge device mapper.
+        /// </summary>
         private readonly IEdgeDeviceMapper edgeDeviceMapper;
 
         /// <summary>
@@ -215,12 +218,7 @@ namespace AzureIoTHub.Portal.Server.Services
             var deviceWithClient = (await query.GetNextAsTwinAsync()).SingleOrDefault();
             var reportedProperties = JObject.Parse(deviceWithClient.Properties.Reported.ToJson());
 
-            if (reportedProperties.TryGetValue("clients", out var clients))
-            {
-                return clients.Count();
-            }
-
-            return 0;
+            return reportedProperties.TryGetValue("clients", out var clients) ? clients.Count() : 0;
         }
 
         /// <summary>

@@ -963,7 +963,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin());
 
             // Act
-            var result = await service.UpdateDeviceTwin(deviceId, twin);
+            var result = await service.UpdateDeviceTwin(twin);
 
             // Assert
             Assert.IsNotNull(result);
@@ -990,7 +990,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ThrowsAsync(new Exception("test"));
 
             // Act
-            var act = () => service.UpdateDeviceTwin(deviceId, twin);
+            var act = () => service.UpdateDeviceTwin(twin);
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
