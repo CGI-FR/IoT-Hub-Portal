@@ -205,7 +205,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             // Update the twin properties
             this.deviceTwinMapper.UpdateTwin(currentTwin, device);
 
-            _ = await this.devicesService.UpdateDeviceTwin(device.DeviceID, currentTwin);
+            _ = await this.devicesService.UpdateDeviceTwin(currentTwin);
 
             return Ok();
         }

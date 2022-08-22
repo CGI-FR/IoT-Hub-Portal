@@ -369,20 +369,19 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <summary>
         /// This function update the twin of the device.
         /// </summary>
-        /// <param name="deviceId">the device id.</param>
         /// <param name="twin">the new twin.</param>
         /// <returns>the updated twin.</returns>
-        public async Task<Twin> UpdateDeviceTwin(string deviceId, Twin twin)
+        public async Task<Twin> UpdateDeviceTwin(Twin twin)
         {
             ArgumentNullException.ThrowIfNull(twin, nameof(twin));
 
             try
             {
-                return await this.registryManager.UpdateTwinAsync(deviceId, twin, twin.ETag);
+                return await this.registryManager.UpdateTwinAsync(twin.DeviceId, twin, twin.ETag);
             }
             catch (Exception e)
             {
-                throw new InternalServerErrorException($"Unable to update the device twin with id {deviceId}", e);
+                throw new InternalServerErrorException($"Unable to update the device twin with id {twin.DeviceId}", e);
             }
         }
 
