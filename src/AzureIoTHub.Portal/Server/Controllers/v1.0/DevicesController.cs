@@ -243,7 +243,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             device.Properties.Desired = DeviceHelper.PropertiesWithDotNotationToTwinCollection(desiredProperties);
 
-            _ = await this.devicesService.UpdateDeviceTwin(deviceID, device);
+            _ = await this.devicesService.UpdateDeviceTwin(device);
 
             return Ok();
         }
