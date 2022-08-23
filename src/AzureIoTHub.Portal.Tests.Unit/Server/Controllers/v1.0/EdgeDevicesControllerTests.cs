@@ -17,6 +17,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using NUnit.Framework;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Common.Exceptions;
+    using AzureIoTHub.Portal.Server.Exceptions;
 
     [TestFixture]
     public class EdgeDevicesControllerTests
@@ -133,6 +135,28 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             Assert.IsNotNull(iotEdge);
             Assert.AreEqual(deviceId, iotEdge.DeviceId);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenDeviceDoesNotExistGetEdgeDeviceSpecifyingIdShouldThrowAnException()
+        {
+            // Arrange
+            var edgeDeviceController = CreateEdgeDevicesController();
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockEdgeDeviceService
+                .Setup(x => x.GetEdgeDevice(It.IsAny<string>()))
+                .ThrowsAsync(new DeviceNotFoundException(""));
+
+            // Act
+            var result = await edgeDeviceController.Get(deviceId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<NotFoundObjectResult>(result);
 
             this.mockRepository.VerifyAll();
         }
@@ -294,6 +318,89 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             // Assert
             _ = await act.Should().ThrowAsync<ArgumentNullException>();
+        }
+
+        [Test]
+        public async Task GetEnrollmentCredentialsShouldReturnEnrollmentCredentials()
+        {
+            // Arrange
+            var edgeDevicesController = CreateEdgeDevicesController();
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockEdgeDeviceService
+                .Setup(x => x.GetEdgeDeviceCredentials(It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(new EnrollmentCredentials());
+
+            // Act
+            var result = await edgeDevicesController.GetCredentials(deviceId);
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            var okObjectResult = result.Result as ObjectResult;
+
+            Assert.IsNotNull(okObjectResult);
+            Assert.AreEqual(200, okObjectResult.StatusCode);
+
+            Assert.IsNotNull(okObjectResult.Value);
+            Assert.IsAssignableFrom<EnrollmentCredentials>(okObjectResult.Value);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenDeviceDoesNotExistGetEnrollmentCredentialsShouldThrowAnException()
+        {
+            // Arrange
+            var edgeDevicesController = CreateEdgeDevicesController();
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockEdgeDeviceService
+                .Setup(x => x.GetEdgeDeviceCredentials(It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal))))
+                .ThrowsAsync(new ResourceNotFoundException(""));
+
+            // Act
+            var result = await edgeDevicesController.GetCredentials(deviceId);
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            var objectResult = result.Result as ObjectResult;
+
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(404, objectResult.StatusCode);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [TestCase("RestartModule")]
+        public async Task ExecuteMethodShouldExecuteC2DMethod(string methodName)
+        {
+            // Arrange
+            var edgeDeviceController = CreateEdgeDevicesController();
+
+            var module = new IoTEdgeModule
+            {
+                ModuleName = "aaa",
+            };
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockEdgeDeviceService
+                .Setup(x => x.ExecuteModuleMethod(It.IsAny<IoTEdgeModule>(),
+                It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal)),
+                It.Is<string>(c => c.Equals(methodName, StringComparison.Ordinal))))
+                .ReturnsAsync(new C2Dresult());
+
+            // Act
+            var result = await edgeDeviceController.ExecuteModuleMethod(module, deviceId, methodName);
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            this.mockRepository.VerifyAll();
         }
     }
 }
