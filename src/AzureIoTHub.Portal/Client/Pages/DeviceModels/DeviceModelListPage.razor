@@ -9,7 +9,7 @@
 
 <MudGrid>
     <MudItem xs="12">
-        <MudTable T="DeviceModel" Items="@result" Loading="@IsLoading" Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+        <MudTable T="DeviceModel" Items="@result" Loading="@IsLoading" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
             <ColGroup>
                 <col style="width: 5%;" />
                 <col style="width: 30%;" />
@@ -38,7 +38,7 @@
                 <MudTd Style="text-align: center">
                     <img height="25" src="@context.ImageUrl" />
                 </MudTd>
-                <MudTd DataLabel="Name" Style="word-break: break-all;">
+                <MudTd DataLabel="Name">
                     @context.Name
                 </MudTd>
                 <MudTd DataLabel="Description" Style="word-break: break-all; ">
