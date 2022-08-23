@@ -10,15 +10,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using Filters;
     using Managers;
     using Mappers;
-    using Services;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
-    using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
+    using Services;
 
     [Authorize]
     [ApiController]
@@ -44,6 +43,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         private readonly IRouterConfigManager routerConfigManager;
 
         /// <summary>
+        /// The LoRaWAN concentrator service.
+        /// </summary>
+        private readonly ILoRaWANConcentratorService loRaWANConcentratorService;
+
+        /// <summary>
         /// The device Lora wan concentrators controller.
         /// </summary>
         private readonly ILogger<LoRaWANConcentratorsController> logger;
@@ -55,16 +59,19 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <param name="devicesService">The devices service.</param>
         /// <param name="routerConfigManager">The router config manager.</param>
         /// <param name="concentratorTwinMapper">The concentrator twin mapper.</param>
+        /// <param name="loRaWANConcentratorService">The device Lora wan concentrators controller.</param>
         public LoRaWANConcentratorsController(
             ILogger<LoRaWANConcentratorsController> logger,
             IDeviceService devicesService,
             IRouterConfigManager routerConfigManager,
-            IConcentratorTwinMapper concentratorTwinMapper)
+            IConcentratorTwinMapper concentratorTwinMapper,
+            ILoRaWANConcentratorService loRaWANConcentratorService)
         {
             this.devicesService = devicesService;
             this.concentratorTwinMapper = concentratorTwinMapper;
             this.logger = logger;
             this.routerConfigManager = routerConfigManager;
+            this.loRaWANConcentratorService = loRaWANConcentratorService;
         }
 
         /// <summary>
@@ -133,34 +140,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 
             try
             {
-                // Create a new Twin from the form's fields.
-                var newTwin = new Twin()
+                if (await this.loRaWANConcentratorService.CreateDeviceAsync(device))
                 {
-                    DeviceId = device.DeviceId,
-                };
-
-                device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
-
-                device.ClientThumbprint ??= string.Empty;
-
-                this.concentratorTwinMapper.UpdateTwin(newTwin, device);
-
-                var status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
-
-                var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceId, false, newTwin, status);
-
-                return Ok(result);
+                    return this.Ok();
+                }
             }
             catch (DeviceAlreadyExistsException e)
             {
-                this.logger?.LogError($"{device.DeviceId} - Create device failed", e);
-                return BadRequest(e.Message);
+                return this.BadRequest(e.Message);
             }
-            catch (InvalidOperationException e)
-            {
-                this.logger?.LogError($"Create device failed for {device.DeviceId} \n {e.Message}");
-                return BadRequest(e.Message);
-            }
+
+            return this.BadRequest();
         }
 
         /// <summary>
