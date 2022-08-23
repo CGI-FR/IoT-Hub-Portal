@@ -34,7 +34,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             return new IoTEdgeDevice()
             {
                 DeviceId = deviceTwin?.DeviceId,
-                Status = deviceTwin.Status?.ToString(),
+                Status = deviceTwin?.Status?.ToString(),
                 Scope = deviceTwin?.DeviceScope,
                 ConnectionState = deviceTwin.ConnectionState?.ToString(),
                 Type = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.Type)) ?? "Undefined",
