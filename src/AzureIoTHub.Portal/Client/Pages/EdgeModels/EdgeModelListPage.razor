@@ -11,7 +11,7 @@
 
 <MudGrid>
     <MudItem xs="12">
-        <MudTable T="IoTEdgeModelListItem" Items="@EdgeModelList" Loading="IsLoading" Dense=true Breakpoint="Breakpoint.Sm" OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
+        <MudTable T="IoTEdgeModelListItem" Items="@EdgeModelList" Loading="IsLoading" Dense=true OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
             <ColGroup>
                 <col style="width: 5%;" />
                 <col style="width: 30%;" />
@@ -40,7 +40,7 @@
                 <MudTd Style="text-align: center">
                     <img height="25" src="@context.ImageUrl" />
                 </MudTd>
-                <MudTd DataLabel="Name" Style="word-break: break-all;">
+                <MudTd DataLabel="Name">
                     @context.Name
                 </MudTd>
                 <MudTd DataLabel="Description" Style="word-break: break-all; ">

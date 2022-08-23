@@ -10,7 +10,7 @@
 <MudGrid>
 
     <MudItem xs="12">
-        <MudTable T="Concentrator" id="concentrators-listing" ServerData=@LoadItems Dense=true Breakpoint="Breakpoint.Sm" Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+        <MudTable T="Concentrator" id="concentrators-listing" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
             <ColGroup>
                 <col style="width: 60%;" />
                 <col style="width: 10%;" />
@@ -36,7 +36,7 @@
                 <MudTh Style="text-align: center">Delete</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Device" Style="word-break: break-all;">
+                <MudTd DataLabel="Device" >
                     <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText><MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceId</MudText>
                 </MudTd>
                 <MudTd DataLabel="Status" Style="text-align: center">
