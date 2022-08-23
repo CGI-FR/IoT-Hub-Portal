@@ -799,7 +799,6 @@
           {
             "name": "deviceId",
             "in": "path",
-            "description": "",
             "required": true,
             "schema": {
               "type": "string"
@@ -892,7 +891,7 @@
           }
         ],
         "requestBody": {
-          "description": "The module.",
+          "description": "The edge module.",
           "content": {
             "application/json": {
               "schema": {
@@ -4233,7 +4232,8 @@
           },
           "imageURI": {
             "minLength": 1,
-            "type": "string"
+            "type": "string",
+            "description": "the device image URI."
           },
           "status": {
             "type": "string",
