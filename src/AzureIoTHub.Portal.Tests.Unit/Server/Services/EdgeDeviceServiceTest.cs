@@ -96,7 +96,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var edgeDeviceService = CreateEdgeDeviceService();
-            var deviceTwin = new Twin(Guid.NewGuid().ToString());
 
             var expectedDevice = new IoTEdgeDevice()
             {
