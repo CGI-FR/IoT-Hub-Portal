@@ -33,7 +33,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
         {
             return new IoTEdgeDevice()
             {
-                DeviceId = deviceTwin.DeviceId,
+                DeviceId = deviceTwin?.DeviceId,
                 Status = deviceTwin.Status?.ToString(),
                 Scope = deviceTwin?.DeviceScope,
                 ConnectionState = deviceTwin.ConnectionState?.ToString(),
