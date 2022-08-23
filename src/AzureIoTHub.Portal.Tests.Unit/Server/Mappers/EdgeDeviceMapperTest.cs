@@ -5,7 +5,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
 {
     using System;
     using System.Collections.Generic;
-    using System.Text.Json.Serialization;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Mappers;
     using Microsoft.Azure.Devices.Shared;
@@ -15,16 +14,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
     [TestFixture]
     public class EdgeDeviceMapperTest
     {
-        private EdgeDeviceMapper CreateEdgeDeviceMapper()
-        {
-            return new EdgeDeviceMapper();
-        }
 
         [Test]
         public void CreateEdgeDeviceListItemShouldReturnValue()
         {
             // Arrange
-            var edgeDeviceMapper = CreateEdgeDeviceMapper();
+            var edgeDeviceMapper = new EdgeDeviceMapper();
 
             var deviceTwin = new Twin(Guid.NewGuid().ToString());
             deviceTwin.Tags["type"] = "lora";
@@ -43,7 +38,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
         public void CreateEdgeDeviceShouldReturnValue()
         {
             // Arrange
-            var edgeDeviceMapper = CreateEdgeDeviceMapper();
+            var edgeDeviceMapper = new EdgeDeviceMapper();
 
             var deviceId = Guid.NewGuid().ToString();
 

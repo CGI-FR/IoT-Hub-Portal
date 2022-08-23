@@ -54,6 +54,11 @@ namespace AzureIoTHub.Portal.Server.Services
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
+        /// <summary>
+        /// Return the edge model template list.
+        /// </summary>
+        /// <returns>IEnumerable IoTEdgeModelListItem.</returns>
+        /// <exception cref="InternalServerErrorException"></exception>
         public IEnumerable<IoTEdgeModelListItem> GetEdgeModels()
         {
             try
@@ -69,6 +74,13 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
+        /// <summary>
+        /// Get the edge model template and it's configuration by the edge model id.
+        /// </summary>
+        /// <param name="modelId">The model identifier.</param>
+        /// <returns>An edge model object.</returns>
+        /// <exception cref="ResourceNotFoundException">Resource not found if template does not exist.</exception>
+        /// <exception cref="InternalServerErrorException">Internal server error exception.</exception>
         public async Task<IoTEdgeModel> GetEdgeModel(string modelId)
         {
             try
@@ -92,6 +104,14 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
+        /// <summary>
+        /// Create a new edge model template and roll out
+        /// the edge model configuration.
+        /// </summary>
+        /// <param name="edgeModel">the new edge modle object.</param>
+        /// <returns>nothing.</returns>
+        /// <exception cref="ResourceAlreadyExistsException">If edge model template already exist return ResourceAlreadyExistsException.</exception>
+        /// <exception cref="InternalServerErrorException"></exception>
         public async Task CreateEdgeModel(IoTEdgeModel edgeModel)
         {
             if (!string.IsNullOrEmpty(edgeModel?.ModelId))
@@ -122,6 +142,13 @@ namespace AzureIoTHub.Portal.Server.Services
             await SaveEntity(entity, edgeModel);
         }
 
+        /// <summary>
+        /// Update the edge model template and the configuration.
+        /// </summary>
+        /// <param name="edgeModel">The edge model.</param>
+        /// <returns>nothing.</returns>
+        /// <exception cref="RequestFailedException"></exception>
+        /// <exception cref="InternalServerErrorException"></exception>
         public async Task UpdateEdgeModel(IoTEdgeModel edgeModel)
         {
             if (string.IsNullOrEmpty(edgeModel?.ModelId))
@@ -147,6 +174,12 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
+        /// <summary>
+        /// Delete edge model template and it's configuration.
+        /// </summary>
+        /// <param name="edgeModelId">The edge model indentifier.</param>
+        /// <returns></returns>
+        /// <exception cref="InternalServerErrorException"></exception>
         public async Task DeleteEdgeModel(string edgeModelId)
         {
             try
@@ -168,6 +201,13 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
+        /// <summary>
+        /// Get the edge model avatar.
+        /// </summary>
+        /// <param name="edgeModelId">The edge model indentifier.</param>
+        /// <returns></returns>
+        /// <exception cref="ResourceNotFoundException"></exception>
+        /// <exception cref="InternalServerErrorException"></exception>
         public async Task<string> GetEdgeModelAvatar(string edgeModelId)
         {
             try
@@ -189,6 +229,14 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
+        /// <summary>
+        /// Update the edge model avatar.
+        /// </summary>
+        /// <param name="edgeModelId">The edge model indentifier</param>
+        /// <param name="file">The image.</param>
+        /// <returns></returns>
+        /// <exception cref="ResourceNotFoundException"></exception>
+        /// <exception cref="InternalServerErrorException"></exception>
         public async Task<string> UpdateEdgeModelAvatar(string edgeModelId, IFormFile file)
         {
             try
@@ -210,6 +258,13 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
+        /// <summary>
+        /// Delete the edge model avatar.
+        /// </summary>
+        /// <param name="edgeModelId">The edge model indentifier</param>
+        /// <returns></returns>
+        /// <exception cref="ResourceNotFoundException"></exception>
+        /// <exception cref="InternalServerErrorException"></exception>
         public async Task DeleteEdgeModelAvatar(string edgeModelId)
         {
             try
@@ -232,7 +287,7 @@ namespace AzureIoTHub.Portal.Server.Services
         }
 
         /// <summary>
-        /// Saves the entity.
+        /// Saves the entity and roll out the configuration.
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <param name="deviceModelObject">The device model object.</param>
