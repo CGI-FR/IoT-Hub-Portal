@@ -18,6 +18,11 @@ namespace AzureIoTHub.Portal.Server.Mappers
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
+        /// <summary>
+        /// Create IoT edge model list item.
+        /// </summary>
+        /// <param name="entity">Table entity.</param>
+        /// <returns>IoTEdgeModelListItem.</returns>
         public IoTEdgeModelListItem CreateEdgeDeviceModelListItem(TableEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity, nameof(entity));
