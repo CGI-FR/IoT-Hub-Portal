@@ -40,7 +40,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 Type = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.Type)) ?? "Undefined",
                 Environment = DeviceHelper.RetrieveTagValue(deviceTwin, "env"),
                 NbDevices = nbConnectedDevice,
-                NbModules = DeviceHelper.RetrieveNbModuleCount(deviceTwinWithModules, deviceTwin.DeviceId),
+                NbModules = DeviceHelper.RetrieveNbModuleCount(deviceTwinWithModules, deviceTwin?.DeviceId),
                 RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceTwinWithModules),
                 Modules = DeviceHelper.RetrieveModuleList(deviceTwinWithModules),
                 LastDeployment = lastConfiguration
