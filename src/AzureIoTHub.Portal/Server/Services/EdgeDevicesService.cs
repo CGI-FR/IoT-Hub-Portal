@@ -124,8 +124,16 @@ namespace AzureIoTHub.Portal.Server.Services
 
             var deviceTwin = new Twin(edgeDevice.DeviceId);
 
-            deviceTwin.Tags["env"] = edgeDevice.Environment;
-            deviceTwin.Tags["type"] = edgeDevice.Type;
+            if (edgeDevice.Tags != null)
+            {
+                foreach (var tag in edgeDevice.Tags)
+                {
+                    DeviceHelper.SetTagValue(deviceTwin, tag.Key, tag.Value);
+                }
+            }
+
+            DeviceHelper.SetTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId), edgeDevice.ModelId);
+            DeviceHelper.SetTagValue(deviceTwin, nameof(IoTEdgeDevice.DeviceName), edgeDevice.DeviceName);
 
             return await this.devicesService.CreateDeviceWithTwin(edgeDevice.DeviceId, true, deviceTwin, DeviceStatus.Enabled);
         }
@@ -149,7 +157,6 @@ namespace AzureIoTHub.Portal.Server.Services
             _ = await this.devicesService.UpdateDevice(device);
 
             var deviceTwin = await this.devicesService.GetDeviceTwin(edgeDevice.DeviceId);
-            deviceTwin.Tags["env"] = edgeDevice.Environment;
 
             return await this.devicesService.UpdateDeviceTwin(deviceTwin);
         }
@@ -203,7 +210,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new ResourceNotFoundException($"IoT Edge {edgeDeviceId} doesn't exist.");
             }
 
-            var deviceType = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.Type));
+            var deviceType = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId));
 
             return await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(edgeDeviceId, deviceType);
         }

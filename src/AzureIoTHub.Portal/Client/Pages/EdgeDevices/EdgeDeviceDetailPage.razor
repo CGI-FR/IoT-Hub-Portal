@@ -42,16 +42,7 @@
                                     <TitleContent><MudText Typo="Typo.h6">Edge Device Details</MudText></TitleContent>
                                     <ChildContent>
                                         <MudGrid>
-                                            <MudItem xs="12" md="6">
-                                                <MudTextField @bind-Value="@edgeDevice.Type" Label="Type" Variant="Variant.Outlined" ReadOnly="true" Required="true" />
-                                            </MudItem>
-                                            <MudItem xs="12" md="6">
-                                                <MudSelect T="string" @bind-Value="@edgeDevice.Environment" Label="Environment" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
-                                                    <MudSelectItem Value="@("Development")" />
-                                                    <MudSelectItem Value="@("Production")" />
-                                                    <MudSelectItem Value="@("Industry")" />
-                                                </MudSelect>
-                                            </MudItem>
+
                                             <MudItem xs="12" md="6">
                                                 <MudText>
                                                     <b>Status</b>
