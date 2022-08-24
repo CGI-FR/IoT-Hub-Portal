@@ -145,7 +145,7 @@
             await LoRaWanConcentratorsClientService.CreateConcentrator(concentrator);
 
             // Prompts a snack bar to inform the action was successful
-            Snackbar.Add($"Device {concentrator.DeviceId} has been successfully created!", Severity.Success);
+            Snackbar.Add($"Device {concentrator.DeviceId} has been successfully created!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success);
 
             // Go back to the list of concentrator
             NavManager.NavigateTo("lorawan/concentrators");

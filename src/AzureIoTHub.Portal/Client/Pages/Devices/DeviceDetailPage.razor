@@ -325,7 +325,7 @@
             }
 
             // Prompts a snack bar to inform the action was successful
-            Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!", Severity.Success, null);
+            Snackbar.Add($"Device {Device.DeviceName} has been successfully updated!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success, null);
 
             NavManager.NavigateTo("devices");
         }
