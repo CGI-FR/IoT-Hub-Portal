@@ -209,7 +209,7 @@
         {
             await EdgeDeviceClientService.UpdateDevice(edgeDevice);
 
-            Snackbar.Add($"Device {edgeDevice.DeviceId} has been successfully updated!", Severity.Success);
+            Snackbar.Add($"Device {edgeDevice.DeviceId} has been successfully updated!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success);
         }
         catch (ProblemDetailsException exception)
         {

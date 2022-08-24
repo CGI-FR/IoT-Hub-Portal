@@ -82,7 +82,7 @@
             processingSave = true;
             await EdgeDeviceClientService.CreateDevice(gateway);
 
-            Snackbar.Add("Device has been successfully created !", Severity.Success);
+            Snackbar.Add("Device has been successfully created!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (ProblemDetailsException exception)
