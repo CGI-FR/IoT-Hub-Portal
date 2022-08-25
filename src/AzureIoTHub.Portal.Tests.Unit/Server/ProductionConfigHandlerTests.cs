@@ -36,6 +36,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server
         [TestCase(ConfigHandler.DPSConnectionStringKey, nameof(ConfigHandler.DPSConnectionString))]
         [TestCase(ConfigHandler.StorageAccountConnectionStringKey, nameof(ConfigHandler.StorageAccountConnectionString))]
         [TestCase(ConfigHandler.LoRaKeyManagementCodeKey, nameof(ConfigHandler.LoRaKeyManagementCode))]
+        [TestCase(ConfigHandler.PostgreSQLConnectionStringKey, nameof(ConfigHandler.PostgreSQLConnectionString))]
         public void SecretsShouldGetValueFromConnectionStrings(string configKey, string configPropertyName)
         {
             // Arrange
