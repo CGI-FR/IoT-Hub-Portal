@@ -28,11 +28,11 @@ jobs:
       working-directory: src/
       
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore AzureIoTHub.Portal.sln 
       working-directory: src/
 
     - name: Build
-      run: dotnet build --no-restore -p:ClientAssetsRestoreCommand="npm ci"
+      run: dotnet build AzureIoTHub.Portal.sln --no-restore -p:ClientAssetsRestoreCommand="npm ci"
       working-directory: src/
     
     - name: Generate Open API documentation

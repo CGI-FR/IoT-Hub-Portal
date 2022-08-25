@@ -68,5 +68,7 @@ namespace AzureIoTHub.Portal.Server
         internal override string IdeasUrl => this.config.GetValue(IdeasUrlKey, string.Empty);
         internal override string IdeasAuthenticationHeader => this.config.GetValue(IdeasAuthenticationHeaderKey, "Ocp-Apim-Subscription-Key");
         internal override string IdeasAuthenticationToken => this.config.GetValue(IdeasAuthenticationTokenKey, string.Empty);
+
+        internal override string PostgreSQLConnectionString => this.config[PostgreSQLConnectionStringKey];
     }
 }
