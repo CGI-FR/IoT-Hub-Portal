@@ -220,7 +220,12 @@
 
         try
         {
-            await this.EdgeModelService.UpdateIoTEdgeModel(EdgeModel);
+            await this.EdgeModelService.UpdateIoTEdgeModel(this.EdgeModel);
+
+            if (content is not null)
+            {
+                await this.EdgeModelService.ChangeAvatar(this.EdgeModel.ModelId, content);
+            }
 
             Snackbar.Add("Edge model successfully updated.", Severity.Success);
         }

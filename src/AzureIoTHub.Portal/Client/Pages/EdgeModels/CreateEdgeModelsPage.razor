@@ -69,7 +69,7 @@
                                     <TitleContent><MudText Typo="Typo.h6">Modules</MudText></TitleContent>
                                     <ChildContent>
                                         <MudItem xs="12">
-                                            <MudTable Items="@moduleCommands" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                            <MudTable Items="@edgeModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                                                 <ColGroup>
                                                     <col style="width: 30%;" />
                                                     <col style="width: 40%;" />
@@ -121,7 +121,7 @@
 
     readonly DialogOptions maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
 
-    public List<IoTEdgeModule> moduleCommands { get; set; } = new List<IoTEdgeModule>();
+    public List<IoTEdgeModule> edgeModules { get; set; } = new List<IoTEdgeModule>();
     public EdgeModelValidator edgeModelValidator = new EdgeModelValidator();
     public IoTEdgeModuleValidator edgeModuleValidator = new IoTEdgeModuleValidator();
 
@@ -164,7 +164,7 @@
 
     private void AddModule()
     {
-        moduleCommands.Add(new IoTEdgeModule());
+        edgeModules.Add(new IoTEdgeModule());
     }
 
     private async Task ShowAddEdgeModuleDialog(IoTEdgeModule module)
@@ -201,7 +201,7 @@
             return;
         }
 
-        if (moduleCommands.Any() && !edgeModuleValidator.Validate(moduleCommands).IsValid)
+        if (edgeModules.Any() && !edgeModuleValidator.Validate(edgeModules).IsValid)
         {
             Snackbar.Add("One or more validation errors occurred with the module.", Severity.Error);
 
@@ -212,14 +212,14 @@
 
         try
         {
-            this.Model.EdgeModules = moduleCommands;
+            this.Model.EdgeModules = edgeModules;
 
             await EdgeModelService.CreateIoTEdgeModel(Model);
             //result.EnsureSuccessStatusCode();
 
             if (content is not null)
             {
-                var response = EdgeModelService.ChangeAvatar(Model.ModelId, content);
+                await EdgeModelService.ChangeAvatar(Model.ModelId, content);
             }
 
             this.Snackbar.Add("Device model successfully created.", Severity.Success);
@@ -233,6 +233,6 @@
 
     private void DeleteModule(IoTEdgeModule module)
     {
-        moduleCommands.Remove(module);
+        edgeModules.Remove(module);
     }
 }

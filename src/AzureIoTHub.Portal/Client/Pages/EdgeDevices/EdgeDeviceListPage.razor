@@ -62,13 +62,12 @@
                     <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@Refresh" id="tableRefreshButton" Class="ma-2"></MudIconButton>
                 </MudTooltip>
                 <MudTooltip Text="Add device">
-                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="ShowAddDialog" />
+                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="RedirectToCreatePage" />
                 </MudTooltip>
             </ToolBarContent>
             <HeaderContent>
                 <MudTh>ID</MudTh>
                 <MudTh Style="text-align: center">Allowed</MudTh>
-                <MudTh Style="text-align: center">Type</MudTh>
                 <MudTh Style="text-align: center">Nb devices</MudTh>
                 <MudTh Style="text-align: center">See details</MudTh>
                 <MudTh Style="text-align: center">Delete</MudTh>
@@ -92,7 +91,6 @@
                     }
                 </MudTd>
 
-                <MudTd DataLabel="Type" Style="text-align: center">@context.Type</MudTd>
                 <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
                         <MudTooltip Text="See device details">
@@ -188,17 +186,7 @@
         Search();
     }
 
-    private async Task ShowAddDialog()
-    {
-        var result = await DialogService.Show<CreateEdgeDeviceDialog>("Add IoT Edge", maxWidth).Result;
-
-        if (result.Cancelled)
-        {
-            return;
-        }
-
-        Search();
-    }
+    private void RedirectToCreatePage() => NavigationManager.NavigateTo("/edge/devices/new");
 
     public async Task ShowDeleteDialog(IoTEdgeListItem gateway)
     {
