@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchServiceName": "azureiothub.portal.server",
+      "composeLaunchUrl": "https://localhost:8001",
+      "serviceActions": {
+        "azureiothub.portal.server": "StartDebugging",
+        "database": "StartWithoutDebugging"
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  database:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgrePassword
+  azureiothub.portal.server:
+    image: ${DOCKER_REGISTRY-}azureiothubportalserver
+    build:
+      context: .
+      dockerfile: AzureIoTHub.Portal/Server/Dockerfile
