@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Server
         internal const string DPSServiceEndpointKey = "IoTDPS:ServiceEndpoint";
         internal const string DPSIDScopeKey = "IoTDPS:IDScope";
         internal const string UseSecurityHeadersKey = "UseSecurityHeaders";
+        internal const string PostgreSQLConnectionStringKey = "PostgreSQL:ConnectionString";
 
         internal const string OIDCScopeKey = "OIDC:Scope";
         internal const string OIDCAuthorityKey = "OIDC:Authority";
@@ -116,5 +117,7 @@ namespace AzureIoTHub.Portal.Server
         internal abstract string IdeasAuthenticationHeader { get; }
 
         internal abstract string IdeasAuthenticationToken { get; }
+
+        internal abstract string PostgreSQLConnectionString { get; }
     }
 }

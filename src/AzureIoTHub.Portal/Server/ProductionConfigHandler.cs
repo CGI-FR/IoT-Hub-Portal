@@ -30,6 +30,8 @@ namespace AzureIoTHub.Portal.Server
 
         internal override string StorageAccountConnectionString => this.config.GetConnectionString(StorageAccountConnectionStringKey);
 
+        internal override string PostgreSQLConnectionString => this.config.GetConnectionString(PostgreSQLConnectionStringKey);
+
         internal override int StorageAccountDeviceModelImageMaxAge => this.config.GetValue(StorageAccountDeviceModelImageMaxAgeKey, 86400);
 
         internal override bool UseSecurityHeaders => this.config.GetValue(UseSecurityHeadersKey, true);
