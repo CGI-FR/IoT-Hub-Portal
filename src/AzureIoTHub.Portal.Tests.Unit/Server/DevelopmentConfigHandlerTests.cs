@@ -46,6 +46,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server
         [TestCase(ConfigHandler.IoTHubConnectionStringKey, nameof(ConfigHandler.IoTHubConnectionString))]
         [TestCase(ConfigHandler.DPSConnectionStringKey, nameof(ConfigHandler.DPSConnectionString))]
         [TestCase(ConfigHandler.StorageAccountConnectionStringKey, nameof(ConfigHandler.StorageAccountConnectionString))]
+        [TestCase(ConfigHandler.PostgreSQLConnectionStringKey, nameof(ConfigHandler.PostgreSQLConnectionString))]
         public void SettingsShouldGetValueFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange
