@@ -41,14 +41,19 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
 
+        private readonly IDeviceTagService deviceTagService;
+
         public EdgeDevicesService(RegistryManager registryManager, IDeviceService devicesService,
             IEdgeDeviceMapper edgeDeviceMapper,
-            IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
+            IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
+            IDeviceTagService deviceTagService)
         {
             this.registryManager = registryManager;
             this.devicesService = devicesService;
             this.edgeDeviceMapper = edgeDeviceMapper;
             this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
+            this.deviceTagService = deviceTagService;
+            this.deviceTagService = deviceTagService;
         }
 
         public PaginationResult<IoTEdgeListItem> GetEdgeDevicesPage(PaginationResult<Twin> edgeDevicesTwin,
@@ -109,8 +114,9 @@ namespace AzureIoTHub.Portal.Server.Services
 
             var edgeDeviceLastConfiguration = await RetrieveLastConfiguration(deviceTwinWithModules);
             var edgeDeviceNbConnectedDevice = await RetrieveNbConnectedDevice(edgeDeviceId);
+            var tagList = this.deviceTagService.GetAllTagsNames();
 
-            return this.edgeDeviceMapper.CreateEdgeDevice(deviceTwin, deviceTwinWithModules, edgeDeviceNbConnectedDevice, edgeDeviceLastConfiguration);
+            return this.edgeDeviceMapper.CreateEdgeDevice(deviceTwin, deviceTwinWithModules, edgeDeviceNbConnectedDevice, edgeDeviceLastConfiguration, tagList);
         }
 
         /// <summary>
