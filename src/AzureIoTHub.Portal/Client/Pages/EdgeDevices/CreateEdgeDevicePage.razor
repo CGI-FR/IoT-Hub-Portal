@@ -119,7 +119,7 @@
                                             @foreach (DeviceTag tag in TagList)
                                             {
                                                 <MudItem xs="12" md="6">
-                                                    <MudTextField @bind-Value="EdgeDevice.Tags[tag.Name]" Label="@tag.Label"
+                                                    <MudTextField @bind-Value="EdgeDevice.Tags[tag.Name]" id="@tag.Name" Label="@tag.Label"
                                                               Required="@tag.Required"
                                                               Variant="Variant.Outlined" />
                                                 </MudItem>
