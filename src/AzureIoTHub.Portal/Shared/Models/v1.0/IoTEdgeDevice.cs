@@ -83,7 +83,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         ///   <c>true</c> if this instance is enabled; otherwise, <c>false</c>.
         /// </summary>
-        public bool IsEnabled { get; }
+        public bool IsEnabled { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IoTEdgeDevice"/> class.
