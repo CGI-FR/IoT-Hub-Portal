@@ -112,6 +112,57 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         }
 
         [Test]
+        public void EdgeDeviceDetailPageShouldProcessProblemDetailsExceptionWhenIssueOccursOnLoadModel()
+        {
+            // Arrange
+            var tags = new Dictionary<string, string>()
+            {
+                {"test01", "test" },
+                {"test02", "test" }
+            };
+
+            var mockIoTEdgeDevice = new IoTEdgeDevice()
+            {
+                DeviceId = this.mockdeviceId,
+                ConnectionState = "Connected",
+                ModelId = Guid.NewGuid().ToString(),
+                Tags = tags
+            };
+
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
+                .ReturnsAsync(mockIoTEdgeDevice);
+
+            _ = this.mockIEdgeModelClientService
+                .Setup(service => service.GetIoTEdgeModel(It.Is<string>(x => x.Equals(mockIoTEdgeDevice.ModelId, StringComparison.Ordinal))))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            _ = this.mockDeviceTagSettingsClientService
+                .Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>()
+                {
+                    new DeviceTag()
+                    {
+                        Name = "test01",
+                        Label = "test01",
+                        Required = true
+                    },
+                    new DeviceTag()
+                    {
+                        Name = "test02",
+                        Label = "test02",
+                        Required = true
+                    }
+                });
+
+            // Act
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+            _ = cut.WaitForElement("form");
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
         public void EdgeDeviceDetailPageShouldProcessProblemDetailsExceptionWhenIssueOccursOnUpdateDevice()
         {
             // Arrange
@@ -236,7 +287,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var mockIoTEdgeDevice = new IoTEdgeDevice()
             {
                 DeviceId = this.mockdeviceId,
-                ConnectionState = "Connected",
+                ConnectionState = "Disconnected",
                 Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule},
                 ModelId = Guid.NewGuid().ToString(),
             };
@@ -374,7 +425,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         {
             var tags = new Dictionary<string, string>()
             {
-                {"test01", "test" }
+                {"test01", "test" },
+                {"test02", "test" }
             };
 
             var mockIoTEdgeDevice = new IoTEdgeDevice()
@@ -390,9 +442,28 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             _ = this.mockIEdgeModelClientService
                 .Setup(service => service.GetIoTEdgeModel(It.Is<string>(x => x.Equals(mockIoTEdgeDevice.ModelId, StringComparison.Ordinal))))
-                .ReturnsAsync(new IoTEdgeModel());
+                .ReturnsAsync(new IoTEdgeModel()
+                {
+                    ModelId = mockIoTEdgeDevice.ModelId
+                });
 
-            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTag>());
+            _ = this.mockDeviceTagSettingsClientService
+                .Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>()
+                {
+                    new DeviceTag()
+                    {
+                        Name = "test01",
+                        Label = "test01",
+                        Required = true
+                    },
+                    new DeviceTag()
+                    {
+                        Name = "test02",
+                        Label = "test02",
+                        Required = true
+                    }
+                });
 
             return mockIoTEdgeDevice;
         }
