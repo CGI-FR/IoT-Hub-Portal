@@ -287,7 +287,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var mockIoTEdgeDevice = new IoTEdgeDevice()
             {
                 DeviceId = this.mockdeviceId,
-                ConnectionState = "Disconnected",
+                ConnectionState = "Connected",
                 Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule},
                 ModelId = Guid.NewGuid().ToString(),
             };
