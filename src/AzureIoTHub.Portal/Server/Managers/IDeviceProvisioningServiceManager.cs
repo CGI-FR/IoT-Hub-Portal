@@ -37,8 +37,8 @@ namespace AzureIoTHub.Portal.Server.Managers
         /// Returns the device enrollment credentials.
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
-        /// <param name="deviceType">The device type.</param>
-        Task<EnrollmentCredentials> GetEnrollmentCredentialsAsync(string deviceId, string deviceType);
+        /// <param name="modelId">The device model id.</param>
+        Task<EnrollmentCredentials> GetEnrollmentCredentialsAsync(string deviceId, string modelId);
 
         Task DeleteEnrollmentGroupAsync(EnrollmentGroup enrollmentGroup, CancellationToken cancellationToken);
     }

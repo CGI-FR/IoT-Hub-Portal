@@ -216,9 +216,9 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new ResourceNotFoundException($"IoT Edge {edgeDeviceId} doesn't exist.");
             }
 
-            var deviceType = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId));
+            var modelId = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId));
 
-            return await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(edgeDeviceId, deviceType);
+            return await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(edgeDeviceId, modelId);
         }
 
         /// <summary>

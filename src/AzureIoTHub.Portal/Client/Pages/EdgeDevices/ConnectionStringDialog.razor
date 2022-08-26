@@ -38,8 +38,10 @@
     public Error Error {get; set;}
     
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
     [Parameter] public string deviceId { get; set; }
-    private EnrollmentCredentials Credentials;
+
+    private EnrollmentCredentials Credentials = new EnrollmentCredentials();
 
     protected override async Task OnInitializedAsync()
     {

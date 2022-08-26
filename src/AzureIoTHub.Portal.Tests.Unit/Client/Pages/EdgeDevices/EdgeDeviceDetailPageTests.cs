@@ -170,7 +170,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
 
-            var rebootButton = cut.WaitForElement("#rebootModule");
+            var rebootButton = cut.WaitForElement(".rebootModule");
 
             // Act
             rebootButton.Click();
@@ -215,7 +215,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
 
-            var rebootButton = cut.WaitForElement("#rebootModule");
+            var rebootButton = cut.WaitForElement(".rebootModule");
 
             // Act
             rebootButton.Click();
@@ -256,7 +256,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
 
             // Act
-            cut.WaitForElement("#rebootModule").Click();
+            cut.WaitForElement(".rebootModule").Click();
 
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
@@ -294,7 +294,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
 
-            var logsButton = cut.WaitForElement("#showLogs");
+            var logsButton = cut.WaitForElement(".showLogs");
 
             // Act
             logsButton.Click();
@@ -306,7 +306,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         [Test]
         public void ClickOnConnectShouldDisplayDeviceCredentials()
         {
-            var mockIoTEdgeDevice = SetupOnInitialisation();
+            _ = SetupOnInitialisation();
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
             cut.WaitForAssertion(() => cut.Find("#connectButton"));
@@ -328,7 +328,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         [Test]
         public void ClickOnDeleteShouldDisplayConfirmationDialogAndReturnIfAborted()
         {
-            var mockIoTEdgeDevice = SetupOnInitialisation();
+            _ = SetupOnInitialisation();
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
@@ -350,7 +350,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         [Test]
         public void ClickOnDeleteShouldDisplayConfirmationDialogAndRedirectIfConfirmed()
         {
-            var mockIoTEdgeDevice = SetupOnInitialisation();
+            _ = SetupOnInitialisation();
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
