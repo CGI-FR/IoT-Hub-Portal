@@ -167,22 +167,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
                 return BadRequest(ModelState);
             }
 
-            ArgumentNullException.ThrowIfNull(device, nameof(device));
-
-            // Device status (enabled/disabled) has to be dealt with afterwards
-            var currentDevice = await this.devicesService.GetDevice(device.DeviceId);
-            currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
-
-            _ = await this.devicesService.UpdateDevice(currentDevice);
-
-            // Get the current twin from the hub, based on the device ID
-            var currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceId);
-            device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
-
-            // Update the twin properties
-            this.concentratorTwinMapper.UpdateTwin(currentTwin, device);
-
-            _ = await this.devicesService.UpdateDeviceTwin(currentTwin);
+            _ = await this.loRaWANConcentratorService.UpdateDeviceAsync(device);
 
             return Ok("Device updated.");
         }

@@ -87,5 +87,43 @@ namespace AzureIoTHub.Portal.Server.Services
 
             return true;
         }
+        public async Task<bool> GetAllDeviceConcentrator(
+            string continuationToken = null,
+            int pageSize = 10)
+        {
+            // Gets all the twins from this devices
+            var result = await this.devicesService.GetAllDevice(
+                continuationToken: continuationToken,
+                filterDeviceType: "LoRa Concentrator",
+                pageSize: pageSize);
+
+            if (!string.IsNullOrEmpty(result.NextPage))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> UpdateDeviceAsync(Concentrator device)
+        {
+            ArgumentNullException.ThrowIfNull(device, nameof(device));
+
+            // Device status (enabled/disabled) has to be dealt with afterwards
+            var currentDevice = await this.devicesService.GetDevice(device.DeviceId);
+            currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+
+            _ = await this.devicesService.UpdateDevice(currentDevice);
+
+            // Get the current twin from the hub, based on the device ID
+            var currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceId);
+            device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
+
+            // Update the twin properties
+            this.concentratorTwinMapper.UpdateTwin(currentTwin, device);
+
+            _ = await this.devicesService.UpdateDeviceTwin(device.DeviceId, currentTwin);
+
+            return true;
+        }
     }
 }
