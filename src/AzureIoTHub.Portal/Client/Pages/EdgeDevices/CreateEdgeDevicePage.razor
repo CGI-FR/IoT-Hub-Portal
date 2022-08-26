@@ -207,6 +207,8 @@
             await this.EdgeDeviceClientService.CreateDevice(EdgeDevice);
 
             Snackbar.Add($"Device {EdgeDevice.DeviceId} has been successfully created!", Severity.Success);
+
+            NavigationManager.NavigateTo("/edge/devices");
         }
         catch (ProblemDetailsException exception)
         {
