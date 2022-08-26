@@ -28,6 +28,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         private Mock<IDialogService> mockDialogService;
         private Mock<ISnackbar> mockSnackbarService;
         private Mock<IEdgeDeviceClientService> mockEdgeDeviceClientService;
+        private Mock<IEdgeModelClientService> mockIEdgeModelClientService;
+        private Mock<IDeviceTagSettingsClientService> mockDeviceTagSettingsClientService;
 
         private readonly string mockdeviceId = Guid.NewGuid().ToString();
 
@@ -40,8 +42,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockSnackbarService = MockRepository.Create<ISnackbar>();
             this.mockEdgeDeviceClientService = MockRepository.Create<IEdgeDeviceClientService>();
+            this.mockIEdgeModelClientService = MockRepository.Create<IEdgeModelClientService>();
+            this.mockDeviceTagSettingsClientService = MockRepository.Create<IDeviceTagSettingsClientService>();
 
             _ = Services.AddSingleton(this.mockEdgeDeviceClientService.Object);
+            _ = Services.AddSingleton(this.mockIEdgeModelClientService.Object);
+            _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
 
@@ -56,8 +62,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public void ReturnButtonMustNavigateToPreviousPage()
         {
             // Arrange
-            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
-                .ReturnsAsync(new IoTEdgeDevice { ConnectionState = "false" });
+            _ = SetupOnInitialisation();
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
             _ = cut.WaitForElement("#saveButton");
@@ -73,15 +78,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         [Test]
         public void ClickOnSaveShouldPutEdgeDeviceDetails()
         {
-            var mockIoTEdgeDevice = new IoTEdgeDevice()
-            {
-                DeviceId = this.mockdeviceId,
-                ConnectionState = "Connected",
-                Type = "Other"
-            };
-
-            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
-                .ReturnsAsync(mockIoTEdgeDevice);
+            var mockIoTEdgeDevice = SetupOnInitialisation();
 
             _ = this.mockEdgeDeviceClientService.Setup(service =>
                     service.UpdateDevice(It.Is<IoTEdgeDevice>(device =>
@@ -115,18 +112,61 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         }
 
         [Test]
-        public void EdgeDeviceDetailPageShouldProcessProblemDetailsExceptionWhenIssueOccursOnUpdateDevice()
+        public void EdgeDeviceDetailPageShouldProcessProblemDetailsExceptionWhenIssueOccursOnLoadModel()
         {
             // Arrange
+            var tags = new Dictionary<string, string>()
+            {
+                {"test01", "test" },
+                {"test02", "test" }
+            };
+
             var mockIoTEdgeDevice = new IoTEdgeDevice()
             {
                 DeviceId = this.mockdeviceId,
                 ConnectionState = "Connected",
-                Type = "Other"
+                ModelId = Guid.NewGuid().ToString(),
+                Tags = tags
             };
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
                 .ReturnsAsync(mockIoTEdgeDevice);
+
+            _ = this.mockIEdgeModelClientService
+                .Setup(service => service.GetIoTEdgeModel(It.Is<string>(x => x.Equals(mockIoTEdgeDevice.ModelId, StringComparison.Ordinal))))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            _ = this.mockDeviceTagSettingsClientService
+                .Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>()
+                {
+                    new DeviceTag()
+                    {
+                        Name = "test01",
+                        Label = "test01",
+                        Required = true
+                    },
+                    new DeviceTag()
+                    {
+                        Name = "test02",
+                        Label = "test02",
+                        Required = true
+                    }
+                });
+
+            // Act
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+            _ = cut.WaitForElement("form");
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void EdgeDeviceDetailPageShouldProcessProblemDetailsExceptionWhenIssueOccursOnUpdateDevice()
+        {
+            // Arrange
+            var mockIoTEdgeDevice = SetupOnInitialisation();
 
             _ = this.mockEdgeDeviceClientService.Setup(service =>
                     service.UpdateDevice(It.Is<IoTEdgeDevice>(device =>
@@ -156,13 +196,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             {
                 DeviceId = this.mockdeviceId,
                 ConnectionState = "Connected",
-                Type = "Other",
-                Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule}
+                Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule},
+                ModelId = Guid.NewGuid().ToString()
             };
 
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
                 .ReturnsAsync(mockIoTEdgeDevice);
+
+            _ = this.mockIEdgeModelClientService
+                .Setup(service => service.GetIoTEdgeModel(It.Is<string>(x => x.Equals(mockIoTEdgeDevice.ModelId, StringComparison.Ordinal))))
+                .ReturnsAsync(new IoTEdgeModel());
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTag>());
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<IoTEdgeModule>(module => mockIoTEdgeModule.ModuleName.Equals(module.ModuleName, StringComparison.Ordinal)), "RestartModule"))
                 .ReturnsAsync(new C2Dresult()
@@ -175,7 +221,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
 
-            var rebootButton = cut.WaitForElement("#rebootModule");
+            var rebootButton = cut.WaitForElement(".rebootModule");
 
             // Act
             rebootButton.Click();
@@ -196,12 +242,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             {
                 DeviceId = this.mockdeviceId,
                 ConnectionState = "Connected",
-                Type = "Other",
-                Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule}
+                Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule},
+                ModelId = Guid.NewGuid().ToString()
             };
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
                 .ReturnsAsync(mockIoTEdgeDevice);
+
+            _ = this.mockIEdgeModelClientService
+                .Setup(service => service.GetIoTEdgeModel(It.Is<string>(x => x.Equals(mockIoTEdgeDevice.ModelId, StringComparison.Ordinal))))
+                .ReturnsAsync(new IoTEdgeModel());
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTag>());
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<IoTEdgeModule>(module => mockIoTEdgeModule.ModuleName.Equals(module.ModuleName, StringComparison.Ordinal)), "RestartModule"))
                 .ReturnsAsync(new C2Dresult()
@@ -214,7 +266,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
 
-            var rebootButton = cut.WaitForElement("#rebootModule");
+            var rebootButton = cut.WaitForElement(".rebootModule");
 
             // Act
             rebootButton.Click();
@@ -236,12 +288,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             {
                 DeviceId = this.mockdeviceId,
                 ConnectionState = "Connected",
-                Type = "Other",
-                Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule}
+                Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule},
+                ModelId = Guid.NewGuid().ToString(),
             };
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
                 .ReturnsAsync(mockIoTEdgeDevice);
+
+            _ = this.mockIEdgeModelClientService
+                .Setup(service => service.GetIoTEdgeModel(It.Is<string>(x => x.Equals(mockIoTEdgeDevice.ModelId, StringComparison.Ordinal))))
+                .ReturnsAsync(new IoTEdgeModel());
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTag>());
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<IoTEdgeModule>(module => mockIoTEdgeModule.ModuleName.Equals(module.ModuleName, StringComparison.Ordinal)), "RestartModule"))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
@@ -249,7 +307,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
 
             // Act
-            cut.WaitForElement("#rebootModule").Click();
+            cut.WaitForElement(".rebootModule").Click();
 
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
@@ -267,12 +325,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             {
                 DeviceId = this.mockdeviceId,
                 ConnectionState = "Connected",
-                Type = "Other",
-                Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule}
+                Modules= new List<IoTEdgeModule>(){mockIoTEdgeModule},
+                ModelId = Guid.NewGuid().ToString()
             };
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
                 .ReturnsAsync(mockIoTEdgeDevice);
+
+            _ = this.mockIEdgeModelClientService
+                .Setup(service => service.GetIoTEdgeModel(It.Is<string>(x => x.Equals(mockIoTEdgeDevice.ModelId, StringComparison.Ordinal))))
+                .ReturnsAsync(new IoTEdgeModel());
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTag>());
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
 
@@ -281,7 +345,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
 
-            var logsButton = cut.WaitForElement("#showLogs");
+            var logsButton = cut.WaitForElement(".showLogs");
 
             // Act
             logsButton.Click();
@@ -293,15 +357,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         [Test]
         public void ClickOnConnectShouldDisplayDeviceCredentials()
         {
-            var mockIoTEdgeDevice = new IoTEdgeDevice()
-            {
-                DeviceId = this.mockdeviceId,
-                ConnectionState = "Connected",
-                Type = "Other",
-            };
-
-            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
-                .ReturnsAsync(mockIoTEdgeDevice);
+            _ = SetupOnInitialisation();
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
             cut.WaitForAssertion(() => cut.Find("#connectButton"));
@@ -323,15 +379,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         [Test]
         public void ClickOnDeleteShouldDisplayConfirmationDialogAndReturnIfAborted()
         {
-            var mockIoTEdgeDevice = new IoTEdgeDevice()
-            {
-                DeviceId = this.mockdeviceId,
-                ConnectionState = "Connected",
-                Type = "Other",
-            };
-
-            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
-                .ReturnsAsync(mockIoTEdgeDevice);
+            _ = SetupOnInitialisation();
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
@@ -353,15 +401,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         [Test]
         public void ClickOnDeleteShouldDisplayConfirmationDialogAndRedirectIfConfirmed()
         {
-            var mockIoTEdgeDevice = new IoTEdgeDevice()
-            {
-                DeviceId = this.mockdeviceId,
-                ConnectionState = "Connected",
-                Type = "Other",
-            };
-
-            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
-                .ReturnsAsync(mockIoTEdgeDevice);
+            _ = SetupOnInitialisation();
 
             var mockDialogReference = MockRepository.Create<IDialogReference>();
             _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
@@ -379,6 +419,53 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             // Assert
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/edge/devices"));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        private IoTEdgeDevice SetupOnInitialisation()
+        {
+            var tags = new Dictionary<string, string>()
+            {
+                {"test01", "test" },
+                {"test02", "test" }
+            };
+
+            var mockIoTEdgeDevice = new IoTEdgeDevice()
+            {
+                DeviceId = this.mockdeviceId,
+                ConnectionState = "Connected",
+                ModelId = Guid.NewGuid().ToString(),
+                Tags = tags
+            };
+
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
+                .ReturnsAsync(mockIoTEdgeDevice);
+
+            _ = this.mockIEdgeModelClientService
+                .Setup(service => service.GetIoTEdgeModel(It.Is<string>(x => x.Equals(mockIoTEdgeDevice.ModelId, StringComparison.Ordinal))))
+                .ReturnsAsync(new IoTEdgeModel()
+                {
+                    ModelId = mockIoTEdgeDevice.ModelId
+                });
+
+            _ = this.mockDeviceTagSettingsClientService
+                .Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>()
+                {
+                    new DeviceTag()
+                    {
+                        Name = "test01",
+                        Label = "test01",
+                        Required = true
+                    },
+                    new DeviceTag()
+                    {
+                        Name = "test02",
+                        Label = "test02",
+                        Required = true
+                    }
+                });
+
+            return mockIoTEdgeDevice;
         }
     }
 }

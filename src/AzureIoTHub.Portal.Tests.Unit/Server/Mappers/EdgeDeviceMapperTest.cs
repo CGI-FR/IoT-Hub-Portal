@@ -6,23 +6,40 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
     using System;
     using System.Collections.Generic;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using Microsoft.Azure.Devices.Shared;
+    using Moq;
     using Newtonsoft.Json;
     using NUnit.Framework;
 
     [TestFixture]
     public class EdgeDeviceMapperTest
     {
+        private MockRepository mockRepository;
+
+        private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
+
+        [SetUp]
+        public void SetUp()
+        {
+            this.mockRepository = new MockRepository(MockBehavior.Strict);
+
+            this.mockDeviceModelImageManager = this.mockRepository.Create<IDeviceModelImageManager>();
+        }
+
+        private EdgeDeviceMapper CreateMapper()
+        {
+            return new EdgeDeviceMapper(this.mockDeviceModelImageManager.Object);
+        }
 
         [Test]
         public void CreateEdgeDeviceListItemShouldReturnValue()
         {
             // Arrange
-            var edgeDeviceMapper = new EdgeDeviceMapper();
+            var edgeDeviceMapper = CreateMapper();
 
             var deviceTwin = new Twin(Guid.NewGuid().ToString());
-            deviceTwin.Tags["type"] = "lora";
             deviceTwin.Properties.Reported["clients"] = new object[12];
 
             // Act
@@ -30,7 +47,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("lora", result.Type);
             Assert.AreEqual(12, result.NbDevices);
         }
 
@@ -38,13 +54,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
         public void CreateEdgeDeviceShouldReturnValue()
         {
             // Arrange
-            var edgeDeviceMapper = new EdgeDeviceMapper();
+            var edgeDeviceMapper = CreateMapper();
 
             var deviceId = Guid.NewGuid().ToString();
+            var modelId = Guid.NewGuid().ToString();
 
             var deviceTwin = new Twin(deviceId);
-            deviceTwin.Tags["type"] = "fake";
-            deviceTwin.Tags["env"] = "fake";
+            deviceTwin.Tags["modelId"] = modelId;
+            deviceTwin.Tags["location"] = "test";
+
+            var tags = new List<string>(){"location"};
 
             var deviceTwinWithModules = new Twin(deviceId);
             var reportedProperties = new Dictionary<string, object>()
@@ -69,15 +88,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
 
             var lastDeployment = new ConfigItem();
 
+            _ = this.mockDeviceModelImageManager
+                .Setup(x => x.ComputeImageUri(It.Is<string>(c => c.Equals(modelId, StringComparison.Ordinal))))
+                .Returns(new Uri($"http://fake.local/{modelId}"));
+
             // Act
-            var result = edgeDeviceMapper.CreateEdgeDevice(deviceTwin, deviceTwinWithModules, 5, lastDeployment);
+            var result = edgeDeviceMapper.CreateEdgeDevice(deviceTwin, deviceTwinWithModules, 5, lastDeployment, tags);
 
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(deviceTwin.DeviceId, result.DeviceId);
             Assert.AreEqual(5, result.NbDevices);
             Assert.AreEqual("running", result.RuntimeResponse);
-            Assert.AreEqual("fake", result.Type);
+            Assert.AreEqual(1, result.Tags.Count);
         }
     }
 }

@@ -6,6 +6,8 @@
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject IEdgeDeviceClientService EdgeDeviceClientService
+@inject IEdgeModelClientService EdgeModelClientService
+@inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
     <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id = "returnButton"/>       
@@ -14,19 +16,29 @@
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Edge Device Details</MudText>
 </MudTooltip>
 
-<MudForm Model="@edgeDevice">
+<MudForm Model="@edgeDevice" @ref="form">
     <MudGrid>
         <MudItem xs="12" sm="4" md="3">
             <MudCard>
                 <MudCardHeader Class="DeviceCardHeader">
                     <CardHeaderContent>
-                        <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@edgeDevice.DeviceId</MudText>
+                        <MudText Typo="Typo.body2" Class="mb-6" id=@nameof(IoTEdgeModel.Name)>Model: <b>@edgeModel.Name</b></MudText>
+                        <MudText Typo="Typo.h5" Class="overflow-ellipsis" Align="Align.Center">@(string.IsNullOrEmpty(edgeDevice.DeviceName) ? edgeDevice.DeviceId : edgeDevice.DeviceName)</MudText>
                     </CardHeaderContent>
                 </MudCardHeader>
+                <MudCardContent>
+                    <div class="d-flex justify-center mb-4">
+                        <MudAvatar Image="@edgeDevice.ImageUrl?.ToString()" Style="height:100px; width: auto; border-radius: 0; background: transparent " />
+                    </div>
+                </MudCardContent>
                 <MudCardActions Class="pb-4 pl-4 justify-center">
-                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
+                    @if (isLoaded)
+                    {
+                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
+                    }
                 </MudCardActions>
             </MudCard>
+
             <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
                 <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="ShowDeleteModal" id="deleteButton" Disabled="isProcessing">Delete edge device</MudButton>
                 <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="UpdateDevice" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
@@ -42,16 +54,7 @@
                                     <TitleContent><MudText Typo="Typo.h6">Edge Device Details</MudText></TitleContent>
                                     <ChildContent>
                                         <MudGrid>
-                                            <MudItem xs="12" md="6">
-                                                <MudTextField @bind-Value="@edgeDevice.Type" Label="Type" Variant="Variant.Outlined" ReadOnly="true" Required="true" />
-                                            </MudItem>
-                                            <MudItem xs="12" md="6">
-                                                <MudSelect T="string" @bind-Value="@edgeDevice.Environment" Label="Environment" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
-                                                    <MudSelectItem Value="@("Development")" />
-                                                    <MudSelectItem Value="@("Production")" />
-                                                    <MudSelectItem Value="@("Industry")" />
-                                                </MudSelect>
-                                            </MudItem>
+
                                             <MudItem xs="12" md="6">
                                                 <MudText>
                                                     <b>Status</b>
@@ -143,11 +146,34 @@
                                                 <MudTd DataLabel="Version" Style="text-align: center">@context.Version</MudTd>
                                                 <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
                                                 <MudTd DataLabel="Device" Style="text-align: center">
-                                                    <MudButton Variant="Variant.Filled" Class="btn" Color="Color.Dark" Disabled="btn_disable" id="showLogs" OnClick="@(async () => await ShowEdgeDeviceLogs(context) )">logs</MudButton>
-                                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="btn_disable" id="rebootModule" OnClick="@(async () => await OnMethod(context,"RestartModule") )">reboot</MudButton>
+                                                    <MudButton Variant="Variant.Filled" Class="btn showLogs" Color="Color.Dark" Disabled="btn_disable" OnClick="@(async () => await ShowEdgeDeviceLogs(context) )">logs</MudButton>
+                                                    <MudButton Variant="Variant.Filled" Class="rebootModule" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context,"RestartModule") )">reboot</MudButton>
                                                 </MudTd>
                                             </RowTemplate>
                                         </MudTable>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Tags">
+                                    <TitleContent><MudText Typo="Typo.h6" Style=@(CheckTagsError() ? "color: red" : "")>Tags</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudGrid>
+                                            @foreach (DeviceTag tag in TagList)
+                                            {
+                                                <MudItem xs="12" md="6">
+                                                    @if (!edgeDevice.Tags.ContainsKey(tag.Name))
+                                                    {
+                                                        edgeDevice.Tags.Add(tag.Name, "");
+                                                    }
+                                                    <MudTextField @bind-Value="edgeDevice.Tags[tag.Name]" Label="@tag.Label"
+                                                              Required="@tag.Required"
+                                                              Variant="Variant.Outlined" />
+                                                </MudItem>
+                                            }
+                                        </MudGrid>
                                     </ChildContent>
                                 </MudExpansionPanel>
                             </MudItem>
@@ -162,14 +188,21 @@
 @code {
     [CascadingParameter]
     public Error Error {get; set;}
-    
+
+    private MudForm form;
+
     [Parameter]
     public string deviceId { get; set; }
+
     private bool btn_disable = false;
     private void Return() => NavigationManager.NavigateTo("edge/devices");
 
     private IoTEdgeDevice edgeDevice;
+    private IoTEdgeModel edgeModel = new IoTEdgeModel();
 
+    private IEnumerable<DeviceTag> TagList { get; set; } = Array.Empty<DeviceTag>();
+
+    private bool isLoaded = false;
     private bool isProcessing;
 
     protected override async Task OnInitializedAsync()
@@ -185,11 +218,15 @@
             isProcessing = true;
 
             edgeDevice = await EdgeDeviceClientService.GetDevice(deviceId);
-            
+
             if (edgeDevice.ConnectionState == "Disconnected")
             {
                 btn_disable = true;
             }
+
+            await LoadModel(edgeDevice.ModelId);
+
+            TagList = await DeviceTagSettingsClientService.GetDeviceTags();
         }
         catch (ProblemDetailsException exception)
         {
@@ -197,16 +234,41 @@
         }
         finally
         {
+            isLoaded = true;
             isProcessing = false;
+        }
+    }
+
+    public async Task LoadModel(string edgeDeviceId)
+    {
+        try
+        {
+            edgeModel = await EdgeModelClientService.GetIoTEdgeModel(edgeDeviceId);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
         }
     }
 
     public async Task UpdateDevice()
     {
-        isProcessing = true;
 
         try
         {
+            isProcessing = true;
+
+            await form.Validate();
+
+            if (CheckTagsError())
+            {
+                Snackbar.Add("One or more validation errors occurred", Severity.Error);
+
+                isProcessing = false;
+
+                return;
+            }
+
             await EdgeDeviceClientService.UpdateDevice(edgeDevice);
 
             Snackbar.Add($"Device {edgeDevice.DeviceId} has been successfully updated!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success);
@@ -266,11 +328,11 @@
 
     }
 
-    public void ShowConnectionString()
+    public async Task ShowConnectionString()
     {
         var parameters = new DialogParameters {{nameof(ConnectionStringDialog.deviceId), this.deviceId}};
 
-        DialogService.Show<ConnectionStringDialog>("Edge Device Connection String", parameters);
+        _ =  await DialogService.Show<ConnectionStringDialog>("Edge Device Connection String", parameters).Result;
     }
 
     public async Task ShowDeleteModal()
@@ -289,5 +351,19 @@
         }
 
         NavigationManager.NavigateTo("/edge/devices");
+    }
+
+    private bool CheckTagsError()
+    {
+        bool tagValidationError = false;
+
+        foreach (DeviceTag tag in TagList)
+        {
+            if (tag.Required && string.IsNullOrEmpty(edgeDevice.Tags[tag.Name]))
+            {
+                tagValidationError = true;
+            }
+        }
+        return tagValidationError;
     }
 }

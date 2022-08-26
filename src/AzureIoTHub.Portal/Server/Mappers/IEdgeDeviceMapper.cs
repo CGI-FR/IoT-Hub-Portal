@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Mappers
 {
+    using System.Collections.Generic;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Shared;
 
@@ -10,6 +11,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
     {
         IoTEdgeListItem CreateEdgeDeviceListItem(Twin deviceTwin);
 
-        IoTEdgeDevice CreateEdgeDevice(Twin deviceTwin, Twin deviceTwinWithModules, int nbConnectedDevice, ConfigItem lastConfiguration);
+        IoTEdgeDevice CreateEdgeDevice(Twin deviceTwin, Twin deviceTwinWithModules, int nbConnectedDevice, ConfigItem lastConfiguration, IEnumerable<string> tags);
     }
 }

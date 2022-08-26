@@ -22,11 +22,6 @@ namespace AzureIoTHub.Portal.Models.v10
         public string Status { get; set; }
 
         /// <summary>
-        /// The device type.
-        /// </summary>
-        public string Type { get; set; }
-
-        /// <summary>
         /// The number of devices connected on the IoT Edge.
         /// </summary>
         public int NbDevices { get; set; }
