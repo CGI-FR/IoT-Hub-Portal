@@ -207,11 +207,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var edgeDevice = new IoTEdgeDevice()
             {
                 DeviceId = Guid.NewGuid().ToString(),
-                Environment = "fake"
             };
 
             var deviceTwin = new Twin(edgeDevice.DeviceId);
-            deviceTwin.Tags["env"] = "dev";
 
             _ = this.mockEdgeDeviceService
                 .Setup(x => x.UpdateEdgeDevice(It.Is<IoTEdgeDevice>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
