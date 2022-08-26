@@ -799,7 +799,6 @@
           {
             "name": "deviceId",
             "in": "path",
-            "description": "",
             "required": true,
             "schema": {
               "type": "string"
@@ -892,7 +891,7 @@
           }
         ],
         "requestBody": {
-          "description": "The module.",
+          "description": "The edge module.",
           "content": {
             "application/json": {
               "schema": {
@@ -4007,7 +4006,8 @@
       "IoTEdgeDevice": {
         "required": [
           "deviceId",
-          "type"
+          "deviceName",
+          "modelId"
         ],
         "type": "object",
         "properties": {
@@ -4015,6 +4015,22 @@
             "minLength": 1,
             "type": "string",
             "description": "The IoT Edge identifier."
+          },
+          "deviceName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The name of the device."
+          },
+          "modelId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The model identifier."
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "The device model image Url.",
+            "format": "uri",
+            "nullable": true
           },
           "connectionState": {
             "type": "string",
@@ -4025,11 +4041,6 @@
             "type": "string",
             "description": "The IoT Edge scope tag value.",
             "nullable": true
-          },
-          "type": {
-            "minLength": 1,
-            "type": "string",
-            "description": "The IoT Edge device type."
           },
           "status": {
             "type": "string",
@@ -4051,11 +4062,6 @@
             "description": "The number of modules on IoT Edge device.",
             "format": "int32"
           },
-          "environment": {
-            "type": "string",
-            "description": "The IoT Edge environment tag value.",
-            "nullable": true
-          },
           "lastDeployment": {
             "$ref": "#/components/schemas/ConfigItem"
           },
@@ -4066,6 +4072,19 @@
             },
             "description": "The IoT Edge modules.",
             "nullable": true
+          },
+          "tags": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "nullable": true
+            },
+            "description": "List of custom device tags and their values.",
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "description": "`true` if this instance is enabled; otherwise, `false`."
           }
         },
         "additionalProperties": false,
@@ -4107,11 +4126,6 @@
           "status": {
             "type": "string",
             "description": "The device status.",
-            "nullable": true
-          },
-          "type": {
-            "type": "string",
-            "description": "The device type.",
             "nullable": true
           },
           "nbDevices": {
@@ -4233,7 +4247,8 @@
           },
           "imageURI": {
             "minLength": 1,
-            "type": "string"
+            "type": "string",
+            "description": "the device image URI."
           },
           "status": {
             "type": "string",
