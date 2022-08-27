@@ -161,7 +161,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(device);
             _ = this.mockDeviceService.Setup(x => x.GetDeviceTwin(It.Is<string>(c => c == concentrator.DeviceId)))
                 .ReturnsAsync(twin);
-            _ = this.mockDeviceService.Setup(x => x.UpdateDeviceTwin(It.Is<string>(c => c == concentrator.DeviceId), It.Is<Twin>(c => c.DeviceId == concentrator.DeviceId)))
+            _ = this.mockDeviceService.Setup(x => x.UpdateDeviceTwin(It.Is<Twin>(c => c.DeviceId == concentrator.DeviceId)))
                 .ReturnsAsync(twin);
 
             // Act
@@ -254,7 +254,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(device);
             _ = this.mockDeviceService.Setup(x => x.GetDeviceTwin(It.Is<string>(c => c == concentrator.DeviceId)))
                 .ReturnsAsync(twin);
-            _ = this.mockDeviceService.Setup(x => x.UpdateDeviceTwin(It.Is<string>(c => c == concentrator.DeviceId), It.Is<Twin>(c => c.DeviceId == concentrator.DeviceId)))
+            _ = this.mockDeviceService.Setup(x => x.UpdateDeviceTwin(It.Is<Twin>(c => c.DeviceId == concentrator.DeviceId)))
                 .ThrowsAsync(new InternalServerErrorException(""));
 
             // Act
