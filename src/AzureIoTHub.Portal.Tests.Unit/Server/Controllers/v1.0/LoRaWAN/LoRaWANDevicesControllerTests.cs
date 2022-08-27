@@ -6,16 +6,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
     using System.Net.Http;
+    using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
-    using Models.v10;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Controllers.V10;
-    using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
@@ -26,6 +24,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
+    using Models.v10;
     using Moq;
     using NUnit.Framework;
 
@@ -44,6 +43,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         private Mock<IDeviceModelCommandMapper> mockDeviceModelCommandMapper;
         private Mock<IUrlHelper> mockUrlHelper;
         private Mock<TableClient> mockCommandsTableClient;
+        private Mock<ILoRaWANDeviceService> mockLoRaWANDeviceService;
 
         [SetUp]
         public void SetUp()
@@ -60,6 +60,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>();
             this.mockCommandsTableClient = this.mockRepository.Create<TableClient>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
+            this.mockLoRaWANDeviceService = this.mockRepository.Create<ILoRaWANDeviceService>();
         }
 
         private LoRaWANDevicesController CreateLoRaWANDevicesController()
@@ -70,8 +71,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
                 this.mockDeviceTagService.Object,
                 this.mockDeviceTwinMapper.Object,
                 this.mockTableClientFactory.Object,
-                this.mockLoraDeviceMethodManager.Object,
-                this.mockDeviceModelCommandMapper.Object,
+                this.mockLoRaWANDeviceService.Object,
                 this.mockProvisioningServiceManager.Object);
         }
 
@@ -84,59 +84,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             var deviceId = Guid.NewGuid().ToString();
             var commandId = Guid.NewGuid().ToString();
 
-            var mockResponse = this.mockRepository.Create<Response>();
-            _ = this.mockDeviceModelCommandMapper
-                .Setup(c => c.GetDeviceModelCommand(It.Is<TableEntity>(x => x.RowKey == commandId && x.PartitionKey == modelId)))
-                .Returns(new DeviceModelCommand
-                {
-                    Name = commandId,
-                    Frame = Guid.NewGuid().ToString(),
-                    Port = 125
-                });
-
-            _ = this.mockCommandsTableClient.Setup(c => c.Query<TableEntity>(
-                    It.Is<string>(x => x == $"RowKey eq '{commandId}' and PartitionKey eq '{modelId}'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                    .Returns(Pageable<TableEntity>.FromPages(new[]
-                    {
-                                    Page<TableEntity>.FromValues(new[]
-                                    {
-                                        new TableEntity(modelId, commandId)
-                                    }, null, mockResponse.Object)
-                    }));
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceCommands())
-                .Returns(this.mockCommandsTableClient.Object);
-
-            using var success = new HttpResponseMessage(HttpStatusCode.Accepted);
-
-            _ = this.mockLoraDeviceMethodManager.Setup(c => c.ExecuteLoRaDeviceMessage(
-                It.Is<string>(x => x == deviceId),
-                It.Is<DeviceModelCommand>(x => x.Name == commandId)))
-                .ReturnsAsync(success);
-
-            _ = this.mockLogger.Setup(c => c.Log(
-                    It.Is<LogLevel>(x => x == LogLevel.Information),
-                    It.IsAny<EventId>(),
-                    It.IsAny<It.IsAnyType>(),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()));
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceId)))
-                    .ReturnsAsync(new Twin()
-                    {
-                        DeviceId = deviceId,
-                        ModelId = modelId,
-                    });
-
-            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
-                    .Returns<Twin, IEnumerable<string>>((_, _) => new LoRaDeviceDetails
-                    {
-                        DeviceID = deviceId,
-                        ModelId = modelId,
-                    });
+            this.mockLoRaWANDeviceService.Setup(c => c.ExecuteLoRaWANCommand(deviceId, commandId))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
 
             // Act
             var result = await loRaWANDevicesController.ExecuteCommand(deviceId, commandId);
@@ -145,166 +95,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             Assert.IsNotNull(result);
             Assert.IsAssignableFrom<OkResult>(result);
 
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task ExecuteCommandShouldThrowInternalServerErrorExceptionWheIssueOccursWhenQueryingCommands()
-        {
-            // Arrange
-            var loRaWANDevicesController = CreateLoRaWANDevicesController();
-            var modelId = Guid.NewGuid().ToString();
-            var deviceId = Guid.NewGuid().ToString();
-            var commandId = Guid.NewGuid().ToString();
-
-            _ = this.mockCommandsTableClient.Setup(c => c.Query<TableEntity>(
-                    It.Is<string>(x => x == $"RowKey eq '{commandId}' and PartitionKey eq '{modelId}'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                    .Throws(new RequestFailedException("test"));
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceCommands())
-                .Returns(this.mockCommandsTableClient.Object);
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceId)))
-                    .ReturnsAsync(new Twin()
-                    {
-                        DeviceId = deviceId,
-                        ModelId = modelId,
-                    });
-
-            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
-                    .Returns<Twin, IEnumerable<string>>((_, _) => new LoRaDeviceDetails
-                    {
-                        DeviceID = deviceId,
-                        ModelId = modelId,
-                    });
-
-            // Act
-            var act = () => loRaWANDevicesController.ExecuteCommand(deviceId, commandId);
-
-            // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task ExecuteCommandShouldReturnNotFoundWhenCommandIsNotFound()
-        {
-            // Arrange
-            var loRaWANDevicesController = CreateLoRaWANDevicesController();
-            var modelId = Guid.NewGuid().ToString();
-            var deviceId = Guid.NewGuid().ToString();
-            var commandId = Guid.NewGuid().ToString();
-
-            var mockResponse = this.mockRepository.Create<Response>();
-
-            _ = this.mockCommandsTableClient.Setup(c => c.Query<TableEntity>(
-                    It.Is<string>(x => x == $"RowKey eq '{commandId}' and PartitionKey eq '{modelId}'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                .Returns(Pageable<TableEntity>.FromPages(new[]
-                {
-                    Page<TableEntity>.FromValues(Array.Empty<TableEntity>(), null, mockResponse.Object)
-                }));
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceCommands())
-                .Returns(this.mockCommandsTableClient.Object);
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceId)))
-                .ReturnsAsync(new Twin()
-                {
-                    DeviceId = deviceId,
-                    ModelId = modelId,
-                });
-
-            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
-                .Returns<Twin, IEnumerable<string>>((_, _) => new LoRaDeviceDetails
-                {
-                    DeviceID = deviceId,
-                    ModelId = modelId,
-                });
-
-            // Act
-            var result = await loRaWANDevicesController.ExecuteCommand(deviceId, commandId);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<NotFoundObjectResult>(result);
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task ExecuteCommandFailedShouldReturnHttp400()
-        {
-            // Arrange
-            var loRaWANDevicesController = CreateLoRaWANDevicesController();
-            var modelId = Guid.NewGuid().ToString();
-            var deviceId = Guid.NewGuid().ToString();
-            var commandId = Guid.NewGuid().ToString();
-
-            var mockResponse = this.mockRepository.Create<Response>();
-            _ = this.mockDeviceModelCommandMapper
-                .Setup(c => c.GetDeviceModelCommand(It.Is<TableEntity>(x => x.RowKey == commandId && x.PartitionKey == modelId)))
-                .Returns(new DeviceModelCommand
-                {
-                    Name = commandId,
-                    Frame = Guid.NewGuid().ToString(),
-                    Port = 125
-                });
-
-            _ = this.mockCommandsTableClient.Setup(c => c.Query<TableEntity>(
-                    It.Is<string>(x => x == $"RowKey eq '{commandId}' and PartitionKey eq '{modelId}'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                    .Returns(Pageable<TableEntity>.FromPages(new[]
-                    {
-                                    Page<TableEntity>.FromValues(new[]
-                                    {
-                                        new TableEntity(modelId, commandId)
-                                    }, null, mockResponse.Object)
-                    }));
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceCommands())
-                .Returns(this.mockCommandsTableClient.Object);
-
-            using var internalServerError = new HttpResponseMessage(HttpStatusCode.InternalServerError);
-
-            _ = this.mockLoraDeviceMethodManager.Setup(c => c.ExecuteLoRaDeviceMessage(
-                It.Is<string>(x => x == deviceId),
-                It.Is<DeviceModelCommand>(x => x.Name == commandId)))
-                .ReturnsAsync(internalServerError);
-
-            _ = this.mockLogger.Setup(c => c.Log(
-                It.Is<LogLevel>(x => x == LogLevel.Error),
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()));
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin(It.Is<string>(x => x == deviceId)))
-                .ReturnsAsync(new Twin()
-                {
-                    DeviceId = deviceId,
-                    ModelId = modelId,
-                });
-
-            _ = this.mockDeviceTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>(), It.IsAny<IEnumerable<string>>()))
-                .Returns<Twin, IEnumerable<string>>((_, _) => new LoRaDeviceDetails
-                {
-                    DeviceID = deviceId,
-                    ModelId = modelId,
-                });
-
-            // Act
-            var result = await loRaWANDevicesController.ExecuteCommand(deviceId, commandId);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<BadRequestObjectResult>(result);
             this.mockRepository.VerifyAll();
         }
 
