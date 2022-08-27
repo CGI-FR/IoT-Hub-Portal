@@ -3,10 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
-    using System.Linq;
     using System.Threading.Tasks;
-    using Azure;
-    using Azure.Data.Tables;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Factories;
@@ -14,7 +11,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using Exceptions;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -27,11 +23,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     [LoRaFeatureActiveFilter]
     public class LoRaWANDevicesController : DevicesControllerBase<DeviceListItem, LoRaDeviceDetails>
     {
-        private readonly ITableClientFactory tableClientFactory;
-        private readonly ILoraDeviceMethodManager loraDeviceMethodManager;
-        private readonly IDeviceModelCommandMapper deviceModelCommandMapper;
-        private readonly IDeviceService deviceService;
-        private readonly IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper;
+        private readonly ILoRaWANDeviceService loRaWANDeviceService;
 
         public LoRaWANDevicesController(
             ILogger<LoRaWANDevicesController> logger,
@@ -39,16 +31,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             IDeviceTagService deviceTagService,
             IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper,
             ITableClientFactory tableClientFactory,
-            ILoraDeviceMethodManager loraDeviceMethodManager,
-            IDeviceModelCommandMapper deviceModelCommandMapper,
+            ILoRaWANDeviceService loRaWANDeviceService,
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
             : base(logger, devicesService, deviceTagService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
         {
-            this.tableClientFactory = tableClientFactory;
-            this.loraDeviceMethodManager = loraDeviceMethodManager;
-            this.deviceModelCommandMapper = deviceModelCommandMapper;
-            this.deviceService = devicesService;
-            this.deviceTwinMapper = deviceTwinMapper;
+            this.loRaWANDeviceService = loRaWANDeviceService;
         }
 
         /// <summary>
@@ -119,42 +106,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpPost("{deviceId}/_command/{commandId}", Name = "POST Execute LoRaWAN command")]
         public async Task<IActionResult> ExecuteCommand(string deviceId, string commandId)
         {
-            var twin = await this.deviceService.GetDeviceTwin(deviceId);
-            var modelId = this.deviceTwinMapper.CreateDeviceDetails(twin, null).ModelId;
+            await this.loRaWANDeviceService.ExecuteLoRaWANCommand(deviceId, commandId);
 
-            TableEntity commandEntity;
-
-            try
-            {
-                commandEntity = this.tableClientFactory
-                    .GetDeviceCommands()
-                    .Query<TableEntity>(filter: $"RowKey eq '{commandId}' and PartitionKey eq '{modelId}'")
-                    .FirstOrDefault();
-
-                if (commandEntity == null)
-                {
-                    return NotFound($"The LoRaWAN command {commandId} for the device {deviceId} cannot be found");
-                }
-            }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException($"Unable to get the LoRaWAN command {commandId} for the device {deviceId}", e);
-            }
-
-            var deviceModelCommand = this.deviceModelCommandMapper.GetDeviceModelCommand(commandEntity);
-
-            var result = await this.loraDeviceMethodManager.ExecuteLoRaDeviceMessage(deviceId, deviceModelCommand);
-
-            if (!result.IsSuccessStatusCode)
-            {
-                Logger.LogError($"{deviceId} - Execute command on device failed \n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}");
-
-                return BadRequest($"Something went wrong when executing the command {deviceModelCommand.Name}.");
-            }
-
-            Logger.LogInformation($"{deviceId} - Execute command: \n{(int)result.StatusCode} - {result.ReasonPhrase}\n{await result.Content.ReadAsStringAsync()}");
-
-            return Ok();
+            return this.Ok();
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
