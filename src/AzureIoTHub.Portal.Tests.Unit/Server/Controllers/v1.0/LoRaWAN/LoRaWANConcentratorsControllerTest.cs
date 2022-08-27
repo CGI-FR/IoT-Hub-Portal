@@ -10,12 +10,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Exceptions;
-    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
@@ -29,7 +27,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
 
         private Mock<ILogger<LoRaWANConcentratorsController>> mockLogger;
         private Mock<IDeviceService> mockDeviceService;
-        private Mock<IRouterConfigManager> mockRouterConfigManager;
         private Mock<IConcentratorTwinMapper> mockConcentratorTwinMapper;
         private Mock<IUrlHelper> mockUrlHelper;
         private Mock<ILoRaWANConcentratorService> mockLoRaWANConcentratorService;
@@ -40,7 +37,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             this.mockRepository = new MockRepository(MockBehavior.Strict);
             this.mockLogger = this.mockRepository.Create<ILogger<LoRaWANConcentratorsController>>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
-            this.mockRouterConfigManager = this.mockRepository.Create<IRouterConfigManager>();
             this.mockConcentratorTwinMapper = this.mockRepository.Create<IConcentratorTwinMapper>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
             this.mockLoRaWANConcentratorService = this.mockRepository.Create<ILoRaWANConcentratorService>();
@@ -51,7 +47,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             return new LoRaWANConcentratorsController(
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
-                this.mockRouterConfigManager.Object,
                 this.mockConcentratorTwinMapper.Object,
                 this.mockLoRaWANConcentratorService.Object)
             {
@@ -87,14 +82,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
                     NextPage = Guid.NewGuid().ToString()
                 });
 
-            _ = this.mockConcentratorTwinMapper.Setup(c => c.CreateDeviceDetails(It.IsAny<Twin>()))
-                .Returns<Twin>(x => new Concentrator
+            _ = this.mockLoRaWANConcentratorService.Setup(c => c.GetAllDeviceConcentrator(It.IsAny<PaginationResult<Twin>>(), It.IsAny<IUrlHelper>()))
+                .Returns((PaginationResult<Twin> r, IUrlHelper h) => new PaginationResult<Concentrator>
                 {
-                    DeviceId = x.DeviceId
+                    Items = r.Items.Select(x => new Concentrator { DeviceId = x.DeviceId }),
+                    NextPage = r.NextPage,
+                    TotalItems = r.TotalItems
                 });
-
-            _ = this.mockUrlHelper.Setup(c => c.RouteUrl(It.IsAny<UrlRouteContext>()))
-                .Returns(Guid.NewGuid().ToString());
 
             // Act
             var response = await concentratorsController.GetAllDeviceConcentrator().ConfigureAwait(false);
@@ -120,6 +114,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         {
             // Arrange
             var concentratorsController = CreateLoRaWANConcentratorsController();
+
+            _ = this.mockLoRaWANConcentratorService.Setup(c => c.GetAllDeviceConcentrator(It.IsAny<PaginationResult<Twin>>(), It.IsAny<IUrlHelper>()))
+                .Returns((PaginationResult<Twin> r, IUrlHelper h) => new PaginationResult<Concentrator>
+                {
+                    Items = r.Items.Select(x => new Concentrator { DeviceId = x.DeviceId }),
+                    NextPage = r.NextPage,
+                    TotalItems = r.TotalItems
+                });
 
             _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
                     It.IsAny<string>(),

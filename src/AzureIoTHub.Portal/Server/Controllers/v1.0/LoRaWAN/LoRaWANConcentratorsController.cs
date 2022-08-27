@@ -4,16 +4,13 @@
 namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Filters;
-    using Managers;
     using Mappers;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Extensions.Logging;
     using Services;
@@ -37,11 +34,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         private readonly IConcentratorTwinMapper concentratorTwinMapper;
 
         /// <summary>
-        /// The device IRouter config manager.
-        /// </summary>
-        private readonly IRouterConfigManager routerConfigManager;
-
-        /// <summary>
         /// The LoRaWAN concentrator service.
         /// </summary>
         private readonly ILoRaWANConcentratorService loRaWANConcentratorService;
@@ -62,14 +54,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         public LoRaWANConcentratorsController(
             ILogger<LoRaWANConcentratorsController> logger,
             IDeviceService devicesService,
-            IRouterConfigManager routerConfigManager,
             IConcentratorTwinMapper concentratorTwinMapper,
             ILoRaWANConcentratorService loRaWANConcentratorService)
         {
             this.devicesService = devicesService;
             this.concentratorTwinMapper = concentratorTwinMapper;
             this.logger = logger;
-            this.routerConfigManager = routerConfigManager;
             this.loRaWANConcentratorService = loRaWANConcentratorService;
         }
 
@@ -88,25 +78,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
                 filterDeviceType: "LoRa Concentrator",
                 pageSize: pageSize);
 
-            string nextPage = null;
-
-            if (!string.IsNullOrEmpty(result.NextPage))
-            {
-                nextPage = Url.RouteUrl(new UrlRouteContext
-                {
-                    Values = new
-                    {
-                        continuationToken = result.NextPage
-                    }
-                });
-            }
-
-            return Ok(new PaginationResult<Concentrator>
-            {
-                Items = result.Items.Select(this.concentratorTwinMapper.CreateDeviceDetails),
-                TotalItems = result.TotalItems,
-                NextPage = nextPage
-            });
+            return this.Ok(this.loRaWANConcentratorService.GetAllDeviceConcentrator(result, this.Url));
         }
 
         /// <summary>

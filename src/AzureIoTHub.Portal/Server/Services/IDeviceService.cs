@@ -21,7 +21,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         Task<Device> UpdateDevice(Device device);
 
-        Task<Twin> UpdateDeviceTwin(string deviceId, Twin twin);
+        Task<Twin> UpdateDeviceTwin(Twin twin);
 
         Task<CloudToDeviceMethodResult> ExecuteC2DMethod(string deviceId, CloudToDeviceMethod method);
 

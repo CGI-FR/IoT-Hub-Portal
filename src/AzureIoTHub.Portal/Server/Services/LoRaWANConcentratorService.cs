@@ -3,15 +3,19 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using Microsoft.Azure.Devices.Common.Exceptions;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Azure.Devices;
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Common.Exceptions;
+    using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
 
     public class LoRaWANConcentratorService : ILoRaWANConcentratorService
     {
@@ -69,7 +73,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 if (!result.IsSuccessful)
                 {
-                    this.logger?.LogWarning(message: $"Failed to create concentrator. {result.Errors}");
+                    this.logger?.LogWarning(message: $"Failed to create concentrator. {string.Join(Environment.NewLine, result.Errors?.Select(c => JsonConvert.SerializeObject(c)) ?? Array.Empty<string>())}");
 
                     return false;
                 }
@@ -87,21 +91,28 @@ namespace AzureIoTHub.Portal.Server.Services
 
             return true;
         }
-        public async Task<bool> GetAllDeviceConcentrator(
-            string continuationToken = null,
-            int pageSize = 10)
-        {
-            // Gets all the twins from this devices
-            var result = await this.devicesService.GetAllDevice(
-                continuationToken: continuationToken,
-                filterDeviceType: "LoRa Concentrator",
-                pageSize: pageSize);
 
-            if (!string.IsNullOrEmpty(result.NextPage))
+        public PaginationResult<Concentrator> GetAllDeviceConcentrator(PaginationResult<Twin> twinResults, IUrlHelper urlHelper)
+        {
+            string nextPage = null;
+
+            if (!string.IsNullOrEmpty(twinResults.NextPage))
             {
-                return false;
+                nextPage = urlHelper.RouteUrl(new UrlRouteContext
+                {
+                    Values = new
+                    {
+                        continuationToken = twinResults.NextPage
+                    }
+                });
             }
-            return true;
+
+            return new PaginationResult<Concentrator>
+            {
+                Items = twinResults.Items.Select(this.concentratorTwinMapper.CreateDeviceDetails),
+                TotalItems = twinResults.TotalItems,
+                NextPage = nextPage
+            };
         }
 
         public async Task<bool> UpdateDeviceAsync(Concentrator device)
@@ -121,7 +132,7 @@ namespace AzureIoTHub.Portal.Server.Services
             // Update the twin properties
             this.concentratorTwinMapper.UpdateTwin(currentTwin, device);
 
-            _ = await this.devicesService.UpdateDeviceTwin(device.DeviceId, currentTwin);
+            _ = await this.devicesService.UpdateDeviceTwin(currentTwin);
 
             return true;
         }
