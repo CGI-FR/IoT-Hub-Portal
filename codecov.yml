@@ -6,4 +6,5 @@ coverage:
 ignore: 
    - "**/Startup.cs"
    - "**/Program.cs"
+   - "**/PortalDbContext.cs"
    - "**/Migrations/*.cs"

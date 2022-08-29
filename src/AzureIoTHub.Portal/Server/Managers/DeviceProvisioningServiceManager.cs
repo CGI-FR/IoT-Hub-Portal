@@ -91,20 +91,20 @@ namespace AzureIoTHub.Portal.Server.Managers
             return attetationMechanism.GetAttestation();
         }
 
-        public async Task<EnrollmentCredentials> GetEnrollmentCredentialsAsync(string deviceId, string deviceType)
+        public async Task<EnrollmentCredentials> GetEnrollmentCredentialsAsync(string deviceId, string modelId)
         {
             Attestation attestation;
 
             try
             {
-                attestation = await GetAttestation(deviceType);
+                attestation = await GetAttestation(modelId);
             }
             catch (HttpRequestException e)
             {
                 if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    _ = await CreateEnrollmentGroupAsync(deviceType);
-                    attestation = await GetAttestation(deviceType);
+                    _ = await CreateEnrollmentGroupAsync(modelId);
+                    attestation = await GetAttestation(modelId);
                 }
                 else
                 {

@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Models.v10
 {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
@@ -18,6 +19,23 @@ namespace AzureIoTHub.Portal.Models.v10
         public string DeviceId { get; set; }
 
         /// <summary>
+        /// The name of the device.
+        /// </summary>
+        [Required(ErrorMessage = "The device should have a name.")]
+        public string DeviceName { get; set; }
+
+        /// <summary>
+        /// The model identifier.
+        /// </summary>
+        [Required(ErrorMessage = "The device should use a model.")]
+        public string ModelId { get; set; }
+
+        /// <summary>
+        /// The device model image Url.
+        /// </summary>
+        public Uri ImageUrl { get; set; }
+
+        /// <summary>
         /// The IoT Edge connection state.
         /// </summary>
         public string ConnectionState { get; set; }
@@ -26,12 +44,6 @@ namespace AzureIoTHub.Portal.Models.v10
         /// The IoT Edge scope tag value.
         /// </summary>
         public string Scope { get; set; }
-
-        /// <summary>
-        /// The IoT Edge device type.
-        /// </summary>
-        [Required(ErrorMessage = "The device type is required.")]
-        public string Type { get; set; }
 
         /// <summary>
         /// The IoT Edge device status.
@@ -54,11 +66,6 @@ namespace AzureIoTHub.Portal.Models.v10
         public int NbModules { get; set; }
 
         /// <summary>
-        /// The IoT Edge environment tag value.
-        /// </summary>
-        public string Environment { get; set; }
-
-        /// <summary>
         /// The IoT Edge configuraton.
         /// </summary>
         public ConfigItem LastDeployment { get; set; }
@@ -69,10 +76,21 @@ namespace AzureIoTHub.Portal.Models.v10
         public IReadOnlyCollection<IoTEdgeModule> Modules { get; set; } = new List<IoTEdgeModule>();
 
         /// <summary>
+        /// List of custom device tags and their values.
+        /// </summary>
+        public Dictionary<string, string> Tags { get; set; } = new();
+
+        /// <summary>
+        ///   <c>true</c> if this instance is enabled; otherwise, <c>false</c>.
+        /// </summary>
+        public bool IsEnabled { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="IoTEdgeDevice"/> class.
         /// </summary>
         public IoTEdgeDevice()
         {
+            this.IsEnabled = true;
         }
     }
 }

@@ -27,6 +27,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         private Mock<RegistryManager> mockRegistryManager;
         private Mock<IEdgeDeviceMapper> mockEdgeDeviceMapper;
         private Mock<IDeviceService> mockDeviceService;
+        private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
 
         [SetUp]
@@ -36,6 +37,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
             this.mockRegistryManager = this.mockRepository.Create<RegistryManager>();
+            this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
             this.mockEdgeDeviceMapper = this.mockRepository.Create<IEdgeDeviceMapper>();
         }
@@ -46,7 +48,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 this.mockRegistryManager.Object,
                 this.mockDeviceService.Object,
                 this.mockEdgeDeviceMapper.Object,
-                this.mockProvisioningServiceManager.Object);
+                this.mockProvisioningServiceManager.Object,
+                this.mockDeviceTagService.Object);
         }
 
         [Test]
@@ -136,8 +139,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockEdgeDeviceMapper
                 .Setup(x => x.CreateEdgeDevice(It.Is<Twin>(c => c.DeviceId.Equals(expectedDevice.DeviceId, StringComparison.Ordinal)),
                 It.Is<Twin>(c => c.DeviceId.Equals(expectedDevice.DeviceId, StringComparison.Ordinal)),
-                It.Is<int>(c => c.Equals(2)), It.IsAny<ConfigItem>()))
+                It.Is<int>(c => c.Equals(2)), It.IsAny<ConfigItem>(), It.IsAny<IEnumerable<string>>()))
                 .Returns(expectedDevice);
+
+            _ = this.mockDeviceTagService.Setup(x => x.GetAllTagsNames()).Returns(new List<string>());
 
             // Act
             var result = await edgeDeviceService.GetEdgeDevice(expectedDevice.DeviceId);
@@ -181,8 +186,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var edgeDevice = new IoTEdgeDevice()
             {
                 DeviceId = "aaa",
-                Type = "lora",
-                Environment = "test"
             };
 
             _ = this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(
@@ -224,7 +227,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             {
                 DeviceId = Guid.NewGuid().ToString(),
                 Status = DeviceStatus.Enabled.ToString(),
-                Environment = "fake"
             };
 
             var mockTwin = new Twin(edgeDevice.DeviceId);
@@ -251,7 +253,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(edgeDevice.Environment, mockTwin.Tags["env"].ToString());
 
             this.mockRepository.VerifyAll();
         }
@@ -322,9 +323,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             };
 
             var mockTwin = new Twin("aaa");
-            mockTwin.Tags["type"] = "bbb";
 
-            _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", "bbb"))
+            _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", It.IsAny<string>()))
                 .ReturnsAsync(mockRegistrationCredentials);
 
             _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))

@@ -113,5 +113,6 @@ namespace AzureIoTHub.Portal.Client
 
             _ = builder.Services.AddSingleton(settings);
         }
+
     }
 }
