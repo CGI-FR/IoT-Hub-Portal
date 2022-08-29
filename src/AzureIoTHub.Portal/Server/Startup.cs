@@ -41,6 +41,7 @@ namespace AzureIoTHub.Portal.Server
     using Polly;
     using Polly.Extensions.Http;
     using Prometheus;
+    using Quartz;
     using Services;
     using ServicesHealthCheck;
     using Shared.Models.v1._0;
@@ -282,6 +283,24 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddHostedService<DeviceMetricExporterService>();
             _ = services.AddHostedService<EdgeDeviceMetricExporterService>();
             _ = services.AddHostedService<ConcentratorMetricExporterService>();
+
+            // Add the required Quartz.NET services
+            _ = services.AddQuartz(q =>
+            {
+                q.UseMicrosoftDependencyInjectionJobFactory();
+                q.UsePersistentStore(opts =>
+                {
+                    // JSON is recommended persistent format to store data in database for greenfield projects.
+                    // You should also strongly consider setting useProperties to true to restrict key - values to be strings.
+                    opts.UseJsonSerializer();
+                    opts.UseProperties = true;
+
+                    opts.UsePostgres(configuration.StorageAccountConnectionString);
+                });
+            });
+
+            // Add the Quartz.NET hosted service
+            _ = services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         }
 
         private static void ConfigureIdeasFeature(IServiceCollection services, ConfigHandler configuration)
