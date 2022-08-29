@@ -6,3 +6,4 @@ coverage:
 ignore: 
    - "**/Startup.cs"
    - "**/Program.cs"
+   - "**/Migrations/*.cs"
