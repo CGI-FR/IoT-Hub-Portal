@@ -59,6 +59,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.6" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="6.0.0" />
+    <PackageReference Include="Quartz" Version="3.4.0" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.4.0" />
+    <PackageReference Include="Quartz.Serialization.Json" Version="3.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
