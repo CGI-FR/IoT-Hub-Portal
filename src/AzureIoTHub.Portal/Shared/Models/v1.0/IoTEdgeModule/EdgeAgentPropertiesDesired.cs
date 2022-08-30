@@ -75,11 +75,11 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
             {
                 Type = "docker",
                 Status = "running",
-                RestarPolicy = "always",
+                RestartPolicy = "always",
                 Settings = new ModuleSettings
                 {
                     Image = "mcr.microsoft.com/azureiotedge-hub:1.1",
-                    CreateOptions = "\\{\"HostConfig\":{\"PortBindings\":{\"443/tcp\":[{\"HostPort\":\"443\"}],\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}]}}}"
+                    CreateOptions = /*lang=json,strict*/ "{\"HostConfig\":{\"PortBindings\":{\"443/tcp\":[{\"HostPort\":\"443\"}],\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}]}}}"
                 }
             };
         }

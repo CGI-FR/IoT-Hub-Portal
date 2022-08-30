@@ -251,8 +251,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
                     {
                         Image = module.ImageURI
                     },
-                    Version = "1.0",
-                    RestarPolicy = "always",
+                    RestartPolicy = "always",
                     EnvironmentVariables = new Dictionary<string, EnvironmentVariable>()
                 };
 
