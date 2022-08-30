@@ -14,16 +14,14 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
 
-        [JsonProperty(PropertyName = "env")]
+        [JsonProperty(PropertyName = "env", NullValueHandling = NullValueHandling.Ignore)]
         public IDictionary<string, EnvironmentVariable>? EnvironmentVariables { get; set; }
 
-        [JsonProperty(PropertyName = "status")]
+        [JsonProperty(PropertyName = "status", NullValueHandling = NullValueHandling.Ignore)]
         public string? Status { get; set; }
 
-        [JsonProperty(PropertyName = "restarPolicy")]
-        public string? RestarPolicy { get; set; }
-
-        public string? Version { get; set; }
+        [JsonProperty(PropertyName = "restartPolicy", NullValueHandling = NullValueHandling.Ignore)]
+        public string? RestartPolicy { get; set; }
 
         public ConfigModule()
         {
@@ -36,7 +34,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
         [JsonProperty(PropertyName = "image")]
         public string Image { get; set; }
 
-        [JsonProperty(PropertyName = "createOptions")]
+        [JsonProperty(PropertyName = "createOptions", NullValueHandling = NullValueHandling.Ignore)]
         public string CreateOptions { get; set; }
     }
 
