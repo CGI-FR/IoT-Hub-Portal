@@ -64,5 +64,10 @@ namespace AzureIoTHub.Portal.Server.Factories
         {
             return CreateClient("tableHealthCheck");
         }
+
+        public TableClient GetEdgeModuleCommands()
+        {
+            return CreateClient(ITableClientFactory.EdgeModuleCommandsTableName);
+        }
     }
 }

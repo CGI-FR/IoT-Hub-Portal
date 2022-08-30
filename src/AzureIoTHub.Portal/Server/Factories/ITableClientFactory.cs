@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Factories
         const string EdgeDeviceTemplateTableName = "EdgeDeviceTemplates";
         const string DeviceTagSettingTableName = "DeviceTagSettings";
         const string DeviceTemplatePropertiesTableName = "DeviceTemplateProperties";
+        const string EdgeModuleCommandsTableName = "EdgeModuleCommands";
 
         TableClient GetDeviceCommands();
 
@@ -24,5 +25,7 @@ namespace AzureIoTHub.Portal.Server.Factories
         TableClient GetDeviceTagSettings();
 
         public TableClient GetTemplatesHealthCheck();
+
+        TableClient GetEdgeModuleCommands();
     }
 }
