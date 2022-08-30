@@ -89,24 +89,11 @@ namespace AzureIoTHub.Portal.Server.Services
                 var query = await this.tableClientFactory
                     .GetEdgeDeviceTemplates()
                     .GetEntityAsync<TableEntity>(DefaultPartitionKey, modelId);
-
                 var modules = await this.configService.GetConfigModuleList(modelId);
-
                 var commands = this.tableClientFactory.GetEdgeModuleCommands()
-                    .Query<EdgeModuleCommand>($"PartitionKey eq '{modelId}'").ToArray();
-
-                foreach (var command in commands)
-                {
-                    foreach (var module in modules)
-                    {
-                        if ((module.ModuleName + "-" + command.Name).Equals(command.RowKey, StringComparison.Ordinal))
-                        {
-                            module.Commands.Add(new Shared.Models.v10.IoTEdgeModuleCommand { Name = command.Name });
-                        }
-                    }
-                }
-
-                return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules);
+                    .Query<EdgeModuleCommand>(c => c.PartitionKey == modelId)
+                    .ToArray();
+                return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, commands);
             }
             catch (RequestFailedException e)
             {
@@ -114,7 +101,6 @@ namespace AzureIoTHub.Portal.Server.Services
                 {
                     throw new ResourceNotFoundException($"The edge model with id {modelId} doesn't exist");
                 }
-
                 throw new InternalServerErrorException($"Unable to get the edge model with id {modelId}", e);
             }
         }
@@ -342,9 +328,15 @@ namespace AzureIoTHub.Portal.Server.Services
                     Timestamp = DateTime.Now,
                     Name = cmd.Name,
                 })).ToArray();
-
             try
             {
+                var existingCommands = this.tableClientFactory.GetEdgeModuleCommands()
+                                                .Query<EdgeModuleCommand>(c => c.PartitionKey == deviceModelObject.ModelId)
+                                                .ToArray();
+                foreach (var command in existingCommands.Where(c => !moduleCommands.Any(x => x.RowKey == c.RowKey)))
+                {
+                    _ = await this.tableClientFactory.GetEdgeModuleCommands().DeleteEntityAsync(command.PartitionKey, command.RowKey);
+                }
                 foreach (var moduleCommand in moduleCommands)
                 {
                     _ = this.tableClientFactory
