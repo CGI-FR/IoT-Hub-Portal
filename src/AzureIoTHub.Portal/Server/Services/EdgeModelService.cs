@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Microsoft.AspNetCore.Http;
     using System.Threading.Tasks;
     using System;
+    using AzureIoTHub.Portal.Server.Entities;
 
     public class EdgeModelService : IEdgeModelService
     {
@@ -90,6 +91,20 @@ namespace AzureIoTHub.Portal.Server.Services
                     .GetEntityAsync<TableEntity>(DefaultPartitionKey, modelId);
 
                 var modules = await this.configService.GetConfigModuleList(modelId);
+
+                var commands = this.tableClientFactory.GetEdgeModuleCommands()
+                    .Query<EdgeModuleCommand>($"PartitionKey eq '{modelId}'").ToArray();
+
+                foreach (var command in commands)
+                {
+                    foreach (var module in modules)
+                    {
+                        if ((module.ModuleName + "-" + command.Name).Equals(command.RowKey, StringComparison.Ordinal))
+                        {
+                            module.Commands.Add(new Shared.Models.v10.IoTEdgeModuleCommand { Name = command.Name });
+                        }
+                    }
+                }
 
                 return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules);
             }
@@ -295,6 +310,8 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             this.edgeDeviceModelMapper.UpdateTableEntity(entity, deviceModelObject);
 
+            await SaveModuleCommands(deviceModelObject);
+
             try
             {
                 _ = await this.tableClientFactory
@@ -307,6 +324,38 @@ namespace AzureIoTHub.Portal.Server.Services
             }
 
             await this.configService.RollOutEdgeModelConfiguration(deviceModelObject);
+        }
+
+        /// <summary>
+        /// Saves the module commands for a specific model object.
+        /// </summary>
+        /// <param name="deviceModelObject">The device model object.</param>
+        /// <returns></returns>
+        /// <exception cref="InternalServerErrorException"></exception>
+        private async Task SaveModuleCommands(IoTEdgeModel deviceModelObject)
+        {
+            IEnumerable<EdgeModuleCommand> moduleCommands = deviceModelObject.EdgeModules
+                .SelectMany(x => x.Commands.Select(cmd => new EdgeModuleCommand
+                {
+                    PartitionKey = deviceModelObject.ModelId,
+                    RowKey = x.ModuleName + "-" + cmd.Name,
+                    Timestamp = DateTime.Now,
+                    Name = cmd.Name,
+                })).ToArray();
+
+            try
+            {
+                foreach (var moduleCommand in moduleCommands)
+                {
+                    _ = this.tableClientFactory
+                        .GetEdgeModuleCommands()
+                        .UpsertEntity(moduleCommand);
+                }
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException("Unable to save device module commands", e);
+            }
         }
     }
 }
