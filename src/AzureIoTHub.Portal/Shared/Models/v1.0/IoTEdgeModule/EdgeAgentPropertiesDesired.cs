@@ -14,7 +14,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
         [JsonProperty(PropertyName = "runtime")]
         public Runtime Runtime { get; set; }
 
-        [JsonProperty(PropertyName = "shemaVersion")]
+        [JsonProperty(PropertyName = "schemaVersion")]
         public string SchemaVersion { get; set; }
 
         [JsonProperty(PropertyName = "systemModules")]
