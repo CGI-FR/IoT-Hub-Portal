@@ -6,12 +6,13 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using System.Collections.Generic;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Server.Entities;
 
     public interface IEdgeDeviceModelMapper
     {
         IoTEdgeModelListItem CreateEdgeDeviceModelListItem(TableEntity entity);
 
-        IoTEdgeModel CreateEdgeDeviceModel(TableEntity entity, List<IoTEdgeModule> ioTEdgeModules);
+        IoTEdgeModel CreateEdgeDeviceModel(TableEntity entity, List<IoTEdgeModule> ioTEdgeModules, IEnumerable<EdgeModuleCommand> commands);
 
         void UpdateTableEntity(TableEntity entity, IoTEdgeModel model);
     }
