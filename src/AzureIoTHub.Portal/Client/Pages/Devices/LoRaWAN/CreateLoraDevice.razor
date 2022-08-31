@@ -12,14 +12,16 @@
                         @if (loraModel.UseOTAA)
                         {
                             <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@LoRaDevice.AppEUI"
+                                <MudTextField id="@nameof(LoRaDevice.AppEUI)"
+                                          @bind-Value="@LoRaDevice.AppEUI"
                                           Label="OTAA AppEUI"
                                           Variant="Variant.Outlined"
                                           For="@(()=> LoRaDevice.AppEUI)"
                                           Required="true" />
                             </MudItem>
                             <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@LoRaDevice.AppKey"
+                                <MudTextField id="@nameof(LoRaDevice.AppKey)"
+                                          @bind-Value="@LoRaDevice.AppKey"
                                           Label="OTAA AppKey"
                                           For="@(() => LoRaDevice.AppKey)"
                                           Required="true"
@@ -29,13 +31,13 @@
                         else
                         {
                             <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@LoRaDevice.AppSKey" Label="ABP App SKey" For="@(() => LoRaDevice.AppSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                <MudTextField id="@nameof(LoRaDevice.AppSKey)" @bind-Value="@LoRaDevice.AppSKey" Label="ABP App SKey" For="@(() => LoRaDevice.AppSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
                             </MudItem>
                             <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@LoRaDevice.NwkSKey" Label="ABP Nwk SKey" For="@(() => LoRaDevice.NwkSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                <MudTextField id="@nameof(LoRaDevice.NwkSKey)" @bind-Value="@LoRaDevice.NwkSKey" Label="ABP Nwk SKey" For="@(() => LoRaDevice.NwkSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
                             </MudItem>
                             <MudItem xs="12" md="6">
-                                <MudTextField @bind-Value="@LoRaDevice.DevAddr" Label="DevAddr" For="@(() => LoRaDevice.DevAddr)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                <MudTextField id="@nameof(LoRaDevice.DevAddr)" @bind-Value="@LoRaDevice.DevAddr" Label="DevAddr" For="@(() => LoRaDevice.DevAddr)" Variant="Variant.Outlined" Required="true"></MudTextField>
                             </MudItem>
                         }
                     </MudGrid>
