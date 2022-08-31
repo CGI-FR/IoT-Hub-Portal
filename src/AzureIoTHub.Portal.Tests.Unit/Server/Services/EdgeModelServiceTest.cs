@@ -23,6 +23,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using FluentAssertions;
     using AzureIoTHub.Portal.Server.Exceptions;
     using Microsoft.Azure.Devices;
+    using AzureIoTHub.Portal.Server.Entities;
+    using System.Linq.Expressions;
 
     [TestFixture]
     public class EdgeModelServiceTest
@@ -34,6 +36,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IEdgeDeviceModelMapper> mockEdgeModelMapper;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
         private Mock<TableClient> mockEdgeDeviceTemplatesTableClient;
+        private Mock<TableClient> mockEdgeModuleCommands;
 
         [SetUp]
         public void SetUp()
@@ -45,6 +48,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockEdgeModelMapper = this.mockRepository.Create<IEdgeDeviceModelMapper>();
             this.mockDeviceModelImageManager = this.mockRepository.Create<IDeviceModelImageManager>();
             this.mockEdgeDeviceTemplatesTableClient = this.mockRepository.Create<TableClient>();
+            this.mockEdgeModuleCommands = this.mockRepository.Create<TableClient>();
         }
 
         public EdgeModelService CreateEdgeModelService()
@@ -125,6 +129,23 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
             _ = mockResponse.Setup(c => c.Value).Returns(new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
 
+            var mockModuleCommandResponse = this.mockRepository.Create<Response>();
+
+            var mockModuleCommands = Pageable<EdgeModuleCommand>.FromPages(new[]
+            {
+                Page<EdgeModuleCommand>.FromValues(Array.Empty<EdgeModuleCommand>(), null, mockModuleCommandResponse.Object)
+            });
+
+            _ = this.mockEdgeModuleCommands.Setup(c => c.Query(
+                        It.IsAny<Expression<Func<EdgeModuleCommand, bool>>>(),
+                        It.IsAny<int?>(),
+                        It.IsAny<IEnumerable<string>>(),
+                        It.IsAny<CancellationToken>()))
+                    .Returns(mockModuleCommands);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeModuleCommands())
+                .Returns(this.mockEdgeModuleCommands.Object);
+
             _ = this.mockEdgeDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
                         It.Is<string>(p => p == EdgeModelService.DefaultPartitionKey),
                         It.Is<string>(k => k == "test"),
@@ -140,7 +161,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new List<IoTEdgeModule>());
 
             _ = this.mockEdgeModelMapper
-                .Setup(x => x.CreateEdgeDeviceModel(It.IsAny<TableEntity>(), It.IsAny<List<IoTEdgeModule>>()))
+                .Setup(x => x.CreateEdgeDeviceModel(It.IsAny<TableEntity>(), It.IsAny<List<IoTEdgeModule>>(), It.IsAny<IEnumerable<EdgeModuleCommand>>()))
                 .Returns(new IoTEdgeModel());
 
             // Act
@@ -211,6 +232,23 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             };
 
             var mockResponse = this.mockRepository.Create<Response>();
+
+            var mockModuleCommandResponse = this.mockRepository.Create<Response>();
+
+            var mockModuleCommands = Pageable<EdgeModuleCommand>.FromPages(new[]
+            {
+                Page<EdgeModuleCommand>.FromValues(Array.Empty<EdgeModuleCommand>(), null, mockModuleCommandResponse.Object)
+            });
+
+            _ = this.mockEdgeModuleCommands.Setup(c => c.Query(
+                        It.IsAny<Expression<Func<EdgeModuleCommand, bool>>>(),
+                        It.IsAny<int?>(),
+                        It.IsAny<IEnumerable<string>>(),
+                        It.IsAny<CancellationToken>()))
+                    .Returns(mockModuleCommands);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeModuleCommands())
+                .Returns(this.mockEdgeModuleCommands.Object);
 
             _ = this.mockEdgeModelMapper
                 .Setup(x => x.UpdateTableEntity(It.IsAny<TableEntity>(), It.IsAny<IoTEdgeModel>()));
@@ -310,6 +348,23 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 ModelId = Guid.NewGuid().ToString()
             };
 
+            var mockModuleCommandResponse = this.mockRepository.Create<Response>();
+
+            var mockModuleCommands = Pageable<EdgeModuleCommand>.FromPages(new[]
+            {
+                Page<EdgeModuleCommand>.FromValues(Array.Empty<EdgeModuleCommand>(), null, mockModuleCommandResponse.Object)
+            });
+
+            _ = this.mockEdgeModuleCommands.Setup(c => c.Query(
+                        It.IsAny<Expression<Func<EdgeModuleCommand, bool>>>(),
+                        It.IsAny<int?>(),
+                        It.IsAny<IEnumerable<string>>(),
+                        It.IsAny<CancellationToken>()))
+                    .Returns(mockModuleCommands);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeModuleCommands())
+                .Returns(this.mockEdgeModuleCommands.Object);
+
             _ = this.mockEdgeModelMapper
                 .Setup(x => x.UpdateTableEntity(It.IsAny<TableEntity>(), It.IsAny<IoTEdgeModel>()));
 
@@ -342,6 +397,23 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             {
                 ModelId = Guid.NewGuid().ToString()
             };
+
+            var mockModuleCommandResponse = this.mockRepository.Create<Response>();
+
+            var mockModuleCommands = Pageable<EdgeModuleCommand>.FromPages(new[]
+            {
+                Page<EdgeModuleCommand>.FromValues(Array.Empty<EdgeModuleCommand>(), null, mockModuleCommandResponse.Object)
+            });
+
+            _ = this.mockEdgeModuleCommands.Setup(c => c.Query(
+                        It.IsAny<Expression<Func<EdgeModuleCommand, bool>>>(),
+                        It.IsAny<int?>(),
+                        It.IsAny<IEnumerable<string>>(),
+                        It.IsAny<CancellationToken>()))
+                    .Returns(mockModuleCommands);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeModuleCommands())
+                .Returns(this.mockEdgeModuleCommands.Object);
 
             var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
             _ = mockResponse.Setup(c => c.Value).Returns(new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
@@ -436,6 +508,23 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             {
                 ModelId = Guid.NewGuid().ToString()
             };
+
+            var mockModuleCommandResponse = this.mockRepository.Create<Response>();
+
+            var mockModuleCommands = Pageable<EdgeModuleCommand>.FromPages(new[]
+            {
+                Page<EdgeModuleCommand>.FromValues(Array.Empty<EdgeModuleCommand>(), null, mockModuleCommandResponse.Object)
+            });
+
+            _ = this.mockEdgeModuleCommands.Setup(c => c.Query(
+                        It.IsAny<Expression<Func<EdgeModuleCommand, bool>>>(),
+                        It.IsAny<int?>(),
+                        It.IsAny<IEnumerable<string>>(),
+                        It.IsAny<CancellationToken>()))
+                    .Returns(mockModuleCommands);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeModuleCommands())
+                .Returns(this.mockEdgeModuleCommands.Object);
 
             var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
             _ = mockResponse.Setup(c => c.Value).Returns(new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
