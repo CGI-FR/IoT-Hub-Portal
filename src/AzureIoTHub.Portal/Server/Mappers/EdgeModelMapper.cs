@@ -5,9 +5,12 @@ namespace AzureIoTHub.Portal.Server.Mappers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Server.Entities;
     using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     public class EdgeModelMapper : IEdgeDeviceModelMapper
     {
@@ -36,11 +39,10 @@ namespace AzureIoTHub.Portal.Server.Mappers
             };
         }
 
-        public IoTEdgeModel CreateEdgeDeviceModel(TableEntity entity, List<IoTEdgeModule> ioTEdgeModules)
+        public IoTEdgeModel CreateEdgeDeviceModel(TableEntity entity, List<IoTEdgeModule> ioTEdgeModules, IEnumerable<EdgeModuleCommand> commands)
         {
             ArgumentNullException.ThrowIfNull(entity, nameof(entity));
-
-            return new IoTEdgeModel
+            var result = new IoTEdgeModel
             {
                 ModelId = entity.RowKey,
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey),
@@ -48,6 +50,19 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 Description = entity[nameof(IoTEdgeModelListItem.Description)]?.ToString(),
                 EdgeModules = ioTEdgeModules
             };
+            foreach (var command in commands)
+            {
+                var module = result.EdgeModules.SingleOrDefault(x => (x.ModuleName + "-" + command.Name).Equals(command.RowKey, StringComparison.Ordinal));
+                if (module == null)
+                {
+                    continue;
+                }
+                module.Commands.Add(new IoTEdgeModuleCommand
+                {
+                    Name = command.Name,
+                });
+            }
+            return result;
         }
 
         public void UpdateTableEntity(TableEntity entity, IoTEdgeModel model)

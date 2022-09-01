@@ -105,49 +105,5 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             cut.WaitForAssertion(() => module.ModuleName.Should().Be("newModuleNameValue"));
             cut.WaitForAssertion(() => module.ImageURI.Should().Be("newModuleImageUriValue"));
         }
-
-        [Test]
-        public async Task ClickOnCancelShouldNotChangeModuleValues()
-        {
-            //Arrange
-            var moduleName = Guid.NewGuid().ToString();
-            var moduleVersion = Guid.NewGuid().ToString();
-            var moduleImageUri = Guid.NewGuid().ToString();
-
-            var module = new IoTEdgeModule()
-            {
-                ModuleName = moduleName,
-                Version = moduleVersion,
-                Status = "running",
-                ImageURI = moduleImageUri,
-                EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
-                ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
-                Commands = new List<IoTEdgeModuleCommand>()
-            };
-
-            var cut = RenderComponent<MudDialogProvider>();
-            var service = Services.GetService<IDialogService>() as DialogService;
-
-            var parameters = new DialogParameters
-            {
-                {
-                    "module", module
-                }
-            };
-
-            // Act
-            await cut.InvokeAsync(() => service?.Show<ModuleDialog>(string.Empty, parameters));
-
-            cut.WaitForAssertion(() => cut.Find("div.mud-dialog-container").Should().NotBeNull());
-
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ModuleName)}").Change("newModuleNameValue"));
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeModule.ImageURI)}").Change("newModuleImageUriValue"));
-
-            var cancelButton = cut.WaitForElement("#CancelButton");
-            cancelButton.Click();
-
-            cut.WaitForAssertion(() => module.ModuleName.Should().Be(moduleName));
-            cut.WaitForAssertion(() => module.ImageURI.Should().Be(moduleImageUri));
-        }
     }
 }

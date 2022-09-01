@@ -5,8 +5,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Server.Entities;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using Moq;
@@ -81,16 +83,32 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
                 ["Description"] = "description_test",
             };
 
-            var modules = new List<IoTEdgeModule>(){ new IoTEdgeModule()};
+            var modules = new List<IoTEdgeModule>()
+            {
+                new IoTEdgeModule
+                {
+                    ModuleName = "module"
+                }
+            };
+            var commands = new List<EdgeModuleCommand>()
+            {
+                new EdgeModuleCommand
+                {
+                    PartitionKey = partitionKey,
+                    Name = "Test",
+                    RowKey = modules.First().ModuleName + "-" + "Test",
+                }
+            };
 
             // Act
-            var result = edgeModelMapper.CreateEdgeDeviceModel(entity, modules);
+            var result = edgeModelMapper.CreateEdgeDeviceModel(entity, modules, commands);
 
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(rowKey, result.ModelId);
             Assert.AreEqual("test-name", result.Name);
             Assert.AreEqual(1, result.EdgeModules.Count);
+            Assert.AreEqual(1, result.EdgeModules.First().Commands.Count);
 
             this.mockRepository.VerifyAll();
         }

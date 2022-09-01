@@ -24,5 +24,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Factories
             // Assert
             _ = act.Should().Throw<InternalServerErrorException>();
         }
+
+        [Test]
+        public void GetEdgeModuleCommandsShouldThrowInternalServerErrorExceptionWhenAnIssueOccurs()
+        {
+            // Arrange
+            var connectionString = Guid.NewGuid().ToString();
+            var tableClientFactory = new TableClientFactory(connectionString);
+
+            // Act
+            var act = () => tableClientFactory.GetEdgeModuleCommands();
+
+            // Assert
+            _ = act.Should().Throw<InternalServerErrorException>();
+        }
     }
 }
