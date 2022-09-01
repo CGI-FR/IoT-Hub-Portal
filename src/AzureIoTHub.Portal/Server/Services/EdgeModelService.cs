@@ -318,7 +318,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <param name="deviceModelObject">The device model object.</param>
         /// <returns></returns>
         /// <exception cref="InternalServerErrorException"></exception>
-        private async Task SaveModuleCommands(IoTEdgeModel deviceModelObject)
+        public async Task SaveModuleCommands(IoTEdgeModel deviceModelObject)
         {
             IEnumerable<EdgeModuleCommand> moduleCommands = deviceModelObject.EdgeModules
                 .SelectMany(x => x.Commands.Select(cmd => new EdgeModuleCommand
@@ -328,6 +328,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     Timestamp = DateTime.Now,
                     Name = cmd.Name,
                 })).ToArray();
+
             try
             {
                 var existingCommands = this.tableClientFactory.GetEdgeModuleCommands()

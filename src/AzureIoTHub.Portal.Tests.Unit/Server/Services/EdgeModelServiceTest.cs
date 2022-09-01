@@ -3,28 +3,29 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 {
-    using Azure;
-    using System.Collections.Generic;
     using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Azure;
     using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
+    using AzureIoTHub.Portal.Server.Entities;
+    using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using FluentAssertions;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Azure.Devices;
     using Moq;
     using NUnit.Framework;
-    using AzureIoTHub.Portal.Models.v10;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Http;
-    using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
-    using System.IO;
-    using FluentAssertions;
-    using AzureIoTHub.Portal.Server.Exceptions;
-    using Microsoft.Azure.Devices;
-    using AzureIoTHub.Portal.Server.Entities;
-    using System.Linq.Expressions;
 
     [TestFixture]
     public class EdgeModelServiceTest
@@ -718,6 +719,132 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             Assert.AreEqual(expectedUrl.ToString(), response);
 
             this.mockTableClientFactory.Verify(c => c.GetEdgeDeviceTemplates(), Times.Once);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task SaveModuleCommandsShouldUpsertModuleCommandTemplates()
+        {
+            // Arrange
+            var edgeModelService = CreateEdgeModelService();
+
+            var modules = new List<IoTEdgeModule>()
+            {
+                new IoTEdgeModule
+                {
+                    ModuleName = "Test",
+                    Commands = new List<IoTEdgeModuleCommand>
+                    {
+                        new IoTEdgeModuleCommand
+                        {
+                            Name = "Command"
+                        }
+                    }
+                }
+            };
+
+            var iotEdgeModel = new IoTEdgeModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                EdgeModules = modules,
+            };
+
+            var mockModuleCommandResponse = this.mockRepository.Create<Response>();
+
+            var mockModuleCommands = Pageable<EdgeModuleCommand>.FromPages(new[]
+            {
+                Page<EdgeModuleCommand>.FromValues(Array.Empty<EdgeModuleCommand>(), null, mockModuleCommandResponse.Object)
+            });
+
+            _ = this.mockEdgeModuleCommands.Setup(c => c.Query(
+                        It.IsAny<Expression<Func<EdgeModuleCommand, bool>>>(),
+                        It.IsAny<int?>(),
+                        It.IsAny<IEnumerable<string>>(),
+                        It.IsAny<CancellationToken>()))
+                    .Returns(mockModuleCommands);
+
+            _ = this.mockEdgeModuleCommands
+                   .Setup(c => c.UpsertEntity(
+                    It.Is<EdgeModuleCommand>(x => x.RowKey == "Test-Command" && x.PartitionKey == iotEdgeModel.ModelId),
+                    It.IsAny<TableUpdateMode>(),
+                    It.IsAny<CancellationToken>()))
+               .Returns((Response)null);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeModuleCommands())
+               .Returns(this.mockEdgeModuleCommands.Object);
+
+            // Act
+            await edgeModelService.SaveModuleCommands(iotEdgeModel);
+
+            // Assert
+            this.mockEdgeModuleCommands.Verify(c => c.UpsertEntity(It.IsAny<EdgeModuleCommand>(), TableUpdateMode.Merge, default), Times.Once);
+            this.mockTableClientFactory.Verify(c => c.GetEdgeModuleCommands(), Times.Exactly(2));
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task SaveModuleCommandsShouldDeleteModuleCommandTemplates()
+        {
+            // Arrange
+            var edgeModelService = CreateEdgeModelService();
+
+            var modules = new List<IoTEdgeModule>()
+            {
+                new IoTEdgeModule
+                {
+                    ModuleName = "Test",
+                    Commands = new List<IoTEdgeModuleCommand>()
+                }
+            };
+
+            var iotEdgeModel = new IoTEdgeModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                EdgeModules = modules,
+            };
+
+            var mockModuleCommandResponse = this.mockRepository.Create<Response>();
+
+            var mockModuleCommands = Pageable<EdgeModuleCommand>.FromPages(new[]
+            {
+                Page<EdgeModuleCommand>.FromValues(new EdgeModuleCommand[1]
+                {
+                    new EdgeModuleCommand
+                    {
+                        PartitionKey = iotEdgeModel.ModelId,
+                        RowKey = "Test-Command",
+                        Timestamp = DateTime.Now,
+                        Name = "Command",
+                    }
+                }, null, mockModuleCommandResponse.Object)
+            });
+
+            var mockResponse = this.mockRepository.Create<Response>();
+
+            _ = this.mockEdgeModuleCommands.Setup(c => c.Query(
+                        It.IsAny<Expression<Func<EdgeModuleCommand, bool>>>(),
+                        It.IsAny<int?>(),
+                        It.IsAny<IEnumerable<string>>(),
+                        It.IsAny<CancellationToken>()))
+                    .Returns(mockModuleCommands);
+
+            _ = this.mockEdgeModuleCommands
+                   .Setup(c => c.DeleteEntityAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<ETag>(),
+                    It.IsAny<CancellationToken>()))
+               .ReturnsAsync(mockResponse.Object);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeModuleCommands())
+               .Returns(this.mockEdgeModuleCommands.Object);
+
+            // Act
+            await edgeModelService.SaveModuleCommands(iotEdgeModel);
+
+            // Assert
+            this.mockEdgeModuleCommands.Verify(c => c.DeleteEntityAsync(It.IsAny<string>(), It.IsAny<string>(), default, default), Times.Once);
+            this.mockTableClientFactory.Verify(c => c.GetEdgeModuleCommands(), Times.Exactly(2));
             this.mockRepository.VerifyAll();
         }
 

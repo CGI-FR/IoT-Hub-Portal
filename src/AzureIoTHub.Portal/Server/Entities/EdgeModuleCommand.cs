@@ -3,6 +3,9 @@
 
 namespace AzureIoTHub.Portal.Server.Entities
 {
+    /// <summary>
+    /// Represents an edge module command.
+    /// </summary>
     public class EdgeModuleCommand : EntityBase
     {
         /// <summary>
