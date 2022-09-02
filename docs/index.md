@@ -1,10 +1,3 @@
-[![Build & Test](https://github.com/CGI-FR/iot-hub-portal/actions/workflows/build.yml/badge.svg)](https://github.com/CGI-FR/iot-hub-portal/actions/workflows/build.yml)
-[![Deploy Staging](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/deploy_staging.yml/badge.svg)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/deploy_staging.yml)
-[![codecov](https://codecov.io/gh/CGI-FR/IoT-Hub-Portal/branch/main/graph/badge.svg?token=S1A59KMRV6)](https://codecov.io/gh/CGI-FR/IoT-Hub-Portal)
-[![Open Source Helpers](https://img.shields.io/github/contributors/CGI-FR/IoT-Hub-Portal)](https://img.shields.io/github/contributors/CGI-FR/IoT-Hub-Portal)
-[![Version](https://img.shields.io/github/v/release/CGI-FR/IoT-Hub-Portal)](https://img.shields.io/github/v/release/CGI-FR/IoT-Hub-Portal)
-[![License](https://img.shields.io/github/license/CGI-FR/IoT-Hub-Portal)](https://img.shields.io/github/v/release/CGI-FR/IoT-Hub-Portal)
-
 # IoT Hub Portal
 
 This project aims to provide a solution for handling IoT Devices easyly.
@@ -41,11 +34,12 @@ The template will deploy in your Azure subscription the Following resources:
 * Log Analytics (when opted in to use Azure Monitor)
 * Azure WebApp and Service Plan
 
-### Instructions 
+### Instructions
 
 1. Choose a solution prefix for your deployment.
 1. Use [Portal AD applications configuration](https://cgi-fr.github.io/IoT-Hub-Portal/stable/b2c-applications) page to configure your AD B2C Tenant.
     > You should have recorded the following information:
+
     > * OpenID authority: `<your-openid-authority>`
     > * OpenID metadata URL: `<your-openid-provider-metadata-url>`
     > * Client ID: `<your-client-id>`
@@ -56,7 +50,7 @@ The template will deploy in your Azure subscription the Following resources:
     [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Fmain%2Ftemplates%2Fazuredeploy.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Fmain%2Ftemplates%2FazuredeployUI.json)
 
 1. You will get to a page asking you to fill the following fields :
-    * **Resource Group**: A logical "folder" where all the template resource would be put into, just choose a meaningful name. 
+    * **Resource Group**: A logical "folder" where all the template resource would be put into, just choose a meaningful name.
     * **Location**: In which DataCenter the resources should be deployed. Make sure to choose a location where IoT Hub is available
     * **Unique Solution Prefix**: A string that would be used as prefix for all the resources name to ensure their uniqueness.
     * **Open Id Authority**: The OpenID authority used by the portal.
