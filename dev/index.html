@@ -183,20 +183,20 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
+<a class="md-nav__link" href="#features">
+    Features
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#prerequisites">
     Prerequisites
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#typical-architecture-deployment">
-    Typical architecture deployment
+<a class="md-nav__link" href="#quick-start">
+    Quick Start
   </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#step-by-step-instructions">
-    Step-By-Step instructions
-  </a>
-<nav aria-label="Step-By-Step instructions" class="md-nav">
+<nav aria-label="Quick Start" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#deployed-azure-resources">
@@ -210,6 +210,21 @@
 </li>
 </ul>
 </nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#known-issues-and-limitations">
+    Known Issues and Limitations
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#support">
+    Support
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#credits">
+    Credits
+  </a>
 </li>
 </ul>
 </nav>
@@ -279,20 +294,20 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
+<a class="md-nav__link" href="#features">
+    Features
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#prerequisites">
     Prerequisites
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#typical-architecture-deployment">
-    Typical architecture deployment
+<a class="md-nav__link" href="#quick-start">
+    Quick Start
   </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#step-by-step-instructions">
-    Step-By-Step instructions
-  </a>
-<nav aria-label="Step-By-Step instructions" class="md-nav">
+<nav aria-label="Quick Start" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#deployed-azure-resources">
@@ -307,6 +322,21 @@
 </ul>
 </nav>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#known-issues-and-limitations">
+    Known Issues and Limitations
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#support">
+    Support
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#credits">
+    Credits
+  </a>
+</li>
 </ul>
 </nav>
 </div>
@@ -318,23 +348,27 @@
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"></path></svg>
 </a>
 <h1 id="iot-hub-portal">IoT Hub Portal<a class="headerlink" href="#iot-hub-portal" title="Permanent link">¶</a></h1>
-<p><a href="https://gitpod.io/#https://github.com/CGI-FR/IoT-Hub-Portal/tree/docs/main"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a></p>
-<p>This project aims to provide a solution for handling IoT Devices easily.
-It relies on Azure IoT Hub for connectivity and device management.</p>
+<p>This project aims to provide a solution for handling IoT Devices easyly.
+It leverages on Azure IoT Hub for connectivity and device management.</p>
+<p><img alt="IoT Hub Portal Architecture" src="https://cgi-fr.github.io/IoT-Hub-Portal/stable/images/architecture.png"/></p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">¶</a></h2>
+<ul>
+<li>Portal Authentication</li>
+<li>IoT Device &amp; device Model management</li>
+<li>IoT Edge device management</li>
+<li>C2D Methods</li>
+<li>LoRA WAN device connectivity</li>
+</ul>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
 <p>The following should be completed before proceeding with the IoT Hub Portal development or deployment in your environment.</p>
 <ul>
 <li>You must have an Azure subscription. Get an <a href="https://azure.microsoft.com/en-us/offers/ms-azr-0044p/">Azure Free account</a> to get started.</li>
-<li>You must have an Identity Provider supporting OpenId protocol.
-    &gt; If you don't have existing Identity Provider, you can follow our dedicated page to setup an Azure AD B2C Tenant with its applications.
-    &gt; See <a href="b2c-applications">Azure AD B2C applications configuration</a> page.</li>
-<li>Understand how IoTEdge LoraWAN StarterKit work. Have a look at <a href="https://azure.github.io/iotedge-lorawan-starterkit">https://azure.github.io/iotedge-lorawan-starterkit</a> to get started.</li>
+<li>You must have configured an Azure AD B2C Tenant with applications. See <a href="https://cgi-fr.github.io/IoT-Hub-Portal/stable/b2c-applications">Portal AD applications configuration</a> page.</li>
+<li>Understandr how IoTEdge LoraWAN StarterKit work. Have a look at <a href="https://azure.github.io/iotedge-lorawan-starterkit">https://azure.github.io/iotedge-lorawan-starterkit</a> to get started.</li>
 </ul>
-<h2 id="typical-architecture-deployment">Typical architecture deployment<a class="headerlink" href="#typical-architecture-deployment" title="Permanent link">¶</a></h2>
-<p><img alt="Architecture" src="images/architecture.png"/></p>
-<h2 id="step-by-step-instructions">Step-By-Step instructions<a class="headerlink" href="#step-by-step-instructions" title="Permanent link">¶</a></h2>
+<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">¶</a></h2>
 <h3 id="deployed-azure-resources">Deployed Azure Resources<a class="headerlink" href="#deployed-azure-resources" title="Permanent link">¶</a></h3>
-<p>The template will deploy the following resources in your Azure subscription:</p>
+<p>The template will deploy in your Azure subscription the Following resources:</p>
 <ul>
 <li>IoT Hub</li>
 <li>Azure Function and Consumption Service Plan</li>
@@ -345,27 +379,25 @@ It relies on Azure IoT Hub for connectivity and device management.</p>
 </ul>
 <h3 id="instructions">Instructions<a class="headerlink" href="#instructions" title="Permanent link">¶</a></h3>
 <ol>
+<li>Choose a solution prefix for your deployment.</li>
 <li>
-<p>Choose a solution prefix for your deployment.</p>
+<p>Use <a href="https://cgi-fr.github.io/IoT-Hub-Portal/stable/b2c-applications">Portal AD applications configuration</a> page to configure your AD B2C Tenant.
+    &gt; You should have recorded the following information:
+    &gt;
+    &gt; * OpenID authority: <code>&lt;your-openid-authority&gt;</code>
+    &gt; * OpenID metadata URL: <code>&lt;your-openid-provider-metadata-url&gt;</code>
+    &gt; * Client ID: <code>&lt;your-client-id&gt;</code>
+    &gt; * API Client ID: <code>&lt;your-client-id&gt;</code></p>
 </li>
 <li>
-<p>Use the <a href="b2c-applications">Portal AD applications configuration</a> page to configure your AD B2C Tenant. You should save the following information:</p>
-<ul>
-<li>OpenID authority: <code>&lt;your-openid-authority&gt;</code></li>
-<li>OpenID metadata URL: <code>&lt;your-openid-provider-metadata-url&gt;</code></li>
-<li>Client ID: <code>&lt;your-client-id&gt;</code></li>
-<li>API Client ID: <code>&lt;your-client-id&gt;</code></li>
-</ul>
-</li>
-<li>
-<p>Press on the button below to start your Azure Deployment.</p>
+<p>Press on the button here below to start your Azure Deployment.</p>
 <p><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Fmain%2Ftemplates%2Fazuredeploy.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Fmain%2Ftemplates%2FazuredeployUI.json"><img alt="Deploy to Azure" src="https://aka.ms/deploytoazurebutton"/></a></p>
 </li>
 <li>
-<p>You will get to a page asking you to fill the following fields:</p>
+<p>You will get to a page asking you to fill the following fields :</p>
 <ul>
 <li><strong>Resource Group</strong>: A logical "folder" where all the template resource would be put into, just choose a meaningful name.</li>
-<li><strong>Location</strong>: In which data center the resources should be deployed. Make sure to choose a location where IoT Hub is available.</li>
+<li><strong>Location</strong>: In which Azure Region the resources should be deployed. Make sure to choose a location where IoT Hub is available</li>
 <li><strong>Unique Solution Prefix</strong>: A string that would be used as prefix for all the resources name to ensure their uniqueness.</li>
 <li><strong>Open Id Authority</strong>: The OpenID authority used by the portal.</li>
 <li><strong>OpenId Metadata URL</strong>: The OpenID metadata URL used by the portal.</li>
@@ -377,10 +409,19 @@ It relies on Azure IoT Hub for connectivity and device management.</p>
 <li><strong>Region</strong>:  In what region are you operating your device (currently only EU868 and US915 is supported)</li>
 </ul>
 <blockquote>
-<p>See: <a href="https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure">https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure</a> for more information about the LoRaWan IoT Hub and Azure deployment.</p>
+<p>see: <a href="https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure">https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure</a> for more information about the LoRaWan IoT Hub and Azure deployment.</p>
 </blockquote>
 </li>
 </ol>
+<h2 id="known-issues-and-limitations">Known Issues and Limitations<a class="headerlink" href="#known-issues-and-limitations" title="Permanent link">¶</a></h2>
+<p>Refer to <a href="knownissues">Known Issues</a> for known issues, gotchas and limitations.</p>
+<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
+<p>This is an open source solution.
+For bugs and issues with the codebase please log an issue in this repo.</p>
+<h2 id="credits">Credits<a class="headerlink" href="#credits" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="https://github.com/Azure/iotedge-lorawan-starterkit">Azure IoT Edge LoRaWAN Starter Kit</a></li>
+</ul>
 </article>
 </div>
 </div>
