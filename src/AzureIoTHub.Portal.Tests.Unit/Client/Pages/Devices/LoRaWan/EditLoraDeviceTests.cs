@@ -4,7 +4,6 @@
 namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 {
     using System;
-    using AzureIoTHub.Portal.Client.Pages.DeviceModels.LoRaWAN;
     using System.Collections.Generic;
     using AzureIoTHub.Portal.Client.Pages.Devices.LoRaWAN;
     using AzureIoTHub.Portal.Client.Services;
@@ -27,7 +26,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     {
         private Mock<ISnackbar> mockSnackbarService;
         private Mock<ILoRaWanDeviceClientService> mockLoRaWanDeviceClientService;
-
         public override void Setup()
         {
             base.Setup();
@@ -61,11 +59,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             var validator = new LoRaDeviceDetailsValidator();
 
             // Act
-
-            var cut = RenderComponent<CreateLoraDevice>(
-                ComponentParameter.CreateParameter(nameof(CreateLoraDevice.LoRaDevice), deviceDetails),
-                ComponentParameter.CreateParameter(nameof(CreateLoraDevice.loraModel), mockLoRaModel),
-                ComponentParameter.CreateParameter(nameof(CreateLoraDevice.LoraValidator), validator));
+            var cut = RenderComponent<EditLoraDevice>(
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), deviceDetails),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), mockLoRaModel),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator));
 
 
             // Assert
@@ -93,14 +90,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             var validator = new LoRaDeviceDetailsValidator();
 
             // Act
-            var cut = RenderComponent<CreateLoraDevice>(
-            ComponentParameter.CreateParameter(nameof(CreateLoraDevice.LoRaDevice), deviceDetails),
-            ComponentParameter.CreateParameter(nameof(CreateLoraDevice.loraModel), mockLoRaModel),
-            ComponentParameter.CreateParameter(nameof(CreateLoraDevice.LoraValidator), validator));
-
+            var cut = RenderComponent<EditLoraDevice>(
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), deviceDetails),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), mockLoRaModel),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator));
 
             // Assert
-
             cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.AppSKey, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.AppSKey)}").GetAttribute("value")));
             cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.NwkSKey, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.NwkSKey)}").GetAttribute("value")));
             cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.DevAddr, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.DevAddr)}").GetAttribute("value")));
@@ -110,13 +105,28 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         public void EditLoRaDevicePageShouldBeRenderedProperly()
         {
             // Arrange
-            var LoRaModel = new LoRaDeviceModel();
-            var commands = new List<DeviceModelCommand>();
+
+            var mockLoRaModel = new LoRaDeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                UseOTAA = false
+            };
+
+            var deviceDetails= new LoRaDeviceDetails()
+            {
+                DeviceID = Guid.NewGuid().ToString(),
+                ModelId = mockLoRaModel.ModelId,
+                AppSKey = Guid.NewGuid().ToString(),
+                NwkSKey = Guid.NewGuid().ToString(),
+                DevAddr = Guid.NewGuid().ToString(),
+            };
+            var validator = new LoRaDeviceDetailsValidator();
 
             // Act
-            var cut = RenderComponent<EditLoraDeviceModel>(
-                ComponentParameter.CreateParameter("LoRaDeviceModel", LoRaModel),
-                ComponentParameter.CreateParameter("Commands", commands));
+            var cut = RenderComponent<EditLoraDevice>(
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), deviceDetails),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), mockLoRaModel),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator));
 
             // Assert   
             cut.WaitForAssertion(() => cut.FindAll(".mud-expand-panel").Count.Should().Be(3));
@@ -228,6 +238,42 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             this.mockLoRaWanDeviceClientService.Verify(c => c.ExecuteCommand(device.DeviceID, commands.Single().Name), Times.Once);
             this.mockSnackbarService.Verify(c => c.Add(It.Is<string>(x => x.Contains($"{commands.Single().Name} has been successfully executed!", StringComparison.OrdinalIgnoreCase)), Severity.Success, It.IsAny<Action<SnackbarOptions>>()), Times.Once);
+        }
+
+        [Test]
+        public void EditLoRaDeviceDetailPageShouldBeRenderedProperly()
+        {
+            // Arrange
+            var mockLoRaModel = new LoRaDeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                UseOTAA = false
+            };
+
+            var deviceDetails= new LoRaDeviceDetails()
+            {
+                DeviceID = Guid.NewGuid().ToString(),
+                ModelId = mockLoRaModel.ModelId,
+                AppSKey = Guid.NewGuid().ToString(),
+                NwkSKey = Guid.NewGuid().ToString(),
+                DevAddr = Guid.NewGuid().ToString(),
+                Deduplication = Guid.NewGuid().ToString(),
+                ClassType = Guid.NewGuid().ToString(),
+            };
+            var validator = new LoRaDeviceDetailsValidator();
+            var LoraDevice = new LoRaDeviceDetails();
+
+
+            // Act
+            var cut = RenderComponent<EditLoraDevice>(
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), deviceDetails),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), mockLoRaModel),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator));
+
+
+            // Assert             
+            Assert.AreEqual(LoraDevice.Deduplication, Enum.Parse<DeduplicationMode>(cut.WaitForElement($"#{nameof(LoRaDeviceDetails.Deduplication)}").GetAttribute("value")));
+            Assert.AreEqual(LoraDevice.ClassType, Enum.Parse<DeduplicationMode>(cut.WaitForElement($"#{nameof(LoRaDeviceDetails.Deduplication)}").GetAttribute("value")));
         }
     }
 }
