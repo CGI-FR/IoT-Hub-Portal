@@ -45,6 +45,7 @@ Before getting started, it is better to master the tools below:
 Once you know the basics of these technologies and tools, you must follow these last steps to set up your working environment.
 
 * IoT Hub Portal uses containers to work correctly. [Docker](https://www.docker.com/) is required to launch this project (version >= 4.11.1).
+
 > Once you have download Docker, you must install the WSL 2 Linux kernel. To do that, please refers to the official [Microsoft documentation](https://aka.ms/wsl2kernel). You can choose the linux distribution of your choice, for example Ubuntu.
 
 * Node.js is used to run JavaScript code in the portal. You can download the latest version [here](https://nodejs.org/en/).The minimal version required is 16.17.0.
