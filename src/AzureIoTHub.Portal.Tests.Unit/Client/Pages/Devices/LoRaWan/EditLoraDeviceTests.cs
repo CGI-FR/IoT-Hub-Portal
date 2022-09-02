@@ -19,6 +19,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using NUnit.Framework;
     using UnitTests.Bases;
     using UnitTests.Mocks;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     [TestFixture]
     public class EditLoraDeviceTests : BlazorUnitTest
@@ -118,6 +120,114 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             // Assert   
             cut.WaitForAssertion(() => cut.FindAll(".mud-expand-panel").Count.Should().Be(3));
+        }
+
+        [Test]
+        public void WhenDeviceNeverConnectedCommandsShouldBeDisabled()
+        {
+            // Arrange
+            var model = new LoRaDeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+            };
+            var commands = new List<DeviceModelCommand>
+            {
+                new DeviceModelCommand
+                {
+                    Name = Guid.NewGuid().ToString()
+                }
+            };
+
+            var device = new LoRaDeviceDetails()
+            {
+                ModelId = model.ModelId
+            };
+
+            // Act
+            var cut = RenderComponent<EditLoraDevice>(
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), device),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), model),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.Commands), commands));
+
+            // Assert
+            cut.WaitForState(() => cut.Find("#CommandNotAvailableMessage").TextContent.Contains("You cannot send command at this moment.", StringComparison.OrdinalIgnoreCase));
+            cut.WaitForAssertion(() => cut.FindAll("#LoRaWANCommandsTable tbody tr").Count.Should().Be(1));
+            Assert.IsTrue(cut.Find("#LoRaWANCommandsTable tbody tr:first-child #ExecuteCommand").HasAttribute("disabled"));
+        }
+
+        [Test]
+        public void WhenDeviceAlteadyConnectedCommandsShouldBeEnabled()
+        {
+            // Arrange
+            var model = new LoRaDeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+            };
+            var commands = new List<DeviceModelCommand>
+            {
+                new DeviceModelCommand
+                {
+                    Name = Guid.NewGuid().ToString()
+                }
+            };
+
+            var device = new LoRaDeviceDetails()
+            {
+                ModelId = model.ModelId,
+                AlreadyLoggedInOnce = true
+            };
+
+            // Act
+            var cut = RenderComponent<EditLoraDevice>(
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), device),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), model),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.Commands), commands));
+
+            // Assert
+            cut.WaitForAssertion(() => cut.FindAll("#LoRaWANCommandsTable tbody tr").Count.Should().Be(1));
+            Assert.IsFalse(cut.Find("#LoRaWANCommandsTable tbody tr:first-child #ExecuteCommand").HasAttribute("disabled"));
+        }
+
+        [Test]
+        public void WhenClickToSendCommandShouldExecuteCommandToService()
+        {
+            // Arrange
+            var model = new LoRaDeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+            };
+            var commands = new List<DeviceModelCommand>
+            {
+                new DeviceModelCommand
+                {
+                    Name = Guid.NewGuid().ToString()
+                }
+            };
+
+            var device = new LoRaDeviceDetails()
+            {
+                ModelId = model.ModelId,
+                AlreadyLoggedInOnce = true
+            };
+
+            _ = this.mockLoRaWanDeviceClientService.Setup(c => c.ExecuteCommand(device.DeviceID, commands.Single().Name))
+                            .Returns(Task.CompletedTask);
+
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>()))
+                .Returns((Snackbar)null);
+
+            // Act
+            var cut = RenderComponent<EditLoraDevice>(
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), device),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), model),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.Commands), commands));
+
+            // Assert
+            cut.WaitForAssertion(() => cut.FindAll("#LoRaWANCommandsTable tbody tr").Count.Should().Be(1));
+            cut.WaitForElement("#LoRaWANCommandsTable tbody tr:first-child #ExecuteCommand").Click();
+
+            this.mockLoRaWanDeviceClientService.Verify(c => c.ExecuteCommand(device.DeviceID, commands.Single().Name), Times.Once);
+            this.mockSnackbarService.Verify(c => c.Add(It.Is<string>(x => x.Contains($"{commands.Single().Name} has been successfully executed!", StringComparison.OrdinalIgnoreCase)), Severity.Success, It.IsAny<Action<SnackbarOptions>>()), Times.Once);
         }
     }
 }

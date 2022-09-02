@@ -124,10 +124,10 @@
                     @if (!LoRaDevice.AlreadyLoggedInOnce)
                     {
                         <MudItem xs="12" Class="mb-4">
-                            <MudText Typo="Typo.caption" Style="color: red">Device hasn't joined the network. You cannot send command at this moment.</MudText>
+                            <MudText id="CommandNotAvailableMessage" Typo="Typo.caption" Style="color: red">Device hasn't joined the network. You cannot send command at this moment.</MudText>
                         </MudItem>
                     }
-                    <MudTable Items="@Commands" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                    <MudTable id="LoRaWANCommandsTable" Items="@Commands" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                         <ColGroup>
                             <col style="width: 70%;" />
                             <col style="width: 30%;" />
@@ -142,7 +142,7 @@
                             </MudTd>
                             <MudTd Style="text-align: center">
                                 <MudTooltip Text="Send command">
-                                    <MudIconButton Title="Execute" Color="Color.Default" Disabled="@(!LoRaDevice.AlreadyLoggedInOnce || isProcessing)" Icon="@Icons.Material.Filled.Send" Size="Size.Medium" OnClick="@(() => ExecuteMethod(CommandContext))"></MudIconButton>
+                                    <MudIconButton id="ExecuteCommand" Title="Execute" Color="Color.Default" Disabled="@(!LoRaDevice.AlreadyLoggedInOnce || isProcessing)" Icon="@Icons.Material.Filled.Send" Size="Size.Medium" OnClick="@(() => ExecuteMethod(CommandContext))"></MudIconButton>
                                 </MudTooltip>
                             </MudTd>
                         </RowTemplate>
