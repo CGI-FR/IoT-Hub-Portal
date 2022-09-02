@@ -119,8 +119,5 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Assert   
             cut.WaitForAssertion(() => cut.FindAll(".mud-expand-panel").Count.Should().Be(3));
         }
-
-        
     }
-
 }
