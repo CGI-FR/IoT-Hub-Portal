@@ -64,7 +64,6 @@ The template will deploy in your Azure subscription the Following resources:
 
     > see: [https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure](https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure) for more information about the LoRaWan IoT Hub and Azure deployment.
 
-
 ## Known Issues and Limitations
 
 Refer to [Known Issues](knownissues) for known issues, gotchas and limitations.
