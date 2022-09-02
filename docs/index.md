@@ -51,7 +51,7 @@ The template will deploy in your Azure subscription the Following resources:
 
 1. You will get to a page asking you to fill the following fields :
     * **Resource Group**: A logical "folder" where all the template resource would be put into, just choose a meaningful name.
-    * **Location**: In which DataCenter the resources should be deployed. Make sure to choose a location where IoT Hub is available
+    * **Location**: In which Azure Region the resources should be deployed. Make sure to choose a location where IoT Hub is available
     * **Unique Solution Prefix**: A string that would be used as prefix for all the resources name to ensure their uniqueness.
     * **Open Id Authority**: The OpenID authority used by the portal.
     * **OpenId Metadata URL**: The OpenID metadata URL used by the portal.
