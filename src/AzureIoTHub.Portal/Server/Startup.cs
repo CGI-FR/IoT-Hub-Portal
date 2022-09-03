@@ -99,7 +99,9 @@ namespace AzureIoTHub.Portal.Server
                 });
 
             _ = services
-                .AddDbContext<PortalDbContext>(opts => opts.UseNpgsql(configuration.PostgreSQLConnectionString));
+                .AddDbContextPool<PortalDbContext>(opts => opts.UseNpgsql(configuration.PostgreSQLConnectionString));
+
+            _ = services.AddScoped<IUnitOfWork, UnitOfWork<PortalDbContext>>();
 
             _ = services.AddSingleton(configuration);
             _ = services.AddSingleton(new PortalMetric());
