@@ -7,6 +7,8 @@ namespace AzureIoTHub.Portal.Server.Model
 
     public class PortalDbContext : DbContext
     {
+        public DbSet<DeviceModelProperty> DeviceModelProperties { get; set; }
+
         public PortalDbContext(DbContextOptions<PortalDbContext> options)
             : base(options)
         { }
