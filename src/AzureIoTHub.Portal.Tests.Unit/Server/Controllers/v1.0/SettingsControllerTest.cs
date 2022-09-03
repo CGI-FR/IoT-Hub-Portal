@@ -5,15 +5,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
     using System;
     using System.Globalization;
-    using Models.v10;
+    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Identity;
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
+    using Models.v10;
     using Moq;
     using NUnit.Framework;
-    using Portal.Server;
 
     [TestFixture]
     public class SettingsControllerTest

@@ -11,7 +11,8 @@ namespace AzureIoTHub.Portal.Server
     using AutoMapper;
     using Azure;
     using Azure.Storage.Blobs;
-    using AzureIoTHub.Portal.Server.Model;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Infrastructure;
     using Exceptions;
     using Extensions;
     using Factories;
@@ -68,7 +69,7 @@ namespace AzureIoTHub.Portal.Server
         {
             ArgumentNullException.ThrowIfNull(services, nameof(services));
 
-            var configuration = ConfigHandler.Create(HostEnvironment, Configuration);
+            var configuration = ConfigHandlerFactory.Create(HostEnvironment, Configuration);
 
             _ = services.Configure<ClientApiIndentityOptions>(opts =>
             {

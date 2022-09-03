@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Filters
 {
     using System;
+    using AzureIoTHub.Portal.Domain;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;
     using Microsoft.Extensions.DependencyInjection;

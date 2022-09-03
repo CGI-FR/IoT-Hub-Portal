@@ -1,8 +1,10 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Model
+namespace AzureIoTHub.Portal.Infrastructure.Repositories
 {
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Base;
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -16,14 +18,16 @@ namespace AzureIoTHub.Portal.Server.Model
             this.context = context;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public IEnumerable<T> GetAll()
         {
-            return await this.context.Set<T>().ToListAsync();
+            return this.context.Set<T>()
+                                .ToList<T>();
         }
 
         public async Task<T> GetByIdAsync(object id)
         {
-            return await this.context.Set<T>().FindAsync(id);
+            var t = await this.context.Set<T>().FindAsync(id);
+            return t;
         }
 
         public async Task InsertAsync(T obj)
