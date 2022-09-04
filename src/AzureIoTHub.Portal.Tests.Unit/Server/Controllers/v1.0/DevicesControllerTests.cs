@@ -10,11 +10,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
-    using Models.v10;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Controllers.V10;
-    using AzureIoTHub.Portal.Server.Entities;
-    using AzureIoTHub.Portal.Server.Exceptions;
-    using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
@@ -30,6 +30,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Primitives;
+    using Models.v10;
     using Moq;
     using NUnit.Framework;
 
@@ -44,7 +45,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         private Mock<IDeviceService> mockDeviceService;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceTwinMapper<DeviceListItem, DeviceDetails>> mockDeviceTwinMapper;
+        private Mock<IDeviceModelPropertiesRepository> mockDeviceModelPropertiesRepository;
         private Mock<ITableClientFactory> mockTableClientFactory;
+        private Mock<IUnitOfWork> mockUnitOfWork;
 
         [SetUp]
         public void SetUp()
@@ -58,16 +61,20 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
+            this.mockDeviceModelPropertiesRepository = this.mockRepository.Create<IDeviceModelPropertiesRepository>();
+            this.mockUnitOfWork = this.mockRepository.Create<IUnitOfWork>();
         }
 
         private DevicesController CreateDevicesController()
         {
             return new DevicesController(
+                this.mockUnitOfWork.Object,
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
                 this.mockDeviceTagService.Object,
                 this.mockProvisioningServiceManager.Object,
                 this.mockDeviceTwinMapper.Object,
+                this.mockDeviceModelPropertiesRepository.Object,
                 this.mockTableClientFactory.Object)
             {
                 Url = this.mockUrlHelper.Object
@@ -482,40 +489,27 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
             DeviceHelper.SetDesiredProperty(twin, "writable", "ccc");
 
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-            var mockResponse = this.mockRepository.Create<Response>();
-
             _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
                 .ReturnsAsync(twin);
 
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
-                .Returns(mockTableClient.Object);
-
-            _ = mockTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
-                    It.Is<string>(x => x == "PartitionKey eq 'bbb'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                    .Returns(AsyncPageable<DeviceModelProperty>.FromPages(new[]
-                    {
-                        Page<DeviceModelProperty>.FromValues(new[]
+            _ = this.mockDeviceModelPropertiesRepository.Setup(c => c.GetModelProperties("bbb"))
+                .ReturnsAsync(new[]
                         {
                             new DeviceModelProperty
                             {
-                                RowKey = Guid.NewGuid().ToString(),
-                                PartitionKey = "bbb",
+                                Id = Guid.NewGuid().ToString(),
+                                ModelId = "bbb",
                                 IsWritable = true,
                                 Name = "writable",
                             },
                             new DeviceModelProperty
                             {
-                                RowKey = Guid.NewGuid().ToString(),
-                                PartitionKey = "bbb",
+                                Id = Guid.NewGuid().ToString(),
+                                ModelId = "bbb",
                                 IsWritable = false,
                                 Name = "notwritable",
                             }
-                        }, null, mockResponse.Object)
-                    }));
+                        });
 
             // Act
             var response = await devicesController.GetProperties("aaa");
@@ -541,19 +535,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
             DeviceHelper.SetDesiredProperty(twin, "writable", "ccc");
 
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-
             _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
                 .ReturnsAsync(twin);
 
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
-                .Returns(mockTableClient.Object);
 
-            _ = mockTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
-                    It.Is<string>(x => x == "PartitionKey eq 'bbb'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
+            _ = this.mockDeviceModelPropertiesRepository.Setup(c => c.GetModelProperties("bbb"))
                     .Throws(new RequestFailedException("test"));
 
             // Act
@@ -573,9 +559,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
 
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-            var mockResponse = this.mockRepository.Create<Response>();
-
             _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
                 .ReturnsAsync(twin);
 
@@ -583,27 +566,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                     It.Is<Twin>(c => c == twin)))
                 .ReturnsAsync(twin);
 
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
-                .Returns(mockTableClient.Object);
-
-            _ = mockTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
-                    It.Is<string>(x => x == "PartitionKey eq 'bbb'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                    .Returns(AsyncPageable<DeviceModelProperty>.FromPages(new[]
-                    {
-                        Page<DeviceModelProperty>.FromValues(new[]
-                        {
-                            new DeviceModelProperty
+            _ = this.mockDeviceModelPropertiesRepository.Setup(c => c.GetModelProperties("bbb"))
+                    .ReturnsAsync(new[]
                             {
-                                RowKey = Guid.NewGuid().ToString(),
-                                PartitionKey = "bbb",
-                                IsWritable = true,
-                                Name = "writable",
-                            }
-                        }, null, mockResponse.Object)
-                    }));
+                                new DeviceModelProperty
+                                {
+                                    Id = Guid.NewGuid().ToString(),
+                                    ModelId = "bbb",
+                                    IsWritable = true,
+                                    Name = "writable",
+                                }
+                            });
 
             // Act
             var response = await devicesController.SetProperties("aaa", new[]
@@ -633,19 +606,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
 
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-
             _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
                 .ReturnsAsync(twin);
 
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
-                .Returns(mockTableClient.Object);
-
-            _ = mockTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
-                    It.Is<string>(x => x == "PartitionKey eq 'bbb'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
+            _ = this.mockDeviceModelPropertiesRepository.Setup(c => c.GetModelProperties("bbb"))
                 .Throws(new RequestFailedException("test"));
 
             // Act
@@ -672,9 +636,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
 
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-            var mockResponse = this.mockRepository.Create<Response>();
-
             _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
                 .ReturnsAsync(twin);
 
@@ -682,27 +643,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 It.Is<Twin>(c => c == twin)))
             .ReturnsAsync(twin);
 
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
-                .Returns(mockTableClient.Object);
-
-            _ = mockTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
-                    It.Is<string>(x => x == "PartitionKey eq 'bbb'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                    .Returns(AsyncPageable<DeviceModelProperty>.FromPages(new[]
-                    {
-                        Page<DeviceModelProperty>.FromValues(new[]
-                        {
-                            new DeviceModelProperty
+            _ = this.mockDeviceModelPropertiesRepository.Setup(c => c.GetModelProperties("bbb"))
+                    .ReturnsAsync(new[]
                             {
-                                RowKey = Guid.NewGuid().ToString(),
-                                PartitionKey = "bbb",
+                        new DeviceModelProperty
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ModelId = "bbb",
                                 IsWritable = false,
                                 Name = "notwritable",
-                            }
-                        }, null, mockResponse.Object)
-                    }));
+                            } });
 
             // Act
             var response = await devicesController.SetProperties("aaa", new[]
@@ -732,9 +682,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
 
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-            var mockResponse = this.mockRepository.Create<Response>();
-
             _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
                 .ReturnsAsync(twin);
 
@@ -742,27 +689,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 It.Is<Twin>(c => c == twin)))
             .ReturnsAsync(twin);
 
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
-                .Returns(mockTableClient.Object);
 
-            _ = mockTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
-                    It.Is<string>(x => x == "PartitionKey eq 'bbb'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                    .Returns(AsyncPageable<DeviceModelProperty>.FromPages(new[]
-                    {
-                        Page<DeviceModelProperty>.FromValues(new[]
-                        {
-                            new DeviceModelProperty
+            _ = this.mockDeviceModelPropertiesRepository.Setup(c => c.GetModelProperties("bbb"))
+                    .ReturnsAsync(new[]
                             {
-                                RowKey = Guid.NewGuid().ToString(),
-                                PartitionKey = "bbb",
-                                IsWritable = true,
-                                Name = "writable",
-                            }
-                        }, null, mockResponse.Object)
-                    }));
+                                new DeviceModelProperty
+                                {
+                                    Id = Guid.NewGuid().ToString(),
+                                    ModelId = "bbb",
+                                    IsWritable = true,
+                                    Name = "writable",
+                                }
+                            });
 
             // Act
             var response = await devicesController.SetProperties("aaa", new[]

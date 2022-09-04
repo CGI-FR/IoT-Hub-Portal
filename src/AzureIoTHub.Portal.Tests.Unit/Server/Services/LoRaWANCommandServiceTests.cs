@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
+namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
 {
     using System;
     using System.Collections.Generic;
@@ -9,15 +9,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
-    using Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Exceptions;
-    using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
+    using Models.v10.LoRaWAN;
     using Moq;
     using NUnit.Framework;
 

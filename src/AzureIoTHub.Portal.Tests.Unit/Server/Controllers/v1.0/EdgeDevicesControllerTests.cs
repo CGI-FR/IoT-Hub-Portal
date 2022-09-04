@@ -7,18 +7,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Models.v10;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
-    using Moq;
-    using NUnit.Framework;
-    using Microsoft.Azure.Devices.Shared;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
-    using AzureIoTHub.Portal.Server.Exceptions;
+    using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Extensions.Logging;
+    using Models.v10;
+    using Moq;
+    using NUnit.Framework;
 
     [TestFixture]
     public class EdgeDevicesControllerTests
