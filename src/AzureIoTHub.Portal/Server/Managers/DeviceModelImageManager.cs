@@ -12,7 +12,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
     using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Server.Exceptions;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using Microsoft.Extensions.Logging;
 
     public class DeviceModelImageManager : IDeviceModelImageManager

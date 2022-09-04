@@ -5,13 +5,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
 {
     using System;
     using System.Collections.Generic;
-    using Models.v10;
+    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Server.Extensions;
-    using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using Microsoft.Azure.Devices.Shared;
+    using Models.v10;
     using Moq;
     using NUnit.Framework;
 

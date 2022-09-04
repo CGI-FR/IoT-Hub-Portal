@@ -6,11 +6,19 @@ namespace AzureIoTHub.Portal.Server.Factories
     using System;
     using Azure;
     using Azure.Data.Tables;
-    using Exceptions;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
 
     public class TableClientFactory : ITableClientFactory
     {
         private readonly string connectionString;
+
+        private const string DeviceCommandTableName = "DeviceCommands";
+        private const string DeviceTemplateTableName = "DeviceTemplates";
+        private const string EdgeDeviceTemplateTableName = "EdgeDeviceTemplates";
+        private const string DeviceTagSettingTableName = "DeviceTagSettings";
+        private const string DeviceTemplatePropertiesTableName = "DeviceTemplateProperties";
+        private const string EdgeModuleCommandsTableName = "EdgeModuleCommands";
 
         public TableClientFactory(string connectionString)
         {
@@ -19,22 +27,22 @@ namespace AzureIoTHub.Portal.Server.Factories
 
         public TableClient GetDeviceCommands()
         {
-            return CreateClient(ITableClientFactory.DeviceCommandTableName);
+            return CreateClient(DeviceCommandTableName);
         }
 
         public TableClient GetDeviceTemplates()
         {
-            return CreateClient(ITableClientFactory.DeviceTemplateTableName);
+            return CreateClient(DeviceTemplateTableName);
         }
 
         public TableClient GetEdgeDeviceTemplates()
         {
-            return CreateClient(ITableClientFactory.EdgeDeviceTemplateTableName);
+            return CreateClient(EdgeDeviceTemplateTableName);
         }
 
         public TableClient GetDeviceTagSettings()
         {
-            return CreateClient(ITableClientFactory.DeviceTagSettingTableName);
+            return CreateClient(DeviceTagSettingTableName);
         }
 
         private TableClient CreateClient(string tableName)
@@ -57,7 +65,7 @@ namespace AzureIoTHub.Portal.Server.Factories
 
         public TableClient GetDeviceTemplateProperties()
         {
-            return CreateClient(ITableClientFactory.DeviceTemplatePropertiesTableName);
+            return CreateClient(DeviceTemplatePropertiesTableName);
         }
 
         public TableClient GetTemplatesHealthCheck()
@@ -67,7 +75,7 @@ namespace AzureIoTHub.Portal.Server.Factories
 
         public TableClient GetEdgeModuleCommands()
         {
-            return CreateClient(ITableClientFactory.EdgeModuleCommandsTableName);
+            return CreateClient(EdgeModuleCommandsTableName);
         }
     }
 }

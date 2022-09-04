@@ -3,19 +3,19 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using Azure.Data.Tables;
-    using Azure;
-    using AzureIoTHub.Portal.Models.v10;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using AzureIoTHub.Portal.Server.Exceptions;
-    using AzureIoTHub.Portal.Server.Factories;
+    using System.Threading.Tasks;
+    using Azure;
+    using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Server.Entities;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using Microsoft.AspNetCore.Http;
-    using System.Threading.Tasks;
-    using System;
-    using AzureIoTHub.Portal.Server.Entities;
 
     public class EdgeModelService : IEdgeModelService
     {

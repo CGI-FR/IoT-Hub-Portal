@@ -5,7 +5,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 {
     using System;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Domain.Base;
+    using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Infrastructure;
     using AzureIoTHub.Portal.Infrastructure.Repositories;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -32,7 +33,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
         public void GetAllTest()
         {
             // Arrange
-            var instance = new GenericRepository<MockEntity>(SetupDbContext());
+            var instance = new GenericRepository<DeviceModelProperty>(SetupDbContext());
 
             // Act
             var result = instance.GetAll();
@@ -49,9 +50,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
             var entityId = Guid.NewGuid().ToString();
 
             var context = SetupDbContext();
-            var instance = new GenericRepository<MockEntity>(context);
+            var instance = new GenericRepository<DeviceModelProperty>(context);
 
-            _ = context.Add(new MockEntity()
+            _ = context.Add(new DeviceModelProperty()
             {
                 Id = entityId
             });
@@ -70,12 +71,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
             var entityId = Guid.NewGuid().ToString();
 
             var context = SetupDbContext();
-            var instance = new GenericRepository<MockEntity>(context);
+            var instance = new GenericRepository<DeviceModelProperty>(context);
 
             // Act
-            await instance.InsertAsync(new MockEntity()
+            await instance.InsertAsync(new DeviceModelProperty()
             {
-                Id = entityId
+                Id = entityId,
+                Name = string.Empty,
+                DisplayName = string.Empty,
+                ModelId = string.Empty
             });
 
             // Assert
@@ -91,22 +95,26 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 
             var firstContext = SetupDbContext();
 
-            _ = firstContext.Add(new MockEntity()
+            _ = firstContext.Add(new DeviceModelProperty()
             {
                 Id = entityId,
-                Name = "Name1"
+                Name = "Name1",
+                DisplayName = string.Empty,
+                ModelId = string.Empty
             });
 
             _ = firstContext.SaveChanges();
 
             var context = SetupDbContext();
-            var instance = new GenericRepository<MockEntity>(context);
+            var instance = new GenericRepository<DeviceModelProperty>(context);
 
             // Act
-            var updated = new MockEntity()
+            var updated = new DeviceModelProperty()
             {
                 Id = entityId,
-                Name = "Name2"
+                Name = "Name2",
+                DisplayName = string.Empty,
+                ModelId = string.Empty
             };
 
             instance.Update(updated);
@@ -123,47 +131,35 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 
             var firstContext = SetupDbContext();
 
-            _ = firstContext.Add(new MockEntity()
+            _ = firstContext.Add(new DeviceModelProperty()
             {
                 Id = entityId,
-                Name = "Name1"
+                Name = "Name1",
+                DisplayName = string.Empty,
+                ModelId = string.Empty
             });
 
             _ = firstContext.SaveChanges();
 
             var context = SetupDbContext();
-            var instance = new GenericRepository<MockEntity>(context);
+            var instance = new GenericRepository<DeviceModelProperty>(context);
 
             // Act
             instance.Delete(entityId);
             _ = context.SaveChanges();
 
             // Assert
-            Assert.IsNull(context.Set<MockEntity>().Find(entityId));
+            Assert.IsNull(context.Set<DeviceModelProperty>().Find(entityId));
         }
 
-        public class MockEntity : EntityBase
+        private static PortalDbContext SetupDbContext()
         {
-            public string Name { get; set; }
-        }
-
-        public class MockContext : DbContext
-        {
-            public DbSet<MockEntity> Entities { get; set; }
-
-            public MockContext(DbContextOptions<MockContext> options)
-                : base(options)
-            { }
-        }
-
-        private static MockContext SetupDbContext()
-        {
-            var contextOptions = new DbContextOptionsBuilder<MockContext>()
+            var contextOptions = new DbContextOptionsBuilder<PortalDbContext>()
                    .UseInMemoryDatabase("TestContext")
                    .ConfigureWarnings(b => b.Ignore(InMemoryEventId.TransactionIgnoredWarning))
                    .Options;
 
-            return new MockContext(contextOptions);
+            return new PortalDbContext(contextOptions);
         }
     }
 }

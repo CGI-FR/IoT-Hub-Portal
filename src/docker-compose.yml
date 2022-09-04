@@ -6,6 +6,8 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: postgrePassword
+    ports:
+      - 5432:5432
   azureiothub.portal.server:
     image: ${DOCKER_REGISTRY-}azureiothubportalserver
     build:

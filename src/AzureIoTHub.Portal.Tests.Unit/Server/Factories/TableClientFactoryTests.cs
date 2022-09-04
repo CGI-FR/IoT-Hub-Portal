@@ -4,7 +4,7 @@
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Factories
 {
     using System;
-    using AzureIoTHub.Portal.Server.Exceptions;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Factories;
     using FluentAssertions;
     using NUnit.Framework;

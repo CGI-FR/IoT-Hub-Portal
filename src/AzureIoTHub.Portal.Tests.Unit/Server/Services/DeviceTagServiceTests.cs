@@ -10,14 +10,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using Models.v10;
     using FluentAssertions;
+    using Models.v10;
     using Moq;
     using NUnit.Framework;
-    using Portal.Server.Exceptions;
 
     [TestFixture]
     public class DeviceTagServiceTests
