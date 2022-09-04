@@ -3,21 +3,21 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using AzureIoTHub.Portal.Models.v10;
-    using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Server.Managers;
-    using Microsoft.Azure.Devices;
-    using System.Collections.Generic;
-    using AzureIoTHub.Portal.Server.Mappers;
-    using Microsoft.Azure.Devices.Shared;
-    using Newtonsoft.Json.Linq;
-    using System.Linq;
     using System;
-    using Newtonsoft.Json;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
-    using AzureIoTHub.Portal.Server.Exceptions;
+    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Server.Mappers;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Shared;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     public class EdgeDevicesService : IEdgeDevicesService
     {

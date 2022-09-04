@@ -7,10 +7,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
     using System.Threading;
     using Azure;
     using Azure.Data.Tables;
-    using Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
+    using Models.v10.LoRaWAN;
     using Moq;
     using NUnit.Framework;
 

@@ -66,6 +66,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
         public async Task DeleteConfig(string configurationId)
         {
             await this.deviceConfigurationsService.DeleteConfigurationAsync(configurationId);
+                    DevicePropertyType.Float => float.TryParse(item.Value, out var floatResult) ? floatResult : null,
+                    DevicePropertyType.Integer => int.TryParse(item.Value, out var intResult) ? intResult : null,
+                    DevicePropertyType.Long => long.TryParse(item.Value, out var logResult) ? logResult : null,
+                    DevicePropertyType.String => item.Value,
+                    _ => null,
+                };
+
+                desiredProperties.Add($"properties.desired.{item.Key}", propertyValue);
+            }
+
+            await this.configService.RollOutDeviceConfiguration(deviceConfig.ModelId, desiredProperties, deviceConfig.ConfigurationId, deviceConfig.Tags, 100);
         }
     }
 }

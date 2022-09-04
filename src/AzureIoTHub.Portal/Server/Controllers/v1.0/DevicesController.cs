@@ -24,6 +24,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         private readonly IDevicePropertyService devicePropertyService;
 
         public DevicesController(
+            IUnitOfWork unitOfWork,
             ILogger<DevicesController> logger,
             IDeviceService devicesService,
             IDeviceTagService deviceTagService,

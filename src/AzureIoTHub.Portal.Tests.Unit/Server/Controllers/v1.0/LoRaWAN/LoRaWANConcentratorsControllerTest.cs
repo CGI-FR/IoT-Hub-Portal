@@ -7,9 +7,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;

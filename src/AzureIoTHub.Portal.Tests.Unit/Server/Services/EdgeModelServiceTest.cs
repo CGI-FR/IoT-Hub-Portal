@@ -12,11 +12,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Entities;
-    using AzureIoTHub.Portal.Server.Exceptions;
-    using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;

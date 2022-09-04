@@ -10,7 +10,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
-    using Models.v10;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Factories;
@@ -28,6 +31,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Primitives;
+    using Models.v10;
     using Moq;
     using NUnit.Framework;
 
@@ -43,7 +47,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         private Mock<IDevicePropertyService> mockDevicePropertyService;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceTwinMapper<DeviceListItem, DeviceDetails>> mockDeviceTwinMapper;
+        private Mock<IDeviceModelPropertiesRepository> mockDeviceModelPropertiesRepository;
         private Mock<ITableClientFactory> mockTableClientFactory;
+        private Mock<IUnitOfWork> mockUnitOfWork;
 
         [SetUp]
         public void SetUp()
@@ -58,11 +64,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
+            this.mockDeviceModelPropertiesRepository = this.mockRepository.Create<IDeviceModelPropertiesRepository>();
+            this.mockUnitOfWork = this.mockRepository.Create<IUnitOfWork>();
         }
 
         private DevicesController CreateDevicesController()
         {
             return new DevicesController(
+                this.mockUnitOfWork.Object,
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
                 this.mockDeviceTagService.Object,

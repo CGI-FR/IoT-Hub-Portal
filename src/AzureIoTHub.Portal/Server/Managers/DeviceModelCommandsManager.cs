@@ -7,9 +7,9 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Collections.ObjectModel;
     using System.Linq;
     using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Server.Mappers;
 
     public class DeviceModelCommandsManager : IDeviceModelCommandsManager
     {

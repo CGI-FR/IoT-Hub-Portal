@@ -12,10 +12,12 @@ namespace AzureIoTHub.Portal.Server
     using Azure;
     using Azure.Storage.Blobs;
     using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Infrastructure;
-    using Exceptions;
+    using AzureIoTHub.Portal.Infrastructure.Factories;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
     using Extensions;
-    using Factories;
     using Hellang.Middleware.ProblemDetails;
     using Hellang.Middleware.ProblemDetails.Mvc;
     using Identity;
@@ -143,6 +145,8 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IEdgeDevicesService, EdgeDevicesService>();
             _ = services.AddTransient<IDevicePropertyService, DevicePropertyService>();
             _ = services.AddTransient<IDeviceConfigurationsService, DeviceConfigurationsService>();
+
+            _ = services.AddScoped<IDeviceModelPropertiesRepository, DeviceModelPropertiesRepository>();
 
             _ = services.AddMudServices();
 
@@ -400,7 +404,7 @@ namespace AzureIoTHub.Portal.Server
             await deviceModelImageManager?.InitializeDefaultImageBlob()!;
             await deviceModelImageManager?.SyncImagesCacheControl()!;
 
-            await EnsureDatabaseCreatedAndUpToDate(app)!;
+            await EnsureDatabaseCreatedAndUpToDate(app, env)!;
         }
 
         private static void UseApiExceptionMiddleware(IApplicationBuilder app)
@@ -424,14 +428,19 @@ namespace AzureIoTHub.Portal.Server
             return Task.CompletedTask;
         }
 
-        private static async Task EnsureDatabaseCreatedAndUpToDate(IApplicationBuilder app)
+        private static async Task EnsureDatabaseCreatedAndUpToDate(IApplicationBuilder app, IWebHostEnvironment env)
         {
             using var scope = app.ApplicationServices.CreateScope();
 
             using var context = scope.ServiceProvider.GetRequiredService<PortalDbContext>();
 
+            if (env.IsDevelopment())
+            {
+                _ = await context.Database.EnsureDeletedAsync();
+            }
+
             // Create the database if not exists and migrate it using the database bigration scripts.
-            await context.Database.MigrateAsync();
+            _ = await context.Database.EnsureCreatedAsync();
         }
     }
 }
