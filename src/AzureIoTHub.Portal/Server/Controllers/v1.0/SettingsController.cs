@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
+    using AzureIoTHub.Portal.Domain;
 
     [ApiController]
     [AllowAnonymous]
