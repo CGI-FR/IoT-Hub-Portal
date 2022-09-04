@@ -3,21 +3,21 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 {
-    using AzureIoTHub.Portal.Server;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
     using AutoFixture;
-    using UnitTests.Bases;
-    using UnitTests.Helpers;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Server.Exceptions;
+    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
-    using AzureIoTHub.Portal.Server.Exceptions;
-    using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using UnitTests.Bases;
+    using UnitTests.Helpers;
 
     [TestFixture]
     public class IdeaServiceTests : BackendUnitTest
