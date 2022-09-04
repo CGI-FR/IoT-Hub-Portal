@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using Azure;
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
+    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Server.Exceptions;
     using Microsoft.Extensions.Logging;
 
