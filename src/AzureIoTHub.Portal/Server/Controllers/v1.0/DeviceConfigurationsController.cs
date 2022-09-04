@@ -7,13 +7,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Azure;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Services;
-    using Entities;
-    using Exceptions;
-    using Factories;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -33,15 +31,22 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
         private readonly IConfigService configService;
 
         /// <summary>
-        /// The table client factory.
+        /// The portal database context.
         /// </summary>
-        private readonly ITableClientFactory tableClientFactory;
+        private readonly IUnitOfWork unitOfWork;
+
+        /// <summary>
+        /// The device model properties repository.
+        /// </summary>
+        private readonly IDeviceModelPropertiesRepository deviceModelPropertiesRepository;
 
         public DeviceConfigurationsController(IConfigService configService,
-            ITableClientFactory tableClientFactory)
+            IDeviceModelPropertiesRepository deviceModelPropertiesRepository,
+            IUnitOfWork unitOfWork)
         {
             this.configService = configService;
-            this.tableClientFactory = tableClientFactory;
+            this.unitOfWork = unitOfWork;
+            this.deviceModelPropertiesRepository = deviceModelPropertiesRepository;
         }
 
         [HttpGet(Name = "GET Device configurations")]
@@ -110,24 +115,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
 
         private async Task CreateOrUpdateConfiguration(DeviceConfig deviceConfig)
         {
-            DeviceModelProperty[] items;
-            try
-            {
-                items = this.tableClientFactory
-                    .GetDeviceTemplateProperties()
-                    .Query<DeviceModelProperty>($"PartitionKey eq '{deviceConfig.ModelId}'")
-                    .ToArray();
-            }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException("Unable to retrieve device model properties", e);
-            }
-
             var desiredProperties = new Dictionary<string, object>();
+
+            var deviceModelProperties = await this.deviceModelPropertiesRepository.GetModelProperties(deviceConfig.ModelId);
 
             foreach (var item in deviceConfig.Properties)
             {
-                var modelProperty = items.SingleOrDefault(c => c.Name == item.Key);
+                var modelProperty = deviceModelProperties.SingleOrDefault(c => c.Name == item.Key);
 
                 if (modelProperty == null)
                     continue;

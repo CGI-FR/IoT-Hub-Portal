@@ -7,19 +7,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Linq;
     using System.Threading.Tasks;
     using Azure;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Server.Entities;
-    using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
-    using Exceptions;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using ITableClientFactory = Domain.ITableClientFactory;
 
     [Authorize]
     [ApiController]
@@ -38,17 +39,31 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         private readonly IDeviceService devicesService;
 
+        /// <summary>
+        /// The portal database context.
+        /// </summary>
+        private readonly IUnitOfWork unitOfWork;
+
+        /// <summary>
+        /// The device model properties repository.
+        /// </summary>
+        private readonly IDeviceModelPropertiesRepository deviceModelPropertiesRepository;
+
         public DevicesController(
+            IUnitOfWork unitOfWork,
             ILogger<DevicesController> logger,
             IDeviceService devicesService,
             IDeviceTagService deviceTagService,
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper,
+            IDeviceModelPropertiesRepository deviceModelPropertiesRepository,
             ITableClientFactory tableClientFactory)
             : base(logger, devicesService, deviceTagService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
         {
+            this.unitOfWork = unitOfWork;
             this.devicesService = devicesService;
             this.tableClientFactory = tableClientFactory;
+            this.deviceModelPropertiesRepository = deviceModelPropertiesRepository;
         }
 
         /// <summary>
@@ -141,19 +156,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 return BadRequest("Device has no modelId tag value");
             }
 
-            AsyncPageable<DeviceModelProperty> items;
-
-            try
-            {
-                items = this.tableClientFactory
-                    .GetDeviceTemplateProperties()
-                    .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{modelId}'");
-            }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException($"Unable to get templates properties fro device with id {deviceID}: {e.Message}", e);
-            }
-
             var result = new List<DevicePropertyValue>();
             JObject desiredPropertiesAsJson;
             JObject reportedPropertiesAsJson;
@@ -176,19 +178,26 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 throw new InternalServerErrorException($"Unable to read reported properties for device with id {deviceID}", e);
             }
 
-            await foreach (var item in items)
+            try
             {
-                var value = item.IsWritable ? desiredPropertiesAsJson.SelectToken(item.Name)?.Value<string>() :
+                foreach (var item in await this.deviceModelPropertiesRepository.GetModelProperties(modelId))
+                {
+                    var value = item.IsWritable ? desiredPropertiesAsJson.SelectToken(item.Name)?.Value<string>() :
                         reportedPropertiesAsJson.SelectToken(item.Name)?.Value<string>();
 
-                result.Add(new DevicePropertyValue
-                {
-                    DisplayName = item.DisplayName,
-                    IsWritable = item.IsWritable,
-                    Name = item.Name,
-                    PropertyType = item.PropertyType,
-                    Value = value
-                });
+                    result.Add(new DevicePropertyValue
+                    {
+                        DisplayName = item.DisplayName,
+                        IsWritable = item.IsWritable,
+                        Name = item.Name,
+                        PropertyType = item.PropertyType,
+                        Value = value
+                    });
+                }
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to get properties for model {modelId}", e);
             }
 
             return result;
@@ -216,29 +225,23 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 return BadRequest("Device has no modelId tag value");
             }
 
-            AsyncPageable<DeviceModelProperty> items;
+            var desiredProperties = new Dictionary<string, object>();
 
             try
             {
-                items = this.tableClientFactory
-                    .GetDeviceTemplateProperties()
-                    .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{modelId}'");
+                foreach (var item in await this.deviceModelPropertiesRepository.GetModelProperties(modelId))
+                {
+                    if (!item.IsWritable)
+                    {
+                        continue;
+                    }
+
+                    _ = desiredProperties.TryAdd(item.Name, values.FirstOrDefault(x => x.Name == item.Name)?.Value);
+                }
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to get templates properties fro device with id {deviceID}: {e.Message}", e);
-            }
-
-            var desiredProperties = new Dictionary<string, object>();
-
-            await foreach (var item in items)
-            {
-                if (!item.IsWritable)
-                {
-                    continue;
-                }
-
-                _ = desiredProperties.TryAdd(item.Name, values.FirstOrDefault(x => x.Name == item.Name)?.Value);
+                throw new InternalServerErrorException($"Unable to get properties for model {modelId}", e);
             }
 
             device.Properties.Desired = DeviceHelper.PropertiesWithDotNotationToTwinCollection(desiredProperties);

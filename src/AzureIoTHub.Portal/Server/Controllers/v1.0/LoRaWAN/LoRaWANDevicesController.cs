@@ -4,9 +4,9 @@
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;

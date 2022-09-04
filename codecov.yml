@@ -8,4 +8,5 @@ ignore:
    - "**/Program.cs"
    - "**/PortalDbContext.cs"
    - "**/Migrations/*.cs"
-   - "**/PortalDbContextFactory.cs"
+   - "**/Seeds/*.cs"
+   - "**/PortalDbContextFactory.cs"   
