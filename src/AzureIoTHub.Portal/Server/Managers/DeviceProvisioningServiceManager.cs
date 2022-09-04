@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using System.Threading;
+    using AzureIoTHub.Portal.Domain;
 
     public class DeviceProvisioningServiceManager : IDeviceProvisioningServiceManager
     {

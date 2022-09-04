@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Portal.Server.Exceptions;
+    using AzureIoTHub.Portal.Domain;
 
     [TestFixture]
     public class ConcentratorMetricLoaderServiceTests : IDisposable

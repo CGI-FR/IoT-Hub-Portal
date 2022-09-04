@@ -1,12 +1,11 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Server
+namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
 {
     using System;
     using System.Globalization;
-    using System.Reflection;
-    using AzureIoTHub.Portal.Server;
+    using AzureIoTHub.Portal.Infrastructure;
     using FluentAssertions;
     using Microsoft.Extensions.Configuration;
     using Moq;
@@ -32,21 +31,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server
             return new DevelopmentConfigHandler(this.mockConfiguration.Object);
         }
 
-        [TestCase(ConfigHandler.PortalNameKey, nameof(ConfigHandler.PortalName))]
-        [TestCase(ConfigHandler.DPSServiceEndpointKey, nameof(ConfigHandler.DPSEndpoint))]
-        [TestCase(ConfigHandler.DPSIDScopeKey, nameof(ConfigHandler.DPSScopeID))]
-        [TestCase(ConfigHandler.OIDCScopeKey, nameof(ConfigHandler.OIDCScope))]
-        [TestCase(ConfigHandler.OIDCAuthorityKey, nameof(ConfigHandler.OIDCAuthority))]
-        [TestCase(ConfigHandler.OIDCMetadataUrlKey, nameof(ConfigHandler.OIDCMetadataUrl))]
-        [TestCase(ConfigHandler.OIDCClientIdKey, nameof(ConfigHandler.OIDCClientId))]
-        [TestCase(ConfigHandler.OIDCApiClientIdKey, nameof(ConfigHandler.OIDCApiClientId))]
-        [TestCase(ConfigHandler.LoRaKeyManagementUrlKey, nameof(ConfigHandler.LoRaKeyManagementUrl))]
-        [TestCase(ConfigHandler.LoRaKeyManagementCodeKey, nameof(ConfigHandler.LoRaKeyManagementCode))]
-        [TestCase(ConfigHandler.LoRaKeyManagementApiVersionKey, nameof(ConfigHandler.LoRaKeyManagementApiVersion))]
-        [TestCase(ConfigHandler.IoTHubConnectionStringKey, nameof(ConfigHandler.IoTHubConnectionString))]
-        [TestCase(ConfigHandler.DPSConnectionStringKey, nameof(ConfigHandler.DPSConnectionString))]
-        [TestCase(ConfigHandler.StorageAccountConnectionStringKey, nameof(ConfigHandler.StorageAccountConnectionString))]
-        [TestCase(ConfigHandler.PostgreSQLConnectionStringKey, nameof(ConfigHandler.PostgreSQLConnectionString))]
+        [TestCase(ConfigHandlerBase.PortalNameKey, nameof(ConfigHandlerBase.PortalName))]
+        [TestCase(ConfigHandlerBase.DPSServiceEndpointKey, nameof(ConfigHandlerBase.DPSEndpoint))]
+        [TestCase(ConfigHandlerBase.DPSIDScopeKey, nameof(ConfigHandlerBase.DPSScopeID))]
+        [TestCase(ConfigHandlerBase.OIDCScopeKey, nameof(ConfigHandlerBase.OIDCScope))]
+        [TestCase(ConfigHandlerBase.OIDCAuthorityKey, nameof(ConfigHandlerBase.OIDCAuthority))]
+        [TestCase(ConfigHandlerBase.OIDCMetadataUrlKey, nameof(ConfigHandlerBase.OIDCMetadataUrl))]
+        [TestCase(ConfigHandlerBase.OIDCClientIdKey, nameof(ConfigHandlerBase.OIDCClientId))]
+        [TestCase(ConfigHandlerBase.OIDCApiClientIdKey, nameof(ConfigHandlerBase.OIDCApiClientId))]
+        [TestCase(ConfigHandlerBase.LoRaKeyManagementUrlKey, nameof(ConfigHandlerBase.LoRaKeyManagementUrl))]
+        [TestCase(ConfigHandlerBase.LoRaKeyManagementCodeKey, nameof(ConfigHandlerBase.LoRaKeyManagementCode))]
+        [TestCase(ConfigHandlerBase.LoRaKeyManagementApiVersionKey, nameof(ConfigHandlerBase.LoRaKeyManagementApiVersion))]
+        [TestCase(ConfigHandlerBase.IoTHubConnectionStringKey, nameof(ConfigHandlerBase.IoTHubConnectionString))]
+        [TestCase(ConfigHandlerBase.DPSConnectionStringKey, nameof(ConfigHandlerBase.DPSConnectionString))]
+        [TestCase(ConfigHandlerBase.StorageAccountConnectionStringKey, nameof(ConfigHandlerBase.StorageAccountConnectionString))]
+        [TestCase(ConfigHandlerBase.PostgreSQLConnectionStringKey, nameof(ConfigHandlerBase.PostgreSQLConnectionString))]
         public void SettingsShouldGetValueFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange
@@ -59,7 +58,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server
             // Act
             var result = configHandler
                                 .GetType()
-                                .GetProperty(configPropertyName, BindingFlags.Instance | BindingFlags.NonPublic)
+                                .GetProperty(configPropertyName)
                                 .GetValue(configHandler, null);
 
             // Assert
@@ -67,7 +66,64 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server
             this.mockRepository.VerifyAll();
         }
 
-        [TestCase(ConfigHandler.IsLoRaFeatureEnabledKey, nameof(ConfigHandler.IsLoRaEnabled))]
+        [TestCase(ConfigHandlerBase.OIDCValidateAudienceKey, nameof(ConfigHandlerBase.OIDCValidateAudience))]
+        [TestCase(ConfigHandlerBase.OIDCValidateIssuerKey, nameof(ConfigHandlerBase.OIDCValidateIssuer))]
+        [TestCase(ConfigHandlerBase.OIDCValidateIssuerSigningKeyKey, nameof(ConfigHandlerBase.OIDCValidateIssuerSigningKey))]
+        [TestCase(ConfigHandlerBase.OIDCValidateLifetimeKey, nameof(ConfigHandlerBase.OIDCValidateLifetime))]
+        [TestCase(ConfigHandlerBase.UseSecurityHeadersKey, nameof(ConfigHandlerBase.UseSecurityHeaders))]
+        public void SecuritySwitchesShouldBeEnabledByDefault(string configKey, string configPropertyName)
+        {
+            // Arrange
+            var configHandler = CreateDevelopmentConfigHandler();
+            var mockConfigurationSection = this.mockRepository.Create<IConfigurationSection>();
+
+            _ = mockConfigurationSection.SetupGet(c => c.Value)
+                .Returns((string)null);
+
+            _ = mockConfigurationSection.SetupGet(c => c.Path)
+                .Returns(string.Empty);
+
+            _ = this.mockConfiguration.Setup(c => c.GetSection(configKey))
+                .Returns(mockConfigurationSection.Object);
+
+            // Act
+            var result = (bool)configHandler
+                                .GetType()
+                                .GetProperty(configPropertyName)
+                                .GetValue(configHandler, null);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestCase(ConfigHandlerBase.OIDCValidateActorKey, nameof(ConfigHandlerBase.OIDCValidateActor))]
+        [TestCase(ConfigHandlerBase.OIDCValidateTokenReplayKey, nameof(ConfigHandlerBase.OIDCValidateTokenReplay))]
+        public void SecuritySwitchesShouldBeDisabledByDefault(string configKey, string configPropertyName)
+        {
+            // Arrange
+            var configHandler = CreateDevelopmentConfigHandler();
+            var mockConfigurationSection = this.mockRepository.Create<IConfigurationSection>();
+
+            _ = mockConfigurationSection.SetupGet(c => c.Value)
+                .Returns((string)null);
+
+            _ = mockConfigurationSection.SetupGet(c => c.Path)
+                .Returns(string.Empty);
+
+            _ = this.mockConfiguration.Setup(c => c.GetSection(configKey))
+                .Returns(mockConfigurationSection.Object);
+
+            // Act
+            var result = (bool)configHandler
+                                .GetType()
+                                .GetProperty(configPropertyName)
+                                .GetValue(configHandler, null);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestCase(ConfigHandlerBase.IsLoRaFeatureEnabledKey, nameof(ConfigHandlerBase.IsLoRaEnabled))]
         public void SettingsShouldGetBoolFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange
@@ -80,7 +136,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server
             // Act
             var result = productionConfigHandler
                                 .GetType()
-                                .GetProperty(configPropertyName, BindingFlags.Instance | BindingFlags.NonPublic)
+                                .GetProperty(configPropertyName)
                                 .GetValue(productionConfigHandler, null);
 
             // Assert
@@ -95,7 +151,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server
             // Act
             result = productionConfigHandler
                                 .GetType()
-                                .GetProperty(configPropertyName, BindingFlags.Instance | BindingFlags.NonPublic)
+                                .GetProperty(configPropertyName)
                                 .GetValue(productionConfigHandler, null);
 
             // Assert
