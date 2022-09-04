@@ -11,9 +11,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
 
     public class GenericRepository<T> : IRepository<T> where T : EntityBase
     {
-        private readonly DbContext context;
+        protected readonly PortalDbContext context;
 
-        public GenericRepository(DbContext context)
+        public GenericRepository(PortalDbContext context)
         {
             this.context = context;
         }

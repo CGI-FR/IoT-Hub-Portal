@@ -3,21 +3,20 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 {
-    using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Server.Exceptions;
-    using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
-    using FluentAssertions;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Extensions.Logging;
-    using Moq;
-    using Newtonsoft.Json.Linq;
-    using Newtonsoft.Json;
-    using NUnit.Framework;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
+    using FluentAssertions;
+    using Microsoft.Azure.Devices;
+    using Moq;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+    using NUnit.Framework;
 
     [TestFixture]
     public class ConfigsServicesTests

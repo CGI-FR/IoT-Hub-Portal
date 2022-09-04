@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Server.ServicesHealthCheck
+namespace AzureIoTHub.Portal.Tests.Unit.Domain.ServicesHealthCheck
 {
     using System;
     using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.ServicesHealthCheck
     using Azure;
     using Azure.Data.Tables;
     using Azure.Data.Tables.Models;
-    using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Server.ServicesHealthCheck;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
     using Moq;

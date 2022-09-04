@@ -7,17 +7,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Models.v10;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Services;
-    using Shared.Constants;
     using FluentAssertions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
+    using Models.v10;
     using Moq;
     using Newtonsoft.Json;
     using NUnit.Framework;
-    using Portal.Server.Exceptions;
+    using Shared.Constants;
 
     [TestFixture]
     public class DeviceServiceTests

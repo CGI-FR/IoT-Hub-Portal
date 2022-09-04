@@ -14,7 +14,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
     using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Server.Exceptions;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Managers;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;

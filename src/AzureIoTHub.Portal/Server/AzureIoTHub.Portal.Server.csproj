@@ -13,15 +13,13 @@
 
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties
-          properties_4launchsettings_1json__JsonSchema=""
-          routerconfigfiles_4as_3923_3925_33_1json__JsonSchema="https://cdn.jsdelivr.net/gh/roadrunner-server/roadrunner@latest/schemas/config/2.0.schema.json" />
+      <UserProperties properties_4launchsettings_1json__JsonSchema="" routerconfigfiles_4as_3923_3925_33_1json__JsonSchema="https://cdn.jsdelivr.net/gh/roadrunner-server/roadrunner@latest/schemas/config/2.0.schema.json" />
     </VisualStudio>
   </ProjectExtensions>
   
   <ItemGroup>
     <ProjectReference Include="..\..\AzureIoTHub.Portal.Infrastructure\AzureIoTHub.Portal.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\AzureIoTHubPortal.Domain\AzureIoTHubPortal.Domain.csproj" />
+    <ProjectReference Include="..\..\AzureIoTHubPortal.Domain\AzureIoTHub.Portal.Domain.csproj" />
     <ProjectReference Include="..\Client\AzureIoTHub.Portal.Client.csproj" />
     <ProjectReference Include="..\Shared\AzureIoTHub.Portal.Shared.csproj" />
   </ItemGroup>

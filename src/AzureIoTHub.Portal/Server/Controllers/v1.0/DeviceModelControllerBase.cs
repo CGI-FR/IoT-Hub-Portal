@@ -9,16 +9,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Threading.Tasks;
     using Azure;
     using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
-    using AzureIoTHub.Portal.Server.Exceptions;
-    using AzureIoTHub.Portal.Shared.Models;
 
     public abstract class DeviceModelsControllerBase<TListItemModel, TModel> : ControllerBase
         where TListItemModel : class, IDeviceModel
