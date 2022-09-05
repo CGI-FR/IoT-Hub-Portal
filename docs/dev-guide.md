@@ -201,7 +201,7 @@ The application uses the following blob storage:
 
 ## Working with the documentation
 
-This documentation site is build using Github Pages.
+This documentation site is build using [Material for MkDocs](https://github.com/squidfunk/mkdocs-material) and [Mike](https://github.com/jimporter/mike).
 
 ```docs/main``` is a detached branch that is locked and only accepts PRs. On PR merge, Github Pages will automatically update the documentation website.
 
@@ -209,36 +209,41 @@ This documentation site is build using Github Pages.
 
 1. Checkout the branch that contains the documentation:
 
-    ```sh
+    ```console
     git checkout origin/docs/main
     git checkout -b docs/<your_branch_name> 
     ```
 
+1. Install dependencies
+
+    ```console
+    pip install -r requirements.txt
+    ```
+
+1. Previewing as you write
+
+    ```console
+    mkdocs serve
+    ```
+
+1. PRs are gated by a markdownlint check. You should use markdownlint to lint any new changes on documentation. For example you can use the vs code extension [https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
 1. Update the documentation
 1. Commit your changes
 1. Push your changes to the branch
 1. Create a PR
 
-### Customizing
+### Customization
 
-The documentation uses the Github pages theme [Leap Day](https://github.com/pages-themes/leap-day).  
-You can customize the theme by editing the `_config.yml` file. You can also customize the theme by editing the `_layouts/default.html` file.
+Refer to Material for MkDocs documentations:
 
-#### Stylesheet
+* [https://squidfunk.github.io/mkdocs-material/customization](https://squidfunk.github.io/mkdocs-material/customization/)
+* [https://squidfunk.github.io/mkdocs-material/setup](https://squidfunk.github.io/mkdocs-material/setup)
 
-If you'd like to add your own custom styles:
+### Versioning
 
-1. Update the `assets/css/style.scss` file from the documentation repository.
-1. Add any custom CSS (or Sass, including imports) you'd like immediately after the `@import` line
+[Mike](https://github.com/jimporter/mike) is used to generate automatically a new documentation version when a release has been published, using ci/cd pipelines.
 
-**Note: If you'd like to change the theme's Sass variables, you must set new values before the `@import` line in your stylesheet.**
-
-#### Layouts
-
-If you'd like to change the theme's HTML layout:
-
-1. Update the `/_layouts/default.html`file from the documentation repository.
-1. Customize the layout as you'd like
+For manual workflows (e.g. delete or retitle an existing version), please refer to [Mike documentation](https://github.com/jimporter/mike)
 
 ## Problem Details
 
