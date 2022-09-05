@@ -145,6 +145,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IEdgeDevicesService, EdgeDevicesService>();
             _ = services.AddTransient<IDevicePropertyService, DevicePropertyService>();
             _ = services.AddTransient<IDeviceConfigurationsService, DeviceConfigurationsService>();
+            _ = services.AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();
 
             _ = services.AddScoped<IDeviceModelPropertiesRepository, DeviceModelPropertiesRepository>();
 
