@@ -5,19 +5,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading;
     using System.Threading.Tasks;
     using AutoMapper;
     using Azure;
-    using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Controllers.V10;
+    using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;
     using Hellang.Middleware.ProblemDetails;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Models.v10;
@@ -31,10 +27,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
         private Mock<ILogger<DeviceModelPropertiesController>> mockLogger;
         private Mock<IMapper> mockMapper;
-        private Mock<ITableClientFactory> mockTableClientFactory;
-        private Mock<TableClient> mockDeviceTemplatesTableClient;
-        private Mock<IDeviceModelPropertiesRepository> mockDeviceModelPropertiesRepository;
-        private Mock<IUnitOfWork> mockUnitOfWork;
+        private Mock<IDeviceModelPropertiesService> mockDeviceModelPropertiesService;
 
         [SetUp]
         public void SetUp()
@@ -43,10 +36,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             this.mockLogger = this.mockRepository.Create<ILogger<DeviceModelPropertiesController>>();
             this.mockMapper = this.mockRepository.Create<IMapper>();
-            this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
-            this.mockDeviceTemplatesTableClient = this.mockRepository.Create<TableClient>();
-            this.mockDeviceModelPropertiesRepository = this.mockRepository.Create<IDeviceModelPropertiesRepository>();
-            this.mockUnitOfWork = this.mockRepository.Create<IUnitOfWork>();
+            this.mockDeviceModelPropertiesService = this.mockRepository.Create<IDeviceModelPropertiesService>();
         }
 
         [Test]
@@ -54,26 +44,26 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
-            var entity = SetupMockEntity();
+            var modelId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceModelPropertiesRepository.Setup(c => c.GetModelProperties(entity.RowKey))
+            _ = this.mockDeviceModelPropertiesService.Setup(c => c.GetModelProperties(modelId))
                     .ReturnsAsync(new[]
                         {
                             new DeviceModelProperty
                             {
                                 Id = Guid.NewGuid().ToString(),
-                                ModelId = entity.RowKey
+                                ModelId = modelId
                             }
                         });
 
-            _ = this.mockMapper.Setup(c => c.Map<DeviceProperty>(It.Is<DeviceModelProperty>(x => x.ModelId == entity.RowKey)))
+            _ = this.mockMapper.Setup(c => c.Map<DeviceProperty>(It.Is<DeviceModelProperty>(x => x.ModelId == modelId)))
                 .Returns((DeviceModelProperty x) => new DeviceProperty
                 {
                     Name = x.Name,
                 });
 
             // Act
-            var response = await deviceModelPropertiesController.GetProperties(entity.RowKey);
+            var response = await deviceModelPropertiesController.GetProperties(modelId);
 
             // Assert
             Assert.IsAssignableFrom<OkObjectResult>(response.Result);
@@ -90,63 +80,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         }
 
         [Test]
-        public async Task GetPropertiesShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
-        {
-            // Arrange
-            var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
-            var entity = SetupMockEntity();
-
-            _ = this.mockDeviceModelPropertiesRepository.Setup(c => c.GetModelProperties(entity.RowKey))
-                    .Throws(new RequestFailedException("test"));
-
-            // Act
-            var act = () => deviceModelPropertiesController.GetProperties(entity.RowKey);
-
-            // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task GetPropertiesShouldThrowInternalServerErrorExceptionWhenIssueOccursWhenCheckingIfDeviceModelExists()
-        {
-            // Arrange
-            var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
-            var modelId = Guid.NewGuid().ToString();
-            var entity = new TableEntity("0", modelId);
-
-            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
-                    It.Is<string>(p => p == "0"),
-                    It.Is<string>(k => k == modelId),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new RequestFailedException("test"));
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
-                .Returns(this.mockDeviceTemplatesTableClient.Object);
-
-            _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
-
-            // Act
-            var act = () => deviceModelPropertiesController.GetProperties(entity.RowKey);
-
-            // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
         public async Task WhenDeviceModelNotExistsGetPropertiesShouldReturnHttp404()
         {
             // Arrange
             var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
-            SetupNotFoundEntity();
+
+            _ = this.mockDeviceModelPropertiesService.Setup(c => c.GetModelProperties(It.IsAny<string>()))
+                .Throws(new ResourceNotFoundException("Not Found"));
 
             // Act
             var response = await deviceModelPropertiesController.GetProperties(Guid.NewGuid().ToString());
 
             // Assert
-            Assert.IsAssignableFrom<NotFoundResult>(response.Result);
+            Assert.IsAssignableFrom<NotFoundObjectResult>(response.Result);
             this.mockRepository.VerifyAll();
         }
 
@@ -155,7 +101,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
-            var entity = SetupMockEntity();
+            var modelId = Guid.NewGuid().ToString();
+
             var mockResponse = this.mockRepository.Create<Response>();
             var existingProperty = Guid.NewGuid().ToString();
 
@@ -168,7 +115,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 }
             };
 
-            _ = this.mockDeviceModelPropertiesRepository.Setup(c => c.SavePropertiesForModel(entity.RowKey, It.IsAny<IEnumerable<DeviceModelProperty>>()))
+            _ = this.mockDeviceModelPropertiesService.Setup(c => c.SavePropertiesForModel(modelId, It.IsAny<IEnumerable<DeviceModelProperty>>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockMapper.Setup(c => c.Map(
@@ -177,53 +124,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 .Returns((DeviceProperty x, Action<IMappingOperationOptions<object, DeviceModelProperty>> _) => new DeviceModelProperty
                 {
                     Name = x.Name,
-                    ModelId = entity.RowKey
+                    ModelId = modelId
                 });
 
-            _ = this.mockUnitOfWork.Setup(c => c.SaveAsync())
-                .Returns(Task.CompletedTask);
-
             // Act
-            var result = await deviceModelPropertiesController.SetProperties(entity.RowKey, properties);
+            var result = await deviceModelPropertiesController.SetProperties(modelId, properties);
 
             // Assert
             Assert.IsAssignableFrom<OkResult>(result);
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task SetPropertiesShouldThrowInternalServerErrorExceptionWhenIssueOccursWhenGettingExistingProperties()
-        {
-            // Arrange
-            var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
-            var entity = SetupMockEntity();
-
-            var properties = new[]
-            {
-                new DeviceProperty
-                {
-                    DisplayName =Guid.NewGuid().ToString(),
-                    Name = Guid.NewGuid().ToString()
-                }
-            };
-
-            _ = this.mockDeviceModelPropertiesRepository.Setup(c => c.SavePropertiesForModel(entity.RowKey, It.IsAny<IEnumerable<DeviceModelProperty>>()))
-                    .Throws(new RequestFailedException("test"));
-
-            _ = this.mockMapper.Setup(c => c.Map(
-                It.IsAny<DeviceProperty>(),
-                It.IsAny<Action<IMappingOperationOptions<object, DeviceModelProperty>>>()))
-                .Returns((DeviceProperty x, Action<IMappingOperationOptions<object, DeviceModelProperty>> _) => new DeviceModelProperty
-                {
-                    Name = x.Name,
-                    ModelId = entity.RowKey
-                });
-
-            // Act
-            var act = () => deviceModelPropertiesController.SetProperties(entity.RowKey, properties);
-
-            // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 
@@ -232,7 +140,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
-            var entity = SetupMockEntity();
 
             var properties = new[]
             {
@@ -242,7 +149,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             deviceModelPropertiesController.ModelState.AddModelError("Key", "Device model is invalid");
 
             // Act
-            var act = () => deviceModelPropertiesController.SetProperties(entity.RowKey, properties);
+            var act = () => deviceModelPropertiesController.SetProperties(Guid.NewGuid().ToString(), properties);
 
             // Assert
             _ = await act.Should().ThrowAsync<ProblemDetailsException>();
@@ -254,56 +161,23 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
-            SetupNotFoundEntity();
+
+            _ = this.mockDeviceModelPropertiesService.Setup(c => c.SavePropertiesForModel(It.IsAny<string>(), It.IsAny<IEnumerable<DeviceModelProperty>>()))
+                .Throws(new ResourceNotFoundException("Not Found"));
 
             // Act
-            var result = await deviceModelPropertiesController.SetProperties(Guid.NewGuid().ToString(), null);
+            var result = await deviceModelPropertiesController.SetProperties(Guid.NewGuid().ToString(), Array.Empty<DeviceProperty>());
 
             // Assert
-            Assert.IsAssignableFrom<NotFoundResult>(result);
+            Assert.IsAssignableFrom<NotFoundObjectResult>(result);
             this.mockRepository.VerifyAll();
-        }
-
-        private TableEntity SetupMockEntity()
-        {
-            var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
-            var modelId = Guid.NewGuid().ToString();
-            var entity = new TableEntity("0", modelId);
-
-            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
-                        It.Is<string>(p => p == "0"),
-                        It.Is<string>(k => k == modelId),
-                        It.IsAny<IEnumerable<string>>(),
-                        It.IsAny<CancellationToken>()))
-                .ReturnsAsync(mockResponse.Object);
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
-                .Returns(this.mockDeviceTemplatesTableClient.Object);
-
-            return entity;
-        }
-
-        private void SetupNotFoundEntity()
-        {
-            _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
-                    It.Is<string>(p => p == "0"),
-                    It.IsAny<string>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                .Throws(new RequestFailedException(StatusCodes.Status404NotFound, "Not Found"));
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
-                .Returns(this.mockDeviceTemplatesTableClient.Object);
         }
 
         private DeviceModelPropertiesController CreateDeviceModelPropertiesController()
         {
             return new DeviceModelPropertiesController(
-                this.mockUnitOfWork.Object,
-                this.mockLogger.Object,
                 this.mockMapper.Object,
-                this.mockDeviceModelPropertiesRepository.Object,
-                this.mockTableClientFactory.Object);
+                this.mockDeviceModelPropertiesService.Object);
         }
     }
 }
