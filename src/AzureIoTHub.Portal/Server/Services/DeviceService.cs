@@ -404,6 +404,26 @@ namespace AzureIoTHub.Portal.Server.Services
         }
 
         /// <summary>
+        /// C2DMethod for custom command.
+        /// </summary>
+        /// <param name="deviceId">the deviceId.</param>
+        /// <param name="moduleName">the module name.</param>
+        /// <param name="method">the C2DMethod.</param>
+        /// <returns></returns>
+        /// <exception cref="InternalServerErrorException"></exception>
+        public async Task<CloudToDeviceMethodResult> ExecuteCustomCommandC2DMethod(string deviceId, string moduleName, CloudToDeviceMethod method)
+        {
+            try
+            {
+                return await this.serviceClient.InvokeDeviceMethodAsync(deviceId, moduleName, method);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to execute the cloud to device method {method.MethodName} on the device with id {deviceId}", e);
+            }
+        }
+
+        /// <summary>
         /// Get edge device logs
         /// </summary>
         /// <param name="deviceId">Device Id</param>

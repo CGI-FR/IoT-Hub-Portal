@@ -190,6 +190,12 @@ namespace AzureIoTHub.Portal.Server.Helpers
                     ModuleName = property.Key
                 };
 
+                if (propertyObject.TryGetValue("settings", out var moduleSettings))
+                {
+                    var setting = moduleSettings.ToObject<Dictionary<string, string>>();
+                    module.ImageURI = setting["image"];
+                }
+
                 if (propertyObject.TryGetValue("status", out var status))
                 {
                     module.Status = status.Value<string>();
