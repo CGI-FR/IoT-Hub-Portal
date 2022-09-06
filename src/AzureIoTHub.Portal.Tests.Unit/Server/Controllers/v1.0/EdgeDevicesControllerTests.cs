@@ -387,13 +387,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockEdgeDeviceService
-                .Setup(x => x.ExecuteModuleMethod(It.IsAny<IoTEdgeModule>(),
+                .Setup(x => x.ExecuteModuleMethod(It.IsAny<string>(),
                 It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal)),
                 It.Is<string>(c => c.Equals(methodName, StringComparison.Ordinal))))
                 .ReturnsAsync(new C2Dresult());
 
             // Act
-            var result = await edgeDeviceController.ExecuteModuleMethod(module, deviceId, methodName);
+            var result = await edgeDeviceController.ExecuteModuleMethod(module.ModuleName, deviceId, methodName);
 
             // Assert
             Assert.IsNotNull(result);
