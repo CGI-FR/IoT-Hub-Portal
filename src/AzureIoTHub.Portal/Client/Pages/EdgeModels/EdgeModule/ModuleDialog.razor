@@ -69,7 +69,6 @@
         IsLoading = true;
 
         currentModuleName = Module.ModuleName;
-        currentVersion = Module.Version;
         currentImageUri = Module.ImageURI;
         currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
         currentModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(Module.ModuleIdentityTwinSettings.ToArray());
@@ -81,7 +80,6 @@
     public void Submit()
     {
         Module.ModuleName = currentModuleName;
-        Module.Version = currentVersion;
         Module.ImageURI = currentImageUri;
         Module.EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(currentEnvironmentVariables.ToArray());
         Module.ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(currentModuleIdentityTwinSettings.ToArray());
