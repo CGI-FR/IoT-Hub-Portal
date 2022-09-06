@@ -18,6 +18,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Threading.Tasks;
     using System.Collections.Generic;
     using AzureIoTHub.Portal.Server.Exceptions;
+    using FluentAssertions;
 
     [TestFixture]
     public class EdgeDeviceServiceTest
@@ -308,6 +309,96 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Assert
             _ = Assert.ThrowsAsync<ArgumentNullException>(() => edgeDeviceService.ExecuteModuleMethod(null, deviceId, methodName));
+        }
+
+        [TestCase("test")]
+        public async Task ExecuteModuleCommand(string commandName)
+        {
+            // Arrange
+            var edgeDeviceService  = CreateEdgeDeviceService();
+
+            var edgeModule = new IoTEdgeModule
+            {
+                ModuleName = "aaa",
+            };
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockDeviceService.Setup(c => c.ExecuteCustomCommandC2DMethod(
+                It.Is<string>(x => x == deviceId),
+                It.Is<string>(x => x == edgeModule.ModuleName),
+                It.Is<CloudToDeviceMethod>(x =>
+                    x.MethodName == commandName
+                )))
+                .ReturnsAsync(new CloudToDeviceMethodResult
+                {
+                    Status = 200
+                });
+
+            // Act
+            var result = await edgeDeviceService.ExecuteModuleCommand(deviceId, edgeModule.ModuleName, commandName);
+
+            // Assert
+            Assert.AreEqual(200, result.Status);
+            this.mockRepository.VerifyAll();
+        }
+
+        [TestCase("test")]
+        public void WhenDeviceIdIsNullExecuteModuleCommandShouldThrowArgumentNullException(string commandName)
+        {
+            // Arrange
+            var edgeDeviceService  = CreateEdgeDeviceService();
+
+            var edgeModule = new IoTEdgeModule
+            {
+                ModuleName = "aaa",
+            };
+
+            var deviceId = string.Empty;
+
+            // Act
+            var result = async () => await edgeDeviceService.ExecuteModuleCommand(deviceId, edgeModule.ModuleName, commandName);
+
+            // Assert
+            _ = result.Should().ThrowAsync<ArgumentNullException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [TestCase("test")]
+        public void WhenModuleIsNullExecuteModuleCommandShouldThrowArgumentNullException(string commandName)
+        {
+            // Arrange
+            var edgeDeviceService  = CreateEdgeDeviceService();
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            // Act
+            var result = async () => await edgeDeviceService.ExecuteModuleCommand(deviceId, null, commandName);
+
+            // Assert
+            _ = result.Should().ThrowAsync<ArgumentNullException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void WhenCommandNameIsNullExecuteModuleCommandShouldThrowArgumentNullException()
+        {
+            // Arrange
+            var edgeDeviceService  = CreateEdgeDeviceService();
+
+            var deviceId = string.Empty;
+
+            var edgeModule = new IoTEdgeModule
+            {
+                ModuleName = "aaa",
+            };
+
+            // Act
+            var result = async () => await edgeDeviceService.ExecuteModuleCommand(deviceId, edgeModule.ModuleName, null);
+
+            // Assert
+            _ = result.Should().ThrowAsync<ArgumentNullException>();
+            this.mockRepository.VerifyAll();
         }
 
         [Test]
