@@ -437,7 +437,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             var payload = JsonConvert.SerializeObject(new
             {
-                schemaVersion = edgeModule.Version,
+                schemaVersion = "1.0",
                 items = new[]
                 {
                     new
