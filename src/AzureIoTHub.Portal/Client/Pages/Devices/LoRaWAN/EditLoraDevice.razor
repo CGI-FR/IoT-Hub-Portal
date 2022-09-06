@@ -87,13 +87,13 @@
                             <MudText Typo=Typo.subtitle1 Class="mb-4">Adaptive DataRate</MudText>
                             <MudGrid>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" @bind-Text="@LoRaDevice.DataRate" Label="Device Current Datarate" Variant="Variant.Text" ReadOnly="true" />
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.DataRate)" @bind-Text="@LoRaDevice.DataRate" Label="Device Current Datarate" Variant="Variant.Text" ReadOnly="true" />
                                 </MudItem>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" @bind-Text="@LoRaDevice.TxPower" Label="Device Current Transmit Power" Variant="Variant.Text" ReadOnly="true" />
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.TxPower)" @bind-Text="@LoRaDevice.TxPower" Label="Device Current Transmit Power" Variant="Variant.Text" ReadOnly="true" />
                                 </MudItem>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" @bind-Text="@LoRaDevice.NbRep" Label="Device Current repetition when transmitting" Variant="Variant.Text" ReadOnly="true" />
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.NbRep)" @bind-Text="@LoRaDevice.NbRep" Label="Device Current repetition when transmitting" Variant="Variant.Text" ReadOnly="true" />
                                 </MudItem>
                             </MudGrid>
                         </MudItem>
@@ -101,13 +101,13 @@
                             <MudText Typo=Typo.subtitle1 Class="mb-4">Receive Windows</MudText>
                             <MudGrid>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" @bind-Text="@LoRaDevice.ReportedRX1DROffset" Label="Device Current RX1DROffset" Variant="Variant.Text" ReadOnly="true" />
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.ReportedRX1DROffset)" @bind-Text="@LoRaDevice.ReportedRX1DROffset" Label="Device Current RX1DROffset" Variant="Variant.Text" ReadOnly="true" />
                                 </MudItem>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" @bind-Text="@LoRaDevice.ReportedRX2DataRate" Label="Device Current Rx2Datarate" Variant="Variant.Text" ReadOnly="true" />
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.ReportedRX2DataRate)" @bind-Text="@LoRaDevice.ReportedRX2DataRate" Label="Device Current Rx2Datarate" Variant="Variant.Text" ReadOnly="true" />
                                 </MudItem>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" @bind-Text="@LoRaDevice.ReportedRXDelay" Label="Device Current RXDelay" Variant="Variant.Text" ReadOnly="true" />
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.ReportedRXDelay)" @bind-Text="@LoRaDevice.ReportedRXDelay" Label="Device Current RXDelay" Variant="Variant.Text" ReadOnly="true" />
                                 </MudItem>
                             </MudGrid>
                         </MudItem>

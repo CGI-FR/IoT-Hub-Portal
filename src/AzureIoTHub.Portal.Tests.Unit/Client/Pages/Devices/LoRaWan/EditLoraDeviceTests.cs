@@ -303,7 +303,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator));
 
             // Assert
-
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.DataRate, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.DataRate)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.TxPower, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.TxPower)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.NbRep, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.NbRep)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.ReportedRX1DROffset, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.ReportedRX1DROffset)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.ReportedRX2DataRate, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.ReportedRX2DataRate)}").GetAttribute("value")));
+            cut.WaitForAssertion(() => Assert.AreEqual(deviceDetails.ReportedRXDelay, cut.WaitForElement($"#{nameof(LoRaDeviceDetails.ReportedRXDelay)}").GetAttribute("value")));
         }
     }
 }
