@@ -115,7 +115,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("running", result.Status);
-            Assert.AreEqual("1.0", result.Version);
             Assert.AreEqual("image_test", result.ImageURI);
             Assert.AreEqual(1, result.EnvironmentVariables.Count);
         }
@@ -161,7 +160,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
                     {
                         ModuleName = "ModuleTest",
                         Status = "running",
-                        Version = "1.0",
                         ImageURI = "image",
                         EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
                         {

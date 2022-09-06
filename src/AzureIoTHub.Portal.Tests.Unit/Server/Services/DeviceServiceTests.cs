@@ -1057,7 +1057,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             var edgeModule = new IoTEdgeModule
             {
-                Version = "1.0",
                 ModuleName = Guid.NewGuid().ToString()
             };
 
@@ -1065,7 +1064,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             var payload = JsonConvert.SerializeObject(new
             {
-                schemaVersion = edgeModule.Version,
+                schemaVersion = "1.0",
                 items = new[]
                 {
                     new
@@ -1117,7 +1116,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             var edgeModule = new IoTEdgeModule
             {
-                Version = "1.0",
                 ModuleName = Guid.NewGuid().ToString()
             };
 
@@ -1125,7 +1123,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             var payload = JsonConvert.SerializeObject(new
             {
-                schemaVersion = edgeModule.Version,
+                schemaVersion = "1.0",
                 items = new[]
                 {
                     new
@@ -1177,7 +1175,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             var edgeModule = new IoTEdgeModule
             {
-                Version = "1.0",
                 ModuleName = Guid.NewGuid().ToString()
             };
 
@@ -1185,7 +1182,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             var payload = JsonConvert.SerializeObject(new
             {
-                schemaVersion = edgeModule.Version,
+                schemaVersion = "1.0",
                 items = new[]
                 {
                     new

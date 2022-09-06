@@ -41,7 +41,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var edgeModule = new IoTEdgeModule
             {
-                Version = "1.0",
                 ModuleName = Guid.NewGuid().ToString()
             };
 
@@ -84,7 +83,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var edgeModule = new IoTEdgeModule
             {
-                Version = "1.0",
                 ModuleName = Guid.NewGuid().ToString()
             };
 
@@ -120,7 +118,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var edgeModule = new IoTEdgeModule
             {
-                Version = "1.0",
                 ModuleName = Guid.NewGuid().ToString()
             };
 

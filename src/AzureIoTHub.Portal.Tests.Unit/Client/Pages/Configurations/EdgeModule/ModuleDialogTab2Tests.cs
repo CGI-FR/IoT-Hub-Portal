@@ -22,7 +22,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             var module = new IoTEdgeModule()
             {
                 ModuleName = Guid.NewGuid().ToString(),
-                Version = Guid.NewGuid().ToString(),
                 Status = "running",
                 EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
                 ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
@@ -43,7 +42,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             var module = new IoTEdgeModule()
             {
                 ModuleName = Guid.NewGuid().ToString(),
-                Version = Guid.NewGuid().ToString(),
                 Status = "running",
                 EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
                 ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>()
@@ -78,7 +76,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             var module = new IoTEdgeModule()
             {
                 ModuleName = Guid.NewGuid().ToString(),
-                Version = Guid.NewGuid().ToString(),
                 Status = "running",
                 EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
                 ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>()

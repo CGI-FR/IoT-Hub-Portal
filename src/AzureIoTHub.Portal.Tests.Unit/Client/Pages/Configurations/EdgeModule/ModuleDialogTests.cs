@@ -29,7 +29,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             var module = new IoTEdgeModule()
             {
                 ModuleName = moduleName,
-                Version = "1.0",
                 Status = "running",
                 ImageURI = moduleImageUri,
                 EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
@@ -73,7 +72,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
             var module = new IoTEdgeModule()
             {
                 ModuleName = moduleName,
-                Version = moduleVersion,
                 Status = "running",
                 ImageURI = moduleImageUri,
                 EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),

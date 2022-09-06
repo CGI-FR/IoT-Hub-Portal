@@ -180,7 +180,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
 
             var edgeModule = new IoTEdgeModule
             {
-                Version = "1.0",
                 ModuleName = Guid.NewGuid().ToString()
             };
 
