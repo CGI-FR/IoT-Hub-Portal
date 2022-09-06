@@ -16,22 +16,22 @@
                                 @if (LoRaDeviceModel.UseOTAA)
                                 {
                                     <MudItem xs="12" md="6">
-                                        <MudTextField @bind-Value="@LoRaDevice.AppEUI" Label="OTAA App EUI" For="@(() => LoRaDevice.AppEUI)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                        <MudTextField id="@nameof(LoRaDevice.AppEUI)" @bind-Value="@LoRaDevice.AppEUI" Label="OTAA App EUI" For="@(() => LoRaDevice.AppEUI)" Variant="Variant.Outlined" Required="true"></MudTextField>
                                     </MudItem>
                                     <MudItem xs="12" md="6">
-                                        <MudTextField @bind-Value="@LoRaDevice.AppKey" Label="OTAA App Key" For="@(() => LoRaDevice.AppKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                        <MudTextField id="@nameof(LoRaDevice.AppKey)" @bind-Value="@LoRaDevice.AppKey" Label="OTAA App Key" For="@(() => LoRaDevice.AppKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
                                     </MudItem>
                                 }
                                 else
                                 {
                                     <MudItem xs="12" md="4">
-                                        <MudTextField @bind-Value="@LoRaDevice.AppSKey" Label="ABP App SKey" For="@(() => LoRaDevice.AppSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                        <MudTextField id="@nameof(LoRaDevice.AppSKey)" @bind-Value="@LoRaDevice.AppSKey" Label="ABP App SKey" For="@(() => LoRaDevice.AppSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
                                     </MudItem>
                                     <MudItem xs="12" md="4">
-                                        <MudTextField @bind-Value="@LoRaDevice.NwkSKey" Label="ABP Nwk SKey" For="@(() => LoRaDevice.NwkSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                        <MudTextField id="@nameof(LoRaDevice.NwkSKey)" @bind-Value="@LoRaDevice.NwkSKey" Label="ABP Nwk SKey" For="@(() => LoRaDevice.NwkSKey)" Variant="Variant.Outlined" Required="true"></MudTextField>
                                     </MudItem>
                                     <MudItem xs="12" md="4">
-                                        <MudTextField @bind-Value="@LoRaDevice.DevAddr" Label="DevAddr" For="@(() => LoRaDevice.DevAddr)" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                        <MudTextField id="@nameof(LoRaDevice.DevAddr)" @bind-Value="@LoRaDevice.DevAddr" Label="DevAddr" For="@(() => LoRaDevice.DevAddr)" Variant="Variant.Outlined" Required="true"></MudTextField>
                                     </MudItem>
                                 }
                             </MudGrid>
@@ -53,7 +53,8 @@
                                     </MudSelect>
                                 </MudItem>
                                 <MudItem md="3" xs="6">
-                                    <MudSelect Disabled="true"
+                                    <MudSelect id="@nameof(LoRaDevice.Deduplication)"
+                                        Disabled="true"
                                                @bind-Value="@LoRaDevice.Deduplication"
                                                For="@(() => LoRaDevice.Deduplication)"
                                                AnchorOrigin="Origin.BottomCenter"
@@ -66,7 +67,7 @@
                                     </MudSelect>
                                 </MudItem>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField @bind-Value="@LoRaDevice.GatewayID" Label="Gateway Id" For="@(() => LoRaDevice.GatewayID)" Variant="Variant.Outlined"></MudTextField>
+                                    <MudTextField id="@nameof(LoRaDevice.GatewayID)" @bind-Value="@LoRaDevice.GatewayID" Label="Gateway Id" For="@(() => LoRaDevice.GatewayID)" Variant="Variant.Outlined"></MudTextField>
                                 </MudItem>
                             </MudGrid>
                         </MudItem>
@@ -86,13 +87,13 @@
                             <MudText Typo=Typo.subtitle1 Class="mb-4">Adaptive DataRate</MudText>
                             <MudGrid>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" @bind-Text="@LoRaDevice.DataRate" Label="Device Current Datarate" Variant="Variant.Text" ReadOnly="true" />
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.DataRate)" @bind-Text="@LoRaDevice.DataRate" Label="Device Current Datarate" Variant="Variant.Text" ReadOnly="true" />
                                 </MudItem>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" @bind-Text="@LoRaDevice.TxPower" Label="Device Current Transmit Power" Variant="Variant.Text" ReadOnly="true" />
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.TxPower)" @bind-Text="@LoRaDevice.TxPower" Label="Device Current Transmit Power" Variant="Variant.Text" ReadOnly="true" />
                                 </MudItem>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" @bind-Text="@LoRaDevice.NbRep" Label="Device Current repetition when transmitting" Variant="Variant.Text" ReadOnly="true" />
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.NbRep)" @bind-Text="@LoRaDevice.NbRep" Label="Device Current repetition when transmitting" Variant="Variant.Text" ReadOnly="true" />
                                 </MudItem>
                             </MudGrid>
                         </MudItem>
@@ -100,13 +101,13 @@
                             <MudText Typo=Typo.subtitle1 Class="mb-4">Receive Windows</MudText>
                             <MudGrid>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" @bind-Text="@LoRaDevice.ReportedRX1DROffset" Label="Device Current RX1DROffset" Variant="Variant.Text" ReadOnly="true" />
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.ReportedRX1DROffset)" @bind-Text="@LoRaDevice.ReportedRX1DROffset" Label="Device Current RX1DROffset" Variant="Variant.Text" ReadOnly="true" />
                                 </MudItem>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" @bind-Text="@LoRaDevice.ReportedRX2DataRate" Label="Device Current Rx2Datarate" Variant="Variant.Text" ReadOnly="true" />
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.ReportedRX2DataRate)" @bind-Text="@LoRaDevice.ReportedRX2DataRate" Label="Device Current Rx2Datarate" Variant="Variant.Text" ReadOnly="true" />
                                 </MudItem>
                                 <MudItem md="6" xs="12">
-                                    <MudTextField T="string" @bind-Text="@LoRaDevice.ReportedRXDelay" Label="Device Current RXDelay" Variant="Variant.Text" ReadOnly="true" />
+                                    <MudTextField T="string" id="@nameof(LoRaDevice.ReportedRXDelay)" @bind-Text="@LoRaDevice.ReportedRXDelay" Label="Device Current RXDelay" Variant="Variant.Text" ReadOnly="true" />
                                 </MudItem>
                             </MudGrid>
                         </MudItem>
@@ -124,10 +125,10 @@
                     @if (!LoRaDevice.AlreadyLoggedInOnce)
                     {
                         <MudItem xs="12" Class="mb-4">
-                            <MudText Typo="Typo.caption" Style="color: red">Device hasn't joined the network. You cannot send command at this moment.</MudText>
+                            <MudText id="CommandNotAvailableMessage" Typo="Typo.caption" Style="color: red">Device hasn't joined the network. You cannot send command at this moment.</MudText>
                         </MudItem>
                     }
-                    <MudTable Items="@Commands" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                    <MudTable id="LoRaWANCommandsTable" Items="@Commands" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                         <ColGroup>
                             <col style="width: 70%;" />
                             <col style="width: 30%;" />
@@ -142,7 +143,7 @@
                             </MudTd>
                             <MudTd Style="text-align: center">
                                 <MudTooltip Text="Send command">
-                                    <MudIconButton Title="Execute" Color="Color.Default" Disabled="@(!LoRaDevice.AlreadyLoggedInOnce || isProcessing)" Icon="@Icons.Material.Filled.Send" Size="Size.Medium" OnClick="@(() => ExecuteMethod(CommandContext))"></MudIconButton>
+                                    <MudIconButton id="ExecuteCommand" Title="Execute" Color="Color.Default" Disabled="@(!LoRaDevice.AlreadyLoggedInOnce || isProcessing)" Icon="@Icons.Material.Filled.Send" Size="Size.Medium" OnClick="@(() => ExecuteMethod(CommandContext))"></MudIconButton>
                                 </MudTooltip>
                             </MudTd>
                         </RowTemplate>
