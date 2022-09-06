@@ -11,5 +11,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// The device model module list.
         /// </summary>
         public List<IoTEdgeModule> EdgeModules { get; set; } = new List<IoTEdgeModule>();
+
+        public List<IoTEdgeRoute> EdgeRoutes { get; set; } = new List<IoTEdgeRoute>();
     }
 }
