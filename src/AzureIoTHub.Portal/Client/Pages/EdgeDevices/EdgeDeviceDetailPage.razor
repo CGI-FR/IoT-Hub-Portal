@@ -1,5 +1,7 @@
 ﻿@page "/edge/devices/{deviceId}"
+
 @using AzureIoTHub.Portal.Models.v10
+@using AzureIoTHub.Portal.Shared.Models.v10;
 
 @attribute [Authorize]
 @inject NavigationManager NavigationManager
@@ -145,9 +147,13 @@
                                                 <MudTd DataLabel="Module Name" Style="word-break: break-all;">@context.ModuleName</MudTd>
                                                 <MudTd DataLabel="Version" Style="text-align: center">@context.Version</MudTd>
                                                 <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
-                                                <MudTd DataLabel="Device" Style="text-align: center">
+                                                <MudTd DataLabel="Device" Style="text-align: center;display:flex">
                                                     <MudButton Variant="Variant.Filled" Class="btn showLogs" Color="Color.Dark" Disabled="btn_disable" OnClick="@(async () => await ShowEdgeDeviceLogs(context) )">logs</MudButton>
                                                     <MudButton Variant="Variant.Filled" Class="rebootModule" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context,"RestartModule") )">reboot</MudButton>
+                                                    @foreach (var command in context.Commands)
+                                                    {
+                                                        <MudButton Variant="Variant.Filled" Class="@(command.Name)" Disabled="btn_disable" Color="Color.Success" OnClick="@(async () => await ExecuteCommand(context.ModuleName, command) )">@command.Name</MudButton>
+                                                    }
                                                 </MudTd>
                                             </RowTemplate>
                                         </MudTable>
@@ -226,6 +232,17 @@
 
             await LoadModel(edgeDevice.ModelId);
 
+            foreach (var edgeModelModule in edgeModel.EdgeModules)
+            {
+                foreach (var item in edgeDevice.Modules)
+                {
+                    if (item.ModuleName.Equals(edgeModelModule.ModuleName, StringComparison.Ordinal))
+                    {
+                        item.Commands = edgeModelModule.Commands;
+                    }
+                }
+            }
+
             TagList = await DeviceTagSettingsClientService.GetDeviceTags();
         }
         catch (ProblemDetailsException exception)
@@ -289,9 +306,38 @@
 
         try
         {
-            //var result = await Http.PostAsJsonAsync($"api/edge/devices/{edgeDevice.DeviceId}/{module.ModuleName}/{methodName}", module);
-
             var c2dResult = await EdgeDeviceClientService.ExecuteModuleMethod(edgeDevice.DeviceId, module, methodName);
+
+            if (c2dResult.Status == 200)
+            {
+                Snackbar.Add("Command successfully executed.", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add($"Error<br>Status : {c2dResult.Status};<br>Payload : {c2dResult.Payload};", Severity.Error,
+                    (option) =>
+                    {
+                        option.VisibleStateDuration = 10000;
+                    });
+            }
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    public async Task ExecuteCommand(string moduleName, IoTEdgeModuleCommand command)
+    {
+        isProcessing = true;
+
+        try
+        {
+            var c2dResult = await EdgeDeviceClientService.ExecuteModuleCommand(edgeDevice.DeviceId, moduleName, command.Name);
 
             if (c2dResult.Status == 200)
             {

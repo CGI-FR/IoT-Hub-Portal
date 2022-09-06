@@ -157,13 +157,19 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Executes the module method on the IoT Edge device.
         /// </summary>
-        /// <param name="edgeModule">The edge module.</param>
+        /// <param name="moduleName">The edge module name.</param>
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="methodName">Name of the method.</param>
-        [HttpPost("{deviceId}/{moduleId}/{methodName}", Name = "POST Execute module command")]
-        public async Task<C2Dresult> ExecuteModuleMethod(IoTEdgeModule edgeModule, string deviceId, string methodName)
+        [HttpGet("{deviceId}/{moduleName}/{methodName}", Name = "Get Execute module command")]
+        public async Task<C2Dresult> ExecuteModuleMethod(string moduleName, string deviceId, string methodName)
         {
-            return await this.edgeDevicesService.ExecuteModuleMethod(edgeModule, deviceId, methodName);
+            return await this.edgeDevicesService.ExecuteModuleMethod(moduleName, deviceId, methodName);
+        }
+
+        [HttpGet("{deviceId}/{moduleName}/custom/{commandName}", Name = "GET Execute custom module command")]
+        public async Task<C2Dresult> ExecuteCustomModuleMethod(string deviceId, string moduleName, string commandName)
+        {
+            return await this.edgeDevicesService.ExecuteModuleCommand(deviceId, moduleName, commandName);
         }
 
         /// <summary>

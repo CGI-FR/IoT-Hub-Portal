@@ -170,29 +170,56 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <summary>
         /// Executes the module method on the IoT Edge device.
         /// </summary>
-        /// <param name="edgeModule"></param>
+        /// <param name="moduleName"></param>
         /// <param name="deviceId"></param>
         /// <param name="methodName"></param>
         /// <returns></returns>
-        public async Task<C2Dresult> ExecuteModuleMethod(IoTEdgeModule edgeModule, string deviceId, string methodName)
+        public async Task<C2Dresult> ExecuteModuleMethod(string moduleName, string deviceId, string methodName)
         {
-            ArgumentNullException.ThrowIfNull(edgeModule, nameof(edgeModule));
+            ArgumentNullException.ThrowIfNull(moduleName, nameof(moduleName));
 
             var method = new CloudToDeviceMethod(methodName);
-            var payload = string.Empty;
+            var payload = "{}";
 
             if (methodName == "RestartModule")
             {
                 payload = JsonConvert.SerializeObject(new
                 {
-                    id = edgeModule.ModuleName,
-                    schemaVersion = edgeModule.Version
+                    id = moduleName,
+                    schemaVersion = "1.0"
                 });
             }
 
             _ = method.SetPayloadJson(payload);
 
             var result = await this.devicesService.ExecuteC2DMethod(deviceId, method);
+
+            return new C2Dresult()
+            {
+                Payload = result.GetPayloadAsJson(),
+                Status = result.Status
+            };
+        }
+
+        /// <summary>
+        /// Execute the custom module command.
+        /// </summary>
+        /// <param name="deviceId">the device identifier.</param>
+        /// <param name="moduleName">the module name.</param>
+        /// <param name="commandName">the command name.</param>
+        /// <returns></returns>
+        public async Task<C2Dresult> ExecuteModuleCommand(string deviceId, string moduleName, string commandName)
+        {
+            ArgumentNullException.ThrowIfNull(deviceId, nameof(deviceId));
+            ArgumentNullException.ThrowIfNull(moduleName, nameof(moduleName));
+            ArgumentNullException.ThrowIfNull(commandName, nameof(commandName));
+
+            var method = new CloudToDeviceMethod(commandName);
+            var payload = "{}";
+
+            _ = method.SetPayloadJson(payload);
+
+            var result = await this.devicesService.ExecuteCustomCommandC2DMethod(deviceId,moduleName, method);
 
             return new C2Dresult()
             {

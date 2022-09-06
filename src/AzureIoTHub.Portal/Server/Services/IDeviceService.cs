@@ -25,6 +25,8 @@ namespace AzureIoTHub.Portal.Server.Services
 
         Task<CloudToDeviceMethodResult> ExecuteC2DMethod(string deviceId, CloudToDeviceMethod method);
 
+        Task<CloudToDeviceMethodResult> ExecuteCustomCommandC2DMethod(string deviceId, string moduleName, CloudToDeviceMethod method);
+
         Task DeleteDevice(string deviceId);
 
         Task<PaginationResult<Twin>> GetAllDevice(
