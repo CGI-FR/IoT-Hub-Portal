@@ -1050,6 +1050,60 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task ExecuteCustomCommandC2DMethodShouldReturn200()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+            var moduleName = Guid.NewGuid().ToString();
+
+            var method = new CloudToDeviceMethod(Guid.NewGuid().ToString());
+
+            _ = this.mockServiceClient.Setup(c => c.InvokeDeviceMethodAsync(
+                It.Is<string>(x => x.Equals(deviceId, StringComparison.Ordinal)),
+                It.Is<string>(x => x.Equals(moduleName, StringComparison.Ordinal)),
+                It.Is<CloudToDeviceMethod>(x => x == method),
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CloudToDeviceMethodResult
+                {
+                    Status = 200
+                });
+
+            // Act
+            var result = await service.ExecuteCustomCommandC2DMethod(deviceId, moduleName, method);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(200, result.Status);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ExecuteCustomCommandC2DMethodShouldThrowInternalServerErrorExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+            var moduleName = Guid.NewGuid().ToString();
+
+            var method = new CloudToDeviceMethod(Guid.NewGuid().ToString());
+
+            _ = this.mockServiceClient.Setup(c => c.InvokeDeviceMethodAsync(
+                It.Is<string>(x => x.Equals(deviceId, StringComparison.Ordinal)),
+                It.Is<string>(x => x.Equals(moduleName, StringComparison.Ordinal)),
+                It.Is<CloudToDeviceMethod>(x => x == method),
+                It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception(""));
+
+            // Act
+            var result = async () => await service.ExecuteCustomCommandC2DMethod(deviceId, moduleName, method);
+
+            // Assert
+            _ = await result.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetEdgeDeviceLogsMustReturnLogsWhen200IsReturned()
         {
             // Arrange
