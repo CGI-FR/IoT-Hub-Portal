@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using Bunit;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
+    using Models.v10.LoRaWAN;
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
@@ -74,6 +75,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     }
                 });
 
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<DeviceToDuplicateSelector>();
             var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItem>>();
 
@@ -82,7 +84,171 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             autocompleteComponent.Find(TagNames.Input).Input(query);
 
             // Assert
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(1));
             cut.WaitForAssertion(() => autocompleteComponent.Instance.IsOpen.Should().BeTrue());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void SelectDeviceShouldDuplicateDeviceAndItsModel()
+        {
+            // Arrange
+            var query = Fixture.Create<string>();
+
+            var expectedDeviceModel = new DeviceModel
+            {
+                ModelId = Fixture.Create<string>()
+            };
+
+            var expectedDevice = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>(),
+                ModelId = expectedDeviceModel.ModelId
+            };
+
+            var expectedDeviceItem = new DeviceListItem
+            {
+                DeviceID = expectedDevice.DeviceID,
+            };
+
+            var url = $"api/devices?pageSize=10&searchText={query}";
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevices(url))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>()
+                {
+                    Items = new List<DeviceListItem>
+                    {
+                        expectedDeviceItem
+                    }
+                });
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevice(expectedDevice.DeviceID))
+                .ReturnsAsync(expectedDevice);
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModel(expectedDevice.ModelId))
+                .ReturnsAsync(expectedDeviceModel);
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<DeviceToDuplicateSelector>();
+
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItem>>();
+            autocompleteComponent.Find(TagNames.Input).Click();
+            autocompleteComponent.Find(TagNames.Input).Input(query);
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(1));
+
+            // Act
+            var item = popoverProvider.Find("div.mud-list-item");
+            item.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => autocompleteComponent.Instance.IsOpen.Should().BeFalse());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void SelectDeviceShouldProcessProblemDetailsExceptionWhenGettingDeviceDetails()
+        {
+            // Arrange
+            var query = Fixture.Create<string>();
+
+            var expectedDeviceModel = new DeviceModel
+            {
+                ModelId = Fixture.Create<string>()
+            };
+
+            var expectedDevice = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>(),
+                ModelId = expectedDeviceModel.ModelId
+            };
+
+            var expectedDeviceItem = new DeviceListItem
+            {
+                DeviceID = expectedDevice.DeviceID,
+            };
+
+            var url = $"api/devices?pageSize=10&searchText={query}";
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevices(url))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>()
+                {
+                    Items = new List<DeviceListItem>
+                    {
+                        expectedDeviceItem
+                    }
+                });
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevice(expectedDevice.DeviceID))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<DeviceToDuplicateSelector>();
+
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItem>>();
+            autocompleteComponent.Find(TagNames.Input).Click();
+            autocompleteComponent.Find(TagNames.Input).Input(query);
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(1));
+
+            // Act
+            var item = popoverProvider.Find("div.mud-list-item");
+            item.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => autocompleteComponent.Instance.IsOpen.Should().BeFalse());
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void SelectLoraDeviceShouldDuplicateLoraDeviceAndItsLoraModel()
+        {
+            // Arrange
+            var query = Fixture.Create<string>();
+
+            var expectedDeviceModel = new LoRaDeviceModel
+            {
+                ModelId = Fixture.Create<string>()
+            };
+
+            var expectedDevice = new LoRaDeviceDetails
+            {
+                DeviceID = Fixture.Create<string>(),
+                ModelId = expectedDeviceModel.ModelId
+            };
+
+            var expectedDeviceItem = new DeviceListItem
+            {
+                DeviceID = expectedDevice.DeviceID,
+                SupportLoRaFeatures = true
+            };
+
+            var url = $"api/devices?pageSize=10&searchText={query}";
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevices(url))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>()
+                {
+                    Items = new List<DeviceListItem>
+                    {
+                        expectedDeviceItem
+                    }
+                });
+
+            _ = this.mockLoRaWanDeviceClientService.Setup(service => service.GetDevice(expectedDevice.DeviceID))
+                .ReturnsAsync(expectedDevice);
+
+            _ = this.mockLoRaWanDeviceModelsClientService.Setup(service => service.GetDeviceModel(expectedDevice.ModelId))
+                .ReturnsAsync(expectedDeviceModel);
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<DeviceToDuplicateSelector>();
+
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<DeviceListItem>>();
+            autocompleteComponent.Find(TagNames.Input).Click();
+            autocompleteComponent.Find(TagNames.Input).Input(query);
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(1));
+
+            // Act
+            var item = popoverProvider.Find("div.mud-list-item");
+            item.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => autocompleteComponent.Instance.IsOpen.Should().BeFalse());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 

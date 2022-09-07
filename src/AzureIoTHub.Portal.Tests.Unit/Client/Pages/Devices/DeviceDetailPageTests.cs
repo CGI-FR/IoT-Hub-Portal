@@ -22,7 +22,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using MudBlazor.Services;
     using NUnit.Framework;
     using UnitTests.Mocks;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Client.Pages.DeviceModels;
 
     [TestFixture]
@@ -532,6 +532,77 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Assert            
             cut.WaitForState(() => this.mockNavigationManager.Uri.EndsWith("/devices", StringComparison.OrdinalIgnoreCase));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnDuplicateShouldDuplicateDeviceDetailAndRedirectToCreateDevicePage()
+        {
+            var mockDeviceModel = new DeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                SupportLoRaFeatures = false,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var mockTag = new DeviceTag
+            {
+                Label = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString(),
+                Required = false,
+                Searchable = false
+            };
+
+            var mockDeviceDetails = new DeviceDetails
+            {
+                DeviceName = Guid.NewGuid().ToString(),
+                ModelId = mockDeviceModel.ModelId,
+                DeviceID = Guid.NewGuid().ToString(),
+                Tags = new Dictionary<string, string>()
+                {
+                    {mockTag.Name,Guid.NewGuid().ToString()}
+                }
+            };
+
+            _ = this.mockDeviceClientService
+                .Setup(service => service.GetDevice(mockDeviceDetails.DeviceID))
+                .ReturnsAsync(mockDeviceDetails);
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModel(mockDeviceDetails.ModelId))
+                .ReturnsAsync(mockDeviceModel);
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>
+                {
+                    mockTag
+                });
+
+            _ = this.mockDeviceClientService
+                .Setup(service => service.GetDeviceProperties(mockDeviceDetails.DeviceID))
+                .ReturnsAsync(new List<DevicePropertyValue>());
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModel.Name)}").InnerHtml.Should().NotBeEmpty());
+
+            var saveButton = cut.WaitForElement("#saveButton");
+
+            var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
+
+            mudButtonGroup.Find(".mud-menu button").Click();
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(2));
+
+            var items = popoverProvider.FindAll("div.mud-list-item");
+
+            // Click on Duplicate
+            items[1].Click();
+
+            // Act
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/devices/new"));
         }
     }
 }

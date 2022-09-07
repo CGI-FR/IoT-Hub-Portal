@@ -318,5 +318,157 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
+
+        [Test]
+        public async Task ClickOnSaveAndAddNewShouldCreateDeviceAndResetCreateDevicePage()
+        {
+            var mockDeviceModel = new DeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                SupportLoRaFeatures = false,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var expectedDeviceDetails = new DeviceDetails
+            {
+                DeviceName = Guid.NewGuid().ToString(),
+                ModelId = mockDeviceModel.ModelId,
+                DeviceID = Guid.NewGuid().ToString(),
+            };
+
+            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModel>
+                {
+                    mockDeviceModel
+                });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>
+                {
+                    new()
+                    {
+                        Label = Guid.NewGuid().ToString(),
+                        Name = Guid.NewGuid().ToString(),
+                        Required = false,
+                        Searchable = false
+                    }
+                });
+
+            _ = this.mockDeviceModelsClientService
+                .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+                .ReturnsAsync(new List<DeviceProperty>());
+
+            _ = this.mockDeviceClientService
+                .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValue>>()))
+                .Returns(Task.CompletedTask);
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<CreateDevicePage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+            await cut.Instance.ChangeModel(mockDeviceModel);
+
+            var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
+
+            mudButtonGroup.Find(".mud-menu button").Click();
+
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(3));
+
+            var items = popoverProvider.FindAll("div.mud-list-item");
+
+            // Click on Save and New
+            items[1].Click();
+
+            // Act
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceDetails.DeviceName)}").TextContent.Should().BeEmpty());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceDetails.DeviceID)}").TextContent.Should().BeEmpty());
+            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().NotEndWith("/devices"));
+        }
+
+        [Test]
+        public async Task ClickOnSaveAndDuplicateShouldCreateDeviceAndDuplicateDeviceDetailsInCreateDevicePage()
+        {
+            var mockDeviceModel = new DeviceModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                SupportLoRaFeatures = false,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var expectedDeviceDetails = new DeviceDetails
+            {
+                DeviceName = Guid.NewGuid().ToString(),
+                ModelId = mockDeviceModel.ModelId,
+                DeviceID = Guid.NewGuid().ToString(),
+            };
+
+            _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModel>
+                {
+                    mockDeviceModel
+                });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTag>
+                {
+                    new()
+                    {
+                        Label = Guid.NewGuid().ToString(),
+                        Name = Guid.NewGuid().ToString(),
+                        Required = false,
+                        Searchable = false
+                    }
+                });
+
+            _ = this.mockDeviceModelsClientService
+                .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+                .ReturnsAsync(new List<DeviceProperty>());
+
+            _ = this.mockDeviceClientService
+                .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValue>>()))
+                .Returns(Task.CompletedTask);
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<CreateDevicePage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+            await cut.Instance.ChangeModel(mockDeviceModel);
+
+            var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
+
+            mudButtonGroup.Find(".mud-menu button").Click();
+
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(3));
+
+            var items = popoverProvider.FindAll("div.mud-list-item");
+
+            // Click on Save and Duplicate
+            items[2].Click();
+
+            // Act
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceDetails.DeviceName)}").TextContent.Should().BeEmpty());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceDetails.DeviceID)}").TextContent.Should().BeEmpty());
+            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().NotEndWith("/devices"));
+        }
     }
 }
