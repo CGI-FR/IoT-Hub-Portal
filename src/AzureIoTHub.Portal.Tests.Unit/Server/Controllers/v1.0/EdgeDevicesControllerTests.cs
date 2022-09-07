@@ -410,7 +410,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
             var moduleName = Guid.NewGuid().ToString();
 
             _ = this.mockEdgeDeviceService
-                .Setup(x => x.ExecuteModuleCommand(
+                .Setup(x => x.ExecuteModuleMethod(
                     It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal)),
                     It.Is<string>(c => c.Equals(moduleName, StringComparison.Ordinal)),
                     It.Is<string>(c => c.Equals(commandName, StringComparison.Ordinal))))

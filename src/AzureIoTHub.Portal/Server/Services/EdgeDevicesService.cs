@@ -178,6 +178,11 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             ArgumentNullException.ThrowIfNull(moduleName, nameof(moduleName));
 
+            if (!methodName.Equals("RestartModule", StringComparison.Ordinal))
+            {
+                return await ExecuteModuleCommand(deviceId, moduleName, methodName);
+            }
+
             var method = new CloudToDeviceMethod(methodName);
 
             var payload = JsonConvert.SerializeObject(new
