@@ -262,7 +262,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                     Status = 500
                 });
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>())).Returns((Snackbar)null);
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>())).Returns(value: null);
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
 
@@ -357,6 +357,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         [Test]
         public void ClickOnConnectShouldDisplayDeviceCredentials()
         {
+            // Arrange
             _ = SetupOnInitialisation();
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
@@ -371,6 +372,80 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             // Act
             connectButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnCommandModuleShouldReturn200()
+        {
+            // Arrange
+            _ = SetupOnInitialisation();
+
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+            cut.WaitForAssertion(() => cut.Find("#commandTest"));
+
+            var commandButton = cut.Find("#commandTest");
+
+            _ = this.mockEdgeDeviceClientService
+                .Setup(x => x.ExecuteModuleCommand(It.Is<string>(c => c.Equals(this.mockdeviceId, StringComparison.Ordinal)), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new C2Dresult() { Status = 200 });
+
+            _ = this.mockSnackbarService
+                .Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>()))
+                .Returns(value: null);
+
+            // Act
+            commandButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnCommandModuleShouldReturn400()
+        {
+            // Arrange
+            _ = SetupOnInitialisation();
+
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+            cut.WaitForAssertion(() => cut.Find("#commandTest"));
+
+            var commandButton = cut.Find("#commandTest");
+
+            _ = this.mockEdgeDeviceClientService
+                .Setup(x => x.ExecuteModuleCommand(It.Is<string>(c => c.Equals(this.mockdeviceId, StringComparison.Ordinal)), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new C2Dresult() { Status = 400 });
+
+            _ = this.mockSnackbarService
+                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>()))
+                .Returns(value: null);
+
+            // Act
+            commandButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnCommandModuleShouldProcessProblemDetailsExceptionWhenIssueOccurs()
+        {
+            // Arrange
+            _ = SetupOnInitialisation();
+
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+            cut.WaitForAssertion(() => cut.Find("#commandTest"));
+
+            var commandButton = cut.Find("#commandTest");
+
+            _ = this.mockEdgeDeviceClientService
+                .Setup(x => x.ExecuteModuleCommand(It.Is<string>(c => c.Equals(this.mockdeviceId, StringComparison.Ordinal)), It.IsAny<string>(), It.IsAny<string>()))
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            // Act
+            commandButton.Click();
 
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
@@ -434,7 +509,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 DeviceId = this.mockdeviceId,
                 ConnectionState = "Connected",
                 ModelId = Guid.NewGuid().ToString(),
-                Tags = tags
+                Tags = tags,
+                Modules = new List<IoTEdgeModule>()
+                {
+                    new IoTEdgeModule()
+                    {
+                        ModuleName = "moduleTest",
+                        ImageURI = Guid.NewGuid().ToString()
+                    }
+                }
             };
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevice(this.mockdeviceId))
@@ -444,7 +527,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 .Setup(service => service.GetIoTEdgeModel(It.Is<string>(x => x.Equals(mockIoTEdgeDevice.ModelId, StringComparison.Ordinal))))
                 .ReturnsAsync(new IoTEdgeModel()
                 {
-                    ModelId = mockIoTEdgeDevice.ModelId
+                    ModelId = mockIoTEdgeDevice.ModelId,
+                    EdgeModules = new List<IoTEdgeModule>()
+                    {
+                        new IoTEdgeModule()
+                        {
+                            ModuleName = "moduleTest",
+                            ImageURI = Guid.NewGuid().ToString(),
+                            Commands = new List<Portal.Shared.Models.v10.IoTEdgeModuleCommand>()
+                            {
+                                new Portal.Shared.Models.v10.IoTEdgeModuleCommand(){ Name = "commandTest"}
+                            }
+                        }
+                    }
                 });
 
             _ = this.mockDeviceTagSettingsClientService
