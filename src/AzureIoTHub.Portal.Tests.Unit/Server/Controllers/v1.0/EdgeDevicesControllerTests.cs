@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
+namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
 {
     using System;
     using System.Collections.Generic;
@@ -393,6 +393,31 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             // Act
             var result = await edgeDeviceController.ExecuteModuleMethod(module.ModuleName, deviceId, methodName);
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [TestCase("test")]
+        public async Task ExecuteCustomModuleMethodShouldExecuteC2DMethod(string commandName)
+        {
+            // Arrange
+            var edgeDeviceController = CreateEdgeDevicesController();
+
+            var deviceId =  Guid.NewGuid().ToString();
+            var moduleName = Guid.NewGuid().ToString();
+
+            _ = this.mockEdgeDeviceService
+                .Setup(x => x.ExecuteModuleCommand(
+                    It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal)),
+                    It.Is<string>(c => c.Equals(moduleName, StringComparison.Ordinal)),
+                    It.Is<string>(c => c.Equals(commandName, StringComparison.Ordinal))))
+                .ReturnsAsync(new C2Dresult());
+
+            // Act
+            var result = await edgeDeviceController.ExecuteCustomModuleMethod(deviceId, moduleName, commandName);
 
             // Assert
             Assert.IsNotNull(result);
