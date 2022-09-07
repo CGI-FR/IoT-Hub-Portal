@@ -81,7 +81,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task WhenDeviceDoesntHaveModelIdNotExistGetPropertiesShouldReturnBadRequest()
+        public async Task WhenDeviceDoesntHaveModelIdNotExistGetPropertiesShouldThrowResourceNotFoundException()
         {
             // Arrange
             var twin = new Twin();
@@ -152,7 +152,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             MockRepository.VerifyAll();
         }
         [Test]
-        public async Task WhenDeviceNotExistSetPropertiesShouldReturnNotFound()
+        public async Task WhenDeviceNotExistSetPropertiesShouldThrowResourceNotFoundException()
         {
             // Arrange
             _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
@@ -167,7 +167,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task WhenDeviceDoesntHaveModelIdNotExistSetPropertiesShouldReturnBadRequest()
+        public async Task WhenDeviceDoesntHaveModelIdNotExistSetPropertiesShouldThrowResourceNotFoundException()
         {
             // Arrange
             var twin = new Twin();
