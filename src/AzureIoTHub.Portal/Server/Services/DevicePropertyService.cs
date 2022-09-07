@@ -7,9 +7,8 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using Azure;
-    using Entities;
-    using Exceptions;
-    using Factories;
+    using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using Helpers;
     using Models.v10;
     using Newtonsoft.Json;
@@ -18,14 +17,13 @@ namespace AzureIoTHub.Portal.Server.Services
     public class DevicePropertyService : IDevicePropertyService
     {
         private readonly IDeviceService devicesService;
-        private readonly ITableClientFactory tableClientFactory;
+        private readonly IDeviceModelPropertiesService deviceModelPropertiesService;
 
-        public DevicePropertyService(IDeviceService devicesService, ITableClientFactory tableClientFactory)
+        public DevicePropertyService(IDeviceService devicesService, IDeviceModelPropertiesService deviceModelPropertiesService)
         {
             this.devicesService = devicesService;
-            this.tableClientFactory = tableClientFactory;
+            this.deviceModelPropertiesService = deviceModelPropertiesService;
         }
-
 
         public async Task<IEnumerable<DevicePropertyValue>> GetProperties(string deviceId)
         {
@@ -43,13 +41,11 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new ResourceNotFoundException($"Device {deviceId} has no modelId tag value");
             }
 
-            AsyncPageable<DeviceModelProperty> items;
+            IEnumerable<DeviceModelProperty> items;
 
             try
             {
-                items = this.tableClientFactory
-                    .GetDeviceTemplateProperties()
-                    .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{modelId}'");
+                items = await this.deviceModelPropertiesService.GetModelProperties(modelId);
             }
             catch (RequestFailedException e)
             {
@@ -78,7 +74,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new InternalServerErrorException($"Unable to read reported properties for device with id {deviceId}", e);
             }
 
-            await foreach (var item in items)
+            foreach (var item in items)
             {
                 var value = item.IsWritable ? desiredPropertiesAsJson.SelectToken(item.Name)?.Value<string>() :
                         reportedPropertiesAsJson.SelectToken(item.Name)?.Value<string>();
@@ -112,13 +108,12 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new ResourceNotFoundException($"Device {deviceId} has no modelId tag value");
             }
 
-            AsyncPageable<DeviceModelProperty> items;
+            IEnumerable<DeviceModelProperty> items;
 
             try
             {
-                items = this.tableClientFactory
-                    .GetDeviceTemplateProperties()
-                    .QueryAsync<DeviceModelProperty>($"PartitionKey eq '{modelId}'");
+                items = await this.deviceModelPropertiesService.GetModelProperties(modelId);
+
             }
             catch (RequestFailedException e)
             {
@@ -127,7 +122,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             var desiredProperties = new Dictionary<string, object>();
 
-            await foreach (var item in items)
+            foreach (var item in items)
             {
                 if (!item.IsWritable)
                 {

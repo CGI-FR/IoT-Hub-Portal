@@ -85,13 +85,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Factories
                     PortBindings = new Dictionary<string, IList<PortBinding>>
                     {
                         {
-                            $"1000/tcp", new List<PortBinding> { new PortBinding { HostIP = "127.0.0.1", HostPort = "1000" } }
+                            $"10000/tcp", new List<PortBinding> { new PortBinding { HostIP = "127.0.0.1", HostPort = "10000" } }
                         },
                         {
-                            $"1001/tcp", new List<PortBinding> { new PortBinding { HostIP = "127.0.0.1", HostPort = "1001" } }
+                            $"10001/tcp", new List<PortBinding> { new PortBinding { HostIP = "127.0.0.1", HostPort = "10001" } }
                         },
                         {
-                            $"1002/tcp", new List<PortBinding> { new PortBinding { HostIP = "127.0.0.1", HostPort = "1002" } }
+                            $"10002/tcp", new List<PortBinding> { new PortBinding { HostIP = "127.0.0.1", HostPort = "10002" } }
                         }
                     }
                 };

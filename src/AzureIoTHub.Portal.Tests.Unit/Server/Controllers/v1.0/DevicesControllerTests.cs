@@ -11,12 +11,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using Azure;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Controllers.V10;
-    using AzureIoTHub.Portal.Server.Exceptions;
-    using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
@@ -49,7 +46,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         private Mock<IDeviceTwinMapper<DeviceListItem, DeviceDetails>> mockDeviceTwinMapper;
         private Mock<IDeviceModelPropertiesRepository> mockDeviceModelPropertiesRepository;
         private Mock<ITableClientFactory> mockTableClientFactory;
-        private Mock<IUnitOfWork> mockUnitOfWork;
 
         [SetUp]
         public void SetUp()
@@ -62,23 +58,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             this.mockDevicePropertyService = this.mockRepository.Create<IDevicePropertyService>();
             this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
-            this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
             this.mockDeviceModelPropertiesRepository = this.mockRepository.Create<IDeviceModelPropertiesRepository>();
-            this.mockUnitOfWork = this.mockRepository.Create<IUnitOfWork>();
+            this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
         }
 
         private DevicesController CreateDevicesController()
         {
             return new DevicesController(
-                this.mockUnitOfWork.Object,
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
                 this.mockDeviceTagService.Object,
                 this.mockProvisioningServiceManager.Object,
                 this.mockDeviceTwinMapper.Object,
-                this.mockTableClientFactory.Object,
-                this.mockDevicePropertyService.Object)
+                this.mockDevicePropertyService.Object,
+                this.mockTableClientFactory.Object)
             {
                 Url = this.mockUrlHelper.Object
             };

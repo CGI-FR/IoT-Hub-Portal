@@ -8,11 +8,10 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using Azure;
+    using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Models;
     using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Server.Entities;
-    using AzureIoTHub.Portal.Server.Exceptions;
-    using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Shared.Models.v10;
 
@@ -23,15 +22,12 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         private readonly IConfigService configService;
 
-        /// <summary>
-        /// The table client factory.
-        /// </summary>
-        private readonly ITableClientFactory tableClientFactory;
+        private readonly IDeviceModelPropertiesService deviceModelPropertiesService;
 
-        public DeviceConfigurationsService(IConfigService configService, ITableClientFactory tableClientFactory)
+        public DeviceConfigurationsService(IConfigService configService, IDeviceModelPropertiesService deviceModelPropertiesService)
         {
             this.configService = configService;
-            this.tableClientFactory = tableClientFactory;
+            this.deviceModelPropertiesService = deviceModelPropertiesService;
         }
 
         public async Task<IEnumerable<ConfigListItem>> GetDeviceConfigurationListAsync()
@@ -86,13 +82,10 @@ namespace AzureIoTHub.Portal.Server.Services
 
         private async Task CreateOrUpdateConfiguration(DeviceConfig deviceConfig)
         {
-            DeviceModelProperty[] items;
+            IEnumerable<DeviceModelProperty> items;
             try
             {
-                items = this.tableClientFactory
-                    .GetDeviceTemplateProperties()
-                    .Query<DeviceModelProperty>($"PartitionKey eq '{deviceConfig.ModelId}'")
-                    .ToArray();
+                items = await this.deviceModelPropertiesService.GetModelProperties(deviceConfig.ModelId);
             }
             catch (RequestFailedException e)
             {

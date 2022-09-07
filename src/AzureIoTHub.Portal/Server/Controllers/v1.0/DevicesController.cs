@@ -5,14 +5,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Models.v10;
-    using Factories;
     using Managers;
     using Mappers;
-    using Services;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using Services;
 
     [Authorize]
     [ApiController]
@@ -24,13 +24,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         private readonly IDevicePropertyService devicePropertyService;
 
         public DevicesController(
-            IUnitOfWork unitOfWork,
             ILogger<DevicesController> logger,
             IDeviceService devicesService,
             IDeviceTagService deviceTagService,
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper,
-            ITableClientFactory tableClientFactory, IDevicePropertyService devicePropertyService)
+            IDevicePropertyService devicePropertyService,
+            ITableClientFactory tableClientFactory)
             : base(logger, devicesService, deviceTagService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
         {
             this.devicePropertyService = devicePropertyService;
