@@ -160,13 +160,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="moduleName">The edge module name.</param>
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="methodName">Name of the method.</param>
-        [HttpGet("{deviceId}/{moduleName}/{methodName}", Name = "Get Execute module command")]
+        [HttpPost("{deviceId}/{moduleName}/{methodName}", Name = "POST Execute module command")]
         public async Task<C2Dresult> ExecuteModuleMethod(string moduleName, string deviceId, string methodName)
         {
             return await this.edgeDevicesService.ExecuteModuleMethod(moduleName, deviceId, methodName);
         }
 
-        [HttpGet("{deviceId}/{moduleName}/custom/{commandName}", Name = "GET Execute custom module command")]
+        [HttpPost("{deviceId}/{moduleName}/custom/{commandName}", Name = "POST Execute custom module command")]
         public async Task<C2Dresult> ExecuteCustomModuleMethod(string deviceId, string moduleName, string commandName)
         {
             return await this.edgeDevicesService.ExecuteModuleCommand(deviceId, moduleName, commandName);

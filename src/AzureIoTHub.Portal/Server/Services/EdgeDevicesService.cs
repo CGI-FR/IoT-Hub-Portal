@@ -179,7 +179,7 @@ namespace AzureIoTHub.Portal.Server.Services
             ArgumentNullException.ThrowIfNull(moduleName, nameof(moduleName));
 
             var method = new CloudToDeviceMethod(methodName);
-            var payload = "{}";
+            var payload = string.Empty;
 
             if (methodName == "RestartModule")
             {

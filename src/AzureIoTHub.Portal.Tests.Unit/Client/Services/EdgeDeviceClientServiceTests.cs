@@ -222,7 +222,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             var methodName = Fixture.Create<string>();
             var c2Dresult = Fixture.Create<C2Dresult>();
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/{edgeModule.ModuleName}/{methodName}")
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/devices/{deviceId}/{edgeModule.ModuleName}/{methodName}")
                 .RespondJson(c2Dresult);
 
             // Act
@@ -244,7 +244,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
 
             var c2Dresult = Fixture.Create<C2Dresult>();
 
-            _ = MockHttpClient.When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/{moduleName}/custom/{commandName}")
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/devices/{deviceId}/{moduleName}/custom/{commandName}")
                 .RespondJson(c2Dresult);
 
             // Act
