@@ -98,6 +98,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task WhenDeviceNotExistGetPropertiesShouldThrowResourceNotFoundException()
+        {
+            // Arrange
+            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
+                .ReturnsAsync((Twin)null);
+
+            // Act
+            var act = () => this.devicePropertyService.GetProperties("aaa");
+
+            // Assert
+            _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetPropertiesShouldReturnDeviceProperties()
         {
             // Arrange
@@ -151,6 +166,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             MockRepository.VerifyAll();
         }
+
         [Test]
         public async Task WhenDeviceNotExistSetPropertiesShouldThrowResourceNotFoundException()
         {
