@@ -411,5 +411,66 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             _ = await result.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task GetPropertiesShouldReturnDevicePropertyValues()
+        {
+            // Arrange
+            var devicesController = CreateDevicesController();
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            var expectedDevicePropertyValues = new List<DevicePropertyValue>
+            {
+                new()
+                {
+                    Name = Guid.NewGuid().ToString()
+                }
+            };
+
+            _ = this.mockDevicePropertyService.Setup(c => c.GetProperties(deviceId))
+                .ReturnsAsync(expectedDevicePropertyValues);
+
+            // Act
+            var result = await devicesController.GetProperties(deviceId);
+
+            // Assert
+            _ = result.Count().Should().Be(1);
+            _ = result.Should().BeEquivalentTo(expectedDevicePropertyValues);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task SetPropertiesShouldSetDevicePropertyValues()
+        {
+            // Arrange
+            var devicesController = CreateDevicesController();
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            var devicePropertyValues = new List<DevicePropertyValue>
+            {
+                new()
+                {
+                    Name = Guid.NewGuid().ToString()
+                }
+            };
+
+            _ = this.mockDevicePropertyService.Setup(c => c.SetProperties(deviceId, devicePropertyValues))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await devicesController.SetProperties(deviceId, devicePropertyValues);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<OkResult>(result.Result);
+
+            var okResult = (OkResult)result.Result;
+            Assert.IsNotNull(okResult);
+
+            this.mockRepository.VerifyAll();
+        }
     }
 }
