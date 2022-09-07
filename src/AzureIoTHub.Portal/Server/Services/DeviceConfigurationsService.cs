@@ -3,7 +3,18 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Azure;
+    using AzureIoTHub.Portal.Models;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Server.Entities;
+    using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Factories;
+    using AzureIoTHub.Portal.Server.Helpers;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     public class DeviceConfigurationsService : IDeviceConfigurationsService
     {
@@ -21,6 +32,99 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             this.configService = configService;
             this.tableClientFactory = tableClientFactory;
+        }
+
+        public async Task<IEnumerable<ConfigListItem>> GetDeviceConfigurationListAsync()
+        {
+            var configList = await this.configService.GetDevicesConfigurations();
+
+            return configList.Select(ConfigHelper.CreateConfigListItem);
+        }
+
+        public async Task<DeviceConfig> GetDeviceConfigurationAsync(string configurationId)
+        {
+            try
+            {
+                var configItem = await this.configService.GetConfigItem(configurationId);
+
+                var deviceConfig = ConfigHelper.CreateDeviceConfig(configItem);
+
+                return deviceConfig;
+            }
+            catch (InvalidOperationException e)
+            {
+                throw new InternalServerErrorException("", e);
+            }
+        }
+
+        public async Task<ConfigurationMetrics> GetConfigurationMetricsAsync(string configurationId)
+        {
+            var configItem = await this.configService.GetConfigItem(configurationId);
+
+            return new ConfigurationMetrics
+            {
+                MetricsTargeted = ConfigHelper.RetrieveMetricValue(configItem, "targetedCount"),
+                MetricsApplied = ConfigHelper.RetrieveMetricValue(configItem, "appliedCount"),
+                MetricsSuccess = ConfigHelper.RetrieveMetricValue(configItem, "reportedSuccessfulCount"),
+                MetricsFailure = ConfigHelper.RetrieveMetricValue(configItem, "reportedFailedCount"),
+                CreationDate = configItem.CreatedTimeUtc
+            };
+        }
+
+        public async Task CreateConfigurationAsync(DeviceConfig deviceConfig)
+        {
+            await CreateOrUpdateConfiguration(deviceConfig);
+        }
+
+        public async Task UpdateConfigurationAsync(DeviceConfig deviceConfig)
+        {
+            await CreateOrUpdateConfiguration(deviceConfig);
+        }
+
+        public async Task DeleteConfigurationAsync(string configurationId)
+        {
+            await this.configService.DeleteConfiguration(configurationId);
+        }
+
+        private async Task CreateOrUpdateConfiguration(DeviceConfig deviceConfig)
+        {
+            DeviceModelProperty[] items;
+            try
+            {
+                items = this.tableClientFactory
+                    .GetDeviceTemplateProperties()
+                    .Query<DeviceModelProperty>($"PartitionKey eq '{deviceConfig.ModelId}'")
+                    .ToArray();
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException("Unable to retrieve device model properties", e);
+            }
+
+            var desiredProperties = new Dictionary<string, object>();
+
+            foreach (var item in deviceConfig.Properties)
+            {
+                var modelProperty = items.SingleOrDefault(c => c.Name == item.Key);
+
+                if (modelProperty == null)
+                    continue;
+
+                object propertyValue = modelProperty.PropertyType switch
+                {
+                    DevicePropertyType.Boolean => bool.TryParse(item.Value, out var boolResult) ? boolResult : null,
+                    DevicePropertyType.Double => double.TryParse(item.Value, out var doubleResult) ? doubleResult : null,
+                    DevicePropertyType.Float => float.TryParse(item.Value, out var floatResult) ? floatResult : null,
+                    DevicePropertyType.Integer => int.TryParse(item.Value, out var intResult) ? intResult : null,
+                    DevicePropertyType.Long => long.TryParse(item.Value, out var logResult) ? logResult : null,
+                    DevicePropertyType.String => item.Value,
+                    _ => null,
+                };
+
+                desiredProperties.Add($"properties.desired.{item.Key}", propertyValue);
+            }
+
+            await this.configService.RollOutDeviceConfiguration(deviceConfig.ModelId, desiredProperties, deviceConfig.ConfigurationId, deviceConfig.Tags, 100);
         }
     }
 }
