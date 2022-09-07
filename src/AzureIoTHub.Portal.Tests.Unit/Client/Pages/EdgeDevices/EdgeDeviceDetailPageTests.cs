@@ -210,7 +210,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTag>());
 
-            _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<IoTEdgeModule>(module => mockIoTEdgeModule.ModuleName.Equals(module.ModuleName, StringComparison.Ordinal)), "RestartModule"))
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<string>(module => mockIoTEdgeModule.ModuleName.Equals(module, StringComparison.Ordinal)), "RestartModule"))
                 .ReturnsAsync(new C2Dresult()
                 {
                     Payload = "ABC",
@@ -255,7 +255,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTag>());
 
-            _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<IoTEdgeModule>(module => mockIoTEdgeModule.ModuleName.Equals(module.ModuleName, StringComparison.Ordinal)), "RestartModule"))
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<string>(module => mockIoTEdgeModule.ModuleName.Equals(module, StringComparison.Ordinal)), "RestartModule"))
                 .ReturnsAsync(new C2Dresult()
                 {
                     Payload = "ABC",
@@ -301,7 +301,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTag>());
 
-            _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<IoTEdgeModule>(module => mockIoTEdgeModule.ModuleName.Equals(module.ModuleName, StringComparison.Ordinal)), "RestartModule"))
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<string>(module => mockIoTEdgeModule.ModuleName.Equals(module, StringComparison.Ordinal)), "RestartModule"))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
@@ -389,7 +389,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var commandButton = cut.Find("#commandTest");
 
             _ = this.mockEdgeDeviceClientService
-                .Setup(x => x.ExecuteModuleCommand(It.Is<string>(c => c.Equals(this.mockdeviceId, StringComparison.Ordinal)), It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(x => x.ExecuteModuleMethod(It.Is<string>(c => c.Equals(this.mockdeviceId, StringComparison.Ordinal)), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new C2Dresult() { Status = 200 });
 
             _ = this.mockSnackbarService
@@ -415,7 +415,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var commandButton = cut.Find("#commandTest");
 
             _ = this.mockEdgeDeviceClientService
-                .Setup(x => x.ExecuteModuleCommand(It.Is<string>(c => c.Equals(this.mockdeviceId, StringComparison.Ordinal)), It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(x => x.ExecuteModuleMethod(It.Is<string>(c => c.Equals(this.mockdeviceId, StringComparison.Ordinal)), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new C2Dresult() { Status = 400 });
 
             _ = this.mockSnackbarService
@@ -441,7 +441,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var commandButton = cut.Find("#commandTest");
 
             _ = this.mockEdgeDeviceClientService
-                .Setup(x => x.ExecuteModuleCommand(It.Is<string>(c => c.Equals(this.mockdeviceId, StringComparison.Ordinal)), It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(x => x.ExecuteModuleMethod(It.Is<string>(c => c.Equals(this.mockdeviceId, StringComparison.Ordinal)), It.IsAny<string>(), It.IsAny<string>()))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act

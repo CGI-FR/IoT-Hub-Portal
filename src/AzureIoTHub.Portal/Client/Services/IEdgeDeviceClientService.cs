@@ -23,8 +23,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         Task<List<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule);
 
-        Task<C2Dresult> ExecuteModuleMethod(string deviceId, IoTEdgeModule edgeModule, string methodName);
+        Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName);
 
-        Task<C2Dresult> ExecuteModuleCommand(string deviceId, string moduleName, string commandName);
     }
 }

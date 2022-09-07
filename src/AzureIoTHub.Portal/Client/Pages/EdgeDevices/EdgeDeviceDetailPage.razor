@@ -146,10 +146,10 @@
                                                 <MudTd DataLabel="Status" Style="text-align: center">@context.Status</MudTd>
                                                 <MudTd DataLabel="Device" Style="text-align: center;display:flex;justify-content:space-evenly;">
                                                     <MudButton Variant="Variant.Filled" Class="btn showLogs" Color="Color.Dark" Disabled="btn_disable" OnClick="@(async () => await ShowEdgeDeviceLogs(context) )">logs</MudButton>
-                                                    <MudButton Variant="Variant.Filled" Class="rebootModule" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context,"RestartModule") )">reboot</MudButton>
+                                                    <MudButton Variant="Variant.Filled" Class="rebootModule" Color="Color.Primary" Disabled="btn_disable" OnClick="@(async () => await OnMethod(context.ModuleName,"RestartModule") )">reboot</MudButton>
                                                     @foreach (var command in context.Commands)
                                                     {
-                                                        <MudButton Variant="Variant.Filled" id="@(command.Name)" Disabled="btn_disable" Color="Color.Success" OnClick="@(async () => await ExecuteCommand(context.ModuleName, command) )">@command.Name</MudButton>
+                                                        <MudButton Variant="Variant.Filled" id="@(command.Name)" Disabled="btn_disable" Color="Color.Success" OnClick="@(async () => await OnMethod(context.ModuleName, command.Name) )">@command.Name</MudButton>
                                                     }
                                                 </MudTd>
                                             </RowTemplate>
@@ -297,44 +297,13 @@
         }
     }
 
-    public async Task OnMethod(IoTEdgeModule module, string methodName)
+    public async Task OnMethod(string moduleName, string methodName)
     {
         isProcessing = true;
 
         try
         {
-            var c2dResult = await EdgeDeviceClientService.ExecuteModuleMethod(edgeDevice.DeviceId, module, methodName);
-
-            if (c2dResult.Status == 200)
-            {
-                Snackbar.Add("Command successfully executed.", Severity.Success);
-            }
-            else
-            {
-                Snackbar.Add($"Error<br>Status : {c2dResult.Status};<br>Payload : {c2dResult.Payload};", Severity.Error,
-                    (option) =>
-                    {
-                        option.VisibleStateDuration = 10000;
-                    });
-            }
-        }
-        catch (ProblemDetailsException exception)
-        {
-            Error?.ProcessProblemDetails(exception);
-        }
-        finally
-        {
-            isProcessing = false;
-        }
-    }
-
-    public async Task ExecuteCommand(string moduleName, IoTEdgeModuleCommand command)
-    {
-        isProcessing = true;
-
-        try
-        {
-            var c2dResult = await EdgeDeviceClientService.ExecuteModuleCommand(edgeDevice.DeviceId, moduleName, command.Name);
+            var c2dResult = await EdgeDeviceClientService.ExecuteModuleMethod(edgeDevice.DeviceId, moduleName, methodName);
 
             if (c2dResult.Status == 200)
             {

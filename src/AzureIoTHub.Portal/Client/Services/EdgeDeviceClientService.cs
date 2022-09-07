@@ -55,16 +55,9 @@ namespace AzureIoTHub.Portal.Client.Services
             return await response.Content.ReadFromJsonAsync<List<IoTEdgeDeviceLog>>();
         }
 
-        public async Task<C2Dresult> ExecuteModuleMethod(string deviceId, IoTEdgeModule edgeModule, string methodName)
+        public async Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName)
         {
-            var response = await this.http.PostAsJsonAsync<HttpResponseMessage>($"api/edge/devices/{deviceId}/{edgeModule.ModuleName}/{methodName}", null);
-
-            return await response.Content.ReadFromJsonAsync<C2Dresult>();
-        }
-
-        public async Task<C2Dresult> ExecuteModuleCommand(string deviceId, string moduleName, string commandName)
-        {
-            var response  = await this.http.PostAsJsonAsync<HttpResponseMessage>($"api/edge/devices/{deviceId}/{moduleName}/custom/{commandName}", null);
+            var response = await this.http.PostAsJsonAsync<HttpResponseMessage>($"api/edge/devices/{deviceId}/{moduleName}/{methodName}", null);
 
             return await response.Content.ReadFromJsonAsync<C2Dresult>();
         }
