@@ -207,5 +207,53 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
 
             _ = result.Count.Should().Be(1);
         }
+
+        [Test]
+        public async Task ExecuteModuleMethodShouldReturn200()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            var edgeModule = new IoTEdgeModule()
+            {
+                ModuleName = Guid.NewGuid().ToString()
+            };
+
+            var methodName = Fixture.Create<string>();
+            var c2Dresult = Fixture.Create<C2Dresult>();
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/{edgeModule.ModuleName}/{methodName}")
+                .RespondJson(c2Dresult);
+
+            // Act
+            var result = await this.edgeDeviceClientService.ExecuteModuleMethod(deviceId, edgeModule, methodName);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(c2Dresult);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task ExecuteModuleCommandShouldReturn200()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+            var commandName = Fixture.Create<string>();
+            var moduleName = Fixture.Create<string>();
+
+            var c2Dresult = Fixture.Create<C2Dresult>();
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/edge/devices/{deviceId}/{moduleName}/custom/{commandName}")
+                .RespondJson(c2Dresult);
+
+            // Act
+            var result = await this.edgeDeviceClientService.ExecuteModuleCommand(deviceId, moduleName, commandName);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(c2Dresult);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
     }
 }
