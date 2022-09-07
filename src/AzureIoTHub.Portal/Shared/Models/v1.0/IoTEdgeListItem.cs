@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Models.v10
 {
+    using System;
     using System.ComponentModel.DataAnnotations;
 
     /// <summary>
@@ -25,5 +26,10 @@ namespace AzureIoTHub.Portal.Models.v10
         /// The number of devices connected on the IoT Edge.
         /// </summary>
         public int NbDevices { get; set; }
+
+        /// <summary>
+        /// The device model image Url.
+        /// </summary>
+        public Uri ImageUrl { get; set; }
     }
 }
