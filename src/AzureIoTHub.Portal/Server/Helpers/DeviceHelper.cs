@@ -190,14 +190,15 @@ namespace AzureIoTHub.Portal.Server.Helpers
                     ModuleName = property.Key
                 };
 
+                if (propertyObject.TryGetValue("settings", out var moduleSettings))
+                {
+                    var setting = moduleSettings.ToObject<Dictionary<string, string>>();
+                    module.ImageURI = setting["image"];
+                }
+
                 if (propertyObject.TryGetValue("status", out var status))
                 {
                     module.Status = status.Value<string>();
-                }
-
-                if (propertyObject.TryGetValue("version", out var version))
-                {
-                    module.Version = version.Value<string>();
                 }
 
                 list.Add(module);

@@ -24,8 +24,10 @@ namespace AzureIoTHub.Portal.Server.Services
 
         Task<Twin> UpdateEdgeDevice(IoTEdgeDevice edgeDevice);
 
-        Task<C2Dresult> ExecuteModuleMethod(IoTEdgeModule edgeModule, string deviceId, string methodName);
+        Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName);
 
         Task<EnrollmentCredentials> GetEdgeDeviceCredentials(string edgeDeviceId);
+
+        Task<C2Dresult> ExecuteModuleCommand(string deviceId, string moduleName, string commandName);
     }
 }

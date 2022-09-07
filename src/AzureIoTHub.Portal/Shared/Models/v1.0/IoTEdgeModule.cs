@@ -19,11 +19,6 @@ namespace AzureIoTHub.Portal.Models.v10
         public string ModuleName { get; set; }
 
         /// <summary>
-        /// The module configuration version.
-        /// </summary>
-        public string Version { get; set; }
-
-        /// <summary>
         /// the device image URI.
         /// </summary>
         [Required(ErrorMessage = "The device image uri is required.")]

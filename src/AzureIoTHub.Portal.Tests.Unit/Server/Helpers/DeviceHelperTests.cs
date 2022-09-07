@@ -308,12 +308,20 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
                     LoRaWanNetworkSrvModule = new
                     {
                         version = "1.0",
-                        status = "running"
+                        status = "running",
+                        settings = new
+                        {
+                            image = "image"
+                        }
                     },
                     LoRaBasicsStationModule = new
                     {
                         runtimeStatus = "running",
-                        version = "1.0"
+                        version = "1.0",
+                        settings = new
+                        {
+                            image = "image"
+                        }
                     }
                 }
             });

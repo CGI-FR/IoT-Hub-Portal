@@ -180,7 +180,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
 
             var edgeModule = new IoTEdgeModule
             {
-                Version = "1.0",
                 ModuleName = Guid.NewGuid().ToString()
             };
 
@@ -207,6 +206,54 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             _ = result.Should().NotBeNull();
 
             _ = result.Count.Should().Be(1);
+        }
+
+        [Test]
+        public async Task ExecuteModuleMethodShouldReturn200()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            var edgeModule = new IoTEdgeModule()
+            {
+                ModuleName = Guid.NewGuid().ToString()
+            };
+
+            var methodName = Fixture.Create<string>();
+            var c2Dresult = Fixture.Create<C2Dresult>();
+
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/devices/{deviceId}/{edgeModule.ModuleName}/{methodName}")
+                .RespondJson(c2Dresult);
+
+            // Act
+            var result = await this.edgeDeviceClientService.ExecuteModuleMethod(deviceId, edgeModule.ModuleName, methodName);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(c2Dresult);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task ExecuteModuleCommandShouldReturn200()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+            var commandName = Fixture.Create<string>();
+            var moduleName = Fixture.Create<string>();
+
+            var c2Dresult = Fixture.Create<C2Dresult>();
+
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/devices/{deviceId}/{moduleName}/{commandName}")
+                .RespondJson(c2Dresult);
+
+            // Act
+            var result = await this.edgeDeviceClientService.ExecuteModuleMethod(deviceId, moduleName, commandName);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(c2Dresult);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
         }
     }
 }

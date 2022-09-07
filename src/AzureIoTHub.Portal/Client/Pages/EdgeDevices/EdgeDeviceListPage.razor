@@ -48,6 +48,7 @@
     <MudItem xs="12">
         <MudTable T="IoTEdgeListItem" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
             <ColGroup>
+                <col style="width: 5%;" />
                 <col style="width: 40%;" />
                 <col style="width: 10%;" />
                 <col style="width: 10%;" />
@@ -65,13 +66,17 @@
                 </MudTooltip>
             </ToolBarContent>
             <HeaderContent>
-                <MudTh>ID</MudTh>
+                <MudTh></MudTh>
+                <MudTh>Device ID</MudTh>
                 <MudTh Style="text-align: center">Allowed</MudTh>
                 <MudTh Style="text-align: center">Nb devices</MudTh>
                 <MudTh Style="text-align: center">See details</MudTh>
                 <MudTh Style="text-align: center">Delete</MudTh>
             </HeaderContent>
             <RowTemplate>
+                <MudTd Style="text-align: center">
+                    <img height="25" src="@context.ImageUrl" />
+                </MudTd>
                 <MudTd DataLabel="Device">
                     @context.DeviceId
                 </MudTd>

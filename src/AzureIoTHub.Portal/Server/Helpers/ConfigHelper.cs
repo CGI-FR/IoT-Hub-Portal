@@ -150,7 +150,6 @@ namespace AzureIoTHub.Portal.Server.Helpers
                 ModuleName = module.Name,
                 ImageURI = module.Value["settings"]["image"]?.Value<string>(),
                 Status = module.Value["status"]?.Value<string>(),
-                Version = module.Value["version"]?.Value<string>(),
             };
 
             foreach (var item in GetEnvironmentVariables(module))
