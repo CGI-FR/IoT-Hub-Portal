@@ -33,8 +33,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         private readonly IDeviceService devicesService;
         private readonly IDeviceTagService deviceTagService;
         private readonly IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper;
-        private readonly ITableClientFactory tableClientFactory;
         private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
+        private readonly ITableClientFactory tableClientFactory;
 
         protected ILogger Logger { get; }
 
