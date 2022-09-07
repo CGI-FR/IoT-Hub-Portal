@@ -40,7 +40,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             var edgeDeviceMapper = CreateMapper();
 
             var deviceTwin = new Twin(Guid.NewGuid().ToString());
+            var modelId = Guid.NewGuid().ToString();
+
             deviceTwin.Properties.Reported["clients"] = new object[12];
+            deviceTwin.Tags["modelId"] = modelId;
+
+            _ = this.mockDeviceModelImageManager
+                .Setup(x => x.ComputeImageUri(It.Is<string>(c => c.Equals(modelId, StringComparison.Ordinal))))
+                .Returns(new Uri($"http://fake.local/{modelId}"));
 
             // Act
             var result = edgeDeviceMapper.CreateEdgeDeviceListItem(deviceTwin);
