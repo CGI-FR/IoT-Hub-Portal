@@ -163,11 +163,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpPost("{deviceId}/{moduleName}/{methodName}", Name = "POST Execute module command")]
         public async Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName)
         {
-            if (methodName.Equals("RestartModule", StringComparison.Ordinal))
-            {
-                return await this.edgeDevicesService.ExecuteModuleMethod(deviceId, moduleName, methodName);
-            }
-            return await this.edgeDevicesService.ExecuteModuleCommand(deviceId, moduleName, methodName);
+            return await this.edgeDevicesService.ExecuteModuleMethod(deviceId, moduleName, methodName);
         }
 
         /// <summary>
