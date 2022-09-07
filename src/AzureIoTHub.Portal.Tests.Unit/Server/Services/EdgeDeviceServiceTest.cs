@@ -293,7 +293,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 });
 
             // Act
-            _ = await edgeDeviceService.ExecuteModuleMethod(edgeModule.ModuleName, deviceId, methodName);
+            _ = await edgeDeviceService.ExecuteModuleMethod(deviceId, edgeModule.ModuleName, methodName);
 
             // Assert
             this.mockRepository.VerifyAll();
@@ -308,7 +308,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var deviceId = Guid.NewGuid().ToString();
 
             // Assert
-            _ = Assert.ThrowsAsync<ArgumentNullException>(() => edgeDeviceService.ExecuteModuleMethod(null, deviceId, methodName));
+            _ = Assert.ThrowsAsync<ArgumentNullException>(() => edgeDeviceService.ExecuteModuleMethod(deviceId, null, methodName));
         }
 
         [TestCase("test")]
