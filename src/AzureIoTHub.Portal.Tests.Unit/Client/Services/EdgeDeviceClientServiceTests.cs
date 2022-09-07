@@ -226,7 +226,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
                 .RespondJson(c2Dresult);
 
             // Act
-            var result = await this.edgeDeviceClientService.ExecuteModuleMethod(deviceId, edgeModule, methodName);
+            var result = await this.edgeDeviceClientService.ExecuteModuleMethod(deviceId, edgeModule.ModuleName, methodName);
 
             // Assert
             _ = result.Should().BeEquivalentTo(c2Dresult);
@@ -244,11 +244,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
 
             var c2Dresult = Fixture.Create<C2Dresult>();
 
-            _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/devices/{deviceId}/{moduleName}/custom/{commandName}")
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/devices/{deviceId}/{moduleName}/{commandName}")
                 .RespondJson(c2Dresult);
 
             // Act
-            var result = await this.edgeDeviceClientService.ExecuteModuleCommand(deviceId, moduleName, commandName);
+            var result = await this.edgeDeviceClientService.ExecuteModuleMethod(deviceId, moduleName, commandName);
 
             // Assert
             _ = result.Should().BeEquivalentTo(c2Dresult);

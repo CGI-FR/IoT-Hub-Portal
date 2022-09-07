@@ -417,7 +417,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
                 .ReturnsAsync(new C2Dresult());
 
             // Act
-            var result = await edgeDeviceController.ExecuteCustomModuleMethod(deviceId, moduleName, commandName);
+            var result = await edgeDeviceController.ExecuteModuleMethod(deviceId, moduleName, commandName);
 
             // Assert
             Assert.IsNotNull(result);

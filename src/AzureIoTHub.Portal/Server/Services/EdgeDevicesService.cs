@@ -174,21 +174,17 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <param name="deviceId"></param>
         /// <param name="methodName"></param>
         /// <returns></returns>
-        public async Task<C2Dresult> ExecuteModuleMethod(string moduleName, string deviceId, string methodName)
+        public async Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName)
         {
             ArgumentNullException.ThrowIfNull(moduleName, nameof(moduleName));
 
             var method = new CloudToDeviceMethod(methodName);
-            var payload = string.Empty;
 
-            if (methodName == "RestartModule")
+            var payload = JsonConvert.SerializeObject(new
             {
-                payload = JsonConvert.SerializeObject(new
-                {
-                    id = moduleName,
-                    schemaVersion = "1.0"
-                });
-            }
+                id = moduleName,
+                schemaVersion = "1.0"
+            });
 
             _ = method.SetPayloadJson(payload);
 
