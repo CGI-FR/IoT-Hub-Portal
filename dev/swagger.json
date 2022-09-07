@@ -877,7 +877,7 @@
         }
       }
     },
-    "/api/edge/devices/{deviceId}/{moduleId}/{methodName}": {
+    "/api/edge/devices/{deviceId}/{moduleName}/{methodName}": {
       "post": {
         "tags": [
           "IoT Edge Devices"
@@ -896,6 +896,16 @@
             }
           },
           {
+            "name": "moduleName",
+            "in": "path",
+            "description": "The edge module name.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "methodName",
             "in": "path",
             "description": "Name of the method.",
@@ -904,37 +914,8 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "moduleId",
-            "in": "path",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
           }
         ],
-        "requestBody": {
-          "description": "The edge module.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/IoTEdgeModule"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/IoTEdgeModule"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/IoTEdgeModule"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Success",
@@ -4194,6 +4175,12 @@
             "type": "integer",
             "description": "The number of devices connected on the IoT Edge.",
             "format": "int32"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "The device model image Url.",
+            "format": "uri",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -4301,11 +4288,6 @@
             "minLength": 1,
             "type": "string",
             "description": "The module name."
-          },
-          "version": {
-            "type": "string",
-            "description": "The module configuration version.",
-            "nullable": true
           },
           "imageURI": {
             "minLength": 1,
