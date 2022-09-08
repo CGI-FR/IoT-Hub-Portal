@@ -39,7 +39,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             };
         }
 
-        public IoTEdgeModel CreateEdgeDeviceModel(TableEntity entity, List<IoTEdgeModule> ioTEdgeModules, IEnumerable<EdgeModuleCommand> commands)
+        public IoTEdgeModel CreateEdgeDeviceModel(TableEntity entity, List<IoTEdgeModule> ioTEdgeModules, List<IoTEdgeRoute> ioTEdgeRoutes, IEnumerable<EdgeModuleCommand> commands)
         {
             ArgumentNullException.ThrowIfNull(entity, nameof(entity));
             var result = new IoTEdgeModel
@@ -48,7 +48,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey),
                 Name = entity[nameof(IoTEdgeModelListItem.Name)]?.ToString(),
                 Description = entity[nameof(IoTEdgeModelListItem.Description)]?.ToString(),
-                EdgeModules = ioTEdgeModules
+                EdgeModules = ioTEdgeModules,
+                EdgeRoutes = ioTEdgeRoutes
             };
             foreach (var command in commands)
             {
