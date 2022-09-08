@@ -13,3 +13,5 @@ services:
     build:
       context: .
       dockerfile: AzureIoTHub.Portal/Server/Dockerfile
+    depends_on:
+      - "database"
