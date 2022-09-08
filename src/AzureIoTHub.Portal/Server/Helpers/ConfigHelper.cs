@@ -225,7 +225,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
         public static Dictionary<string, IDictionary<string, object>> GenerateModulesContent(IoTEdgeModel edgeModel)
         {
             var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
-            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
+            var edgeHubPropertiesDesired = GenerateRoutesContent(edgeModel);
 
             var modulesContent =  new Dictionary<string, IDictionary<string, object>>
             {
@@ -285,6 +285,37 @@ namespace AzureIoTHub.Portal.Server.Helpers
 
 
             return modulesContent;
+        }
+
+        public static EdgeHubPropertiesDesired GenerateRoutesContent(IoTEdgeModel edgeModel)
+        {
+            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
+
+            // Defines routes in the IoTEdgeHub module
+            foreach (var route in edgeModel.EdgeRoutes)
+            {
+                var routeContent = new
+                {
+                    route = route.Value,
+                    priority = route.Priority != null ? route.Priority : 0,
+                    timeToLiveSecs = route.TimeToLive != null ? route.TimeToLive : (uint)edgeHubPropertiesDesired.StoreAndForwardConfiguration.TimeToLiveSecs
+                };
+                edgeHubPropertiesDesired.Routes.Add(route.Name, routeContent);
+            }
+            return edgeHubPropertiesDesired;
+        }
+
+        public static IoTEdgeRoute CreateRouteIoTEdgeRouteFromJProperty(JProperty route)
+        {
+            ArgumentNullException.ThrowIfNull(route, nameof(route));
+
+            return new IoTEdgeRoute
+            {
+                Name = route.Name,
+                Value = route.Value["route"]?.Value<string>(),
+                Priority = route.Value["priority"].Value<int>(),
+                TimeToLive = route.Value["timeToLiveSecs"].Value<uint>(),
+            };
         }
     }
 }

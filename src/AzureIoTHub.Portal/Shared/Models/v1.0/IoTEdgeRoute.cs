@@ -26,13 +26,13 @@ namespace AzureIoTHub.Portal.Models.v10
         /// The route priority
         /// </summary>
         [Range(0, 9)]
-        public int Priority { get; set; }
+        public int? Priority { get; set; } = null;
 
         /// <summary>
         /// The route time to live (secs)
         /// </summary>
         [Range(0, uint.MaxValue)]
-        public uint TimeToLive { get; set; }
+        public uint? TimeToLive { get; set; } = null;
 
     }
 }

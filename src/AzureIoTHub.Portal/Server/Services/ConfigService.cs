@@ -105,6 +105,44 @@ namespace AzureIoTHub.Portal.Server.Services
             return moduleList;
         }
 
+        public async Task<List<IoTEdgeRoute>> GetConfigRouteList(string modelId)
+        {
+            var configList = await GetIoTEdgeConfigurations();
+
+            var config = configList.FirstOrDefault((x) => x.Id.StartsWith(modelId, StringComparison.Ordinal));
+
+            if (config == null)
+            {
+                throw new InternalServerErrorException("Config does not exist.");
+            }
+
+            var routeList = new List<IoTEdgeRoute>();
+
+            // Details of routes are stored within the EdgeHub properties.desired
+            if (config.Content.ModulesContent != null
+                && config.Content.ModulesContent.TryGetValue("$edgeHub", out var edgeHubModule)
+                && edgeHubModule.TryGetValue("properties.desired", out var edgeHubDesiredProperties))
+            {
+                //
+                if (edgeHubDesiredProperties is not JObject modObject)
+                {
+                    throw new InvalidOperationException($"Could not parse properties.desired for the configuration id {config.Id}");
+                }
+
+                // 
+                if (modObject.TryGetValue("routes", out var routes))
+                {
+                    foreach (var newRoute in routes.Values<JProperty>().Select(route => ConfigHelper.CreateRouteIoTEdgeRouteFromJProperty(route)))
+                    {
+                        routeList.Add(newRoute);
+                    }
+                }
+            }
+
+            return routeList;
+
+        }
+
         public async Task DeleteConfiguration(string configId)
         {
             try
