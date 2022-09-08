@@ -79,17 +79,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Assert
             Assert.IsNotNull(response);
 
-            //Assert.IsAssignableFrom<OkObjectResult>(response.Result);
+            Assert.IsAssignableFrom<OkObjectResult>(response.Result);
 
-            //if (response.Result is OkObjectResult okObjectResult)
-            //{
-            //    Assert.IsNotNull(okObjectResult.Value);
-            //    Assert.IsAssignableFrom<DeviceConfig>(okObjectResult.Value);
-            //}
-            //else
-            //{
-            //    Assert.Fail("Cannot inspect the result.");
-            //}
+            if (response.Result is OkObjectResult okObjectResult)
+            {
+                Assert.IsNotNull(okObjectResult.Value);
+                Assert.IsAssignableFrom<DeviceConfig>(okObjectResult.Value);
+            }
+            else
+            {
+                Assert.Fail("Cannot inspect the result.");
+            }
 
             this.mockRepository.VerifyAll();
         }

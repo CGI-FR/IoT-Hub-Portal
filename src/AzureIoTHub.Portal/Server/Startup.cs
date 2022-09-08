@@ -133,6 +133,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<ILoRaWANConcentratorService, LoRaWANConcentratorService>();
             _ = services.AddTransient<IEdgeDevicesService, EdgeDevicesService>();
             _ = services.AddTransient<IDevicePropertyService, DevicePropertyService>();
+            _ = services.AddTransient<IDeviceConfigurationsService, DeviceConfigurationsService>();
 
             _ = services.AddMudServices();
 

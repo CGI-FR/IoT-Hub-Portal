@@ -37,14 +37,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<DeviceConfig>> Get(string configurationId)
         {
-            return await this.deviceConfigurationsService.GetDeviceConfigurationAsync(configurationId);
+            return Ok(await this.deviceConfigurationsService.GetDeviceConfigurationAsync(configurationId));
         }
 
         [HttpGet("{configurationId}/metrics", Name = "GET Device configuration metrics")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ConfigurationMetrics>> GetConfigurationMetrics(string configurationId)
         {
-            return await this.deviceConfigurationsService.GetConfigurationMetricsAsync(configurationId);
+            return Ok(await this.deviceConfigurationsService.GetConfigurationMetricsAsync(configurationId));
         }
 
         [HttpPost(Name = "POST Create Device configuration")]

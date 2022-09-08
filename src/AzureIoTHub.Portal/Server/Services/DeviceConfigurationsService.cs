@@ -47,9 +47,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 var configItem = await this.configService.GetConfigItem(configurationId);
 
-                var deviceConfig = ConfigHelper.CreateDeviceConfig(configItem);
-
-                return deviceConfig;
+                return ConfigHelper.CreateDeviceConfig(configItem);
             }
             catch (InvalidOperationException e)
             {
