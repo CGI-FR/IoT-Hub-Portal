@@ -132,10 +132,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockRepository.VerifyAll();
         }
 
-        [TestCase(null, "Target condition is null.")]
-        [TestCase("", "Target condition is null.")]
-        [TestCase("fake condition", "Target condition is not formed as expected.")]
-        public void WhenTargetConditionMalFormedShouldThrowInternalServerErrorException(string targetCondition, string errorMessage)
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("fake condition")]
+        public void WhenTargetConditionMalFormedShouldThrowInternalServerErrorException(string targetCondition)
         {
             // Arrange
             var deviceConfigurationsService = CreateService();
