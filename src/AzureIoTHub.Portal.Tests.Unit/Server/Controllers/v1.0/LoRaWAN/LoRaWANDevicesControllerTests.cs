@@ -7,11 +7,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Controllers.V10;
-    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;
@@ -29,16 +26,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     {
         private MockRepository mockRepository;
 
-        private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
         private Mock<ILogger<LoRaWANDevicesController>> mockLogger;
         private Mock<IDeviceService> mockDeviceService;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>> mockDeviceTwinMapper;
-        private Mock<ITableClientFactory> mockTableClientFactory;
-        private Mock<ILoraDeviceMethodManager> mockLoraDeviceMethodManager;
-        private Mock<IDeviceModelCommandMapper> mockDeviceModelCommandMapper;
-        private Mock<IUrlHelper> mockUrlHelper;
-        private Mock<TableClient> mockCommandsTableClient;
         private Mock<ILoRaWANDeviceService> mockLoRaWANDeviceService;
 
         [SetUp]
@@ -46,16 +37,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
             this.mockLogger = this.mockRepository.Create<ILogger<LoRaWANDevicesController>>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
             this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>>();
-            this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
-            this.mockLoraDeviceMethodManager = this.mockRepository.Create<ILoraDeviceMethodManager>();
-            this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>();
-            this.mockCommandsTableClient = this.mockRepository.Create<TableClient>();
-            this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
             this.mockLoRaWANDeviceService = this.mockRepository.Create<ILoRaWANDeviceService>();
         }
 
@@ -66,9 +51,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
                 this.mockDeviceService.Object,
                 this.mockDeviceTagService.Object,
                 this.mockDeviceTwinMapper.Object,
-                this.mockTableClientFactory.Object,
-                this.mockLoRaWANDeviceService.Object,
-                this.mockProvisioningServiceManager.Object);
+                this.mockLoRaWANDeviceService.Object);
         }
 
         [Test]

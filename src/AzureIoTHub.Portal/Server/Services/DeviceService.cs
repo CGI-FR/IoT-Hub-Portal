@@ -10,12 +10,16 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using Azure;
+    using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Constants;
+    using Managers;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
+    using Models.v10;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
@@ -24,14 +28,18 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly RegistryManager registryManager;
         private readonly ServiceClient serviceClient;
         private readonly ILogger<DeviceService> log;
+        private readonly ITableClientFactory tableClientFactory;
+        private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
 
         public DeviceService(
             ILogger<DeviceService> log,
             RegistryManager registryManager,
-            ServiceClient serviceClient)
+            ServiceClient serviceClient, ITableClientFactory tableClientFactory, IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
         {
             this.log = log;
             this.serviceClient = serviceClient;
+            this.tableClientFactory = tableClientFactory;
+            this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
             this.registryManager = registryManager;
         }
 
@@ -573,6 +581,35 @@ namespace AzureIoTHub.Portal.Server.Services
             catch (Exception e)
             {
                 throw new InternalServerErrorException("Unable to get connected LoRaWAN concentrators count", e);
+            }
+        }
+
+        public async Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId)
+        {
+            var device = await GetDeviceTwin(deviceId);
+
+            if (device == null)
+            {
+                throw new ResourceNotFoundException($"Unable to find the device {deviceId}");
+            }
+
+            if (!device.Tags.Contains("modelId"))
+            {
+                throw new ResourceNotFoundException($"Device {deviceId} has no modelId tag value");
+            }
+
+            try
+            {
+                var response = await this.tableClientFactory.GetDeviceTemplates()
+                    .GetEntityAsync<TableEntity>("0", device.Tags["modelId"].ToString());
+
+                var modelEntity = response.Value;
+
+                return await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceId, modelEntity[nameof(DeviceModel.Name)].ToString());
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Unable to get model of the device with id {deviceId}: {e.Message}", e);
             }
         }
     }

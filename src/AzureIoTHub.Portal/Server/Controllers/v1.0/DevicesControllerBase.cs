@@ -9,22 +9,18 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using Azure;
-    using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models;
     using Hellang.Middleware.ProblemDetails;
+    using Mappers;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
+    using Models.v10;
+    using Services;
+    using Shared.Models;
 
     public abstract class DevicesControllerBase<TListItem, TModel> : ControllerBase
         where TListItem : DeviceListItem
@@ -33,8 +29,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         private readonly IDeviceService devicesService;
         private readonly IDeviceTagService deviceTagService;
         private readonly IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper;
-        private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
-        private readonly ITableClientFactory tableClientFactory;
 
         protected ILogger Logger { get; }
 
@@ -42,16 +36,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             ILogger logger,
             IDeviceService devicesService,
             IDeviceTagService deviceTagService,
-            IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper,
-            IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
-            ITableClientFactory tableClientFactory)
+            IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper)
         {
             Logger = logger;
             this.devicesService = devicesService;
             this.deviceTagService = deviceTagService;
             this.deviceTwinMapper = deviceTwinMapper;
-            this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
-            this.tableClientFactory = tableClientFactory;
         }
 
         /// <summary>
@@ -160,7 +150,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             }
 
             // Create a new Twin from the form's fields.
-            var newTwin = new Twin()
+            var newTwin = new Twin
             {
                 DeviceId = device.DeviceID
             };
@@ -227,35 +217,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceID">The device identifier.</param>
         public virtual async Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
         {
-            var item = await this.devicesService.GetDeviceTwin(deviceID);
-
-            if (item == null)
-            {
-                return NotFound("Device doesn't exist.");
-            }
-
-            if (!item.Tags.Contains("modelId"))
-            {
-                return BadRequest($"Cannot find device type from device {deviceID}");
-            }
-
-            Response<TableEntity> response;
-
-            try
-            {
-                response = await this.tableClientFactory.GetDeviceTemplates()
-                    .GetEntityAsync<TableEntity>("0", item.Tags["modelId"].ToString());
-            }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException($"Unable to get model of the device with id {deviceID}: {e.Message}", e);
-            }
-
-            var modelEntity = response.Value;
-
-            var credentials = await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceID, modelEntity[nameof(DeviceModel.Name)].ToString());
-
-            return Ok(credentials);
+            return Ok(await this.devicesService.GetEnrollmentCredentials(deviceID));
         }
     }
 }

@@ -4,16 +4,14 @@
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Filters;
-    using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Server.Services;
+    using Filters;
+    using Mappers;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using Models.v10;
+    using Models.v10.LoRaWAN;
+    using Services;
 
     [Authorize]
     [ApiController]
@@ -30,10 +28,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             IDeviceService devicesService,
             IDeviceTagService deviceTagService,
             IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper,
-            ITableClientFactory tableClientFactory,
-            ILoRaWANDeviceService loRaWANDeviceService,
-            IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
-            : base(logger, devicesService, deviceTagService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
+            ILoRaWANDeviceService loRaWANDeviceService)
+            : base(logger, devicesService, deviceTagService, deviceTwinMapper)
         {
             this.loRaWANDeviceService = loRaWANDeviceService;
         }
@@ -54,7 +50,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             bool? searchState = null,
             int pageSize = 10)
         {
-            return base.GetItems("GET LoRaWAN device list", continuationToken, searchText, searchStatus, searchState, pageSize);
+            return GetItems("GET LoRaWAN device list", continuationToken, searchText, searchStatus, searchState, pageSize);
         }
 
         /// <summary>
@@ -108,7 +104,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             await this.loRaWANDeviceService.ExecuteLoRaWANCommand(deviceId, commandId);
 
-            return this.Ok();
+            return Ok();
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]

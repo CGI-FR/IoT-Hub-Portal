@@ -4,11 +4,16 @@
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Azure;
+    using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Constants;
     using FluentAssertions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
@@ -17,7 +22,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Moq;
     using Newtonsoft.Json;
     using NUnit.Framework;
-    using Shared.Constants;
+    using Portal.Server.Managers;
 
     [TestFixture]
     public class DeviceServiceTests
@@ -27,6 +32,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         private Mock<RegistryManager> mockRegistryManager;
         private Mock<ServiceClient> mockServiceClient;
         private Mock<ILogger<DeviceService>> mockLogger;
+        private Mock<ITableClientFactory> mockTableClientFactory;
+        private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
 
         [SetUp]
         public void SetUp()
@@ -36,6 +43,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockRegistryManager = this.mockRepository.Create<RegistryManager>();
             this.mockServiceClient = this.mockRepository.Create<ServiceClient>();
             this.mockLogger = this.mockRepository.Create<ILogger<DeviceService>>();
+            this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
+            this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
         }
 
         private DeviceService CreateService()
@@ -43,7 +52,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             return new DeviceService(
                 this.mockLogger.Object,
                 this.mockRegistryManager.Object,
-                this.mockServiceClient.Object);
+                this.mockServiceClient.Object,
+                this.mockTableClientFactory.Object,
+                this.mockProvisioningServiceManager.Object);
         }
 
         [Test]
@@ -1152,7 +1163,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var deviceService = new DeviceService(
                 logger,
                 this.mockRegistryManager.Object,
-                this.mockServiceClient.Object);
+                this.mockServiceClient.Object,
+                this.mockTableClientFactory.Object,
+                this.mockProvisioningServiceManager.Object);
 
             // Act
             var result = await deviceService.GetEdgeDeviceLogs(deviceId, edgeModule);
@@ -1211,7 +1224,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var deviceService = new DeviceService(
                 logger,
                 this.mockRegistryManager.Object,
-                this.mockServiceClient.Object);
+                this.mockServiceClient.Object,
+                this.mockTableClientFactory.Object,
+                this.mockProvisioningServiceManager.Object);
 
             // Act
             var result = await deviceService.GetEdgeDeviceLogs(deviceId, edgeModule);
@@ -1267,7 +1282,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var deviceService = new DeviceService(
                 logger,
                 this.mockRegistryManager.Object,
-                this.mockServiceClient.Object);
+                this.mockServiceClient.Object,
+                this.mockTableClientFactory.Object,
+                this.mockProvisioningServiceManager.Object);
 
             // Act
             var act = () => deviceService.GetEdgeDeviceLogs(deviceId, edgeModule);
@@ -1574,6 +1591,97 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetEnrollmentCredentialsShouldReturnEnrollmentCredentials()
+        {
+            // Arrange
+
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+            var mockTwin = new Twin(deviceId);
+            mockTwin.Tags["modelId"] = "bbb";
+
+            _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == deviceId)))
+                .ReturnsAsync(mockTwin);
+
+            var mockRegistrationCredentials = new EnrollmentCredentials
+            {
+                RegistrationID = "aaa",
+                SymmetricKey = "dfhjkfdgh"
+            };
+
+            var mockTableClient = this.mockRepository.Create<TableClient>();
+            var mockDeviceModelEntity = new TableEntity
+            {
+                [nameof(DeviceModel.Name)] = "ccc"
+            };
+            var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
+
+            _ = mockResponse.SetupGet(c => c.Value)
+                .Returns(mockDeviceModelEntity);
+
+            _ = mockTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
+                It.Is<string>(x => x == "0"),
+                It.Is<string>(x => x == "bbb"),
+                It.IsAny<IEnumerable<string>>(),
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockResponse.Object);
+
+            _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync(deviceId, "ccc"))
+                .ReturnsAsync(mockRegistrationCredentials);
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(mockTableClient.Object);
+
+            // Act
+            var enrollmentCredentials = await service.GetEnrollmentCredentials(deviceId);
+
+            // Assert
+            _ = enrollmentCredentials.Should().BeEquivalentTo(mockRegistrationCredentials);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenDeviceTypePropertyNotExistGetEnrollmentCredentialsShouldThrowResourceNotFoundException()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+            var mockTwin = new Twin(deviceId);
+
+
+            _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == deviceId)))
+                .ReturnsAsync(mockTwin);
+
+            // Act
+            var act = () => service.GetEnrollmentCredentials(deviceId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenDeviceNotExistGetEnrollmentCredentialsShouldThrowResourceNotFoundException()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == deviceId)))
+                .ReturnsAsync((Twin)null);
+
+            // Act
+            var act = () => service.GetEnrollmentCredentials(deviceId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
+
             this.mockRepository.VerifyAll();
         }
     }

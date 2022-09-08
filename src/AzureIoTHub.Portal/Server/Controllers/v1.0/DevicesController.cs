@@ -5,9 +5,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Models.v10;
-    using Managers;
     using Mappers;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -27,11 +25,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             ILogger<DevicesController> logger,
             IDeviceService devicesService,
             IDeviceTagService deviceTagService,
-            IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper,
-            IDevicePropertyService devicePropertyService,
-            ITableClientFactory tableClientFactory)
-            : base(logger, devicesService, deviceTagService, deviceTwinMapper, deviceProvisioningServiceManager, tableClientFactory)
+            IDevicePropertyService devicePropertyService)
+            : base(logger, devicesService, deviceTagService, deviceTwinMapper)
         {
             this.devicePropertyService = devicePropertyService;
         }
