@@ -8,6 +8,18 @@
                 "description": "Prefix used for resource names. Should be unique as this will also be used for domain names."
             }
         },
+        "pgsqlAdminLogin": {
+            "type": "string",
+            "metadata": {
+                "description": "PostgreSQL user"
+            }
+        },
+        "pgsqlAdminPassword": {
+            "type": "string",
+            "metadata": {
+                "description": "PostgreSQL password"
+            }
+        },
         "openIdAuthority": {
             "type": "string",
             "metadata": {
@@ -173,7 +185,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/CGI-FR/IoT-Hub-Portal/main/templates/portalDeployWithLoRa.json",
+                    "uri": "https://raw.githubusercontent.com/CGI-FR/IoT-Hub-Portal/v3/test/arm/templates/portalDeployWithLoRa.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -182,6 +194,12 @@
                     },
                     "uniqueSolutionPrefix": {
                         "value": "[parameters('uniqueSolutionPrefix')]"
+                    },
+                    "pgsqlAdminLogin": {
+                        "value": "[parameters('pgsqlAdminLogin')]"
+                    },
+                    "pgsqlAdminPassword": {
+                        "value": "[parameters('pgsqlAdminPassword')]"
                     },
                     "openIdAuthority": {
                         "value": "[parameters('openIdAuthority')]"
@@ -218,7 +236,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/CGI-FR/IoT-Hub-Portal/main/templates/portalDeployWithoutLoRa.json",
+                    "uri": "https://raw.githubusercontent.com/CGI-FR/IoT-Hub-Portal/v3/test/arm/templates/portalDeployWithoutLoRa.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -227,6 +245,12 @@
                     },
                     "uniqueSolutionPrefix": {
                         "value": "[parameters('uniqueSolutionPrefix')]"
+                    },
+                    "pgsqlAdminLogin": {
+                        "value": "[parameters('pgsqlAdminLogin')]"
+                    },
+                    "pgsqlAdminPassword": {
+                        "value": "[parameters('pgsqlAdminPassword')]"
                     },
                     "openIdAuthority": {
                         "value": "[parameters('openIdAuthority')]"
