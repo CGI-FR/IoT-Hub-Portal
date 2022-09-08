@@ -161,8 +161,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Setup(x => x.GetConfigModuleList(It.IsAny<string>()))
                 .ReturnsAsync(new List<IoTEdgeModule>());
 
+            _ = this.mockConfigService
+                .Setup(x => x.GetConfigRouteList(It.IsAny<string>()))
+                .ReturnsAsync(new List<IoTEdgeRoute>());
+
             _ = this.mockEdgeModelMapper
-                .Setup(x => x.CreateEdgeDeviceModel(It.IsAny<TableEntity>(), It.IsAny<List<IoTEdgeModule>>(), It.IsAny<IEnumerable<EdgeModuleCommand>>()))
+                .Setup(x => x.CreateEdgeDeviceModel(It.IsAny<TableEntity>(), It.IsAny<List<IoTEdgeModule>>(), It.IsAny<List<IoTEdgeRoute>>(), It.IsAny<IEnumerable<EdgeModuleCommand>>()))
                 .Returns(new IoTEdgeModel());
 
             // Act
