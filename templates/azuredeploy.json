@@ -102,21 +102,23 @@
         },
         "ideasUrl": {
             "type": "string",
+            "defaultValue": "",
             "metadata": {
-                "description": "Url of Awesome-Ideas, to publish ideas submitted by users"
+                "description": "Url of Awesome-Ideas, to publish ideas submitted by users. Required when ideasEnabled is true"
             }
         },
         "ideasAuthenticationHeader": {
             "type": "string",
             "defaultValue": "Ocp-Apim-Subscription-Key",
             "metadata": {
-                "description": "Authentication header to interact with Awesome-Ideas"
+                "description": "Authentication header to interact with Awesome-Ideas. Required when ideasEnabled is true"
             }
         },
         "ideasAuthenticationToken": {
             "type": "string",
+            "defaultValue": "",
             "metadata": {
-                "description": "Authentication token to interact with Awesome-Ideas"
+                "description": "Authentication token to interact with Awesome-Ideas. Required when ideasEnabled is true"
             }
         }
     },
