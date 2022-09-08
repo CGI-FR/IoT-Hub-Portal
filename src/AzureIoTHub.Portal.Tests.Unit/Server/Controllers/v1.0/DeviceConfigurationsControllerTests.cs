@@ -114,5 +114,71 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             this.mockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task CreateDeviceConfigurationShoulCreateConfiguration()
+        {
+            // Arrange
+            var deviceConfigController = CreateDeviceConfigurationsController();
+
+            var deviceConfig = new DeviceConfig()
+            {
+                ConfigurationId= Guid.NewGuid().ToString(),
+            };
+
+            _ = this.mockDeviceConfigurationsService
+                .Setup(x => x.CreateConfigurationAsync(It.Is<DeviceConfig>(c => c.ConfigurationId.Equals(deviceConfig.ConfigurationId, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await deviceConfigController.CreateConfig(deviceConfig);
+
+            // Assert
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDeviceConfigurationShouldUpdateConfiguration()
+        {
+            // Arrange
+            var deviceConfigController = CreateDeviceConfigurationsController();
+
+            var deviceConfig = new DeviceConfig()
+            {
+                ConfigurationId= Guid.NewGuid().ToString(),
+            };
+
+            _ = this.mockDeviceConfigurationsService
+                .Setup(x => x.UpdateConfigurationAsync(It.Is<DeviceConfig>(c => c.ConfigurationId.Equals(deviceConfig.ConfigurationId, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await deviceConfigController.UpdateConfig(deviceConfig);
+
+            // Assert
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceConfigurationShouldDeleteConfiguration()
+        {
+            // Arrange
+            var deviceConfigController = CreateDeviceConfigurationsController();
+
+            var deviceConfig = new DeviceConfig()
+            {
+                ConfigurationId= Guid.NewGuid().ToString(),
+            };
+
+            _ = this.mockDeviceConfigurationsService
+                .Setup(x => x.DeleteConfigurationAsync(It.Is<string>(c => c.Equals(deviceConfig.ConfigurationId, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await deviceConfigController.DeleteConfig(deviceConfig.ConfigurationId);
+
+            // Assert
+            this.mockRepository.VerifyAll();
+        }
     }
 }
