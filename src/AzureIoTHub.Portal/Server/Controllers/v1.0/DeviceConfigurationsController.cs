@@ -7,7 +7,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Services;
-    using Factories;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -20,24 +19,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
     [ApiExplorerSettings(GroupName = "IoT Devices")]
     public class DeviceConfigurationsController : ControllerBase
     {
-        /// <summary>
-        /// The configuration service.
-        /// </summary>
-        private readonly IConfigService configService;
-
         private readonly IDeviceConfigurationsService deviceConfigurationsService;
 
-        /// <summary>
-        /// The table client factory.
-        /// </summary>
-        private readonly ITableClientFactory tableClientFactory;
-
-        public DeviceConfigurationsController(IConfigService configService,
-            IDeviceConfigurationsService deviceConfigurationsService,
-            ITableClientFactory tableClientFactory)
+        public DeviceConfigurationsController(IDeviceConfigurationsService deviceConfigurationsService)
         {
-            this.configService = configService;
-            this.tableClientFactory = tableClientFactory;
             this.deviceConfigurationsService = deviceConfigurationsService;
         }
 

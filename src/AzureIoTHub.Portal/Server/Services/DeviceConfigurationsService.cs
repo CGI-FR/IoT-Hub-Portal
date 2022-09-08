@@ -53,7 +53,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
             catch (InvalidOperationException e)
             {
-                throw new InternalServerErrorException("", e);
+                throw new InternalServerErrorException("Something went wrong when getting device configuration.", e);
             }
         }
 

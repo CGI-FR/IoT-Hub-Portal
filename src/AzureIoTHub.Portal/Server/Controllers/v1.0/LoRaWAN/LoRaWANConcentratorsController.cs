@@ -48,7 +48,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <param name="devicesService">The devices service.</param>
-        /// <param name="routerConfigManager">The router config manager.</param>
         /// <param name="concentratorTwinMapper">The concentrator twin mapper.</param>
         /// <param name="loRaWANConcentratorService">The device Lora wan concentrators controller.</param>
         public LoRaWANConcentratorsController(
