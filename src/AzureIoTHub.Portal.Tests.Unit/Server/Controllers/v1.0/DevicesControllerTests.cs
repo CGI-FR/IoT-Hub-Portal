@@ -12,10 +12,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using Azure.Data.Tables;
     using Models.v10;
     using AzureIoTHub.Portal.Server.Controllers.V10;
-    using AzureIoTHub.Portal.Server.Entities;
     using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
@@ -42,6 +40,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         private Mock<IUrlHelper> mockUrlHelper;
         private Mock<ILogger<DevicesController>> mockLogger;
         private Mock<IDeviceService> mockDeviceService;
+        private Mock<IDevicePropertyService> mockDevicePropertyService;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceTwinMapper<DeviceListItem, DeviceDetails>> mockDeviceTwinMapper;
         private Mock<ITableClientFactory> mockTableClientFactory;
@@ -54,6 +53,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
             this.mockLogger = this.mockRepository.Create<ILogger<DevicesController>>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
+            this.mockDevicePropertyService = this.mockRepository.Create<IDevicePropertyService>();
             this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
@@ -68,7 +68,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 this.mockDeviceTagService.Object,
                 this.mockProvisioningServiceManager.Object,
                 this.mockDeviceTwinMapper.Object,
-                this.mockTableClientFactory.Object)
+                this.mockTableClientFactory.Object,
+                this.mockDevicePropertyService.Object)
             {
                 Url = this.mockUrlHelper.Object
             };
@@ -395,395 +396,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         }
 
         [Test]
-        public async Task WhenDeviceNotExistGetPropertiesShouldReturnNotFound()
-        {
-            // Arrange
-            var devicesController = CreateDevicesController();
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync((Twin)null);
-
-            // Act
-            var response = await devicesController.GetProperties("aaa");
-
-            // Assert
-            Assert.IsNotNull(response);
-            Assert.IsAssignableFrom<NotFoundResult>(response.Result);
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task WhenDeviceDoesntHaveModelIdNotExistGetPropertiesShouldReturnBadRequest()
-        {
-            // Arrange
-            var devicesController = CreateDevicesController();
-            var twin = new Twin();
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync(twin);
-
-            // Act
-            var response = await devicesController.GetProperties("aaa");
-
-            // Assert
-            Assert.IsNotNull(response);
-            Assert.IsAssignableFrom<BadRequestObjectResult>(response.Result);
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task WhenDeviceNotExistSetPropertiesShouldReturnNotFound()
-        {
-            // Arrange
-            var devicesController = CreateDevicesController();
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync((Twin)null);
-
-            // Act
-            var response = await devicesController.SetProperties("aaa", null);
-
-            // Assert
-            Assert.IsNotNull(response);
-            Assert.IsAssignableFrom<NotFoundResult>(response.Result);
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task WhenDeviceDoesntHaveModelIdNotExistSetPropertiesShouldReturnBadRequest()
-        {
-            // Arrange
-            var devicesController = CreateDevicesController();
-            var twin = new Twin();
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync(twin);
-
-            // Act
-            var response = await devicesController.SetProperties("aaa", null);
-
-            // Assert
-            Assert.IsNotNull(response);
-            Assert.IsAssignableFrom<BadRequestObjectResult>(response.Result);
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task GetPropertiesShouldReturnDeviceProperties()
-        {
-            // Arrange
-            var devicesController = CreateDevicesController();
-            var twin = new Twin();
-
-            DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
-            DeviceHelper.SetDesiredProperty(twin, "writable", "ccc");
-
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-            var mockResponse = this.mockRepository.Create<Response>();
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync(twin);
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
-                .Returns(mockTableClient.Object);
-
-            _ = mockTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
-                    It.Is<string>(x => x == "PartitionKey eq 'bbb'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                    .Returns(AsyncPageable<DeviceModelProperty>.FromPages(new[]
-                    {
-                        Page<DeviceModelProperty>.FromValues(new[]
-                        {
-                            new DeviceModelProperty
-                            {
-                                RowKey = Guid.NewGuid().ToString(),
-                                PartitionKey = "bbb",
-                                IsWritable = true,
-                                Name = "writable",
-                            },
-                            new DeviceModelProperty
-                            {
-                                RowKey = Guid.NewGuid().ToString(),
-                                PartitionKey = "bbb",
-                                IsWritable = false,
-                                Name = "notwritable",
-                            }
-                        }, null, mockResponse.Object)
-                    }));
-
-            // Act
-            var response = await devicesController.GetProperties("aaa");
-
-            // Assert
-            Assert.IsNotNull(response);
-            Assert.IsNotNull(response.Value);
-
-            Assert.AreEqual(2, response.Value.Count());
-            Assert.AreEqual("ccc", response.Value.Single(x => x.Name == "writable").Value);
-            Assert.IsNull(response.Value.Single(x => x.Name == "notwritable").Value);
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task GetPropertiesShouldThrowInternalServerErrorExceptionWhenIssueOccursOnGettingProperties()
-        {
-            // Arrange
-            var devicesController = CreateDevicesController();
-            var twin = new Twin();
-
-            DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
-            DeviceHelper.SetDesiredProperty(twin, "writable", "ccc");
-
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync(twin);
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
-                .Returns(mockTableClient.Object);
-
-            _ = mockTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
-                    It.Is<string>(x => x == "PartitionKey eq 'bbb'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                    .Throws(new RequestFailedException("test"));
-
-            // Act
-            var act = () => devicesController.GetProperties("aaa");
-
-            // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task SetPropertiesShouldUpdateDesiredProperties()
-        {
-            // Arrange
-            var devicesController = CreateDevicesController();
-            var twin = new Twin();
-
-            DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
-
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-            var mockResponse = this.mockRepository.Create<Response>();
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync(twin);
-
-            _ = this.mockDeviceService.Setup(c => c.UpdateDeviceTwin(
-                    It.Is<Twin>(c => c == twin)))
-                .ReturnsAsync(twin);
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
-                .Returns(mockTableClient.Object);
-
-            _ = mockTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
-                    It.Is<string>(x => x == "PartitionKey eq 'bbb'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                    .Returns(AsyncPageable<DeviceModelProperty>.FromPages(new[]
-                    {
-                        Page<DeviceModelProperty>.FromValues(new[]
-                        {
-                            new DeviceModelProperty
-                            {
-                                RowKey = Guid.NewGuid().ToString(),
-                                PartitionKey = "bbb",
-                                IsWritable = true,
-                                Name = "writable",
-                            }
-                        }, null, mockResponse.Object)
-                    }));
-
-            // Act
-            var response = await devicesController.SetProperties("aaa", new[]
-            {
-                new DevicePropertyValue
-                {
-                    Name = "writable",
-                    Value = "ccc"
-                }
-            });
-
-            // Assert
-            Assert.IsNotNull(response);
-            Assert.IsAssignableFrom<OkResult>(response.Result);
-
-            Assert.AreEqual("ccc", twin.Properties.Desired["writable"].ToString());
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task SetPropertiesShouldThrowInternalServerErrorExceptionWhenIssueOccursOnGettingProperties()
-        {
-            // Arrange
-            var devicesController = CreateDevicesController();
-            var twin = new Twin();
-
-            DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
-
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync(twin);
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
-                .Returns(mockTableClient.Object);
-
-            _ = mockTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
-                    It.Is<string>(x => x == "PartitionKey eq 'bbb'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                .Throws(new RequestFailedException("test"));
-
-            // Act
-            var act = () => devicesController.SetProperties("aaa", new[]
-            {
-                new DevicePropertyValue
-                {
-                    Name = "writable",
-                    Value = "ccc"
-                }
-            });
-
-            // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task WhenPropertyNotWrittableSetPropertiesShouldNotUpdateDesiredProperty()
-        {
-            // Arrange
-            var devicesController = CreateDevicesController();
-            var twin = new Twin();
-
-            DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
-
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-            var mockResponse = this.mockRepository.Create<Response>();
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync(twin);
-
-            _ = this.mockDeviceService.Setup(c => c.UpdateDeviceTwin(
-                It.Is<Twin>(c => c == twin)))
-            .ReturnsAsync(twin);
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
-                .Returns(mockTableClient.Object);
-
-            _ = mockTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
-                    It.Is<string>(x => x == "PartitionKey eq 'bbb'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                    .Returns(AsyncPageable<DeviceModelProperty>.FromPages(new[]
-                    {
-                        Page<DeviceModelProperty>.FromValues(new[]
-                        {
-                            new DeviceModelProperty
-                            {
-                                RowKey = Guid.NewGuid().ToString(),
-                                PartitionKey = "bbb",
-                                IsWritable = false,
-                                Name = "notwritable",
-                            }
-                        }, null, mockResponse.Object)
-                    }));
-
-            // Act
-            var response = await devicesController.SetProperties("aaa", new[]
-            {
-                new DevicePropertyValue
-                {
-                    Name = "notwritable",
-                    Value = "ccc"
-                }
-            });
-
-            // Assert
-            Assert.IsNotNull(response);
-            Assert.IsAssignableFrom<OkResult>(response.Result);
-
-            Assert.IsFalse(twin.Properties.Desired.Contains("notwritable"));
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task WhenPropertyNotInModelSetPropertiesShouldNotUpdateDesiredProperty()
-        {
-            // Arrange
-            var devicesController = CreateDevicesController();
-            var twin = new Twin();
-
-            DeviceHelper.SetTagValue(twin, "ModelId", "bbb");
-
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-            var mockResponse = this.mockRepository.Create<Response>();
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync(twin);
-
-            _ = this.mockDeviceService.Setup(c => c.UpdateDeviceTwin(
-                It.Is<Twin>(c => c == twin)))
-            .ReturnsAsync(twin);
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplateProperties())
-                .Returns(mockTableClient.Object);
-
-            _ = mockTableClient.Setup(c => c.QueryAsync<DeviceModelProperty>(
-                    It.Is<string>(x => x == "PartitionKey eq 'bbb'"),
-                    It.IsAny<int?>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                    .Returns(AsyncPageable<DeviceModelProperty>.FromPages(new[]
-                    {
-                        Page<DeviceModelProperty>.FromValues(new[]
-                        {
-                            new DeviceModelProperty
-                            {
-                                RowKey = Guid.NewGuid().ToString(),
-                                PartitionKey = "bbb",
-                                IsWritable = true,
-                                Name = "writable",
-                            }
-                        }, null, mockResponse.Object)
-                    }));
-
-            // Act
-            var response = await devicesController.SetProperties("aaa", new[]
-            {
-                new DevicePropertyValue
-                {
-                    Name = "unknown",
-                    Value = "eee"
-                }
-            });
-
-            // Assert
-            Assert.IsNotNull(response);
-            Assert.IsAssignableFrom<OkResult>(response.Result);
-
-            Assert.IsFalse(twin.Properties.Desired.Contains("unknown"));
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
         public async Task CreateDeviceAsyncDuplicatedDeviceIdShouldThrowInternalServerErrorException()
         {
             // Arrange
@@ -793,15 +405,72 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 .ReturnsAsync(new Device());
 
             // Act
-            //var result = await existingDevice.GetItem(deviceID);
             var result = async () => await devicesController.CreateDeviceAsync(new DeviceDetails());
 
             // Assert
-            //Assert.IsNotNull(result);
-            //Assert.IsAssignableFrom<OkResult>(result);
             _ = await result.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public async Task GetPropertiesShouldReturnDevicePropertyValues()
+        {
+            // Arrange
+            var devicesController = CreateDevicesController();
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            var expectedDevicePropertyValues = new List<DevicePropertyValue>
+            {
+                new()
+                {
+                    Name = Guid.NewGuid().ToString()
+                }
+            };
+
+            _ = this.mockDevicePropertyService.Setup(c => c.GetProperties(deviceId))
+                .ReturnsAsync(expectedDevicePropertyValues);
+
+            // Act
+            var result = await devicesController.GetProperties(deviceId);
+
+            // Assert
+            _ = result.Count().Should().Be(1);
+            _ = result.Should().BeEquivalentTo(expectedDevicePropertyValues);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task SetPropertiesShouldSetDevicePropertyValues()
+        {
+            // Arrange
+            var devicesController = CreateDevicesController();
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            var devicePropertyValues = new List<DevicePropertyValue>
+            {
+                new()
+                {
+                    Name = Guid.NewGuid().ToString()
+                }
+            };
+
+            _ = this.mockDevicePropertyService.Setup(c => c.SetProperties(deviceId, devicePropertyValues))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await devicesController.SetProperties(deviceId, devicePropertyValues);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<OkResult>(result.Result);
+
+            var okResult = (OkResult)result.Result;
+            Assert.IsNotNull(okResult);
+
+            this.mockRepository.VerifyAll();
+        }
     }
 }

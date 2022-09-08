@@ -110,7 +110,6 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient(_ => new BlobServiceClient(configuration.StorageAccountConnectionString));
             _ = services.AddTransient<ITableClientFactory>(_ => new TableClientFactory(configuration.StorageAccountConnectionString));
             _ = services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
-            _ = services.AddTransient<IDeviceService, DeviceService>();
             _ = services.AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>();
             _ = services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
             _ = services.AddTransient<IDeviceModelCommandsManager, DeviceModelCommandsManager>();
@@ -125,6 +124,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IEdgeDeviceModelMapper, EdgeModelMapper>();
             _ = services.AddTransient<IEdgeDeviceMapper, EdgeDeviceMapper>();
 
+            _ = services.AddTransient<IDeviceService, DeviceService>();
             _ = services.AddTransient<IConfigService, ConfigService>();
             _ = services.AddTransient<IDeviceTagService, DeviceTagService>();
             _ = services.AddTransient<ILoRaWANCommandService, LoRaWANCommandService>();
@@ -132,6 +132,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IEdgeModelService, EdgeModelService>();
             _ = services.AddTransient<ILoRaWANConcentratorService, LoRaWANConcentratorService>();
             _ = services.AddTransient<IEdgeDevicesService, EdgeDevicesService>();
+            _ = services.AddTransient<IDevicePropertyService, DevicePropertyService>();
 
             _ = services.AddMudServices();
 
