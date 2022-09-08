@@ -128,9 +128,9 @@
       "name": "[variables('pgsqlServerName')]",
       "location": "[parameters('location')]",
       "sku": {
-        "name": "B_Gen5_1",
+        "name": "B_Gen5_2",
         "tier": "Basic",
-        "capacity": "2",
+        "capacity": 2,
         "size": "5120",
         "family": "Gen5"
       },
@@ -140,9 +140,9 @@
         "administratorLogin": "[parameters('pgsqlAdminLogin')]",
         "administratorLoginPassword": "[parameters('pgsqlAdminPassword')]",
         "storageProfile": {
-          "storageMB": "2048",
-          "backupRetentionDays": "7",
-          "geoRedundantBackup": "false"
+          "storageMB": 5120,
+          "backupRetentionDays": 7,
+          "geoRedundantBackup": "Disabled"
         }
       }
     },

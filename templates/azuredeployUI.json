@@ -65,7 +65,7 @@
 									"constraints": {
 										"required": true,
 										"regex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{12,}$",
-										"validationMessage": "Password must be at least 30 characters long, contain only numbers and letters"
+										"validationMessage": "The password must be alphanumeric, contain at least 12 characters, and have at least 1 letter and 1 number"
 									}
 								}
 							],
