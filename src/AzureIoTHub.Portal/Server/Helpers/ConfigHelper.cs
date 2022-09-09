@@ -225,7 +225,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
         public static Dictionary<string, IDictionary<string, object>> GenerateModulesContent(IoTEdgeModel edgeModel)
         {
             var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
-            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
+            var edgeHubPropertiesDesired = GenerateRoutesContent(edgeModel.EdgeRoutes);
 
             var modulesContent =  new Dictionary<string, IDictionary<string, object>>
             {
@@ -285,6 +285,39 @@ namespace AzureIoTHub.Portal.Server.Helpers
 
 
             return modulesContent;
+        }
+
+        public static EdgeHubPropertiesDesired GenerateRoutesContent(List<IoTEdgeRoute> edgeRoutes)
+        {
+            ArgumentNullException.ThrowIfNull(edgeRoutes, nameof(edgeRoutes));
+
+            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
+
+            // Defines routes in the IoTEdgeHub module
+            foreach (var route in edgeRoutes)
+            {
+                var routeContent = new
+                {
+                    route = route.Value,
+                    priority = route.Priority != null ? route.Priority : 0,
+                    timeToLiveSecs = route.TimeToLive != null ? route.TimeToLive : (uint)edgeHubPropertiesDesired.StoreAndForwardConfiguration.TimeToLiveSecs
+                };
+                edgeHubPropertiesDesired.Routes.Add(route.Name, routeContent);
+            }
+            return edgeHubPropertiesDesired;
+        }
+
+        public static IoTEdgeRoute CreateIoTEdgeRouteFromJProperty(JProperty route)
+        {
+            ArgumentNullException.ThrowIfNull(route, nameof(route));
+
+            return new IoTEdgeRoute
+            {
+                Name = route.Name,
+                Value = route.Value["route"]?.Value<string>(),
+                Priority = route.Value["priority"]?.Value<int>(),
+                TimeToLive = route.Value["timeToLiveSecs"]?.Value<uint>(),
+            };
         }
     }
 }

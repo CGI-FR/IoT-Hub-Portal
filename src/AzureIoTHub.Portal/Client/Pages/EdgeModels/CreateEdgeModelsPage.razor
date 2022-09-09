@@ -65,7 +65,7 @@
 
                         <MudGrid>
                             <MudItem xs="12">
-                                <MudExpansionPanel Text="Commands" IsInitiallyExpanded="true">
+                                <MudExpansionPanel Text="Modules" IsInitiallyExpanded="true">
                                     <TitleContent><MudText Typo="Typo.h6">Modules</MudText></TitleContent>
                                     <ChildContent>
                                         <MudItem xs="12">
@@ -106,6 +106,54 @@
                             </MudItem>
                         </MudGrid>
 
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Routes" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">Routes</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudItem xs="12">
+                                            <MudTable Items="@Model.EdgeRoutes" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                <ColGroup>
+                                                    <col style="width: 20%;" />
+                                                    <col style="width: 20%;" />
+                                                    <col style="width: 10%;" />
+                                                    <col style="width: 10%;" />
+                                                    <col style="width: 5%;" />
+                                                </ColGroup>
+                                                <HeaderContent>
+                                                    <MudTh Style="text-align: center">Name</MudTh>
+                                                    <MudTh Style="text-align: center">Value</MudTh>
+                                                    <MudTh Style="text-align: center">Priority</MudTh>
+                                                    <MudTh Style="text-align: center">Time To Live (Secs)</MudTh>
+                                                    <MudTh Style="text-align: center">Delete</MudTh>
+                                                </HeaderContent>
+                                                <RowTemplate Context="RouteContext">
+                                                    <MudTd DataLabel="Name" Style="word-break: break-all;">
+                                                        <MudTextField id="@(nameof(IoTEdgeRoute.Name))" @bind-Value="@RouteContext.Name" Margin="Margin.Dense" Label="Name" For="@(() => RouteContext.Name )" Variant="Variant.Outlined" Required="true"></MudTextField>
+                                                    </MudTd>
+                                                    <MudTd DataLabel="Value" Style="word-break: break-all;">
+                                                        <MudTextField id="@(nameof(IoTEdgeRoute.Value))" @bind-Value="@RouteContext.Value" Margin="Margin.Dense" Label="Value" For="@(() => RouteContext.Value )" Variant="Variant.Outlined" Required="true" />
+                                                    </MudTd>
+                                                    <MudTd DataLabel="Priority" Style="text-align: center;">
+                                                        <MudNumericField @bind-Value="@RouteContext.Priority" Label="Priority" For="@(() => RouteContext.Priority)" Variant="Variant.Outlined"></MudNumericField>
+                                                    </MudTd>
+                                                    <MudTd DataLabel="Time To Live (Secs)" Style="text-align: center;">
+                                                        <MudNumericField @bind-Value="@RouteContext.TimeToLive" Label="TTL" For="@(() => RouteContext.TimeToLive)" Variant="Variant.Outlined"></MudNumericField>
+                                                    </MudTd>
+                                                    <MudTd DataLabel="Delete" Style="text-align: center">
+                                                        <MudIconButton Color="Color.Default" Class="deleteRouteButton" OnClick="( () => DeleteRoute(RouteContext))" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium"></MudIconButton>
+                                                    </MudTd>
+                                                </RowTemplate>
+                                                <FooterContent>
+                                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" id="addRouteButton" OnClick="AddRoute" Color="Color.Success">Add new route</MudButton>
+                                                </FooterContent>
+                                            </MudTable>
+                                        </MudItem>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+
                     </MudExpansionPanels>
                 </MudTabPanel>
 
@@ -122,8 +170,10 @@
     readonly DialogOptions maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
 
     public List<IoTEdgeModule> edgeModules { get; set; } = new List<IoTEdgeModule>();
+
     public EdgeModelValidator edgeModelValidator = new EdgeModelValidator();
     public IoTEdgeModuleValidator edgeModuleValidator = new IoTEdgeModuleValidator();
+    public IoTEdgeRouteValidator edgeRouteValidator = new IoTEdgeRouteValidator();
 
     private MudForm form;
     private bool isProcessing;
@@ -210,6 +260,16 @@
             return;
         }
 
+        if(Model.EdgeRoutes.Any() && !edgeRouteValidator.Validate(Model.EdgeRoutes).IsValid)
+        {
+
+            Snackbar.Add("One or more validation errors occured with the routes.", Severity.Error);
+
+            isProcessing = false;
+
+            return;
+        }
+
         try
         {
             this.Model.EdgeModules = edgeModules;
@@ -234,5 +294,20 @@
     private void DeleteModule(IoTEdgeModule module)
     {
         edgeModules.Remove(module);
+    }
+
+    private void DeleteRoute(IoTEdgeRoute route)
+    {
+        Model.EdgeRoutes.Remove(route);
+    }
+
+    private void AddRoute()
+    {
+        var last = Model.EdgeRoutes.LastOrDefault();
+
+        if (Model.EdgeRoutes.Count == 0 || (last.Name is not null && last.Value is not null))
+        {
+            Model.EdgeRoutes.Add(new IoTEdgeRoute());
+        }
     }
 }

@@ -27,5 +27,7 @@ namespace AzureIoTHub.Portal.Server.Services
         Task<int> GetFailedDeploymentsCount();
 
         Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId);
+
+        Task<List<IoTEdgeRoute>> GetConfigRouteList(string modelId);
     }
 }

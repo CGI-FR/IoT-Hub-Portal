@@ -90,6 +90,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
                     ModuleName = "module"
                 }
             };
+
+            var routes = new List<IoTEdgeRoute>()
+            {
+                new IoTEdgeRoute
+                {
+                    Name = "route",
+                    Value = "FROM source WHERE condition INTO sink",
+                }
+            };
+
             var commands = new List<EdgeModuleCommand>()
             {
                 new EdgeModuleCommand
@@ -101,13 +111,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             };
 
             // Act
-            var result = edgeModelMapper.CreateEdgeDeviceModel(entity, modules, commands);
+            var result = edgeModelMapper.CreateEdgeDeviceModel(entity, modules, routes, commands);
 
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(rowKey, result.ModelId);
             Assert.AreEqual("test-name", result.Name);
             Assert.AreEqual(1, result.EdgeModules.Count);
+            Assert.AreEqual(1, result.EdgeRoutes.Count);
             Assert.AreEqual(1, result.EdgeModules.First().Commands.Count);
 
             this.mockRepository.VerifyAll();

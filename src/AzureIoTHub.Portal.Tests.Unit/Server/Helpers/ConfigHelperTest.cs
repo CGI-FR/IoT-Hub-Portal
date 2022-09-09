@@ -5,9 +5,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
     using FluentAssertions;
     using Microsoft.Azure.Devices;
     using Newtonsoft.Json;
@@ -204,6 +206,59 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.Count);
             Assert.AreEqual("setting01", result[0].Name);
+        }
+
+        [Test]
+        public void GenerateRoutesContentShouldReturnValue()
+        {
+            // Arrange
+            var edgeModel = new IoTEdgeModel()
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Name = "Model test",
+                Description = "Description Test",
+                EdgeRoutes = new List<IoTEdgeRoute>()
+                {
+                    new IoTEdgeRoute()
+                    {
+                        Name = "RouteName",
+                        Value = "FROM source INTO sink",
+                        Priority = 5,
+                        TimeToLive = 7200
+                    }
+                }
+            };
+
+            // Act
+            var result = ConfigHelper.GenerateRoutesContent(edgeModel.EdgeRoutes);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<EdgeHubPropertiesDesired>(result);
+
+            var firstRoute = result.Routes.FirstOrDefault();
+            Assert.AreEqual("RouteName", firstRoute.Key);
+            Assert.AreEqual("{ route = FROM source INTO sink, priority = 5, timeToLiveSecs = 7200 }", firstRoute.Value.ToString());
+        }
+
+        [Test]
+        public void GenerateRoutesContentWithNullRoutesShouldThrowException()
+        {
+            // Arrange+Act
+            var result = () => ConfigHelper.GenerateRoutesContent(null);
+
+            // Assert
+            _ = result.Should().Throw<ArgumentNullException>();
+        }
+
+        [Test]
+        public void CreateIoTEdgeRouteFromJPropertyWithNullRouteShouldThrowException()
+        {
+            // Arrange+Act
+            var result = () => ConfigHelper.CreateIoTEdgeRouteFromJProperty(null);
+
+            // Assert
+            _ = result.Should().Throw<ArgumentNullException>();
         }
     }
 }

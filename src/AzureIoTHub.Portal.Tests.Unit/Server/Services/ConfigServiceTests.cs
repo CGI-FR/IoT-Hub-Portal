@@ -9,7 +9,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
     using FluentAssertions;
     using Microsoft.Azure.Devices;
-    using Microsoft.Extensions.Logging;
     using Moq;
     using Newtonsoft.Json.Linq;
     using Newtonsoft.Json;
@@ -20,7 +19,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Threading.Tasks;
 
     [TestFixture]
-    public class ConfigsServicesTests
+    public class ConfigServiceTests
     {
         private MockRepository mockRepository;
 
@@ -537,7 +536,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public void WhenGetConfigIsNullConfigModuleListShouldReturnAList()
+        public void WhenGetConfigIsNullGetConfigModuleListShouldThrowInternalServerErrorException()
         {
             // Arrange
             var configService = CreateConfigsServices();
@@ -564,7 +563,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public void WhenPropertiesDesiredIsInWrongFormatGetConfigModuleListShouldReturnAList()
+        public void WhenPropertiesDesiredIsInWrongFormatGetConfigModuleListShouldThrowInvalidOperationException()
         {
             // Arrange
             var configService = CreateConfigsServices();
@@ -605,6 +604,132 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Act
             var result = async () => await configService.GetConfigModuleList(configTest.Id);
+
+            // Assert
+            _ = result.Should().ThrowAsync<InvalidOperationException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetConfigRouteListShouldReturnAList()
+        {
+            // Arrange
+            var configService = CreateConfigsServices();
+
+            var configTest = new Configuration(Guid.NewGuid().ToString());
+            var listConfig = new List<Configuration>()
+            {
+                configTest
+            };
+
+            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
+            var routes = new Dictionary<string, object>()
+            {
+                {"Route1", new object() },
+                {"Route2", new object() }
+            };
+
+            edgeHubPropertiesDesired.Routes = routes;
+
+            var mockConfigEnumerator = this.mockRepository.Create<IEnumerable<Configuration>>();
+
+            configTest.Content.ModulesContent = new Dictionary<string, IDictionary<string, object>>()
+            {
+                {
+                    "$edgeHub", new Dictionary<string, object>()
+                    {
+                        {
+                            "properties.desired", JObject.Parse(JsonConvert.SerializeObject(edgeHubPropertiesDesired))
+                        }
+                    }
+                }
+            };
+
+            _ = mockConfigEnumerator.Setup(x => x.GetEnumerator()).Returns(listConfig.GetEnumerator);
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ReturnsAsync(mockConfigEnumerator.Object);
+
+            // Act
+            var result = await configService.GetConfigRouteList(configTest.Id);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void WhenGetConfigIsNullGetConfigRouteListShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var configService = CreateConfigsServices();
+
+            var configTest = new Configuration(Guid.NewGuid().ToString());
+            var listConfig = new List<Configuration>()
+            {
+            };
+
+            var mockConfigEnumerator = this.mockRepository.Create<IEnumerable<Configuration>>();
+
+            _ = mockConfigEnumerator.Setup(x => x.GetEnumerator()).Returns(listConfig.GetEnumerator);
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ReturnsAsync(mockConfigEnumerator.Object);
+
+            // Act
+            var result = async () => await configService.GetConfigRouteList(configTest.Id);
+
+            // Assert
+            _ = result.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void WhenPropertiesDesiredIsInWrongFormatGetConfigRouteListShouldThrowInvalidOperationException()
+        {
+            // Arrange
+            var configService = CreateConfigsServices();
+
+            var configTest = new Configuration(Guid.NewGuid().ToString());
+            var listConfig = new List<Configuration>()
+            {
+                configTest
+            };
+
+            var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
+            var routes = new Dictionary<string, object>()
+            {
+                {"Route1", new object() },
+                {"Route2", new object() }
+            };
+
+            edgeHubPropertiesDesired.Routes = routes;
+
+            var mockConfigEnumerator = this.mockRepository.Create<IEnumerable<Configuration>>();
+
+            configTest.Content.ModulesContent = new Dictionary<string, IDictionary<string, object>>()
+            {
+                {
+                    "$edgeHub", new Dictionary<string, object>()
+                    {
+                        {
+                            "properties.desired", edgeHubPropertiesDesired
+                        }
+                    }
+                }
+            };
+
+            _ = mockConfigEnumerator.Setup(x => x.GetEnumerator()).Returns(listConfig.GetEnumerator);
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ReturnsAsync(mockConfigEnumerator.Object);
+
+            // Act
+            var result = async () => await configService.GetConfigRouteList(configTest.Id);
 
             // Assert
             _ = result.Should().ThrowAsync<InvalidOperationException>();

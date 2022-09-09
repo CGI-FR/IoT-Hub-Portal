@@ -12,7 +12,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     {
         IoTEdgeModelListItem CreateEdgeDeviceModelListItem(TableEntity entity);
 
-        IoTEdgeModel CreateEdgeDeviceModel(TableEntity entity, List<IoTEdgeModule> ioTEdgeModules, IEnumerable<EdgeModuleCommand> commands);
+        IoTEdgeModel CreateEdgeDeviceModel(TableEntity entity, List<IoTEdgeModule> ioTEdgeModules, List<IoTEdgeRoute> ioTEdgeRoutes, IEnumerable<EdgeModuleCommand> commands);
 
         void UpdateTableEntity(TableEntity entity, IoTEdgeModel model);
     }

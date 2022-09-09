@@ -91,12 +91,11 @@ namespace AzureIoTHub.Portal.Server.Services
                     .GetEntityAsync<TableEntity>(DefaultPartitionKey, modelId);
 
                 var modules = await this.configService.GetConfigModuleList(modelId);
-
+                var routes = await this.configService.GetConfigRouteList(modelId);
                 var commands = this.tableClientFactory.GetEdgeModuleCommands()
                     .Query<EdgeModuleCommand>(c => c.PartitionKey == modelId)
                     .ToArray();
-
-                return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, commands);
+                return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
             }
             catch (RequestFailedException e)
             {
