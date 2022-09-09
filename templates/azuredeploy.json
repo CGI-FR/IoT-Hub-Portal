@@ -15,7 +15,7 @@
             }
         },
         "pgsqlAdminPassword": {
-            "type": "string",
+            "type": "securestring",
             "metadata": {
                 "description": "PostgreSQL password"
             }

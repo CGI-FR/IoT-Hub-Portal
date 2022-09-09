@@ -22,7 +22,7 @@
       }
     },
     "pgsqlAdminPassword": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": "[concat(uniqueString(resourceGroup().id, newGuid()), 'x', '!')]",
       "metadata": {
         "description": "PostgreSQL password"
