@@ -24,13 +24,13 @@ namespace AzureIoTHub.Portal.Client.Validators
 
                     _ = c.RuleFor(x => x.Value)
                         .NotEmpty()
-                        .WithMessage("The route value is required")
+                        .WithMessage("The route value is required.")
                         .Matches(@"^(?i)FROM [\S]+( WHERE [\S]+)? INTO [\S]+$")
                         .WithMessage("Route should be 'FROM <source> (WHERE <condition>) INTO <sink>'.");
 
                     _ = c.RuleFor(x => x.Priority)
                         .InclusiveBetween(0, 9)
-                        .WithMessage("The priority should be between 1 and 9.");
+                        .WithMessage("The priority should be between 0 and 9.");
 
                     _ = c.RuleFor(x => x.TimeToLive)
                         .InclusiveBetween((uint)0, uint.MaxValue)
