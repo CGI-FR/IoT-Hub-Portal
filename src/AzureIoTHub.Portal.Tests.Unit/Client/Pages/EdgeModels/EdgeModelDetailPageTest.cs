@@ -87,6 +87,36 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         }
 
         [Test]
+        public void WhenRoutesRequiredFieldEmptyClickOnSaveShouldProssessValidationError()
+        {
+            // Arrange
+            var edgeModel = new IoTEdgeModel()
+            {
+                Name = Guid.NewGuid().ToString(),
+            };
+
+            _ = this.mockSnackbarService
+                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>()))
+                .Returns(value: null);
+
+            // Act
+            var cut = RenderComponent<CreateEdgeModelsPage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            cut.WaitForElement($"#{nameof(IoTEdgeModel.Name)}").Change(edgeModel.Name);
+
+            var addRouteButton = cut.WaitForElement("#addRouteButton");
+            addRouteButton.Click();
+
+            cut.WaitForElement($"#{nameof(IoTEdgeRoute.Name)}").Change("RouteTest");
+
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
         public void WhenClickOnSaveChangesShouldProssessProblem()
         {
             // Arrange
@@ -290,6 +320,43 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                 .ReturnsAsync(edgeModel.ImageUrl.ToString());
 
             return edgeModel;
+        }
+
+        [Test]
+        public void ClickOnAddRouteShouldAddRouteOnEdgeModelData()
+        {
+            // Arrange
+
+            // Act
+            var cut = RenderComponent<CreateEdgeModelsPage>();
+            var addRouteButton = cut.WaitForElement("#addRouteButton");
+
+            addRouteButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => Assert.AreEqual(1, cut.FindAll(".deleteRouteButton").Count));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnDeleteRouteShouldRemoveRouteFromEdgeModelData()
+        {
+            // Arrange
+
+            // Act
+            var cut = RenderComponent<CreateEdgeModelsPage>();
+            var addRouteButton = cut.WaitForElement("#addRouteButton");
+
+            addRouteButton.Click();
+            cut.WaitForAssertion(() => Assert.AreEqual(1, cut.FindAll(".deleteRouteButton").Count));
+
+            var deleteRouteButton = cut.WaitForElement(".deleteRouteButton");
+
+            deleteRouteButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => Assert.AreEqual(0, cut.FindAll(".deleteRouteButton").Count));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }
