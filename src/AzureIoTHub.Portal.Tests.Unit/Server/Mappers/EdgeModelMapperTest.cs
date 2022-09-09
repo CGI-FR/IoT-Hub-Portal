@@ -118,6 +118,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             Assert.AreEqual(rowKey, result.ModelId);
             Assert.AreEqual("test-name", result.Name);
             Assert.AreEqual(1, result.EdgeModules.Count);
+            Assert.AreEqual(1, result.EdgeRoutes.Count);
             Assert.AreEqual(1, result.EdgeModules.First().Commands.Count);
 
             this.mockRepository.VerifyAll();

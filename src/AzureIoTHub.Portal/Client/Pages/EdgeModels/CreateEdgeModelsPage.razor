@@ -170,8 +170,10 @@
     readonly DialogOptions maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
 
     public List<IoTEdgeModule> edgeModules { get; set; } = new List<IoTEdgeModule>();
+
     public EdgeModelValidator edgeModelValidator = new EdgeModelValidator();
     public IoTEdgeModuleValidator edgeModuleValidator = new IoTEdgeModuleValidator();
+    public IoTEdgeRouteValidator edgeRouteValidator = new IoTEdgeRouteValidator();
 
     private MudForm form;
     private bool isProcessing;
@@ -258,6 +260,16 @@
             return;
         }
 
+        if(Model.EdgeRoutes.Any() && !edgeRouteValidator.Validate(Model.EdgeRoutes).IsValid)
+        {
+
+            Snackbar.Add("One or more validation errors occured with the routes.", Severity.Error);
+
+            isProcessing = false;
+
+            return;
+        }
+
         try
         {
             this.Model.EdgeModules = edgeModules;
@@ -291,6 +303,11 @@
 
     private void AddRoute()
     {
-        Model.EdgeRoutes.Add(new IoTEdgeRoute());
+        var last = Model.EdgeRoutes.LastOrDefault();
+
+        if (Model.EdgeRoutes.Count == 0 || (last.Name is not null && last.Value is not null))
+        {
+            Model.EdgeRoutes.Add(new IoTEdgeRoute());
+        }
     }
 }

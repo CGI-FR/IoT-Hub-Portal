@@ -18,7 +18,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// The route value.
         /// Eg : FROM /messages/* INTO $upstream.
         /// </summary>
-        [RegularExpression(@"^FROM [\S]+( WHERE [\S]+)? INTO [\S]+$", ErrorMessage = "Route should be 'FROM <source> (WHERE <condition>) INTO <sink>'")]
+        [RegularExpression(@"^(?i)FROM [\S]+( WHERE [\S]+)? INTO [\S]+$", ErrorMessage = "Route should be 'FROM <source> (WHERE <condition>) INTO <sink>'")]
         [Required(ErrorMessage = "The route should have a value.")]
         public string Value { get; set; }
 

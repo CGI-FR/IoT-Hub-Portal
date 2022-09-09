@@ -178,8 +178,10 @@
     public string ModelID { get; set; }
 
     private IoTEdgeModel EdgeModel { get; set; }
+
     public EdgeModelValidator edgeModelValidator = new EdgeModelValidator();
     public IoTEdgeModuleValidator edgeModuleValidator = new IoTEdgeModuleValidator();
+    public IoTEdgeRouteValidator edgeRouteValidator = new IoTEdgeRouteValidator();
 
     private bool isProcessing;
 
@@ -259,7 +261,17 @@
 
         if (this.EdgeModel.EdgeModules.Any() && !edgeModuleValidator.Validate(this.EdgeModel.EdgeModules).IsValid)
         {
-            Snackbar.Add("One or more validation errors occurred with the module.", Severity.Error);
+            Snackbar.Add("One or more validation errors occurred with the modules.", Severity.Error);
+
+            isProcessing = false;
+
+            return;
+        }
+
+        if (this.EdgeModel.EdgeRoutes.Any() && !edgeRouteValidator.Validate(this.EdgeModel.EdgeRoutes).IsValid)
+        {
+
+            Snackbar.Add("One or more validation errors occured with the routes.", Severity.Error);
 
             isProcessing = false;
 
@@ -340,7 +352,13 @@
         EdgeModel.EdgeRoutes.Remove(route);
     }
 
-    private void AddRoute(){
-        EdgeModel.EdgeRoutes.Add(new IoTEdgeRoute());
+    private void AddRoute()
+    {
+        var last = EdgeModel.EdgeRoutes.LastOrDefault();
+
+        if (EdgeModel.EdgeRoutes.Count == 0 || (last.Name is not null && last.Value is not null))
+        {
+            EdgeModel.EdgeRoutes.Add(new IoTEdgeRoute());
+        }
     }
 }
