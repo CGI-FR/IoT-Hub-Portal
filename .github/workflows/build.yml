@@ -46,13 +46,6 @@ jobs:
         name: swagger-doc
         path: ./src/swagger.json
 
-    # Start Azurite for local testing
-    - name: Start Azurite 
-      run: |
-        sudo npm install -g azurite
-        sudo mkdir azurite
-        sudo azurite --silent --location azurite --debug azurite\debug.log &
-
     - name: Run unit tests
       run: dotnet test --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura AzureIoTHub.Portal.Tests.Unit/AzureIoTHub.Portal.Tests.Unit.csproj
       working-directory: src/
