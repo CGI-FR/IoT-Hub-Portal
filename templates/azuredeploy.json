@@ -187,7 +187,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/CGI-FR/IoT-Hub-Portal/v3/test/arm/templates/portalDeployWithLoRa.json",
+                    "uri": "https://raw.githubusercontent.com/CGI-FR/IoT-Hub-Portal/v3/bugfix/1180_fix_postgres_arm_deployment_v2/templates/portalDeployWithLoRa.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -238,7 +238,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/CGI-FR/IoT-Hub-Portal/v3/test/arm/templates/portalDeployWithoutLoRa.json",
+                    "uri": "https://raw.githubusercontent.com/CGI-FR/IoT-Hub-Portal/v3/bugfix/1180_fix_postgres_arm_deployment_v2/templates/portalDeployWithoutLoRa.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
