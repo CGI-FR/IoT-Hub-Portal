@@ -10,7 +10,6 @@ namespace AzureIoTHub.Portal.Server.Helpers
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
-    using Microsoft.AspNetCore.Routing;
     using Microsoft.Azure.Devices;
     using Newtonsoft.Json.Linq;
 
