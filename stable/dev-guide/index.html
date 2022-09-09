@@ -275,23 +275,14 @@
 <nav aria-label="How to update the documentation" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#customizing">
-    Customizing
-  </a>
-<nav aria-label="Customizing" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#stylesheet">
-    Stylesheet
+<a class="md-nav__link" href="#customization">
+    Customization
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#layouts">
-    Layouts
+<a class="md-nav__link" href="#versioning">
+    Versioning
   </a>
-</li>
-</ul>
-</nav>
 </li>
 </ul>
 </nav>
@@ -465,23 +456,14 @@
 <nav aria-label="How to update the documentation" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#customizing">
-    Customizing
-  </a>
-<nav aria-label="Customizing" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#stylesheet">
-    Stylesheet
+<a class="md-nav__link" href="#customization">
+    Customization
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#layouts">
-    Layouts
+<a class="md-nav__link" href="#versioning">
+    Versioning
   </a>
-</li>
-</ul>
-</nav>
 </li>
 </ul>
 </nav>
@@ -718,40 +700,44 @@ This solution will use tables and blob storage to store its data. There is no ne
 <li><strong>device-images</strong>: The blob storage that contains the device images.</li>
 </ul>
 <h2 id="working-with-the-documentation">Working with the documentation<a class="headerlink" href="#working-with-the-documentation" title="Permanent link">¶</a></h2>
-<p>This documentation site is build using Github Pages.</p>
+<p>This documentation site is build using <a href="https://github.com/squidfunk/mkdocs-material">Material for MkDocs</a> and <a href="https://github.com/jimporter/mike">Mike</a>.</p>
 <p><code>docs/main</code> is a detached branch that is locked and only accepts PRs. On PR merge, Github Pages will automatically update the documentation website.</p>
 <h2 id="how-to-update-the-documentation">How to update the documentation<a class="headerlink" href="#how-to-update-the-documentation" title="Permanent link">¶</a></h2>
 <ol>
 <li>
 <p>Checkout the branch that contains the documentation:</p>
-<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a>git checkout origin/docs/main
-<a id="__codelineno-1-2" name="__codelineno-1-2"></a>git checkout -b docs/&lt;your_branch_name&gt; 
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash Session</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="go">git checkout origin/docs/main</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="go">git checkout -b docs/&lt;your_branch_name&gt; </span>
 </code></pre></div></td></tr></table></div>
 </li>
 <li>
-<p>Update the documentation</p>
+<p>Install dependencies</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash Session</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="go">pip install -r requirements.txt</span>
+</code></pre></div></td></tr></table></div>
 </li>
+<li>
+<p>Previewing as you write</p>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">Bash Session</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="go">mkdocs serve</span>
+</code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p>PRs are gated by a markdownlint check. You should use markdownlint to lint any new changes on documentation. For example you can use the vs code extension <a href="https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint">https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint</a></p>
+</li>
+<li>Update the documentation</li>
 <li>Commit your changes</li>
 <li>Push your changes to the branch</li>
 <li>Create a PR</li>
 </ol>
-<h3 id="customizing">Customizing<a class="headerlink" href="#customizing" title="Permanent link">¶</a></h3>
-<p>The documentation uses the Github pages theme <a href="https://github.com/pages-themes/leap-day">Leap Day</a>.<br/>
-You can customize the theme by editing the <code>_config.yml</code> file. You can also customize the theme by editing the <code>_layouts/default.html</code> file.</p>
-<h4 id="stylesheet">Stylesheet<a class="headerlink" href="#stylesheet" title="Permanent link">¶</a></h4>
-<p>If you'd like to add your own custom styles:</p>
-<ol>
-<li>Update the <code>assets/css/style.scss</code> file from the documentation repository.</li>
-<li>Add any custom CSS (or Sass, including imports) you'd like immediately after the <code>@import</code> line</li>
-</ol>
-<p><strong>Note: If you'd like to change the theme's Sass variables, you must set new values before the <code>@import</code> line in your stylesheet.</strong></p>
-<h4 id="layouts">Layouts<a class="headerlink" href="#layouts" title="Permanent link">¶</a></h4>
-<p>If you'd like to change the theme's HTML layout:</p>
-<ol>
-<li>Update the <code>/_layouts/default.html</code>file from the documentation repository.</li>
-<li>Customize the layout as you'd like</li>
-</ol>
+<h3 id="customization">Customization<a class="headerlink" href="#customization" title="Permanent link">¶</a></h3>
+<p>Refer to Material for MkDocs documentations:</p>
+<ul>
+<li><a href="https://squidfunk.github.io/mkdocs-material/customization/">https://squidfunk.github.io/mkdocs-material/customization</a></li>
+<li><a href="https://squidfunk.github.io/mkdocs-material/setup">https://squidfunk.github.io/mkdocs-material/setup</a></li>
+</ul>
+<h3 id="versioning">Versioning<a class="headerlink" href="#versioning" title="Permanent link">¶</a></h3>
+<p><a href="https://github.com/jimporter/mike">Mike</a> is used to generate automatically a new documentation version when a release has been published, using ci/cd pipelines.</p>
+<p>For manual workflows (e.g. delete or retitle an existing version), please refer to <a href="https://github.com/jimporter/mike">Mike documentation</a></p>
 <h2 id="problem-details">Problem Details<a class="headerlink" href="#problem-details" title="Permanent link">¶</a></h2>
 <p>On IoT Hub Portal, we use the library <a href="https://github.com/khellang/Middleware">Hellang.Middleware.ProblemDetails</a> which implements <a href="https://datatracker.ietf.org/doc/html/rfc7807">RFC7807</a> to describe issues/problems that occurred on backend.</p>
 <h3 id="handle-a-new-exception-using-problem-details">Handle a new exception using <code>Problem Details</code><a class="headerlink" href="#handle-a-new-exception-using-problem-details" title="Permanent link">¶</a></h3>
@@ -779,43 +765,43 @@ Below an example on how to:</p>
 <li>Catch an ProblemDetailsException when making a http call</li>
 <li>Delegate the exception to the <code>Error</code> component, so that it can visually warn the user</li>
 </ul>
-<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-2-10">10</a></span>
-<span class="normal"><a href="#__codelineno-2-11">11</a></span>
-<span class="normal"><a href="#__codelineno-2-12">12</a></span>
-<span class="normal"><a href="#__codelineno-2-13">13</a></span>
-<span class="normal"><a href="#__codelineno-2-14">14</a></span>
-<span class="normal"><a href="#__codelineno-2-15">15</a></span>
-<span class="normal"><a href="#__codelineno-2-16">16</a></span>
-<span class="normal"><a href="#__codelineno-2-17">17</a></span>
-<span class="normal"><a href="#__codelineno-2-18">18</a></span>
-<span class="normal"><a href="#__codelineno-2-19">19</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">@code</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">    </span><span class="c1">// Inject the reference to the Error component as a cascading parameter</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="na">[CascadingParameter]</span><span class="w"></span>
-<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="p">{</span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;}</span><span class="w"></span>
-<a id="__codelineno-2-5" name="__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">GetData</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">    </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">        </span><span class="k">try</span><span class="w"></span>
-<a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">        </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">            </span><span class="c1">// Execute an http request</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">        </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ProblemDetailsException</span><span class="w"> </span><span class="n">exception</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">        </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w">            </span><span class="c1">// Pass the ProblemDetailsException exception to Error component using its method ProcessProblemDetails()</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w">            </span><span class="c1">// The Error component will alert the user by showing a (snackbar/dialog) using the content of the exception</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w">            </span><span class="n">Error</span><span class="p">?.</span><span class="n">ProcessProblemDetails</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="p">}</span><span class="w"></span>
+<div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">C#</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span>
+<span class="normal"><a href="#__codelineno-4-11">11</a></span>
+<span class="normal"><a href="#__codelineno-4-12">12</a></span>
+<span class="normal"><a href="#__codelineno-4-13">13</a></span>
+<span class="normal"><a href="#__codelineno-4-14">14</a></span>
+<span class="normal"><a href="#__codelineno-4-15">15</a></span>
+<span class="normal"><a href="#__codelineno-4-16">16</a></span>
+<span class="normal"><a href="#__codelineno-4-17">17</a></span>
+<span class="normal"><a href="#__codelineno-4-18">18</a></span>
+<span class="normal"><a href="#__codelineno-4-19">19</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">@code</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">    </span><span class="c1">// Inject the reference to the Error component as a cascading parameter</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">    </span><span class="na">[CascadingParameter]</span><span class="w"></span>
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="p">{</span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;}</span><span class="w"></span>
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">GetData</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w">    </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">        </span><span class="k">try</span><span class="w"></span>
+<a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">        </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">            </span><span class="c1">// Execute an http request</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w">        </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ProblemDetailsException</span><span class="w"> </span><span class="n">exception</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w">        </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="w">            </span><span class="c1">// Pass the ProblemDetailsException exception to Error component using its method ProcessProblemDetails()</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="w">            </span><span class="c1">// The Error component will alert the user by showing a (snackbar/dialog) using the content of the exception</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="w">            </span><span class="n">Error</span><span class="p">?.</span><span class="n">ProcessProblemDetails</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div></td></tr></table></div>
 </article>
 </div>

@@ -116,6 +116,7 @@
             "name": "configurationId",
             "in": "path",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -154,6 +155,7 @@
             "name": "configurationId",
             "in": "path",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -194,6 +196,7 @@
             "name": "configurationId",
             "in": "path",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -217,6 +220,7 @@
             "name": "configurationId",
             "in": "path",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -258,6 +262,7 @@
             "name": "continuationToken",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "string"
             }
@@ -266,6 +271,7 @@
             "name": "searchText",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "string"
             }
@@ -274,6 +280,7 @@
             "name": "searchStatus",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "boolean"
             }
@@ -282,6 +289,7 @@
             "name": "searchState",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "boolean"
             }
@@ -290,6 +298,7 @@
             "name": "pageSize",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -398,6 +407,7 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -438,6 +448,7 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -463,6 +474,7 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -505,6 +517,7 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -554,6 +567,7 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -633,6 +647,7 @@
             "name": "continuationToken",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "string"
             }
@@ -641,6 +656,7 @@
             "name": "searchText",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "string"
             }
@@ -649,6 +665,7 @@
             "name": "searchStatus",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "boolean"
             }
@@ -657,6 +674,7 @@
             "name": "searchType",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "string"
             }
@@ -665,6 +683,7 @@
             "name": "pageSize",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -761,6 +780,7 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -800,6 +820,7 @@
             "name": "deviceId",
             "in": "path",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -843,6 +864,7 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -855,7 +877,7 @@
         }
       }
     },
-    "/api/edge/devices/{deviceId}/{moduleId}/{methodName}": {
+    "/api/edge/devices/{deviceId}/{moduleName}/{methodName}": {
       "post": {
         "tags": [
           "IoT Edge Devices"
@@ -868,6 +890,17 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "moduleName",
+            "in": "path",
+            "description": "The edge module name.",
+            "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -877,39 +910,12 @@
             "in": "path",
             "description": "Name of the method.",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "moduleId",
-            "in": "path",
-            "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
           }
         ],
-        "requestBody": {
-          "description": "The edge module.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/IoTEdgeModule"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/IoTEdgeModule"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/IoTEdgeModule"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Success",
@@ -947,6 +953,7 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -989,6 +996,7 @@
             "in": "path",
             "description": "Device Id",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1153,6 +1161,7 @@
             "name": "edgeModelId",
             "in": "path",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1192,6 +1201,7 @@
             "in": "path",
             "description": "the model id.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1217,6 +1227,7 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1277,6 +1288,7 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1357,6 +1369,7 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1449,6 +1462,7 @@
           {
             "name": "continuationToken",
             "in": "query",
+            "style": "form",
             "schema": {
               "type": "string"
             }
@@ -1456,6 +1470,7 @@
           {
             "name": "pageSize",
             "in": "query",
+            "style": "form",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -1604,6 +1619,7 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1644,6 +1660,7 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1668,6 +1685,7 @@
             "name": "continuationToken",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "string"
             }
@@ -1676,6 +1694,7 @@
             "name": "searchText",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "string"
             }
@@ -1684,6 +1703,7 @@
             "name": "searchStatus",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "boolean"
             }
@@ -1692,6 +1712,7 @@
             "name": "searchState",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "boolean"
             }
@@ -1700,6 +1721,7 @@
             "name": "pageSize",
             "in": "query",
             "description": "",
+            "style": "form",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -1808,6 +1830,7 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1848,6 +1871,7 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1873,6 +1897,7 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1882,6 +1907,7 @@
             "in": "path",
             "description": "The command identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2039,6 +2065,7 @@
             "in": "path",
             "description": "The devic emodel identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2098,6 +2125,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2181,6 +2209,7 @@
             "in": "path",
             "description": "The device model identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2246,6 +2275,7 @@
             "in": "path",
             "description": "The device model identifier",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2306,6 +2336,7 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2386,6 +2417,7 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2431,6 +2463,7 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2483,6 +2516,7 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2626,6 +2660,7 @@
             "in": "path",
             "description": "The devic emodel identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2685,6 +2720,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2768,6 +2804,7 @@
             "in": "path",
             "description": "The device model identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2833,6 +2870,7 @@
             "in": "path",
             "description": "The device model identifier",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2893,6 +2931,7 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2973,6 +3012,7 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -3018,6 +3058,7 @@
             "in": "path",
             "description": "The device model properties",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -3087,6 +3128,7 @@
             "in": "path",
             "description": "The device model properties",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -3258,6 +3300,7 @@
             "in": "path",
             "description": "Device Tag Name",
             "required": true,
+            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -4132,6 +4175,12 @@
             "type": "integer",
             "description": "The number of devices connected on the IoT Edge.",
             "format": "int32"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "The device model image Url.",
+            "format": "uri",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -4239,11 +4288,6 @@
             "minLength": 1,
             "type": "string",
             "description": "The module name."
-          },
-          "version": {
-            "type": "string",
-            "description": "The module configuration version.",
-            "nullable": true
           },
           "imageURI": {
             "minLength": 1,
