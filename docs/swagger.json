@@ -4244,6 +4244,13 @@
             },
             "description": "The device model module list.",
             "nullable": true
+          },
+          "edgeRoutes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeRoute"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -4365,6 +4372,43 @@
           "value": {
             "type": "string",
             "description": "The module identity twin setting value",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IoTEdgeRoute": {
+        "required": [
+          "name",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The route name."
+          },
+          "value": {
+            "minLength": 1,
+            "pattern": "^(?i)FROM [\\S]+( WHERE [\\S]+)? INTO [\\S]+$",
+            "type": "string",
+            "description": "The route value.\r\nEg : FROM /messages/* INTO $upstream."
+          },
+          "priority": {
+            "maximum": 9,
+            "minimum": 0,
+            "type": "integer",
+            "description": "The route priority",
+            "format": "int32",
+            "nullable": true
+          },
+          "timeToLive": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer",
+            "description": "The route time to live (secs)",
+            "format": "int32",
             "nullable": true
           }
         },
