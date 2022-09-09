@@ -100,7 +100,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                 .Returns(value: null);
 
             // Act
-            var cut = RenderComponent<CreateEdgeModelsPage>();
+            var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
             var saveButton = cut.WaitForElement("#SaveButton");
 
             cut.WaitForElement($"#{nameof(IoTEdgeModel.Name)}").Change(edgeModel.Name);
@@ -328,7 +328,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
 
             // Act
-            var cut = RenderComponent<CreateEdgeModelsPage>();
+            var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
             var addRouteButton = cut.WaitForElement("#addRouteButton");
 
             addRouteButton.Click();
@@ -344,7 +344,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
 
             // Act
-            var cut = RenderComponent<CreateEdgeModelsPage>();
+            var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
             var addRouteButton = cut.WaitForElement("#addRouteButton");
 
             addRouteButton.Click();
