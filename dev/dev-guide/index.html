@@ -570,7 +570,8 @@
 <span class="normal"><a href="#__codelineno-0-16">16</a></span>
 <span class="normal"><a href="#__codelineno-0-17">17</a></span>
 <span class="normal"><a href="#__codelineno-0-18">18</a></span>
-<span class="normal"><a href="#__codelineno-0-19">19</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="p">{</span><span class="w"></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="p">{</span><span class="w"></span>
 <a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="nt">"StorageAccount:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;CONNECTION_STRING_STORAGE_ACCOUNT&gt;"</span><span class="p">,</span><span class="w"></span>
 <a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span><span class="nt">"StorageAccount:BlobContainerName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;BLOB_CONTAINER_NAME&gt;"</span><span class="p">,</span><span class="w"></span>
 <a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">  </span><span class="nt">"OIDC:Scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SCOPE&gt;"</span><span class="p">,</span><span class="w"></span>
@@ -587,8 +588,9 @@
 <a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">  </span><span class="nt">"IoTDPS:ServiceEndpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SERVICE_END_POINT&gt;"</span><span class="p">,</span><span class="w"></span>
 <a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">  </span><span class="nt">"IoTDPS:LoRaEnrollmentGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_ENROLLMENT_GROUP&gt;"</span><span class="p">,</span><span class="w"></span>
 <a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">  </span><span class="nt">"IoTDPS:DefaultEnrollmentGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_DEFAULT_ENROLLMENT_GROUP&gt;"</span><span class="p">,</span><span class="w"></span>
-<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">  </span><span class="nt">"IoTDPS:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_DPS_CONNECTION_STRING&gt;"</span><span class="w"></span>
-<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">  </span><span class="nt">"IoTDPS:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_DPS_CONNECTION_STRING&gt;"</span><span class="p">,</span><span class="w"></span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">  </span><span class="nt">"PostgreSQL:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;POSTGRE_SQL_CONNECTION_STRING&gt;"</span><span class="w"></span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div></td></tr></table></div>
 <blockquote>
 <p><u>Note:</u> You must replace all values in the brackets by your own Azure settings. If you can't find them in the Azure Portal, please contact an administrator of this project to have more information.</p>
@@ -629,6 +631,7 @@
 <li><strong>IoTDPS__ConnectionString</strong>: The connection string to the Azure IoT Device Provisioning Service.</li>
 <li><strong>StorageAccount__ConnectionString</strong>: The connection string to the Azure Storage account.</li>
 <li><strong>LoRaKeyManagement__Code</strong>: The LoRa Key Management Facade code.</li>
+<li><strong>PostgreSQL__ConnectionString</strong>: The connection string allowing the connection to the PostgreSQL database.</li>
 </ul>
 <blockquote>
 <p>Note: For a production environment, an Azure Key Vault is advised to store the connection strings.</p>
