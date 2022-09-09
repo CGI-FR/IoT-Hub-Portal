@@ -75,7 +75,8 @@ _Secrets_ are used to fill in the login credentials to the cloud platform. You h
   "IoTDPS:ServiceEndpoint": "<SERVICE_END_POINT>",
   "IoTDPS:LoRaEnrollmentGroup": "<LORA_WAN_ENROLLMENT_GROUP>",
   "IoTDPS:DefaultEnrollmentGroup": "<LORA_WAN_DEFAULT_ENROLLMENT_GROUP>",
-  "IoTDPS:ConnectionString": "<IOT_DPS_CONNECTION_STRING>"
+  "IoTDPS:ConnectionString": "<IOT_DPS_CONNECTION_STRING>",
+  "PostgreSQL:ConnectionString": "<POSTGRE_SQL_CONNECTION_STRING>"
 }
 ```
 
@@ -124,6 +125,7 @@ Here are different connection strings that the user can configure:
 * **IoTDPS__ConnectionString**: The connection string to the Azure IoT Device Provisioning Service.
 * **StorageAccount__ConnectionString**: The connection string to the Azure Storage account.
 * **LoRaKeyManagement__Code**: The LoRa Key Management Facade code.
+* **PostgreSQL__ConnectionString**: The connection string allowing the connection to the PostgreSQL database.
 
 > Note: For a production environment, an Azure Key Vault is advised to store the connection strings.
 
