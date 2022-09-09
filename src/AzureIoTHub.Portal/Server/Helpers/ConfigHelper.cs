@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
+    using Microsoft.AspNetCore.Routing;
     using Microsoft.Azure.Devices;
     using Newtonsoft.Json.Linq;
 
@@ -225,7 +226,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
         public static Dictionary<string, IDictionary<string, object>> GenerateModulesContent(IoTEdgeModel edgeModel)
         {
             var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
-            var edgeHubPropertiesDesired = GenerateRoutesContent(edgeModel);
+            var edgeHubPropertiesDesired = GenerateRoutesContent(edgeModel.EdgeRoutes);
 
             var modulesContent =  new Dictionary<string, IDictionary<string, object>>
             {
@@ -287,12 +288,14 @@ namespace AzureIoTHub.Portal.Server.Helpers
             return modulesContent;
         }
 
-        public static EdgeHubPropertiesDesired GenerateRoutesContent(IoTEdgeModel edgeModel)
+        public static EdgeHubPropertiesDesired GenerateRoutesContent(List<IoTEdgeRoute> edgeRoutes)
         {
+            ArgumentNullException.ThrowIfNull(edgeRoutes, nameof(edgeRoutes));
+
             var edgeHubPropertiesDesired = new EdgeHubPropertiesDesired();
 
             // Defines routes in the IoTEdgeHub module
-            foreach (var route in edgeModel.EdgeRoutes)
+            foreach (var route in edgeRoutes)
             {
                 var routeContent = new
                 {
@@ -305,7 +308,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
             return edgeHubPropertiesDesired;
         }
 
-        public static IoTEdgeRoute CreateRouteIoTEdgeRouteFromJProperty(JProperty route)
+        public static IoTEdgeRoute CreateIoTEdgeRouteFromJProperty(JProperty route)
         {
             ArgumentNullException.ThrowIfNull(route, nameof(route));
 
@@ -313,8 +316,8 @@ namespace AzureIoTHub.Portal.Server.Helpers
             {
                 Name = route.Name,
                 Value = route.Value["route"]?.Value<string>(),
-                Priority = route.Value["priority"].Value<int>(),
-                TimeToLive = route.Value["timeToLiveSecs"].Value<uint>(),
+                Priority = route.Value["priority"]?.Value<int>(),
+                TimeToLive = route.Value["timeToLiveSecs"]?.Value<uint>(),
             };
         }
     }

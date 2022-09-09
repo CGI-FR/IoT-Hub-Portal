@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
     using AzureIoTHub.Portal.Models.v10;
     using NUnit.Framework;
 
+    [TestFixture]
     internal class IoTEdgeRouteValidatorTests
     {
         [Test]
