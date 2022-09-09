@@ -235,11 +235,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
             // Assert
             Assert.IsNotNull(result);
             Assert.IsAssignableFrom<EdgeHubPropertiesDesired>(result);
-            var test = result.Routes.FirstOrDefault();
 
-            Console.WriteLine(test.Value);
-            Assert.AreEqual("RouteName", test.Key);
-            Assert.AreEqual("{ route = FROM source INTO sink, priority = 5, timeToLiveSecs = 7200 }", test.Value.ToString());
+            var firstRoute = result.Routes.FirstOrDefault();
+            Assert.AreEqual("RouteName", firstRoute.Key);
+            Assert.AreEqual("{ route = FROM source INTO sink, priority = 5, timeToLiveSecs = 7200 }", firstRoute.Value.ToString());
         }
 
         [Test]

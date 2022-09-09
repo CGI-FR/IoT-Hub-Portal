@@ -90,10 +90,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void WhenRoutesRequiredFieldEmptyClickOnSaveShouldProssessValidationError()
         {
             // Arrange
-            var edgeModel = new IoTEdgeModel()
-            {
-                Name = Guid.NewGuid().ToString(),
-            };
+            var edgeModel =  SetupLoadEdgeModel();
 
             _ = this.mockSnackbarService
                 .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>()))
@@ -101,7 +98,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
 
             // Act
             var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
-            var saveButton = cut.WaitForElement("#SaveButton");
+            var saveButton = cut.WaitForElement("#saveButton");
 
             cut.WaitForElement($"#{nameof(IoTEdgeModel.Name)}").Change(edgeModel.Name);
 
@@ -326,6 +323,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnAddRouteShouldAddRouteOnEdgeModelData()
         {
             // Arrange
+            _ = SetupLoadEdgeModel();
 
             // Act
             var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
@@ -342,6 +340,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnDeleteRouteShouldRemoveRouteFromEdgeModelData()
         {
             // Arrange
+            _ = SetupLoadEdgeModel();
 
             // Act
             var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
