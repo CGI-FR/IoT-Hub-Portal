@@ -87,7 +87,34 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         }
 
         [Test]
-        public void WhenRoutesRequiredFieldEmptyClickOnSaveShouldProssessValidationError()
+        public void WhenModuleRequiredFieldEmptyClickOnSaveShouldProcessValidationError()
+        {
+            // Arrange
+            var edgeModel =  SetupLoadEdgeModel();
+
+            _ = this.mockSnackbarService
+                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>()))
+                .Returns(value: null);
+
+            // Act
+            var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
+            var saveButton = cut.WaitForElement("#saveButton");
+
+            cut.WaitForElement($"#{nameof(IoTEdgeModel.Name)}").Change(edgeModel.Name);
+
+            var addModuleButton = cut.WaitForElement("#addModuleButton");
+            addModuleButton.Click();
+
+            cut.WaitForElement($"#{nameof(IoTEdgeRoute.Name)}").Change("ModuleTest");
+
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void WhenRoutesRequiredFieldEmptyClickOnSaveShouldProcessValidationError()
         {
             // Arrange
             var edgeModel =  SetupLoadEdgeModel();
