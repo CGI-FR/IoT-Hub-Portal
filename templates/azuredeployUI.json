@@ -41,6 +41,37 @@
 							"visible": true
 						},
 						{
+							"name": "databaseSection",
+							"type": "Microsoft.Common.Section",
+							"label": "Database",
+							"elements": [
+								{
+									"name": "pgsqlAdminLogin",
+									"type": "Microsoft.Common.TextBox",
+									"label": "PostgreSQL user",
+									"toolTip": "PostgreSQL user",
+									"constraints": {
+										"required": true
+									}
+								},
+								{
+									"name": "pgsqlAdminPassword",
+									"type": "Microsoft.Common.PasswordBox",
+									"label": {
+										"password": "PostgreSQL password",
+										"confirmPassword": "Confirm PostgreSQL password"
+									},
+									"toolTip": "PostgreSQL password",
+									"constraints": {
+										"required": true,
+										"regex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{12,}$",
+										"validationMessage": "The password must be alphanumeric, contain at least 12 characters, and have at least 1 letter and 1 number"
+									}
+								}
+							],
+							"visible": true
+						},
+						{
 							"name": "identityProviderSection",
 							"type": "Microsoft.Common.Section",
 							"label": "Identity Provider",
@@ -303,6 +334,10 @@
         "outputs": {
             "parameters": {
                 "uniqueSolutionPrefix": "[steps('commonStep').uniqueSolutionPrefix]",
+
+				"pgsqlAdminLogin": "[steps('commonStep').databaseSection.pgsqlAdminLogin]",
+				"pgsqlAdminPassword": "[steps('commonStep').databaseSection.pgsqlAdminPassword]",
+
 				"openIdAuthority": "[steps('commonStep').identityProviderSection.openIdAuthority]",
 				"openIdMetadataURL": "[steps('commonStep').identityProviderSection.openIdMetadataURL]",
 				"clientId": "[steps('commonStep').identityProviderSection.clientId]",

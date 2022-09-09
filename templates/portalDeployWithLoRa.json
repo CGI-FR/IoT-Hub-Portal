@@ -14,6 +14,20 @@
         "description": "Prefix used for resource names. Should be unique as this will also be used for domain names."
       }
     },
+    "pgsqlAdminLogin": {
+      "type": "string",
+      "defaultValue": "[concat(uniqueString(resourceGroup().id, newGuid()))]",
+      "metadata": {
+        "description": "PostgreSQL user"
+      }
+    },
+    "pgsqlAdminPassword": {
+      "type": "string",
+      "defaultValue": "[concat(uniqueString(resourceGroup().id, newGuid()), 'x', '!')]",
+      "metadata": {
+        "description": "PostgreSQL password"
+      }
+    },
     "openIdAuthority": {
       "type": "string",
       "metadata": {
@@ -69,8 +83,6 @@
   },
   "variables": {
     "pgsqlServerName": "[concat(parameters('uniqueSolutionPrefix'), 'pgsql')]",
-    "pgsqlAdminLogin": "[concat(uniqueString(resourceGroup().id, newGuid()))]",
-    "pgsqlAdminPassword": "[concat(uniqueString(resourceGroup().id, newGuid()), 'x', '!')]",
     "iotHubName": "[concat(parameters('uniqueSolutionPrefix'), 'hub')]",
     "dpsName": "[concat(parameters('uniqueSolutionPrefix'), 'dps')]",
     "siteName": "[concat(parameters('uniqueSolutionPrefix'), 'portal')]",
@@ -118,21 +130,21 @@
       "name": "[variables('pgsqlServerName')]",
       "location": "[parameters('location')]",
       "sku": {
-        "name": "B_Gen5_1",
+        "name": "B_Gen5_2",
         "tier": "Basic",
-        "capacity": "2",
+        "capacity": 2,
         "size": "5120",
         "family": "Gen5"
       },
       "properties": {
         "createMode": "Default",
         "version": "11",
-        "administratorLogin": "[variables('pgsqlAdminLogin')]",
-        "administratorLoginPassword": "[variables('pgsqlAdminPassword')]",
+        "administratorLogin": "[parameters('pgsqlAdminLogin')]",
+        "administratorLoginPassword": "[parameters('pgsqlAdminPassword')]",
         "storageProfile": {
-          "storageMB": "2048",
-          "backupRetentionDays": "7",
-          "geoRedundantBackup": "false"
+          "storageMB": 5120,
+          "backupRetentionDays": 7,
+          "geoRedundantBackup": "Disabled"
         }
       }
     },
@@ -215,7 +227,7 @@
             {
               "name": "PostgreSQL__ConnectionString",
               "type": "Custom",
-              "connectionString": "[concat('User ID=', variables('pgsqlAdminLogin'), ';Password=', variables('pgsqlAdminPassword'), ';Host=', concat(variables('pgsqlServerName'), '.postgres.database.azure.com') ,';Port=5432;Database=', variables('siteName') ,';Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;"
+              "connectionString": "[concat('User ID=', parameters('pgsqlAdminLogin'), ';Password=', parameters('pgsqlAdminPassword'), ';Host=', concat(variables('pgsqlServerName'), '.postgres.database.azure.com') ,';Port=5432;Database=', variables('siteName') ,';Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;"
             }
           ],
           "appSettings": [
