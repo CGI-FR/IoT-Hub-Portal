@@ -7,7 +7,8 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Net.Http.Json;
     using System.Text;
     using System.Threading.Tasks;
-    using Exceptions;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
     using Shared.Models.v1._0;

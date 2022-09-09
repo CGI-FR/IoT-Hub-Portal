@@ -13,13 +13,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
     using Azure;
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
-    using AzureIoTHub.Portal.Server.Exceptions;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Managers;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
-    using Portal.Server;
     using UnitTests.Bases;
 
     [TestFixture]

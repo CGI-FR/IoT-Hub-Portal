@@ -4,8 +4,8 @@
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Exceptions
 {
     using System;
-    using AzureIoTHub.Portal.Server.Constants;
-    using AzureIoTHub.Portal.Server.Exceptions;
+    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Shared.Constants;
     using FluentAssertions;
     using NUnit.Framework;
 

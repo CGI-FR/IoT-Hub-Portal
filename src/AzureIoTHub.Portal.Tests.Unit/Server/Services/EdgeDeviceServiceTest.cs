@@ -3,22 +3,22 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 {
-    using System.Linq;
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using FluentAssertions;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Moq;
     using NUnit.Framework;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
-    using AzureIoTHub.Portal.Models.v10;
-    using System.Threading.Tasks;
-    using System.Collections.Generic;
-    using AzureIoTHub.Portal.Server.Exceptions;
-    using FluentAssertions;
 
     [TestFixture]
     public class EdgeDeviceServiceTest

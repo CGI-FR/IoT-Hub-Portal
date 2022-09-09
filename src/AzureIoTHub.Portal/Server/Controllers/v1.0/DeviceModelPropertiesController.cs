@@ -6,12 +6,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
-    using AzureIoTHub.Portal.Server.Factories;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Server.Services;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.AspNetCore.Authorization;
 
     [Authorize]
     [ApiController]
@@ -23,14 +22,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Initializes a new instance of the Device model properties controller class.
         /// </summary>
-        /// <param name="log">The logger.</param>
         /// <param name="mapper">The mapper.</param>
-        /// <param name="tableClientFactory">the table client factory.</param>
+        /// <param name="deviceModelPropertiesService">The device model properties service.</param>
         public DeviceModelPropertiesController(
-            ILogger<DeviceModelPropertiesController> log,
             IMapper mapper,
-            ITableClientFactory tableClientFactory)
-            : base(log, mapper, tableClientFactory)
+            IDeviceModelPropertiesService deviceModelPropertiesService)
+            : base(mapper, deviceModelPropertiesService)
         {
         }
 

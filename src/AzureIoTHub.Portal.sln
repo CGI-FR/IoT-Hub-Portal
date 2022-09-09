@@ -52,6 +52,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATES", "ISSUE_TE
 		..\.github\ISSUE_TEMPLATE\user_story.md = ..\.github\ISSUE_TEMPLATE\user_story.md
 	EndProjectSection
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{B9D2DE01-84DE-461F-998C-20B57E4AA021}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Domain", "AzureIoTHubPortal.Domain\AzureIoTHub.Portal.Domain.csproj", "{BC1E7AEF-393D-4771-8AD2-C0BE7E5C405F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Infrastructure", "AzureIoTHub.Portal.Infrastructure\AzureIoTHub.Portal.Infrastructure.csproj", "{C0E587A8-607D-4746-8536-44AB34074522}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +80,18 @@ Global
 		{51FD5B90-B422-47BF-83F2-516520CFB124}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51FD5B90-B422-47BF-83F2-516520CFB124}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51FD5B90-B422-47BF-83F2-516520CFB124}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9D2DE01-84DE-461F-998C-20B57E4AA021}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9D2DE01-84DE-461F-998C-20B57E4AA021}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9D2DE01-84DE-461F-998C-20B57E4AA021}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9D2DE01-84DE-461F-998C-20B57E4AA021}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC1E7AEF-393D-4771-8AD2-C0BE7E5C405F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC1E7AEF-393D-4771-8AD2-C0BE7E5C405F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC1E7AEF-393D-4771-8AD2-C0BE7E5C405F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC1E7AEF-393D-4771-8AD2-C0BE7E5C405F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0E587A8-607D-4746-8536-44AB34074522}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0E587A8-607D-4746-8536-44AB34074522}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0E587A8-607D-4746-8536-44AB34074522}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0E587A8-607D-4746-8536-44AB34074522}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

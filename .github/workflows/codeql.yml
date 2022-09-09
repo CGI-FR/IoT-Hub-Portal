@@ -1,10 +1,10 @@
 name: "Code Scanning"
 
-on:  
+on:
   pull_request:
-    branches: [ main ]
+    branches: [ main, v3/main ]
   push:
-    branches: [main]
+    branches: [ main, v3/main ]
   schedule:
     #        ┌───────────── minute (0 - 59)
     #        │  ┌───────────── hour (0 - 23)
@@ -45,7 +45,7 @@ jobs:
         queries: +security-and-quality,security-extended
 
     - name: Build
-      run: dotnet build --configuration Release
+      run: dotnet build AzureIoTHub.Portal.sln --configuration Release
       working-directory: src/
 
     - name: Perform CodeQL Analysis

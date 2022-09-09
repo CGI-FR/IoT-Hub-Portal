@@ -11,9 +11,13 @@ namespace AzureIoTHub.Portal.Server
     using AutoMapper;
     using Azure;
     using Azure.Storage.Blobs;
-    using Exceptions;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Infrastructure;
+    using AzureIoTHub.Portal.Infrastructure.Factories;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
     using Extensions;
-    using Factories;
     using Hellang.Middleware.ProblemDetails;
     using Hellang.Middleware.ProblemDetails.Mvc;
     using Identity;
@@ -28,6 +32,7 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.AspNetCore.Mvc.Versioning;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Provisioning.Service;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -39,6 +44,7 @@ namespace AzureIoTHub.Portal.Server
     using Polly;
     using Polly.Extensions.Http;
     using Prometheus;
+    using Quartz;
     using Services;
     using ServicesHealthCheck;
     using Shared.Models.v1._0;
@@ -65,7 +71,7 @@ namespace AzureIoTHub.Portal.Server
         {
             ArgumentNullException.ThrowIfNull(services, nameof(services));
 
-            var configuration = ConfigHandler.Create(HostEnvironment, Configuration);
+            var configuration = ConfigHandlerFactory.Create(HostEnvironment, Configuration);
 
             _ = services.Configure<ClientApiIndentityOptions>(opts =>
             {
@@ -94,6 +100,11 @@ namespace AzureIoTHub.Portal.Server
                     opts.TokenValidationParameters.ValidateActor = configuration.OIDCValidateActor;
                     opts.TokenValidationParameters.ValidateTokenReplay = configuration.OIDCValidateTokenReplay;
                 });
+
+            _ = services
+                .AddDbContextPool<PortalDbContext>(opts => opts.UseNpgsql(configuration.PostgreSQLConnectionString));
+
+            _ = services.AddScoped<IUnitOfWork, UnitOfWork<PortalDbContext>>();
 
             _ = services.AddSingleton(configuration);
             _ = services.AddSingleton(new PortalMetric());
@@ -134,6 +145,9 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IEdgeDevicesService, EdgeDevicesService>();
             _ = services.AddTransient<IDevicePropertyService, DevicePropertyService>();
             _ = services.AddTransient<IDeviceConfigurationsService, DeviceConfigurationsService>();
+            _ = services.AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();
+
+            _ = services.AddScoped<IDeviceModelPropertiesRepository, DeviceModelPropertiesRepository>();
 
             _ = services.AddMudServices();
 
@@ -261,6 +275,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddSingleton(mapper);
 
             _ = services.AddHealthChecks()
+                .AddDbContextCheck<PortalDbContext>()
                 .AddCheck<IoTHubHealthCheck>("iothubHealth")
                 .AddCheck<StorageAccountHealthCheck>("storageAccountHealth")
                 .AddCheck<TableStorageHealthCheck>("tableStorageHealth")
@@ -276,6 +291,24 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddHostedService<DeviceMetricExporterService>();
             _ = services.AddHostedService<EdgeDeviceMetricExporterService>();
             _ = services.AddHostedService<ConcentratorMetricExporterService>();
+
+            // Add the required Quartz.NET services
+            _ = services.AddQuartz(q =>
+            {
+                q.UseMicrosoftDependencyInjectionJobFactory();
+                q.UsePersistentStore(opts =>
+                {
+                    // JSON is recommended persistent format to store data in database for greenfield projects.
+                    // You should also strongly consider setting useProperties to true to restrict key - values to be strings.
+                    opts.UseJsonSerializer();
+                    opts.UseProperties = true;
+
+                    opts.UsePostgres(configuration.StorageAccountConnectionString);
+                });
+            });
+
+            // Add the Quartz.NET hosted service
+            _ = services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         }
 
         private static void ConfigureIdeasFeature(IServiceCollection services, ConfigHandler configuration)
@@ -367,11 +400,12 @@ namespace AzureIoTHub.Portal.Server
                 });
             });
 
-
             var deviceModelImageManager = app.ApplicationServices.GetService<IDeviceModelImageManager>();
 
             await deviceModelImageManager?.InitializeDefaultImageBlob()!;
             await deviceModelImageManager?.SyncImagesCacheControl()!;
+
+            await EnsureDatabaseCreatedAndUpToDate(app, env)!;
         }
 
         private static void UseApiExceptionMiddleware(IApplicationBuilder app)
@@ -393,6 +427,21 @@ namespace AzureIoTHub.Portal.Server
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             return Task.CompletedTask;
+        }
+
+        private static async Task EnsureDatabaseCreatedAndUpToDate(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            using var scope = app.ApplicationServices.CreateScope();
+
+            using var context = scope.ServiceProvider.GetRequiredService<PortalDbContext>();
+
+            if (env.IsDevelopment())
+            {
+                _ = await context.Database.EnsureDeletedAsync();
+            }
+
+            // Create the database if not exists and migrate it using the database bigration scripts.
+            _ = await context.Database.EnsureCreatedAsync();
         }
     }
 }

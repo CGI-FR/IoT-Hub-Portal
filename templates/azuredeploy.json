@@ -8,6 +8,18 @@
                 "description": "Prefix used for resource names. Should be unique as this will also be used for domain names."
             }
         },
+        "pgsqlAdminLogin": {
+            "type": "string",
+            "metadata": {
+                "description": "PostgreSQL user"
+            }
+        },
+        "pgsqlAdminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "PostgreSQL password"
+            }
+        },
         "openIdAuthority": {
             "type": "string",
             "metadata": {
@@ -185,6 +197,12 @@
                     "uniqueSolutionPrefix": {
                         "value": "[parameters('uniqueSolutionPrefix')]"
                     },
+                    "pgsqlAdminLogin": {
+                        "value": "[parameters('pgsqlAdminLogin')]"
+                    },
+                    "pgsqlAdminPassword": {
+                        "value": "[parameters('pgsqlAdminPassword')]"
+                    },
                     "openIdAuthority": {
                         "value": "[parameters('openIdAuthority')]"
                     },
@@ -229,6 +247,12 @@
                     },
                     "uniqueSolutionPrefix": {
                         "value": "[parameters('uniqueSolutionPrefix')]"
+                    },
+                    "pgsqlAdminLogin": {
+                        "value": "[parameters('pgsqlAdminLogin')]"
+                    },
+                    "pgsqlAdminPassword": {
+                        "value": "[parameters('pgsqlAdminPassword')]"
                     },
                     "openIdAuthority": {
                         "value": "[parameters('openIdAuthority')]"

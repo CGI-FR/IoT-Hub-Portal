@@ -9,8 +9,8 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Server.Exceptions;
     using AzureIoTHub.Portal.Server.Helpers;
     using Extensions;
     using Microsoft.Azure.Devices;

@@ -3,16 +3,16 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 {
-    using AzureIoTHub.Portal.Server;
     using System;
     using System.Threading;
-    using NUnit.Framework;
-    using Microsoft.Extensions.Logging;
-    using Moq;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Shared.Constants;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using FluentAssertions;
-    using Portal.Server.Constants;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using NUnit.Framework;
     using Prometheus;
 
     [TestFixture]

@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Infrastructure;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Wrappers;
     using Microsoft.Azure.Devices.Provisioning.Service;
@@ -13,7 +14,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
     using Microsoft.Extensions.Configuration;
     using Moq;
     using NUnit.Framework;
-    using Portal.Server;
 
     [TestFixture]
     public class DeviceProvisioningServiceManagerTests

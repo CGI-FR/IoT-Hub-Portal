@@ -3,16 +3,16 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Server.Factories;
-    using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Models.v10;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Azure;
-    using Exceptions;
+    using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Server.Mappers;
 
     public class DeviceTagService : IDeviceTagService
     {

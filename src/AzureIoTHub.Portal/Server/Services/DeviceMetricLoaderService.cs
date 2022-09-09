@@ -6,7 +6,8 @@ namespace AzureIoTHub.Portal.Server.Services
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using Exceptions;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
