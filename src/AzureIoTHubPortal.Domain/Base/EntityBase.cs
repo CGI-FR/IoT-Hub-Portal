@@ -8,6 +8,6 @@ namespace AzureIoTHub.Portal.Domain.Base
     public abstract class EntityBase
     {
         [Key]
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
     }
 }
