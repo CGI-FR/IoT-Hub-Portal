@@ -8,6 +8,8 @@ services:
       POSTGRES_PASSWORD: postgrePassword
     ports:
       - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
   azureiothub.portal.server:
     image: ${DOCKER_REGISTRY-}azureiothubportalserver
     build:
@@ -15,3 +17,5 @@ services:
       dockerfile: AzureIoTHub.Portal/Server/Dockerfile
     depends_on:
       - "database"
+volumes:
+  pgdata:
