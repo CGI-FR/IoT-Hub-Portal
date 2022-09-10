@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Infrastructure
     using AzureIoTHub.Portal.Infrastructure.Seeds;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Infrastructure;
+    using Microsoft.Extensions.Logging;
 
     public class PortalDbContext : DbContext
     {
@@ -31,9 +32,9 @@ namespace AzureIoTHub.Portal.Infrastructure
                 _ = modelBuilder
                     .MigrateDeviceModelProperties(config);
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException e)
             {
-
+                this.Database.GetService<ILogger<PortalDbContext>>().LogError(e, "Failed to seed the database.");
             }
         }
     }
