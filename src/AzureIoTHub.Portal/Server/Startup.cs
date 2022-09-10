@@ -296,14 +296,20 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddQuartz(q =>
             {
                 q.UseMicrosoftDependencyInjectionJobFactory();
+                q.InterruptJobsOnShutdownWithWait = true;
+
                 q.UsePersistentStore(opts =>
                 {
                     // JSON is recommended persistent format to store data in database for greenfield projects.
                     // You should also strongly consider setting useProperties to true to restrict key - values to be strings.
                     opts.UseJsonSerializer();
+                    opts.UseClustering();
                     opts.UseProperties = true;
 
-                    opts.UsePostgres(configuration.StorageAccountConnectionString);
+                    opts.UsePostgres(c =>
+                    {
+                        c.ConnectionString = configuration.PostgreSQLConnectionString;
+                    });
                 });
             });
 
@@ -405,7 +411,7 @@ namespace AzureIoTHub.Portal.Server
             await deviceModelImageManager?.InitializeDefaultImageBlob()!;
             await deviceModelImageManager?.SyncImagesCacheControl()!;
 
-            await EnsureDatabaseCreatedAndUpToDate(app, env)!;
+            await EnsureDatabaseCreatedAndUpToDate(app)!;
         }
 
         private static void UseApiExceptionMiddleware(IApplicationBuilder app)
@@ -429,19 +435,12 @@ namespace AzureIoTHub.Portal.Server
             return Task.CompletedTask;
         }
 
-        private static async Task EnsureDatabaseCreatedAndUpToDate(IApplicationBuilder app, IWebHostEnvironment env)
+        private static async Task EnsureDatabaseCreatedAndUpToDate(IApplicationBuilder app)
         {
             using var scope = app.ApplicationServices.CreateScope();
-
             using var context = scope.ServiceProvider.GetRequiredService<PortalDbContext>();
 
-            if (env.IsDevelopment())
-            {
-                _ = await context.Database.EnsureDeletedAsync();
-            }
-
-            // Create the database if not exists and migrate it using the database bigration scripts.
-            _ = await context.Database.EnsureCreatedAsync();
+            await context.Database.MigrateAsync();
         }
     }
 }
