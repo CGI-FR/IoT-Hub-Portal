@@ -20,22 +20,5 @@ namespace AzureIoTHub.Portal.Infrastructure
             : base(options)
         {
         }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            try
-            {
-                var config = this.Database.GetService<ConfigHandler>();
-
-                _ = modelBuilder
-                    .MigrateDeviceModelProperties(config);
-            }
-            catch (InvalidOperationException e)
-            {
-                this.Database.GetService<ILogger<PortalDbContext>>().LogError(e, "Failed to seed the database.");
-            }
-        }
     }
 }

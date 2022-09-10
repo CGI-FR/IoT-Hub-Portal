@@ -17,6 +17,7 @@ namespace AzureIoTHub.Portal.Server
     using AzureIoTHub.Portal.Infrastructure;
     using AzureIoTHub.Portal.Infrastructure.Factories;
     using AzureIoTHub.Portal.Infrastructure.Repositories;
+    using AzureIoTHub.Portal.Infrastructure.Seeds;
     using Extensions;
     using Hellang.Middleware.ProblemDetails;
     using Hellang.Middleware.ProblemDetails.Mvc;
@@ -36,6 +37,7 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Primitives;
     using Microsoft.OpenApi.Models;
     using Models.v10;
@@ -439,8 +441,21 @@ namespace AzureIoTHub.Portal.Server
         {
             using var scope = app.ApplicationServices.CreateScope();
             using var context = scope.ServiceProvider.GetRequiredService<PortalDbContext>();
+            var config = scope.ServiceProvider.GetRequiredService<ConfigHandler>();
 
             await context.Database.MigrateAsync();
+
+            try
+            {
+                await context
+                    .MigrateDeviceModelProperties(config);
+
+                _ = await context.SaveChangesAsync();
+            }
+            catch (InvalidOperationException e)
+            {
+                scope.ServiceProvider.GetRequiredService<ILogger>().LogError(e, "Failed to seed the database.");
+            }
         }
     }
 }
