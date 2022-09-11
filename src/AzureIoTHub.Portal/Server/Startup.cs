@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server
     using System.IO;
     using System.Net;
     using System.Threading.Tasks;
+    using Application.Abstractions.Services;
     using AutoMapper;
     using Azure;
     using Azure.Storage.Blobs;
@@ -22,6 +23,7 @@ namespace AzureIoTHub.Portal.Server
     using Hellang.Middleware.ProblemDetails;
     using Hellang.Middleware.ProblemDetails.Mvc;
     using Identity;
+    using Infrastructure.Jobs;
     using Managers;
     using Mappers;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -150,6 +152,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();
 
             _ = services.AddScoped<IDeviceModelPropertiesRepository, DeviceModelPropertiesRepository>();
+            _ = services.AddScoped<IDeviceTagRepository, DeviceTagRepository>();
 
             _ = services.AddMudServices();
 
@@ -271,6 +274,7 @@ namespace AzureIoTHub.Portal.Server
                 _ = mc.CreateMap(typeof(AsyncPageable<>), typeof(List<>));
 
                 mc.AddProfile(new DevicePropertyProfile());
+                mc.AddProfile(new DeviceTagProfile());
             });
 
             var mapper = mapperConfig.CreateMapper();
@@ -308,6 +312,16 @@ namespace AzureIoTHub.Portal.Server
                 q.AddMetricsService<DeviceMetricExporterService, DeviceMetricLoaderService>(configuration);
                 q.AddMetricsService<EdgeDeviceMetricExporterService, EdgeDeviceMetricLoaderService>(configuration);
                 q.AddMetricsService<ConcentratorMetricExporterService, ConcentratorMetricLoaderService>(configuration);
+
+                _ = q.AddJob<SyncStorageAccountTablesWithDatabase>(opts => opts
+                    .WithIdentity(nameof(SyncStorageAccountTablesWithDatabase))
+                );
+
+                _ = q.AddTrigger(t => t
+                    .WithIdentity($"{nameof(SyncStorageAccountTablesWithDatabase)} Trigger")
+                    .ForJob(nameof(SyncStorageAccountTablesWithDatabase))
+                    .StartNow()
+                );
             });
 
             // Add the Quartz.NET hosted service
