@@ -1,9 +1,9 @@
 # IoT Hub Portal
 
-This project aims to provide a solution for handling IoT Devices easyly.
+This project aims to provide a solution for handling IoT Devices easily.
 It leverages on Azure IoT Hub for connectivity and device management.
 
-![IoT Hub Portal Architecture](https://cgi-fr.github.io/IoT-Hub-Portal/stable/images/architecture.png)
+![IoT Hub Portal Architecture](images/architecture.png)
 
 ## Features
 
@@ -19,7 +19,7 @@ The following should be completed before proceeding with the IoT Hub Portal deve
 
 * You must have an Azure subscription. Get an [Azure Free account](https://azure.microsoft.com/en-us/offers/ms-azr-0044p/) to get started.
 * You must have configured an Azure AD B2C Tenant with applications. See [Portal AD applications configuration](https://cgi-fr.github.io/IoT-Hub-Portal/stable/b2c-applications) page.
-* Understandr how IoTEdge LoraWAN StarterKit work. Have a look at [https://azure.github.io/iotedge-lorawan-starterkit](https://azure.github.io/iotedge-lorawan-starterkit) to get started.
+* Understand how IoTEdge LoraWAN StarterKit work. Have a look at [https://azure.github.io/iotedge-lorawan-starterkit](https://azure.github.io/iotedge-lorawan-starterkit) to get started.
 
 ## Quick Start
 
@@ -33,6 +33,7 @@ The template will deploy in your Azure subscription the Following resources:
 * Application Insights
 * Log Analytics (when opted in to use Azure Monitor)
 * Azure WebApp and Service Plan
+* Azure Database for PostgreSQL
 
 ### Instructions
 
@@ -53,6 +54,9 @@ The template will deploy in your Azure subscription the Following resources:
     * **Resource Group**: A logical "folder" where all the template resource would be put into, just choose a meaningful name.
     * **Location**: In which Azure Region the resources should be deployed. Make sure to choose a location where IoT Hub is available
     * **Unique Solution Prefix**: A string that would be used as prefix for all the resources name to ensure their uniqueness.
+    * **PostgreSQL user**: The PostgreSQL user name to be used for the IoT Hub Portal database.
+    * **PostgreSQL password**: The PostgreSQL password to be used for the IoT Hub Portal database.
+    * **Confirm PostgreSQL password**: The PostgreSQL password to be used for the IoT Hub Portal database.
     * **Open Id Authority**: The OpenID authority used by the portal.
     * **OpenId Metadata URL**: The OpenID metadata URL used by the portal.
     * **Client Id**: the ID of the web client that will be used to authenticate the portal.

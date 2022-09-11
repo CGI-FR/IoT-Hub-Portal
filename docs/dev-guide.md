@@ -26,6 +26,7 @@ This schema represent the various components and how they interact to have a bet
 1. The IoT Hub portal uses the LoRa Key Management Facade to send Cloud to Device (C2D) messages to LoRa devices.
 1. The LoRa Key Management Facade uses Redis to store its cached data.
 1. The LoRa Key Management Facade uses the Azure IoT Hub REST API to retrieve the LoRa device keys and send C2D messages.
+1. The IoT Hub portal synchronizes its data with the IoT Hub to provide a consistent view of the data.
 
 > Note: For more information about the LoRa Key Management Facade, see the [Azure IoT Edge LoRaWAN Starter Kit](https://azure.github.io/iotedge-lorawan-starterkit) page.
 
