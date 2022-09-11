@@ -268,7 +268,7 @@
             {
               "name": "PostgreSQL__ConnectionString",
               "type": "Custom",
-              "connectionString": "[concat('Server=', variables('pgsqlServerName') ,'.postgres.database.azure.com;Database=', variables('siteName') ,';Port=5432;User Id=', parameters('pgsqlAdminLogin') ,'@', variables('pgsqlServerName') ,';Password=', parameters('pgsqlAdminPassword'), ';Pooling=true;Connection Lifetime=0;Command Timeout=0;Ssl Mode=VerifyFull;')"
+              "connectionString": "[concat('Server=', variables('pgsqlServerName') ,'.postgres.database.azure.com;Database=', variables('siteName') ,';Port=5432;User Id=', parameters('pgsqlAdminLogin') ,'@', variables('pgsqlServerName') ,';Password=', parameters('pgsqlAdminPassword'), ';Pooling=true;Connection Lifetime=0;Command Timeout=0;Ssl Mode=VerifyFull;')]"
             }
           ],
           "appSettings": [
