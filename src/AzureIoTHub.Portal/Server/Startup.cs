@@ -103,10 +103,7 @@ namespace AzureIoTHub.Portal.Server
                     opts.TokenValidationParameters.ValidateTokenReplay = configuration.OIDCValidateTokenReplay;
                 });
 
-            _ = services
-                .AddDbContextPool<PortalDbContext>(opts => opts.UseNpgsql(configuration.PostgreSQLConnectionString));
-
-            _ = services.AddScoped<IUnitOfWork, UnitOfWork<PortalDbContext>>();
+            ConfigureDatabase(services, configuration);
 
             _ = services.AddSingleton(configuration);
             _ = services.AddSingleton(new PortalMetric());
@@ -310,6 +307,8 @@ namespace AzureIoTHub.Portal.Server
                 q.AddMetricsService<ConcentratorMetricExporterService, ConcentratorMetricLoaderService>(configuration);
             });
 
+
+
             // Add the Quartz.NET hosted service
             _ = services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         }
@@ -325,6 +324,23 @@ namespace AzureIoTHub.Portal.Server
                 client.DefaultRequestHeaders.Add(configuration.IdeasAuthenticationHeader,
                     configuration.IdeasAuthenticationToken);
             });
+        }
+
+        private static void ConfigureDatabase(IServiceCollection services, ConfigHandler configuration)
+        {
+            _ = services
+                .AddDbContextPool<PortalDbContext>(opts => opts.UseNpgsql(configuration.PostgreSQLConnectionString));
+
+            if (string.IsNullOrEmpty(configuration.PostgreSQLConnectionString))
+                return;
+
+            _ = services.AddScoped<IUnitOfWork, UnitOfWork<PortalDbContext>>();
+
+            var dbContextOptions = new DbContextOptionsBuilder<PortalDbContext>();
+            _ = dbContextOptions.UseNpgsql(configuration.PostgreSQLConnectionString);
+
+            using var ctx = new PortalDbContext(dbContextOptions.Options);
+            ctx.Database.Migrate();
         }
 
         /// <summary>
@@ -438,8 +454,6 @@ namespace AzureIoTHub.Portal.Server
             using var context = scope.ServiceProvider.GetRequiredService<PortalDbContext>();
             var config = scope.ServiceProvider.GetRequiredService<ConfigHandler>();
 
-            await context.Database.MigrateAsync();
-
             try
             {
                 await context
@@ -447,6 +461,8 @@ namespace AzureIoTHub.Portal.Server
 
                 await context
                     .MigrateDeviceTags(config);
+
+                await context
                     .MigrateDeviceModelCommands(config);
 
                 _ = await context.SaveChangesAsync();
