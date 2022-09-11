@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Infrastructure
         public DbSet<DeviceTag> DeviceTags { get; set; }
         public DbSet<DeviceModelCommand> DeviceModelCommands { get; set; }
         public DbSet<DeviceModel> DeviceModels { get; set; }
+        public DbSet<EdgeDeviceModel> EdgeDeviceModels { get; set; }
         public DbSet<EdgeDeviceModelCommand> EdgeDeviceModelCommands { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
