@@ -3,61 +3,45 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using System;
-    using System.Threading;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
+    using Quartz;
     using Shared.Models.v1._0;
 
-    public class EdgeDeviceMetricLoaderService : BackgroundService
+    [DisallowConcurrentExecution]
+    public class EdgeDeviceMetricLoaderService : IJob
     {
         private readonly ILogger<EdgeDeviceMetricLoaderService> logger;
-        private readonly ConfigHandler configHandler;
         private readonly PortalMetric portalMetric;
+        private readonly IDeviceService deviceService;
+        private readonly IConfigService configService;
 
-        public EdgeDeviceMetricLoaderService(ILogger<EdgeDeviceMetricLoaderService> logger, ConfigHandler configHandler, PortalMetric portalMetric, IServiceProvider services)
+        public EdgeDeviceMetricLoaderService(ILogger<EdgeDeviceMetricLoaderService> logger, PortalMetric portalMetric, IDeviceService deviceService, IConfigService configService)
         {
             this.logger = logger;
-            this.configHandler = configHandler;
             this.portalMetric = portalMetric;
-            Services = services;
+            this.deviceService = deviceService;
+            this.configService = configService;
         }
 
-        public IServiceProvider Services { get; }
-
-
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public async Task Execute(IJobExecutionContext context)
         {
-            using var timer = new PeriodicTimer(TimeSpan.FromMinutes(this.configHandler.MetricLoaderRefreshIntervalInMinutes));
+            this.logger.LogInformation("Start loading edge devices metrics");
 
-            do
-            {
-                this.logger.LogInformation("Start loading edge devices metrics");
+            await LoadEdgeDevicesCountMetric();
+            await LoadConnectedEdgeDevicesCountMetric();
+            await LoadFailedDeploymentsCountMetric();
 
-                using var scope = Services.CreateScope();
+            this.logger.LogInformation("End loading edge devices metrics");
 
-                await LoadEdgeDevicesCountMetric(scope);
-                await LoadConnectedEdgeDevicesCountMetric(scope);
-                await LoadFailedDeploymentsCountMetric(scope);
-
-                this.logger.LogInformation("End loading edge devices metrics");
-            } while (await timer.WaitForNextTickAsync(stoppingToken));
         }
 
-        private async Task LoadEdgeDevicesCountMetric(IServiceScope scope)
+        private async Task LoadEdgeDevicesCountMetric()
         {
             try
             {
-                var deviceService =
-                    scope.ServiceProvider
-                        .GetRequiredService<IDeviceService>();
-
                 this.portalMetric.EdgeDeviceCount = await deviceService.GetEdgeDevicesCount();
-
             }
             catch (InternalServerErrorException e)
             {
@@ -65,16 +49,11 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
-        private async Task LoadConnectedEdgeDevicesCountMetric(IServiceScope scope)
+        private async Task LoadConnectedEdgeDevicesCountMetric()
         {
             try
             {
-                var deviceService =
-                    scope.ServiceProvider
-                        .GetRequiredService<IDeviceService>();
-
                 this.portalMetric.ConnectedEdgeDeviceCount = await deviceService.GetConnectedEdgeDevicesCount();
-
             }
             catch (InternalServerErrorException e)
             {
@@ -82,16 +61,11 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
-        private async Task LoadFailedDeploymentsCountMetric(IServiceScope scope)
+        private async Task LoadFailedDeploymentsCountMetric()
         {
             try
             {
-                var configService =
-                    scope.ServiceProvider
-                        .GetRequiredService<IConfigService>();
-
                 this.portalMetric.FailedDeploymentCount = await configService.GetFailedDeploymentsCount();
-
             }
             catch (InternalServerErrorException e)
             {

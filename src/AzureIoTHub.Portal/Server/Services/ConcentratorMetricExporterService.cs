@@ -3,46 +3,38 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using System;
-    using System.Threading;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
-    using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Prometheus;
+    using Quartz;
     using Shared.Models.v1._0;
 
-    public class ConcentratorMetricExporterService : BackgroundService
+    [DisallowConcurrentExecution]
+    public class ConcentratorMetricExporterService : IJob
     {
         private readonly ILogger<ConcentratorMetricExporterService> logger;
-        private readonly ConfigHandler configHandler;
         private readonly PortalMetric portalMetric;
 
         private readonly Counter concentratorCounter = Metrics.CreateCounter(MetricName.ConcentratorCount, "Concentrators count");
         private readonly Counter connectedConcentratorCounter = Metrics.CreateCounter(MetricName.ConnectedConcentratorCount, "Connected concentrators count");
 
-        public ConcentratorMetricExporterService(ILogger<ConcentratorMetricExporterService> logger, ConfigHandler configHandler, PortalMetric portalMetric)
+        public ConcentratorMetricExporterService(ILogger<ConcentratorMetricExporterService> logger, PortalMetric portalMetric)
         {
             this.logger = logger;
-            this.configHandler = configHandler;
             this.portalMetric = portalMetric;
         }
 
-
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public Task Execute(IJobExecutionContext context)
         {
-            using var timer = new PeriodicTimer(TimeSpan.FromSeconds(this.configHandler.MetricExporterRefreshIntervalInSeconds));
+            this.logger.LogInformation("Start exporting concentrators metrics");
 
-            do
-            {
-                this.logger.LogInformation("Start exporting concentrators metrics");
+            this.concentratorCounter.IncTo(this.portalMetric.ConcentratorCount);
+            this.connectedConcentratorCounter.IncTo(this.portalMetric.ConnectedConcentratorCount);
 
-                this.concentratorCounter.IncTo(this.portalMetric.ConcentratorCount);
-                this.connectedConcentratorCounter.IncTo(this.portalMetric.ConnectedConcentratorCount);
+            this.logger.LogInformation("End exporting concentrators metrics");
 
-                this.logger.LogInformation("End exporting concentrators metrics");
-            } while (await timer.WaitForNextTickAsync(stoppingToken));
+            return Task.CompletedTask;
         }
     }
 }

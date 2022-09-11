@@ -3,60 +3,41 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using System;
-    using System.Threading;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
+    using Quartz;
     using Shared.Models.v1._0;
 
-    public class DeviceMetricLoaderService : BackgroundService
+    [DisallowConcurrentExecution]
+    public class DeviceMetricLoaderService : IJob
     {
         private readonly ILogger<DeviceMetricLoaderService> logger;
-        private readonly ConfigHandler configHandler;
         private readonly PortalMetric portalMetric;
+        private readonly IDeviceService deviceService;
 
-        public DeviceMetricLoaderService(ILogger<DeviceMetricLoaderService> logger, ConfigHandler configHandler, PortalMetric portalMetric, IServiceProvider services)
+        public DeviceMetricLoaderService(ILogger<DeviceMetricLoaderService> logger, PortalMetric portalMetric, IDeviceService deviceService)
         {
             this.logger = logger;
-            this.configHandler = configHandler;
             this.portalMetric = portalMetric;
-            Services = services;
+            this.deviceService = deviceService;
         }
 
-        public IServiceProvider Services { get; }
-
-
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public async Task Execute(IJobExecutionContext context)
         {
-            using var timer = new PeriodicTimer(TimeSpan.FromMinutes(this.configHandler.MetricLoaderRefreshIntervalInMinutes));
+            this.logger.LogInformation("Start loading devices metrics");
 
-            do
-            {
-                this.logger.LogInformation("Start loading devices metrics");
+            await LoadDevicesCountMetric();
+            await LoadConnectedDevicesCountMetric();
 
-                using var scope = Services.CreateScope();
-
-                await LoadDevicesCountMetric(scope);
-                await LoadConnectedDevicesCountMetric(scope);
-
-                this.logger.LogInformation("End loading devices metrics");
-            } while (await timer.WaitForNextTickAsync(stoppingToken));
+            this.logger.LogInformation("End loading devices metrics");
         }
 
-        private async Task LoadDevicesCountMetric(IServiceScope scope)
+        private async Task LoadDevicesCountMetric()
         {
             try
             {
-                var deviceService =
-                    scope.ServiceProvider
-                        .GetRequiredService<IDeviceService>();
-
                 this.portalMetric.DeviceCount = await deviceService.GetDevicesCount();
-
             }
             catch (InternalServerErrorException e)
             {
@@ -64,16 +45,11 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
-        private async Task LoadConnectedDevicesCountMetric(IServiceScope scope)
+        private async Task LoadConnectedDevicesCountMetric()
         {
             try
             {
-                var deviceService =
-                    scope.ServiceProvider
-                        .GetRequiredService<IDeviceService>();
-
                 this.portalMetric.ConnectedDeviceCount = await deviceService.GetConnectedDevicesCount();
-
             }
             catch (InternalServerErrorException e)
             {

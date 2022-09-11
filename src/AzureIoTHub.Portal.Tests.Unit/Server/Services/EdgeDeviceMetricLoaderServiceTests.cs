@@ -10,7 +10,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using FluentAssertions;
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
@@ -23,7 +22,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         private PortalMetric portalMetric;
 
         private Mock<ILogger<EdgeDeviceMetricLoaderService>> mockLogger;
-        private Mock<ConfigHandler> mockConfigHandler;
         private Mock<IDeviceService> mockDeviceService;
         private Mock<IConfigService> mockConfigService;
 
@@ -33,19 +31,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockLogger = this.mockRepository.Create<ILogger<EdgeDeviceMetricLoaderService>>();
-            this.mockConfigHandler = this.mockRepository.Create<ConfigHandler>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
             this.mockConfigService = this.mockRepository.Create<IConfigService>();
 
             this.portalMetric = new PortalMetric();
 
-            var services = new ServiceCollection();
-
-            _ = services.AddTransient(_ => this.mockDeviceService.Object);
-            _ = services.AddTransient(_ => this.mockConfigService.Object);
-
             this.edgeDeviceMetricLoaderService =
-                new EdgeDeviceMetricLoaderService(this.mockLogger.Object, this.mockConfigHandler.Object, this.portalMetric, services.BuildServiceProvider());
+                new EdgeDeviceMetricLoaderService(this.mockLogger.Object, this.portalMetric, this.mockDeviceService.Object, this.mockConfigService.Object);
         }
 
         [Test]
@@ -53,7 +45,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
-            _ = this.mockConfigHandler.Setup(handler => handler.MetricLoaderRefreshIntervalInMinutes).Returns(1);
 
             _ = this.mockDeviceService.Setup(service => service.GetEdgeDevicesCount()).ReturnsAsync(10);
             _ = this.mockDeviceService.Setup(service => service.GetConnectedEdgeDevicesCount()).ReturnsAsync(3);
@@ -62,8 +53,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             using var cancellationToken = new CancellationTokenSource();
 
             // Act
-            _ = this.edgeDeviceMetricLoaderService.StartAsync(cancellationToken.Token);
-            cancellationToken.Cancel();
+            _ = this.edgeDeviceMetricLoaderService.Execute(null);
 
             // Assert
             _ = this.portalMetric.EdgeDeviceCount.Should().Be(10);
@@ -77,17 +67,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
-            _ = this.mockConfigHandler.Setup(handler => handler.MetricLoaderRefreshIntervalInMinutes).Returns(1);
 
             _ = this.mockDeviceService.Setup(service => service.GetEdgeDevicesCount()).ThrowsAsync(new InternalServerErrorException("test"));
             _ = this.mockDeviceService.Setup(service => service.GetConnectedEdgeDevicesCount()).ReturnsAsync(3);
             _ = this.mockConfigService.Setup(service => service.GetFailedDeploymentsCount()).ReturnsAsync(1);
 
-            using var cancellationToken = new CancellationTokenSource();
-
             // Act
-            _ = this.edgeDeviceMetricLoaderService.StartAsync(cancellationToken.Token);
-            cancellationToken.Cancel();
+            _ = this.edgeDeviceMetricLoaderService.Execute(null);
 
             // Assert
             _ = this.portalMetric.EdgeDeviceCount.Should().Be(0);
@@ -102,17 +88,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
-            _ = this.mockConfigHandler.Setup(handler => handler.MetricLoaderRefreshIntervalInMinutes).Returns(1);
 
             _ = this.mockDeviceService.Setup(service => service.GetEdgeDevicesCount()).ReturnsAsync(10);
             _ = this.mockDeviceService.Setup(service => service.GetConnectedEdgeDevicesCount()).ThrowsAsync(new InternalServerErrorException("test"));
             _ = this.mockConfigService.Setup(service => service.GetFailedDeploymentsCount()).ReturnsAsync(1);
 
-            using var cancellationToken = new CancellationTokenSource();
-
             // Act
-            _ = this.edgeDeviceMetricLoaderService.StartAsync(cancellationToken.Token);
-            cancellationToken.Cancel();
+            _ = this.edgeDeviceMetricLoaderService.Execute(null);
 
             // Assert
             _ = this.portalMetric.EdgeDeviceCount.Should().Be(10);
@@ -126,17 +108,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
-            _ = this.mockConfigHandler.Setup(handler => handler.MetricLoaderRefreshIntervalInMinutes).Returns(1);
 
             _ = this.mockDeviceService.Setup(service => service.GetEdgeDevicesCount()).ReturnsAsync(10);
             _ = this.mockDeviceService.Setup(service => service.GetConnectedEdgeDevicesCount()).ReturnsAsync(3);
             _ = this.mockConfigService.Setup(service => service.GetFailedDeploymentsCount()).ThrowsAsync(new InternalServerErrorException("test"));
 
-            using var cancellationToken = new CancellationTokenSource();
-
             // Act
-            _ = this.edgeDeviceMetricLoaderService.StartAsync(cancellationToken.Token);
-            cancellationToken.Cancel();
+            _ = this.edgeDeviceMetricLoaderService.Execute(null);
 
             // Assert
             _ = this.portalMetric.EdgeDeviceCount.Should().Be(10);

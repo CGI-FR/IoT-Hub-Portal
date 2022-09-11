@@ -3,59 +3,41 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using System;
-    using System.Threading;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
+    using Quartz;
     using Shared.Models.v1._0;
 
-    public class ConcentratorMetricLoaderService : BackgroundService
+    [DisallowConcurrentExecution]
+    public class ConcentratorMetricLoaderService : IJob
     {
         private readonly ILogger<ConcentratorMetricLoaderService> logger;
-        private readonly ConfigHandler configHandler;
         private readonly PortalMetric portalMetric;
+        private readonly IDeviceService deviceService;
 
-        public ConcentratorMetricLoaderService(ILogger<ConcentratorMetricLoaderService> logger, ConfigHandler configHandler, PortalMetric portalMetric, IServiceProvider services)
+        public ConcentratorMetricLoaderService(ILogger<ConcentratorMetricLoaderService> logger, PortalMetric portalMetric, IDeviceService deviceService)
         {
             this.logger = logger;
-            this.configHandler = configHandler;
             this.portalMetric = portalMetric;
-            Services = services;
+            this.deviceService = deviceService;
         }
 
-        public IServiceProvider Services { get; }
-
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public async Task Execute(IJobExecutionContext context)
         {
-            using var timer = new PeriodicTimer(TimeSpan.FromMinutes(this.configHandler.MetricLoaderRefreshIntervalInMinutes));
+            this.logger.LogInformation("Start loading concentrators metrics");
 
-            do
-            {
-                this.logger.LogInformation("Start loading concentrators metrics");
+            await LoadConcentratorsCountMetric();
+            await LoadConnectedConcentratorsCountMetric();
 
-                using var scope = Services.CreateScope();
-
-                await LoadConcentratorsCountMetric(scope);
-                await LoadConnectedConcentratorsCountMetric(scope);
-
-                this.logger.LogInformation("End loading concentrators metrics");
-            } while (await timer.WaitForNextTickAsync(stoppingToken));
+            this.logger.LogInformation("End loading concentrators metrics");
         }
 
-        private async Task LoadConcentratorsCountMetric(IServiceScope scope)
+        private async Task LoadConcentratorsCountMetric()
         {
             try
             {
-                var deviceService =
-                    scope.ServiceProvider
-                        .GetRequiredService<IDeviceService>();
-
                 this.portalMetric.ConcentratorCount = await deviceService.GetConcentratorsCount();
-
             }
             catch (InternalServerErrorException e)
             {
@@ -63,16 +45,11 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
-        private async Task LoadConnectedConcentratorsCountMetric(IServiceScope scope)
+        private async Task LoadConnectedConcentratorsCountMetric()
         {
             try
             {
-                var deviceService =
-                    scope.ServiceProvider
-                        .GetRequiredService<IDeviceService>();
-
                 this.portalMetric.ConnectedConcentratorCount = await deviceService.GetConnectedConcentratorsCount();
-
             }
             catch (InternalServerErrorException e)
             {
