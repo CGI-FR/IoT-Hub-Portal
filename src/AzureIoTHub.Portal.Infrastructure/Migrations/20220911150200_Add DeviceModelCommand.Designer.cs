@@ -2,6 +2,7 @@
 using AzureIoTHub.Portal.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AzureIoTHub.Portal.Infrastructure.Migrations
 {
     [DbContext(typeof(PortalDbContext))]
-    partial class PortalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220911150200_Add DeviceModelCommand")]
+    partial class AddDeviceModelCommand
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,26 +79,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DeviceModelProperties");
-                });
-
-            modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.DeviceTag", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Label")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("Required")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("Searchable")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DeviceTags");
                 });
 #pragma warning restore 612, 618
         }
