@@ -33,6 +33,7 @@ The template will deploy in your Azure subscription the Following resources:
 * Application Insights
 * Log Analytics (when opted in to use Azure Monitor)
 * Azure WebApp and Service Plan
+* Azure Database for PostgreSQL
 
 ### Instructions
 
