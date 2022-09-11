@@ -445,6 +445,9 @@ namespace AzureIoTHub.Portal.Server
                 await context
                     .MigrateDeviceModelProperties(config);
 
+                await context
+                    .MigrateDeviceModelCommands(config);
+
                 _ = await context.SaveChangesAsync();
             }
             catch (InvalidOperationException e)
