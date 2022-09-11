@@ -9,15 +9,15 @@ namespace AzureIoTHub.Portal.Server.Services
 
     public interface IDeviceTagService
     {
-        IEnumerable<DeviceTag> GetAllTags();
+        IEnumerable<DeviceTagDto> GetAllTags();
 
         IEnumerable<string> GetAllTagsNames();
 
         IEnumerable<string> GetAllSearchableTagsNames();
 
-        Task UpdateTags(IEnumerable<DeviceTag> tags);
+        Task UpdateTags(IEnumerable<DeviceTagDto> tags);
 
-        Task CreateOrUpdateDeviceTag(DeviceTag deviceTag);
+        Task CreateOrUpdateDeviceTag(DeviceTagDto deviceTag);
 
         Task DeleteDeviceTagByName(string deviceTagName);
     }

@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Domain
     {
         IEnumerable<T> GetAll();
 
-        Task<T> GetByIdAsync(object id);
+        Task<T?> GetByIdAsync(object id);
 
         Task InsertAsync(T obj);
 

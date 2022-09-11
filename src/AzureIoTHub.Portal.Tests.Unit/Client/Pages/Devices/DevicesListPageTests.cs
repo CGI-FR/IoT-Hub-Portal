@@ -50,7 +50,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             using var deviceResponseMock = new HttpResponseMessage();
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
             _ = this.mockDeviceClientService.Setup(service =>
                     service.GetDevices($"{this.apiBaseUrl}?pageSize=10&searchText=&searchStatus=&searchState="))
@@ -85,7 +85,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
 
             // Act
@@ -122,7 +122,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
             var mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
 
@@ -151,7 +151,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
             var cut = RenderComponent<DeviceListPage>();
 
@@ -178,7 +178,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
             var cut = RenderComponent<DeviceListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
@@ -206,7 +206,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
             var cut = RenderComponent<DeviceListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
@@ -255,7 +255,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
             // Act
             var cut = RenderComponent<DeviceListPage>();

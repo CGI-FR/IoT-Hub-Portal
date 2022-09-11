@@ -87,7 +87,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {
@@ -139,7 +139,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {
@@ -238,7 +238,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {
@@ -293,7 +293,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {
@@ -347,7 +347,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {
@@ -423,7 +423,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {

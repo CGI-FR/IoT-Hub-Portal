@@ -117,7 +117,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public void ResetSharedDeviceShouldReturnNewDeviceWithExpectedTags()
         {
             // Arrange
-            var expectedTags = Fixture.CreateMany<DeviceTag>(2).ToList();
+            var expectedTags = Fixture.CreateMany<DeviceTagDto>(2).ToList();
 
             var expectedDevice = new DeviceDetails();
 

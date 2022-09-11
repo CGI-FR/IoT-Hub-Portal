@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Models.v10
     /// <summary>
     /// Device tag.
     /// </summary>
-    public class DeviceTag
+    public class DeviceTagDto
     {
         /// <summary>
         /// The registered name in the device twin.

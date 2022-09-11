@@ -24,7 +24,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
                                 .ToList<T>();
         }
 
-        public async Task<T> GetByIdAsync(object id)
+        public async Task<T?> GetByIdAsync(object id)
         {
             var t = await this.context.Set<T>().FindAsync(id);
             return t;

@@ -62,9 +62,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 .ReturnsAsync(new List<IoTEdgeModelListItem>() { edgeModel });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(x => x.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>()
+                .ReturnsAsync(new List<DeviceTagDto>()
                 {
-                    new DeviceTag(){ Name = "tag01", Required = true}
+                    new DeviceTagDto(){ Name = "tag01", Required = true}
                 });
 
             _ = this.mockEdgeDeviceClientService
@@ -103,9 +103,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 .ReturnsAsync(new List<IoTEdgeModelListItem>() { edgeModel });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(x => x.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>()
+                .ReturnsAsync(new List<DeviceTagDto>()
                 {
-                    new DeviceTag(){ Name = "tag01", Required = true}
+                    new DeviceTagDto(){ Name = "tag01", Required = true}
                 });
 
             _ = this.mockEdgeDeviceClientService

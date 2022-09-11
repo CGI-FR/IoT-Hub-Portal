@@ -221,7 +221,7 @@
     [CascadingParameter]
     public Error Error {get; set;}
 
-    IEnumerable<DeviceTag> AvailableTags { get; set; } = Array.Empty<DeviceTag>();
+    IEnumerable<DeviceTagDto> AvailableTags { get; set; } = Array.Empty<DeviceTagDto>();
     IEnumerable<DeviceProperty> AvailableProperties = Array.Empty<DeviceProperty>();
 
     public string SelectedTag { get; set; }

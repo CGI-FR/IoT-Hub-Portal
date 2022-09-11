@@ -43,7 +43,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Settings
         {
             // Arrange
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {
@@ -87,7 +87,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Settings
             MockHttpClient.Clear();
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(Fixture.Build<DeviceTag>().CreateMany(3).ToList());
+                .ReturnsAsync(Fixture.Build<DeviceTagDto>().CreateMany(3).ToList());
 
             // Act
             cut.WaitForElement("#reload-tags").Click();
@@ -130,7 +130,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Settings
         {
             //Arrange
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {
@@ -138,7 +138,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Settings
                         Searchable = false
                     }
                 });
-            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.CreateOrUpdateDeviceTag(It.IsAny<DeviceTag>()))
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.CreateOrUpdateDeviceTag(It.IsAny<DeviceTagDto>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns((Snackbar)null);
@@ -160,7 +160,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Settings
             const string deviceTagName = "tagName";
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {
@@ -183,7 +183,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Settings
         [Test]
         public void ClickOnSaveShouldDisplayErrorSnackbarIfDuplicated()
         {
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = "Label",
                 Name = "Name",
@@ -192,7 +192,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Settings
             };
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag,
                     mockTag
@@ -216,7 +216,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Settings
         [Test]
         public void ClickOnSaveShouldDisplayErrorSnackbarIfValidationIssue()
         {
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = "Label",
                 Name = "InvalidName!",
@@ -225,7 +225,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Settings
             };
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag,
                     mockTag
@@ -251,12 +251,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Settings
         {
             // Arrange
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new () { Label = "Label", Name = "Name", Required = false, Searchable = false }
                 });
 
-            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.CreateOrUpdateDeviceTag(It.IsAny<DeviceTag>()))
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.CreateOrUpdateDeviceTag(It.IsAny<DeviceTagDto>()))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
@@ -274,7 +274,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Settings
         {
             //Arrange
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(Array.Empty<DeviceTag>());
+                .ReturnsAsync(Array.Empty<DeviceTagDto>());
 
             var cut = RenderComponent<DeviceTagsPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));

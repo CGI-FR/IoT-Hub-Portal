@@ -7,146 +7,108 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Azure;
-    using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Server.Mappers;
+    using AutoMapper;
+    using Domain;
+    using Domain.Exceptions;
+    using Models.v10;
+    using Domain.Entities;
+    using Domain.Repositories;
+    using Microsoft.EntityFrameworkCore;
 
     public class DeviceTagService : IDeviceTagService
     {
-        /// <summary>
-        /// The table client factory.
-        /// </summary>
-        private readonly ITableClientFactory tableClientFactory;
-
-        /// <summary>
-        /// The device tag mapper.
-        /// </summary>
-        private readonly IDeviceTagMapper deviceTagMapper;
+        private readonly IMapper mapper;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IDeviceTagRepository deviceTagRepository;
 
         /// <summary>
         /// The default partition key in AzureDataTable
         /// </summary>
         public const string DefaultPartitionKey = "0";
 
-        public DeviceTagService(IDeviceTagMapper deviceTagMapper, ITableClientFactory tableClientFactory)
+        public DeviceTagService(IMapper mapper,
+            IUnitOfWork unitOfWork,
+            IDeviceTagRepository deviceTagRepository)
         {
-            this.deviceTagMapper = deviceTagMapper;
-            this.tableClientFactory = tableClientFactory;
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.deviceTagRepository = deviceTagRepository;
         }
 
-        public IEnumerable<DeviceTag> GetAllTags()
+        public IEnumerable<DeviceTagDto> GetAllTags()
         {
-            try
-            {
-                return this.tableClientFactory
-                    .GetDeviceTagSettings()
-                    .Query<TableEntity>()
-                    .Select(this.deviceTagMapper.GetDeviceTag)
-                    .ToList();
-            }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException("Unable to get devices tags", e);
-            }
+            return this.deviceTagRepository
+                .GetAll()
+                .Select(tag => this.mapper.Map<DeviceTagDto>(tag))
+                .ToList();
         }
 
         public IEnumerable<string> GetAllTagsNames()
         {
-            try
-            {
-                var tagNameList = this.tableClientFactory
-                    .GetDeviceTagSettings()
-                    .Query<TableEntity>()
-                    .Select(c => this.deviceTagMapper.GetDeviceTag(c).Name);
-
-                return tagNameList.ToList();
-            }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException($"Unable to query device tags names: {e.Message}", e);
-            }
+            return this.deviceTagRepository
+                .GetAll()
+                .Select(tag => tag.Name)
+                .ToList();
         }
 
         public IEnumerable<string> GetAllSearchableTagsNames()
         {
+            return this.deviceTagRepository
+                .GetAll()
+                .Where(tag => tag.Searchable)
+                .Select(tag => tag.Name)
+                .ToList();
+        }
+
+        public async Task UpdateTags(IEnumerable<DeviceTagDto> tags)
+        {
             try
             {
-                var tagNameList = this.tableClientFactory
-                    .GetDeviceTagSettings()
-                    .Query<TableEntity>()
-                    .Where(c => this.deviceTagMapper.GetDeviceTag(c).Searchable)
-                    .Select(c => this.deviceTagMapper.GetDeviceTag(c).Name);
+                ArgumentNullException.ThrowIfNull(tags);
 
-                return tagNameList.ToList();
+                var existingTags = this.deviceTagRepository.GetAll().ToList();
+
+                existingTags.ForEach(tag =>
+                {
+                    this.deviceTagRepository.Delete(tag);
+                });
+
+                foreach (var tag in tags)
+                {
+                    await this.deviceTagRepository.InsertAsync(this.mapper.Map<DeviceTag>(tag));
+                }
+
+                await this.unitOfWork.SaveAsync();
             }
-            catch (RequestFailedException e)
+            catch (DbUpdateException e)
             {
-                throw new InternalServerErrorException($"Unable to query searchable device tags names: {e.Message}", e);
+                throw new InternalServerErrorException("Unable to save devices tags", e);
             }
         }
 
-        public async Task UpdateTags(IEnumerable<DeviceTag> tags)
+        public async Task CreateOrUpdateDeviceTag(DeviceTagDto deviceTag)
         {
-            ArgumentNullException.ThrowIfNull(tags, nameof(tags));
-
-            Pageable<TableEntity> query;
-
             try
             {
-                query = this.tableClientFactory
-                    .GetDeviceTagSettings()
-                    .Query<TableEntity>();
-            }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException("Unable to get existing devices tags", e);
-            }
+                var deviceTagEntity = await this.deviceTagRepository.GetByIdAsync(deviceTag.Name);
 
-            foreach (var item in query)
-            {
-                try
+                if (deviceTagEntity == null)
                 {
-                    _ = await this.tableClientFactory
-                        .GetDeviceTagSettings()
-                        .DeleteEntityAsync(item.PartitionKey, item.RowKey);
+                    deviceTagEntity = this.mapper.Map<DeviceTag>(deviceTag);
+                    await this.deviceTagRepository.InsertAsync(deviceTagEntity);
                 }
-                catch (RequestFailedException e)
+                else
                 {
-                    throw new InternalServerErrorException($"Unable to delete the device tag {item.RowKey}", e);
+                    deviceTagEntity.Label = deviceTag.Label;
+                    deviceTagEntity.Searchable = deviceTag.Searchable;
+                    deviceTagEntity.Required = deviceTag.Required;
+
+                    this.deviceTagRepository.Update(deviceTagEntity);
                 }
+
+                await this.unitOfWork.SaveAsync();
             }
-
-            foreach (var tag in tags)
-            {
-                var entity = new TableEntity()
-                {
-                    PartitionKey = DefaultPartitionKey,
-                    RowKey = tag.Name
-                };
-                await SaveEntity(entity, tag);
-            }
-        }
-
-        public async Task CreateOrUpdateDeviceTag(DeviceTag deviceTag)
-        {
-            var entity = new TableEntity
-            {
-                PartitionKey = DefaultPartitionKey,
-                RowKey = deviceTag.Name
-            };
-
-            this.deviceTagMapper.UpdateTableEntity(entity, deviceTag);
-
-            try
-            {
-                _ = await this.tableClientFactory
-                    .GetDeviceTagSettings()
-                    .UpsertEntityAsync(entity);
-            }
-            catch (RequestFailedException e)
+            catch (DbUpdateException e)
             {
                 throw new InternalServerErrorException($"Unable to create or update the device tag {deviceTag.Name}", e);
             }
@@ -154,37 +116,15 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task DeleteDeviceTagByName(string deviceTagName)
         {
-
             try
             {
-                _ = await this.tableClientFactory
-                    .GetDeviceTagSettings()
-                    .DeleteEntityAsync(DefaultPartitionKey, deviceTagName);
+                this.deviceTagRepository.Delete(deviceTagName);
+
+                await this.unitOfWork.SaveAsync();
             }
-            catch (RequestFailedException e)
+            catch (DbUpdateException e)
             {
                 throw new InternalServerErrorException($"Unable to delete the device tag {deviceTagName}", e);
-            }
-        }
-
-        /// <summary>
-        /// Saves the entity.
-        /// </summary>
-        /// <param name="entity">The entity</param>
-        /// <param name="tag">The device tag</param>
-        private async Task SaveEntity(TableEntity entity, DeviceTag tag)
-        {
-            this.deviceTagMapper.UpdateTableEntity(entity, tag);
-
-            try
-            {
-                _ = await this.tableClientFactory
-                    .GetDeviceTagSettings()
-                    .AddEntityAsync(entity);
-            }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException($"Unable to save the device tag {tag.Name}", e);
             }
         }
     }

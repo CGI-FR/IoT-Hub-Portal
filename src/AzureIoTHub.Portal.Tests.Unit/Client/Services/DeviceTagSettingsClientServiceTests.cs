@@ -34,7 +34,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetDeviceTagsShouldReturnDeviceTags()
         {
             // Arrange
-            var expectedDeviceTags = Fixture.Build<DeviceTag>().CreateMany(3).ToList();
+            var expectedDeviceTags = Fixture.Build<DeviceTagDto>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, "/api/settings/device-tags")
                 .RespondJson(expectedDeviceTags);
