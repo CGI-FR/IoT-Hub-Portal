@@ -469,6 +469,9 @@ namespace AzureIoTHub.Portal.Server
                     .MigrateDeviceModels(config);
 
                 await context
+                    .MigrateEdgeDeviceModels(config);
+
+                await context
                     .MigrateEdgeDeviceModelCommands(config);
 
                 _ = await context.SaveChangesAsync();
