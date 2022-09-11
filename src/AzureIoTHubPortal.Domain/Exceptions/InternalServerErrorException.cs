@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Domain.Exceptions
 
     public class InternalServerErrorException : BaseException
     {
-        public InternalServerErrorException(string detail, Exception innerException = null) : base(ErrorTitles.InternalServerError, detail, innerException)
+        public InternalServerErrorException(string detail, Exception? innerException = null) : base(ErrorTitles.InternalServerError, detail, innerException)
         {
         }
     }
