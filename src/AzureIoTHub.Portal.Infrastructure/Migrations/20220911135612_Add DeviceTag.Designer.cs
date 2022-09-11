@@ -2,6 +2,7 @@
 using AzureIoTHub.Portal.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AzureIoTHub.Portal.Infrastructure.Migrations
 {
     [DbContext(typeof(PortalDbContext))]
-    partial class PortalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220911135612_Add DeviceTag")]
+    partial class AddDeviceTag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,33 +22,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.DeviceModelCommand", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("Confirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("DeviceModelId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Frame")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsBuiltin")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("Port")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DeviceModelCommands");
-                });
 
             modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.DeviceModelProperty", b =>
                 {
