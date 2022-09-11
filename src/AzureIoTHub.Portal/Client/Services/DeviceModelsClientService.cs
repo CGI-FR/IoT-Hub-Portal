@@ -18,22 +18,22 @@ namespace AzureIoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public async Task<IList<DeviceModel>> GetDeviceModels()
+        public async Task<IList<DeviceModelDto>> GetDeviceModels()
         {
-            return await this.http.GetFromJsonAsync<List<DeviceModel>>("api/models");
+            return await this.http.GetFromJsonAsync<List<DeviceModelDto>>("api/models");
         }
 
-        public Task<DeviceModel> GetDeviceModel(string deviceModelId)
+        public Task<DeviceModelDto> GetDeviceModel(string deviceModelId)
         {
-            return this.http.GetFromJsonAsync<DeviceModel>($"api/models/{deviceModelId}");
+            return this.http.GetFromJsonAsync<DeviceModelDto>($"api/models/{deviceModelId}");
         }
 
-        public Task CreateDeviceModel(DeviceModel deviceModel)
+        public Task CreateDeviceModel(DeviceModelDto deviceModel)
         {
             return this.http.PostAsJsonAsync("api/models", deviceModel);
         }
 
-        public Task UpdateDeviceModel(DeviceModel deviceModel)
+        public Task UpdateDeviceModel(DeviceModelDto deviceModel)
         {
             return this.http.PutAsJsonAsync($"api/models/{deviceModel.ModelId}", deviceModel);
         }

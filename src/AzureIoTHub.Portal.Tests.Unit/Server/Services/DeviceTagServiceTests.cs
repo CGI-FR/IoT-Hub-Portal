@@ -48,7 +48,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             var deviceTagService = CreateDeviceTagService();
 
-            var tag = new DeviceTag
+            var tag = new DeviceTagDto
             {
                 Name = "testName",
                 Label = "testLabel",
@@ -60,7 +60,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             _ = this.mockDeviceTagMapper.Setup(c => c.UpdateTableEntity(
                It.Is<TableEntity>(x => x.RowKey == tag.Name && x.PartitionKey == DeviceTagService.DefaultPartitionKey),
-               It.Is<DeviceTag>(x => x == tag)));
+               It.Is<DeviceTagDto>(x => x == tag)));
 
             _ = this.mockDeviceTagTableClient.Setup(c => c.AddEntityAsync(
                 It.Is<TableEntity>(x => x.PartitionKey == DeviceTagService.DefaultPartitionKey && x.RowKey == tag.Name),
@@ -90,7 +90,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(this.mockDeviceTagTableClient.Object);
 
             // Act
-            await deviceTagService.UpdateTags(new List<DeviceTag>(new[] { tag }));
+            await deviceTagService.UpdateTags(new List<DeviceTagDto>(new[] { tag }));
 
             // Assert
             this.mockTableClientFactory.Verify(c => c.GetDeviceTagSettings());
@@ -109,7 +109,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             var deviceTagService = CreateDeviceTagService();
 
-            var tag = new DeviceTag
+            var tag = new DeviceTagDto
             {
                 Name = "testName",
                 Label = "testLabel",
@@ -128,7 +128,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(this.mockDeviceTagTableClient.Object);
 
             // Act
-            var act = () => deviceTagService.UpdateTags(new List<DeviceTag>(new[] { tag }));
+            var act = () => deviceTagService.UpdateTags(new List<DeviceTagDto>(new[] { tag }));
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
@@ -140,7 +140,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             var deviceTagService = CreateDeviceTagService();
 
-            var tag = new DeviceTag
+            var tag = new DeviceTagDto
             {
                 Name = "testName",
                 Label = "testLabel",
@@ -173,7 +173,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(this.mockDeviceTagTableClient.Object);
 
             // Act
-            var act = () => deviceTagService.UpdateTags(new List<DeviceTag>(new[] { tag }));
+            var act = () => deviceTagService.UpdateTags(new List<DeviceTagDto>(new[] { tag }));
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
@@ -185,7 +185,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             var deviceTagService = CreateDeviceTagService();
 
-            var tag = new DeviceTag
+            var tag = new DeviceTagDto
             {
                 Name = "testName",
                 Label = "testLabel",
@@ -197,7 +197,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             _ = this.mockDeviceTagMapper.Setup(c => c.UpdateTableEntity(
                It.Is<TableEntity>(x => x.RowKey == tag.Name && x.PartitionKey == DeviceTagService.DefaultPartitionKey),
-               It.Is<DeviceTag>(x => x == tag)));
+               It.Is<DeviceTagDto>(x => x == tag)));
 
             _ = this.mockDeviceTagTableClient.Setup(c => c.AddEntityAsync(
                 It.Is<TableEntity>(x => x.PartitionKey == DeviceTagService.DefaultPartitionKey && x.RowKey == tag.Name),
@@ -227,7 +227,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(this.mockDeviceTagTableClient.Object);
 
             // Act
-            var act = () => deviceTagService.UpdateTags(new List<DeviceTag>(new[] { tag }));
+            var act = () => deviceTagService.UpdateTags(new List<DeviceTagDto>(new[] { tag }));
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
@@ -258,7 +258,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(this.mockDeviceTagTableClient.Object);
 
             _ = this.mockDeviceTagMapper.Setup(c => c.GetDeviceTag(It.IsAny<TableEntity>()))
-                .Returns((TableEntity _) => new DeviceTag
+                .Returns((TableEntity _) => new DeviceTagDto
                 {
                     Name = Guid.NewGuid().ToString(),
                     Label = "test",
@@ -272,7 +272,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(10, result.Count());
-            Assert.IsAssignableFrom<DeviceTag>(result.First());
+            Assert.IsAssignableFrom<DeviceTagDto>(result.First());
 
             this.mockRepository.VerifyAll();
         }
@@ -322,7 +322,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(this.mockDeviceTagTableClient.Object);
 
             _ = this.mockDeviceTagMapper.Setup(c => c.GetDeviceTag(It.IsAny<TableEntity>()))
-                .Returns((TableEntity _) => new DeviceTag
+                .Returns((TableEntity _) => new DeviceTagDto
                 {
                     Name = Guid.NewGuid().ToString(),
                     Label = "test",
@@ -379,7 +379,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 {
                     return new TableEntity(DeviceTagService.DefaultPartitionKey, "test")
                     {
-                        [nameof(DeviceTag.Searchable)] = boolList[returnedIndex],
+                        [nameof(DeviceTagDto.Searchable)] = boolList[returnedIndex],
                     };
                 });
 
@@ -392,12 +392,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(this.mockDeviceTagTableClient.Object);
 
             _ = this.mockDeviceTagMapper.Setup(c => c.GetDeviceTag(It.IsAny<TableEntity>()))
-                .Returns((TableEntity entity) => new DeviceTag
+                .Returns((TableEntity entity) => new DeviceTagDto
                 {
                     Name = Guid.NewGuid().ToString(),
                     Label = "test",
                     Required = true,
-                    Searchable = bool.Parse(entity[nameof(DeviceTag.Searchable)].ToString())
+                    Searchable = bool.Parse(entity[nameof(DeviceTagDto.Searchable)].ToString())
                 });
 
             // Act
@@ -435,7 +435,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task CreateOrUpdateDeviceTagShouldUpsertDeviceTag()
         {
             // Arrange
-            var deviceTag = new DeviceTag
+            var deviceTag = new DeviceTagDto
             {
                 Name = Guid.NewGuid().ToString()
             };
@@ -446,7 +446,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             _ = this.mockDeviceTagMapper.Setup(c => c.UpdateTableEntity(
                 It.Is<TableEntity>(x => x.RowKey == deviceTag.Name && x.PartitionKey == DeviceTagService.DefaultPartitionKey),
-                It.Is<DeviceTag>(x => x == deviceTag)));
+                It.Is<DeviceTagDto>(x => x == deviceTag)));
 
             _ = this.mockDeviceTagTableClient.Setup(c => c.UpsertEntityAsync(It.Is<TableEntity>(x =>
                     x.PartitionKey == DeviceTagService.DefaultPartitionKey && x.RowKey == deviceTag.Name), It.IsAny<TableUpdateMode>(), It.IsAny<CancellationToken>()))
@@ -467,7 +467,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task CreateOrUpdateDeviceTagShouldThrowInternalServerErrorExceptionWhenAnIssueOccurs()
         {
             // Arrange
-            var deviceTag = new DeviceTag
+            var deviceTag = new DeviceTagDto
             {
                 Name = Guid.NewGuid().ToString()
             };
@@ -476,7 +476,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             _ = this.mockDeviceTagMapper.Setup(c => c.UpdateTableEntity(
                 It.Is<TableEntity>(x => x.RowKey == deviceTag.Name && x.PartitionKey == DeviceTagService.DefaultPartitionKey),
-                It.Is<DeviceTag>(x => x == deviceTag)));
+                It.Is<DeviceTagDto>(x => x == deviceTag)));
 
             _ = this.mockDeviceTagTableClient.Setup(c => c.UpsertEntityAsync(It.Is<TableEntity>(x =>
                     x.PartitionKey == DeviceTagService.DefaultPartitionKey && x.RowKey == deviceTag.Name), It.IsAny<TableUpdateMode>(), It.IsAny<CancellationToken>()))
@@ -497,7 +497,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteDeviceTagByNameShouldDeleteDeviceTag()
         {
             // Arrange
-            var deviceTag = new DeviceTag
+            var deviceTag = new DeviceTagDto
             {
                 Name = Guid.NewGuid().ToString()
             };
@@ -528,7 +528,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteDeviceTagByNameShouldThrowInternalServerErrorExceptionWhenAnIssueOccurs()
         {
             // Arrange
-            var deviceTag = new DeviceTag
+            var deviceTag = new DeviceTagDto
             {
                 Name = Guid.NewGuid().ToString()
             };

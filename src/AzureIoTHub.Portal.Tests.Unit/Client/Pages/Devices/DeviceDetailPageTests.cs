@@ -83,10 +83,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(new List<DevicePropertyValue>());
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModel(modelId))
-                .ReturnsAsync(new DeviceModel());
+                .ReturnsAsync(new DeviceModelDto());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
             // Act
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", deviceId));
@@ -111,10 +111,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(new LoRaDeviceModel());
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service => service.GetDeviceModelCommands(modelId))
-                .ReturnsAsync(new List<DeviceModelCommand>());
+                .ReturnsAsync(new List<DeviceModelCommandDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
             // Act
             var cut = RenderComponent<DeviceDetailPage>(
@@ -142,10 +142,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(new List<DevicePropertyValue>());
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModel(modelId))
-                .ReturnsAsync(new DeviceModel());
+                .ReturnsAsync(new DeviceModelDto());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
 
             // Act
@@ -162,7 +162,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void ClickOnSaveShouldPutDeviceDetails()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -170,7 +170,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -200,7 +200,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(mockDeviceModel);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag
                 });
@@ -217,7 +217,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             // Act
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModel.Name)}").InnerHtml.Should().NotBeEmpty());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModelDto.Name)}").InnerHtml.Should().NotBeEmpty());
 
             var saveButton = cut.WaitForElement("#saveButton");
             saveButton.Click();
@@ -230,7 +230,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void SaveShouldProcessProblemDetailsExceptionWhenIssueOccursOnUpdatingDevice()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -238,7 +238,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -268,7 +268,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(mockDeviceModel);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag
                 });
@@ -291,7 +291,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void ClickOnSaveShouldDisplaySnackbarIfValidationError()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -299,7 +299,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -326,7 +326,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(mockDeviceModel);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag
                 });
@@ -351,7 +351,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void ClickOnConnectShouldDisplayDeviceCredentials()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -359,7 +359,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -386,7 +386,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(mockDeviceModel);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag
                 });
@@ -412,7 +412,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void ClickOnDeleteShouldDisplayConfirmationDialogAndReturnIfAborted()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -420,7 +420,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -447,7 +447,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(mockDeviceModel);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag
                 });
@@ -474,7 +474,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void ClickOnDeleteShouldDisplayConfirmationDialogAndRedirectIfConfirmed()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -482,7 +482,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -509,7 +509,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(mockDeviceModel);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag
                 });
@@ -537,7 +537,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void ClickOnDuplicateShouldDuplicateDeviceDetailAndRedirectToCreateDevicePage()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -545,7 +545,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -572,7 +572,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(mockDeviceModel);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag
                 });
@@ -583,7 +583,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModel.Name)}").InnerHtml.Should().NotBeEmpty());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModelDto.Name)}").InnerHtml.Should().NotBeEmpty());
 
             var saveButton = cut.WaitForElement("#saveButton");
 

@@ -133,8 +133,8 @@ namespace AzureIoTHub.Portal.Server
 
             _ = services.AddTransient<IDeviceTwinMapper<DeviceListItem, DeviceDetails>, DeviceTwinMapper>();
             _ = services.AddTransient<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>, LoRaDeviceTwinMapper>();
-            _ = services.AddTransient<IDeviceModelMapper<DeviceModel, DeviceModel>, DeviceModelMapper>();
-            _ = services.AddTransient<IDeviceModelMapper<DeviceModel, LoRaDeviceModel>, LoRaDeviceModelMapper>();
+            _ = services.AddTransient<IDeviceModelMapper<DeviceModelDto, DeviceModelDto>, DeviceModelMapper>();
+            _ = services.AddTransient<IDeviceModelMapper<DeviceModelDto, LoRaDeviceModel>, LoRaDeviceModelMapper>();
             _ = services.AddTransient<IDeviceTagMapper, DeviceTagMapper>();
             _ = services.AddTransient<IEdgeDeviceModelMapper, EdgeModelMapper>();
             _ = services.AddTransient<IEdgeDeviceMapper, EdgeDeviceMapper>();
@@ -153,6 +153,7 @@ namespace AzureIoTHub.Portal.Server
 
             _ = services.AddScoped<IDeviceModelPropertiesRepository, DeviceModelPropertiesRepository>();
             _ = services.AddScoped<IDeviceTagRepository, DeviceTagRepository>();
+            _ = services.AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>();
 
             _ = services.AddMudServices();
 
@@ -275,6 +276,7 @@ namespace AzureIoTHub.Portal.Server
 
                 mc.AddProfile(new DevicePropertyProfile());
                 mc.AddProfile(new DeviceTagProfile());
+                mc.AddProfile(new DeviceModelCommandProfile());
             });
 
             var mapper = mapperConfig.CreateMapper();

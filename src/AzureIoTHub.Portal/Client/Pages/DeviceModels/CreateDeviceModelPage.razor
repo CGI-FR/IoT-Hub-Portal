@@ -168,7 +168,7 @@
     private DeviceModelValidator standardValidator = new DeviceModelValidator();
     private LoRaDeviceModelValidator loraValidator = new LoRaDeviceModelValidator();
     private DevicePropertyValidator propertiesValidator = new DevicePropertyValidator();
-    private List<DeviceModelCommand> Commands { get; set; }
+    private List<DeviceModelCommandDto> Commands { get; set; }
     private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
 
     private LoRaDeviceModelCommandValidator CommandValidator = new LoRaDeviceModelCommandValidator();
@@ -196,12 +196,12 @@
     private void SetLoRaDeviceModel()
     {
         Model = new LoRaDeviceModel(Model);
-        Commands = new List<DeviceModelCommand>();
+        Commands = new List<DeviceModelCommandDto>();
     }
 
     private void SetStandardDeviceModel()
     {
-        Model = new DeviceModel
+        Model = new DeviceModelDto
             {
                 ModelId = Model.ModelId,
                 Name = Model.Name,
@@ -210,7 +210,7 @@
             };
     }
 
-    internal IDeviceModel Model { get; set; } = new DeviceModel
+    internal IDeviceModel Model { get; set; } = new DeviceModelDto
         {
             ModelId = Guid.NewGuid().ToString()
         };
@@ -231,7 +231,7 @@
 
     private bool CheckGeneralValidation()
     {
-        if (!IsLoRa && this.Model is DeviceModel deviceModel)
+        if (!IsLoRa && this.Model is DeviceModelDto deviceModel)
         {
             return !this.standardValidator.Validate(deviceModel).IsValid;
         }
@@ -296,7 +296,7 @@
             }
         }
 
-        if (!IsLoRa ? !standardValidator.Validate(Model as DeviceModel).IsValid :
+        if (!IsLoRa ? !standardValidator.Validate(Model as DeviceModelDto).IsValid :
             (!this.loraValidator.Validate(this.Model as LoRaDeviceModel).IsValid
             || duplicated
             || cmdValidationError))
@@ -318,7 +318,7 @@
             }
             else
             {
-                await DeviceModelsClientService.CreateDeviceModel(Model as DeviceModel);
+                await DeviceModelsClientService.CreateDeviceModel(Model as DeviceModelDto);
 
                 await DeviceModelsClientService.SetDeviceModelModelProperties(Model.ModelId, Properties);
             }

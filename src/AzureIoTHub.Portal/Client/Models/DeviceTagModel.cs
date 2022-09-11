@@ -5,14 +5,14 @@ namespace AzureIoTHub.Portal.Client.Models
 {
     using Portal.Models.v10;
 
-    public class DeviceTagModel : DeviceTag
+    public class DeviceTagModel : DeviceTagDto
     {
         public DeviceTagModel()
         {
             IsNewTag = true;
         }
 
-        public DeviceTagModel(DeviceTag deviceTag)
+        public DeviceTagModel(DeviceTagDto deviceTag)
         {
             Name = deviceTag.Name;
             Label = deviceTag.Label;

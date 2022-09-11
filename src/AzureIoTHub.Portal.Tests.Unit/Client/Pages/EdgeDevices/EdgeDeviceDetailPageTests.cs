@@ -138,15 +138,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             _ = this.mockDeviceTagSettingsClientService
                 .Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>()
+                .ReturnsAsync(new List<DeviceTagDto>()
                 {
-                    new DeviceTag()
+                    new DeviceTagDto()
                     {
                         Name = "test01",
                         Label = "test01",
                         Required = true
                     },
-                    new DeviceTag()
+                    new DeviceTagDto()
                     {
                         Name = "test02",
                         Label = "test02",
@@ -208,7 +208,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 .Setup(service => service.GetIoTEdgeModel(It.Is<string>(x => x.Equals(mockIoTEdgeDevice.ModelId, StringComparison.Ordinal))))
                 .ReturnsAsync(new IoTEdgeModel());
 
-            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTag>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTagDto>());
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<string>(module => mockIoTEdgeModule.ModuleName.Equals(module, StringComparison.Ordinal)), "RestartModule"))
                 .ReturnsAsync(new C2Dresult()
@@ -253,7 +253,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 .Setup(service => service.GetIoTEdgeModel(It.Is<string>(x => x.Equals(mockIoTEdgeDevice.ModelId, StringComparison.Ordinal))))
                 .ReturnsAsync(new IoTEdgeModel());
 
-            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTag>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTagDto>());
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<string>(module => mockIoTEdgeModule.ModuleName.Equals(module, StringComparison.Ordinal)), "RestartModule"))
                 .ReturnsAsync(new C2Dresult()
@@ -299,7 +299,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 .Setup(service => service.GetIoTEdgeModel(It.Is<string>(x => x.Equals(mockIoTEdgeDevice.ModelId, StringComparison.Ordinal))))
                 .ReturnsAsync(new IoTEdgeModel());
 
-            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTag>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTagDto>());
 
             _ = this.mockEdgeDeviceClientService.Setup(service => service.ExecuteModuleMethod(this.mockdeviceId, It.Is<string>(module => mockIoTEdgeModule.ModuleName.Equals(module, StringComparison.Ordinal)), "RestartModule"))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
@@ -336,7 +336,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 .Setup(service => service.GetIoTEdgeModel(It.Is<string>(x => x.Equals(mockIoTEdgeDevice.ModelId, StringComparison.Ordinal))))
                 .ReturnsAsync(new IoTEdgeModel());
 
-            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTag>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags()).ReturnsAsync(new List<DeviceTagDto>());
 
             var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
 
@@ -544,15 +544,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             _ = this.mockDeviceTagSettingsClientService
                 .Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>()
+                .ReturnsAsync(new List<DeviceTagDto>()
                 {
-                    new DeviceTag()
+                    new DeviceTagDto()
                     {
                         Name = "test01",
                         Label = "test01",
                         Required = true
                     },
-                    new DeviceTag()
+                    new DeviceTagDto()
                     {
                         Name = "test02",
                         Label = "test02",

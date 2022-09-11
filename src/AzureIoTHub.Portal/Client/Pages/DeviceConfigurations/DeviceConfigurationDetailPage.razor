@@ -221,7 +221,7 @@
     [CascadingParameter]
     public Error Error {get; set;}
 
-    IEnumerable<DeviceTag> AvailableTags { get; set; } = Array.Empty<DeviceTag>();
+    IEnumerable<DeviceTagDto> AvailableTags { get; set; } = Array.Empty<DeviceTagDto>();
     IEnumerable<DeviceProperty> AvailableProperties = Array.Empty<DeviceProperty>();
 
     public string SelectedTag { get; set; }
@@ -231,7 +231,7 @@
     public string ConfigId { get; set; }
 
     public DeviceConfig Configuration { get; set; } = new();
-    public DeviceModel DeviceModel { get; set; } = new();
+    public DeviceModelDto DeviceModel { get; set; } = new();
     private ConfigurationMetrics Metrics { get; set; } = new();
     private void Return() => navigationManager.NavigateTo("/device-configurations");
 

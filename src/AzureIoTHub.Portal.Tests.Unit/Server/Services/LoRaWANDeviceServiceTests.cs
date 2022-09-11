@@ -78,7 +78,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockResponse = this.mockRepository.Create<Response>();
             _ = this.mockDeviceModelCommandMapper
                 .Setup(c => c.GetDeviceModelCommand(It.Is<TableEntity>(x => x.RowKey == commandId && x.PartitionKey == modelId)))
-                .Returns(new DeviceModelCommand
+                .Returns(new DeviceModelCommandDto
                 {
                     Name = commandId,
                     Frame = Guid.NewGuid().ToString(),
@@ -105,7 +105,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             _ = this.mockLoraDeviceMethodManager.Setup(c => c.ExecuteLoRaDeviceMessage(
                 It.Is<string>(x => x == deviceId),
-                It.Is<DeviceModelCommand>(x => x.Name == commandId)))
+                It.Is<DeviceModelCommandDto>(x => x.Name == commandId)))
                 .ReturnsAsync(success);
 
             _ = this.mockLogger.Setup(c => c.Log(
@@ -234,7 +234,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockResponse = this.mockRepository.Create<Response>();
             _ = this.mockDeviceModelCommandMapper
                 .Setup(c => c.GetDeviceModelCommand(It.Is<TableEntity>(x => x.RowKey == commandId && x.PartitionKey == modelId)))
-                .Returns(new DeviceModelCommand
+                .Returns(new DeviceModelCommandDto
                 {
                     Name = commandId,
                     Frame = Guid.NewGuid().ToString(),
@@ -261,7 +261,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             _ = this.mockLoraDeviceMethodManager.Setup(c => c.ExecuteLoRaDeviceMessage(
                 It.Is<string>(x => x == deviceId),
-                It.Is<DeviceModelCommand>(x => x.Name == commandId)))
+                It.Is<DeviceModelCommandDto>(x => x.Name == commandId)))
                 .ReturnsAsync(internalServerError);
 
             _ = this.mockLogger.Setup(c => c.Log(

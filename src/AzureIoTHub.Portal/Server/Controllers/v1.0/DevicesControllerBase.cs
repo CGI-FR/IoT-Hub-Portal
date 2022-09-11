@@ -254,7 +254,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
             var modelEntity = response.Value;
 
-            var credentials = await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceID, modelEntity[nameof(DeviceModel.Name)].ToString());
+            var credentials = await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceID, modelEntity[nameof(DeviceModelDto.Name)].ToString());
 
             return Ok(credentials);
         }

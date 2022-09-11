@@ -15,17 +15,18 @@ namespace AzureIoTHub.Portal.Server.Mappers
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns>The device model comamnd.</returns>
-        public DeviceModelCommand GetDeviceModelCommand(TableEntity entity)
+        public DeviceModelCommandDto GetDeviceModelCommand(TableEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity, nameof(entity));
 
-            return new DeviceModelCommand
+            return new DeviceModelCommandDto
             {
                 Name = entity.RowKey,
-                Frame = entity[nameof(DeviceModelCommand.Frame)].ToString(),
-                Port = int.Parse(entity[nameof(DeviceModelCommand.Port)].ToString(), CultureInfo.InvariantCulture),
-                IsBuiltin = bool.Parse(entity[nameof(DeviceModelCommand.IsBuiltin)]?.ToString() ?? "false"),
-                Confirmed = bool.Parse(entity[nameof(DeviceModelCommand.Confirmed)]?.ToString() ?? "false"),
+                Frame = entity[nameof(DeviceModelCommandDto.Frame)].ToString(),
+                Port = int.Parse(entity[nameof(DeviceModelCommandDto.Port)].ToString(), CultureInfo.InvariantCulture),
+                IsBuiltin = bool.Parse(entity[nameof(DeviceModelCommandDto.IsBuiltin)]?.ToString() ?? "false"),
+                Confirmed = bool.Parse(entity[nameof(DeviceModelCommandDto.Confirmed)]?.ToString() ?? "false"),
+                DeviceModelId = entity.PartitionKey
             };
         }
 
@@ -34,15 +35,15 @@ namespace AzureIoTHub.Portal.Server.Mappers
         /// </summary>
         /// <param name="commandEntity">The command entity.</param>
         /// <param name="element">The element.</param>
-        public void UpdateTableEntity(TableEntity commandEntity, DeviceModelCommand element)
+        public void UpdateTableEntity(TableEntity commandEntity, DeviceModelCommandDto element)
         {
             ArgumentNullException.ThrowIfNull(commandEntity, nameof(commandEntity));
             ArgumentNullException.ThrowIfNull(element, nameof(element));
 
-            commandEntity[nameof(DeviceModelCommand.Frame)] = element.Frame;
-            commandEntity[nameof(DeviceModelCommand.Port)] = element.Port;
-            commandEntity[nameof(DeviceModelCommand.IsBuiltin)] = element.IsBuiltin;
-            commandEntity[nameof(DeviceModelCommand.Confirmed)] = element.Confirmed;
+            commandEntity[nameof(DeviceModelCommandDto.Frame)] = element.Frame;
+            commandEntity[nameof(DeviceModelCommandDto.Port)] = element.Port;
+            commandEntity[nameof(DeviceModelCommandDto.IsBuiltin)] = element.IsBuiltin;
+            commandEntity[nameof(DeviceModelCommandDto.Confirmed)] = element.Confirmed;
         }
     }
 }

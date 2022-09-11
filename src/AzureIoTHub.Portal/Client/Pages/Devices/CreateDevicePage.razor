@@ -151,7 +151,7 @@
                                     <TitleContent><MudText Typo="Typo.h6" Style=@(CheckTagsError() ? "color: red" : "")>Tags</MudText></TitleContent>
                                     <ChildContent>
                                         <MudGrid>
-                                            @foreach (DeviceTag tag in TagList)
+                                            @foreach (DeviceTagDto tag in TagList)
                                             {
                                                 <MudItem xs="12" md="6">
                                                     <MudTextField @bind-Value="Device.Tags[tag.Name]" Label="@tag.Label"
@@ -281,7 +281,7 @@
         set { Task.Run(async () => await ChangeModel(value)); }
     }
 
-    private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
+    private IEnumerable<DeviceTagDto> TagList { get; set; } = new List<DeviceTagDto>();
     private List<DevicePropertyValue> Properties = new List<DevicePropertyValue>();
 
     private bool displayValidationErrorMessages = false;
@@ -323,7 +323,7 @@
     public void Dispose()
     {
         DeviceLayoutService.ResetSharedDevice<DeviceDetails>();
-        DeviceLayoutService.ResetSharedDeviceModel<DeviceModel>();
+        DeviceLayoutService.ResetSharedDeviceModel<DeviceModelDto>();
         DeviceLayoutService.RefreshDeviceOccurred -= DeviceServiceOnRefreshDeviceOccurred;
     }
 
@@ -382,7 +382,7 @@
                 break;
             case DeviceSaveAction.SaveAndAddNew:
                 Device = DeviceLayoutService.ResetSharedDevice<DeviceDetails>(TagList.ToList());
-                DeviceModel = DeviceLayoutService.ResetSharedDeviceModel<DeviceModel>();
+                DeviceModel = DeviceLayoutService.ResetSharedDeviceModel<DeviceModelDto>();
                 break;
             case DeviceSaveAction.SaveAndDuplicate:
                 Device = DeviceLayoutService.DuplicateSharedDevice(Device as DeviceDetails);
@@ -402,7 +402,7 @@
     {
         bool tagValidationError = false;
 
-        foreach (DeviceTag tag in TagList)
+        foreach (DeviceTagDto tag in TagList)
         {
             if (tag.Required && string.IsNullOrEmpty(Device.Tags[tag.Name]))
             {

@@ -21,7 +21,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             this.httpClient = httpClient;
         }
 
-        public async Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommand command)
+        public async Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommandDto command)
         {
             ArgumentNullException.ThrowIfNull(deviceId, nameof(deviceId));
             ArgumentNullException.ThrowIfNull(command, nameof(command));

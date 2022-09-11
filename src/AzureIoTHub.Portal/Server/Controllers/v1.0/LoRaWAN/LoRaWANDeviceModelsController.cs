@@ -22,7 +22,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     [Route("api/lorawan/models")]
     [ApiExplorerSettings(GroupName = "LoRa WAN")]
     [LoRaFeatureActiveFilter]
-    public class LoRaWANDeviceModelsController : DeviceModelsControllerBase<DeviceModel, LoRaDeviceModel>
+    public class LoRaWANDeviceModelsController : DeviceModelsControllerBase<DeviceModelDto, LoRaDeviceModel>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LoRaWANDeviceModelsController"/> class.
@@ -35,15 +35,15 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <param name="deviceProvisioningServiceManager">The device provisioning service manager.</param>
         /// <param name="configService">The configuration service.</param>
         public LoRaWANDeviceModelsController(
-            ILogger<DeviceModelsControllerBase<DeviceModel, LoRaDeviceModel>> log,
+            ILogger<DeviceModelsControllerBase<DeviceModelDto, LoRaDeviceModel>> log,
             IDeviceModelImageManager deviceModelImageManager,
-            IDeviceModelMapper<DeviceModel, LoRaDeviceModel> deviceModelMapper,
+            IDeviceModelMapper<DeviceModelDto, LoRaDeviceModel> deviceModelMapper,
             IDeviceService devicesService,
             ITableClientFactory tableClientFactory,
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             IConfigService configService)
             : base(log, deviceModelImageManager, deviceModelMapper, devicesService, tableClientFactory, deviceProvisioningServiceManager, configService,
-                  $"{nameof(DeviceModel.SupportLoRaFeatures)} eq true")
+                  $"{nameof(DeviceModelDto.SupportLoRaFeatures)} eq true")
         {
         }
 
@@ -53,7 +53,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <returns>An array representing the device models.</returns>
         [HttpGet(Name = "GET LoRaWAN device model list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public override ActionResult<IEnumerable<DeviceModel>> GetItems()
+        public override ActionResult<IEnumerable<DeviceModelDto>> GetItems()
         {
             return base.GetItems();
         }

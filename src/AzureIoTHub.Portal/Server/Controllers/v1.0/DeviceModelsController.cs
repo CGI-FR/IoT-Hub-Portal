@@ -19,7 +19,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     [ApiVersion("1.0")]
     [Route("api/models")]
     [ApiExplorerSettings(GroupName = "Device Models")]
-    public class DeviceModelsController : DeviceModelsControllerBase<DeviceModel, DeviceModel>
+    public class DeviceModelsController : DeviceModelsControllerBase<DeviceModelDto, DeviceModelDto>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceModelsController"/> class.
@@ -31,9 +31,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="tableClientFactory">The table client factory.</param>
         /// <param name="deviceProvisioningServiceManager">The device provisioning service manager.</param>
         /// <param name="configService">The configuration service.</param>
-        public DeviceModelsController(ILogger<DeviceModelsControllerBase<DeviceModel, DeviceModel>> log,
+        public DeviceModelsController(ILogger<DeviceModelsControllerBase<DeviceModelDto, DeviceModelDto>> log,
             IDeviceModelImageManager deviceModelImageManager,
-            IDeviceModelMapper<DeviceModel, DeviceModel> deviceModelMapper,
+            IDeviceModelMapper<DeviceModelDto, DeviceModelDto> deviceModelMapper,
             IDeviceService devicesService,
             ITableClientFactory tableClientFactory,
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
@@ -48,7 +48,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <returns>An array representing the device models.</returns>
         [HttpGet(Name = "GET Device model list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public override ActionResult<IEnumerable<DeviceModel>> GetItems()
+        public override ActionResult<IEnumerable<DeviceModelDto>> GetItems()
         {
             return base.GetItems();
         }
@@ -61,7 +61,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpGet("{id}", Name = "GET Device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override Task<ActionResult<DeviceModel>> GetItem(string id)
+        public override Task<ActionResult<DeviceModelDto>> GetItem(string id)
         {
             return base.GetItem(id);
         }
@@ -112,7 +112,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpPost(Name = "POST Create a new device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public override Task<IActionResult> Post(DeviceModel deviceModel)
+        public override Task<IActionResult> Post(DeviceModelDto deviceModel)
         {
             return base.Post(deviceModel);
         }
@@ -126,7 +126,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override Task<IActionResult> Put(DeviceModel deviceModel)
+        public override Task<IActionResult> Put(DeviceModelDto deviceModel)
         {
             return base.Put(deviceModel);
         }

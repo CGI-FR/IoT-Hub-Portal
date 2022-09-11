@@ -5,12 +5,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 {
     using System;
     using System.Threading.Tasks;
+    using Application.Abstractions.Services;
     using AzureIoTHub.Portal.Server.Filters;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Authorization;
-    using AzureIoTHub.Portal.Server.Services;
 
     [Authorize]
     [ApiController]
@@ -42,7 +42,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <returns>The action result.</returns>
         [HttpPost(Name = "POST Set device model commands")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Post(string id, DeviceModelCommand[] commands)
+        public async Task<IActionResult> Post(string id, DeviceModelCommandDto[] commands)
         {
             ArgumentNullException.ThrowIfNull(id, nameof(id));
             ArgumentNullException.ThrowIfNull(commands, nameof(commands));
@@ -59,7 +59,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <returns>The action result.</returns>
         [HttpGet(Name = "GET Device model commands")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<DeviceModelCommand[]>> Get(string id)
+        public async Task<ActionResult<DeviceModelCommandDto[]>> Get(string id)
         {
 
             ArgumentNullException.ThrowIfNull(id, nameof(id));

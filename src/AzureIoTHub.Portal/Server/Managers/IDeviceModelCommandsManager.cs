@@ -10,6 +10,6 @@ namespace AzureIoTHub.Portal.Server.Managers
     {
         ReadOnlyCollection<Command> RetrieveCommands(string deviceModel);
 
-        ReadOnlyCollection<DeviceModelCommand> RetrieveDeviceModelCommands(string deviceModel);
+        ReadOnlyCollection<DeviceModelCommandDto> RetrieveDeviceModelCommands(string deviceModel);
     }
 }

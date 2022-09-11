@@ -38,7 +38,7 @@ namespace AzureIoTHub.Portal.Server.Services
             this.tableClientFactory = tableClientFactory;
         }
 
-        public IEnumerable<DeviceTag> GetAllTags()
+        public IEnumerable<DeviceTagDto> GetAllTags()
         {
             try
             {
@@ -89,7 +89,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
-        public async Task UpdateTags(IEnumerable<DeviceTag> tags)
+        public async Task UpdateTags(IEnumerable<DeviceTagDto> tags)
         {
             ArgumentNullException.ThrowIfNull(tags, nameof(tags));
 
@@ -131,7 +131,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
-        public async Task CreateOrUpdateDeviceTag(DeviceTag deviceTag)
+        public async Task CreateOrUpdateDeviceTag(DeviceTagDto deviceTag)
         {
             var entity = new TableEntity
             {
@@ -173,7 +173,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         /// <param name="entity">The entity</param>
         /// <param name="tag">The device tag</param>
-        private async Task SaveEntity(TableEntity entity, DeviceTag tag)
+        private async Task SaveEntity(TableEntity entity, DeviceTagDto tag)
         {
             this.deviceTagMapper.UpdateTableEntity(entity, tag);
 

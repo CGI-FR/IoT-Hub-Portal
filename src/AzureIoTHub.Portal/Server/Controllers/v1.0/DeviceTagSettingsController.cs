@@ -49,7 +49,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="tags">List of tags.</param>
         /// <returns>The action result.</returns>
         [HttpPost(Name = "POST Update the Device tags settings")]
-        public async Task<IActionResult> Post(IEnumerable<DeviceTag> tags)
+        public async Task<IActionResult> Post(IEnumerable<DeviceTagDto> tags)
         {
             ArgumentNullException.ThrowIfNull(tags, nameof(tags));
 
@@ -62,7 +62,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// </summary>
         /// <returns>The list of tags</returns>
         [HttpGet(Name = "GET Device tags settings")]
-        public ActionResult<List<DeviceTag>> Get()
+        public ActionResult<List<DeviceTagDto>> Get()
         {
             return Ok(this.deviceTagService.GetAllTags());
         }
@@ -73,7 +73,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceTag">Device Tag</param>
         /// <returns>The action result</returns>
         [HttpPatch(Name = "Create or update a device tag")]
-        public async Task<IActionResult> CreateOrUpdateDeviceTag([FromBody] DeviceTag deviceTag)
+        public async Task<IActionResult> CreateOrUpdateDeviceTag([FromBody] DeviceTagDto deviceTag)
         {
             await this.deviceTagService.CreateOrUpdateDeviceTag(deviceTag);
             return Ok();

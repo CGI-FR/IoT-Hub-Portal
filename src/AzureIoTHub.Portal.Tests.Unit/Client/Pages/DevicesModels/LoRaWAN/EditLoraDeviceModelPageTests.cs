@@ -23,7 +23,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels.LoRaWAN
         {
             // Arrange
             var model = new LoRaDeviceModel();
-            var commands = new List<DeviceModelCommand>();
+            var commands = new List<DeviceModelCommandDto>();
 
             var cut = RenderComponent<EditLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
@@ -38,7 +38,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels.LoRaWAN
         {
             // Arrange
             var model = new LoRaDeviceModel();
-            var commands = new List<DeviceModelCommand>();
+            var commands = new List<DeviceModelCommandDto>();
 
             var cut = RenderComponent<EditLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
@@ -56,7 +56,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels.LoRaWAN
         {
             // Arrange
             var model = new LoRaDeviceModel();
-            var commands = new List<DeviceModelCommand>();
+            var commands = new List<DeviceModelCommandDto>();
 
             var cut = RenderComponent<EditLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),

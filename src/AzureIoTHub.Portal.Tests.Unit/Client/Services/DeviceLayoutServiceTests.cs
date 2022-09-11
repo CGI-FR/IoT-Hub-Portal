@@ -91,7 +91,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public void DuplicateSharedDeviceModelShouldReturnDuplicatedDeviceModel()
         {
             // Arrange
-            var deviceModel = Fixture.Create<DeviceModel>();
+            var deviceModel = Fixture.Create<DeviceModelDto>();
 
             // Act
             var result = this.deviceLayoutService.DuplicateSharedDeviceModel(deviceModel);
@@ -117,7 +117,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public void ResetSharedDeviceShouldReturnNewDeviceWithExpectedTags()
         {
             // Arrange
-            var expectedTags = Fixture.CreateMany<DeviceTag>(2).ToList();
+            var expectedTags = Fixture.CreateMany<DeviceTagDto>(2).ToList();
 
             var expectedDevice = new DeviceDetails();
 
@@ -137,10 +137,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public void ResetSharedDeviceModelShouldReturnNewDeviceModel()
         {
             // Arrange
-            var expectedDeviceModel = new DeviceModel();
+            var expectedDeviceModel = new DeviceModelDto();
 
             // Act
-            var result = this.deviceLayoutService.ResetSharedDeviceModel<DeviceModel>();
+            var result = this.deviceLayoutService.ResetSharedDeviceModel<DeviceModelDto>();
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceModel);

@@ -51,7 +51,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
             var deviceModelCommandsService = CreateDeviceModelCommandsService();
             var entity = SetupMockDeviceModel();
 
-            var command = new DeviceModelCommand
+            var command = new DeviceModelCommandDto
             {
                 Name = Guid.NewGuid().ToString()
             };
@@ -60,7 +60,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
 
             _ = this.mockDeviceModelCommandMapper.Setup(c => c.UpdateTableEntity(
                     It.Is<TableEntity>(x => x.RowKey == command.Name && x.PartitionKey == entity.RowKey),
-                    It.Is<DeviceModelCommand>(x => x == command)));
+                    It.Is<DeviceModelCommandDto>(x => x == command)));
 
             _ = this.mockCommandsTableClient.Setup(c => c.AddEntityAsync(
                  It.Is<TableEntity>(x => x.RowKey == command.Name && x.PartitionKey == entity.RowKey),
@@ -128,7 +128,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
             _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
                 .Returns(this.mockDeviceTemplatesTableClient.Object);
 
-            var command = new DeviceModelCommand
+            var command = new DeviceModelCommandDto
             {
                 Name = Guid.NewGuid().ToString()
             };
@@ -172,7 +172,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
             _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
                 .Returns(this.mockDeviceTemplatesTableClient.Object);
 
-            var command = new DeviceModelCommand
+            var command = new DeviceModelCommandDto
             {
                 Name = Guid.NewGuid().ToString()
             };
@@ -219,14 +219,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
             var modelId = Guid.NewGuid().ToString();
             var entity = new TableEntity(LoRaWANDeviceModelsController.DefaultPartitionKey, modelId);
 
-            var command = new DeviceModelCommand
+            var command = new DeviceModelCommandDto
             {
                 Name = Guid.NewGuid().ToString()
             };
 
             _ = this.mockDeviceModelCommandMapper.Setup(c => c.UpdateTableEntity(
                 It.Is<TableEntity>(x => x.RowKey == command.Name && x.PartitionKey == entity.RowKey),
-                It.Is<DeviceModelCommand>(x => x == command)));
+                It.Is<DeviceModelCommandDto>(x => x == command)));
 
             _ = this.mockDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
                     It.Is<string>(p => p == LoRaWANDeviceModelsController.DefaultPartitionKey),
@@ -283,7 +283,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
             SetupNotFoundDeviceModel();
 
             // Act
-            var act = () => deviceModelCommandsService.PostDeviceModelCommands(Guid.NewGuid().ToString(), new[] { new DeviceModelCommand() });
+            var act = () => deviceModelCommandsService.PostDeviceModelCommands(Guid.NewGuid().ToString(), new[] { new DeviceModelCommandDto() });
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
@@ -335,13 +335,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
 
             _ = this.mockDeviceModelCommandMapper.Setup(c => c.GetDeviceModelCommand(
                 It.Is<TableEntity>(x => x.PartitionKey == deviceModelId)))
-                .Returns(new DeviceModelCommand());
+                .Returns(new DeviceModelCommandDto());
 
             // Act
             var result = await deviceModelCommandsService.GetDeviceModelCommandsFromModel(deviceModelId);
 
             // Assert
-            Assert.IsAssignableFrom<DeviceModelCommand[]>(result);
+            Assert.IsAssignableFrom<DeviceModelCommandDto[]>(result);
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Length);
         }

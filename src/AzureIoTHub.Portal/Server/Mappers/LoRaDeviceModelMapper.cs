@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
-    public class LoRaDeviceModelMapper : IDeviceModelMapper<DeviceModel, LoRaDeviceModel>
+    public class LoRaDeviceModelMapper : IDeviceModelMapper<DeviceModelDto, LoRaDeviceModel>
     {
         private readonly IDeviceModelCommandsManager deviceModelCommandsManager;
         private readonly IDeviceModelImageManager deviceModelImageManager;
@@ -21,11 +21,11 @@ namespace AzureIoTHub.Portal.Server.Mappers
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
-        public DeviceModel CreateDeviceModelListItem(TableEntity entity)
+        public DeviceModelDto CreateDeviceModelListItem(TableEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity, nameof(entity));
 
-            return new DeviceModel
+            return new DeviceModelDto
             {
                 ModelId = entity.RowKey,
                 IsBuiltin = bool.Parse(entity[nameof(LoRaDeviceModel.IsBuiltin)]?.ToString() ?? "false"),

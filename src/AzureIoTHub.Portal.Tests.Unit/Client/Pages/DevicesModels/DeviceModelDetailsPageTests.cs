@@ -68,7 +68,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var expectedModel = SetupMockDeviceModel(properties: expectedProperties);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.UpdateDeviceModel(It.Is<DeviceModel>(model =>
+                    service.UpdateDeviceModel(It.Is<DeviceModelDto>(model =>
                         expectedModel.ModelId.Equals(model.ModelId, StringComparison.Ordinal) && expectedModel.Name.Equals(model.Name, StringComparison.Ordinal) && expectedModel.Description.Equals(model.Description, StringComparison.Ordinal) && !model.SupportLoRaFeatures && !model.IsBuiltin)))
                 .Returns(Task.CompletedTask);
 
@@ -106,7 +106,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var expectedModel = SetupMockDeviceModel(properties: expectedProperties);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                        service.UpdateDeviceModel(It.Is<DeviceModel>(model =>
+                        service.UpdateDeviceModel(It.Is<DeviceModelDto>(model =>
                             expectedModel.ModelId.Equals(model.ModelId, StringComparison.Ordinal) && expectedModel.Name.Equals(model.Name, StringComparison.Ordinal) && expectedModel.Description.Equals(model.Description, StringComparison.Ordinal) && !model.SupportLoRaFeatures && !model.IsBuiltin)))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
@@ -143,7 +143,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var cut = RenderComponent<DeviceModelDetailPage>
                     (ComponentParameter.CreateParameter(nameof(DeviceModelDetailPage.ModelID), this.mockModelId));
 
-            cut.WaitForElement($"#{nameof(DeviceModel.Name)}").Change("");
+            cut.WaitForElement($"#{nameof(DeviceModelDto.Name)}").Change("");
             var saveButton = cut.WaitForElement("#saveButton");
             saveButton.Click();
 
@@ -161,7 +161,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(this.mockModelId))
-                .ReturnsAsync(new DeviceModel
+                .ReturnsAsync(new DeviceModelDto
                 {
                     ModelId = this.mockModelId,
                     Name = Guid.NewGuid().ToString()
@@ -176,7 +176,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 .ReturnsAsync(string.Empty);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.UpdateDeviceModel(It.IsAny<DeviceModel>()))
+                    service.UpdateDeviceModel(It.IsAny<DeviceModelDto>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -214,7 +214,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(this.mockModelId))
-                .ReturnsAsync(new DeviceModel
+                .ReturnsAsync(new DeviceModelDto
                 {
                     ModelId = this.mockModelId,
                     Name = Guid.NewGuid().ToString()
@@ -232,7 +232,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 .ReturnsAsync(string.Empty);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.UpdateDeviceModel(It.IsAny<DeviceModel>()))
+                    service.UpdateDeviceModel(It.IsAny<DeviceModelDto>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -350,9 +350,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
-        private DeviceModel SetupMockDeviceModel(DeviceProperty[] properties = null)
+        private DeviceModelDto SetupMockDeviceModel(DeviceProperty[] properties = null)
         {
-            var deviceModel = new DeviceModel
+            var deviceModel = new DeviceModelDto
             {
                 ModelId = this.mockModelId,
                 Name = this.mockModelId,
@@ -377,7 +377,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             return deviceModel;
         }
 
-        private LoRaDeviceModel SetupMockLoRaWANDeviceModel(DeviceModelCommand[] commands = null)
+        private LoRaDeviceModel SetupMockLoRaWANDeviceModel(DeviceModelCommandDto[] commands = null)
         {
             var deviceModel = new LoRaDeviceModel
             {
@@ -394,7 +394,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModelCommands(this.mockModelId))
-                .ReturnsAsync(commands ?? Array.Empty<DeviceModelCommand>());
+                .ReturnsAsync(commands ?? Array.Empty<DeviceModelCommandDto>());
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
                     service.GetAvatarUrl(this.mockModelId))

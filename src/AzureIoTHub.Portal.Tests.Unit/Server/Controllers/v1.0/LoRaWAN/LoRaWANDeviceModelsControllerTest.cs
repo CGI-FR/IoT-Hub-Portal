@@ -35,10 +35,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     {
         private MockRepository mockRepository;
 
-        private Mock<ILogger<DeviceModelsControllerBase<DeviceModel, LoRaDeviceModel>>> mockLogger;
+        private Mock<ILogger<DeviceModelsControllerBase<DeviceModelDto, LoRaDeviceModel>>> mockLogger;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
         private Mock<IDeviceModelCommandMapper> mockDeviceModelCommandMapper;
-        private Mock<IDeviceModelMapper<DeviceModel, LoRaDeviceModel>> mockDeviceModelMapper;
+        private Mock<IDeviceModelMapper<DeviceModelDto, LoRaDeviceModel>> mockDeviceModelMapper;
         private Mock<IDeviceService> mockDeviceService;
         private Mock<ITableClientFactory> mockTableClientFactory;
         private Mock<IDeviceProvisioningServiceManager> mockDeviceProvisioningServiceManager;
@@ -51,11 +51,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockLogger = this.mockRepository.Create<ILogger<DeviceModelsControllerBase<DeviceModel, LoRaDeviceModel>>>();
+            this.mockLogger = this.mockRepository.Create<ILogger<DeviceModelsControllerBase<DeviceModelDto, LoRaDeviceModel>>>();
             this.mockDeviceModelImageManager = this.mockRepository.Create<IDeviceModelImageManager>();
             this.mockDeviceModelCommandMapper = this.mockRepository.Create<IDeviceModelCommandMapper>();
             this.mockDeviceProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
-            this.mockDeviceModelMapper = this.mockRepository.Create<IDeviceModelMapper<DeviceModel, LoRaDeviceModel>>();
+            this.mockDeviceModelMapper = this.mockRepository.Create<IDeviceModelMapper<DeviceModelDto, LoRaDeviceModel>>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockDeviceTemplatesTableClient = this.mockRepository.Create<TableClient>();
@@ -100,7 +100,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
                 .Returns(this.mockDeviceTemplatesTableClient.Object);
 
             _ = this.mockDeviceModelMapper.Setup(c => c.CreateDeviceModelListItem(It.IsAny<TableEntity>()))
-                .Returns((TableEntity _) => new DeviceModel());
+                .Returns((TableEntity _) => new DeviceModelDto());
 
             // Act
             var response = deviceModelsController.GetItems();
@@ -113,7 +113,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             Assert.AreEqual(200, okResponse.StatusCode);
 
             Assert.IsNotNull(okResponse.Value);
-            var result = okResponse.Value as IEnumerable<DeviceModel>;
+            var result = okResponse.Value as IEnumerable<DeviceModelDto>;
             Assert.AreEqual(10, result?.Count());
 
             this.mockRepository.VerifyAll();

@@ -33,14 +33,14 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.PutAsJsonAsync($"api/lorawan/models/{deviceModel.ModelId}", deviceModel);
         }
 
-        public Task SetDeviceModelCommands(string deviceModelId, IList<DeviceModelCommand> commands)
+        public Task SetDeviceModelCommands(string deviceModelId, IList<DeviceModelCommandDto> commands)
         {
             return this.http.PostAsJsonAsync($"api/lorawan/models/{deviceModelId}/commands", commands);
         }
 
-        public async Task<IList<DeviceModelCommand>> GetDeviceModelCommands(string deviceModelId)
+        public async Task<IList<DeviceModelCommandDto>> GetDeviceModelCommands(string deviceModelId)
         {
-            return await this.http.GetFromJsonAsync<List<DeviceModelCommand>>($"api/lorawan/models/{deviceModelId}/commands");
+            return await this.http.GetFromJsonAsync<List<DeviceModelCommandDto>>($"api/lorawan/models/{deviceModelId}/commands");
         }
 
         public Task<string> GetAvatarUrl(string deviceModelId)

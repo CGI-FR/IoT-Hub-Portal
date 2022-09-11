@@ -119,13 +119,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
                 ModelId = Fixture.Create<string>()
             };
 
-            var expectedCommands = Fixture.Build<DeviceModelCommand>().CreateMany(3).ToList();
+            var expectedCommands = Fixture.Build<DeviceModelCommandDto>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/models/{deviceModelId.ModelId}/properties")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IList<DeviceModelCommand>>>();
-                    var body = m.Content as ObjectContent<IList<DeviceModelCommand>>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IList<DeviceModelCommandDto>>>();
+                    var body = m.Content as ObjectContent<IList<DeviceModelCommandDto>>;
                     _ = body.Value.Should().BeEquivalentTo(expectedCommands);
                     return true;
                 })
@@ -145,7 +145,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var deviceModelId = Fixture.Create<string>();
 
-            var expectedCommands = Fixture.CreateMany<DeviceModelCommand>().ToList();
+            var expectedCommands = Fixture.CreateMany<DeviceModelCommandDto>().ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/models/{deviceModelId}/commands")
                 .RespondJson(expectedCommands);

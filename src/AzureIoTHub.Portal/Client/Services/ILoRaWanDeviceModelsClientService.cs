@@ -16,9 +16,9 @@ namespace AzureIoTHub.Portal.Client.Services
 
         Task UpdateDeviceModel(LoRaDeviceModel deviceModel);
 
-        Task SetDeviceModelCommands(string deviceModelId, IList<DeviceModelCommand> commands);
+        Task SetDeviceModelCommands(string deviceModelId, IList<DeviceModelCommandDto> commands);
 
-        Task<IList<DeviceModelCommand>> GetDeviceModelCommands(string deviceModelId);
+        Task<IList<DeviceModelCommandDto>> GetDeviceModelCommands(string deviceModelId);
 
         Task<string> GetAvatarUrl(string deviceModelId);
 

@@ -52,11 +52,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>());
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
             // Act
             var cut = RenderComponent<CreateDeviceConfigurationsPage>();
@@ -80,11 +80,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>());
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.CreateDeviceConfiguration(It.Is<DeviceConfig>(config => configuration.Equals(config))))
@@ -116,11 +116,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>());
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.CreateDeviceConfiguration(It.Is<DeviceConfig>(config => configuration.Equals(config))))
@@ -158,7 +158,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Arrange
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>());
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -177,11 +177,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Arrange
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>());
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new () { Name = "tag0" },
                     new () { Name = "tag1" }
@@ -213,7 +213,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>
+                .ReturnsAsync(new List<DeviceModelDto>
                 {
                     new ()
                     {
@@ -228,7 +228,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new () { Name = "tag0" },
                     new () { Name = "tag1" }

@@ -5,13 +5,13 @@ namespace AzureIoTHub.Portal.Server.Mappers
 {
     using AutoMapper;
     using Domain.Entities;
-    using Models.v10;
+    using Models.v10.LoRaWAN;
 
-    public class DeviceTagProfile : Profile
+    public class DeviceModelCommandProfile : Profile
     {
-        public DeviceTagProfile()
+        public DeviceModelCommandProfile()
         {
-            _ = CreateMap<DeviceTagDto, DeviceTag>()
+            _ = CreateMap<DeviceModelCommandDto, DeviceModelCommand>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Name))
                 .ReverseMap();
         }

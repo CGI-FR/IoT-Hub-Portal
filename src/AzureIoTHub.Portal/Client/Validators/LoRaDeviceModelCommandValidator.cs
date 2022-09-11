@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Client.Validators
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using FluentValidation;
 
-    public class LoRaDeviceModelCommandValidator : AbstractValidator<DeviceModelCommand>
+    public class LoRaDeviceModelCommandValidator : AbstractValidator<DeviceModelCommandDto>
     {
         public LoRaDeviceModelCommandValidator()
         {

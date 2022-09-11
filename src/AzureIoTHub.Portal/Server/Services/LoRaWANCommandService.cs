@@ -4,7 +4,9 @@
 namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
+    using Application.Abstractions.Services;
     using Azure;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Domain;
@@ -48,7 +50,7 @@ namespace AzureIoTHub.Portal.Server.Services
             this.deviceModelCommandMapper = deviceModelCommandMapper;
         }
 
-        public async Task PostDeviceModelCommands(string id, DeviceModelCommand[] commands)
+        public async Task PostDeviceModelCommands(string id, DeviceModelCommandDto[] commands)
         {
             var query = await GetCommandsQueryFromModelId(id);
 
@@ -88,11 +90,28 @@ namespace AzureIoTHub.Portal.Server.Services
                 }
             }
         }
-        public async Task<DeviceModelCommand[]> GetDeviceModelCommandsFromModel(string id)
+
+        public IEnumerable<DeviceModelCommandDto> GetAllDeviceModelCommands()
+        {
+            try
+            {
+                return this.tableClientFactory
+                    .GetDeviceCommands()
+                    .Query<TableEntity>()
+                    .Select(this.deviceModelCommandMapper.GetDeviceModelCommand)
+                    .ToList();
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException("Unable to get devices model commands", e);
+            }
+        }
+
+        public async Task<DeviceModelCommandDto[]> GetDeviceModelCommandsFromModel(string id)
         {
             var query = await GetCommandsQueryFromModelId(id);
 
-            var commands = new List<DeviceModelCommand>();
+            var commands = new List<DeviceModelCommandDto>();
 
             foreach (var item in query)
             {

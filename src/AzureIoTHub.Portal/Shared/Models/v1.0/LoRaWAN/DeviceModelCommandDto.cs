@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
     /// <summary>
     /// Device model command.
     /// </summary>
-    public class DeviceModelCommand
+    public class DeviceModelCommandDto
     {
         /// <summary>
         /// The command name.
@@ -40,5 +40,7 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// A value indicating whether this instance is builtin.
         /// </summary>
         public bool IsBuiltin { get; set; }
+
+        public string DeviceModelId { get; set; }
     }
 }

@@ -98,7 +98,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             // Arrange
             var deviceModelMapper = CreateDeviceModelMapper();
             var entity = new TableEntity();
-            var model = new DeviceModel
+            var model = new DeviceModelDto
             {
                 Name = "DeviceModelName",
                 Description = "Description"

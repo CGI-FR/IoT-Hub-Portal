@@ -18,7 +18,7 @@
                     <MudItem xs="12" md="12">
                         <MudTextField @bind-Value="searchID" Placeholder="DeviceID / DeviceName" id="searchID"></MudTextField>
                     </MudItem>
-                    @foreach (DeviceTag tag in TagList)
+                    @foreach (DeviceTagDto tag in TagList)
                     {
                         if (tag.Searchable)
                         {
@@ -175,7 +175,7 @@
 
     private readonly Dictionary<int, string> pages = new();
 
-    private IEnumerable<DeviceTag> TagList { get; set; } = new List<DeviceTag>();
+    private IEnumerable<DeviceTagDto> TagList { get; set; } = new List<DeviceTagDto>();
 
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
 

@@ -95,7 +95,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Arrange
             var query = Fixture.Create<string>();
 
-            var expectedDeviceModel = new DeviceModel
+            var expectedDeviceModel = new DeviceModelDto
             {
                 ModelId = Fixture.Create<string>()
             };
@@ -150,7 +150,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Arrange
             var query = Fixture.Create<string>();
 
-            var expectedDeviceModel = new DeviceModel
+            var expectedDeviceModel = new DeviceModelDto
             {
                 ModelId = Fixture.Create<string>()
             };

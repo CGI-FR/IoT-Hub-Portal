@@ -62,7 +62,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public async Task ClickOnSaveShouldPostDeviceDetailsAsync()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -81,13 +81,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>
+                .ReturnsAsync(new List<DeviceModelDto>
                 {
                     mockDeviceModel
                 });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {
@@ -124,7 +124,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public async Task DeviceShouldNotBeCreatedWhenModelIsNotValid()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -133,13 +133,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>
+                .ReturnsAsync(new List<DeviceModelDto>
                 {
                     mockDeviceModel
                 });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {
@@ -171,7 +171,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void OnInitializedAsyncShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceTags()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -180,7 +180,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>
+                .ReturnsAsync(new List<DeviceModelDto>
                 {
                     mockDeviceModel
                 });
@@ -213,7 +213,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public async Task SaveShouldProcessProblemDetailsExceptionWhenIssueOccursOnCreatingDevice()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -232,13 +232,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>
+                .ReturnsAsync(new List<DeviceModelDto>
                 {
                     mockDeviceModel
                 });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {
@@ -271,7 +271,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public async Task ChangeModelShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingModelProperties()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -287,13 +287,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>
+                .ReturnsAsync(new List<DeviceModelDto>
                 {
                     mockDeviceModel
                 });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {
@@ -322,7 +322,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public async Task ClickOnSaveAndAddNewShouldCreateDeviceAndResetCreateDevicePage()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -341,13 +341,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>
+                .ReturnsAsync(new List<DeviceModelDto>
                 {
                     mockDeviceModel
                 });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {
@@ -398,7 +398,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public async Task ClickOnSaveAndDuplicateShouldCreateDeviceAndDuplicateDeviceDetailsInCreateDevicePage()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -417,13 +417,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>
+                .ReturnsAsync(new List<DeviceModelDto>
                 {
                     mockDeviceModel
                 });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     new()
                     {

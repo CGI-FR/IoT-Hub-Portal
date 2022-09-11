@@ -179,11 +179,11 @@
     public LoRaDeviceModel LoRaDeviceModel { get; set; }
 
     [Parameter]
-    public IList<DeviceModelCommand> Commands { get; set; }
+    public IList<DeviceModelCommandDto> Commands { get; set; }
 
     private bool loraProperty { get; set; }
 
-    private DeviceModelCommand DeviceModelCommand { get; set; } = new DeviceModelCommand();
+    private DeviceModelCommandDto DeviceModelCommand { get; set; } = new DeviceModelCommandDto();
 
     private void AddCommand()
     {
@@ -191,11 +191,11 @@
 
         if (Commands.Count == 0 || (last.Name is not null && last.Frame is not null))
         {
-            Commands.Add(new DeviceModelCommand());
+            Commands.Add(new DeviceModelCommandDto());
         }
     }
 
-    private void DeleteCommand(DeviceModelCommand item)
+    private void DeleteCommand(DeviceModelCommandDto item)
     {
         Commands.Remove(item);
     }

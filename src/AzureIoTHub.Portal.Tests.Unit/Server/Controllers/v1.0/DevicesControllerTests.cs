@@ -322,7 +322,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var mockTableClient = this.mockRepository.Create<TableClient>();
             var mockDeviceModelEntity = new TableEntity
             {
-                [nameof(DeviceModel.Name)] = "ccc"
+                [nameof(DeviceModelDto.Name)] = "ccc"
             };
             var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
 

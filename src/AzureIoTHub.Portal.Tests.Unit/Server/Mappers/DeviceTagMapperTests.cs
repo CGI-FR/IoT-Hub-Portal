@@ -57,7 +57,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             var deviceTagMapper = CreateDeviceTagMapper();
             var entity = new TableEntity();
 
-            var element = new DeviceTag
+            var element = new DeviceTagDto
             {
                 Name = "ExpectedName",
                 Label = "ExpectedLabel",

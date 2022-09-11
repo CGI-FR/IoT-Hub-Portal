@@ -9,7 +9,7 @@
 
 <MudGrid>
     <MudItem xs="12">
-        <MudTable T="DeviceModel" Items="@result" Loading="@IsLoading" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+        <MudTable T="DeviceModelDto" Items="@result" Loading="@IsLoading" Dense=true Hover=true Bordered=true Striped=true OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
             <ColGroup>
                 <col style="width: 5%;" />
                 <col style="width: 30%;" />
@@ -74,7 +74,7 @@
     public Error Error { get; set; }
 
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
-    private List<DeviceModel> result = new();
+    private List<DeviceModelDto> result = new();
     private bool IsLoading = true;
 
     protected override async Task OnInitializedAsync()
@@ -105,7 +105,7 @@
         }
     }
 
-    private async Task DeleteDeviceModel(DeviceModel deviceModel)
+    private async Task DeleteDeviceModel(DeviceModelDto deviceModel)
     {
         var parameters = new DialogParameters();
         parameters.Add("deviceModelID", deviceModel.ModelId);
@@ -121,7 +121,7 @@
         await LoadDeviceModels();
     }
 
-    private void GoToDetails(DeviceModel item)
+    private void GoToDetails(DeviceModelDto item)
     {
         navigationManager.NavigateTo($"/device-models/{item.ModelId}{((item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
     }

@@ -44,7 +44,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var modelId = Fixture.Create<string>();
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new[] { new DeviceModel { ModelId = modelId, SupportLoRaFeatures = false } });
+                .ReturnsAsync(new[] { new DeviceModelDto { ModelId = modelId, SupportLoRaFeatures = false } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -66,7 +66,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var modelId = Guid.NewGuid().ToString();
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new[] { new DeviceModel { ModelId = modelId, SupportLoRaFeatures = true } });
+                .ReturnsAsync(new[] { new DeviceModelDto { ModelId = modelId, SupportLoRaFeatures = true } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -87,8 +87,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
                 .ReturnsAsync(new[] {
-                    new DeviceModel { ModelId = Guid.NewGuid().ToString() },
-                    new DeviceModel{  ModelId = Guid.NewGuid().ToString() }
+                    new DeviceModelDto { ModelId = Guid.NewGuid().ToString() },
+                    new DeviceModelDto{  ModelId = Guid.NewGuid().ToString() }
                 });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
@@ -114,7 +114,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
+                .ReturnsAsync(new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -151,7 +151,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
+                .ReturnsAsync(new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -177,7 +177,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
+                .ReturnsAsync(new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -202,7 +202,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new[] { new DeviceModel { ModelId = deviceId, SupportLoRaFeatures = true } });
+                .ReturnsAsync(new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 

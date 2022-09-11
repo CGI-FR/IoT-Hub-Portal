@@ -53,9 +53,9 @@ namespace AzureIoTHub.Portal.Server.Managers
             return commands.AsReadOnly();
         }
 
-        public ReadOnlyCollection<DeviceModelCommand> RetrieveDeviceModelCommands(string deviceModel)
+        public ReadOnlyCollection<DeviceModelCommandDto> RetrieveDeviceModelCommands(string deviceModel)
         {
-            var commands = new List<DeviceModelCommand>();
+            var commands = new List<DeviceModelCommandDto>();
 
             if (deviceModel == null)
             {

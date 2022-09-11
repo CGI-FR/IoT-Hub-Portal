@@ -140,9 +140,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             {
                 ModelId = Guid.NewGuid().ToString(),
             };
-            var commands = new List<DeviceModelCommand>
+            var commands = new List<DeviceModelCommandDto>
             {
-                new DeviceModelCommand
+                new DeviceModelCommandDto
                 {
                     Name = Guid.NewGuid().ToString()
                 }
@@ -173,9 +173,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             {
                 ModelId = Guid.NewGuid().ToString(),
             };
-            var commands = new List<DeviceModelCommand>
+            var commands = new List<DeviceModelCommandDto>
             {
-                new DeviceModelCommand
+                new DeviceModelCommandDto
                 {
                     Name = Guid.NewGuid().ToString()
                 }
@@ -206,9 +206,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             {
                 ModelId = Guid.NewGuid().ToString(),
             };
-            var commands = new List<DeviceModelCommand>
+            var commands = new List<DeviceModelCommandDto>
             {
-                new DeviceModelCommand
+                new DeviceModelCommandDto
                 {
                     Name = Guid.NewGuid().ToString()
                 }

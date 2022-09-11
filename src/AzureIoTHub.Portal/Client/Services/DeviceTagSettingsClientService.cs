@@ -20,7 +20,7 @@ namespace AzureIoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public Task CreateOrUpdateDeviceTag(DeviceTag deviceTag)
+        public Task CreateOrUpdateDeviceTag(DeviceTagDto deviceTag)
         {
             var deviceTagAsJson = JsonConvert.SerializeObject(deviceTag);
             using var content = new StringContent(deviceTagAsJson, Encoding.UTF8, "application/json");
@@ -32,9 +32,9 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.DeleteAsync($"api/settings/device-tags/{deviceTagName}");
         }
 
-        public async Task<IList<DeviceTag>> GetDeviceTags()
+        public async Task<IList<DeviceTagDto>> GetDeviceTags()
         {
-            return await this.http.GetFromJsonAsync<List<DeviceTag>>("api/settings/device-tags");
+            return await this.http.GetFromJsonAsync<List<DeviceTagDto>>("api/settings/device-tags");
         }
 
     }
