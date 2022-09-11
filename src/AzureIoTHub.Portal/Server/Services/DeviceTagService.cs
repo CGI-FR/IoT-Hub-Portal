@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Application.Abstractions.Services;
     using Azure;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Domain;

@@ -58,6 +58,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Domain",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Infrastructure", "AzureIoTHub.Portal.Infrastructure\AzureIoTHub.Portal.Infrastructure.csproj", "{C0E587A8-607D-4746-8536-44AB34074522}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureIoTHub.Portal.Application", "AzureIoTHub.Portal.Application\AzureIoTHub.Portal.Application.csproj", "{2EC678DF-A995-4DB5-80C6-4CC213C1ED91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,10 @@ Global
 		{C0E587A8-607D-4746-8536-44AB34074522}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0E587A8-607D-4746-8536-44AB34074522}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0E587A8-607D-4746-8536-44AB34074522}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EC678DF-A995-4DB5-80C6-4CC213C1ED91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EC678DF-A995-4DB5-80C6-4CC213C1ED91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EC678DF-A995-4DB5-80C6-4CC213C1ED91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EC678DF-A995-4DB5-80C6-4CC213C1ED91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

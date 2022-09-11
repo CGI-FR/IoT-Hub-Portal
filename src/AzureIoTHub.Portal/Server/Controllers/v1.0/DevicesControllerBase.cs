@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using Application.Abstractions.Services;
     using Azure;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Domain;

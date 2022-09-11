@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Application.Abstractions.Services;
     using Azure;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Domain;

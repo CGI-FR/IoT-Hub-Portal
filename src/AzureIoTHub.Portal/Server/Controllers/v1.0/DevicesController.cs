@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Application.Abstractions.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Models.v10;
     using Managers;

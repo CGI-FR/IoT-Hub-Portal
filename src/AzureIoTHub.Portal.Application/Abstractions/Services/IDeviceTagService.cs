@@ -1,11 +1,11 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Services
+namespace AzureIoTHub.Portal.Application.Abstractions.Services
 {
-    using AzureIoTHub.Portal.Models.v10;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Models.v10;
 
     public interface IDeviceTagService
     {
