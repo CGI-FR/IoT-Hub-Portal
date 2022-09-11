@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Domain.Exceptions
 
     public class ResourceAlreadyExistsException : BaseException
     {
-        public ResourceAlreadyExistsException(string detail, Exception innerException = null) : base(ErrorTitles.ResourceAlreadyExists, detail, innerException)
+        public ResourceAlreadyExistsException(string detail, Exception? innerException = null) : base(ErrorTitles.ResourceAlreadyExists, detail, innerException)
         {
         }
     }
