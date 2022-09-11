@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Infrastructure
     public class PortalDbContext : DbContext
     {
         public DbSet<DeviceModelProperty> DeviceModelProperties { get; set; }
+        public DbSet<DeviceModelCommand> DeviceModelCommands { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PortalDbContext(DbContextOptions<PortalDbContext> options)
