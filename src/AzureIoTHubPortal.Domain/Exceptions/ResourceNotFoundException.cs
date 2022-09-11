@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Domain.Exceptions
 
     public class ResourceNotFoundException : BaseException
     {
-        public ResourceNotFoundException(string detail, Exception innerException = null) : base(ErrorTitles.ResourceNotFound, detail, innerException)
+        public ResourceNotFoundException(string detail, Exception? innerException = null) : base(ErrorTitles.ResourceNotFound, detail, innerException)
         {
         }
     }
