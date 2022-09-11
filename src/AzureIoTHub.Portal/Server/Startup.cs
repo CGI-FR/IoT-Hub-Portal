@@ -282,7 +282,8 @@ namespace AzureIoTHub.Portal.Server
                 .AddCheck<StorageAccountHealthCheck>("storageAccountHealth")
                 .AddCheck<TableStorageHealthCheck>("tableStorageHealth")
                 .AddCheck<ProvisioningServiceClientHealthCheck>("dpsHealth")
-                .AddCheck<LoRaManagementKeyFacadeHealthCheck>("loraManagementFacadeHealth");
+                .AddCheck<LoRaManagementKeyFacadeHealthCheck>("loraManagementFacadeHealth")
+                .AddCheck<DatabaseHealthCheck>("databaseHealthCheck"); ;
 
             // Register metric loaders as Hosted Services
             _ = services.AddHostedService<DeviceMetricLoaderService>();
