@@ -283,17 +283,7 @@ namespace AzureIoTHub.Portal.Server
                 .AddCheck<TableStorageHealthCheck>("tableStorageHealth")
                 .AddCheck<ProvisioningServiceClientHealthCheck>("dpsHealth")
                 .AddCheck<LoRaManagementKeyFacadeHealthCheck>("loraManagementFacadeHealth")
-                .AddCheck<DatabaseHealthCheck>("databaseHealthCheck"); ;
-
-            // Register metric loaders as Hosted Services
-            _ = services.AddHostedService<DeviceMetricLoaderService>();
-            _ = services.AddHostedService<EdgeDeviceMetricLoaderService>();
-            _ = services.AddHostedService<ConcentratorMetricLoaderService>();
-
-            // Register metric exporters as Hosted Services
-            _ = services.AddHostedService<DeviceMetricExporterService>();
-            _ = services.AddHostedService<EdgeDeviceMetricExporterService>();
-            _ = services.AddHostedService<ConcentratorMetricExporterService>();
+                .AddCheck<DatabaseHealthCheck>("databaseHealthCheck");
 
             // Add the required Quartz.NET services
             _ = services.AddQuartz(q =>
@@ -314,6 +304,10 @@ namespace AzureIoTHub.Portal.Server
                         c.ConnectionString = configuration.PostgreSQLConnectionString;
                     });
                 });
+
+                q.AddMetricsService<DeviceMetricExporterService, DeviceMetricLoaderService>(configuration);
+                q.AddMetricsService<EdgeDeviceMetricExporterService, EdgeDeviceMetricLoaderService>(configuration);
+                q.AddMetricsService<ConcentratorMetricExporterService, ConcentratorMetricLoaderService>(configuration);
             });
 
             // Add the Quartz.NET hosted service
