@@ -1,0 +1,28 @@
+name: Delete Documentation Version
+on:
+  workflow_dispatch:
+    inputs:
+      version_to_delete:
+        description: 'Version to delete'
+        required: true
+jobs:
+  deploy-documentation-preview-version:
+    name: Delete Documentation Version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: docs/main
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Setup git user for mike push
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+      - name: Delete doc version and push
+        run: mike delete --push ${{ github.event.inputs.version_to_delete }}
