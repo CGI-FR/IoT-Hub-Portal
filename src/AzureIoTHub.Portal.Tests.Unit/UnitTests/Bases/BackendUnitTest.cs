@@ -5,11 +5,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
 {
     using System;
     using AutoMapper;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Diagnostics;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Abstractions;
     using Moq;
     using NUnit.Framework;
+    using Portal.Infrastructure;
     using Portal.Server.Mappers;
     using RichardSzalay.MockHttp;
 
@@ -26,6 +29,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
         protected virtual AutoFixture.Fixture Fixture { get; } = new();
 
         protected virtual IMapper Mapper { get; set; }
+
+        protected virtual PortalDbContext DbContext { get; set; }
 
         [SetUp]
         public virtual void Setup()
@@ -49,6 +54,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
             });
             Mapper = mappingConfig.CreateMapper();
             _ = ServiceCollection.AddSingleton(Mapper);
+
+            // Add InMemory Database
+            var contextOptions = new DbContextOptionsBuilder<PortalDbContext>()
+                .UseInMemoryDatabase("TestContext")
+                .ConfigureWarnings(b => b.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+                .Options;
+            DbContext = new PortalDbContext(contextOptions);
+            _ = DbContext.Database.EnsureDeleted();
+            _ = DbContext.Database.EnsureCreated();
         }
 
         [TearDown]
