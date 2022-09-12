@@ -147,6 +147,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();
 
             _ = services.AddScoped<IDeviceModelPropertiesRepository, DeviceModelPropertiesRepository>();
+            _ = services.AddScoped<IDeviceTagRepository, DeviceTagRepository>();
 
             _ = services.AddMudServices();
 
@@ -268,6 +269,7 @@ namespace AzureIoTHub.Portal.Server
                 _ = mc.CreateMap(typeof(AsyncPageable<>), typeof(List<>));
 
                 mc.AddProfile(new DevicePropertyProfile());
+                mc.AddProfile(new DeviceTagProfile());
             });
 
             var mapper = mapperConfig.CreateMapper();

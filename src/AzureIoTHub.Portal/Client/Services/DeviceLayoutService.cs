@@ -31,12 +31,12 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.sharedDeviceModel;
         }
 
-        public TDevice ResetSharedDevice<TDevice>(List<DeviceTag> tags = null)
+        public TDevice ResetSharedDevice<TDevice>(List<DeviceTagDto> tags = null)
             where TDevice : class, IDeviceDetails, new()
         {
             this.sharedDevice = new TDevice();
 
-            foreach (var tag in tags ?? new List<DeviceTag>())
+            foreach (var tag in tags ?? new List<DeviceTagDto>())
             {
                 _ = this.sharedDevice.Tags.TryAdd(tag.Name, string.Empty);
             }

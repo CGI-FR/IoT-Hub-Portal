@@ -16,7 +16,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         IDeviceDetails GetSharedDevice();
         IDeviceModel GetSharedDeviceModel();
-        TDevice ResetSharedDevice<TDevice>(List<DeviceTag> tags = null)
+        TDevice ResetSharedDevice<TDevice>(List<DeviceTagDto> tags = null)
             where TDevice : class, IDeviceDetails, new();
         TDeviceModel ResetSharedDeviceModel<TDeviceModel>()
             where TDeviceModel : class, IDeviceModel, new();

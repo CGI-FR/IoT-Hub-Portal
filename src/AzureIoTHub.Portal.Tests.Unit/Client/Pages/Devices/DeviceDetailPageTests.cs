@@ -86,7 +86,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(new DeviceModel());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
             // Act
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", deviceId));
@@ -114,7 +114,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(new List<DeviceModelCommand>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
             // Act
             var cut = RenderComponent<DeviceDetailPage>(
@@ -145,7 +145,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(new DeviceModel());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>());
+                .ReturnsAsync(new List<DeviceTagDto>());
 
 
             // Act
@@ -170,7 +170,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -200,7 +200,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(mockDeviceModel);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag
                 });
@@ -238,7 +238,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -268,7 +268,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(mockDeviceModel);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag
                 });
@@ -299,7 +299,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -326,7 +326,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(mockDeviceModel);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag
                 });
@@ -359,7 +359,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -386,7 +386,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(mockDeviceModel);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag
                 });
@@ -420,7 +420,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -447,7 +447,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(mockDeviceModel);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag
                 });
@@ -482,7 +482,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -509,7 +509,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(mockDeviceModel);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag
                 });
@@ -545,7 +545,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            var mockTag = new DeviceTag
+            var mockTag = new DeviceTagDto
             {
                 Label = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -572,7 +572,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(mockDeviceModel);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ReturnsAsync(new List<DeviceTag>
+                .ReturnsAsync(new List<DeviceTagDto>
                 {
                     mockTag
                 });

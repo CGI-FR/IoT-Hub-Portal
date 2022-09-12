@@ -14,16 +14,16 @@ namespace AzureIoTHub.Portal.Server.Mappers
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns>A device tag setting</returns>
-        public DeviceTag GetDeviceTag(TableEntity entity)
+        public DeviceTagDto GetDeviceTag(TableEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity, nameof(entity));
 
-            return new DeviceTag
+            return new DeviceTagDto
             {
                 Name = entity.RowKey,
-                Label = entity[nameof(DeviceTag.Label)].ToString(),
-                Required = bool.Parse(entity[nameof(DeviceTag.Required)].ToString() ?? "false"),
-                Searchable = bool.Parse(entity[nameof(DeviceTag.Searchable)].ToString() ?? "false")
+                Label = entity[nameof(DeviceTagDto.Label)].ToString(),
+                Required = bool.Parse(entity[nameof(DeviceTagDto.Required)].ToString() ?? "false"),
+                Searchable = bool.Parse(entity[nameof(DeviceTagDto.Searchable)].ToString() ?? "false")
             };
         }
 
@@ -32,14 +32,14 @@ namespace AzureIoTHub.Portal.Server.Mappers
         /// </summary>
         /// <param name="tagEntity">The entity.</param>
         /// <param name="element">The device tag object.</param>
-        public void UpdateTableEntity(TableEntity tagEntity, DeviceTag element)
+        public void UpdateTableEntity(TableEntity tagEntity, DeviceTagDto element)
         {
             ArgumentNullException.ThrowIfNull(tagEntity, nameof(tagEntity));
             ArgumentNullException.ThrowIfNull(element, nameof(element));
 
-            tagEntity[nameof(DeviceTag.Label)] = element.Label;
-            tagEntity[nameof(DeviceTag.Required)] = element.Required;
-            tagEntity[nameof(DeviceTag.Searchable)] = element.Searchable;
+            tagEntity[nameof(DeviceTagDto.Label)] = element.Label;
+            tagEntity[nameof(DeviceTagDto.Required)] = element.Required;
+            tagEntity[nameof(DeviceTagDto.Searchable)] = element.Searchable;
         }
     }
 }

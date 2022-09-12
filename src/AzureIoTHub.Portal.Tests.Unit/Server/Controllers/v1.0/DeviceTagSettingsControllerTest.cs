@@ -47,7 +47,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Arrange
             var deviceTagSettingsController = CreateDeviceTagSettingsController();
 
-            var tag = new DeviceTag
+            var tag = new DeviceTagDto
             {
                 Name = "testName",
                 Label = "testLabel",
@@ -55,11 +55,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 Searchable = true
             };
 
-            _ = this.mockDeviceTagService.Setup(c => c.UpdateTags(It.IsAny<List<DeviceTag>>()))
+            _ = this.mockDeviceTagService.Setup(c => c.UpdateTags(It.IsAny<List<DeviceTagDto>>()))
                 .Returns(Task.CompletedTask);
 
             // Act
-            var result = await deviceTagSettingsController.Post(new List<DeviceTag>(new[] { tag }));
+            var result = await deviceTagSettingsController.Post(new List<DeviceTagDto>(new[] { tag }));
 
             // Assert
             Assert.IsNotNull(result);
@@ -74,7 +74,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Arrange
             var deviceTagSettingsController = CreateDeviceTagSettingsController();
 
-            _ = this.mockDeviceTagService.Setup(x => x.GetAllTags()).Returns(new DeviceTag[10].ToList());
+            _ = this.mockDeviceTagService.Setup(x => x.GetAllTags()).Returns(new DeviceTagDto[10].ToList());
 
             // Act
             var response = deviceTagSettingsController.Get();
@@ -87,7 +87,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             Assert.AreEqual(200, okResponse?.StatusCode);
 
             Assert.IsNotNull(okResponse?.Value);
-            var result = okResponse?.Value as IEnumerable<DeviceTag>;
+            var result = okResponse?.Value as IEnumerable<DeviceTagDto>;
             Assert.AreEqual(10, result?.Count());
 
             this.mockDeviceTagService.VerifyAll();
@@ -98,14 +98,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         public async Task CreateOrUpdateDeviceTagShouldCreateOrUpdateDeviceTag()
         {
             // Arrange
-            var deviceTag = new DeviceTag
+            var deviceTag = new DeviceTagDto
             {
                 Name = Guid.NewGuid().ToString(),
             };
 
             var deviceTagSettingsController = CreateDeviceTagSettingsController();
 
-            _ = this.mockDeviceTagService.Setup(x => x.CreateOrUpdateDeviceTag(It.Is<DeviceTag>(x => x.Name.Equals(deviceTag.Name, StringComparison.Ordinal))))
+            _ = this.mockDeviceTagService.Setup(x => x.CreateOrUpdateDeviceTag(It.Is<DeviceTagDto>(x => x.Name.Equals(deviceTag.Name, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -121,7 +121,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         public async Task DeleteDeviceTagByNameShouldDeleteDeviceTag()
         {
             // Arrange
-            var deviceTag = new DeviceTag
+            var deviceTag = new DeviceTagDto
             {
                 Name = Guid.NewGuid().ToString(),
             };
