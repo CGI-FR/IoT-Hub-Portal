@@ -3204,7 +3204,7 @@
               "schema": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/DeviceTag"
+                  "$ref": "#/components/schemas/DeviceTagDto"
                 }
               }
             },
@@ -3212,7 +3212,7 @@
               "schema": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/DeviceTag"
+                  "$ref": "#/components/schemas/DeviceTagDto"
                 }
               }
             },
@@ -3220,7 +3220,7 @@
               "schema": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/DeviceTag"
+                  "$ref": "#/components/schemas/DeviceTagDto"
                 }
               }
             }
@@ -3246,7 +3246,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DeviceTag"
+                    "$ref": "#/components/schemas/DeviceTagDto"
                   }
                 }
               }
@@ -3265,17 +3265,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DeviceTag"
+                "$ref": "#/components/schemas/DeviceTagDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/DeviceTag"
+                "$ref": "#/components/schemas/DeviceTagDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/DeviceTag"
+                "$ref": "#/components/schemas/DeviceTagDto"
               }
             }
           }
@@ -3945,7 +3945,7 @@
         "additionalProperties": false,
         "description": "Device property value."
       },
-      "DeviceTag": {
+      "DeviceTagDto": {
         "required": [
           "label",
           "name"
