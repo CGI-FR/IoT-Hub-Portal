@@ -21,11 +21,6 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly IDeviceTagRepository deviceTagRepository;
 
-        /// <summary>
-        /// The default partition key in AzureDataTable
-        /// </summary>
-        public const string DefaultPartitionKey = "0";
-
         public DeviceTagService(IMapper mapper,
             IUnitOfWork unitOfWork,
             IDeviceTagRepository deviceTagRepository)
