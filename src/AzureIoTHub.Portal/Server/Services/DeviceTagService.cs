@@ -70,7 +70,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 existingTags.ForEach(tag =>
                 {
-                    this.deviceTagRepository.Delete(tag);
+                    this.deviceTagRepository.Delete(tag.Id);
                 });
 
                 foreach (var tag in tags)

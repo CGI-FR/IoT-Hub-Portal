@@ -73,6 +73,32 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task UpdateTagsShouldDeleteExistingTagsAndCreatedNewTags()
+        {
+            var existingTags = Fixture.CreateMany<DeviceTag>(1).ToList();
+
+            var newTags = Fixture.CreateMany<DeviceTagDto>(1).ToList();
+
+            _ = this.mockDeviceTagRepository.Setup(repository => repository.GetAll())
+                .Returns(existingTags);
+
+            this.mockDeviceTagRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            _ = this.mockDeviceTagRepository.Setup(repository => repository.InsertAsync(It.IsAny<DeviceTag>()))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.deviceTagService.UpdateTags(newTags);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task UpdateTagsShouldThrowInternalServerErrorExceptionWhenDDbUpdateExceptionIsThrown()
         {
             var tag = new DeviceTagDto
