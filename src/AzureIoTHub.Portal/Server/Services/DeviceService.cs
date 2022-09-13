@@ -612,5 +612,20 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new InternalServerErrorException($"Unable to get model of the device with id {deviceId}: {e.Message}", e);
             }
         }
+
+        public async Task<Twin> CreateNewTwinFromDeviceId(string deviceId)
+        {
+            var existingDevice = await this.GetDevice(deviceId);
+            if (existingDevice != null)
+            {
+                throw new InternalServerErrorException($"The device with ID {deviceId} already exists");
+            }
+
+            // Create a new Twin from the form's fields.
+            return new Twin
+            {
+                DeviceId = deviceId
+            };
+        }
     }
 }

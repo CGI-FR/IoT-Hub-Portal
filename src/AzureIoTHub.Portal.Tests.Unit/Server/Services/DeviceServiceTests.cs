@@ -1684,5 +1684,39 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             this.mockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task CreateNewTwinFromDeviceIdShouldReturnTwin()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+            _ = this.mockRegistryManager.Setup(c => c.GetDeviceAsync(It.IsAny<string>()))
+                .ReturnsAsync((Device)null);
+
+            // Act
+            var twin = await service.CreateNewTwinFromDeviceId(deviceId);
+
+            // Assert
+            Assert.AreEqual(deviceId, twin.DeviceId);
+            this.mockRepository.VerifyAll();
+    }
+
+        [Test]
+        public async Task CreateNewTwinFromDeviceIdShouldThrowInternalErrorExceptionWhenDeviceAlreadyExists()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+            _ = this.mockRegistryManager.Setup(c => c.GetDeviceAsync(It.IsAny<string>()))
+                .ReturnsAsync(new Device());
+
+            // Act
+            var act = () => service.CreateNewTwinFromDeviceId(deviceId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
     }
 }

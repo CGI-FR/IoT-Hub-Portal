@@ -61,5 +61,7 @@ namespace AzureIoTHub.Portal.Server.Services
         Task<int> GetConnectedConcentratorsCount();
 
         Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId);
+
+        Task<Twin> CreateNewTwinFromDeviceId(string deviceId);
     }
 }
