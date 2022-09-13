@@ -1700,7 +1700,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Assert
             Assert.AreEqual(deviceId, twin.DeviceId);
             this.mockRepository.VerifyAll();
-    }
+        }
 
         [Test]
         public async Task CreateNewTwinFromDeviceIdShouldThrowInternalErrorExceptionWhenDeviceAlreadyExists()
