@@ -1686,6 +1686,50 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task WhenUnableToGetModelGetEnrollmentCredentialsShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+            var mockTwin = new Twin(deviceId);
+            mockTwin.Tags["modelId"] = "bbb";
+
+            _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == deviceId)))
+                .ReturnsAsync(mockTwin);
+
+            var mockTableClient = this.mockRepository.Create<TableClient>();
+            var mockDeviceModelEntity = new TableEntity
+            {
+                [nameof(DeviceModel.Name)] = "ccc"
+            };
+            var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
+
+            _ = mockResponse.SetupGet(c => c.Value)
+                .Returns(mockDeviceModelEntity);
+
+            _ = mockTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
+                It.Is<string>(x => x == "0"),
+                It.Is<string>(x => x == "bbb"),
+                It.IsAny<IEnumerable<string>>(),
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockResponse.Object);
+
+            _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync(deviceId, "ccc"))
+                .Throws(new RequestFailedException("test"));
+
+            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
+                .Returns(mockTableClient.Object);
+
+            // Act
+            var act = () => service.GetEnrollmentCredentials(deviceId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task CreateNewTwinFromDeviceIdShouldReturnTwin()
         {
             // Arrange
