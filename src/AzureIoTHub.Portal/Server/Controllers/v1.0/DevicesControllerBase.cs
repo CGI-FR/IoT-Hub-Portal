@@ -5,9 +5,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using Hellang.Middleware.ProblemDetails;
     using Mappers;
@@ -94,13 +92,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                         pageSize
                     }
                 });
-
-                var tagsFilterBuilder = new StringBuilder();
-
-                foreach (var tag in searchTags)
-                {
-                    _ = tagsFilterBuilder.Append(CultureInfo.InvariantCulture, $"&tag.{tag.Key}={tag.Value}");
-                }
             }
 
             return new PaginationResult<TListItem>
