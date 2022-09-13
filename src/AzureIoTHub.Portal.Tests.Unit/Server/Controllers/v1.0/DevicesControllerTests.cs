@@ -6,15 +6,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
-    using Azure;
-    using Azure.Data.Tables;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Controllers.V10;
-    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;
@@ -37,7 +33,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     {
         private MockRepository mockRepository;
 
-        private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
         private Mock<IUrlHelper> mockUrlHelper;
         private Mock<ILogger<DevicesController>> mockLogger;
         private Mock<IDeviceService> mockDeviceService;
@@ -52,7 +47,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
             this.mockLogger = this.mockRepository.Create<ILogger<DevicesController>>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
             this.mockDevicePropertyService = this.mockRepository.Create<IDevicePropertyService>();
@@ -69,10 +63,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 this.mockLogger.Object,
                 this.mockDeviceService.Object,
                 this.mockDeviceTagService.Object,
-                this.mockProvisioningServiceManager.Object,
                 this.mockDeviceTwinMapper.Object,
-                this.mockDevicePropertyService.Object,
-                this.mockTableClientFactory.Object)
+                this.mockDevicePropertyService.Object)
             {
                 Url = this.mockUrlHelper.Object
             };
@@ -195,8 +187,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             Twin twin = null;
 
-            _ = this.mockDeviceService.Setup(c => c.GetDevice(It.IsAny<string>()))
-                .ReturnsAsync((Device)null);
+            _ = this.mockDeviceService.Setup(c => c.CreateNewTwinFromDeviceId(It.IsAny<string>()))
+                .ReturnsAsync(new Twin { DeviceId = device.DeviceID });
 
             _ = this.mockDeviceTwinMapper.Setup(c => c.UpdateTwin(It.Is<Twin>(x => x.DeviceId == device.DeviceID), It.Is<DeviceDetails>(x => x == device)))
                 .Callback<Twin, DeviceDetails>((t, _) => twin = t);
@@ -309,40 +301,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var devicesController = CreateDevicesController();
+
+
             var mockRegistrationCredentials = new EnrollmentCredentials
             {
                 RegistrationID = "aaa",
                 SymmetricKey = "dfhjkfdgh"
             };
 
-            var mockTwin = new Twin("aaa");
-            mockTwin.Tags["modelId"] = "bbb";
-
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-            var mockDeviceModelEntity = new TableEntity
-            {
-                [nameof(DeviceModel.Name)] = "ccc"
-            };
-            var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
-
-            _ = mockResponse.SetupGet(c => c.Value)
-                .Returns(mockDeviceModelEntity);
-
-            _ = mockTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
-                It.Is<string>(x => x == "0"),
-                It.Is<string>(x => x == "bbb"),
-                It.IsAny<IEnumerable<string>>(),
-                It.IsAny<CancellationToken>()))
-                .ReturnsAsync(mockResponse.Object);
-
-            _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", "ccc"))
+            _ = this.mockDeviceService.Setup(c => c.GetEnrollmentCredentials("aaa"))
                 .ReturnsAsync(mockRegistrationCredentials);
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync(mockTwin);
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
-                .Returns(mockTableClient.Object);
 
             // Act
             var response = await devicesController.GetCredentials("aaa");
@@ -359,53 +327,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         }
 
         [Test]
-        public async Task WhenDeviceTypePropertyNotExistGetEnrollmentCredentialsShouldReturnBadRequest()
-        {
-            // Arrange
-            var devicesController = CreateDevicesController();
-
-            var mockTwin = new Twin("aaa");
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync(mockTwin);
-
-            // Act
-            var response = await devicesController.GetCredentials("aaa");
-
-            // Assert
-            Assert.IsNotNull(response);
-            Assert.IsAssignableFrom<BadRequestObjectResult>(response.Result);
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task WhenDeviceNotExistGetEnrollmentCredentialsShouldReturnNotFound()
-        {
-            // Arrange
-            var devicesController = CreateDevicesController();
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync((Twin)null);
-
-            // Act
-            var response = await devicesController.GetCredentials("aaa");
-
-            // Assert
-            Assert.IsNotNull(response);
-            Assert.IsAssignableFrom<NotFoundObjectResult>(response.Result);
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
         public async Task CreateDeviceAsyncDuplicatedDeviceIdShouldThrowInternalServerErrorException()
         {
             // Arrange
             var devicesController = CreateDevicesController();
 
-            _ = this.mockDeviceService.Setup(c => c.GetDevice(It.IsAny<string>()))
-                .ReturnsAsync(new Device());
+            _ = this.mockDeviceService.Setup(c => c.CreateNewTwinFromDeviceId(It.IsAny<string>()))
+                .ThrowsAsync(new InternalServerErrorException("test"));
 
             // Act
             var result = async () => await devicesController.CreateDeviceAsync(new DeviceDetails());
