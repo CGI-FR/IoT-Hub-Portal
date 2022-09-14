@@ -59,7 +59,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.CreateDeviceModel(It.Is<DeviceModel>(model =>
+                    service.CreateDeviceModel(It.Is<DeviceModelDto>(model =>
                         modelName.Equals(model.Name, StringComparison.Ordinal) && description.Equals(model.Description, StringComparison.Ordinal) && !model.SupportLoRaFeatures)))
                 .Returns(Task.CompletedTask);
 
@@ -73,8 +73,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var cut = RenderComponent<CreateDeviceModelPage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(DeviceModel.Name)}").Change(modelName);
-            cut.WaitForElement($"#{nameof(DeviceModel.Description)}").Change(description);
+            cut.WaitForElement($"#{nameof(DeviceModelDto.Name)}").Change(modelName);
+            cut.WaitForElement($"#{nameof(DeviceModelDto.Description)}").Change(description);
 
             saveButton.Click();
 
@@ -93,7 +93,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.CreateDeviceModel(It.Is<DeviceModel>(model =>
+                    service.CreateDeviceModel(It.Is<DeviceModelDto>(model =>
                         modelName.Equals(model.Name, StringComparison.Ordinal) && description.Equals(model.Description, StringComparison.Ordinal) && !model.SupportLoRaFeatures)))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
@@ -101,8 +101,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var cut = RenderComponent<CreateDeviceModelPage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(DeviceModel.Name)}").Change(modelName);
-            cut.WaitForElement($"#{nameof(DeviceModel.Description)}").Change(description);
+            cut.WaitForElement($"#{nameof(DeviceModelDto.Name)}").Change(modelName);
+            cut.WaitForElement($"#{nameof(DeviceModelDto.Description)}").Change(description);
 
             saveButton.Click();
 
@@ -121,7 +121,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.CreateDeviceModel(It.IsAny<DeviceModel>()))
+                    service.CreateDeviceModel(It.IsAny<DeviceModelDto>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -135,8 +135,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var saveButton = cut.WaitForElement("#SaveButton");
             var addPropertyButton = cut.WaitForElement("#addPropertyButton");
 
-            cut.WaitForElement($"#{nameof(DeviceModel.Name)}").Change(Guid.NewGuid().ToString());
-            cut.WaitForElement($"#{nameof(DeviceModel.Description)}").Change(Guid.NewGuid().ToString());
+            cut.WaitForElement($"#{nameof(DeviceModelDto.Name)}").Change(Guid.NewGuid().ToString());
+            cut.WaitForElement($"#{nameof(DeviceModelDto.Description)}").Change(Guid.NewGuid().ToString());
 
             addPropertyButton.Click();
 
@@ -164,7 +164,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.CreateDeviceModel(It.IsAny<DeviceModel>()))
+                    service.CreateDeviceModel(It.IsAny<DeviceModelDto>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -177,8 +177,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var cut = RenderComponent<CreateDeviceModelPage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(DeviceModel.Name)}").Change(Guid.NewGuid().ToString());
-            cut.WaitForElement($"#{nameof(DeviceModel.Description)}").Change(Guid.NewGuid().ToString());
+            cut.WaitForElement($"#{nameof(DeviceModelDto.Name)}").Change(Guid.NewGuid().ToString());
+            cut.WaitForElement($"#{nameof(DeviceModelDto.Description)}").Change(Guid.NewGuid().ToString());
 
             var addPropertyButton = cut.WaitForElement("#addPropertyButton");
             addPropertyButton.Click();
@@ -261,12 +261,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
-                    service.CreateDeviceModel(It.Is<LoRaDeviceModel>(model =>
+                    service.CreateDeviceModel(It.Is<LoRaDeviceModelDto>(model =>
                         modelName.Equals(model.Name, StringComparison.Ordinal) && description.Equals(model.Description, StringComparison.Ordinal) && model.SupportLoRaFeatures)))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
-                    service.SetDeviceModelCommands(It.IsAny<string>(), new List<DeviceModelCommand>()))
+                    service.SetDeviceModelCommands(It.IsAny<string>(), new List<DeviceModelCommandDto>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>())).Returns((Snackbar)null);
@@ -278,8 +278,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             cut.WaitForElement("#SupportLoRaFeatures").Change(true);
             cut.WaitForState(() => cut.FindAll(".mud-tabs .mud-tab").Count == 2);
 
-            cut.WaitForElement($"#{nameof(DeviceModel.Name)}").Change(modelName);
-            cut.WaitForElement($"#{nameof(DeviceModel.Description)}").Change(description);
+            cut.WaitForElement($"#{nameof(DeviceModelDto.Name)}").Change(modelName);
+            cut.WaitForElement($"#{nameof(DeviceModelDto.Description)}").Change(description);
 
             saveButton.Click();
 

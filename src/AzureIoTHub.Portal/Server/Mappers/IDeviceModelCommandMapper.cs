@@ -8,8 +8,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
     public interface IDeviceModelCommandMapper
     {
-        public DeviceModelCommand GetDeviceModelCommand(TableEntity entity);
+        public DeviceModelCommandDto GetDeviceModelCommand(TableEntity entity);
 
-        public void UpdateTableEntity(TableEntity commandEntity, DeviceModelCommand element);
+        public void UpdateTableEntity(TableEntity commandEntity, DeviceModelCommandDto element);
     }
 }

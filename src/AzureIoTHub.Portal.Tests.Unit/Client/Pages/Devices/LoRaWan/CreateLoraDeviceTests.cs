@@ -28,7 +28,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void WhenUseOTAAShouldDisplayOTAATextboxes()
         {
-            var mockLoRaModel = new LoRaDeviceModel
+            var mockLoRaModel = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 UseOTAA = true
@@ -48,7 +48,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             var cut = RenderComponent<CreateLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(CreateLoraDevice.LoRaDevice), deviceDetails),
-                ComponentParameter.CreateParameter(nameof(CreateLoraDevice.loraModel), mockLoRaModel),
+                ComponentParameter.CreateParameter(nameof(CreateLoraDevice.LoraModelDto), mockLoRaModel),
                 ComponentParameter.CreateParameter(nameof(CreateLoraDevice.LoraValidator), validator));
 
 
@@ -60,7 +60,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void WhenNotUseOTAAShouldDisplayABPTextboxes()
         {
-            var mockLoRaModel = new LoRaDeviceModel
+            var mockLoRaModel = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 UseOTAA = false
@@ -79,7 +79,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Act
             var cut = RenderComponent<CreateLoraDevice>(
             ComponentParameter.CreateParameter(nameof(CreateLoraDevice.LoRaDevice), deviceDetails),
-            ComponentParameter.CreateParameter(nameof(CreateLoraDevice.loraModel), mockLoRaModel),
+            ComponentParameter.CreateParameter(nameof(CreateLoraDevice.LoraModelDto), mockLoRaModel),
             ComponentParameter.CreateParameter(nameof(CreateLoraDevice.LoraValidator), validator));
 
 

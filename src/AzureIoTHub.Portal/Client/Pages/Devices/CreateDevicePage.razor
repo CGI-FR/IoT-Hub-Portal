@@ -235,7 +235,7 @@
                 @if (IsLoRa)
                 {
                     <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
-                        <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" loraModel="@(loRaDeviceModel)" LoraValidator="@(loraValidator)" />
+                        <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraModelDto="@(LoRaDeviceModelDto)" LoraValidator="@(loraValidator)" />
                     </MudTabPanel>
                 }
             </MudTabs>
@@ -253,7 +253,7 @@
 
     private DeviceDetailsValidator standardValidator = new DeviceDetailsValidator();
     private LoRaDeviceDetailsValidator loraValidator = new LoRaDeviceDetailsValidator();
-    private LoRaDeviceModel loRaDeviceModel { get; set; }
+    private LoRaDeviceModelDto LoRaDeviceModelDto { get; set; }
 
     private bool IsLoRa
     {
@@ -323,7 +323,7 @@
     public void Dispose()
     {
         DeviceLayoutService.ResetSharedDevice<DeviceDetails>();
-        DeviceLayoutService.ResetSharedDeviceModel<DeviceModel>();
+        DeviceLayoutService.ResetSharedDeviceModel<DeviceModelDto>();
         DeviceLayoutService.RefreshDeviceOccurred -= DeviceServiceOnRefreshDeviceOccurred;
     }
 
@@ -382,7 +382,7 @@
                 break;
             case DeviceSaveAction.SaveAndAddNew:
                 Device = DeviceLayoutService.ResetSharedDevice<DeviceDetails>(TagList.ToList());
-                DeviceModel = DeviceLayoutService.ResetSharedDeviceModel<DeviceModel>();
+                DeviceModel = DeviceLayoutService.ResetSharedDeviceModel<DeviceModelDto>();
                 break;
             case DeviceSaveAction.SaveAndDuplicate:
                 Device = DeviceLayoutService.DuplicateSharedDevice(Device as DeviceDetails);
@@ -506,7 +506,7 @@
                         UseOTAA = loRaDeviceModelResult.UseOTAA
                     };
 
-                loRaDeviceModel = loRaDeviceModelResult;
+                LoRaDeviceModelDto = loRaDeviceModelResult;
             }
             else
             {

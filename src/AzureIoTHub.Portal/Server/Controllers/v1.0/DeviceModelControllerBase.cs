@@ -3,22 +3,12 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
-    using Azure;
-    using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Server.Helpers;
-    using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Server.Services;
+    using Services;
     using AzureIoTHub.Portal.Shared.Models;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Logging;
 
     public abstract class DeviceModelsControllerBase<TListItemModel, TModel> : ControllerBase
         where TListItemModel : class, IDeviceModel
@@ -31,100 +21,24 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public const string DefaultPartitionKey = "0";
 #pragma warning restore RCS1158 // Static member in generic type should use a type parameter.
 
-        /// <summary>
-        /// The logger.
-        /// </summary>
-        private readonly ILogger log;
-
-        /// <summary>
-        /// The table client factory.
-        /// </summary>
-        private readonly ITableClientFactory tableClientFactory;
-
-        /// <summary>
-        /// The device model mapper.
-        /// </summary>
-        private readonly IDeviceModelMapper<TListItemModel, TModel> deviceModelMapper;
-
-        /// <summary>
-        /// The device model image manager.
-        /// </summary>
-        private readonly IDeviceModelImageManager deviceModelImageManager;
-
-        /// <summary>
-        /// The devices service.
-        /// </summary>
-        private readonly IDeviceService devicesService;
-
-        /// <summary>
-        /// The device provisioning service manager.
-        /// </summary>
-        private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
-
-        /// <summary>
-        /// The configuration service.
-        /// </summary>
-        private readonly IConfigService configService;
-
-        /// <summary>
-        /// The device template filter.
-        /// </summary>
-        private readonly string filter;
+        private readonly IDeviceModelService<TListItemModel, TModel> deviceModelService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceModelsController"/> class.
         /// </summary>
-        /// <param name="log">The logger.</param>
-        /// <param name="deviceModelImageManager">The device model image manager.</param>
-        /// <param name="deviceModelMapper">The device model mapper.</param>
-        /// <param name="devicesService">The devices service.</param>
-        /// <param name="tableClientFactory">The table client factory.</param>
-        /// <param name="deviceProvisioningServiceManager">The device provisioning service manager.</param>
-        /// <param name="configService">The configuration service.</param>
-        /// <param name="filter">The device template filter query string.</param>
-        protected DeviceModelsControllerBase(
-            ILogger log,
-            IDeviceModelImageManager deviceModelImageManager,
-            IDeviceModelMapper<TListItemModel, TModel> deviceModelMapper,
-            IDeviceService devicesService,
-            ITableClientFactory tableClientFactory,
-            IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
-            IConfigService configService,
-            string filter)
+        /// <param name="deviceModelService"></param>
+        protected DeviceModelsControllerBase(IDeviceModelService<TListItemModel, TModel> deviceModelService)
         {
-            this.log = log;
-            this.deviceModelMapper = deviceModelMapper;
-            this.tableClientFactory = tableClientFactory;
-            this.deviceModelImageManager = deviceModelImageManager;
-            this.devicesService = devicesService;
-            this.filter = filter;
-            this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
-            this.configService = configService;
+            this.deviceModelService = deviceModelService;
         }
 
         /// <summary>
         /// Gets the device models.
         /// </summary>
         /// <returns>The list of device models.</returns>
-        public virtual ActionResult<IEnumerable<TListItemModel>> GetItems()
+        public virtual async Task<ActionResult<IEnumerable<TListItemModel>>> GetItems()
         {
-            Pageable<TableEntity> entities;
-            try
-            {
-                // PartitionKey 0 contains all device models
-                entities = this.tableClientFactory
-                            .GetDeviceTemplates()
-                            .Query<TableEntity>(this.filter);
-            }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException("Unable to get device models.", e);
-            }
-
-            // Converts the query result into a list of device models
-            var deviceModelList = entities.Select(this.deviceModelMapper.CreateDeviceModelListItem);
-
-            return Ok(deviceModelList.ToArray());
+            return Ok(await this.deviceModelService.GetDeviceModels());
         }
 
         /// <summary>
@@ -134,25 +48,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <returns>The corresponding model.</returns>
         public virtual async Task<ActionResult<TModel>> GetItem(string id)
         {
-            try
-            {
-                var query = await this.tableClientFactory
-                            .GetDeviceTemplates()
-                            .GetEntityAsync<TableEntity>(DefaultPartitionKey, id);
-
-                return Ok(this.deviceModelMapper.CreateDeviceModel(query.Value));
-            }
-            catch (RequestFailedException e)
-            {
-                if (e.Status == StatusCodes.Status404NotFound)
-                {
-                    return NotFound();
-                }
-
-                this.log.Log(LogLevel.Error, e.Message, e);
-
-                throw new InternalServerErrorException($"Unable to get the device model with the id: {id}", e);
-            }
+            return await this.deviceModelService.GetDeviceModel(id);
         }
 
         /// <summary>
@@ -162,25 +58,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <returns>The avatar.</returns>
         public virtual async Task<ActionResult<string>> GetAvatar(string id)
         {
-            try
-            {
-                _ = await this.tableClientFactory
-                            .GetDeviceTemplates()
-                            .GetEntityAsync<TableEntity>(DefaultPartitionKey, id);
-
-                return this.Ok(this.deviceModelImageManager.ComputeImageUri(id).ToString());
-            }
-            catch (RequestFailedException e)
-            {
-                if (e.Status == StatusCodes.Status404NotFound)
-                {
-                    return NotFound();
-                }
-
-                this.log.Log(LogLevel.Error, e.Message, e);
-
-                throw new InternalServerErrorException("Unable to get the device model avatar.", e);
-            }
+            return Ok(await this.deviceModelService.GetDeviceModelAvatar(id));
         }
 
         /// <summary>
@@ -191,25 +69,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <returns>The avatar.</returns>
         public virtual async Task<ActionResult<string>> ChangeAvatar(string id, IFormFile file)
         {
-            try
-            {
-                _ = await this.tableClientFactory
-                               .GetDeviceTemplates()
-                               .GetEntityAsync<TableEntity>(DefaultPartitionKey, id);
-
-                return Ok(await this.deviceModelImageManager.ChangeDeviceModelImageAsync(id, file?.OpenReadStream()));
-            }
-            catch (RequestFailedException e)
-            {
-                if (e.Status == StatusCodes.Status404NotFound)
-                {
-                    return NotFound();
-                }
-
-                this.log.Log(LogLevel.Error, e.Message, e);
-
-                throw new InternalServerErrorException($"Unable to change the device model avatar with id:{id}.", e);
-            }
+            return Ok(await this.deviceModelService.UpdateDeviceModelAvatar(id, file));
         }
 
         /// <summary>
@@ -218,27 +78,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="id">The model identifier.</param>
         public virtual async Task<IActionResult> DeleteAvatar(string id)
         {
-            try
-            {
-                _ = await this.tableClientFactory
-                               .GetDeviceTemplates()
-                               .GetEntityAsync<TableEntity>(DefaultPartitionKey, id);
+            await this.deviceModelService.DeleteDeviceModelAvatar(id);
 
-                await this.deviceModelImageManager.DeleteDeviceModelImageAsync(id);
-
-                return NoContent();
-            }
-            catch (RequestFailedException e)
-            {
-                if (e.Status == StatusCodes.Status404NotFound)
-                {
-                    return NotFound();
-                }
-
-                this.log.Log(LogLevel.Error, e.Message, e);
-
-                throw new InternalServerErrorException($"Unable to delete avatar of the device model with the id: {id}", e);
-            }
+            return NoContent();
         }
 
         /// <summary>
@@ -248,34 +90,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <returns>The action result.</returns>
         public virtual async Task<IActionResult> Post(TModel deviceModel)
         {
-            if (!string.IsNullOrEmpty(deviceModel?.ModelId))
-            {
-                try
-                {
-                    _ = await this.tableClientFactory
-                                   .GetDeviceTemplates()
-                                   .GetEntityAsync<TableEntity>(DefaultPartitionKey, deviceModel.ModelId);
-
-                    return BadRequest("Cannot create a device model with an existing id.");
-                }
-                catch (RequestFailedException e)
-                {
-                    if (e.Status != StatusCodes.Status404NotFound)
-                    {
-                        this.log.Log(LogLevel.Error, e.Message, e);
-
-                        throw new InternalServerErrorException($"Unable create the device model with id: {deviceModel?.ModelId}.", e);
-                    }
-                }
-            }
-
-            var entity = new TableEntity()
-            {
-                PartitionKey = DefaultPartitionKey,
-                RowKey = string.IsNullOrEmpty(deviceModel.ModelId) ? Guid.NewGuid().ToString() : deviceModel.ModelId
-            };
-
-            await SaveEntity(entity, deviceModel);
+            await this.deviceModelService.CreateDeviceModel(deviceModel);
 
             return Ok();
         }
@@ -287,32 +102,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <returns>The action result.</returns>
         public virtual async Task<IActionResult> Put(TModel deviceModel)
         {
-            if (string.IsNullOrEmpty(deviceModel?.ModelId))
-            {
-                return BadRequest("Should provide the model id.");
-            }
-
-            TableEntity entity;
-
-            try
-            {
-                entity = await this.tableClientFactory
-                               .GetDeviceTemplates()
-                               .GetEntityAsync<TableEntity>(DefaultPartitionKey, deviceModel.ModelId);
-            }
-            catch (RequestFailedException e)
-            {
-                if (e.Status == StatusCodes.Status404NotFound)
-                {
-                    return NotFound();
-                }
-
-                this.log.Log(LogLevel.Error, e.Message, e);
-
-                throw new InternalServerErrorException($"Unable to update device model with id: {deviceModel?.ModelId}", e);
-            }
-
-            await SaveEntity(entity, deviceModel);
+            await this.deviceModelService.UpdateDeviceModel(deviceModel);
 
             return Ok();
         }
@@ -324,103 +114,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <returns>The action result.</returns>
         public virtual async Task<IActionResult> Delete(string id)
         {
-            // we get all devices
-            var deviceList = await this.devicesService.GetAllDevice();
-
-            try
-            {
-                _ = await this.tableClientFactory
-                            .GetDeviceTemplates()
-                            .GetEntityAsync<TableEntity>(DefaultPartitionKey, id);
-            }
-            catch (RequestFailedException e)
-            {
-                if (e.Status == StatusCodes.Status404NotFound)
-                {
-                    return NotFound();
-                }
-
-                this.log.Log(LogLevel.Error, e.Message, e);
-
-                throw new InternalServerErrorException("Unable to get the device model entity.", e);
-            }
-
-            if (deviceList.Items.Any(x => DeviceHelper.RetrieveTagValue(x, "modelId") == id))
-            {
-                return BadRequest("This model is already in use by a device and cannot be deleted.");
-            }
-
-            TableEntity[] queryCommand;
-
-            try
-            {
-                queryCommand = this.tableClientFactory
-                                   .GetDeviceCommands()
-                                   .Query<TableEntity>(t => t.PartitionKey == id)
-                                   .ToArray();
-            }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException($"Unable to get commands for the device models with id: {id}", e);
-            }
-
-
-            foreach (var item in queryCommand)
-            {
-                try
-                {
-                    _ = await this.tableClientFactory
-                                    .GetDeviceCommands()
-                                    .DeleteEntityAsync(id, item.RowKey);
-                }
-                catch (RequestFailedException e)
-                {
-                    throw new InternalServerErrorException("Unable to delete the device model command entity.", e);
-                }
-            }
-
-            // Image deletion
-            await this.deviceModelImageManager.DeleteDeviceModelImageAsync(id);
-
-            try
-            {
-                _ = await this.tableClientFactory
-                    .GetDeviceTemplates()
-                    .DeleteEntityAsync(DefaultPartitionKey, id);
-            }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException("Unable to delete the device model entity.", e);
-            }
+            await this.deviceModelService.DeleteDeviceModel(id);
 
             return NoContent();
-        }
-
-        /// <summary>
-        /// Saves the entity.
-        /// </summary>
-        /// <param name="entity">The entity.</param>
-        /// <param name="deviceModelObject">The device model object.</param>
-        private async Task SaveEntity(TableEntity entity, TModel deviceModelObject)
-        {
-            var desiredProperties = this.deviceModelMapper.UpdateTableEntity(entity, deviceModelObject);
-
-            try
-            {
-                _ = await this.tableClientFactory
-                    .GetDeviceTemplates()
-                    .UpsertEntityAsync(entity);
-            }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException("Unable to upsert the device model entity.", e);
-            }
-
-            var deviceModelTwin = new TwinCollection();
-
-            _ = await this.deviceProvisioningServiceManager.CreateEnrollmentGroupFromModelAsync(deviceModelObject.ModelId, deviceModelObject.Name, deviceModelTwin);
-
-            await this.configService.RollOutDeviceModelConfiguration(deviceModelObject.ModelId, desiredProperties);
         }
     }
 }

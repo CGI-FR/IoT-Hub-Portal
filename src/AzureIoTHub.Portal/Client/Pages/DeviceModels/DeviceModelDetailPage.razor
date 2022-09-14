@@ -139,7 +139,7 @@
                 @if (IsLoRa)
                 {
                     <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
-                        <EditLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModel)"
+                        <EditLoraDeviceModel LoRaDeviceModel="@(Model as LoRaDeviceModelDto)"
                                              Commands="Commands"/>
                     </MudTabPanel>
                 }
@@ -165,7 +165,7 @@
     private LoRaDeviceModelValidator loraValidator = new LoRaDeviceModelValidator();
     private DevicePropertyValidator propertiesValidator = new DevicePropertyValidator();
 
-    private List<DeviceModelCommand> Commands { get; set; } = new List<DeviceModelCommand>();
+    private List<DeviceModelCommandDto> Commands { get; set; } = new List<DeviceModelCommandDto>();
     private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
 
     private LoRaDeviceModelCommandValidator CommandValidator = new LoRaDeviceModelCommandValidator();
@@ -176,7 +176,7 @@
     {
         get
         {
-            return this.Model is LoRaDeviceModel;
+            return this.Model is LoRaDeviceModelDto;
         }
         set
         {
@@ -190,9 +190,9 @@
         }
     }
 
-    private void SetLoRaDeviceModel() => Model = new LoRaDeviceModel(Model);
+    private void SetLoRaDeviceModel() => Model = new LoRaDeviceModelDto(Model);
 
-    private void SetStandardDeviceModel() => Model = new DeviceModel
+    private void SetStandardDeviceModel() => Model = new DeviceModelDto
         {
             ModelId = Model.ModelId,
             Name = Model.Name,
@@ -200,7 +200,7 @@
             Description = Model.Description
         };
 
-    private IDeviceModel Model { get; set; } = new DeviceModel
+    private IDeviceModel Model { get; set; } = new DeviceModelDto
         {
             ModelId = Guid.NewGuid().ToString()
         };
@@ -211,7 +211,7 @@
 
     private bool CheckLoRaValidation()
     {
-        if (IsLoRa && this.Model is LoRaDeviceModel loRaDeviceModel)
+        if (IsLoRa && this.Model is LoRaDeviceModelDto loRaDeviceModel)
         {
             return !this.loraValidator.Validate(loRaDeviceModel).IsValid;
         }
@@ -221,7 +221,7 @@
 
     private bool CheckGeneralValidation()
     {
-        if (!IsLoRa && this.Model is DeviceModel deviceModel)
+        if (!IsLoRa && this.Model is DeviceModelDto deviceModel)
         {
             return !this.standardValidator.Validate(deviceModel).IsValid;
         }
@@ -312,8 +312,8 @@
             }
         }
 
-        if (!IsLoRa ? !standardValidator.Validate(Model as DeviceModel).IsValid :
-            (!this.loraValidator.Validate(this.Model as LoRaDeviceModel).IsValid
+        if (!IsLoRa ? !standardValidator.Validate(Model as DeviceModelDto).IsValid :
+            (!this.loraValidator.Validate(this.Model as LoRaDeviceModelDto).IsValid
             || duplicated
             || cmdValidationError))
         {
@@ -332,13 +332,13 @@
         {
             if (IsLoRa)
             {
-                await LoRaWanDeviceModelsClientService.UpdateDeviceModel(Model as LoRaDeviceModel);
+                await LoRaWanDeviceModelsClientService.UpdateDeviceModel(Model as LoRaDeviceModelDto);
 
                 await LoRaWanDeviceModelsClientService.SetDeviceModelCommands(Model.ModelId, Commands);
             }
             else
             {
-                await DeviceModelsClientService.UpdateDeviceModel(Model as DeviceModel);
+                await DeviceModelsClientService.UpdateDeviceModel(Model as DeviceModelDto);
 
                 await DeviceModelsClientService.SetDeviceModelModelProperties(Model.ModelId, Properties);
             }

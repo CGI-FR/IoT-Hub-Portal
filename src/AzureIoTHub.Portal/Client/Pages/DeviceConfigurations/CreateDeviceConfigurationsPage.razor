@@ -28,7 +28,7 @@
                         </MudItem>
                         <MudItem xs="12">
                             Select a device model to configure.
-                            <MudAutocomplete T="DeviceModel"
+                            <MudAutocomplete T="DeviceModelDto"
                                              id="selectDeviceModel"
                                              Label="Targeted Device model*"
                                              Dense=true
@@ -229,7 +229,7 @@
 
     IEnumerable<DeviceTagDto> AvailableTags { get; set; } = Array.Empty<DeviceTagDto>();
     IEnumerable<DeviceProperty> AvailableProperties = Array.Empty<DeviceProperty>();
-    IEnumerable<DeviceModel> AvailableModels = Array.Empty<DeviceModel>();
+    IEnumerable<DeviceModelDto> AvailableModels = Array.Empty<DeviceModelDto>();
 
     public string SelectedTag { get; set; }
     public string SelectedProperty { get; set; }
@@ -280,7 +280,7 @@
         }
     }
 
-    public async Task SelectModel(DeviceModel model)
+    public async Task SelectModel(DeviceModelDto model)
     {
         if (model == null)
         {
@@ -303,7 +303,7 @@
     /// </summary>
     /// <param name="value">Text entered in the field</param>
     /// <returns>Item of the device model list that matches the user's value</returns>
-    private async Task<IEnumerable<DeviceModel>> Search(string value)
+    private async Task<IEnumerable<DeviceModelDto>> Search(string value)
     {
         // In real life use an asynchronous function for fetching data from an api.
         await Task.Delay(0);

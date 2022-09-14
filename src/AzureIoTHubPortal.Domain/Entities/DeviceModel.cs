@@ -3,7 +3,7 @@
 
 namespace AzureIoTHub.Portal.Domain.Entities
 {
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using Models.v10.LoRaWAN;
     using Base;
 
     public class DeviceModel : EntityBase

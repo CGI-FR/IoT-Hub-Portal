@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
     using Models.v10;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
+    using FluentAssertions;
     using Moq;
     using NUnit.Framework;
 
@@ -17,7 +18,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
         private MockRepository mockRepository;
 
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
-        private Mock<IDeviceModelCommandsManager> mockDeviceModelCommandsManager;
 
         [SetUp]
         public void SetUp()
@@ -25,8 +25,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockDeviceModelImageManager = this.mockRepository.Create<IDeviceModelImageManager>();
-
-            this.mockDeviceModelCommandsManager = this.mockRepository.Create<IDeviceModelCommandsManager>();
         }
 
         private DeviceModelMapper CreateDeviceModelMapper()
@@ -93,25 +91,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
         }
 
         [Test]
-        public void UpdateTableEntityStateUnderTestExpectedBehavior()
+        public void BuildDeviceModelDesiredPropertiesShouldReturnEmptyDesiredPropertiesForDeviceModel()
         {
             // Arrange
             var deviceModelMapper = CreateDeviceModelMapper();
-            var entity = new TableEntity();
-            var model = new DeviceModel
+            var model = new DeviceModelDto
             {
                 Name = "DeviceModelName",
                 Description = "Description"
             };
 
             // Act
-            _ = deviceModelMapper.UpdateTableEntity(
-                entity,
-                model);
+            var result = deviceModelMapper.BuildDeviceModelDesiredProperties(model);
 
             // Assert
-            Assert.AreEqual("DeviceModelName", entity["Name"]);
-            Assert.AreEqual("Description", entity["Description"]);
+            _ = result.Should().BeEmpty();
 
             this.mockRepository.VerifyAll();
         }

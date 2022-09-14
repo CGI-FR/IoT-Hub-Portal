@@ -55,7 +55,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             var deviceModelCommandMapper = CreateDeviceModelCommandMapper();
             var entity = new TableEntity();
 
-            var element = new DeviceModelCommand
+            var element = new DeviceModelCommandDto
             {
                 Name = "000-000-001",
                 Frame = "ExpectedFrame",

@@ -62,7 +62,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
         {
             // Arrange
             var deviceId = Fixture.Create<string>();
-            var command = new DeviceModelCommand
+            var command = new DeviceModelCommandDto
             {
                 Frame = Fixture.Create<string>(),
                 Confirmed = Fixture.Create<bool>(),

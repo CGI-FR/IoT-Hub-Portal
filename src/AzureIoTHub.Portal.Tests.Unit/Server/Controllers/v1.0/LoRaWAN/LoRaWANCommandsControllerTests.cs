@@ -32,7 +32,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         public async Task PostShouldCreateCommand()
         {
             // Arrange
-            var command = new DeviceModelCommand
+            var command = new DeviceModelCommandDto
             {
                 Name = Guid.NewGuid().ToString()
             };
@@ -55,7 +55,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         public async Task PostNullModelIdShouldThrowArgumentNullException()
         {
             //Arrange
-            var command = new DeviceModelCommand
+            var command = new DeviceModelCommandDto
             {
                 Name = Guid.NewGuid().ToString()
             };
@@ -88,7 +88,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         public async Task GetShouldReturnDeviceModelCommands()
         {
             // Arrange
-            var command = new DeviceModelCommand
+            var command = new DeviceModelCommandDto
             {
                 Name = Guid.NewGuid().ToString()
             };
@@ -109,9 +109,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             var okResult = (OkObjectResult)response.Result;
 
             Assert.IsNotNull(okResult);
-            Assert.IsAssignableFrom<DeviceModelCommand[]>(okResult.Value);
+            Assert.IsAssignableFrom<DeviceModelCommandDto[]>(okResult.Value);
 
-            var result = (DeviceModelCommand[])okResult.Value;
+            var result = (DeviceModelCommandDto[])okResult.Value;
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Length);
 

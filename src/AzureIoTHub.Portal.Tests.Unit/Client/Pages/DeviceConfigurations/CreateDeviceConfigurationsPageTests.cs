@@ -52,7 +52,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>());
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -80,7 +80,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>());
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -116,7 +116,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>());
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -158,7 +158,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Arrange
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>());
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -177,7 +177,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Arrange
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>());
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -213,7 +213,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModel>
+                .ReturnsAsync(new List<DeviceModelDto>
                 {
                     new ()
                     {

@@ -4,17 +4,15 @@
 namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Filters;
-    using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Server.Services;
+    using Filters;
+    using Services;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
 
     [Authorize]
     [ApiController]
@@ -22,29 +20,18 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     [Route("api/lorawan/models")]
     [ApiExplorerSettings(GroupName = "LoRa WAN")]
     [LoRaFeatureActiveFilter]
-    public class LoRaWANDeviceModelsController : DeviceModelsControllerBase<DeviceModel, LoRaDeviceModel>
+    public class LoRaWANDeviceModelsController : DeviceModelsControllerBase<DeviceModelDto, LoRaDeviceModelDto>
     {
+        private readonly IDeviceModelService<DeviceModelDto, LoRaDeviceModelDto> deviceModelService;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LoRaWANDeviceModelsController"/> class.
         /// </summary>
-        /// <param name="log">The logger.</param>
-        /// <param name="deviceModelImageManager">The device model image manager.</param>
-        /// <param name="deviceModelMapper">The device model mapper.</param>
-        /// <param name="devicesService">The devices service.</param>
-        /// <param name="tableClientFactory">The table client factory.</param>
-        /// <param name="deviceProvisioningServiceManager">The device provisioning service manager.</param>
-        /// <param name="configService">The configuration service.</param>
-        public LoRaWANDeviceModelsController(
-            ILogger<DeviceModelsControllerBase<DeviceModel, LoRaDeviceModel>> log,
-            IDeviceModelImageManager deviceModelImageManager,
-            IDeviceModelMapper<DeviceModel, LoRaDeviceModel> deviceModelMapper,
-            IDeviceService devicesService,
-            ITableClientFactory tableClientFactory,
-            IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
-            IConfigService configService)
-            : base(log, deviceModelImageManager, deviceModelMapper, devicesService, tableClientFactory, deviceProvisioningServiceManager, configService,
-                  $"{nameof(DeviceModel.SupportLoRaFeatures)} eq true")
+        /// <param name="deviceModelService">Device Model Service</param>
+        public LoRaWANDeviceModelsController(IDeviceModelService<DeviceModelDto, LoRaDeviceModelDto> deviceModelService)
+            : base(deviceModelService)
         {
+            this.deviceModelService = deviceModelService;
         }
 
         /// <summary>
@@ -53,9 +40,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <returns>An array representing the device models.</returns>
         [HttpGet(Name = "GET LoRaWAN device model list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public override ActionResult<IEnumerable<DeviceModel>> GetItems()
+        public override async Task<ActionResult<IEnumerable<DeviceModelDto>>> GetItems()
         {
-            return base.GetItems();
+            var devices = await this.deviceModelService.GetDeviceModels();
+            return Ok(devices.Where(device => device.SupportLoRaFeatures));
         }
 
         /// <summary>
@@ -66,7 +54,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [HttpGet("{id}", Name = "GET LoRaWAN device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override Task<ActionResult<LoRaDeviceModel>> GetItem(string id)
+        public override Task<ActionResult<LoRaDeviceModelDto>> GetItem(string id)
         {
             return base.GetItem(id);
         }
@@ -112,28 +100,28 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <summary>
         /// Creates the specified device model.
         /// </summary>
-        /// <param name="deviceModel">The device model.</param>
+        /// <param name="deviceModelDto">The device model.</param>
         /// <returns>The action result.</returns>
         [HttpPost(Name = "POST Create a new LoRaWAN device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public override Task<IActionResult> Post(LoRaDeviceModel deviceModel)
+        public override Task<IActionResult> Post(LoRaDeviceModelDto deviceModelDto)
         {
-            return base.Post(deviceModel);
+            return base.Post(deviceModelDto);
         }
 
         /// <summary>
         /// Updates the specified device model.
         /// </summary>
-        /// <param name="deviceModel">The device model.</param>
+        /// <param name="deviceModelDto">The device model.</param>
         /// <returns>The action result.</returns>
         [HttpPut("{id}", Name = "PUT Update the LoRaWAN device model")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public override Task<IActionResult> Put(LoRaDeviceModel deviceModel)
+        public override Task<IActionResult> Put(LoRaDeviceModelDto deviceModelDto)
         {
-            return base.Put(deviceModel);
+            return base.Put(deviceModelDto);
         }
 
         /// <summary>

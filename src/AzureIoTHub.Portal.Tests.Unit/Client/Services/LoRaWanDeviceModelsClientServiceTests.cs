@@ -39,7 +39,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var deviceModelId = Fixture.Create<string>();
 
-            var expectedDeviceModel = new LoRaDeviceModel
+            var expectedDeviceModel = new LoRaDeviceModelDto
             {
                 ModelId = deviceModelId
             };
@@ -60,7 +60,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task CreateDeviceModelShouldCreateDeviceModel()
         {
             // Arrange
-            var expectedDeviceModel = new LoRaDeviceModel
+            var expectedDeviceModel = new LoRaDeviceModelDto
             {
                 ModelId = Fixture.Create<string>()
             };
@@ -68,8 +68,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             _ = MockHttpClient.When(HttpMethod.Post, "/api/lorawan/models")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<LoRaDeviceModel>>();
-                    var body = m.Content as ObjectContent<LoRaDeviceModel>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<LoRaDeviceModelDto>>();
+                    var body = m.Content as ObjectContent<LoRaDeviceModelDto>;
                     _ = body.Value.Should().BeEquivalentTo(expectedDeviceModel);
                     return true;
                 })
@@ -87,7 +87,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task UpdateDeviceModelShouldUpdateDeviceModel()
         {
             // Arrange
-            var expectedDeviceModel = new LoRaDeviceModel
+            var expectedDeviceModel = new LoRaDeviceModelDto
             {
                 ModelId = Fixture.Create<string>()
             };
@@ -95,8 +95,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             _ = MockHttpClient.When(HttpMethod.Put, $"/api/lorawan/models/{expectedDeviceModel.ModelId}")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<LoRaDeviceModel>>();
-                    var body = m.Content as ObjectContent<LoRaDeviceModel>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<LoRaDeviceModelDto>>();
+                    var body = m.Content as ObjectContent<LoRaDeviceModelDto>;
                     _ = body.Value.Should().BeEquivalentTo(expectedDeviceModel);
                     return true;
                 })
@@ -114,18 +114,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task SetDeviceModelCommandsShouldSetDeviceModelCommands()
         {
             // Arrange
-            var deviceModelId = new LoRaDeviceModel
+            var deviceModelId = new LoRaDeviceModelDto
             {
                 ModelId = Fixture.Create<string>()
             };
 
-            var expectedCommands = Fixture.Build<DeviceModelCommand>().CreateMany(3).ToList();
+            var expectedCommands = Fixture.Build<DeviceModelCommandDto>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/models/{deviceModelId.ModelId}/properties")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IList<DeviceModelCommand>>>();
-                    var body = m.Content as ObjectContent<IList<DeviceModelCommand>>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<IList<DeviceModelCommandDto>>>();
+                    var body = m.Content as ObjectContent<IList<DeviceModelCommandDto>>;
                     _ = body.Value.Should().BeEquivalentTo(expectedCommands);
                     return true;
                 })
@@ -145,7 +145,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var deviceModelId = Fixture.Create<string>();
 
-            var expectedCommands = Fixture.CreateMany<DeviceModelCommand>().ToList();
+            var expectedCommands = Fixture.CreateMany<DeviceModelCommandDto>().ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/models/{deviceModelId}/commands")
                 .RespondJson(expectedCommands);
@@ -163,7 +163,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetAvatarUrlShouldReturnAvatarUrl()
         {
             // Arrange
-            var deviceModel = new LoRaDeviceModel
+            var deviceModel = new LoRaDeviceModelDto
             {
                 ModelId = Fixture.Create<string>(),
                 ImageUrl = Fixture.Create<Uri>()
@@ -185,7 +185,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task ChangeAvatarPropertiesShouldChangeAvatar()
         {
             // Arrange
-            var deviceModel = new LoRaDeviceModel
+            var deviceModel = new LoRaDeviceModelDto
             {
                 ModelId = Fixture.Create<string>()
             };

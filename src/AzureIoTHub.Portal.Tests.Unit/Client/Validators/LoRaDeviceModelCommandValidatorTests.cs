@@ -17,7 +17,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
 
             // Arrange
             var cmdValidator = new LoRaDeviceModelCommandValidator();
-            var commmand = new DeviceModelCommand()
+            var commmand = new DeviceModelCommandDto()
             {
                 Name = Guid.NewGuid().ToString(),
                 Frame = "ABCDEF1234567890",
@@ -39,7 +39,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var cmdValidator = new LoRaDeviceModelCommandValidator();
-            var commmand = new DeviceModelCommand()
+            var commmand = new DeviceModelCommandDto()
             {
                 Frame = "ABCDEF1234567890",
                 Port = 1
@@ -59,7 +59,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var cmdValidator = new LoRaDeviceModelCommandValidator();
-            var commmand = new DeviceModelCommand()
+            var commmand = new DeviceModelCommandDto()
             {
                 Name = Guid.NewGuid().ToString(),
                 Port = 1
@@ -80,7 +80,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
             var frameValue = new string('A', 256);
             // Arrange
             var cmdValidator = new LoRaDeviceModelCommandValidator();
-            var commmand = new DeviceModelCommand()
+            var commmand = new DeviceModelCommandDto()
             {
                 Name = Guid.NewGuid().ToString(),
                 Frame = frameValue,
@@ -102,7 +102,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
             var frameValue = "AZERTY";
             // Arrange
             var cmdValidator = new LoRaDeviceModelCommandValidator();
-            var commmand = new DeviceModelCommand()
+            var commmand = new DeviceModelCommandDto()
             {
                 Name = Guid.NewGuid().ToString(),
                 Frame = frameValue,
@@ -123,7 +123,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var cmdValidator = new LoRaDeviceModelCommandValidator();
-            var commmand = new DeviceModelCommand()
+            var commmand = new DeviceModelCommandDto()
             {
                 Name = Guid.NewGuid().ToString(),
                 Frame = "ABCDEF1234567890",

@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Client.Validators
     using AzureIoTHub.Portal.Models.v10;
     using FluentValidation;
 
-    public class DeviceModelValidator : AbstractValidator<DeviceModel>
+    public class DeviceModelValidator : AbstractValidator<DeviceModelDto>
     {
         public DeviceModelValidator()
         {

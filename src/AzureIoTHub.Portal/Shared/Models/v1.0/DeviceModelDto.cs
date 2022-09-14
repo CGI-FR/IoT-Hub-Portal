@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Models.v10
     /// <summary>
     /// Device model.
     /// </summary>
-    public class DeviceModel : IDeviceModel
+    public class DeviceModelDto : IDeviceModel
     {
         /// <summary>
         /// The device model identifier.
@@ -44,9 +44,9 @@ namespace AzureIoTHub.Portal.Models.v10
         public bool SupportLoRaFeatures { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceModel"/> class.
+        /// Initializes a new instance of the <see cref="DeviceModelDto"/> class.
         /// </summary>
-        public DeviceModel()
+        public DeviceModelDto()
         {
         }
     }

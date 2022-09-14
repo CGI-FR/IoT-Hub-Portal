@@ -21,16 +21,16 @@ namespace AzureIoTHub.Portal.Server.Managers
             this.httpClient = httpClient;
         }
 
-        public async Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommand command)
+        public async Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommandDto commandDto)
         {
             ArgumentNullException.ThrowIfNull(deviceId, nameof(deviceId));
-            ArgumentNullException.ThrowIfNull(command, nameof(command));
+            ArgumentNullException.ThrowIfNull(commandDto, nameof(commandDto));
 
             var body = new LoRaCloudToDeviceMessage
             {
-                RawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(command.Frame)),
-                Fport = command.Port,
-                Confirmed = command.Confirmed
+                RawPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes(commandDto.Frame)),
+                Fport = commandDto.Port,
+                Confirmed = commandDto.Confirmed
             };
 
             using var commandContent = JsonContent.Create(body);

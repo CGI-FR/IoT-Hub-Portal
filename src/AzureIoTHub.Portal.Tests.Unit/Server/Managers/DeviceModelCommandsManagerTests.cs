@@ -92,8 +92,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             var resultReturned = false;
 
             var entityMock = new TableEntity(deviceModel, "bbbb");
-            _ = entityMock.TryAdd(nameof(DeviceModelCommand.Frame), "ADETRDTHDFG");
-            _ = entityMock.TryAdd(nameof(DeviceModelCommand.Port), 125);
+            _ = entityMock.TryAdd(nameof(DeviceModelCommandDto.Frame), "ADETRDTHDFG");
+            _ = entityMock.TryAdd(nameof(DeviceModelCommandDto.Port), 125);
 
             var mockTable = this.mockRepository.Create<TableClient>();
             var mockTableResponse = this.mockRepository.Create<Pageable<TableEntity>>();

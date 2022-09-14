@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
     public interface ILoRaWANCommandService
     {
-        Task<DeviceModelCommand[]> GetDeviceModelCommandsFromModel(string id);
-        Task PostDeviceModelCommands(string id, DeviceModelCommand[] commands);
+        Task<DeviceModelCommandDto[]> GetDeviceModelCommandsFromModel(string id);
+        Task PostDeviceModelCommands(string id, DeviceModelCommandDto[] commands);
     }
 }

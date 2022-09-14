@@ -9,7 +9,7 @@
                 <TitleContent><MudText Typo="Typo.h6">LoraWAN</MudText></TitleContent>
                 <ChildContent>
                     <MudGrid>
-                        @if (loraModel.UseOTAA)
+                        @if (LoraModelDto.UseOTAA)
                         {
                             <MudItem xs="12" md="6">
                                 <MudTextField id="@nameof(LoRaDevice.AppEUI)"
@@ -55,6 +55,6 @@
     public LoRaDeviceDetailsValidator LoraValidator { get; set; }
 
     [Parameter]
-    public LoRaDeviceModel loraModel { get; set; }
+    public LoRaDeviceModelDto LoraModelDto { get; set; }
 
 }

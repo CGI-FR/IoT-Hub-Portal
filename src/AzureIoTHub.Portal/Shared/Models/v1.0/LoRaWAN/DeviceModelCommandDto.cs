@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
     /// <summary>
     /// Device model command.
     /// </summary>
-    public class DeviceModelCommand
+    public class DeviceModelCommandDto
     {
         /// <summary>
         /// The command name.
