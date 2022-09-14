@@ -117,7 +117,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 if (devices.Items.Any(x => DeviceHelper.RetrieveTagValue(x, "modelId") == deviceModelId))
                 {
                     throw new ResourceAlreadyExistsException(
-                        $"The device model {deviceModelEntity} is already in use by a device and cannot be deleted");
+                        $"The device model {deviceModelId} is already in use by a device and cannot be deleted");
                 }
 
                 var deviceModelCommands = this.deviceModelCommandRepository.GetAll().Where(command =>
