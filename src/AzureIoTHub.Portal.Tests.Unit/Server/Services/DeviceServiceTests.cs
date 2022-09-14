@@ -1616,7 +1616,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockTableClient = this.mockRepository.Create<TableClient>();
             var mockDeviceModelEntity = new TableEntity
             {
-                [nameof(DeviceModel.Name)] = "ccc"
+                [nameof(DeviceModelDto.Name)] = "ccc"
             };
             var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
 
@@ -1700,7 +1700,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockTableClient = this.mockRepository.Create<TableClient>();
             var mockDeviceModelEntity = new TableEntity
             {
-                [nameof(DeviceModel.Name)] = "ccc"
+                [nameof(DeviceModelDto.Name)] = "ccc"
             };
             var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
 
