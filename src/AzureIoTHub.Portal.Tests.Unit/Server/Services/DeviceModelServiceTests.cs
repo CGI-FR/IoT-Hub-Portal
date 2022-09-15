@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using FluentAssertions;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
     using Moq;
@@ -148,6 +149,102 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             await this.deviceModelService.CreateDeviceModel(deviceModelDto);
 
             // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task CreateDeviceModelShouldThrowInternalServerErrorExceptionWhenDDbUpdateExceptionIsThrown()
+        {
+            // Arrange
+            var deviceModelDto = Fixture.Create<DeviceModelDto>();
+
+            _ = this.mockDeviceModelRepository.Setup(repository => repository.InsertAsync(It.IsAny<DeviceModel>()))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.deviceModelService.CreateDeviceModel(deviceModelDto);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDeviceModelShouldUpdateDeviceModel()
+        {
+            // Arrange
+            var deviceModelDto = Fixture.Create<DeviceModelDto>();
+
+            _ = this.mockDeviceModelRepository.Setup(repository => repository.GetByIdAsync(deviceModelDto.ModelId))
+                .ReturnsAsync(new DeviceModel());
+
+            this.mockDeviceModelRepository.Setup(repository => repository.Update(It.IsAny<DeviceModel>()))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceModelMapper
+                .Setup(mapper => mapper.BuildDeviceModelDesiredProperties(It.IsAny<DeviceModelDto>()))
+                .Returns(new Dictionary<string, object>());
+
+            _ = this.mockDeviceProvisioningServiceManager.Setup(manager =>
+                    manager.CreateEnrollmentGroupFromModelAsync(deviceModelDto.ModelId, deviceModelDto.Name,
+                        It.IsAny<TwinCollection>()))
+                .ReturnsAsync((EnrollmentGroup)null);
+
+            _ = this.mockConfigService.Setup(service =>
+                    service.RollOutDeviceModelConfiguration(deviceModelDto.ModelId,
+                        It.IsAny<Dictionary<string, object>>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.deviceModelService.UpdateDeviceModel(deviceModelDto);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDeviceModelShouldThrowInternalServerErrorExceptionWhenDDbUpdateExceptionIsThrown()
+        {
+            // Arrange
+            var deviceModelDto = Fixture.Create<DeviceModelDto>();
+
+            _ = this.mockDeviceModelRepository.Setup(repository => repository.GetByIdAsync(deviceModelDto.ModelId))
+                .ReturnsAsync(new DeviceModel());
+
+            this.mockDeviceModelRepository.Setup(repository => repository.Update(It.IsAny<DeviceModel>()))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.deviceModelService.UpdateDeviceModel(deviceModelDto);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDeviceModelShouldThrowResourceNotFoundExceptionWhenDeviceModelDOntExist()
+        {
+            // Arrange
+            var deviceModelDto = Fixture.Create<DeviceModelDto>();
+
+            _ = this.mockDeviceModelRepository.Setup(repository => repository.GetByIdAsync(deviceModelDto.ModelId))
+                .ReturnsAsync((DeviceModel)null);
+
+            // Act
+            var act = () => this.deviceModelService.UpdateDeviceModel(deviceModelDto);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
             MockRepository.VerifyAll();
         }
     }
