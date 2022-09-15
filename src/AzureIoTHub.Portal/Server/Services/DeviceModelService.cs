@@ -16,8 +16,8 @@ namespace AzureIoTHub.Portal.Server.Services
     using Managers;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Azure.Devices.Shared;
-    using Azure;
     using Helpers;
+    using Microsoft.EntityFrameworkCore;
 
     public class DeviceModelService<TListItem, TModel> : IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel
@@ -76,29 +76,43 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task CreateDeviceModel(TModel deviceModel)
         {
-            var deviceModelEntity = this.mapper.Map<DeviceModel>(deviceModel);
+            try
+            {
+                var deviceModelEntity = this.mapper.Map<DeviceModel>(deviceModel);
 
-            await this.deviceModelRepository.InsertAsync(deviceModelEntity);
-            await this.unitOfWork.SaveAsync();
+                await this.deviceModelRepository.InsertAsync(deviceModelEntity);
+                await this.unitOfWork.SaveAsync();
 
-            await CreateDeviceModelConfiguration(deviceModel);
+                await CreateDeviceModelConfiguration(deviceModel);
+            }
+            catch (DbUpdateException e)
+            {
+                throw new InternalServerErrorException($"Unable to create the device model {deviceModel.Name}", e);
+            }
         }
 
         public async Task UpdateDeviceModel(TModel deviceModel)
         {
-            var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModel.ModelId);
-
-            if (deviceModelEntity == null)
+            try
             {
-                throw new ResourceNotFoundException($"The device model {deviceModel.ModelId} doesn't exist");
+                var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModel.ModelId);
+
+                if (deviceModelEntity == null)
+                {
+                    throw new ResourceNotFoundException($"The device model {deviceModel.ModelId} doesn't exist");
+                }
+
+                _ = this.mapper.Map(deviceModel, deviceModelEntity);
+
+                this.deviceModelRepository.Update(deviceModelEntity);
+                await this.unitOfWork.SaveAsync();
+
+                await CreateDeviceModelConfiguration(deviceModel);
             }
-
-            _ = this.mapper.Map(deviceModel, deviceModelEntity);
-
-            this.deviceModelRepository.Update(deviceModelEntity);
-            await this.unitOfWork.SaveAsync();
-
-            await CreateDeviceModelConfiguration(deviceModel);
+            catch (DbUpdateException e)
+            {
+                throw new InternalServerErrorException($"Unable to update the device model {deviceModel.Name}", e);
+            }
         }
 
         public async Task DeleteDeviceModel(string deviceModelId)
@@ -135,7 +149,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 await this.unitOfWork.SaveAsync();
             }
-            catch (RequestFailedException e)
+            catch (DbUpdateException e)
             {
                 throw new InternalServerErrorException($"Unable to delete the device model {deviceModelId}", e);
             }
