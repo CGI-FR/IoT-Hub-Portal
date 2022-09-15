@@ -5,12 +5,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.EntityFrameworkCore;
@@ -405,6 +407,64 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Act
             await this.deviceModelService.DeleteDeviceModel(deviceModelDto.ModelId);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetDeviceModelAvatarShouldReturnDeviceModelAvatar()
+        {
+            // Arrange
+            var deviceModelDto = Fixture.Create<DeviceModelDto>();
+            var expectedAvatarUrl = Fixture.Create<Uri>();
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(deviceModelDto.ModelId))
+                .Returns(expectedAvatarUrl);
+
+            // Act
+            var result = await this.deviceModelService.GetDeviceModelAvatar(deviceModelDto.ModelId);
+
+            // Assert
+            _ = result.Should().Be(expectedAvatarUrl.ToString());
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDeviceModelAvatarShouldUpdateDeviceModelAvatar()
+        {
+            // Arrange
+            var deviceModelDto = Fixture.Create<DeviceModelDto>();
+            var expectedAvatarUrl = Fixture.Create<string>();
+
+            var mockFormFile = MockRepository.Create<IFormFile>();
+
+            _ = this.mockDeviceModelImageManager.Setup(manager =>
+                    manager.ChangeDeviceModelImageAsync(deviceModelDto.ModelId, It.IsAny<Stream>()))
+                .ReturnsAsync(expectedAvatarUrl);
+
+            _ = mockFormFile.Setup(file => file.OpenReadStream())
+                .Returns(Stream.Null);
+
+            // Act
+            var result = await this.deviceModelService.UpdateDeviceModelAvatar(deviceModelDto.ModelId, mockFormFile.Object);
+
+            // Assert
+            _ = result.Should().Be(expectedAvatarUrl);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceModelAvatarShouldDeleteDeviceModelAvatar()
+        {
+            // Arrange
+            var deviceModelDto = Fixture.Create<DeviceModelDto>();
+
+            _ = this.mockDeviceModelImageManager
+                .Setup(manager => manager.DeleteDeviceModelImageAsync(deviceModelDto.ModelId))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.deviceModelService.DeleteDeviceModelAvatar(deviceModelDto.ModelId);
 
             // Assert
             MockRepository.VerifyAll();
