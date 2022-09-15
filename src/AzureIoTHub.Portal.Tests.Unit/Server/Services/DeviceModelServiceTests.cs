@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -245,6 +246,167 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Assert
             _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceModelShouldDeleteDeviceModel()
+        {
+            // Arrange
+            var deviceModelDto = Fixture.Create<DeviceModelDto>();
+
+            var commands = Fixture.CreateMany<DeviceModelCommand>(5).Select(command =>
+            {
+                command.DeviceModelId = deviceModelDto.ModelId;
+                return command;
+            }) .ToList();
+
+            _ = this.mockDeviceModelRepository.Setup(repository => repository.GetByIdAsync(deviceModelDto.ModelId))
+                .ReturnsAsync(new DeviceModel());
+
+            _ = this.mockDeviceService.Setup(service => service.GetAllDevice(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<int>()))
+                .ReturnsAsync(new PaginationResult<Twin>
+                {
+                    Items = Array.Empty<Twin>()
+                });
+
+            _ = this.mockDeviceModelCommandRepository.Setup(repository => repository.GetAll())
+                .Returns(commands);
+
+            this.mockDeviceModelCommandRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            _ = this.mockDeviceModelImageManager
+                .Setup(manager => manager.DeleteDeviceModelImageAsync(deviceModelDto.ModelId))
+                .Returns(Task.CompletedTask);
+
+            this.mockDeviceModelRepository.Setup(repository => repository.Delete(deviceModelDto.ModelId))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.deviceModelService.DeleteDeviceModel(deviceModelDto.ModelId);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceModelShouldThrowInternalServerErrorExceptionWhenDDbUpdateExceptionIsThrown()
+        {
+            // Arrange
+            var deviceModelDto = Fixture.Create<DeviceModelDto>();
+
+            var commands = Fixture.CreateMany<DeviceModelCommand>(5).Select(command =>
+            {
+                command.DeviceModelId = deviceModelDto.ModelId;
+                return command;
+            }) .ToList();
+
+            _ = this.mockDeviceModelRepository.Setup(repository => repository.GetByIdAsync(deviceModelDto.ModelId))
+                .ReturnsAsync(new DeviceModel());
+
+            _ = this.mockDeviceService.Setup(service => service.GetAllDevice(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<int>()))
+                .ReturnsAsync(new PaginationResult<Twin>
+                {
+                    Items = Array.Empty<Twin>()
+                });
+
+            _ = this.mockDeviceModelCommandRepository.Setup(repository => repository.GetAll())
+                .Returns(commands);
+
+            this.mockDeviceModelCommandRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            _ = this.mockDeviceModelImageManager
+                .Setup(manager => manager.DeleteDeviceModelImageAsync(deviceModelDto.ModelId))
+                .Returns(Task.CompletedTask);
+
+            this.mockDeviceModelRepository.Setup(repository => repository.Delete(deviceModelDto.ModelId))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.deviceModelService.DeleteDeviceModel(deviceModelDto.ModelId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceModelShouldThrowInternalServerErrorExceptionWhenDeviceModelIsUsedByDevice()
+        {
+            // Arrange
+            var deviceModelDto = Fixture.Create<DeviceModelDto>();
+
+            _ = this.mockDeviceModelRepository.Setup(repository => repository.GetByIdAsync(deviceModelDto.ModelId))
+                .ReturnsAsync(new DeviceModel());
+
+            _ = this.mockDeviceService.Setup(service => service.GetAllDevice(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<int>()))
+                .ReturnsAsync(new PaginationResult<Twin>
+                {
+                    Items = new List<Twin>
+                    {
+                        new()
+                        {
+                            Tags = new TwinCollection
+                            {
+                                ["modelId"] = deviceModelDto.ModelId
+                            }
+                        }
+                    }
+                });
+
+            // Act
+            var act = () => this.deviceModelService.DeleteDeviceModel(deviceModelDto.ModelId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<ResourceAlreadyExistsException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceModelShouldNotDeleteNonExistingDevice()
+        {
+            // Arrange
+            var deviceModelDto = Fixture.Create<DeviceModelDto>();
+
+            _ = this.mockDeviceModelRepository.Setup(repository => repository.GetByIdAsync(deviceModelDto.ModelId))
+                .ReturnsAsync((DeviceModel)null);
+
+            // Act
+            await this.deviceModelService.DeleteDeviceModel(deviceModelDto.ModelId);
+
+            // Assert
             MockRepository.VerifyAll();
         }
     }
