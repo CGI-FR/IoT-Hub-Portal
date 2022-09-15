@@ -202,7 +202,7 @@
                 @if (IsLoRa && Device != null && Commands != null)
                 {
                     <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
-                        <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" LoRaDeviceModel="@(DeviceModel as LoRaDeviceModel)" Commands="@Commands" />
+                        <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" LoRaDeviceModelDto="@(DeviceModel as LoRaDeviceModelDto)" Commands="@Commands" />
                     </MudTabPanel>
                 }
             </MudTabs>
@@ -231,7 +231,7 @@
 
     private IDeviceDetails Device { get; set; } = new DeviceDetails();
 
-    private IDeviceModel DeviceModel { get; set; } = new DeviceModel();
+    private IDeviceModel DeviceModel { get; set; } = new DeviceModelDto();
 
     private bool isLoaded = false;
 
@@ -242,7 +242,7 @@
 
     private void Return() => NavManager.NavigateTo("devices");
 
-    private IEnumerable<DeviceModelCommand> Commands { get; set; }
+    private IEnumerable<DeviceModelCommandDto> Commands { get; set; }
 
     private IEnumerable<DeviceTagDto> TagList { get; set; } = Array.Empty<DeviceTagDto>();
 

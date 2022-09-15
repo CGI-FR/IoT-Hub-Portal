@@ -42,7 +42,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void WhenUseOTAAShouldDisplayOTAATextboxes()
         {
-            var mockLoRaModel = new LoRaDeviceModel
+            var mockLoRaModel = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 UseOTAA = true
@@ -61,7 +61,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Act
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), deviceDetails),
-                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), mockLoRaModel),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModelDto), mockLoRaModel),
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator));
 
 
@@ -73,7 +73,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void WhenNotUseOTAAShouldDisplayABPTextboxes()
         {
-            var mockLoRaModel = new LoRaDeviceModel
+            var mockLoRaModel = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 UseOTAA = false
@@ -92,7 +92,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Act
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), deviceDetails),
-                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), mockLoRaModel),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModelDto), mockLoRaModel),
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator));
 
             // Assert
@@ -106,7 +106,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         {
             // Arrange
 
-            var mockLoRaModel = new LoRaDeviceModel
+            var mockLoRaModel = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 UseOTAA = false
@@ -125,7 +125,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Act
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), deviceDetails),
-                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), mockLoRaModel),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModelDto), mockLoRaModel),
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator));
 
             // Assert   
@@ -136,13 +136,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         public void WhenDeviceNeverConnectedCommandsShouldBeDisabled()
         {
             // Arrange
-            var model = new LoRaDeviceModel
+            var model = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
             };
-            var commands = new List<DeviceModelCommand>
+            var commands = new List<DeviceModelCommandDto>
             {
-                new DeviceModelCommand
+                new DeviceModelCommandDto
                 {
                     Name = Guid.NewGuid().ToString()
                 }
@@ -156,7 +156,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Act
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), device),
-                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), model),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModelDto), model),
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.Commands), commands));
 
             // Assert
@@ -169,13 +169,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         public void WhenDeviceAlteadyConnectedCommandsShouldBeEnabled()
         {
             // Arrange
-            var model = new LoRaDeviceModel
+            var model = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
             };
-            var commands = new List<DeviceModelCommand>
+            var commands = new List<DeviceModelCommandDto>
             {
-                new DeviceModelCommand
+                new DeviceModelCommandDto
                 {
                     Name = Guid.NewGuid().ToString()
                 }
@@ -190,7 +190,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Act
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), device),
-                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), model),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModelDto), model),
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.Commands), commands));
 
             // Assert
@@ -202,13 +202,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         public void WhenClickToSendCommandShouldExecuteCommandToService()
         {
             // Arrange
-            var model = new LoRaDeviceModel
+            var model = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
             };
-            var commands = new List<DeviceModelCommand>
+            var commands = new List<DeviceModelCommandDto>
             {
-                new DeviceModelCommand
+                new DeviceModelCommandDto
                 {
                     Name = Guid.NewGuid().ToString()
                 }
@@ -229,7 +229,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Act
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), device),
-                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), model),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModelDto), model),
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.Commands), commands));
 
             // Assert
@@ -244,7 +244,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         public void EditLoRaDeviceDetailPageShouldBeRenderedProperly()
         {
             // Arrange
-            var mockLoRaModel = new LoRaDeviceModel
+            var mockLoRaModel = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 UseOTAA = false
@@ -265,7 +265,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Act
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), deviceDetails),
-                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), mockLoRaModel),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModelDto), mockLoRaModel),
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator));
 
 
@@ -278,7 +278,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         public void EditLoRaDeviceDetailPageWithReportedProperties()
         {
             // Arrange
-            var mockLoRaModel = new LoRaDeviceModel
+            var mockLoRaModel = new LoRaDeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 UseOTAA = false
@@ -299,7 +299,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Act
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), deviceDetails),
-                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModel), mockLoRaModel),
+                ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDeviceModelDto), mockLoRaModel),
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoraValidator), validator));
 
             // Assert

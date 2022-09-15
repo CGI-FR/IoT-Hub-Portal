@@ -3,140 +3,75 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using System.Collections.Generic;
+    using System;
+    using System.Linq;
     using System.Threading.Tasks;
-    using Azure;
-    using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Mappers;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Logging;
+    using AutoMapper;
+    using Domain;
+    using Domain.Exceptions;
+    using Models.v10.LoRaWAN;
+    using Domain.Entities;
+    using Domain.Repositories;
+    using Microsoft.EntityFrameworkCore;
 
     public class LoRaWANCommandService : ILoRaWANCommandService
     {
-        /// <summary>
-        /// The table client factory.
-        /// </summary>
-        private readonly ITableClientFactory tableClientFactory;
+        private readonly IMapper mapper;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IDeviceModelCommandRepository deviceModelCommandRepository;
+        private readonly IDeviceModelRepository deviceModelRepository;
 
-        /// <summary>
-        /// The device model command mapper.
-        /// </summary>H
-        private readonly IDeviceModelCommandMapper deviceModelCommandMapper;
-
-        /// <summary>
-        /// The logger.
-        /// </summary>
-        private readonly ILogger<LoRaWANCommandService> log;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LoRaWANCommandService"/> class.
-        /// </summary>
-        /// <param name="log">The logger.</param>
-        /// <param name="deviceModelCommandMapper">The device model command mapper.</param>
-        /// <param name="tableClientFactory">The table client factory.</param>
-        public LoRaWANCommandService(
-            ILogger<LoRaWANCommandService> log,
-            IDeviceModelCommandMapper deviceModelCommandMapper,
-            ITableClientFactory tableClientFactory)
+        public LoRaWANCommandService(IMapper mapper,
+            IUnitOfWork unitOfWork,
+            IDeviceModelCommandRepository deviceModelCommandRepository,
+            IDeviceModelRepository deviceModelRepository)
         {
-            this.log = log;
-            this.tableClientFactory = tableClientFactory;
-            this.deviceModelCommandMapper = deviceModelCommandMapper;
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.deviceModelCommandRepository = deviceModelCommandRepository;
+            this.deviceModelRepository = deviceModelRepository;
         }
 
-        public async Task PostDeviceModelCommands(string id, DeviceModelCommand[] commands)
-        {
-            var query = await GetCommandsQueryFromModelId(id);
-
-            foreach (var item in query)
-            {
-                try
-                {
-                    _ = await this.tableClientFactory
-                        .GetDeviceCommands()
-                        .DeleteEntityAsync(item.PartitionKey, item.RowKey);
-                }
-                catch (RequestFailedException e)
-                {
-                    throw new InternalServerErrorException($"Unable to delete the command {item.RowKey} of the model with id {id}", e);
-                }
-            }
-
-            foreach (var command in commands)
-            {
-                var entity = new TableEntity()
-                {
-                    PartitionKey = id,
-                    RowKey = command.Name
-                };
-
-                this.deviceModelCommandMapper.UpdateTableEntity(entity, command);
-
-                try
-                {
-                    _ = await this.tableClientFactory
-                        .GetDeviceCommands()
-                        .AddEntityAsync(entity);
-                }
-                catch (RequestFailedException e)
-                {
-                    throw new InternalServerErrorException($"Unable to create the command {command.Name} of the model with id {id}", e);
-                }
-            }
-        }
-        public async Task<DeviceModelCommand[]> GetDeviceModelCommandsFromModel(string id)
-        {
-            var query = await GetCommandsQueryFromModelId(id);
-
-            var commands = new List<DeviceModelCommand>();
-
-            foreach (var item in query)
-            {
-                var command = this.deviceModelCommandMapper.GetDeviceModelCommand(item);
-                commands.Add(command);
-            }
-
-            return commands.ToArray();
-        }
-
-        private async Task<Pageable<TableEntity>> GetCommandsQueryFromModelId(string id)
+        public async Task PostDeviceModelCommands(string id, DeviceModelCommandDto[] commands)
         {
             try
             {
-                _ = await this.tableClientFactory
-                             .GetDeviceTemplates()
-                             .GetEntityAsync<TableEntity>(LoRaWANDeviceModelsController.DefaultPartitionKey, id);
-            }
-            catch (RequestFailedException e)
-            {
-                if (e.Status == StatusCodes.Status404NotFound)
+                var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(id);
+
+                if (deviceModelEntity == null)
                 {
-                    throw new InternalServerErrorException($"Unable to find a model with id {id}.", e);
+                    throw new ResourceNotFoundException($"The device model {id} doesn't exist");
                 }
 
-                this.log.LogError(e.Message, e);
+                var existingDeviceModelCommands = await GetDeviceModelCommandsFromModel(id);
 
-                throw;
+                foreach (var deviceModelCommand in existingDeviceModelCommands)
+                {
+                    this.deviceModelCommandRepository.Delete(deviceModelCommand.Name);
+                }
+
+                foreach (var deviceModelCommand in commands)
+                {
+                    var deviceModelCommandEntity = this.mapper.Map<DeviceModelCommand>(deviceModelCommand);
+                    deviceModelCommandEntity.DeviceModelId = id;
+
+                    await this.deviceModelCommandRepository.InsertAsync(deviceModelCommandEntity);
+                }
+
+                await this.unitOfWork.SaveAsync();
             }
-
-            Pageable<TableEntity> query;
-
-            try
+            catch (DbUpdateException e)
             {
-                query = this.tableClientFactory
-                    .GetDeviceCommands()
-                    .Query<TableEntity>(filter: $"PartitionKey eq '{id}'");
+                throw new InternalServerErrorException($"Unable to create the commands for the model with id {id}", e);
             }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException($"Unable to get existing commands of the model with id {id}", e);
-            }
+        }
 
-            return query;
+        public Task<DeviceModelCommandDto[]> GetDeviceModelCommandsFromModel(string id)
+        {
+            return Task.Run(() => this.deviceModelCommandRepository.GetAll()
+                .Where(command => command.DeviceModelId.Equals(id, StringComparison.Ordinal))
+                .Select(command => this.mapper.Map<DeviceModelCommandDto>(command))
+                .ToArray());
         }
     }
 }

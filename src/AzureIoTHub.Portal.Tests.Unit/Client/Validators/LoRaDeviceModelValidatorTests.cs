@@ -15,7 +15,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
 
             // Arrange
             var loraModelValidator = new LoRaDeviceModelValidator();
-            var loraModel = new LoRaDeviceModel()
+            var loraModel = new LoRaDeviceModelDto()
             {
                 UseOTAA = true,
                 //AppEUI = Guid.NewGuid().ToString(),

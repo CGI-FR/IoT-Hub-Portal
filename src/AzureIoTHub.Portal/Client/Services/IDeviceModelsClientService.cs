@@ -10,13 +10,13 @@ namespace AzureIoTHub.Portal.Client.Services
 
     public interface IDeviceModelsClientService
     {
-        Task<IList<DeviceModel>> GetDeviceModels();
+        Task<IList<DeviceModelDto>> GetDeviceModels();
 
-        Task<DeviceModel> GetDeviceModel(string deviceModelId);
+        Task<DeviceModelDto> GetDeviceModel(string deviceModelId);
 
-        Task CreateDeviceModel(DeviceModel deviceModel);
+        Task CreateDeviceModel(DeviceModelDto deviceModel);
 
-        Task UpdateDeviceModel(DeviceModel deviceModel);
+        Task UpdateDeviceModel(DeviceModelDto deviceModel);
 
         Task DeleteDeviceModel(string deviceModelId);
 

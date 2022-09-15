@@ -10,15 +10,15 @@ namespace AzureIoTHub.Portal.Client.Services
 
     public interface ILoRaWanDeviceModelsClientService
     {
-        Task<LoRaDeviceModel> GetDeviceModel(string deviceModelId);
+        Task<LoRaDeviceModelDto> GetDeviceModel(string deviceModelId);
 
-        Task CreateDeviceModel(LoRaDeviceModel deviceModel);
+        Task CreateDeviceModel(LoRaDeviceModelDto deviceModelDto);
 
-        Task UpdateDeviceModel(LoRaDeviceModel deviceModel);
+        Task UpdateDeviceModel(LoRaDeviceModelDto deviceModelDto);
 
-        Task SetDeviceModelCommands(string deviceModelId, IList<DeviceModelCommand> commands);
+        Task SetDeviceModelCommands(string deviceModelId, IList<DeviceModelCommandDto> commands);
 
-        Task<IList<DeviceModelCommand>> GetDeviceModelCommands(string deviceModelId);
+        Task<IList<DeviceModelCommandDto>> GetDeviceModelCommands(string deviceModelId);
 
         Task<string> GetAvatarUrl(string deviceModelId);
 

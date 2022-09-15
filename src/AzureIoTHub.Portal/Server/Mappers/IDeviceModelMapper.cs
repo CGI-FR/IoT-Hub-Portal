@@ -15,6 +15,6 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         public TModel CreateDeviceModel(TableEntity entity);
 
-        public Dictionary<string, object> UpdateTableEntity(TableEntity entity, TModel model);
+        public Dictionary<string, object> BuildDeviceModelDesiredProperties(TModel model);
     }
 }

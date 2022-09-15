@@ -12,7 +12,7 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
     /// <summary>
     /// LoRa Device model.
     /// </summary>
-    public class LoRaDeviceModel : LoRaDeviceBase, IDeviceModel
+    public class LoRaDeviceModelDto : LoRaDeviceBase, IDeviceModel
     {
         /// <summary>
         /// The device model identifier.
@@ -62,10 +62,10 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         public bool? Downlink { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LoRaDeviceModel"/> class.
+        /// Initializes a new instance of the <see cref="LoRaDeviceModelDto"/> class.
         /// </summary>
         /// <param name="from">The device model taht the LoRa Device model should herit.</param>
-        public LoRaDeviceModel(IDeviceModel from)
+        public LoRaDeviceModelDto(IDeviceModel from)
         {
             ArgumentNullException.ThrowIfNull(from, nameof(from));
 
@@ -78,9 +78,9 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LoRaDeviceModel"/> class.
+        /// Initializes a new instance of the <see cref="LoRaDeviceModelDto"/> class.
         /// </summary>
-        public LoRaDeviceModel()
+        public LoRaDeviceModelDto()
         {
             ClassType = ClassType.A;
             Downlink = true;

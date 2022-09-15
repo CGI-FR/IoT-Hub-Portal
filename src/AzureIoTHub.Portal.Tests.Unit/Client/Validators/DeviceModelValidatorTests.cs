@@ -16,7 +16,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
 
             // Arrange
             var standardModelValidator = new DeviceModelValidator();
-            var deviceModel = new DeviceModel()
+            var deviceModel = new DeviceModelDto()
             {
                 Name = Guid.NewGuid().ToString(),
             };
@@ -34,7 +34,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var standardModelValidator = new DeviceModelValidator();
-            var deviceModel = new DeviceModel();
+            var deviceModel = new DeviceModelDto();
 
             // Act
             var standardModelValidation = standardModelValidator.Validate(deviceModel);

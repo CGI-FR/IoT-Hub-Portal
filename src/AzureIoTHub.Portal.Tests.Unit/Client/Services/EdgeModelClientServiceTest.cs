@@ -130,7 +130,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task DeleteIoTEdgeModelShouldDeleteEdgeModel()
         {
             // Arrange
-            var expectedEdgeModel = Fixture.Create<DeviceModel>();
+            var expectedEdgeModel = Fixture.Create<DeviceModelDto>();
 
             _ = MockHttpClient.When(HttpMethod.Delete, $"api/edge/models/{expectedEdgeModel.ModelId}")
                 .Respond(HttpStatusCode.NoContent);

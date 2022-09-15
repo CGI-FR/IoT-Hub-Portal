@@ -51,6 +51,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
             var mappingConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new DeviceTagProfile());
+                mc.AddProfile(new DeviceModelProfile());
+                mc.AddProfile(new DeviceModelCommandProfile());
             });
             Mapper = mappingConfig.CreateMapper();
             _ = ServiceCollection.AddSingleton(Mapper);

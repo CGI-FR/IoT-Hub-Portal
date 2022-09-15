@@ -9,7 +9,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using System;
     using System.Collections.Generic;
 
-    public class DeviceModelMapper : IDeviceModelMapper<DeviceModel, DeviceModel>
+    public class DeviceModelMapper : IDeviceModelMapper<DeviceModelDto, DeviceModelDto>
     {
         private readonly IDeviceModelImageManager deviceModelImageManager;
 
@@ -18,45 +18,37 @@ namespace AzureIoTHub.Portal.Server.Mappers
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
-        public DeviceModel CreateDeviceModelListItem(TableEntity entity)
+        public DeviceModelDto CreateDeviceModelListItem(TableEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity, nameof(entity));
 
-            return new DeviceModel
+            return new DeviceModelDto
             {
                 ModelId = entity.RowKey,
-                IsBuiltin = bool.Parse(entity[nameof(DeviceModel.IsBuiltin)]?.ToString() ?? "false"),
-                SupportLoRaFeatures = bool.Parse(entity[nameof(DeviceModel.SupportLoRaFeatures)]?.ToString() ?? "false"),
+                IsBuiltin = bool.Parse(entity[nameof(DeviceModelDto.IsBuiltin)]?.ToString() ?? "false"),
+                SupportLoRaFeatures = bool.Parse(entity[nameof(DeviceModelDto.SupportLoRaFeatures)]?.ToString() ?? "false"),
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey),
-                Name = entity[nameof(DeviceModel.Name)]?.ToString(),
-                Description = entity[nameof(DeviceModel.Description)]?.ToString(),
+                Name = entity[nameof(DeviceModelDto.Name)]?.ToString(),
+                Description = entity[nameof(DeviceModelDto.Description)]?.ToString(),
             };
         }
 
-        public DeviceModel CreateDeviceModel(TableEntity entity)
+        public DeviceModelDto CreateDeviceModel(TableEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity, nameof(entity));
 
-            return new DeviceModel
+            return new DeviceModelDto
             {
                 ModelId = entity.RowKey,
-                IsBuiltin = bool.Parse(entity[nameof(DeviceModel.IsBuiltin)]?.ToString() ?? "false"),
+                IsBuiltin = bool.Parse(entity[nameof(DeviceModelDto.IsBuiltin)]?.ToString() ?? "false"),
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(entity.RowKey),
-                Name = entity[nameof(DeviceModel.Name)]?.ToString(),
-                Description = entity[nameof(DeviceModel.Description)]?.ToString()
+                Name = entity[nameof(DeviceModelDto.Name)]?.ToString(),
+                Description = entity[nameof(DeviceModelDto.Description)]?.ToString()
             };
         }
 
-        public Dictionary<string, object> UpdateTableEntity(TableEntity entity, DeviceModel model)
+        public Dictionary<string, object> BuildDeviceModelDesiredProperties(DeviceModelDto model)
         {
-            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
-            ArgumentNullException.ThrowIfNull(model, nameof(model));
-
-            entity[nameof(DeviceModel.Name)] = model.Name;
-            entity[nameof(DeviceModel.Description)] = model.Description;
-            entity[nameof(DeviceModel.IsBuiltin)] = model.IsBuiltin;
-            entity[nameof(DeviceModel.SupportLoRaFeatures)] = false;
-
             return new Dictionary<string, object>();
         }
     }

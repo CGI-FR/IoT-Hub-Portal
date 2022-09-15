@@ -83,7 +83,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(new List<DevicePropertyValue>());
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModel(modelId))
-                .ReturnsAsync(new DeviceModel());
+                .ReturnsAsync(new DeviceModelDto());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
@@ -108,10 +108,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(new LoRaDeviceDetails() { ModelId = modelId });
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service => service.GetDeviceModel(modelId))
-                .ReturnsAsync(new LoRaDeviceModel());
+                .ReturnsAsync(new LoRaDeviceModelDto());
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service => service.GetDeviceModelCommands(modelId))
-                .ReturnsAsync(new List<DeviceModelCommand>());
+                .ReturnsAsync(new List<DeviceModelCommandDto>());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
@@ -142,7 +142,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .ReturnsAsync(new List<DevicePropertyValue>());
 
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModel(modelId))
-                .ReturnsAsync(new DeviceModel());
+                .ReturnsAsync(new DeviceModelDto());
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
@@ -162,7 +162,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void ClickOnSaveShouldPutDeviceDetails()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -217,7 +217,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             // Act
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModel.Name)}").InnerHtml.Should().NotBeEmpty());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModelDto.Name)}").InnerHtml.Should().NotBeEmpty());
 
             var saveButton = cut.WaitForElement("#saveButton");
             saveButton.Click();
@@ -230,7 +230,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void SaveShouldProcessProblemDetailsExceptionWhenIssueOccursOnUpdatingDevice()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -291,7 +291,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void ClickOnSaveShouldDisplaySnackbarIfValidationError()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -351,7 +351,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void ClickOnConnectShouldDisplayDeviceCredentials()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -412,7 +412,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void ClickOnDeleteShouldDisplayConfirmationDialogAndReturnIfAborted()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -474,7 +474,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void ClickOnDeleteShouldDisplayConfirmationDialogAndRedirectIfConfirmed()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -537,7 +537,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void ClickOnDuplicateShouldDuplicateDeviceDetailAndRedirectToCreateDevicePage()
         {
-            var mockDeviceModel = new DeviceModel
+            var mockDeviceModel = new DeviceModelDto
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -583,7 +583,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
-            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModel.Name)}").InnerHtml.Should().NotBeEmpty());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceModelDto.Name)}").InnerHtml.Should().NotBeEmpty());
 
             var saveButton = cut.WaitForElement("#saveButton");
 

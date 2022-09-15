@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 
     public interface ILoraDeviceMethodManager
     {
-        Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommand command);
+        Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommandDto commandDto);
         Task<HttpResponseMessage> CheckAzureFunctionReturn(CancellationToken cancellationToken);
     }
 }

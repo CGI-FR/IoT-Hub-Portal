@@ -18,29 +18,29 @@ namespace AzureIoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public Task<LoRaDeviceModel> GetDeviceModel(string deviceModelId)
+        public Task<LoRaDeviceModelDto> GetDeviceModel(string deviceModelId)
         {
-            return this.http.GetFromJsonAsync<LoRaDeviceModel>($"api/lorawan/models/{deviceModelId}");
+            return this.http.GetFromJsonAsync<LoRaDeviceModelDto>($"api/lorawan/models/{deviceModelId}");
         }
 
-        public Task CreateDeviceModel(LoRaDeviceModel deviceModel)
+        public Task CreateDeviceModel(LoRaDeviceModelDto deviceModelDto)
         {
-            return this.http.PostAsJsonAsync("api/lorawan/models", deviceModel);
+            return this.http.PostAsJsonAsync("api/lorawan/models", deviceModelDto);
         }
 
-        public Task UpdateDeviceModel(LoRaDeviceModel deviceModel)
+        public Task UpdateDeviceModel(LoRaDeviceModelDto deviceModelDto)
         {
-            return this.http.PutAsJsonAsync($"api/lorawan/models/{deviceModel.ModelId}", deviceModel);
+            return this.http.PutAsJsonAsync($"api/lorawan/models/{deviceModelDto.ModelId}", deviceModelDto);
         }
 
-        public Task SetDeviceModelCommands(string deviceModelId, IList<DeviceModelCommand> commands)
+        public Task SetDeviceModelCommands(string deviceModelId, IList<DeviceModelCommandDto> commands)
         {
             return this.http.PostAsJsonAsync($"api/lorawan/models/{deviceModelId}/commands", commands);
         }
 
-        public async Task<IList<DeviceModelCommand>> GetDeviceModelCommands(string deviceModelId)
+        public async Task<IList<DeviceModelCommandDto>> GetDeviceModelCommands(string deviceModelId)
         {
-            return await this.http.GetFromJsonAsync<List<DeviceModelCommand>>($"api/lorawan/models/{deviceModelId}/commands");
+            return await this.http.GetFromJsonAsync<List<DeviceModelCommandDto>>($"api/lorawan/models/{deviceModelId}/commands");
         }
 
         public Task<string> GetAvatarUrl(string deviceModelId)

@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
     using Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
+    using FluentAssertions;
     using Moq;
     using NUnit.Framework;
 
@@ -16,7 +17,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
     {
         private MockRepository mockRepository;
 
-        private Mock<IDeviceModelCommandsManager> mockDeviceModelCommandsManager;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
 
         [SetUp]
@@ -24,14 +24,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockDeviceModelCommandsManager = this.mockRepository.Create<IDeviceModelCommandsManager>();
             this.mockDeviceModelImageManager = this.mockRepository.Create<IDeviceModelImageManager>();
         }
 
         private LoRaDeviceModelMapper CreateLoRaDeviceModelMapper()
         {
             return new LoRaDeviceModelMapper(
-                this.mockDeviceModelCommandsManager.Object,
                 this.mockDeviceModelImageManager.Object);
         }
 
@@ -49,10 +47,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == entity.RowKey)))
                 .Returns(expectedModelImageUri);
 
-            entity[nameof(LoRaDeviceModel.IsBuiltin)] = isBuiltin;
-            entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)] = supportLora;
-            entity[nameof(LoRaDeviceModel.Name)] = "FAKE DEVICE";
-            entity[nameof(LoRaDeviceModel.Description)] = "FAKE DESCRIPTION";
+            entity[nameof(LoRaDeviceModelDto.IsBuiltin)] = isBuiltin;
+            entity[nameof(LoRaDeviceModelDto.SupportLoRaFeatures)] = supportLora;
+            entity[nameof(LoRaDeviceModelDto.Name)] = "FAKE DEVICE";
+            entity[nameof(LoRaDeviceModelDto.Description)] = "FAKE DESCRIPTION";
 
             // Act
             var result = loRaDeviceModelMapper.CreateDeviceModelListItem(entity);
@@ -60,10 +58,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(entity.RowKey, result.ModelId);
-            Assert.AreEqual(entity[nameof(LoRaDeviceModel.Name)], result.Name);
-            Assert.AreEqual(entity[nameof(LoRaDeviceModel.Description)], result.Description);
-            Assert.AreEqual(entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)], supportLora);
-            Assert.AreEqual(entity[nameof(LoRaDeviceModel.IsBuiltin)], isBuiltin);
+            Assert.AreEqual(entity[nameof(LoRaDeviceModelDto.Name)], result.Name);
+            Assert.AreEqual(entity[nameof(LoRaDeviceModelDto.Description)], result.Description);
+            Assert.AreEqual(entity[nameof(LoRaDeviceModelDto.SupportLoRaFeatures)], supportLora);
+            Assert.AreEqual(entity[nameof(LoRaDeviceModelDto.IsBuiltin)], isBuiltin);
 
             this.mockRepository.VerifyAll();
         }
@@ -82,11 +80,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == entity.RowKey)))
                 .Returns(expectedModelImageUri);
 
-            entity[nameof(LoRaDeviceModel.IsBuiltin)] = isBuiltin;
-            entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)] = supportLora;
-            entity[nameof(LoRaDeviceModel.Name)] = "FAKE DEVICE";
-            entity[nameof(LoRaDeviceModel.Description)] = "FAKE DESCRIPTION";
-            entity[nameof(LoRaDeviceModel.SensorDecoder)] = "FAKE SENSORDECODERURL";
+            entity[nameof(LoRaDeviceModelDto.IsBuiltin)] = isBuiltin;
+            entity[nameof(LoRaDeviceModelDto.SupportLoRaFeatures)] = supportLora;
+            entity[nameof(LoRaDeviceModelDto.Name)] = "FAKE DEVICE";
+            entity[nameof(LoRaDeviceModelDto.Description)] = "FAKE DESCRIPTION";
+            entity[nameof(LoRaDeviceModelDto.SensorDecoder)] = "FAKE SENSORDECODERURL";
 
             // Act
             var result = loRaDeviceModelMapper.CreateDeviceModel(
@@ -95,11 +93,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(entity.RowKey, result.ModelId);
-            Assert.AreEqual(entity[nameof(LoRaDeviceModel.Name)], result.Name);
-            Assert.AreEqual(entity[nameof(LoRaDeviceModel.Description)], result.Description);
-            Assert.AreEqual(entity[nameof(LoRaDeviceModel.SensorDecoder)], result.SensorDecoder);
-            Assert.AreEqual(entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)], supportLora);
-            Assert.AreEqual(entity[nameof(LoRaDeviceModel.IsBuiltin)], isBuiltin);
+            Assert.AreEqual(entity[nameof(LoRaDeviceModelDto.Name)], result.Name);
+            Assert.AreEqual(entity[nameof(LoRaDeviceModelDto.Description)], result.Description);
+            Assert.AreEqual(entity[nameof(LoRaDeviceModelDto.SensorDecoder)], result.SensorDecoder);
+            Assert.AreEqual(entity[nameof(LoRaDeviceModelDto.SupportLoRaFeatures)], supportLora);
+            Assert.AreEqual(entity[nameof(LoRaDeviceModelDto.IsBuiltin)], isBuiltin);
             this.mockRepository.VerifyAll();
         }
 
@@ -111,10 +109,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
         {
             // Arrange
             var loRaDeviceModelMapper = CreateLoRaDeviceModelMapper();
-            var entity = new TableEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var model = new LoRaDeviceModel
+            var model = new LoRaDeviceModelDto
             {
-                ModelId = entity.RowKey,
+                ModelId = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
                 ImageUrl = new Uri("http://fake.local"),
@@ -123,17 +120,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             };
 
             // Act
-            _ = loRaDeviceModelMapper.UpdateTableEntity(
-                entity,
-                model);
+            var result = loRaDeviceModelMapper.BuildDeviceModelDesiredProperties(model);
 
             // Assert
-            Assert.AreEqual(model.ModelId, entity.RowKey);
-            Assert.AreEqual(model.Name, entity[nameof(LoRaDeviceModel.Name)]);
-            Assert.AreEqual(model.Description, entity[nameof(LoRaDeviceModel.Description)]);
-            Assert.AreEqual(true, entity[nameof(LoRaDeviceModel.SupportLoRaFeatures)]);
-            Assert.AreEqual(isBuiltin, entity[nameof(LoRaDeviceModel.IsBuiltin)]);
-            Assert.AreEqual(model.SensorDecoder, entity[nameof(LoRaDeviceModel.SensorDecoder)]);
+            _ = result.Keys.Count.Should().Be(13);
+
             this.mockRepository.VerifyAll();
         }
     }

@@ -22,8 +22,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels.LoRaWAN
         public void CreateLoRaDeviceModelPageShouldBeRenderedProperly()
         {
             // Arrange
-            var model = new LoRaDeviceModel();
-            var commands = new List<DeviceModelCommand>();
+            var model = new LoRaDeviceModelDto();
+            var commands = new List<DeviceModelCommandDto>();
 
             var cut = RenderComponent<EditLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
@@ -37,8 +37,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels.LoRaWAN
         public void ClickOnAddShouldAddRow()
         {
             // Arrange
-            var model = new LoRaDeviceModel();
-            var commands = new List<DeviceModelCommand>();
+            var model = new LoRaDeviceModelDto();
+            var commands = new List<DeviceModelCommandDto>();
 
             var cut = RenderComponent<EditLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
@@ -55,8 +55,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels.LoRaWAN
         public void ClickOnRemoveShouldDeleteRow()
         {
             // Arrange
-            var model = new LoRaDeviceModel();
-            var commands = new List<DeviceModelCommand>();
+            var model = new LoRaDeviceModelDto();
+            var commands = new List<DeviceModelCommandDto>();
 
             var cut = RenderComponent<EditLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),

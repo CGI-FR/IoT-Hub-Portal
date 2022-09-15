@@ -605,7 +605,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 var modelEntity = response.Value;
 
-                return await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceId, modelEntity[nameof(DeviceModel.Name)].ToString());
+                return await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceId, modelEntity[nameof(DeviceModelDto.Name)].ToString());
             }
             catch (RequestFailedException e)
             {

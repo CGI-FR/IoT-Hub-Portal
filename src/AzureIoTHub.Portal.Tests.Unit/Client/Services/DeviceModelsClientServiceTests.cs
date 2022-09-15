@@ -36,7 +36,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetDeviceModelsShouldReturnDeviceModels()
         {
             // Arrange
-            var expectedDeviceModels = Fixture.Build<DeviceModel>().CreateMany(3).ToList();
+            var expectedDeviceModels = Fixture.Build<DeviceModelDto>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, "/api/models")
                 .RespondJson(expectedDeviceModels);
@@ -54,7 +54,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetDeviceModelShouldReturnDeviceModel()
         {
             // Arrange
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
+            var expectedDeviceModel = Fixture.Create<DeviceModelDto>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{expectedDeviceModel.ModelId}")
                 .RespondJson(expectedDeviceModel);
@@ -72,13 +72,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task CreateDeviceModelShouldCreateDeviceModel()
         {
             // Arrange
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
+            var expectedDeviceModel = Fixture.Create<DeviceModelDto>();
 
             _ = MockHttpClient.When(HttpMethod.Post, "/api/models")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceModel>>();
-                    var body = m.Content as ObjectContent<DeviceModel>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceModelDto>>();
+                    var body = m.Content as ObjectContent<DeviceModelDto>;
                     _ = body.Value.Should().BeEquivalentTo(expectedDeviceModel);
                     return true;
                 })
@@ -96,13 +96,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task UpdateDeviceModelShouldUpdateDeviceModel()
         {
             // Arrange
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
+            var expectedDeviceModel = Fixture.Create<DeviceModelDto>();
 
             _ = MockHttpClient.When(HttpMethod.Put, $"/api/models/{expectedDeviceModel.ModelId}")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceModel>>();
-                    var body = m.Content as ObjectContent<DeviceModel>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<DeviceModelDto>>();
+                    var body = m.Content as ObjectContent<DeviceModelDto>;
                     _ = body.Value.Should().BeEquivalentTo(expectedDeviceModel);
                     return true;
                 })
@@ -120,7 +120,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task DeleteDeviceModelShouldDeleteDeviceModel()
         {
             // Arrange
-            var expectedDeviceModel = Fixture.Create<DeviceModel>();
+            var expectedDeviceModel = Fixture.Create<DeviceModelDto>();
 
             _ = MockHttpClient.When(HttpMethod.Delete, $"/api/models/{expectedDeviceModel.ModelId}")
                 .Respond(HttpStatusCode.NoContent);
@@ -137,7 +137,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetDeviceModelModelPropertiesShouldReturnDeviceModelModelProperties()
         {
             // Arrange
-            var deviceModel = Fixture.Create<DeviceModel>();
+            var deviceModel = Fixture.Create<DeviceModelDto>();
             var expectedDeviceModelProperties = Fixture.Build<DeviceProperty>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{deviceModel.ModelId}/properties")
@@ -156,7 +156,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task SetDeviceModelModelPropertiesShouldSetDeviceModelModelProperties()
         {
             // Arrange
-            var deviceModel = Fixture.Create<DeviceModel>();
+            var deviceModel = Fixture.Create<DeviceModelDto>();
             var expectedDeviceModelProperties = Fixture.Build<DeviceProperty>().CreateMany(3).ToList();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{deviceModel.ModelId}/properties")
@@ -181,7 +181,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetAvatarUrlShouldReturnAvatarUrl()
         {
             // Arrange
-            var deviceModel = Fixture.Create<DeviceModel>();
+            var deviceModel = Fixture.Create<DeviceModelDto>();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/models/{deviceModel.ModelId}/avatar")
                 .RespondJson(deviceModel.ImageUrl.ToString());
@@ -199,7 +199,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task ChangeAvatarPropertiesShouldChangeAvatar()
         {
             // Arrange
-            var deviceModel = Fixture.Create<DeviceModel>();
+            var deviceModel = Fixture.Create<DeviceModelDto>();
             using var content = new MultipartFormDataContent();
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/models/{deviceModel.ModelId}/avatar")
