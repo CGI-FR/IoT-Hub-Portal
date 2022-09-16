@@ -5,15 +5,11 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Azure;
-    using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Domain;
+    using Domain;
     using AzureIoTHub.Portal.Domain.Entities;
-    using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Domain.Repositories;
-    using Microsoft.AspNetCore.Http;
+    using Domain.Exceptions;
+    using Domain.Repositories;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Logging;
 
     public class DeviceModelPropertiesService : IDeviceModelPropertiesService
     {
@@ -23,27 +19,17 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IUnitOfWork unitOfWork;
 
         /// <summary>
-        /// The table client factory.
-        /// </summary>
-        private readonly ITableClientFactory tableClientFactory;
-
-        /// <summary>
         /// The device model properties repository.
         /// </summary>
         private readonly IDeviceModelPropertiesRepository deviceModelPropertiesRepository;
 
-        /// <summary>
-        /// The logger.
-        /// </summary>
-        private readonly ILogger log;
+        private readonly IDeviceModelRepository deviceModelRepository;
 
-        public DeviceModelPropertiesService(
-            ILogger<DeviceModelPropertiesService> log, IUnitOfWork unitOfWork, ITableClientFactory tableClientFactory, IDeviceModelPropertiesRepository deviceModelPropertiesRepository)
+        public DeviceModelPropertiesService(IUnitOfWork unitOfWork, IDeviceModelPropertiesRepository deviceModelPropertiesRepository, IDeviceModelRepository deviceModelRepository)
         {
-            this.log = log;
             this.unitOfWork = unitOfWork;
-            this.tableClientFactory = tableClientFactory;
             this.deviceModelPropertiesRepository = deviceModelPropertiesRepository;
+            this.deviceModelRepository = deviceModelRepository;
         }
 
         public async Task<IEnumerable<DeviceModelProperty>> GetModelProperties(string modelId)
@@ -69,27 +55,13 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
-        private async Task<bool> AssertModelExists(string id)
+        private async Task<bool> AssertModelExists(string deviceModelId)
         {
-            try
-            {
-                _ = await this.tableClientFactory
-                                    .GetDeviceTemplates()
-                                    .GetEntityAsync<TableEntity>("0", id);
+            var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModelId);
 
-                return true;
-            }
-            catch (RequestFailedException e)
-            {
-                if (e.Status == StatusCodes.Status404NotFound)
-                {
-                    throw new ResourceNotFoundException($"The model {id} doesn't exist.");
-                }
-
-                this.log.LogError(e.Message, e);
-
-                throw new InternalServerErrorException($"Unable to check if device model with id {id} exist", e);
-            }
+            return deviceModelEntity == null
+                ? throw new ResourceNotFoundException($"The device model {deviceModelId} doesn't exist")
+                : true;
         }
     }
 }
