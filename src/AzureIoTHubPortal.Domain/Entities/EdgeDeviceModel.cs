@@ -8,5 +8,8 @@ namespace AzureIoTHub.Portal.Domain.Entities
     public class EdgeDeviceModel : EntityBase
     {
         public string Name { get; set; }
+
+        public string? Description { get; set; }
+
     }
 }

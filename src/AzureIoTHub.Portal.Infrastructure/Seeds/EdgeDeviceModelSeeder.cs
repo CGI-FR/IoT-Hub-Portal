@@ -27,7 +27,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Seeds
                 _ = await set.AddAsync(new EdgeDeviceModel
                 {
                     Id = item.RowKey,
-                    Name = item[nameof(EdgeDeviceModel.Name)].ToString()
+                    Name = item[nameof(EdgeDeviceModel.Name)].ToString(),
+                    Description = item[nameof(EdgeDeviceModel.Description)]?.ToString()
                 });
 #pragma warning restore CS8629 // Nullable value type may be null.
 
