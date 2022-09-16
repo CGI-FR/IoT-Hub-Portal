@@ -1975,7 +1975,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DeviceModel"
+                    "$ref": "#/components/schemas/DeviceModelDto"
                   }
                 }
               },
@@ -1983,7 +1983,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DeviceModel"
+                    "$ref": "#/components/schemas/DeviceModelDto"
                   }
                 }
               },
@@ -1991,7 +1991,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DeviceModel"
+                    "$ref": "#/components/schemas/DeviceModelDto"
                   }
                 }
               }
@@ -2010,17 +2010,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoRaDeviceModel"
+                "$ref": "#/components/schemas/LoRaDeviceModelDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoRaDeviceModel"
+                "$ref": "#/components/schemas/LoRaDeviceModelDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/LoRaDeviceModel"
+                "$ref": "#/components/schemas/LoRaDeviceModelDto"
               }
             }
           }
@@ -2077,17 +2077,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/LoRaDeviceModel"
+                  "$ref": "#/components/schemas/LoRaDeviceModelDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LoRaDeviceModel"
+                  "$ref": "#/components/schemas/LoRaDeviceModelDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LoRaDeviceModel"
+                  "$ref": "#/components/schemas/LoRaDeviceModelDto"
                 }
               }
             }
@@ -2136,17 +2136,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoRaDeviceModel"
+                "$ref": "#/components/schemas/LoRaDeviceModelDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoRaDeviceModel"
+                "$ref": "#/components/schemas/LoRaDeviceModelDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/LoRaDeviceModel"
+                "$ref": "#/components/schemas/LoRaDeviceModelDto"
               }
             }
           }
@@ -2476,7 +2476,7 @@
               "schema": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/DeviceModelCommand"
+                  "$ref": "#/components/schemas/DeviceModelCommandDto"
                 }
               }
             },
@@ -2484,7 +2484,7 @@
               "schema": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/DeviceModelCommand"
+                  "$ref": "#/components/schemas/DeviceModelCommandDto"
                 }
               }
             },
@@ -2492,7 +2492,7 @@
               "schema": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/DeviceModelCommand"
+                  "$ref": "#/components/schemas/DeviceModelCommandDto"
                 }
               }
             }
@@ -2530,7 +2530,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DeviceModelCommand"
+                    "$ref": "#/components/schemas/DeviceModelCommandDto"
                   }
                 }
               },
@@ -2538,7 +2538,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DeviceModelCommand"
+                    "$ref": "#/components/schemas/DeviceModelCommandDto"
                   }
                 }
               },
@@ -2546,7 +2546,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DeviceModelCommand"
+                    "$ref": "#/components/schemas/DeviceModelCommandDto"
                   }
                 }
               }
@@ -2570,7 +2570,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DeviceModel"
+                    "$ref": "#/components/schemas/DeviceModelDto"
                   }
                 }
               },
@@ -2578,7 +2578,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DeviceModel"
+                    "$ref": "#/components/schemas/DeviceModelDto"
                   }
                 }
               },
@@ -2586,7 +2586,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DeviceModel"
+                    "$ref": "#/components/schemas/DeviceModelDto"
                   }
                 }
               }
@@ -2605,17 +2605,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DeviceModel"
+                "$ref": "#/components/schemas/DeviceModelDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/DeviceModel"
+                "$ref": "#/components/schemas/DeviceModelDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/DeviceModel"
+                "$ref": "#/components/schemas/DeviceModelDto"
               }
             }
           }
@@ -2672,17 +2672,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeviceModel"
+                  "$ref": "#/components/schemas/DeviceModelDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeviceModel"
+                  "$ref": "#/components/schemas/DeviceModelDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeviceModel"
+                  "$ref": "#/components/schemas/DeviceModelDto"
                 }
               }
             }
@@ -2731,17 +2731,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DeviceModel"
+                "$ref": "#/components/schemas/DeviceModelDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/DeviceModel"
+                "$ref": "#/components/schemas/DeviceModelDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/DeviceModel"
+                "$ref": "#/components/schemas/DeviceModelDto"
               }
             }
           }
@@ -3770,46 +3770,7 @@
         "additionalProperties": false,
         "description": "Class representing the page results."
       },
-      "DeviceModel": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "modelId": {
-            "type": "string",
-            "description": "The device model identifier.",
-            "nullable": true
-          },
-          "imageUrl": {
-            "type": "string",
-            "description": "The device model image Url.",
-            "format": "uri",
-            "nullable": true
-          },
-          "name": {
-            "minLength": 1,
-            "type": "string",
-            "description": "The device model name."
-          },
-          "description": {
-            "type": "string",
-            "description": "The device model description.",
-            "nullable": true
-          },
-          "isBuiltin": {
-            "type": "boolean",
-            "description": "A value indicating whether this instance is builtin."
-          },
-          "supportLoRaFeatures": {
-            "type": "boolean",
-            "description": "A value indicating whether the LoRa features is supported on this model."
-          }
-        },
-        "additionalProperties": false,
-        "description": "Device model."
-      },
-      "DeviceModelCommand": {
+      "DeviceModelCommandDto": {
         "required": [
           "frame",
           "name",
@@ -3847,6 +3808,45 @@
         },
         "additionalProperties": false,
         "description": "Device model command."
+      },
+      "DeviceModelDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "description": "The device model identifier.",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "The device model image Url.",
+            "format": "uri",
+            "nullable": true
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The device model name."
+          },
+          "description": {
+            "type": "string",
+            "description": "The device model description.",
+            "nullable": true
+          },
+          "isBuiltin": {
+            "type": "boolean",
+            "description": "A value indicating whether this instance is builtin."
+          },
+          "supportLoRaFeatures": {
+            "type": "boolean",
+            "description": "A value indicating whether the LoRa features is supported on this model."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Device model."
       },
       "DeviceProperty": {
         "required": [
@@ -4642,7 +4642,7 @@
         "additionalProperties": false,
         "description": "LoRa WAN Device details."
       },
-      "LoRaDeviceModel": {
+      "LoRaDeviceModelDto": {
         "required": [
           "name"
         ],
