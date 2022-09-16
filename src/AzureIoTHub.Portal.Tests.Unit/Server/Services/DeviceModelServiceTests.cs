@@ -74,10 +74,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var expectedDeviceModels = Fixture.CreateMany<DeviceModel>(3).ToList();
-            var expectedDeviceModelsDto = expectedDeviceModels.Select(model => Mapper.Map<DeviceModelDto>(model)).ToList();
+            var expectedImageUri = Fixture.Create<Uri>();
+            var expectedDeviceModelsDto = expectedDeviceModels.Select(model =>
+            {
+                var deviceModelDto = Mapper.Map<DeviceModelDto>(model);
+                deviceModelDto.ImageUrl = expectedImageUri;
+                return deviceModelDto;
+            }).ToList();
 
             _ = this.mockDeviceModelRepository.Setup(repository => repository.GetAll())
                 .Returns(expectedDeviceModels);
+
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
+                .Returns(expectedImageUri);
 
             // Act
             var result = await this.deviceModelService.GetDeviceModels();
