@@ -3,10 +3,44 @@
 
 namespace AzureIoTHub.Portal.Domain.Entities
 {
+    using System.ComponentModel.DataAnnotations.Schema;
+    using AzureIoTHub.Portal.Domain.Base;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
-    public class LorawanDevice : Device
+    public class LorawanDevice : EntityBase
     {
+
+        /// <summary>
+        /// The name of the device.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// The model identifier.
+        /// </summary>
+        public string DeviceModelId { get; set; }
+
+        /// <summary>
+        ///   <c>true</c> if this instance is connected; otherwise, <c>false</c>.
+        /// </summary>
+        public bool IsConnected { get; set; }
+
+        /// <summary>
+        ///   <c>true</c> if this instance is enabled; otherwise, <c>false</c>.
+        /// </summary>
+        public bool IsEnabled { get; set; }
+
+        /// <summary>
+        /// The status updated time.
+        /// </summary>
+        public DateTime StatusUpdatedTime { get; set; }
+
+        /// <summary>
+        /// List of custom device tags and their values.
+        /// </summary>
+        [Column(TypeName = "jsonb")]
+        public Dictionary<string, string> Tags { get; set; } = new();
+
         /// <summary>
         /// A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP
         /// </summary>
