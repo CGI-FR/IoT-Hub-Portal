@@ -18,6 +18,7 @@ namespace AzureIoTHub.Portal.Server
     using AzureIoTHub.Portal.Infrastructure.Factories;
     using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Seeds;
+    using AzureIoTHub.Portal.Server.Jobs;
     using Extensions;
     using Hellang.Middleware.ProblemDetails;
     using Hellang.Middleware.ProblemDetails.Mvc;
@@ -312,6 +313,15 @@ namespace AzureIoTHub.Portal.Server
                 q.AddMetricsService<DeviceMetricExporterService, DeviceMetricLoaderService>(configuration);
                 q.AddMetricsService<EdgeDeviceMetricExporterService, EdgeDeviceMetricLoaderService>(configuration);
                 q.AddMetricsService<ConcentratorMetricExporterService, ConcentratorMetricLoaderService>(configuration);
+
+                _ = q.AddJob<SyncDevicesJob>(j => j.WithIdentity(nameof(SyncDevicesJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncDevicesJob)}")
+                        .ForJob(nameof(SyncDevicesJob))
+                        .WithSimpleSchedule(s => s
+                            //.WithIntervalInSeconds(configuration.MetricExporterRefreshIntervalInSeconds)
+                            .WithIntervalInSeconds(30)
+                            .RepeatForever()));
             });
 
 
