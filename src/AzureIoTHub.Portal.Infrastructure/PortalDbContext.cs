@@ -16,6 +16,8 @@ namespace AzureIoTHub.Portal.Infrastructure
         public DbSet<DeviceTag> DeviceTags { get; set; }
         public DbSet<DeviceModelCommand> DeviceModelCommands { get; set; }
         public DbSet<DeviceModel> DeviceModels { get; set; }
+        public DbSet<Device> Devices { get; set; }
+        public DbSet<LorawanDevice> LorawanDevices { get; set; }
         public DbSet<EdgeDeviceModel> EdgeDeviceModels { get; set; }
         public DbSet<EdgeDeviceModelCommand> EdgeDeviceModelCommands { get; set; }
 
