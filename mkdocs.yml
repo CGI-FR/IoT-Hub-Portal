@@ -105,7 +105,11 @@ extra:
 # Navigation
 nav:
   - index.md
-  - Dev Guide: 'dev-guide.md'
+  - Dev Guide:
+    - 'Developer Guide': 'dev-guide.md'
+    - 'Testing':
+      - 'dev-guide/testing/unit-tests-common-practices.md'
+      - 'dev-guide/testing/unit-tests-on-blazor-components.md'
   - Concepts: 'concepts.md'
   - Web API Reference: 'open-api.md'
   - About:
