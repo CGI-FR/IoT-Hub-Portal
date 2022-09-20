@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Domain.Repositories
 {
     using Entities;
 
-    public interface IEdgeModelRepository : IRepository<EdgeDeviceModel>
+    public interface IEdgeDeviceModelRepository : IRepository<EdgeDeviceModel>
     {
     }
 }

@@ -149,7 +149,8 @@ namespace AzureIoTHub.Portal.Server
 
             _ = services.AddScoped<IDeviceModelPropertiesRepository, DeviceModelPropertiesRepository>();
             _ = services.AddScoped<IDeviceTagRepository, DeviceTagRepository>();
-            _ = services.AddScoped<IEdgeModelRepository, EdgeModelRepository>();
+            _ = services.AddScoped<IEdgeDeviceModelRepository, EdgeDeviceModelRepository>();
+            _ = services.AddScoped<IEdgeDeviceModelCommandRepository, EdgeDeviceModelCommandRepository>();
             _ = services.AddScoped<IDeviceModelRepository, DeviceModelRepository>();
             _ = services.AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>();
 
@@ -275,6 +276,7 @@ namespace AzureIoTHub.Portal.Server
                 mc.AddProfile(new DevicePropertyProfile());
                 mc.AddProfile(new DeviceTagProfile());
                 mc.AddProfile(new EdgeDeviceModelProfile());
+                mc.AddProfile(new EdgeDeviceModelCommandProfile());
                 mc.AddProfile(new DeviceModelProfile());
                 mc.AddProfile(new DeviceModelCommandProfile());
             });
