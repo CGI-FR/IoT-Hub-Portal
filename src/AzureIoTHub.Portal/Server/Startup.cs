@@ -153,6 +153,8 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddScoped<IEdgeDeviceModelRepository, EdgeDeviceModelRepository>();
             _ = services.AddScoped<IEdgeDeviceModelCommandRepository, EdgeDeviceModelCommandRepository>();
             _ = services.AddScoped<IDeviceModelRepository, DeviceModelRepository>();
+            _ = services.AddScoped<IDeviceRepository, DeviceRepository>();
+            _ = services.AddScoped<ILorawanDeviceRepository, LorawanDeviceRepository>();
             _ = services.AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>();
 
             _ = services.AddMudServices();
@@ -280,6 +282,7 @@ namespace AzureIoTHub.Portal.Server
                 mc.AddProfile(new EdgeDeviceModelCommandProfile());
                 mc.AddProfile(new DeviceModelProfile());
                 mc.AddProfile(new DeviceModelCommandProfile());
+                mc.AddProfile(new DeviceProfile());
             });
 
             var mapper = mapperConfig.CreateMapper();
@@ -324,7 +327,7 @@ namespace AzureIoTHub.Portal.Server
                         .ForJob(nameof(SyncDevicesJob))
                         .WithSimpleSchedule(s => s
                             //.WithIntervalInSeconds(configuration.MetricExporterRefreshIntervalInSeconds)
-                            .WithIntervalInSeconds(30)
+                            .WithIntervalInSeconds(3000)
                             .RepeatForever()));
             });
 

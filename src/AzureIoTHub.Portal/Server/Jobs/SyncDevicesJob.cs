@@ -5,17 +5,37 @@ namespace AzureIoTHub.Portal.Server.Jobs
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AutoMapper;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Services;
     using Microsoft.Azure.Devices.Shared;
     using Quartz;
 
+    [DisallowConcurrentExecution]
     public class SyncDevicesJob : IJob
     {
         private readonly IDeviceService deviceService;
+        private readonly IDeviceModelRepository deviceModelRepository;
+        private readonly ILorawanDeviceRepository lorawanDeviceRepository;
+        private readonly IDeviceRepository deviceRepository;
+        private readonly IMapper mapper;
+        private readonly IUnitOfWork unitOfWork;
 
-        public SyncDevicesJob(IDeviceService deviceService)
+        public SyncDevicesJob(IDeviceService deviceService,
+            IDeviceModelRepository deviceModelRepository,
+            ILorawanDeviceRepository lorawanDeviceRepository,
+            IDeviceRepository deviceRepository,
+            IMapper mapper,
+            IUnitOfWork unitOfWork)
         {
             this.deviceService = deviceService;
+            this.deviceModelRepository = deviceModelRepository;
+            this.lorawanDeviceRepository = lorawanDeviceRepository;
+            this.deviceRepository = deviceRepository;
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -26,7 +46,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
             int totalTwinDevices;
             do
             {
-                var result = await this.deviceService.GetAllDevice(continuationToken: continuationToken, pageSize: 100);
+                var result = await this.deviceService.GetAllDevice(continuationToken: continuationToken,excludeDeviceType: "LoRa Concentrator", pageSize: 100);
                 twins.AddRange(result.Items);
 
                 totalTwinDevices = result.TotalItems;
@@ -34,7 +54,56 @@ namespace AzureIoTHub.Portal.Server.Jobs
 
             } while (totalTwinDevices > twins.Count);
 
-            throw new System.NotImplementedException();
+            foreach (var twin in twins)
+            {
+                var model = await this.deviceModelRepository.GetByIdAsync(twin.Tags["modelId"]?.ToString());
+
+                if (model == null)
+                {
+                    continue;
+                }
+
+                if (model.SupportLoRaFeatures)
+                {
+                    var device = this.mapper.Map<LorawanDevice>(twin);
+
+                    var lorawanDeviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(device.Id);
+                    if (lorawanDeviceEntity == null)
+                    {
+                        await this.lorawanDeviceRepository.InsertAsync(device);
+                    }
+                    else
+                    {
+                        if (lorawanDeviceEntity.StatusUpdatedTime < device.StatusUpdatedTime)
+                        {
+                            _ = this.mapper.Map(device, lorawanDeviceEntity);
+                            this.lorawanDeviceRepository.Update(lorawanDeviceEntity);
+                        }
+                    }
+                }
+                else
+                {
+                    var device = this.mapper.Map<Device>(twin);
+
+                    var deviceEntity = await this.deviceRepository.GetByIdAsync(device.Id);
+                    if (deviceEntity == null)
+                    {
+                        await this.deviceRepository.InsertAsync(device);
+                    }
+                    else
+                    {
+                        if (deviceEntity.StatusUpdatedTime < device.StatusUpdatedTime)
+                        {
+                            _ = this.mapper.Map(device, deviceEntity);
+                            this.deviceRepository.Update(deviceEntity);
+                        }
+                    }
+                }
+            }
+
+            // save entity
+            await this.unitOfWork.SaveAsync();
+
         }
     }
 }

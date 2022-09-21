@@ -49,28 +49,28 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// <summary>
         /// The OTAA App Key.
         /// </summary>
-        public string AppKey { get; set; }
+        public string? AppKey { get; set; }
 
         /// <summary>
         /// The device OTAA Application EUI.
         /// </summary>
-        public string AppEUI { get; set; }
+        public string? AppEUI { get; set; }
 
         /// <summary>
         ///  The ABP AppSKey.
         /// </summary>
-        public string AppSKey { get; set; }
+        public string? AppSKey { get; set; }
 
         /// <summary>
         ///  The ABP NwkSKey.
         /// </summary>
-        public string NwkSKey { get; set; }
+        public string? NwkSKey { get; set; }
 
         /// <summary>
         /// Unique identifier that allows
         /// the device to be recognized.
         /// </summary>
-        public string DevAddr { get; set; }
+        public string? DevAddr { get; set; }
 
         /// <summary>
         /// A value indicating whether the device has already joined the platform.
@@ -81,40 +81,40 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// The Device Current Datarate,
         /// This value will be only reported if you are using Adaptive Data Rate.
         /// </summary>
-        public string DataRate { get; set; }
+        public string? DataRate { get; set; }
 
         /// <summary>
         /// The Device Current Transmit Power,
         /// This value will be only reported if you are using Adaptive Data Rate.
         /// </summary>
-        public string TxPower { get; set; }
+        public string? TxPower { get; set; }
 
         /// <summary>
         /// The Device Current repetition when transmitting.
         /// E.g. if set to two, the device will transmit twice his upstream messages.
         /// This value will be only reported if you are using Adaptive Data Rate.
         /// </summary>
-        public string NbRep { get; set; }
+        public string? NbRep { get; set; }
 
         /// <summary>
         /// The Device Current Rx2Datarate.
         /// </summary>
-        public string ReportedRX2DataRate { get; set; }
+        public string? ReportedRX2DataRate { get; set; }
 
         /// <summary>
         /// The Device Current RX1DROffset.
         /// </summary>
-        public string ReportedRX1DROffset { get; set; }
+        public string? ReportedRX1DROffset { get; set; }
 
         /// <summary>
         /// The Device Current RXDelay.
         /// </summary>
-        public string ReportedRXDelay { get; set; }
+        public string? ReportedRXDelay { get; set; }
 
         /// <summary>
         /// The GatewayID of the device.
         /// </summary>
-        public string GatewayID { get; set; }
+        public string? GatewayID { get; set; }
 
         /// <summary>
         /// A value indicating whether the downlinks are enabled (True if not provided)
@@ -197,6 +197,6 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// <summary>
         /// The sensor decoder API Url.
         /// </summary>
-        public string SensorDecoder { get; set; }
+        public string? SensorDecoder { get; set; }
     }
 }
