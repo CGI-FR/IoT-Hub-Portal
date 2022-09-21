@@ -18,6 +18,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Microsoft.EntityFrameworkCore;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Shared.Models.v10;
+    using Microsoft.AspNetCore.Mvc.RazorPages;
 
     public class EdgeModelService : IEdgeModelService
     {
@@ -128,7 +129,8 @@ namespace AzureIoTHub.Portal.Server.Services
                 .SelectMany(x => x.Commands.Select(cmd => new IoTEdgeModuleCommand
                 {
                     EdgeDeviceModelId = deviceModelObject.ModelId,
-                    CommandId = x.ModuleName + "-" + cmd.Name,
+                    CommandId = Guid.NewGuid().ToString(),
+                    ModuleName = x.ModuleName,
                     Name = cmd.Name,
                 })).ToArray();
 
@@ -140,7 +142,6 @@ namespace AzureIoTHub.Portal.Server.Services
                 {
                     this.commandRepository.Delete(command.Id);
                 }
-                //await this.unitOfWork.SaveAsync();
 
                 foreach (var cmd in moduleCommands)
                 {
@@ -182,15 +183,13 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 foreach (var command in commands)
                 {
-                    var module = result.EdgeModules.SingleOrDefault(x => (x.ModuleName + "-" + command.Name).Equals(command.Id, StringComparison.Ordinal));
+                    var module = result.EdgeModules.SingleOrDefault(x => x.ModuleName.Equals(command.ModuleName, StringComparison.Ordinal));
                     if (module == null)
                     {
                         continue;
                     }
-                    module.Commands.Add(new IoTEdgeModuleCommand
-                    {
-                        Name = command.Name,
-                    });
+
+                    module.Commands.Add(this.mapper.Map<IoTEdgeModuleCommand>(command));
                 }
 
                 return result;
@@ -229,8 +228,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     throw new ResourceNotFoundException($"The edge model with id {edgeModel.ModelId} doesn't exist");
                 }
 
-                //_ = this.mapper.Map(edgeModel, edgeModelEntity);
-                edgeModelEntity = this.mapper.Map<EdgeDeviceModel>(edgeModel);
+                _ = this.mapper.Map(edgeModel, edgeModelEntity);
                 this.edgeModelRepository.Update(edgeModelEntity);
 
                 await this.unitOfWork.SaveAsync();

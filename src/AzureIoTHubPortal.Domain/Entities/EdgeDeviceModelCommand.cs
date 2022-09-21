@@ -10,5 +10,7 @@ namespace AzureIoTHub.Portal.Domain.Entities
         public string Name { get; set; }
 
         public string EdgeDeviceModelId { get; set; }
+
+        public string ModuleName { get; set; }
     }
 }
