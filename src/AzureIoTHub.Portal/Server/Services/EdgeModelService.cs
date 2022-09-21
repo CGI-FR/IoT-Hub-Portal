@@ -19,6 +19,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Mvc.RazorPages;
+    using Microsoft.Graph;
 
     public class EdgeModelService : IEdgeModelService
     {
@@ -70,7 +71,12 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return this.edgeModelRepository
                     .GetAll()
-                    .Select(model => this.mapper.Map<IoTEdgeModelListItem>(model))
+                    .Select(model =>
+                    {
+                        var edgeDeviceModelListItem = this.mapper.Map<IoTEdgeModelListItem>(model);
+                        edgeDeviceModelListItem.ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeDeviceModelListItem.ModelId);
+                        return edgeDeviceModelListItem;
+                    })
                     .ToList();
             }
             catch (Exception e)
@@ -174,7 +180,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 var result = new IoTEdgeModel
                 {
                     ModelId = edgeModelEntity.Id,
-                    ImageUrl = null,
+                    ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id),
                     Name = edgeModelEntity.Name,
                     Description = edgeModelEntity.Description,
                     EdgeModules = modules,
