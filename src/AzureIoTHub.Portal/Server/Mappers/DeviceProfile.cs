@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     {
         public DeviceProfile()
         {
+            _ = CreateMap<Device, Device>();
             _ = CreateMap<Twin, Device>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Tags["deviceName"]))
@@ -23,6 +24,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == Microsoft.Azure.Devices.DeviceStatus.Enabled))
                 .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => GetTags(src)));
 
+
+            _ = CreateMap<LorawanDevice, LorawanDevice>();
             _ = CreateMap<Twin, LorawanDevice>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Tags["deviceName"]))
