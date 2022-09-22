@@ -30,6 +30,8 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// </summary>
         public bool IsEnabled { get; set; }
 
+        public int Version { get; set; }
+
         /// <summary>
         /// The status updated time.
         /// </summary>
