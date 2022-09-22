@@ -6,7 +6,6 @@
 namespace AzureIoTHub.Portal.Infrastructure.Migrations
 {
     using System;
-    using System.Collections.Generic;
     using Microsoft.EntityFrameworkCore.Migrations;
 
     public partial class AddDeviceandLorawanDevice : Migration
@@ -24,7 +23,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Migrations
                     IsEnabled = table.Column<bool>(type: "boolean", nullable: false),
                     Version = table.Column<int>(type: "integer", nullable: false),
                     StatusUpdatedTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Tags = table.Column<Dictionary<string, string>>(type: "jsonb", nullable: false)
+                    Tags = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,7 +41,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Migrations
                     IsEnabled = table.Column<bool>(type: "boolean", nullable: false),
                     Version = table.Column<int>(type: "integer", nullable: false),
                     StatusUpdatedTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Tags = table.Column<Dictionary<string, string>>(type: "jsonb", nullable: false),
+                    Tags = table.Column<string>(type: "text", nullable: false),
                     UseOTAA = table.Column<bool>(type: "boolean", nullable: false),
                     AppKey = table.Column<string>(type: "text", nullable: true),
                     AppEUI = table.Column<string>(type: "text", nullable: true),

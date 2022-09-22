@@ -55,6 +55,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
                 mc.AddProfile(new EdgeDeviceModelCommandProfile());
                 mc.AddProfile(new DeviceModelProfile());
                 mc.AddProfile(new DeviceModelCommandProfile());
+                mc.AddProfile(new DeviceProfile());
             });
             Mapper = mappingConfig.CreateMapper();
             _ = ServiceCollection.AddSingleton(Mapper);

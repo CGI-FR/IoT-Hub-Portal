@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Domain.Entities
 {
-    using System.ComponentModel.DataAnnotations.Schema;
     using AzureIoTHub.Portal.Domain.Base;
 
     public class Device : EntityBase
@@ -38,7 +37,6 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// <summary>
         /// List of custom device tags and their values.
         /// </summary>
-        [Column(TypeName = "jsonb")]
         public Dictionary<string, string> Tags { get; set; } = new();
     }
 }
