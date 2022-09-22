@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Domain.Entities
 {
-    using System.ComponentModel.DataAnnotations.Schema;
     using AzureIoTHub.Portal.Domain.Base;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
@@ -40,7 +39,6 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// <summary>
         /// List of custom device tags and their values.
         /// </summary>
-        [Column(TypeName = "jsonb")]
         public Dictionary<string, string> Tags { get; set; } = new();
 
         /// <summary>
