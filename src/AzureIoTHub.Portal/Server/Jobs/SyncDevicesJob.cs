@@ -74,7 +74,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
                     }
                     else
                     {
-                        if (lorawanDeviceEntity.StatusUpdatedTime < device.StatusUpdatedTime)
+                        if (lorawanDeviceEntity.Version < device.Version)
                         {
                             _ = this.mapper.Map(device, lorawanDeviceEntity);
                             this.lorawanDeviceRepository.Update(lorawanDeviceEntity);
@@ -92,7 +92,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
                     }
                     else
                     {
-                        if (deviceEntity.StatusUpdatedTime < device.StatusUpdatedTime)
+                        if (deviceEntity.Version < device.Version)
                         {
                             _ = this.mapper.Map(device, deviceEntity);
                             this.deviceRepository.Update(deviceEntity);
