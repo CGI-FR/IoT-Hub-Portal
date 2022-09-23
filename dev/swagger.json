@@ -4341,6 +4341,18 @@
             "type": "string",
             "description": "The command name",
             "nullable": true
+          },
+          "edgeDeviceModelId": {
+            "type": "string",
+            "nullable": true
+          },
+          "commandId": {
+            "type": "string",
+            "nullable": true
+          },
+          "moduleName": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
