@@ -410,133 +410,58 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             MockRepository.VerifyAll();
         }
 
-        /*
-        
         [Test]
-        public async Task SaveModuleCommandsShouldUpsertModuleCommandTemplates()
+        public async Task SaveModuleCommandsShouldUpdateDatabase()
         {
             // Arrange
-            //var this.edgeDeviceModelService = CreateEdgeModelService();
+            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
 
-            var modules = new List<IoTEdgeModule>()
+            var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
             {
-                new IoTEdgeModule
-                {
-                    ModuleName = "Test",
-                    Commands = new List<IoTEdgeModuleCommand>
-                    {
-                        new IoTEdgeModuleCommand
-                        {
-                            Name = "Command"
-                        }
-                    }
-                }
-            };
+                command.EdgeDeviceModelId = edgeDeviceModel.ModelId;
+                return command;
+            }) .ToList();
+            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
+                .Returns(expectedCommands);
+            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
+            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDeviceModelCommand>()))
+                 .Returns(Task.CompletedTask);
 
-            var iotEdgeModel = new IoTEdgeModel
-            {
-                ModelId = Guid.NewGuid().ToString(),
-                EdgeModules = modules,
-            };
-
-            var mockModuleCommandResponse = this.mockRepository.Create<Response>();
-
-            var mockModuleCommands = Pageable<EdgeModuleCommand>.FromPages(new[]
-            {
-                Page<EdgeModuleCommand>.FromValues(Array.Empty<EdgeModuleCommand>(), null, mockModuleCommandResponse.Object)
-            });
-
-            _ = this.mockEdgeModuleCommands.Setup(c => c.Query(
-                        It.IsAny<Expression<Func<EdgeModuleCommand, bool>>>(),
-                        It.IsAny<int?>(),
-                        It.IsAny<IEnumerable<string>>(),
-                        It.IsAny<CancellationToken>()))
-                    .Returns(mockModuleCommands);
-
-            _ = this.mockEdgeModuleCommands
-                   .Setup(c => c.UpsertEntity(
-                    It.Is<EdgeModuleCommand>(x => x.RowKey == "Test-Command" && x.PartitionKey == iotEdgeModel.ModelId),
-                    It.IsAny<TableUpdateMode>(),
-                    It.IsAny<CancellationToken>()))
-               .Returns((Response)null);
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeModuleCommands())
-               .Returns(this.mockEdgeModuleCommands.Object);
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
 
             // Act
-            await this.edgeDeviceModelService.SaveModuleCommands(iotEdgeModel);
+            await this.edgeDeviceModelService.SaveModuleCommands(edgeDeviceModel);
 
             // Assert
-            this.mockEdgeModuleCommands.Verify(c => c.UpsertEntity(It.IsAny<EdgeModuleCommand>(), TableUpdateMode.Merge, default), Times.Once);
-            this.mockTableClientFactory.Verify(c => c.GetEdgeModuleCommands(), Times.Exactly(2));
-            this.mockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
-        public async Task SaveModuleCommandsShouldDeleteModuleCommandTemplates()
+        public void SaveModuleCommandsShouldThrowInternalServerErrorExceptionIfDbUpdateExceptionOccurs()
         {
             // Arrange
-            //var this.edgeDeviceModelService = CreateEdgeModelService();
+            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
 
-            var modules = new List<IoTEdgeModule>()
+            var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
             {
-                new IoTEdgeModule
-                {
-                    ModuleName = "Test",
-                    Commands = new List<IoTEdgeModuleCommand>()
-                }
-            };
+                command.EdgeDeviceModelId = edgeDeviceModel.ModelId;
+                return command;
+            }) .ToList();
+            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
+                .Returns(expectedCommands);
+            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
+            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDeviceModelCommand>()))
+                 .Returns(Task.CompletedTask);
 
-            var iotEdgeModel = new IoTEdgeModel
-            {
-                ModelId = Guid.NewGuid().ToString(),
-                EdgeModules = modules,
-            };
-
-            var mockModuleCommandResponse = this.mockRepository.Create<Response>();
-
-            var mockModuleCommands = Pageable<EdgeModuleCommand>.FromPages(new[]
-            {
-                Page<EdgeModuleCommand>.FromValues(new EdgeModuleCommand[1]
-                {
-                    new EdgeModuleCommand
-                    {
-                        PartitionKey = iotEdgeModel.ModelId,
-                        RowKey = "Test-Command",
-                        Timestamp = DateTime.Now,
-                        Name = "Command",
-                    }
-                }, null, mockModuleCommandResponse.Object)
-            });
-
-            var mockResponse = this.mockRepository.Create<Response>();
-
-            _ = this.mockEdgeModuleCommands.Setup(c => c.Query(
-                        It.IsAny<Expression<Func<EdgeModuleCommand, bool>>>(),
-                        It.IsAny<int?>(),
-                        It.IsAny<IEnumerable<string>>(),
-                        It.IsAny<CancellationToken>()))
-                    .Returns(mockModuleCommands);
-
-            _ = this.mockEdgeModuleCommands
-                   .Setup(c => c.DeleteEntityAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<ETag>(),
-                    It.IsAny<CancellationToken>()))
-               .ReturnsAsync(mockResponse.Object);
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeModuleCommands())
-               .Returns(this.mockEdgeModuleCommands.Object);
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Throws(new DbUpdateException());
 
             // Act
-            await this.edgeDeviceModelService.SaveModuleCommands(iotEdgeModel);
+            var result = async () => await this.edgeDeviceModelService.SaveModuleCommands(edgeDeviceModel);
 
             // Assert
-            this.mockEdgeModuleCommands.Verify(c => c.DeleteEntityAsync(It.IsAny<string>(), It.IsAny<string>(), default, default), Times.Once);
-            this.mockTableClientFactory.Verify(c => c.GetEdgeModuleCommands(), Times.Exactly(2));
-            this.mockRepository.VerifyAll();
+            _ = result.Should().ThrowAsync<InternalServerErrorException>();
         }
-    }*/
     }
 }
