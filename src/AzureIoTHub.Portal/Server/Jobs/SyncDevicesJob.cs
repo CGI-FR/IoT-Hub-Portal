@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Services;
     using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Extensions.Logging;
     using Quartz;
 
     [DisallowConcurrentExecution]
@@ -22,13 +23,15 @@ namespace AzureIoTHub.Portal.Server.Jobs
         private readonly IDeviceRepository deviceRepository;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
+        private readonly ILogger<SyncDevicesJob> logger;
 
         public SyncDevicesJob(IDeviceService deviceService,
             IDeviceModelRepository deviceModelRepository,
             ILorawanDeviceRepository lorawanDeviceRepository,
             IDeviceRepository deviceRepository,
             IMapper mapper,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            ILogger<SyncDevicesJob> logger)
         {
             this.deviceService = deviceService;
             this.deviceModelRepository = deviceModelRepository;
@@ -36,23 +39,12 @@ namespace AzureIoTHub.Portal.Server.Jobs
             this.deviceRepository = deviceRepository;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
+            this.logger = logger;
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
-            var twins = new List<Twin>();
-            var continuationToken = string.Empty;
-
-            int totalTwinDevices;
-            do
-            {
-                var result = await this.deviceService.GetAllDevice(continuationToken: continuationToken,excludeDeviceType: "LoRa Concentrator", pageSize: 100);
-                twins.AddRange(result.Items);
-
-                totalTwinDevices = result.TotalItems;
-                continuationToken = result.NextPage;
-
-            } while (totalTwinDevices > twins.Count);
+            var twins = await GetAllDeviceTwin();
 
             foreach (var twin in twins)
             {
@@ -65,20 +57,27 @@ namespace AzureIoTHub.Portal.Server.Jobs
 
                 if (model.SupportLoRaFeatures)
                 {
-                    var device = this.mapper.Map<LorawanDevice>(twin);
+                    try
+                    {
+                        var device = this.mapper.Map<LorawanDevice>(twin);
 
-                    var lorawanDeviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(device.Id);
-                    if (lorawanDeviceEntity == null)
-                    {
-                        await this.lorawanDeviceRepository.InsertAsync(device);
-                    }
-                    else
-                    {
-                        if (lorawanDeviceEntity.Version < device.Version)
+                        var lorawanDeviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(device.Id);
+                        if (lorawanDeviceEntity == null)
                         {
-                            _ = this.mapper.Map(device, lorawanDeviceEntity);
-                            this.lorawanDeviceRepository.Update(lorawanDeviceEntity);
+                            await this.lorawanDeviceRepository.InsertAsync(device);
                         }
+                        else
+                        {
+                            if (lorawanDeviceEntity.Version < device.Version)
+                            {
+                                _ = this.mapper.Map(device, lorawanDeviceEntity);
+                                this.lorawanDeviceRepository.Update(lorawanDeviceEntity);
+                            }
+                        }
+                    }
+                    catch (System.Exception)
+                    {
+                        this.logger.LogWarning($"Error while attenpting to insert LoRa device {twin.DeviceId}.");
                     }
                 }
                 else
@@ -103,7 +102,25 @@ namespace AzureIoTHub.Portal.Server.Jobs
 
             // save entity
             await this.unitOfWork.SaveAsync();
+        }
 
+        private async Task<List<Twin>> GetAllDeviceTwin()
+        {
+            var twins = new List<Twin>();
+            var continuationToken = string.Empty;
+
+            int totalTwinDevices;
+            do
+            {
+                var result = await this.deviceService.GetAllDevice(continuationToken: continuationToken,excludeDeviceType: "LoRa Concentrator", pageSize: 100);
+                twins.AddRange(result.Items);
+
+                totalTwinDevices = result.TotalItems;
+                continuationToken = result.NextPage;
+
+            } while (totalTwinDevices > twins.Count);
+
+            return twins;
         }
     }
 }
