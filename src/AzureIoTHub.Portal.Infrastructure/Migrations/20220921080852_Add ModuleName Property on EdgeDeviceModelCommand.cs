@@ -1,14 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #nullable disable
 
 namespace AzureIoTHub.Portal.Infrastructure.Migrations
 {
+    using Microsoft.EntityFrameworkCore.Migrations;
     public partial class AddModuleNamePropertyonEdgeDeviceModelCommand : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+            _ = migrationBuilder.AddColumn<string>(
                 name: "ModuleName",
                 table: "EdgeDeviceModelCommands",
                 type: "text",
@@ -18,7 +20,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+            _ = migrationBuilder.DropColumn(
                 name: "ModuleName",
                 table: "EdgeDeviceModelCommands");
         }
