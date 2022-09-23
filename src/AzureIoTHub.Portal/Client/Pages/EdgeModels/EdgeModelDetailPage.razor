@@ -14,10 +14,10 @@
 @inject IDialogService DialogService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
-    <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />       
+    <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />
 </MudTooltip>
 <MudTooltip Placement="Placement.Top">
-<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4"> Edge Device Model</MudText>
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4"> Edge Device Model</MudText>
 </MudTooltip>
 
 <MudForm Model="@EdgeModel" @ref="form" id="form">
@@ -172,7 +172,7 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; }
 
     [Parameter]
     public string ModelID { get; set; }
@@ -247,39 +247,39 @@
     {
         isProcessing = true;
 
-        // Displays validation error message for each field
-        await form.Validate();
-
-        if (!edgeModelValidator.Validate(this.EdgeModel).IsValid)
-        {
-            Snackbar.Add("One or more validation errors occurred", Severity.Error);
-
-            isProcessing = false;
-
-            return;
-        }
-
-        if (this.EdgeModel.EdgeModules.Any() && !edgeModuleValidator.Validate(this.EdgeModel.EdgeModules).IsValid)
-        {
-            Snackbar.Add("One or more validation errors occurred with the modules.", Severity.Error);
-
-            isProcessing = false;
-
-            return;
-        }
-
-        if (this.EdgeModel.EdgeRoutes.Any() && !edgeRouteValidator.Validate(this.EdgeModel.EdgeRoutes).IsValid)
-        {
-
-            Snackbar.Add("One or more validation errors occured with the routes.", Severity.Error);
-
-            isProcessing = false;
-
-            return;
-        }
-
         try
         {
+            // Displays validation error message for each field
+            await form.Validate();
+
+            if (!edgeModelValidator.Validate(this.EdgeModel).IsValid)
+            {
+                Snackbar.Add("One or more validation errors occurred", Severity.Error);
+
+                isProcessing = false;
+
+                return;
+            }
+
+            if (this.EdgeModel.EdgeModules.Any() && !edgeModuleValidator.Validate(this.EdgeModel.EdgeModules).IsValid)
+            {
+                Snackbar.Add("One or more validation errors occurred with the modules.", Severity.Error);
+
+                isProcessing = false;
+
+                return;
+            }
+
+            if (this.EdgeModel.EdgeRoutes.Any() && !edgeRouteValidator.Validate(this.EdgeModel.EdgeRoutes).IsValid)
+            {
+
+                Snackbar.Add("One or more validation errors occured with the routes.", Severity.Error);
+
+                isProcessing = false;
+
+                return;
+            }
+
             await this.EdgeModelService.UpdateIoTEdgeModel(this.EdgeModel);
 
             if (content is not null)
@@ -348,7 +348,8 @@
         this.NavigationManager.NavigateTo("/edge/models");
     }
 
-    private void DeleteRoute(IoTEdgeRoute route){
+    private void DeleteRoute(IoTEdgeRoute route)
+    {
         EdgeModel.EdgeRoutes.Remove(route);
     }
 

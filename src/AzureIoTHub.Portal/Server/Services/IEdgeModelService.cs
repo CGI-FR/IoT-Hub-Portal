@@ -25,5 +25,7 @@ namespace AzureIoTHub.Portal.Server.Services
         Task<string> UpdateEdgeModelAvatar(string edgeModelId, IFormFile file);
 
         Task DeleteEdgeModelAvatar(string edgeModelId);
+
+        Task SaveModuleCommands(IoTEdgeModel deviceModelObject);
     }
 }

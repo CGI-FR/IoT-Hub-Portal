@@ -26,7 +26,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Seeds
 #pragma warning disable CS8629 // Nullable value type may be null.
                 _ = await set.AddAsync(new EdgeDeviceModelCommand
                 {
-                    Id = item.RowKey,
+                    Id = Guid.NewGuid().ToString(),
+                    ModuleName = item.RowKey.Split("-")[0].ToString(),
                     Name = item[nameof(EdgeDeviceModelCommand.Name)].ToString(),
                     EdgeDeviceModelId = item.PartitionKey
                 });
