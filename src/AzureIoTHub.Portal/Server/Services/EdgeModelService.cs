@@ -8,7 +8,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Azure;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
@@ -18,8 +17,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using Microsoft.EntityFrameworkCore;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Shared.Models.v10;
-    using Microsoft.AspNetCore.Mvc.RazorPages;
-    using Microsoft.Graph;
 
     public class EdgeModelService : IEdgeModelService
     {
@@ -64,26 +61,17 @@ namespace AzureIoTHub.Portal.Server.Services
         /// Return the edge model template list.
         /// </summary>
         /// <returns>IEnumerable IoTEdgeModelListItem.</returns>
-        /// <exception cref="InternalServerErrorException"></exception>
         public IEnumerable<IoTEdgeModelListItem> GetEdgeModels()
         {
-            try
-            {
-                return this.edgeModelRepository
-                    .GetAll()
-                    .Select(model =>
-                    {
-                        var edgeDeviceModelListItem = this.mapper.Map<IoTEdgeModelListItem>(model);
-                        edgeDeviceModelListItem.ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeDeviceModelListItem.ModelId);
-                        return edgeDeviceModelListItem;
-                    })
-                    .ToList();
-            }
-            catch (Exception e)
-            {
-                throw new InternalServerErrorException("Unable to get edge models.", e);
-
-            }
+            return this.edgeModelRepository
+                .GetAll()
+                .Select(model =>
+                {
+                    var edgeDeviceModelListItem = this.mapper.Map<IoTEdgeModelListItem>(model);
+                    edgeDeviceModelListItem.ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeDeviceModelListItem.ModelId);
+                    return edgeDeviceModelListItem;
+                })
+                .ToList();
         }
 
         /// <summary>
@@ -105,22 +93,22 @@ namespace AzureIoTHub.Portal.Server.Services
                     {
                         edgeModelEntity = this.mapper.Map<EdgeDeviceModel>(edgeModel);
                         await this.edgeModelRepository.InsertAsync(edgeModelEntity);
+                        await this.unitOfWork.SaveAsync();
                     }
                     else
                     {
                         throw new ResourceAlreadyExistsException($"The edge model with id {edgeModel?.ModelId} already exists");
-
                     }
-                    await this.unitOfWork.SaveAsync();
                 }
                 catch (DbUpdateException e)
                 {
                     throw new InternalServerErrorException($"Unable to create the device model with id {edgeModel?.ModelId}", e);
                 }
+
+                await SaveModuleCommands(edgeModel);
+                await this.configService.RollOutEdgeModelConfiguration(edgeModel);
             }
 
-            await SaveModuleCommands(edgeModel);
-            await this.configService.RollOutEdgeModelConfiguration(edgeModel);
         }
 
         /// <summary>
@@ -143,7 +131,6 @@ namespace AzureIoTHub.Portal.Server.Services
             try
             {
                 var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == deviceModelObject.ModelId).ToList();
-                //foreach (var command in existingCommands.Where(c => !moduleCommands.Any(x => x.CommandId == c.Id)))
                 foreach (var command in existingCommands)
                 {
                     this.commandRepository.Delete(command.Id);
@@ -167,49 +154,43 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <param name="modelId">The model identifier.</param>
         /// <returns>An edge model object.</returns>
         /// <exception cref="ResourceNotFoundException">Resource not found if template does not exist.</exception>
-        /// <exception cref="InternalServerErrorException">Internal server error exception.</exception>
         public async Task<IoTEdgeModel> GetEdgeModel(string modelId)
         {
-            try
+            var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(modelId);
+
+            if (edgeModelEntity == null)
             {
-                var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(modelId);
-                var modules = await this.configService.GetConfigModuleList(modelId);
-                var routes = await this.configService.GetConfigRouteList(modelId);
-                var commands =  this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == modelId).ToList();
-
-                var result = new IoTEdgeModel
-                {
-                    ModelId = edgeModelEntity.Id,
-                    ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id),
-                    Name = edgeModelEntity.Name,
-                    Description = edgeModelEntity.Description,
-                    EdgeModules = modules,
-                    EdgeRoutes = routes
-                };
-
-                foreach (var command in commands)
-                {
-                    var module = result.EdgeModules.SingleOrDefault(x => x.ModuleName.Equals(command.ModuleName, StringComparison.Ordinal));
-                    if (module == null)
-                    {
-                        continue;
-                    }
-
-                    module.Commands.Add(this.mapper.Map<IoTEdgeModuleCommand>(command));
-                }
-
-                return result;
-                //return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
+                throw new ResourceNotFoundException($"The edge model with id {modelId} doesn't exist");
             }
 
-            catch (RequestFailedException e)
+            var modules = await this.configService.GetConfigModuleList(modelId);
+            var routes = await this.configService.GetConfigRouteList(modelId);
+            var commands =  this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == modelId).ToList();
+
+            //TODO : User a mapper
+            //Previously return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
+            var result = new IoTEdgeModel
             {
-                if (e.Status == StatusCodes.Status404NotFound)
+                ModelId = edgeModelEntity.Id,
+                ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id),
+                Name = edgeModelEntity.Name,
+                Description = edgeModelEntity.Description,
+                EdgeModules = modules,
+                EdgeRoutes = routes
+            };
+
+            foreach (var command in commands)
+            {
+                var module = result.EdgeModules.SingleOrDefault(x => x.ModuleName.Equals(command.ModuleName, StringComparison.Ordinal));
+                if (module == null)
                 {
-                    throw new ResourceNotFoundException($"The edge model with id {modelId} doesn't exist");
+                    continue;
                 }
-                throw new InternalServerErrorException($"Unable to get the edge model with id {modelId}", e);
+
+                module.Commands.Add(this.mapper.Map<IoTEdgeModuleCommand>(command));
             }
+
+            return result;
         }
 
 
@@ -218,33 +199,31 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         /// <param name="edgeModel">The edge model.</param>
         /// <returns>nothing.</returns>
-        /// <exception cref="RequestFailedException"></exception>
         /// <exception cref="InternalServerErrorException"></exception>
         public async Task UpdateEdgeModel(IoTEdgeModel edgeModel)
         {
-            if (string.IsNullOrEmpty(edgeModel?.ModelId))
+            if (!string.IsNullOrEmpty(edgeModel?.ModelId))
             {
-                throw new RequestFailedException("edge model id is null.");
-            }
-            try
-            {
-                var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel.ModelId);
-                if (edgeModelEntity == null)
+                try
                 {
-                    throw new ResourceNotFoundException($"The edge model with id {edgeModel.ModelId} doesn't exist");
+                    var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel.ModelId);
+                    if (edgeModelEntity == null)
+                    {
+                        throw new ResourceNotFoundException($"The edge model with id {edgeModel.ModelId} doesn't exist");
+                    }
+
+                    _ = this.mapper.Map(edgeModel, edgeModelEntity);
+                    this.edgeModelRepository.Update(edgeModelEntity);
+
+                    await this.unitOfWork.SaveAsync();
+
+                    await SaveModuleCommands(edgeModel);
+                    await this.configService.RollOutEdgeModelConfiguration(edgeModel);
                 }
-
-                _ = this.mapper.Map(edgeModel, edgeModelEntity);
-                this.edgeModelRepository.Update(edgeModelEntity);
-
-                await this.unitOfWork.SaveAsync();
-
-                await SaveModuleCommands(edgeModel);
-                await this.configService.RollOutEdgeModelConfiguration(edgeModel);
-            }
-            catch (DbUpdateException e)
-            {
-                throw new InternalServerErrorException($"Unable to create the device model with id {edgeModel?.ModelId}", e);
+                catch (DbUpdateException e)
+                {
+                    throw new InternalServerErrorException($"Unable to create the device model with id {edgeModel?.ModelId}", e);
+                }
             }
         }
 
@@ -256,33 +235,32 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <exception cref="InternalServerErrorException"></exception>
         public async Task DeleteEdgeModel(string edgeModelId)
         {
-            try
+            if (!string.IsNullOrEmpty(edgeModelId))
             {
-                this.edgeModelRepository.Delete(edgeModelId);
-
-                var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelId).ToList();
-                foreach (var command in existingCommands)
+                try
                 {
-                    this.commandRepository.Delete(command.Id);
+                    this.edgeModelRepository.Delete(edgeModelId);
+
+                    var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelId).ToList();
+                    foreach (var command in existingCommands)
+                    {
+                        this.commandRepository.Delete(command.Id);
+                    }
+
+                    await this.unitOfWork.SaveAsync();
+
+                    var config = this.configService.GetIoTEdgeConfigurations().Result.FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
+
+                    if (config != null)
+                    {
+                        await this.configService.DeleteConfiguration(config.Id);
+                    }
                 }
 
-                await this.unitOfWork.SaveAsync();
-
-                var config = this.configService.GetIoTEdgeConfigurations().Result.FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
-
-                if (config != null)
+                catch (DbUpdateException e)
                 {
-                    await this.configService.DeleteConfiguration(config.Id);
+                    throw new InternalServerErrorException($"Unable to delete the edge model with {edgeModelId} model entity.", e);
                 }
-            }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException($"Unable to delete the configuration associated with model {edgeModelId}.", e);
-            }
-
-            catch (DbUpdateException e)
-            {
-                throw new InternalServerErrorException($"Unable to delete the edge model with {edgeModelId} model entity.", e);
             }
         }
 
@@ -291,25 +269,9 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         /// <param name="edgeModelId">The edge model indentifier.</param>
         /// <returns></returns>
-        /// <exception cref="ResourceNotFoundException"></exception>
-        /// <exception cref="InternalServerErrorException"></exception>
-        public async Task<string> GetEdgeModelAvatar(string edgeModelId)
+        public Task<string> GetEdgeModelAvatar(string edgeModelId)
         {
-            try
-            {
-                _ = await this.edgeModelRepository.GetByIdAsync(edgeModelId);
-
-                return this.deviceModelImageManager.ComputeImageUri(edgeModelId).ToString();
-            }
-            catch (RequestFailedException e)
-            {
-                if (e.Status == StatusCodes.Status404NotFound)
-                {
-                    throw new ResourceNotFoundException($"The avatar of the edge model with id {edgeModelId} doesn't exist");
-                }
-
-                throw new InternalServerErrorException($"Unable to get the edge model avatar with id {edgeModelId}", e);
-            }
+            return Task.Run(() => this.deviceModelImageManager.ComputeImageUri(edgeModelId).ToString());
         }
 
         /// <summary>
@@ -318,23 +280,9 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <param name="edgeModelId">The edge model indentifier</param>
         /// <param name="file">The image.</param>
         /// <returns></returns>
-        /// <exception cref="ResourceNotFoundException"></exception>
-        /// <exception cref="InternalServerErrorException"></exception>
-        public async Task<string> UpdateEdgeModelAvatar(string edgeModelId, IFormFile file)
+        public Task<string> UpdateEdgeModelAvatar(string edgeModelId, IFormFile file)
         {
-            try
-            {
-                _ = await this.edgeModelRepository.GetByIdAsync(edgeModelId);
-                return await this.deviceModelImageManager.ChangeDeviceModelImageAsync(edgeModelId, file?.OpenReadStream());
-            }
-            catch (RequestFailedException e)
-            {
-                if (e.Status == StatusCodes.Status404NotFound)
-                {
-                    throw new ResourceNotFoundException($"The avatar of the edge model with id {edgeModelId} doesn't exist");
-                }
-                throw new InternalServerErrorException($"Unable to update the edge model avatar with id {edgeModelId}.", e);
-            }
+            return Task.Run(() => this.deviceModelImageManager.ChangeDeviceModelImageAsync(edgeModelId, file?.OpenReadStream()));
         }
 
         /// <summary>
@@ -342,23 +290,9 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         /// <param name="edgeModelId">The edge model indentifier</param>
         /// <returns></returns>
-        /// <exception cref="ResourceNotFoundException"></exception>
-        /// <exception cref="InternalServerErrorException"></exception>
-        public async Task DeleteEdgeModelAvatar(string edgeModelId)
+        public Task DeleteEdgeModelAvatar(string edgeModelId)
         {
-            try
-            {
-                _ = await this.edgeModelRepository.GetByIdAsync(edgeModelId);
-                await this.deviceModelImageManager.DeleteDeviceModelImageAsync(edgeModelId);
-            }
-            catch (RequestFailedException e)
-            {
-                if (e.Status == StatusCodes.Status404NotFound)
-                {
-                    throw new ResourceNotFoundException($"The avatar of the edge model with id {edgeModelId} doesn't exist");
-                }
-                throw new InternalServerErrorException($"Unable to delete the edge model avatar with id {edgeModelId}.", e);
-            }
+            return Task.Run(() => this.deviceModelImageManager.DeleteDeviceModelImageAsync(edgeModelId));
         }
     }
 }
