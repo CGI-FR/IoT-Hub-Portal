@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
@@ -17,6 +18,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Azure.Devices;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
@@ -354,115 +356,62 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = result.Should().ThrowAsync<InternalServerErrorException>();
         }
 
-        /*
         [Test]
-        public async Task GetEdgeModelAvatarShouldReturnValue()
+        public async Task GetEdgeDeviceModelAvatarShouldReturnEdgeDeviceModelAvatar()
         {
             // Arrange
-            //var this.edgeDeviceModelService = CreateEdgeModelService();
-            var entity = SetupMockEntity();
-
-            var expectedUrl = new Uri($"http://fake.local/{entity.RowKey}");
-
-            _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.Is<string>(x => x == entity.RowKey)))
-                .Returns(expectedUrl);
+            var expectedImageUri = Fixture.Create<Uri>();
+            _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.IsAny<string>()))
+                .Returns(expectedImageUri);
 
             // Act
-            var response = await this.edgeDeviceModelService.GetEdgeModelAvatar(entity.RowKey);
+            var result = await this.edgeDeviceModelService.GetEdgeModelAvatar(Guid.NewGuid().ToString());
 
             // Assert
-            Assert.IsNotNull(response);
-            Assert.AreEqual(expectedUrl, response);
-
-            this.mockTableClientFactory.Verify(c => c.GetEdgeDeviceTemplates(), Times.Once);
-            this.mockRepository.VerifyAll();
+            _ = result.Should().Be(expectedImageUri.ToString());
+            MockRepository.VerifyAll();
         }
 
         [Test]
-        public void WhenGetEntityAsyncFailedWith404StatusCodeGetEdgeModelAvatarShouldThrowResourceNotFoundException()
+        public async Task UpdateEdgeDeviceModelAvatarShouldUpdateEdgeDeviceModelAvatar()
         {
             // Arrange
-            //var this.edgeDeviceModelService = CreateEdgeModelService();
+            var expectedImageUri = Fixture.Create<Uri>();
 
-            var modelId = Guid.NewGuid().ToString();
-            var entity = new TableEntity(LoRaWANDeviceModelsController.DefaultPartitionKey, modelId);
+            var mockFormFile = MockRepository.Create<IFormFile>();
 
-            _ = this.mockEdgeDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
-                        It.Is<string>(p => p == EdgeModelService.DefaultPartitionKey),
-                        It.Is<string>(k => k == modelId),
-                        It.IsAny<IEnumerable<string>>(),
-                        It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new RequestFailedException(StatusCodes.Status404NotFound, ""));
+            _ = this.mockDeviceModelImageManager.Setup(manager =>
+                    manager.ChangeDeviceModelImageAsync(It.IsAny<string>(), It.IsAny<Stream>()))
+                .ReturnsAsync(expectedImageUri.ToString());
 
-            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeDeviceTemplates())
-                .Returns(this.mockEdgeDeviceTemplatesTableClient.Object);
-
+            _ = mockFormFile.Setup(file => file.OpenReadStream())
+                .Returns(Stream.Null);
 
             // Act
-            var response = async () => await this.edgeDeviceModelService.GetEdgeModelAvatar(entity.RowKey);
+            var result = await this.edgeDeviceModelService.UpdateEdgeModelAvatar(Guid.NewGuid().ToString(), mockFormFile.Object);
 
             // Assert
-            _ = response.Should().ThrowAsync<ResourceNotFoundException>();
-
-            this.mockTableClientFactory.Verify(c => c.GetEdgeDeviceTemplates(), Times.Once);
-            this.mockRepository.VerifyAll();
+            _ = result.Should().Be(expectedImageUri.ToString());
+            MockRepository.VerifyAll();
         }
 
         [Test]
-        public void WhenGetEntityAsyncFailedGetEdgeModelAvatarShouldThrowInternalServerErrorException()
+        public async Task DeleteEdgeDeviceModelAvatarShouldDeleteEdgeDeviceModelAvatar()
         {
             // Arrange
-            //var this.edgeDeviceModelService = CreateEdgeModelService();
-
-            var modelId = Guid.NewGuid().ToString();
-            var entity = new TableEntity(LoRaWANDeviceModelsController.DefaultPartitionKey, modelId);
-
-            _ = this.mockEdgeDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
-                        It.Is<string>(p => p == EdgeModelService.DefaultPartitionKey),
-                        It.Is<string>(k => k == modelId),
-                        It.IsAny<IEnumerable<string>>(),
-                        It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new RequestFailedException(""));
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeDeviceTemplates())
-                .Returns(this.mockEdgeDeviceTemplatesTableClient.Object);
-
-
-            // Act
-            var response = async () => await this.edgeDeviceModelService.GetEdgeModelAvatar(entity.RowKey);
-
-            // Assert
-            _ = response.Should().ThrowAsync<InternalServerErrorException>();
-
-            this.mockTableClientFactory.Verify(c => c.GetEdgeDeviceTemplates(), Times.Once);
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task UpdateEdgeModelAvatarShouldUpdateValue()
-        {
-            // Arrange
-            //var this.edgeDeviceModelService = CreateEdgeModelService();
-            var entity = SetupMockEntity();
-
-            var mockFile = new Mock<IFormFile>();
-            var expectedUrl = new Uri($"http://fake.local/{entity.RowKey}");
-
             _ = this.mockDeviceModelImageManager
-                .Setup(c => c.ChangeDeviceModelImageAsync(It.Is<string>(x => x == entity.RowKey), It.IsAny<Stream>()))
-                .ReturnsAsync(expectedUrl.ToString());
+                .Setup(manager => manager.DeleteDeviceModelImageAsync(It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
 
             // Act
-            var response = await this.edgeDeviceModelService.UpdateEdgeModelAvatar(entity.RowKey, mockFile.Object);
+            await this.edgeDeviceModelService.DeleteEdgeModelAvatar(Guid.NewGuid().ToString());
 
             // Assert
-            Assert.IsNotNull(response);
-            Assert.AreEqual(expectedUrl.ToString(), response);
-
-            this.mockTableClientFactory.Verify(c => c.GetEdgeDeviceTemplates(), Times.Once);
-            this.mockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
+        /*
+        
         [Test]
         public async Task SaveModuleCommandsShouldUpsertModuleCommandTemplates()
         {
@@ -587,181 +536,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockEdgeModuleCommands.Verify(c => c.DeleteEntityAsync(It.IsAny<string>(), It.IsAny<string>(), default, default), Times.Once);
             this.mockTableClientFactory.Verify(c => c.GetEdgeModuleCommands(), Times.Exactly(2));
             this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public void WhenGetEntityAsyncFailedUpdateEdgeModelAvatarShouldThrowInternalServerErrorException()
-        {
-            // Arrange
-            //var this.edgeDeviceModelService = CreateEdgeModelService();
-
-            var mockFile = new Mock<IFormFile>();
-
-            var modelId = Guid.NewGuid().ToString();
-            var entity = new TableEntity(LoRaWANDeviceModelsController.DefaultPartitionKey, modelId);
-
-            _ = this.mockEdgeDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
-                        It.Is<string>(p => p == EdgeModelService.DefaultPartitionKey),
-                        It.Is<string>(k => k == modelId),
-                        It.IsAny<IEnumerable<string>>(),
-                        It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new RequestFailedException(""));
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeDeviceTemplates())
-                .Returns(this.mockEdgeDeviceTemplatesTableClient.Object);
-
-
-            // Act
-            var response = async () => await this.edgeDeviceModelService.UpdateEdgeModelAvatar(entity.RowKey, mockFile.Object);
-
-            // Assert
-            _ = response.Should().ThrowAsync<InternalServerErrorException>();
-
-            this.mockTableClientFactory.Verify(c => c.GetEdgeDeviceTemplates(), Times.Once);
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public void WhenGetEntityAsyncFailedWith404StatusCodeUpdateEdgeModelAvatarShouldThrowInternalServerErrorException()
-        {
-            // Arrange
-            //var this.edgeDeviceModelService = CreateEdgeModelService();
-
-            var mockFile = new Mock<IFormFile>();
-
-            var modelId = Guid.NewGuid().ToString();
-            var entity = new TableEntity(LoRaWANDeviceModelsController.DefaultPartitionKey, modelId);
-
-            _ = this.mockEdgeDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
-                        It.Is<string>(p => p == EdgeModelService.DefaultPartitionKey),
-                        It.Is<string>(k => k == modelId),
-                        It.IsAny<IEnumerable<string>>(),
-                        It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new RequestFailedException(StatusCodes.Status404NotFound, ""));
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeDeviceTemplates())
-                .Returns(this.mockEdgeDeviceTemplatesTableClient.Object);
-
-
-            // Act
-            var response = async () => await this.edgeDeviceModelService.UpdateEdgeModelAvatar(entity.RowKey, mockFile.Object);
-
-            // Assert
-            _ = response.Should().ThrowAsync<ResourceNotFoundException>();
-
-            this.mockTableClientFactory.Verify(c => c.GetEdgeDeviceTemplates(), Times.Once);
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task DeleteEdgeModelAvatarShouldDeleteValue()
-        {
-            // Arrange
-            //var this.edgeDeviceModelService = CreateEdgeModelService();
-            var entity = SetupMockEntity();
-
-            _ = this.mockDeviceModelImageManager
-                .Setup(x => x.DeleteDeviceModelImageAsync(It.Is<string>(c => c == entity.RowKey)))
-                .Returns(Task.CompletedTask);
-
-            // Act
-            await this.edgeDeviceModelService.DeleteEdgeModelAvatar(entity.RowKey);
-
-            // Assert
-
-            this.mockDeviceModelImageManager.Verify(c => c.DeleteDeviceModelImageAsync(entity.RowKey), Times.Once);
-            this.mockTableClientFactory.Verify(c => c.GetEdgeDeviceTemplates(), Times.Once);
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public void WhenGetEntityAsyncFailedWith404DeleteEdgeModelAvatarShouldThrowResourceNotFoundException()
-        {
-            // Arrange
-            //var this.edgeDeviceModelService = CreateEdgeModelService();
-
-            var modelId = Guid.NewGuid().ToString();
-            var entity = new TableEntity(LoRaWANDeviceModelsController.DefaultPartitionKey, modelId);
-
-            _ = this.mockEdgeDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
-                        It.Is<string>(p => p == EdgeModelService.DefaultPartitionKey),
-                        It.Is<string>(k => k == modelId),
-                        It.IsAny<IEnumerable<string>>(),
-                        It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new RequestFailedException(StatusCodes.Status404NotFound, ""));
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeDeviceTemplates())
-                .Returns(this.mockEdgeDeviceTemplatesTableClient.Object);
-
-            // Act
-            var response = async () => await this.edgeDeviceModelService.DeleteEdgeModelAvatar(entity.RowKey);
-
-            // Assert
-            _ = response.Should().ThrowAsync<ResourceNotFoundException>();
-
-            this.mockTableClientFactory.Verify(c => c.GetEdgeDeviceTemplates(), Times.Once);
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public void WhenGetEntityAsyncFailedDeleteEdgeModelAvatarShouldThrowResourceNotFoundException()
-        {
-            // Arrange
-            //var this.edgeDeviceModelService = CreateEdgeModelService();
-
-            var modelId = Guid.NewGuid().ToString();
-            var entity = new TableEntity(LoRaWANDeviceModelsController.DefaultPartitionKey, modelId);
-
-            _ = this.mockEdgeDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
-                        It.Is<string>(p => p == EdgeModelService.DefaultPartitionKey),
-                        It.Is<string>(k => k == modelId),
-                        It.IsAny<IEnumerable<string>>(),
-                        It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new RequestFailedException(""));
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeDeviceTemplates())
-                .Returns(this.mockEdgeDeviceTemplatesTableClient.Object);
-
-            // Act
-            var response = async () => await this.edgeDeviceModelService.DeleteEdgeModelAvatar(entity.RowKey);
-
-            // Assert
-            _ = response.Should().ThrowAsync<InternalServerErrorException>();
-
-            this.mockTableClientFactory.Verify(c => c.GetEdgeDeviceTemplates(), Times.Once);
-            this.mockRepository.VerifyAll();
-        }
-
-        private TableEntity SetupMockEntity()
-        {
-            var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
-            var modelId = Guid.NewGuid().ToString();
-            var entity = new TableEntity(LoRaWANDeviceModelsController.DefaultPartitionKey, modelId);
-
-            _ = this.mockEdgeDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
-                        It.Is<string>(p => p == EdgeModelService.DefaultPartitionKey),
-                        It.Is<string>(k => k == modelId),
-                        It.IsAny<IEnumerable<string>>(),
-                        It.IsAny<CancellationToken>()))
-                .ReturnsAsync(mockResponse.Object);
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeDeviceTemplates())
-                .Returns(this.mockEdgeDeviceTemplatesTableClient.Object);
-
-            return entity;
-        }
-
-        private void SetupNotFoundEntity()
-        {
-            _ = this.mockEdgeDeviceTemplatesTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
-                    It.Is<string>(p => p == EdgeModelService.DefaultPartitionKey),
-                    It.IsAny<string>(),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<CancellationToken>()))
-                .Throws(new RequestFailedException(StatusCodes.Status404NotFound, "Not Found"));
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetEdgeDeviceTemplates())
-                .Returns(this.mockEdgeDeviceTemplatesTableClient.Object);
         }
     }*/
     }
