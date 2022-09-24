@@ -5,9 +5,11 @@ namespace AzureIoTHub.Portal.Server.Mappers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Text.Json;
     using AutoMapper;
     using AzureIoTHub.Portal.Domain.Entities;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using Models.v10.LoRaWAN;
     using Microsoft.Azure.Devices.Shared;
 
     public class DeviceProfile : Profile
@@ -66,22 +68,10 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
         private static Dictionary<string, string> GetTags(Twin twin)
         {
-            var customTags = new Dictionary<string, string>();
-
-            if (twin.Tags != null)
-            {
-                var tagList  = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(twin.Tags.ToJson());
-
-                foreach (var tag in tagList)
-                {
-                    if (tag.Key is not "modelId" and not "deviceName")
-                    {
-                        customTags.Add(tag.Key, tag.Value.ToString());
-                    }
-                }
-            }
-
-            return customTags;
+            return (JsonSerializer.Deserialize<Dictionary<string, object>>(twin.Tags.ToJson()) ?? new Dictionary<string, object>())
+                .Where(tag => tag.Key is not "modelId" and not "deviceName")
+                .Select(tag => new KeyValuePair<string, string>(tag.Key, tag.Value.ToString()))
+                .ToDictionary(tag => tag.Key, tag => tag.Value);
         }
 
         private static bool? GetDesiredPropertyAsBooleanValue(Twin twin, string propertyName)
