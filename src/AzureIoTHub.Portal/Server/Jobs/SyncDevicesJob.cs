@@ -3,13 +3,14 @@
 
 namespace AzureIoTHub.Portal.Server.Jobs
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
-    using AzureIoTHub.Portal.Domain;
+    using Domain;
     using AzureIoTHub.Portal.Domain.Entities;
-    using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Server.Services;
+    using Domain.Repositories;
+    using Services;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Quartz;
@@ -24,6 +25,8 @@ namespace AzureIoTHub.Portal.Server.Jobs
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly ILogger<SyncDevicesJob> logger;
+
+        private const string ModelId = "modelId";
 
         public SyncDevicesJob(IDeviceService deviceService,
             IDeviceModelRepository deviceModelRepository,
@@ -44,67 +47,46 @@ namespace AzureIoTHub.Portal.Server.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            var twins = await GetAllDeviceTwin();
-
-            foreach (var twin in twins)
+            try
             {
-                var model = await this.deviceModelRepository.GetByIdAsync(twin.Tags["modelId"]?.ToString());
+                this.logger.LogInformation("Start of sync devices job");
 
-                if (model == null)
+                await SyncDevices();
+
+                this.logger.LogInformation("End of sync devices job");
+            }
+            catch (Exception e)
+            {
+                this.logger.LogError(e, "Sync devices job has failed");
+            }
+        }
+
+        private async Task SyncDevices()
+        {
+            foreach (var twin in await GetTwinDevices())
+            {
+                var deviceModel = await this.deviceModelRepository.GetByIdAsync(twin.Tags[ModelId]?.ToString() ?? string.Empty);
+
+                if (deviceModel == null)
                 {
+                    this.logger.LogWarning($"The device with wont be synched, its model id {twin.Tags[ModelId]?.ToString()} doesn't exist");
                     continue;
                 }
 
-                if (model.SupportLoRaFeatures)
+                if (deviceModel.SupportLoRaFeatures)
                 {
-                    try
-                    {
-                        var device = this.mapper.Map<LorawanDevice>(twin);
-
-                        var lorawanDeviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(device.Id);
-                        if (lorawanDeviceEntity == null)
-                        {
-                            await this.lorawanDeviceRepository.InsertAsync(device);
-                        }
-                        else
-                        {
-                            if (lorawanDeviceEntity.Version < device.Version)
-                            {
-                                _ = this.mapper.Map(device, lorawanDeviceEntity);
-                                this.lorawanDeviceRepository.Update(lorawanDeviceEntity);
-                            }
-                        }
-                    }
-                    catch (System.Exception)
-                    {
-                        this.logger.LogWarning($"Error while attenpting to insert LoRa device {twin.DeviceId}.");
-                    }
+                    await CreateOrUpdateLorawanDevice(twin);
                 }
                 else
                 {
-                    var device = this.mapper.Map<Device>(twin);
-
-                    var deviceEntity = await this.deviceRepository.GetByIdAsync(device.Id);
-                    if (deviceEntity == null)
-                    {
-                        await this.deviceRepository.InsertAsync(device);
-                    }
-                    else
-                    {
-                        if (deviceEntity.Version < device.Version)
-                        {
-                            _ = this.mapper.Map(device, deviceEntity);
-                            this.deviceRepository.Update(deviceEntity);
-                        }
-                    }
+                    await CreateOrUpdateDevice(twin);
                 }
             }
 
-            // save entity
             await this.unitOfWork.SaveAsync();
         }
 
-        private async Task<List<Twin>> GetAllDeviceTwin()
+        private async Task<List<Twin>> GetTwinDevices()
         {
             var twins = new List<Twin>();
             var continuationToken = string.Empty;
@@ -121,6 +103,42 @@ namespace AzureIoTHub.Portal.Server.Jobs
             } while (totalTwinDevices > twins.Count);
 
             return twins;
+        }
+
+        private async Task CreateOrUpdateLorawanDevice(Twin twin)
+        {
+            var lorawanDevice = this.mapper.Map<LorawanDevice>(twin);
+
+            var lorawanDeviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(lorawanDevice.Id);
+            if (lorawanDeviceEntity == null)
+            {
+                await this.lorawanDeviceRepository.InsertAsync(lorawanDevice);
+            }
+            else
+            {
+                if (lorawanDeviceEntity.Version >= lorawanDevice.Version) return;
+
+                _ = this.mapper.Map(lorawanDevice, lorawanDeviceEntity);
+                this.lorawanDeviceRepository.Update(lorawanDeviceEntity);
+            }
+        }
+
+        private async Task CreateOrUpdateDevice(Twin twin)
+        {
+            var device = this.mapper.Map<Device>(twin);
+
+            var deviceEntity = await this.deviceRepository.GetByIdAsync(device.Id);
+            if (deviceEntity == null)
+            {
+                await this.deviceRepository.InsertAsync(device);
+            }
+            else
+            {
+                if (deviceEntity.Version >= device.Version) return;
+
+                _ = this.mapper.Map(device, deviceEntity);
+                this.deviceRepository.Update(deviceEntity);
+            }
         }
     }
 }
