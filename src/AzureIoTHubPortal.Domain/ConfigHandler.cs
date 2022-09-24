@@ -51,7 +51,7 @@ namespace AzureIoTHub.Portal.Domain
 
         public abstract string PortalName { get; }
 
-        public abstract int SyncDevicesJobRefreshIntervalInSeconds { get; }
+        public abstract int SyncDatabaseJobRefreshIntervalInSeconds { get; }
 
         public abstract int MetricExporterRefreshIntervalInSeconds { get; }
 

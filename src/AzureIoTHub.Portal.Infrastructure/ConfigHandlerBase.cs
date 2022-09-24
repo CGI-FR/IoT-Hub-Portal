@@ -39,7 +39,7 @@ namespace AzureIoTHub.Portal.Infrastructure
         internal const string MetricExporterRefreshIntervalKey = "Metrics:ExporterRefreshIntervalInSeconds";
         internal const string MetricLoaderRefreshIntervalKey = "Metrics:LoaderRefreshIntervalInMinutes";
 
-        internal const string SyncDevicesJobRefreshIntervalKey = "Job:SyncDeviceJobRefreshIntervalInSeconds";
+        internal const string SyncDatabaseJobRefreshIntervalKey = "Job:SyncDatabaseJobRefreshIntervalInSeconds";
 
         internal const string IdeasEnabledKey = "Ideas:Enabled";
         internal const string IdeasUrlKey = "Ideas:Url";
