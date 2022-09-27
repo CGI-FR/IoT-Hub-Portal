@@ -79,6 +79,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             AddOptionalProperties(nameof(LoRaDeviceModelDto.RX1DROffset), modelDto.RX1DROffset, desiredProperties);
             AddOptionalProperties(nameof(LoRaDeviceModelDto.RX2DataRate), modelDto.RX2DataRate, desiredProperties);
             AddOptionalProperties(nameof(LoRaDeviceModelDto.RXDelay), modelDto.RXDelay, desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.ClassType), modelDto.ClassType.ToString(), desiredProperties);
 
             return desiredProperties;
         }
