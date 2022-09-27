@@ -119,8 +119,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
             Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.GatewayID), item.GatewayID);
 
-            Helpers.DeviceHelper.SetDesiredProperty(twin, nameof(item.ClassType), item.ClassType);
-
             if (item.Tags != null)
             {
                 foreach (var customTag in item.Tags)
