@@ -184,13 +184,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         }
 
         [Test]
-        public void SyncDatabaseJobRefreshIntervalInSecondsConfigMustHaveDefaultValue()
+        public void SyncDatabaseJobRefreshIntervalInMinutesConfigMustHaveDefaultValue()
         {
             // Arrange
             var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
 
             // Assert
-            _ = productionConfigHandler.SyncDatabaseJobRefreshIntervalInSeconds.Should().Be(300);
+            _ = productionConfigHandler.SyncDatabaseJobRefreshIntervalInMinutes.Should().Be(5);
         }
 
         [Test]

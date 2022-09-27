@@ -326,7 +326,7 @@ namespace AzureIoTHub.Portal.Server
                         .WithIdentity($"{nameof(SyncDevicesJob)}")
                         .ForJob(nameof(SyncDevicesJob))
                         .WithSimpleSchedule(s => s
-                            .WithIntervalInSeconds(configuration.SyncDatabaseJobRefreshIntervalInSeconds)
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));
             });
 

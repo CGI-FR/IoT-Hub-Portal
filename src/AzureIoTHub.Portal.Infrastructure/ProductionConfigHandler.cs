@@ -16,7 +16,7 @@ namespace AzureIoTHub.Portal.Infrastructure
 
         public override string PortalName => this.config[PortalNameKey];
 
-        public override int SyncDatabaseJobRefreshIntervalInSeconds => this.config.GetValue(SyncDatabaseJobRefreshIntervalKey, 300);
+        public override int SyncDatabaseJobRefreshIntervalInMinutes => this.config.GetValue(SyncDatabaseJobRefreshIntervalKey, 5);
 
         public override int MetricExporterRefreshIntervalInSeconds => this.config.GetValue(MetricExporterRefreshIntervalKey, 30);
 
