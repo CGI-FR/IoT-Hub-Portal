@@ -3,10 +3,8 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
 {
-    using AzureIoTHub.Portal.Server;
     using System;
     using System.Globalization;
-    using System.Reflection;
     using FluentAssertions;
     using Microsoft.Extensions.Configuration;
     using Moq;
@@ -183,6 +181,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
             // Assert
             Assert.AreEqual(expected, result);
             this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void SyncDatabaseJobRefreshIntervalInMinutesConfigMustHaveDefaultValue()
+        {
+            // Arrange
+            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = productionConfigHandler.SyncDatabaseJobRefreshIntervalInMinutes.Should().Be(5);
         }
 
         [Test]
