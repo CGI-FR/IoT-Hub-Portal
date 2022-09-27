@@ -8,7 +8,7 @@
 <meta content="IoT Hub Portal for device management" name="description"/>
 <link href="../assets/images/favicon.svg" rel="icon"/>
 <meta content="mkdocs-1.3.1, mkdocs-material-8.3.9" name="generator"/>
-<title>Dev Guide - IoT Hub Portal</title>
+<title>Developer Guide - IoT Hub Portal</title>
 <link href="../assets/stylesheets/main.1d29e8d0.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.cbb835fc.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -50,7 +50,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              Dev Guide
+              Developer Guide
             
           </span>
 </div>
@@ -123,8 +123,8 @@
 </li>
 <li class="md-tabs__item">
 <a class="md-tabs__link md-tabs__link--active" href="./">
-      Dev Guide
-    </a>
+        Dev Guide
+      </a>
 </li>
 <li class="md-tabs__item">
 <a class="md-tabs__link" href="../concepts/">
@@ -172,14 +172,26 @@
         IoT Hub Portal
       </a>
 </li>
-<li class="md-nav__item md-nav__item--active">
-<input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
-<label class="md-nav__link md-nav__link--active" for="__toc">
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2">
           Dev Guide
           <span class="md-nav__icon md-icon"></span>
 </label>
+<nav aria-label="Dev Guide" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+          Dev Guide
+        </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+          Developer Guide
+          <span class="md-nav__icon md-icon"></span>
+</label>
 <a class="md-nav__link md-nav__link--active" href="./">
-        Dev Guide
+        Developer Guide
       </a>
 <nav aria-label="Table of contents" class="md-nav md-nav--secondary">
 <label class="md-nav__title" for="__toc">
@@ -302,6 +314,34 @@
 <a class="md-nav__link" href="#handle-problem-details-exceptions-on-frontend">
     Handle Problem Details exceptions on frontend
   </a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_2" id="__nav_2_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2_2">
+          Testing
+          <span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-label="Testing" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_2_2">
+<span class="md-nav__icon md-icon"></span>
+          Testing
+        </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="testing/unit-tests-common-practices/">
+        Unit Tests Common Practices
+      </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="testing/unit-tests-on-blazor-components/">
+        Unit Tests on Blazor components
+      </a>
 </li>
 </ul>
 </nav>
@@ -523,6 +563,7 @@
 <li>The IoT Hub portal uses the LoRa Key Management Facade to send Cloud to Device (C2D) messages to LoRa devices.</li>
 <li>The LoRa Key Management Facade uses Redis to store its cached data.</li>
 <li>The LoRa Key Management Facade uses the Azure IoT Hub REST API to retrieve the LoRa device keys and send C2D messages.</li>
+<li>The IoT Hub portal synchronizes its data with the IoT Hub to provide a consistent view of the data.</li>
 </ol>
 <blockquote>
 <p>Note: For more information about the LoRa Key Management Facade, see the <a href="https://azure.github.io/iotedge-lorawan-starterkit">Azure IoT Edge LoRaWAN Starter Kit</a> page.</p>
@@ -570,7 +611,8 @@
 <span class="normal"><a href="#__codelineno-0-16">16</a></span>
 <span class="normal"><a href="#__codelineno-0-17">17</a></span>
 <span class="normal"><a href="#__codelineno-0-18">18</a></span>
-<span class="normal"><a href="#__codelineno-0-19">19</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="p">{</span><span class="w"></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="p">{</span><span class="w"></span>
 <a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="nt">"StorageAccount:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;CONNECTION_STRING_STORAGE_ACCOUNT&gt;"</span><span class="p">,</span><span class="w"></span>
 <a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span><span class="nt">"StorageAccount:BlobContainerName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;BLOB_CONTAINER_NAME&gt;"</span><span class="p">,</span><span class="w"></span>
 <a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">  </span><span class="nt">"OIDC:Scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SCOPE&gt;"</span><span class="p">,</span><span class="w"></span>
@@ -587,8 +629,9 @@
 <a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">  </span><span class="nt">"IoTDPS:ServiceEndpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SERVICE_END_POINT&gt;"</span><span class="p">,</span><span class="w"></span>
 <a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">  </span><span class="nt">"IoTDPS:LoRaEnrollmentGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_ENROLLMENT_GROUP&gt;"</span><span class="p">,</span><span class="w"></span>
 <a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">  </span><span class="nt">"IoTDPS:DefaultEnrollmentGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_DEFAULT_ENROLLMENT_GROUP&gt;"</span><span class="p">,</span><span class="w"></span>
-<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">  </span><span class="nt">"IoTDPS:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_DPS_CONNECTION_STRING&gt;"</span><span class="w"></span>
-<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">  </span><span class="nt">"IoTDPS:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_DPS_CONNECTION_STRING&gt;"</span><span class="p">,</span><span class="w"></span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">  </span><span class="nt">"PostgreSQL:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;POSTGRE_SQL_CONNECTION_STRING&gt;"</span><span class="w"></span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div></td></tr></table></div>
 <blockquote>
 <p><u>Note:</u> You must replace all values in the brackets by your own Azure settings. If you can't find them in the Azure Portal, please contact an administrator of this project to have more information.</p>
@@ -621,6 +664,7 @@
 <li><strong>Ideas__Url</strong>: Url of <code>Awesome-Ideas</code>, to publish ideas submitted by users.</li>
 <li><strong>Ideas__Authentication__Header</strong>: (Optional, default value <code>Ocp-Apim-Subscription-Key</code>) Authentication header name.</li>
 <li><strong>Ideas__Authentication__Token</strong>: Authentication token.</li>
+<li><strong>Job__SyncDatabaseJobRefreshIntervalInMinutes</strong>: (Optional, default value <code>5</code>) The refresh interval in <code>minutes</code> to collect data from Azure IoT Hub (Devices, Iot Edge Devices...) and store them on the database of the Portal.</li>
 </ul>
 <h3 id="connection-strings">Connection strings<a class="headerlink" href="#connection-strings" title="Permanent link">¶</a></h3>
 <p>Here are different connection strings that the user can configure:</p>
@@ -629,6 +673,7 @@
 <li><strong>IoTDPS__ConnectionString</strong>: The connection string to the Azure IoT Device Provisioning Service.</li>
 <li><strong>StorageAccount__ConnectionString</strong>: The connection string to the Azure Storage account.</li>
 <li><strong>LoRaKeyManagement__Code</strong>: The LoRa Key Management Facade code.</li>
+<li><strong>PostgreSQL__ConnectionString</strong>: The connection string allowing the connection to the PostgreSQL database.</li>
 </ul>
 <blockquote>
 <p>Note: For a production environment, an Azure Key Vault is advised to store the connection strings.</p>
@@ -826,13 +871,13 @@ Below an example on how to:</p>
             </div>
 </div>
 </a>
-<a aria-label="Next: Concepts" class="md-footer__link md-footer__link--next" href="../concepts/" rel="next">
+<a aria-label="Next: Unit Tests Common Practices" class="md-footer__link md-footer__link--next" href="testing/unit-tests-common-practices/" rel="next">
 <div class="md-footer__title">
 <div class="md-ellipsis">
 <span class="md-footer__direction">
                 Next
               </span>
-              Concepts
+              Unit Tests Common Practices
             </div>
 </div>
 <div class="md-footer__button md-icon">
