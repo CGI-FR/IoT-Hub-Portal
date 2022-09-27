@@ -54,6 +54,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 AppSKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.AppSKey)),
                 NwkSKey = Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.NwkSKey)),
                 Deduplication = Enum.TryParse<DeduplicationMode>(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.Deduplication)), out var deduplication) ? deduplication : DeduplicationMode.None,
+                ClassType = Enum.TryParse<ClassType>(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.ClassType)), out var classType) ? classType : ClassType.A,
                 PreferredWindow = int.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.PreferredWindow)), out var preferedWindow) ? preferedWindow : default,
                 Supports32BitFCnt = bool.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.Supports32BitFCnt)), out var boolResult) ? boolResult : null,
                 ABPRelaxMode = bool.TryParse(Helpers.DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(LoRaDeviceDetails.ABPRelaxMode)), out boolResult) ? boolResult : null,
