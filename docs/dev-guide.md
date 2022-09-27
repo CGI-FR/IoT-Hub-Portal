@@ -117,6 +117,7 @@ Here are different settings that the user can configure:
 * **Ideas__Url**: Url of `Awesome-Ideas`, to publish ideas submitted by users.
 * **Ideas__Authentication__Header**: (Optional, default value `Ocp-Apim-Subscription-Key`) Authentication header name.
 * **Ideas__Authentication__Token**: Authentication token.
+* **Job__SyncDatabaseJobRefreshIntervalInMinutes**: (Optional, default value `5`) The refresh interval in `minutes` to collect data from Azure IoT Hub (Devices, Iot Edge Devices...) and store them on the database of the Portal.
 
 ### Connection strings
 
