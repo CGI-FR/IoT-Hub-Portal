@@ -22,6 +22,8 @@ namespace AzureIoTHub.Portal.Domain.Entities
 
         public DeduplicationMode? Deduplication { get; set; }
 
+        public ClassType ClassType { get; set; }
+
         public bool? ABPRelaxMode { get; set; }
 
         public bool? Downlink { get; set; }

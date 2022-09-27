@@ -123,7 +123,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             var result = loRaDeviceModelMapper.BuildDeviceModelDesiredProperties(model);
 
             // Assert
-            _ = result.Keys.Count.Should().Be(13);
+            _ = result.Keys.Count.Should().Be(14);
 
             this.mockRepository.VerifyAll();
         }

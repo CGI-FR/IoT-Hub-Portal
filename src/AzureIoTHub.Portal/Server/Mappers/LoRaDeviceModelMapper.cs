@@ -47,6 +47,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 Description = entity[nameof(LoRaDeviceModelDto.Description)]?.ToString(),
                 SensorDecoder = entity[nameof(LoRaDeviceModelDto.SensorDecoder)]?.ToString(),
                 UseOTAA = bool.Parse(entity[nameof(LoRaDeviceModelDto.UseOTAA)]?.ToString() ?? "true"),
+                ClassType = Enum.TryParse<ClassType>(entity[nameof(LoRaDeviceModelDto.ClassType)]?.ToString(), out var classType) ? classType : ClassType.A,
                 PreferredWindow = int.TryParse(entity[nameof(LoRaDeviceModelDto.PreferredWindow)]?.ToString(), out var intResult) ? intResult : 1,
                 Supports32BitFCnt = bool.TryParse(entity[nameof(LoRaDeviceModelDto.Supports32BitFCnt)]?.ToString(), out var boolResult) ? boolResult : null,
                 ABPRelaxMode = bool.TryParse(entity[nameof(LoRaDeviceModelDto.ABPRelaxMode)]?.ToString(), out boolResult) ? boolResult : null,
@@ -79,6 +80,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             AddOptionalProperties(nameof(LoRaDeviceModelDto.RX1DROffset), modelDto.RX1DROffset, desiredProperties);
             AddOptionalProperties(nameof(LoRaDeviceModelDto.RX2DataRate), modelDto.RX2DataRate, desiredProperties);
             AddOptionalProperties(nameof(LoRaDeviceModelDto.RXDelay), modelDto.RXDelay, desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.ClassType), modelDto.ClassType.ToString(), desiredProperties);
 
             return desiredProperties;
         }
