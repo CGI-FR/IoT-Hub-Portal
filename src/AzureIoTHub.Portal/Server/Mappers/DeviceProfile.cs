@@ -66,12 +66,16 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 .ForMember(dest => dest.ClassType, opts => opts.MapFrom(src => GetDesiredPropertyAsEnum<ClassType>(src, nameof(LoRaDeviceDetails.ClassType))));
         }
 
-        private static Dictionary<string, string> GetTags(Twin twin)
+        private static ICollection<DeviceTagValue> GetTags(Twin twin)
         {
             return (JsonSerializer.Deserialize<Dictionary<string, object>>(twin.Tags.ToJson()) ?? new Dictionary<string, object>())
                 .Where(tag => tag.Key is not "modelId" and not "deviceName")
-                .Select(tag => new KeyValuePair<string, string>(tag.Key, tag.Value.ToString()))
-                .ToDictionary(tag => tag.Key, tag => tag.Value);
+                .Select(tag => new DeviceTagValue
+                {
+                    Name = tag.Key,
+                    Value = tag.Value.ToString() ?? string.Empty
+                })
+                .ToList();
         }
 
         private static bool? GetDesiredPropertyAsBooleanValue(Twin twin, string propertyName)

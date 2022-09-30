@@ -39,7 +39,7 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// <summary>
         /// List of custom device tags and their values.
         /// </summary>
-        public Dictionary<string, string> Tags { get; set; } = new();
+        public ICollection<DeviceTagValue> Tags { get; set; }
 
         /// <summary>
         /// A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP
