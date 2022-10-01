@@ -36,12 +36,24 @@ namespace AzureIoTHub.Portal.Server.Services
         public LoRaWANCommandService(IMapper mapper,
             IUnitOfWork unitOfWork,
             IDeviceModelCommandRepository deviceModelCommandRepository,
-            IDeviceModelRepository deviceModelRepository)
+            IDeviceModelRepository deviceModelRepository,
+            IExternalDeviceService externalDeviceService,
+            IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper,
+            ITableClientFactory tableClientFactory,
+            ILoraDeviceMethodManager loraDeviceMethodManager,
+            IDeviceModelCommandMapper deviceModelCommandMapper,
+            ILogger<LoRaWANCommandService> logger)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.deviceModelCommandRepository = deviceModelCommandRepository;
             this.deviceModelRepository = deviceModelRepository;
+            this.externalDeviceService = externalDeviceService;
+            this.deviceTwinMapper = deviceTwinMapper;
+            this.tableClientFactory = tableClientFactory;
+            this.loraDeviceMethodManager = loraDeviceMethodManager;
+            this.deviceModelCommandMapper = deviceModelCommandMapper;
+            this.logger = logger;
         }
 
         public async Task PostDeviceModelCommands(string id, DeviceModelCommandDto[] commands)
