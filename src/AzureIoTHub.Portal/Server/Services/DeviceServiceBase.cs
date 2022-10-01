@@ -17,6 +17,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq.Dynamic.Core;
     using Microsoft.Azure.Devices;
     using Mappers;
+    using Shared.Models.v1._0.Filters;
     using Device = Domain.Entities.Device;
 
     public abstract class DeviceServiceBase<TDto> : IDeviceService<TDto>

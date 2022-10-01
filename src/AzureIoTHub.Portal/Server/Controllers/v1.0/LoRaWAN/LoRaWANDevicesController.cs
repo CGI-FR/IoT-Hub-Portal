@@ -5,7 +5,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.Threading.Tasks;
     using Filters;
-    using Mappers;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -25,12 +24,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 
         public LoRaWANDevicesController(
             ILogger<LoRaWANDevicesController> logger,
-            IExternalDeviceService externalDevicesService,
-            IDeviceTagService deviceTagService,
-            IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper,
             ILoRaWANCommandService loRaWanCommandService,
-            IGenericDeviceService<LoRaDeviceDetails> deviceService)
-            : base(logger, externalDevicesService, deviceTagService, deviceTwinMapper, deviceService)
+            IDeviceService<LoRaDeviceDetails> deviceService)
+            : base(logger, deviceService)
         {
             this.loRaWanCommandService = loRaWanCommandService;
         }
@@ -45,13 +41,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="pageSize"></param>
         [HttpGet(Name = "GET LoRaWAN device list")]
         public Task<PaginationResult<DeviceListItem>> SearchItems(
-            string continuationToken = null,
             string searchText = null,
             bool? searchStatus = null,
             bool? searchState = null,
-            int pageSize = 10)
+            int pageSize = 10,
+            int pageNumber = 0,
+            [FromQuery] string[] orderBy = null)
         {
-            return GetItems("GET LoRaWAN device list", continuationToken, searchText, searchStatus, searchState, pageSize);
+            return GetItems("GET LoRaWAN device list", searchText, searchStatus, searchState, pageSize, pageNumber, orderBy);
         }
 
         /// <summary>

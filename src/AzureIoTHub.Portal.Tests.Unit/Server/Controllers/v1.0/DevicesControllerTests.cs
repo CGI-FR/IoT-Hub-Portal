@@ -35,12 +35,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
         private Mock<IUrlHelper> mockUrlHelper;
         private Mock<ILogger<DevicesController>> mockLogger;
-        private Mock<IDeviceService> mockDeviceService;
+        private Mock<IExternalDeviceService> mockDeviceService;
         private Mock<IDevicePropertyService> mockDevicePropertyService;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceTwinMapper<DeviceListItem, DeviceDetails>> mockDeviceTwinMapper;
-        private Mock<IDeviceModelPropertiesRepository> mockDeviceModelPropertiesRepository;
-        private Mock<ITableClientFactory> mockTableClientFactory;
+
+        private Mock<IDeviceService<DeviceDetails>> mockGenericDeviceService;
 
         [SetUp]
         public void SetUp()
@@ -48,23 +48,20 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockLogger = this.mockRepository.Create<ILogger<DevicesController>>();
-            this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
+            this.mockDeviceService = this.mockRepository.Create<IExternalDeviceService>();
             this.mockDevicePropertyService = this.mockRepository.Create<IDevicePropertyService>();
             this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
             this.mockDeviceTwinMapper = this.mockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
-            this.mockDeviceModelPropertiesRepository = this.mockRepository.Create<IDeviceModelPropertiesRepository>();
-            this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
+            this.mockGenericDeviceService = this.mockRepository.Create<IDeviceService<DeviceDetails>>();
         }
 
         private DevicesController CreateDevicesController()
         {
             return new DevicesController(
                 this.mockLogger.Object,
-                this.mockDeviceService.Object,
-                this.mockDeviceTagService.Object,
-                this.mockDeviceTwinMapper.Object,
-                this.mockDevicePropertyService.Object)
+                this.mockDevicePropertyService.Object,
+                this.mockGenericDeviceService.Object)
             {
                 Url = this.mockUrlHelper.Object
             };
@@ -134,7 +131,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Act
 
             var result = await devicesController.SearchItems(
-                continuationToken: "aaa",
                 searchText: "bbb",
                 searchStatus: true,
                 searchState: false,
