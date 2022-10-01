@@ -25,13 +25,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Portal.Server.Managers;
 
     [TestFixture]
-    public class DeviceServiceTests
+    public class ExternalDeviceServiceTests
     {
         private MockRepository mockRepository;
 
         private Mock<RegistryManager> mockRegistryManager;
         private Mock<ServiceClient> mockServiceClient;
-        private Mock<ILogger<DeviceService>> mockLogger;
+        private Mock<ILogger<ExternalDeviceService>> mockLogger;
         private Mock<ITableClientFactory> mockTableClientFactory;
         private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
 
@@ -42,14 +42,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             this.mockRegistryManager = this.mockRepository.Create<RegistryManager>();
             this.mockServiceClient = this.mockRepository.Create<ServiceClient>();
-            this.mockLogger = this.mockRepository.Create<ILogger<DeviceService>>();
+            this.mockLogger = this.mockRepository.Create<ILogger<ExternalDeviceService>>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
         }
 
-        private DeviceService CreateService()
+        private ExternalDeviceService CreateService()
         {
-            return new DeviceService(
+            return new ExternalDeviceService(
                 this.mockLogger.Object,
                 this.mockRegistryManager.Object,
                 this.mockServiceClient.Object,
@@ -1148,7 +1148,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = method.SetPayloadJson(payload);
 
 
-            var logger = Mock.Of<ILogger<DeviceService>>();
+            var logger = Mock.Of<ILogger<ExternalDeviceService>>();
 
             _ = this.mockServiceClient.Setup(c => c.InvokeDeviceMethodAsync(
                 It.Is<string>(x => x == deviceId),
@@ -1160,7 +1160,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     Status = 200
                 });
 
-            var deviceService = new DeviceService(
+            var deviceService = new ExternalDeviceService(
                 logger,
                 this.mockRegistryManager.Object,
                 this.mockServiceClient.Object,
@@ -1209,7 +1209,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = method.SetPayloadJson(payload);
 
 
-            var logger = Mock.Of<ILogger<DeviceService>>();
+            var logger = Mock.Of<ILogger<ExternalDeviceService>>();
 
             _ = this.mockServiceClient.Setup(c => c.InvokeDeviceMethodAsync(
                 It.Is<string>(x => x == deviceId),
@@ -1221,7 +1221,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     Status = 500
                 });
 
-            var deviceService = new DeviceService(
+            var deviceService = new ExternalDeviceService(
                 logger,
                 this.mockRegistryManager.Object,
                 this.mockServiceClient.Object,
@@ -1270,7 +1270,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = method.SetPayloadJson(payload);
 
 
-            var logger = Mock.Of<ILogger<DeviceService>>();
+            var logger = Mock.Of<ILogger<ExternalDeviceService>>();
 
             _ = this.mockServiceClient.Setup(c => c.InvokeDeviceMethodAsync(
                     It.Is<string>(x => x == deviceId),
@@ -1279,7 +1279,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("test"));
 
-            var deviceService = new DeviceService(
+            var deviceService = new ExternalDeviceService(
                 logger,
                 this.mockRegistryManager.Object,
                 this.mockServiceClient.Object,

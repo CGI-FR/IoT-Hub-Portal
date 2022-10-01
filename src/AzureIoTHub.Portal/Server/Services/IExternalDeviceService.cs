@@ -9,7 +9,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
 
-    public interface IDeviceService
+    public interface IExternalDeviceService
     {
         Task<Device> GetDevice(string deviceId);
 

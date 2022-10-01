@@ -23,16 +23,16 @@ namespace AzureIoTHub.Portal.Server.Services
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    public class DeviceService : IDeviceService
+    public class ExternalDeviceService : IExternalDeviceService
     {
         private readonly RegistryManager registryManager;
         private readonly ServiceClient serviceClient;
-        private readonly ILogger<DeviceService> log;
+        private readonly ILogger<ExternalDeviceService> log;
         private readonly ITableClientFactory tableClientFactory;
         private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
 
-        public DeviceService(
-            ILogger<DeviceService> log,
+        public ExternalDeviceService(
+            ILogger<ExternalDeviceService> log,
             RegistryManager registryManager,
             ServiceClient serviceClient, ITableClientFactory tableClientFactory, IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
         {
