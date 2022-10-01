@@ -39,6 +39,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="searchStatus"></param>
         /// <param name="searchState"></param>
         /// <param name="pageSize"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="orderBy"></param>
         [HttpGet(Name = "GET LoRaWAN device list")]
         public Task<PaginationResult<DeviceListItem>> SearchItems(
             string searchText = null,

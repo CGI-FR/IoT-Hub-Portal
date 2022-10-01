@@ -34,7 +34,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the device list.
         /// </summary>
         /// <param name="routeName"></param>
-        /// <param name="continuationToken"></param>
         /// <param name="searchText"></param>
         /// <param name="searchStatus"></param>
         /// <param name="searchState"></param>
@@ -58,7 +57,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 pageSize,
                 pageNumber,
                 orderBy,
-                Request.Query
+                Request?.Query
                     .Where(pair => pair.Key.StartsWith("tag.", StringComparison.InvariantCulture))
                     .ToDictionary(pair => pair.Key, pair => pair.Key)
                 );
