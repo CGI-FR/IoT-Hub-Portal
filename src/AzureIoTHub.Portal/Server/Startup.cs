@@ -135,11 +135,10 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IEdgeDeviceModelMapper, EdgeModelMapper>();
             _ = services.AddTransient<IEdgeDeviceMapper, EdgeDeviceMapper>();
 
-            _ = services.AddTransient<IDeviceService, DeviceService>();
+            _ = services.AddTransient<IExternalDeviceService, ExternalDeviceService>();
             _ = services.AddTransient<IConfigService, ConfigService>();
             _ = services.AddTransient<IDeviceTagService, DeviceTagService>();
             _ = services.AddTransient<ILoRaWANCommandService, LoRaWANCommandService>();
-            _ = services.AddTransient<ILoRaWANDeviceService, LoRaWANDeviceService>();
             _ = services.AddTransient<IEdgeModelService, EdgeModelService>();
             _ = services.AddTransient<ILoRaWANConcentratorService, LoRaWANConcentratorService>();
             _ = services.AddTransient<IEdgeDevicesService, EdgeDevicesService>();
@@ -147,6 +146,8 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IDeviceConfigurationsService, DeviceConfigurationsService>();
             _ = services.AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();
             _ = services.AddTransient(typeof(IDeviceModelService<,>), typeof(DeviceModelService<,>));
+            _ = services.AddTransient<IDeviceService<DeviceDetails>, DeviceService>();
+            _ = services.AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
 
             _ = services.AddScoped<IDeviceModelPropertiesRepository, DeviceModelPropertiesRepository>();
             _ = services.AddScoped<IDeviceTagRepository, DeviceTagRepository>();
