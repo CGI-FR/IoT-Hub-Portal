@@ -12,8 +12,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;
     using Hellang.Middleware.ProblemDetails;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Controllers;
+    using Microsoft.AspNetCore.Routing;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Primitives;
     using Models.v10;
     using Moq;
     using NUnit.Framework;
@@ -73,6 +77,20 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         {
             // Arrange
             var devicesController = CreateLoRaWANDevicesController();
+
+            var mockHttpRequest = this.mockRepository.Create<HttpRequest>();
+            var mockHttpContext = this.mockRepository.Create<HttpContext>();
+
+            _ = mockHttpContext.SetupGet(c => c.Request)
+                .Returns(mockHttpRequest.Object);
+
+            var mockQueryCollection = new QueryCollection(new Dictionary<string, StringValues>());
+
+            _ = mockHttpRequest.Setup(c => c.Query)
+                .Returns(mockQueryCollection);
+
+            devicesController.ControllerContext = new ControllerContext(
+                new ActionContext(mockHttpContext.Object, new RouteData(), new ControllerActionDescriptor()));
 
             var expectedPaginatedDevices = new PaginatedResult<DeviceListItem>()
             {
