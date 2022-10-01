@@ -22,7 +22,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
     {
         private IJob syncDevicesJob;
 
-        private Mock<IDeviceService> mockDeviceService;
+        private Mock<IExternalDeviceService> mockDeviceService;
         private Mock<IDeviceModelRepository> mockDeviceModelRepository;
         private Mock<ILorawanDeviceRepository> mockLorawanDeviceRepository;
         private Mock<IDeviceRepository> mockDeviceRepository;
@@ -32,7 +32,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
         {
             base.Setup();
 
-            this.mockDeviceService = MockRepository.Create<IDeviceService>();
+            this.mockDeviceService = MockRepository.Create<IExternalDeviceService>();
             this.mockDeviceModelRepository = MockRepository.Create<IDeviceModelRepository>();
             this.mockLorawanDeviceRepository = MockRepository.Create<ILorawanDeviceRepository>();
             this.mockDeviceRepository = MockRepository.Create<IDeviceRepository>();

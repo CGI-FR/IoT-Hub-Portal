@@ -22,7 +22,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <summary>
         /// The device Idevice service.
         /// </summary>
-        private readonly IDeviceService devicesService;
+        private readonly IExternalDeviceService externalDevicesService;
 
         /// <summary>
         /// The device IConcentrator twin mapper.
@@ -41,12 +41,12 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public LoRaWANConcentratorService(
             ILogger<LoRaWANConcentratorService> logger,
-            IDeviceService devicesService,
+            IExternalDeviceService externalDevicesService,
             IConcentratorTwinMapper concentratorTwinMapper,
             IRouterConfigManager routerConfigManager)
         {
             this.logger = logger;
-            this.devicesService = devicesService;
+            this.externalDevicesService = externalDevicesService;
             this.concentratorTwinMapper = concentratorTwinMapper;
             this.routerConfigManager = routerConfigManager;
         }
@@ -69,7 +69,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 var status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
-                var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceId, false, newTwin, status);
+                var result = await this.externalDevicesService.CreateDeviceWithTwin(device.DeviceId, false, newTwin, status);
 
                 if (!result.IsSuccessful)
                 {
@@ -120,19 +120,19 @@ namespace AzureIoTHub.Portal.Server.Services
             ArgumentNullException.ThrowIfNull(device, nameof(device));
 
             // Device status (enabled/disabled) has to be dealt with afterwards
-            var currentDevice = await this.devicesService.GetDevice(device.DeviceId);
+            var currentDevice = await this.externalDevicesService.GetDevice(device.DeviceId);
             currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
-            _ = await this.devicesService.UpdateDevice(currentDevice);
+            _ = await this.externalDevicesService.UpdateDevice(currentDevice);
 
             // Get the current twin from the hub, based on the device ID
-            var currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceId);
+            var currentTwin = await this.externalDevicesService.GetDeviceTwin(device.DeviceId);
             device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
 
             // Update the twin properties
             this.concentratorTwinMapper.UpdateTwin(currentTwin, device);
 
-            _ = await this.devicesService.UpdateDeviceTwin(currentTwin);
+            _ = await this.externalDevicesService.UpdateDeviceTwin(currentTwin);
 
             return true;
         }

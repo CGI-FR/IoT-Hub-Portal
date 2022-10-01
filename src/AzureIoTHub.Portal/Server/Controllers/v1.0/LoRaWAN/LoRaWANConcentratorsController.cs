@@ -26,7 +26,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <summary>
         /// The device Idevice service.
         /// </summary>
-        private readonly IDeviceService devicesService;
+        private readonly IExternalDeviceService externalDevicesService;
 
         /// <summary>
         /// The device IConcentrator twin mapper.
@@ -47,16 +47,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// Initializes a new instance of the <see cref="LoRaWANConcentratorsController"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        /// <param name="devicesService">The devices service.</param>
+        /// <param name="externalDevicesService">The devices service.</param>
         /// <param name="concentratorTwinMapper">The concentrator twin mapper.</param>
         /// <param name="loRaWANConcentratorService">The device Lora wan concentrators controller.</param>
         public LoRaWANConcentratorsController(
             ILogger<LoRaWANConcentratorsController> logger,
-            IDeviceService devicesService,
+            IExternalDeviceService externalDevicesService,
             IConcentratorTwinMapper concentratorTwinMapper,
             ILoRaWANConcentratorService loRaWANConcentratorService)
         {
-            this.devicesService = devicesService;
+            this.externalDevicesService = externalDevicesService;
             this.concentratorTwinMapper = concentratorTwinMapper;
             this.logger = logger;
             this.loRaWANConcentratorService = loRaWANConcentratorService;
@@ -72,7 +72,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
             int pageSize = 10)
         {
             // Gets all the twins from this devices
-            var result = await this.devicesService.GetAllDevice(
+            var result = await this.externalDevicesService.GetAllDevice(
                 continuationToken: continuationToken,
                 filterDeviceType: "LoRa Concentrator",
                 pageSize: pageSize);
@@ -88,7 +88,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Concentrator>> GetDeviceConcentrator(string deviceId)
         {
-            var item = await this.devicesService.GetDeviceTwin(deviceId);
+            var item = await this.externalDevicesService.GetDeviceTwin(deviceId);
             return Ok(this.concentratorTwinMapper.CreateDeviceDetails(item));
         }
 
@@ -150,7 +150,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(string deviceId)
         {
-            await this.devicesService.DeleteDevice(deviceId);
+            await this.externalDevicesService.DeleteDevice(deviceId);
             return Ok("the device was successfully deleted.");
         }
     }

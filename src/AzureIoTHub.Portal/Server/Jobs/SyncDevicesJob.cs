@@ -18,7 +18,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
     [DisallowConcurrentExecution]
     public class SyncDevicesJob : IJob
     {
-        private readonly IDeviceService deviceService;
+        private readonly IExternalDeviceService externalDeviceService;
         private readonly IDeviceModelRepository deviceModelRepository;
         private readonly ILorawanDeviceRepository lorawanDeviceRepository;
         private readonly IDeviceRepository deviceRepository;
@@ -28,7 +28,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
 
         private const string ModelId = "modelId";
 
-        public SyncDevicesJob(IDeviceService deviceService,
+        public SyncDevicesJob(IExternalDeviceService externalDeviceService,
             IDeviceModelRepository deviceModelRepository,
             ILorawanDeviceRepository lorawanDeviceRepository,
             IDeviceRepository deviceRepository,
@@ -36,7 +36,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
             IUnitOfWork unitOfWork,
             ILogger<SyncDevicesJob> logger)
         {
-            this.deviceService = deviceService;
+            this.externalDeviceService = externalDeviceService;
             this.deviceModelRepository = deviceModelRepository;
             this.lorawanDeviceRepository = lorawanDeviceRepository;
             this.deviceRepository = deviceRepository;
@@ -94,7 +94,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
             int totalTwinDevices;
             do
             {
-                var result = await this.deviceService.GetAllDevice(continuationToken: continuationToken,excludeDeviceType: "LoRa Concentrator", pageSize: 100);
+                var result = await this.externalDeviceService.GetAllDevice(continuationToken: continuationToken,excludeDeviceType: "LoRa Concentrator", pageSize: 100);
                 twins.AddRange(result.Items);
 
                 totalTwinDevices = result.TotalItems;

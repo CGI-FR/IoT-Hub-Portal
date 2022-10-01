@@ -30,7 +30,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// The device idevice service.
         /// </summary>
-        private readonly IDeviceService devicesService;
+        private readonly IExternalDeviceService externalDevicesService;
 
         /// <summary>
         /// The edge device service.
@@ -45,12 +45,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="edgeDevicesService">The edge deviceservice.</param>
         public EdgeDevicesController(
             ILogger<EdgeDevicesController> logger,
-            IDeviceService service,
+            IExternalDeviceService service,
             IEdgeDevicesService edgeDevicesService)
         {
             this.edgeDevicesService = edgeDevicesService;
             this.logger = logger;
-            this.devicesService = service;
+            this.externalDevicesService = service;
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             string searchType = null,
             int pageSize = 10)
         {
-            var edgeDevicesTwin = await this.devicesService.GetAllEdgeDevice(
+            var edgeDevicesTwin = await this.externalDevicesService.GetAllEdgeDevice(
                 continuationToken: continuationToken,
                 searchText: searchText,
                 searchStatus: searchStatus,
@@ -130,7 +130,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteDeviceAsync(string deviceId)
         {
-            await this.devicesService.DeleteDevice(deviceId);
+            await this.externalDevicesService.DeleteDevice(deviceId);
             this.logger.LogInformation($"iot hub device was delete  {deviceId}");
 
             return Ok($"iot hub device was delete  {deviceId}");
@@ -177,7 +177,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             ArgumentNullException.ThrowIfNull(edgeModule, nameof(edgeModule));
 
-            return await this.devicesService.GetEdgeDeviceLogs(deviceId, edgeModule);
+            return await this.externalDevicesService.GetEdgeDeviceLogs(deviceId, edgeModule);
         }
     }
 }
