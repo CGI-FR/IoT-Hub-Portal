@@ -92,10 +92,10 @@
             </ToolBarContent>
             <HeaderContent>
                 <MudTh></MudTh>
-                <MudTh>Device</MudTh>
-                <MudTh Style="text-align: center">Allowed</MudTh>
-                <MudTh Style="text-align: center">Connection state</MudTh>
-                <MudTh Style="text-align: center">Last status update</MudTh>
+                <MudTh><MudTableSortLabel SortLabel="DeviceID" T="DeviceListItem">Device</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="DeviceListItem">Allowed</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsConnected" T="DeviceListItem">Connection state</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="StatusUpdatedTime" T="DeviceListItem">Last status update</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center">See details</MudTh>
                 <MudTh Style="text-align: center">Delete</MudTh>
             </HeaderContent>
@@ -173,8 +173,6 @@
 
     private bool IsLoading { get; set; } = true;
 
-    private readonly Dictionary<int, string> pages = new();
-
     private IEnumerable<DeviceTagDto> TagList { get; set; } = new List<DeviceTagDto>();
 
     private int[] pageSizeOptions = new int[] { 2, 5, 10 };
@@ -204,25 +202,26 @@
         {
             PaginationResult<DeviceListItem> result;
 
-            if (pages.Keys.Contains(state.Page))
+            string orderBy = null;
+
+            switch (state.SortDirection)
             {
-                result = await DeviceClientService.GetDevices(pages[state.Page]);
-            }
-            else
-            {
-                var uri = $"api/devices?pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchID)}&searchStatus={searchStatus}&searchState={searchState}";
-
-                foreach (var searchTag in this.searchTags.Where(c => !string.IsNullOrEmpty(c.Value)))
-                {
-                    uri += $"&tag.{searchTag.Key}={searchTag.Value}";
-                }
-
-                _ = pages.TryAdd(state.Page, uri);
-
-                result = await DeviceClientService.GetDevices(uri);
+                case SortDirection.Ascending:
+                    orderBy = $"{state.SortLabel} asc";
+                    break;
+                case SortDirection.Descending:
+                    orderBy = $"{state.SortLabel} desc";
+                    break;
             }
 
-            _ = pages.TryAdd(state.Page + 1, result.NextPage);
+            var uri = $"api/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchID)}&searchStatus={searchStatus}&searchState={searchState}&orderBy={orderBy}";
+
+            foreach (var searchTag in this.searchTags.Where(c => !string.IsNullOrEmpty(c.Value)))
+            {
+                uri += $"&tag.{searchTag.Key}={searchTag.Value}";
+            }
+
+            result = await DeviceClientService.GetDevices(uri);
 
             return new TableData<DeviceListItem>
                 {
@@ -263,8 +262,6 @@
 
     private void Search()
     {
-        pages.Clear();
-
         table.ReloadServerData();
     }
 
