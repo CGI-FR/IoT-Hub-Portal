@@ -19,19 +19,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     [Route("api/lorawan/devices")]
     [ApiExplorerSettings(GroupName = "LoRa WAN")]
     [LoRaFeatureActiveFilter]
-    public class LoRaWANDevicesController : DevicesControllerBase<DeviceListItem, LoRaDeviceDetails>
+    public class LoRaWANDevicesController : DevicesControllerBase<LoRaDeviceDetails>
     {
-        private readonly ILoRaWANDeviceService loRaWANDeviceService;
+        private readonly ILoRaWANCommandService loRaWanCommandService;
 
         public LoRaWANDevicesController(
             ILogger<LoRaWANDevicesController> logger,
-            IDeviceService devicesService,
+            IExternalDeviceService externalDevicesService,
             IDeviceTagService deviceTagService,
             IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper,
-            ILoRaWANDeviceService loRaWANDeviceService)
-            : base(logger, devicesService, deviceTagService, deviceTwinMapper)
+            ILoRaWANCommandService loRaWanCommandService,
+            IGenericDeviceService<LoRaDeviceDetails> deviceService)
+            : base(logger, externalDevicesService, deviceTagService, deviceTwinMapper, deviceService)
         {
-            this.loRaWANDeviceService = loRaWANDeviceService;
+            this.loRaWanCommandService = loRaWanCommandService;
         }
 
         /// <summary>
@@ -102,7 +103,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpPost("{deviceId}/_command/{commandId}", Name = "POST Execute LoRaWAN command")]
         public async Task<IActionResult> ExecuteCommand(string deviceId, string commandId)
         {
-            await this.loRaWANDeviceService.ExecuteLoRaWANCommand(deviceId, commandId);
+            await this.loRaWanCommandService.ExecuteLoRaWANCommand(deviceId, commandId);
 
             return Ok();
         }
