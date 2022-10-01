@@ -5,8 +5,9 @@ namespace AzureIoTHub.Portal.Domain
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Base;
 
-    public interface IRepository<T> where T : class
+    public interface IRepository<T> where T : EntityBase
     {
         IEnumerable<T> GetAll();
 
