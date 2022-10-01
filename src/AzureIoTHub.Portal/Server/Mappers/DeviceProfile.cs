@@ -11,12 +11,30 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using AzureIoTHub.Portal.Domain.Entities;
     using Models.v10.LoRaWAN;
     using Microsoft.Azure.Devices.Shared;
+    using Models.v10;
 
     public class DeviceProfile : Profile
     {
         public DeviceProfile()
         {
             _ = CreateMap<Device, Device>();
+
+            _ = CreateMap<DeviceDetails, Device>()
+                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceID))
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.DeviceName))
+                .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.ModelId))
+                .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.Select(pair => new DeviceTagValue
+                {
+                    Name = pair.Key,
+                    Value = pair.Value
+                })));
+
+            _ = CreateMap<Device, DeviceDetails>()
+                .ForMember(dest => dest.DeviceID, opts => opts.MapFrom(src => src.Id))
+                .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
+                .ForMember(dest => dest.ModelId, opts => opts.MapFrom(src => src.DeviceModelId))
+                .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.ToDictionary(tag => tag.Name, tag => tag.Value)));
+
             _ = CreateMap<Twin, Device>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Tags["deviceName"]))
@@ -26,8 +44,24 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.Status == Microsoft.Azure.Devices.DeviceStatus.Enabled))
                 .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => GetTags(src)));
 
-
             _ = CreateMap<LorawanDevice, LorawanDevice>();
+
+            _ = CreateMap<LoRaDeviceDetails, LorawanDevice>()
+                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceID))
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.DeviceName))
+                .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.ModelId))
+                .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.Select(pair => new DeviceTagValue
+                {
+                    Name = pair.Key,
+                    Value = pair.Value
+                })));
+
+            _ = CreateMap<LorawanDevice, LoRaDeviceDetails>()
+                .ForMember(dest => dest.DeviceID, opts => opts.MapFrom(src => src.Id))
+                .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
+                .ForMember(dest => dest.ModelId, opts => opts.MapFrom(src => src.DeviceModelId))
+                .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.ToDictionary(tag => tag.Name, tag => tag.Value)));
+
             _ = CreateMap<Twin, LorawanDevice>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Tags["deviceName"]))
