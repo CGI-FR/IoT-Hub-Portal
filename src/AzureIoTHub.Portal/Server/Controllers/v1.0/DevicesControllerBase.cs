@@ -58,7 +58,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 pageSize,
                 pageNumber,
                 orderBy,
-                GetTagsForQueryString(Request.Query));
+                GetTagsFromQueryString(Request.Query));
 
             var nextPage = string.Empty;
 
@@ -163,7 +163,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             return Ok(await this.deviceService.GetCredentials(deviceID));
         }
 
-        private static Dictionary<string, string> GetTagsForQueryString(IQueryCollection queryCollection)
+        private static Dictionary<string, string> GetTagsFromQueryString(IQueryCollection queryCollection)
         {
             return queryCollection
                 .Where(pair => pair.Key.StartsWith("tag.", StringComparison.InvariantCulture))
