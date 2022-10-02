@@ -14,12 +14,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Portal.Server.Managers;
     using Portal.Server.Mappers;
     using AutoFixture;
-    using AzureIoTHub.Portal.Domain.Entities;
     using System.Threading.Tasks;
     using System;
     using System.Linq;
     using FluentAssertions;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using Microsoft.Azure.Devices.Provisioning.Service;
+    using System.Collections.Generic;
+    using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Shared;
+    using Device = Portal.Domain.Entities.Device;
+    using Microsoft.EntityFrameworkCore;
 
     [TestFixture]
     public class DeviceServiceTests : BackendUnitTest
@@ -99,6 +104,74 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Assert
             _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task CreateDevice_NewDevice_DeviceCreated()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.CreateNewTwinFromDeviceId(deviceDto.DeviceID))
+                .ReturnsAsync(new Twin());
+
+            this.mockDeviceTwinMapper
+                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
+                .Verifiable();
+
+            _ = this.mockExternalDevicesService.Setup(service =>
+                    service.CreateDeviceWithTwin(deviceDto.DeviceID, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
+                .ReturnsAsync(new BulkRegistryOperationResult());
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<Device>()))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await this.deviceService.CreateDevice(deviceDto);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(deviceDto);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task CreateDevice_DbUpdateExceptionIsThrown_InternalServerErrorExceptionIsThrown()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.CreateNewTwinFromDeviceId(deviceDto.DeviceID))
+                .ReturnsAsync(new Twin());
+
+            this.mockDeviceTwinMapper
+                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
+                .Verifiable();
+
+            _ = this.mockExternalDevicesService.Setup(service =>
+                    service.CreateDeviceWithTwin(deviceDto.DeviceID, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
+                .ReturnsAsync(new BulkRegistryOperationResult());
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<Device>()))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.deviceService.CreateDevice(deviceDto);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             MockRepository.VerifyAll();
         }
     }
