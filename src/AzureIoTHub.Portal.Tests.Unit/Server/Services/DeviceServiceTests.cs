@@ -470,5 +470,27 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             MockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task GetCredentials_DeviceExist_ReturnsEnrollmentCredentials()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            var expectedEnrollmentCredentials = Fixture.Create<EnrollmentCredentials>();
+
+            _ = this.mockExternalDevicesService.Setup(service => service.GetEnrollmentCredentials(deviceDto.DeviceID))
+                .ReturnsAsync(expectedEnrollmentCredentials);
+
+            // Act
+            var result = await this.deviceService.GetCredentials(deviceDto.DeviceID);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedEnrollmentCredentials);
+            MockRepository.VerifyAll();
+        }
     }
 }
