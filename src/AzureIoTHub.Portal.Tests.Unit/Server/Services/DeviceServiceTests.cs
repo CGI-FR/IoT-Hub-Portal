@@ -292,5 +292,84 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             MockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task DeleteDevice_DeviceExist_DeviceDeleted()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(new Device());
+
+            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.deviceService.DeleteDevice(deviceDto.DeviceID);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDevice_DeviceNotExist_NothingIsDone()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync((Device)null);
+
+            // Act
+            await this.deviceService.DeleteDevice(deviceDto.DeviceID);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDevice_DbUpdateExceptionIsRaised_InternalServerErrorExceptionIsThrown()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(new Device());
+
+            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.deviceService.DeleteDevice(deviceDto.DeviceID);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+        }
     }
 }

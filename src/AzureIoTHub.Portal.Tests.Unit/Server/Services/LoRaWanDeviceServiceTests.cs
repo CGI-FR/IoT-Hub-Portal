@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AutoFixture;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Models.v10;
+    using Models.v10;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
@@ -17,7 +17,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Threading.Tasks;
     using System;
     using System.Linq;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using Models.v10.LoRaWAN;
     using FluentAssertions;
     using Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
@@ -288,6 +288,85 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Act
             var act = () => this.lorawanDeviceService.UpdateDevice(deviceDto);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDevice_DeviceExist_DeviceDeleted()
+        {
+            // Arrange
+            var deviceDto = new LoRaDeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(new LorawanDevice());
+
+            this.mockLorawanDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.lorawanDeviceService.DeleteDevice(deviceDto.DeviceID);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDevice_DeviceNotExist_NothingIsDone()
+        {
+            // Arrange
+            var deviceDto = new LoRaDeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync((LorawanDevice)null);
+
+            // Act
+            await this.lorawanDeviceService.DeleteDevice(deviceDto.DeviceID);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDevice_DbUpdateExceptionIsRaised_InternalServerErrorExceptionIsThrown()
+        {
+            // Arrange
+            var deviceDto = new LoRaDeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(new LorawanDevice());
+
+            this.mockLorawanDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.lorawanDeviceService.DeleteDevice(deviceDto.DeviceID);
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
