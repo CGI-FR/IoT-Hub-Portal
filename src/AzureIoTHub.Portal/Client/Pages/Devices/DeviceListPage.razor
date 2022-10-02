@@ -200,8 +200,6 @@
     {
         try
         {
-            PaginationResult<DeviceListItem> result;
-
             string orderBy = null;
 
             switch (state.SortDirection)
@@ -216,12 +214,12 @@
 
             var uri = $"api/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchID)}&searchStatus={searchStatus}&searchState={searchState}&orderBy={orderBy}";
 
-            foreach (var searchTag in this.searchTags.Where(c => !string.IsNullOrEmpty(c.Value)))
+            foreach (var searchTag in searchTags.Where(c => !string.IsNullOrEmpty(c.Value)))
             {
                 uri += $"&tag.{searchTag.Key}={searchTag.Value}";
             }
 
-            result = await DeviceClientService.GetDevices(uri);
+            var result = await DeviceClientService.GetDevices(uri);
 
             return new TableData<DeviceListItem>
                 {
