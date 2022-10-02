@@ -63,7 +63,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task GetDevice_ExistingDevice_ReturnsExpectedDevice()
+        public async Task GetDevice_DeviceExist_ReturnsExpectedDevice()
         {
             // Arrange
             var expectedDevice = Fixture.Create<LorawanDevice>();
@@ -168,6 +168,126 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Act
             var act = () => this.lorawanDeviceService.CreateDevice(deviceDto);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDevice_DeviceExist_DeviceUpdated()
+        {
+            // Arrange
+            var deviceDto = new LoRaDeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceID))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device());
+
+            _ = this.mockExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<Microsoft.Azure.Devices.Device>()))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device());
+
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
+                .ReturnsAsync(new Twin());
+
+            this.mockDeviceTwinMapper
+                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
+                .Verifiable();
+
+            _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
+                .ReturnsAsync(new Twin());
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(new LorawanDevice());
+
+            this.mockLorawanDeviceRepository.Setup(repository => repository.Update(It.IsAny<LorawanDevice>()))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await this.lorawanDeviceService.UpdateDevice(deviceDto);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(deviceDto);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDevice_DeviceNotExist_ResourceNotFoundExceptionIsThrown()
+        {
+            // Arrange
+            var deviceDto = new LoRaDeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceID))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device());
+
+            _ = this.mockExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<Microsoft.Azure.Devices.Device>()))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device());
+
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
+                .ReturnsAsync(new Twin());
+
+            this.mockDeviceTwinMapper
+                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
+                .Verifiable();
+
+            _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
+                .ReturnsAsync(new Twin());
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync((LorawanDevice)null);
+
+            // Act
+            var act = () => this.lorawanDeviceService.UpdateDevice(deviceDto);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDevice_DbUpdateExceptionIsRaised_InternalServerErrorExceptionIsThrown()
+        {
+            // Arrange
+            var deviceDto = new LoRaDeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceID))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device());
+
+            _ = this.mockExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<Microsoft.Azure.Devices.Device>()))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device());
+
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
+                .ReturnsAsync(new Twin());
+
+            this.mockDeviceTwinMapper
+                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
+                .Verifiable();
+
+            _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
+                .ReturnsAsync(new Twin());
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(new LorawanDevice());
+
+            this.mockLorawanDeviceRepository.Setup(repository => repository.Update(It.IsAny<LorawanDevice>()))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.lorawanDeviceService.UpdateDevice(deviceDto);
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();

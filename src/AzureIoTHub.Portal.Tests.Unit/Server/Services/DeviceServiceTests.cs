@@ -19,8 +19,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Linq;
     using FluentAssertions;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using Microsoft.Azure.Devices.Provisioning.Service;
-    using System.Collections.Generic;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Device = Portal.Domain.Entities.Device;
@@ -64,7 +62,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task GetDevice_ExistingDevice_ReturnsExpectedDevice()
+        public async Task GetDevice_DeviceExist_ReturnsExpectedDevice()
         {
             // Arrange
             var expectedDevice = Fixture.Create<Device>();
@@ -169,6 +167,126 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Act
             var act = () => this.deviceService.CreateDevice(deviceDto);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDevice_DeviceExist_DeviceUpdated()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceID))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device());
+
+            _ = this.mockExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<Microsoft.Azure.Devices.Device>()))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device());
+
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
+                .ReturnsAsync(new Twin());
+
+            this.mockDeviceTwinMapper
+                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
+                .Verifiable();
+
+            _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
+                .ReturnsAsync(new Twin());
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(new Device());
+
+            this.mockDeviceRepository.Setup(repository => repository.Update(It.IsAny<Device>()))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await this.deviceService.UpdateDevice(deviceDto);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(deviceDto);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDevice_DeviceNotExist_ResourceNotFoundExceptionIsThrown()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceID))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device());
+
+            _ = this.mockExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<Microsoft.Azure.Devices.Device>()))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device());
+
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
+                .ReturnsAsync(new Twin());
+
+            this.mockDeviceTwinMapper
+                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
+                .Verifiable();
+
+            _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
+                .ReturnsAsync(new Twin());
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync((Device)null);
+
+            // Act
+            var act = () => this.deviceService.UpdateDevice(deviceDto);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDevice_DbUpdateExceptionIsRaised_InternalServerErrorExceptionIsThrown()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDevice(deviceDto.DeviceID))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device());
+
+            _ = this.mockExternalDevicesService.Setup(service => service.UpdateDevice(It.IsAny<Microsoft.Azure.Devices.Device>()))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device());
+
+            _ = this.mockExternalDevicesService.Setup(service => service.GetDeviceTwin(deviceDto.DeviceID))
+                .ReturnsAsync(new Twin());
+
+            this.mockDeviceTwinMapper
+                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
+                .Verifiable();
+
+            _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
+                .ReturnsAsync(new Twin());
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(new Device());
+
+            this.mockDeviceRepository.Setup(repository => repository.Update(It.IsAny<Device>()))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.deviceService.UpdateDevice(deviceDto);
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
