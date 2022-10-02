@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Hellang.Middleware.ProblemDetails;
@@ -57,10 +58,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 pageSize,
                 pageNumber,
                 orderBy,
-                Request.Query
-                    .Where(pair => pair.Key.StartsWith("tag.", StringComparison.InvariantCulture))
-                    .ToDictionary(pair => pair.Key, pair => pair.Key)
-                );
+                GetTagsForQueryString(Request.Query));
 
             var nextPage = string.Empty;
 
@@ -163,6 +161,18 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public virtual async Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
         {
             return Ok(await this.deviceService.GetCredentials(deviceID));
+        }
+
+        private static Dictionary<string, string> GetTagsForQueryString(IQueryCollection queryCollection)
+        {
+            return queryCollection
+                .Where(pair => pair.Key.StartsWith("tag.", StringComparison.InvariantCulture))
+                .Select(pair => new
+                {
+                    Tag = pair.Key.Split(new[] { "tag." }, StringSplitOptions.None).Skip(1).FirstOrDefault(),
+                    Value = pair.Value.ToString()
+                })
+                .ToDictionary(arg => arg.Tag, arg => arg.Value);
         }
     }
 }
