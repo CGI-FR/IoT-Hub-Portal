@@ -53,10 +53,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 IsEnabled = searchStatus,
                 Keyword = searchText,
                 OrderBy = orderBy,
-                Tags = this.deviceTagService.GetAllSearchableTagsNames()
-                    .Where(tags.ContainsKey)
-                    .Select(tag => new { tag, tagValue = tags[tag] })
-                    .ToDictionary(pair => pair.tag, pair => pair.tagValue)
+                Tags = GetSearchableTags(tags)
             };
 
             var devicePredicate = PredicateBuilder.True<Device>();
@@ -183,6 +180,16 @@ namespace AzureIoTHub.Portal.Server.Services
                 .Union(tags.Where(s => !device.Tags.ContainsKey(s))
                     .Select(s => new KeyValuePair<string, string>(s, string.Empty)))
                 .ToDictionary(pair => pair.Key, pair => pair.Value);
+        }
+
+        private Dictionary<string, string> GetSearchableTags(IReadOnlyDictionary<string, string> tags)
+        {
+            return tags == null
+                ? new Dictionary<string, string>()
+                : this.deviceTagService.GetAllSearchableTagsNames()
+                    .Where(tags.ContainsKey)
+                    .Select(tag => new { tag, tagValue = tags[tag] })
+                    .ToDictionary(pair => pair.tag, pair => pair.tagValue);
         }
     }
 }
