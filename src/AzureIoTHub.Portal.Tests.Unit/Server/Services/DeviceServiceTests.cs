@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AutoFixture;
     using System.Threading.Tasks;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using FluentAssertions;
     using AzureIoTHub.Portal.Domain.Exceptions;
@@ -59,6 +60,32 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             Services = ServiceCollection.BuildServiceProvider();
 
             this.deviceService = Services.GetRequiredService<IDeviceService<DeviceDetails>>();
+        }
+
+        [Test]
+        public async Task GetDevices_DefaultFilter_ReturnsExpectedDevices()
+        {
+            // Arrange
+            var expectedTotalDevicesCount = 50;
+            var expectedPageSize = 10;
+            var expectedCurrentPage = 0;
+            var expectedDevices = Fixture.CreateMany<Device>(expectedTotalDevicesCount).ToList();
+
+            await DbContext.AddRangeAsync(expectedDevices);
+            _ = await DbContext.SaveChangesAsync();
+
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
+                .Returns(Fixture.Create<Uri>());
+
+            // Act
+            var result = await this.deviceService.GetDevices();
+
+            // Assert
+            _ = result.Data.Count.Should().Be(expectedPageSize);
+            _ = result.TotalCount.Should().Be(expectedTotalDevicesCount);
+            _ = result.PageSize.Should().Be(expectedPageSize);
+            _ = result.CurrentPage.Should().Be(expectedCurrentPage);
+            MockRepository.VerifyAll();
         }
 
         [Test]
