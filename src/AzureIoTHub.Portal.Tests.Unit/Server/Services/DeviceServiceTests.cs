@@ -24,6 +24,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Microsoft.Azure.Devices.Shared;
     using Device = Portal.Domain.Entities.Device;
     using Microsoft.EntityFrameworkCore;
+    using Portal.Domain.Entities;
 
     [TestFixture]
     public class DeviceServiceTests : BackendUnitTest
@@ -69,9 +70,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var expectedTotalDevicesCount = 50;
             var expectedPageSize = 10;
             var expectedCurrentPage = 0;
-            var expectedDevices = Fixture.CreateMany<Device>(expectedTotalDevicesCount).ToList();
+            var expectedDevices = Fixture.CreateMany<Device>(expectedTotalDevicesCount/2).ToList();
+            var expectedLorawanDevices = Fixture.CreateMany<LorawanDevice>(expectedTotalDevicesCount/2).ToList();
 
             await DbContext.AddRangeAsync(expectedDevices);
+            await DbContext.AddRangeAsync(expectedLorawanDevices);
             _ = await DbContext.SaveChangesAsync();
 
             _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
@@ -85,6 +88,75 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = result.TotalCount.Should().Be(expectedTotalDevicesCount);
             _ = result.PageSize.Should().Be(expectedPageSize);
             _ = result.CurrentPage.Should().Be(expectedCurrentPage);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetDevices_CustomFilter_ReturnsExpectedDevices()
+        {
+            // Arrange
+            var keywordFilter = "WaNt tHiS DeViCe";
+
+            var tagFilter = new Dictionary<string, string>
+            {
+                {"location", "FR"}
+            };
+
+            var device1 = new Device
+            {
+                IsConnected = false,
+                IsEnabled = true,
+                Name = "I want this device",
+                Tags = new List<DeviceTagValue>
+                {
+                    new()
+                    {
+                        Name = "location",
+                        Value = "FR"
+                    }
+                },
+                DeviceModelId = Fixture.Create<string>()
+            };
+
+            var device2 = new Device
+            {
+                IsConnected = true,
+                IsEnabled = false,
+                Name = "I don't want this device",
+                Tags = new List<DeviceTagValue>
+                {
+                    new()
+                    {
+                        Name = "location",
+                        Value = "US"
+                    }
+                },
+                DeviceModelId = Fixture.Create<string>()
+            };
+
+            var expectedTotalDevicesCount = 1;
+            var expectedPageSize = 10;
+            var expectedCurrentPage = 0;
+
+            _ = await DbContext.AddAsync(device1);
+            _ = await DbContext.AddAsync(device2);
+            _ = await DbContext.SaveChangesAsync();
+
+            _ = this.mockDeviceTagService.Setup(service => service.GetAllSearchableTagsNames())
+                .Returns(new List<string> { "location" });
+
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
+                .Returns(Fixture.Create<Uri>());
+
+            // Act
+            var result = await this.deviceService.GetDevices(searchText: keywordFilter, searchState: false, searchStatus: true, tags: tagFilter);
+
+            // Assert
+            _ = result.Data.Count.Should().Be(expectedTotalDevicesCount);
+            _ = result.TotalCount.Should().Be(expectedTotalDevicesCount);
+            _ = result.PageSize.Should().Be(expectedPageSize);
+            _ = result.CurrentPage.Should().Be(expectedCurrentPage);
+            _ = result.Data.First().DeviceName.Should().Be(device1.Name);
             MockRepository.VerifyAll();
         }
 
