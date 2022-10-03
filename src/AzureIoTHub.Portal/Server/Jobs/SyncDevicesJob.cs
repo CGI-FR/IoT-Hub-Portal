@@ -22,6 +22,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
         private readonly IDeviceModelRepository deviceModelRepository;
         private readonly ILorawanDeviceRepository lorawanDeviceRepository;
         private readonly IDeviceRepository deviceRepository;
+        private readonly IDeviceTagValueRepository deviceTagValueRepository;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly ILogger<SyncDevicesJob> logger;
@@ -32,6 +33,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
             IDeviceModelRepository deviceModelRepository,
             ILorawanDeviceRepository lorawanDeviceRepository,
             IDeviceRepository deviceRepository,
+            IDeviceTagValueRepository deviceTagValueRepository,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             ILogger<SyncDevicesJob> logger)
@@ -40,6 +42,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
             this.deviceModelRepository = deviceModelRepository;
             this.lorawanDeviceRepository = lorawanDeviceRepository;
             this.deviceRepository = deviceRepository;
+            this.deviceTagValueRepository = deviceTagValueRepository;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.logger = logger;
@@ -118,6 +121,11 @@ namespace AzureIoTHub.Portal.Server.Jobs
             {
                 if (lorawanDeviceEntity.Version >= lorawanDevice.Version) return;
 
+                foreach (var deviceTagEntity in lorawanDeviceEntity.Tags)
+                {
+                    this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
+                }
+
                 _ = this.mapper.Map(lorawanDevice, lorawanDeviceEntity);
                 this.lorawanDeviceRepository.Update(lorawanDeviceEntity);
             }
@@ -135,6 +143,11 @@ namespace AzureIoTHub.Portal.Server.Jobs
             else
             {
                 if (deviceEntity.Version >= device.Version) return;
+
+                foreach (var deviceTagEntity in deviceEntity.Tags)
+                {
+                    this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
+                }
 
                 _ = this.mapper.Map(device, deviceEntity);
                 this.deviceRepository.Update(deviceEntity);

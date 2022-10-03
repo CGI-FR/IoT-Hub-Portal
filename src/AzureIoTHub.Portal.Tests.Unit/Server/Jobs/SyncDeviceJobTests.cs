@@ -26,6 +26,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
         private Mock<IDeviceModelRepository> mockDeviceModelRepository;
         private Mock<ILorawanDeviceRepository> mockLorawanDeviceRepository;
         private Mock<IDeviceRepository> mockDeviceRepository;
+        private Mock<IDeviceTagValueRepository> mockDeviceTagValueRepository;
         private Mock<IUnitOfWork> mockUnitOfWork;
 
         public override void Setup()
@@ -36,6 +37,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
             this.mockDeviceModelRepository = MockRepository.Create<IDeviceModelRepository>();
             this.mockLorawanDeviceRepository = MockRepository.Create<ILorawanDeviceRepository>();
             this.mockDeviceRepository = MockRepository.Create<IDeviceRepository>();
+            this.mockDeviceTagValueRepository = MockRepository.Create<IDeviceTagValueRepository>();
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
 
 
@@ -43,6 +45,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockLorawanDeviceRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDeviceTagValueRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton<IJob, SyncDevicesJob>();
 
@@ -133,7 +136,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
             var existingDevice = new Device
             {
                 Id = expectedTwinDevice.DeviceId,
-                Version = 1
+                Version = 1,
+                Tags = new List<DeviceTagValue>
+                {
+                    new()
+                    {
+                        Id = Fixture.Create<string>(),
+                        Name = Fixture.Create<string>(),
+                        Value = Fixture.Create<string>()
+                    }
+                }
             };
 
             _ = this.mockDeviceService
@@ -162,6 +174,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedTwinDevice.DeviceId))
                 .ReturnsAsync(existingDevice);
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
 
             this.mockDeviceRepository.Setup(repository => repository.Update(It.IsAny<Device>()))
                 .Verifiable();
@@ -258,7 +273,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
             var existingLorawanDevice = new LorawanDevice
             {
                 Id = expectedTwinDevice.DeviceId,
-                Version = 1
+                Version = 1,
+                Tags = new List<DeviceTagValue>
+                {
+                    new()
+                    {
+                        Id = Fixture.Create<string>(),
+                        Name = Fixture.Create<string>(),
+                        Value = Fixture.Create<string>()
+                    }
+                }
             };
 
             _ = this.mockDeviceService
@@ -287,6 +311,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedTwinDevice.DeviceId))
                 .ReturnsAsync(existingLorawanDevice);
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
 
             this.mockLorawanDeviceRepository.Setup(repository => repository.Update(It.IsAny<LorawanDevice>()))
                 .Verifiable();
