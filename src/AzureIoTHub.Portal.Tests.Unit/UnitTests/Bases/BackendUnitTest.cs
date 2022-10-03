@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
 {
     using System;
+    using System.Reflection;
     using AutoMapper;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -13,6 +14,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
     using Moq;
     using NUnit.Framework;
     using Portal.Infrastructure;
+    using Portal.Server;
     using Portal.Server.Mappers;
     using RichardSzalay.MockHttp;
 
@@ -47,18 +49,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
             httpClient.BaseAddress = new Uri("http://fake.local");
             _ = ServiceCollection.AddSingleton(httpClient);
 
-            // Add Mapper Configuration
-            var mappingConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new DeviceTagProfile());
-                mc.AddProfile(new EdgeDeviceModelProfile());
-                mc.AddProfile(new EdgeDeviceModelCommandProfile());
-                mc.AddProfile(new DeviceModelProfile());
-                mc.AddProfile(new DeviceModelCommandProfile());
-                mc.AddProfile(new DeviceProfile());
-            });
-            Mapper = mappingConfig.CreateMapper();
-            _ = ServiceCollection.AddSingleton(Mapper);
+            // Add AutoMapper Configuration
+            _ = ServiceCollection.AddAutoMapper(typeof(Startup));
 
             // Add InMemory Database
             var contextOptions = new DbContextOptionsBuilder<PortalDbContext>()

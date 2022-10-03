@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
+    using AutoMapper;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;
@@ -67,6 +68,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             Services = ServiceCollection.BuildServiceProvider();
 
             this.deviceModelService = Services.GetRequiredService<IDeviceModelService<DeviceModelDto, DeviceModelDto>>();
+            Mapper = Services.GetRequiredService<IMapper>();
         }
 
         [Test]

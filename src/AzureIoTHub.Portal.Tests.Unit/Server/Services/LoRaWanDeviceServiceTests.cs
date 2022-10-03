@@ -25,6 +25,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Azure.Devices;
     using Microsoft.EntityFrameworkCore;
+    using AutoMapper;
 
     [TestFixture]
     public class LoRaWanDeviceServiceTests : BackendUnitTest
@@ -64,6 +65,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             Services = ServiceCollection.BuildServiceProvider();
 
             this.lorawanDeviceService = Services.GetRequiredService<IDeviceService<LoRaDeviceDetails>>();
+            Mapper = Services.GetRequiredService<IMapper>();
         }
 
         [Test]

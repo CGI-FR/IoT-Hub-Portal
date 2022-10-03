@@ -4,25 +4,22 @@
 namespace AzureIoTHub.Portal.Server
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Net;
     using System.Threading.Tasks;
-    using AutoMapper;
-    using Azure;
     using Azure.Storage.Blobs;
-    using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Infrastructure;
-    using AzureIoTHub.Portal.Infrastructure.Factories;
-    using AzureIoTHub.Portal.Infrastructure.Repositories;
-    using AzureIoTHub.Portal.Infrastructure.Seeds;
-    using AzureIoTHub.Portal.Server.Jobs;
+    using Domain;
+    using Domain.Exceptions;
+    using Domain.Repositories;
     using Extensions;
     using Hellang.Middleware.ProblemDetails;
     using Hellang.Middleware.ProblemDetails.Mvc;
     using Identity;
+    using Infrastructure;
+    using Infrastructure.Factories;
+    using Infrastructure.Repositories;
+    using Infrastructure.Seeds;
+    using Jobs;
     using Managers;
     using Mappers;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -274,21 +271,8 @@ namespace AzureIoTHub.Portal.Server
                     new HeaderApiVersionReader("X-Version"));
             });
 
-            var mapperConfig = new MapperConfiguration(mc =>
-            {
-                _ = mc.CreateMap(typeof(AsyncPageable<>), typeof(List<>));
-
-                mc.AddProfile(new DevicePropertyProfile());
-                mc.AddProfile(new DeviceTagProfile());
-                mc.AddProfile(new EdgeDeviceModelProfile());
-                mc.AddProfile(new EdgeDeviceModelCommandProfile());
-                mc.AddProfile(new DeviceModelProfile());
-                mc.AddProfile(new DeviceModelCommandProfile());
-                mc.AddProfile(new DeviceProfile());
-            });
-
-            var mapper = mapperConfig.CreateMapper();
-            _ = services.AddSingleton(mapper);
+            // Add AutoMapper Configuration
+            _ = services.AddAutoMapper(typeof(Startup));
 
             _ = services.AddHealthChecks()
                 .AddDbContextCheck<PortalDbContext>()
