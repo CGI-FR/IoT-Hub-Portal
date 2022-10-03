@@ -21,11 +21,13 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly ILorawanDeviceRepository lorawanDeviceRepository;
+        private readonly IDeviceTagValueRepository deviceTagValueRepository;
         private readonly IDeviceModelImageManager deviceModelImageManager;
 
         public LoRaWanDeviceService(IMapper mapper,
             IUnitOfWork unitOfWork,
             ILorawanDeviceRepository lorawanDeviceRepository,
+            IDeviceTagValueRepository deviceTagValueRepository,
             IExternalDeviceService externalDevicesService,
             IDeviceTagService deviceTagService,
             PortalDbContext portalDbContext,
@@ -36,6 +38,7 @@ namespace AzureIoTHub.Portal.Server.Services
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.lorawanDeviceRepository = lorawanDeviceRepository;
+            this.deviceTagValueRepository = deviceTagValueRepository;
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
@@ -87,6 +90,11 @@ namespace AzureIoTHub.Portal.Server.Services
                 if (deviceEntity == null)
                 {
                     throw new ResourceNotFoundException($"The LoRaWAN device {device.DeviceID} doesn't exist");
+                }
+
+                foreach (var deviceTagEntity in deviceEntity.Tags)
+                {
+                    this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
                 }
 
                 _ = this.mapper.Map(device, deviceEntity);

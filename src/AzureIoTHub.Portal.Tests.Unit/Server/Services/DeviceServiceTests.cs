@@ -31,6 +31,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     {
         private Mock<IUnitOfWork> mockUnitOfWork;
         private Mock<IDeviceRepository> mockDeviceRepository;
+        private Mock<IDeviceTagValueRepository> mockDeviceTagValueRepository;
         private Mock<IExternalDeviceService> mockExternalDevicesService;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
@@ -44,6 +45,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
             this.mockDeviceRepository = MockRepository.Create<IDeviceRepository>();
+            this.mockDeviceTagValueRepository = MockRepository.Create<IDeviceTagValueRepository>();
             this.mockExternalDevicesService = MockRepository.Create<IExternalDeviceService>();
             this.mockDeviceTagService = MockRepository.Create<IDeviceTagService>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
@@ -51,6 +53,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDeviceTagValueRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockExternalDevicesService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
@@ -298,7 +301,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin());
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
-                .ReturnsAsync(new Device());
+                .ReturnsAsync(new Device
+                {
+                    Tags = new List<DeviceTagValue>
+                    {
+                        new()
+                        {
+                            Id = Fixture.Create<string>()
+                        }
+                    }
+                });
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
 
             this.mockDeviceRepository.Setup(repository => repository.Update(It.IsAny<Device>()))
                 .Verifiable();
@@ -376,7 +391,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin());
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
-                .ReturnsAsync(new Device());
+                .ReturnsAsync(new Device
+                {
+                    Tags = new List<DeviceTagValue>()
+                });
 
             this.mockDeviceRepository.Setup(repository => repository.Update(It.IsAny<Device>()))
                 .Verifiable();

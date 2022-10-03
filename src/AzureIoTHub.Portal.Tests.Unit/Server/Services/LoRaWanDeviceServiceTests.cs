@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Moq;
     using System.Threading.Tasks;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using Models.v10.LoRaWAN;
     using FluentAssertions;
@@ -30,6 +31,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     {
         private Mock<IUnitOfWork> mockUnitOfWork;
         private Mock<ILorawanDeviceRepository> mockLorawanDeviceRepository;
+        private Mock<IDeviceTagValueRepository> mockDeviceTagValueRepository;
         private Mock<IExternalDeviceService> mockExternalDevicesService;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
@@ -43,6 +45,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
             this.mockLorawanDeviceRepository = MockRepository.Create<ILorawanDeviceRepository>();
+            this.mockDeviceTagValueRepository = MockRepository.Create<IDeviceTagValueRepository>();
             this.mockExternalDevicesService = MockRepository.Create<IExternalDeviceService>();
             this.mockDeviceTagService = MockRepository.Create<IDeviceTagService>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
@@ -50,6 +53,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockLorawanDeviceRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDeviceTagValueRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockExternalDevicesService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
@@ -200,7 +204,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin());
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
-                .ReturnsAsync(new LorawanDevice());
+                .ReturnsAsync(new LorawanDevice
+                {
+                    Tags = new List<DeviceTagValue>
+                    {
+                        new()
+                        {
+                            Id = Fixture.Create<string>()
+                        }
+                    }
+                });
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
 
             this.mockLorawanDeviceRepository.Setup(repository => repository.Update(It.IsAny<LorawanDevice>()))
                 .Verifiable();
@@ -278,7 +294,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin());
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
-                .ReturnsAsync(new LorawanDevice());
+                .ReturnsAsync(new LorawanDevice
+                {
+                    Tags = new List<DeviceTagValue>()
+                });
 
             this.mockLorawanDeviceRepository.Setup(repository => repository.Update(It.IsAny<LorawanDevice>()))
                 .Verifiable();
