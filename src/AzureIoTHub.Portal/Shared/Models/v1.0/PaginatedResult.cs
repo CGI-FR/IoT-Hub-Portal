@@ -30,6 +30,6 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0
 
         public bool HasPreviousPage => CurrentPage > 0;
 
-        public bool HasNextPage => CurrentPage < TotalPages;
+        public bool HasNextPage => CurrentPage < (TotalPages - 1);
     }
 }
