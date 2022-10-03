@@ -4,8 +4,10 @@
 namespace AzureIoTHub.Portal.Domain
 {
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using Base;
+    using Portal.Shared.Models.v1._0;
 
     public interface IRepository<T> where T : EntityBase
     {
@@ -18,5 +20,7 @@ namespace AzureIoTHub.Portal.Domain
         void Update(T obj);
 
         void Delete(object id);
+
+        Task<PaginatedResult<T>> GetPaginatedListAsync(int pageNumber, int pageSize, string[]? orderBy = null, Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default);
     }
 }

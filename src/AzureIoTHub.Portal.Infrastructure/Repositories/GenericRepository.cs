@@ -7,7 +7,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
     using Domain.Base;
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
+    using Shared.Models.v1._0;
+    using System.Linq.Dynamic.Core;
 
     public class GenericRepository<T> : IRepository<T> where T : EntityBase
     {
@@ -49,6 +52,33 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
                     .Find(id);
 
             _ = this.context.Set<T>().Remove(existing);
+        }
+
+        public async Task<PaginatedResult<T>> GetPaginatedListAsync(
+            int pageNumber,
+            int pageSize,
+            string[]? orderBy = null,
+            Expression<Func<T, bool>>? expression = null,
+            CancellationToken cancellationToken = default
+            )
+        {
+            IQueryable<T> query = this.context.Set<T>();
+            if (expression != null) query = query.Where(expression);
+
+            var ordering = orderBy?.Any() == true ? string.Join(",", orderBy) : null;
+
+            query = !string.IsNullOrWhiteSpace(ordering) ? query.OrderBy(ordering) : query.OrderBy(a => a.Id);
+
+            var count = await query
+                .AsNoTracking()
+                .CountAsync(cancellationToken: cancellationToken);
+
+            var items = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToDynamicListAsync<T>(cancellationToken: cancellationToken);
+
+            return new PaginatedResult<T>(items, count, pageNumber, pageSize);
         }
     }
 }
