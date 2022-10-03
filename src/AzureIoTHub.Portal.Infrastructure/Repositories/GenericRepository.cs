@@ -74,7 +74,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
                 .CountAsync(cancellationToken: cancellationToken);
 
             var items = await query
-                .Skip((pageNumber - 1) * pageSize)
+                .Skip(pageNumber * pageSize)
                 .Take(pageSize)
                 .ToDynamicListAsync<T>(cancellationToken: cancellationToken);
 
