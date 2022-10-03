@@ -26,7 +26,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
         private MockRepository mockRepository;
 
         private Mock<ILogger<EdgeDevicesController>> mockLogger;
-        private Mock<IDeviceService> mockDeviceService;
+        private Mock<IExternalDeviceService> mockDeviceService;
         private Mock<IEdgeDevicesService> mockEdgeDeviceService;
         private Mock<IUrlHelper> mockUrlHelper;
 
@@ -36,7 +36,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockLogger = this.mockRepository.Create<ILogger<EdgeDevicesController>>();
-            this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
+            this.mockDeviceService = this.mockRepository.Create<IExternalDeviceService>();
             this.mockEdgeDeviceService = this.mockRepository.Create<IEdgeDevicesService>();
             this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
         }

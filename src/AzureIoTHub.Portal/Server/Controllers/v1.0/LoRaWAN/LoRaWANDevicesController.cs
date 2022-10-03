@@ -5,7 +5,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.Threading.Tasks;
     using Filters;
-    using Mappers;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -19,19 +18,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     [Route("api/lorawan/devices")]
     [ApiExplorerSettings(GroupName = "LoRa WAN")]
     [LoRaFeatureActiveFilter]
-    public class LoRaWANDevicesController : DevicesControllerBase<DeviceListItem, LoRaDeviceDetails>
+    public class LoRaWANDevicesController : DevicesControllerBase<LoRaDeviceDetails>
     {
-        private readonly ILoRaWANDeviceService loRaWANDeviceService;
+        private readonly ILoRaWANCommandService loRaWanCommandService;
 
         public LoRaWANDevicesController(
             ILogger<LoRaWANDevicesController> logger,
-            IDeviceService devicesService,
-            IDeviceTagService deviceTagService,
-            IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper,
-            ILoRaWANDeviceService loRaWANDeviceService)
-            : base(logger, devicesService, deviceTagService, deviceTwinMapper)
+            ILoRaWANCommandService loRaWanCommandService,
+            IDeviceService<LoRaDeviceDetails> deviceService)
+            : base(logger, deviceService)
         {
-            this.loRaWANDeviceService = loRaWANDeviceService;
+            this.loRaWanCommandService = loRaWanCommandService;
         }
 
         /// <summary>
@@ -42,15 +39,18 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="searchStatus"></param>
         /// <param name="searchState"></param>
         /// <param name="pageSize"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="orderBy"></param>
         [HttpGet(Name = "GET LoRaWAN device list")]
         public Task<PaginationResult<DeviceListItem>> SearchItems(
-            string continuationToken = null,
             string searchText = null,
             bool? searchStatus = null,
             bool? searchState = null,
-            int pageSize = 10)
+            int pageSize = 10,
+            int pageNumber = 0,
+            [FromQuery] string[] orderBy = null)
         {
-            return GetItems("GET LoRaWAN device list", continuationToken, searchText, searchStatus, searchState, pageSize);
+            return GetItems("GET LoRaWAN device list", searchText, searchStatus, searchState, pageSize, pageNumber, orderBy);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpPost("{deviceId}/_command/{commandId}", Name = "POST Execute LoRaWAN command")]
         public async Task<IActionResult> ExecuteCommand(string deviceId, string commandId)
         {
-            await this.loRaWANDeviceService.ExecuteLoRaWANCommand(deviceId, commandId);
+            await this.loRaWanCommandService.ExecuteLoRaWANCommand(deviceId, commandId);
 
             return Ok();
         }

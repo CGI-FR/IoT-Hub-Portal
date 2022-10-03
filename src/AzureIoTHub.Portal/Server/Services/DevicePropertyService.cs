@@ -16,18 +16,18 @@ namespace AzureIoTHub.Portal.Server.Services
 
     public class DevicePropertyService : IDevicePropertyService
     {
-        private readonly IDeviceService devicesService;
+        private readonly IExternalDeviceService externalDevicesService;
         private readonly IDeviceModelPropertiesService deviceModelPropertiesService;
 
-        public DevicePropertyService(IDeviceService devicesService, IDeviceModelPropertiesService deviceModelPropertiesService)
+        public DevicePropertyService(IExternalDeviceService externalDevicesService, IDeviceModelPropertiesService deviceModelPropertiesService)
         {
-            this.devicesService = devicesService;
+            this.externalDevicesService = externalDevicesService;
             this.deviceModelPropertiesService = deviceModelPropertiesService;
         }
 
         public async Task<IEnumerable<DevicePropertyValue>> GetProperties(string deviceId)
         {
-            var device = await this.devicesService.GetDeviceTwin(deviceId);
+            var device = await this.externalDevicesService.GetDeviceTwin(deviceId);
 
             if (device == null)
             {
@@ -94,7 +94,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task SetProperties(string deviceId, IEnumerable<DevicePropertyValue> devicePropertyValues)
         {
-            var device = await this.devicesService.GetDeviceTwin(deviceId);
+            var device = await this.externalDevicesService.GetDeviceTwin(deviceId);
 
             if (device == null)
             {
@@ -134,7 +134,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             device.Properties.Desired = DeviceHelper.PropertiesWithDotNotationToTwinCollection(desiredProperties);
 
-            _ = await this.devicesService.UpdateDeviceTwin(device);
+            _ = await this.externalDevicesService.UpdateDeviceTwin(device);
         }
     }
 }

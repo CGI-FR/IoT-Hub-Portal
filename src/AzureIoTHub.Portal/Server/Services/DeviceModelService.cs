@@ -32,7 +32,7 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IConfigService configService;
         private readonly IDeviceModelImageManager deviceModelImageManager;
         private readonly IDeviceModelMapper<TListItem, TModel> deviceModelMapper;
-        private readonly IDeviceService deviceService;
+        private readonly IExternalDeviceService externalDeviceService;
 
         public DeviceModelService(IMapper mapper,
             IUnitOfWork unitOfWork,
@@ -42,7 +42,7 @@ namespace AzureIoTHub.Portal.Server.Services
             IConfigService configService,
             IDeviceModelImageManager deviceModelImageManager,
             IDeviceModelMapper<TListItem, TModel> deviceModelMapper,
-            IDeviceService deviceService)
+            IExternalDeviceService externalDeviceService)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -52,7 +52,7 @@ namespace AzureIoTHub.Portal.Server.Services
             this.configService = configService;
             this.deviceModelImageManager = deviceModelImageManager;
             this.deviceModelMapper = deviceModelMapper;
-            this.deviceService = deviceService;
+            this.externalDeviceService = externalDeviceService;
         }
 
         public async Task<IEnumerable<TListItem>> GetDeviceModels()
@@ -131,7 +131,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     return;
                 }
 
-                var devices = await this.deviceService.GetAllDevice();
+                var devices = await this.externalDeviceService.GetAllDevice();
 
                 if (devices.Items.Any(x => DeviceHelper.RetrieveTagValue(x, "modelId") == deviceModelId))
                 {

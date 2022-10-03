@@ -35,7 +35,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IDeviceProvisioningServiceManager> mockDeviceProvisioningServiceManager;
         private Mock<IConfigService> mockConfigService;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
-        private Mock<IDeviceService> mockDeviceService;
+        private Mock<IExternalDeviceService> mockDeviceService;
         private Mock<IDeviceModelMapper<DeviceModelDto, DeviceModelDto>> mockDeviceModelMapper;
 
         private IDeviceModelService<DeviceModelDto, DeviceModelDto> deviceModelService;
@@ -51,7 +51,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockDeviceProvisioningServiceManager = MockRepository.Create<IDeviceProvisioningServiceManager>();
             this.mockConfigService = MockRepository.Create<IConfigService>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
-            this.mockDeviceService = MockRepository.Create<IDeviceService>();
+            this.mockDeviceService = MockRepository.Create<IExternalDeviceService>();
             this.mockDeviceModelMapper = MockRepository.Create<IDeviceModelMapper<DeviceModelDto, DeviceModelDto>>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);

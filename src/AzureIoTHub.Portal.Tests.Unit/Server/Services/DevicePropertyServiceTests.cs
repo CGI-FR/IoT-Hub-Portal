@@ -22,7 +22,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     [TestFixture]
     public class DevicePropertyServiceTests : BackendUnitTest
     {
-        private Mock<IDeviceService> mockDeviceService;
+        private Mock<IExternalDeviceService> mockDeviceService;
         private Mock<IDeviceModelPropertiesService> mockDeviceModelPropertiesService;
         private IDevicePropertyService devicePropertyService;
 
@@ -31,7 +31,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             base.Setup();
 
 
-            this.mockDeviceService = MockRepository.Create<IDeviceService>();
+            this.mockDeviceService = MockRepository.Create<IExternalDeviceService>();
             this.mockDeviceModelPropertiesService = MockRepository.Create<IDeviceModelPropertiesService>();
 
             _ = ServiceCollection.AddSingleton(this.mockDeviceService.Object);

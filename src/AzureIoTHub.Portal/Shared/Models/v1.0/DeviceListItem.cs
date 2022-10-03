@@ -21,6 +21,11 @@ namespace AzureIoTHub.Portal.Models.v10
         public string DeviceName { get; set; }
 
         /// <summary>
+        /// The device Model Identifier.
+        /// </summary>
+        public string DeviceModelId { get; set; }
+
+        /// <summary>
         /// The device model image Url.
         /// </summary>
         public Uri ImageUrl { get; set; }

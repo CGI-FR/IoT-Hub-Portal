@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
-    using Mappers;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -17,17 +16,15 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     [ApiVersion("1.0")]
     [Route("api/devices")]
     [ApiExplorerSettings(GroupName = "IoT Devices")]
-    public class DevicesController : DevicesControllerBase<DeviceListItem, DeviceDetails>
+    public class DevicesController : DevicesControllerBase<DeviceDetails>
     {
         private readonly IDevicePropertyService devicePropertyService;
 
         public DevicesController(
             ILogger<DevicesController> logger,
-            IDeviceService devicesService,
-            IDeviceTagService deviceTagService,
-            IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper,
-            IDevicePropertyService devicePropertyService)
-            : base(logger, devicesService, deviceTagService, deviceTwinMapper)
+            IDevicePropertyService devicePropertyService,
+            IDeviceService<DeviceDetails> deviceService)
+            : base(logger, deviceService)
         {
             this.devicePropertyService = devicePropertyService;
         }
@@ -35,20 +32,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the device list.
         /// </summary>
-        /// <param name="continuationToken"></param>
         /// <param name="searchText"></param>
         /// <param name="searchStatus"></param>
         /// <param name="searchState"></param>
         /// <param name="pageSize"></param>
         [HttpGet(Name = "GET Device list")]
         public Task<PaginationResult<DeviceListItem>> SearchItems(
-            string continuationToken = null,
             string searchText = null,
             bool? searchStatus = null,
             bool? searchState = null,
-            int pageSize = 10)
+            int pageSize = 10,
+            int pageNumber = 0,
+            [FromQuery] string[] orderBy = null)
         {
-            return base.GetItems("GET Device list", continuationToken, searchText, searchStatus, searchState, pageSize);
+            return GetItems("GET Device list", searchText, searchStatus, searchState, pageSize, pageNumber, orderBy);
         }
 
         /// <summary>

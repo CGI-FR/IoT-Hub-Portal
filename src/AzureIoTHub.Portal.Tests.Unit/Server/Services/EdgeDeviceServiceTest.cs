@@ -27,7 +27,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
         private Mock<RegistryManager> mockRegistryManager;
         private Mock<IEdgeDeviceMapper> mockEdgeDeviceMapper;
-        private Mock<IDeviceService> mockDeviceService;
+        private Mock<IExternalDeviceService> mockDeviceService;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
 
@@ -39,7 +39,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
             this.mockRegistryManager = this.mockRepository.Create<RegistryManager>();
             this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
-            this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
+            this.mockDeviceService = this.mockRepository.Create<IExternalDeviceService>();
             this.mockEdgeDeviceMapper = this.mockRepository.Create<IEdgeDeviceMapper>();
         }
 

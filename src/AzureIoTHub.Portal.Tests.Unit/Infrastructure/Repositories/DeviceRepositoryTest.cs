@@ -39,5 +39,22 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDevices);
         }
+
+        [Test]
+        public async Task GetByIdAsync_ExistingDevice_ReturnsExpectedDevice()
+        {
+            // Arrange
+            var expectedDevice = Fixture.Create<Device>();
+
+            _ = DbContext.Add(expectedDevice);
+
+            _ = await DbContext.SaveChangesAsync();
+
+            //Act
+            var result = await this.deviceRepository.GetByIdAsync(expectedDevice.Id);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedDevice);
+        }
     }
 }

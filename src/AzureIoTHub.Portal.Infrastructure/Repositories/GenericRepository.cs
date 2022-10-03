@@ -3,8 +3,8 @@
 
 namespace AzureIoTHub.Portal.Infrastructure.Repositories
 {
-    using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Domain.Base;
+    using Domain;
+    using Domain.Base;
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -24,7 +24,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
                                 .ToList<T>();
         }
 
-        public async Task<T?> GetByIdAsync(object id)
+        public virtual async Task<T?> GetByIdAsync(object id)
         {
             var t = await this.context.Set<T>().FindAsync(id);
             return t;

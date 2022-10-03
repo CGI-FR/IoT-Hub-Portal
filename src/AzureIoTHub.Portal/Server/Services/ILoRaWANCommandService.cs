@@ -4,11 +4,12 @@
 namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using Models.v10.LoRaWAN;
 
     public interface ILoRaWANCommandService
     {
         Task<DeviceModelCommandDto[]> GetDeviceModelCommandsFromModel(string id);
         Task PostDeviceModelCommands(string id, DeviceModelCommandDto[] commands);
+        Task ExecuteLoRaWANCommand(string deviceId, string commandId);
     }
 }

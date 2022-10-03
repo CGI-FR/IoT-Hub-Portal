@@ -20,7 +20,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         private PortalMetric portalMetric;
 
         private Mock<ILogger<DeviceMetricLoaderService>> mockLogger;
-        private Mock<IDeviceService> mockDeviceService;
+        private Mock<IExternalDeviceService> mockDeviceService;
 
         [SetUp]
         public void SetUp()
@@ -28,7 +28,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockLogger = this.mockRepository.Create<ILogger<DeviceMetricLoaderService>>();
-            this.mockDeviceService = this.mockRepository.Create<IDeviceService>();
+            this.mockDeviceService = this.mockRepository.Create<IExternalDeviceService>();
 
             this.portalMetric = new PortalMetric();
 

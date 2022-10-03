@@ -4,53 +4,54 @@
 namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Threading.Tasks;
+    using Models.v10.LoRaWAN;
     using AutoMapper;
-    using Models.v10;
+    using Domain.Entities;
     using Domain.Repositories;
-    using Domain.Exceptions;
     using Managers;
     using Infrastructure;
-    using AzureIoTHub.Portal.Domain.Entities;
+    using Domain.Exceptions;
     using Microsoft.EntityFrameworkCore;
     using Domain;
+    using Models.v10;
     using Mappers;
 
-    public class DeviceService : DeviceServiceBase<DeviceDetails>
+    public class LoRaWanDeviceService : DeviceServiceBase<LoRaDeviceDetails>
     {
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
-        private readonly IDeviceRepository deviceRepository;
+        private readonly ILorawanDeviceRepository lorawanDeviceRepository;
         private readonly IDeviceTagValueRepository deviceTagValueRepository;
         private readonly IDeviceModelImageManager deviceModelImageManager;
 
-        public DeviceService(IMapper mapper,
+        public LoRaWanDeviceService(IMapper mapper,
             IUnitOfWork unitOfWork,
-            IDeviceRepository deviceRepository,
+            ILorawanDeviceRepository lorawanDeviceRepository,
             IDeviceTagValueRepository deviceTagValueRepository,
             IExternalDeviceService externalDevicesService,
             IDeviceTagService deviceTagService,
+            PortalDbContext portalDbContext,
             IDeviceModelImageManager deviceModelImageManager,
-            IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper,
-            PortalDbContext portalDbContext)
+            IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper)
             : base(portalDbContext, externalDevicesService, deviceTagService, deviceModelImageManager, deviceTwinMapper)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
-            this.deviceRepository = deviceRepository;
+            this.lorawanDeviceRepository = lorawanDeviceRepository;
             this.deviceTagValueRepository = deviceTagValueRepository;
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
-        public override async Task<DeviceDetails> GetDevice(string deviceId)
+        public override async Task<LoRaDeviceDetails> GetDevice(string deviceId)
         {
-            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId);
+            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId);
 
             if (deviceEntity == null)
             {
-                throw new ResourceNotFoundException($"The device with id {deviceId} doesn't exist");
+                throw new ResourceNotFoundException($"The LoRaWAN device with id {deviceId} doesn't exist");
             }
 
-            var deviceDto = this.mapper.Map<DeviceDetails>(deviceEntity);
+            var deviceDto = this.mapper.Map<LoRaDeviceDetails>(deviceEntity);
 
             deviceDto.ImageUrl = this.deviceModelImageManager.ComputeImageUri(deviceDto.ModelId);
 
@@ -59,36 +60,36 @@ namespace AzureIoTHub.Portal.Server.Services
             return deviceDto;
         }
 
-        public override async Task<DeviceDetails> CreateDevice(DeviceDetails device)
+        public override async Task<LoRaDeviceDetails> CreateDevice(LoRaDeviceDetails device)
         {
             _ = base.CreateDevice(device);
 
             try
             {
-                var deviceEntity = this.mapper.Map<Device>(device);
+                var deviceEntity = this.mapper.Map<LorawanDevice>(device);
 
-                await this.deviceRepository.InsertAsync(deviceEntity);
+                await this.lorawanDeviceRepository.InsertAsync(deviceEntity);
                 await this.unitOfWork.SaveAsync();
 
                 return device;
             }
             catch (DbUpdateException e)
             {
-                throw new InternalServerErrorException($"Unable to create the device {device.DeviceName}", e);
+                throw new InternalServerErrorException($"Unable to create the LoRaWAN device {device.DeviceName}", e);
             }
         }
 
-        public override async Task<DeviceDetails> UpdateDevice(DeviceDetails device)
+        public override async Task<LoRaDeviceDetails> UpdateDevice(LoRaDeviceDetails device)
         {
             _ = await base.UpdateDevice(device);
 
             try
             {
-                var deviceEntity = await this.deviceRepository.GetByIdAsync(device.DeviceID);
+                var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(device.DeviceID);
 
                 if (deviceEntity == null)
                 {
-                    throw new ResourceNotFoundException($"The device {device.DeviceID} doesn't exist");
+                    throw new ResourceNotFoundException($"The LoRaWAN device {device.DeviceID} doesn't exist");
                 }
 
                 foreach (var deviceTagEntity in deviceEntity.Tags)
@@ -98,14 +99,14 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 _ = this.mapper.Map(device, deviceEntity);
 
-                this.deviceRepository.Update(deviceEntity);
+                this.lorawanDeviceRepository.Update(deviceEntity);
                 await this.unitOfWork.SaveAsync();
 
                 return device;
             }
             catch (DbUpdateException e)
             {
-                throw new InternalServerErrorException($"Unable to update the device {device.DeviceName}", e);
+                throw new InternalServerErrorException($"Unable to update the LoRaWAN device {device.DeviceName}", e);
             }
         }
 
@@ -115,20 +116,20 @@ namespace AzureIoTHub.Portal.Server.Services
 
             try
             {
-                var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId);
+                var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId);
 
                 if (deviceEntity == null)
                 {
                     return;
                 }
 
-                this.deviceRepository.Delete(deviceId);
+                this.lorawanDeviceRepository.Delete(deviceId);
 
                 await this.unitOfWork.SaveAsync();
             }
             catch (DbUpdateException e)
             {
-                throw new InternalServerErrorException($"Unable to delete the device {deviceId}", e);
+                throw new InternalServerErrorException($"Unable to delete the LoRaWAN device {deviceId}", e);
             }
         }
     }

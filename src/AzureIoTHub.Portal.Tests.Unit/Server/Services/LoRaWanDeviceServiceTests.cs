@@ -5,175 +5,78 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 {
     using UnitTests.Bases;
     using NUnit.Framework;
-    using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
-    using AzureIoTHub.Portal.Server.Services;
-    using Moq;
-    using Portal.Domain;
-    using Portal.Domain.Repositories;
-    using Portal.Server.Managers;
-    using Portal.Server.Mappers;
     using AutoFixture;
+    using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Domain;
+    using Models.v10;
+    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Server.Services;
+    using Microsoft.Extensions.DependencyInjection;
+    using Moq;
     using System.Threading.Tasks;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Models.v10.LoRaWAN;
     using FluentAssertions;
-    using AzureIoTHub.Portal.Domain.Exceptions;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Shared;
-    using Device = Portal.Domain.Entities.Device;
-    using Microsoft.EntityFrameworkCore;
     using Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Domain.Exceptions;
+    using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Azure.Devices;
+    using Microsoft.EntityFrameworkCore;
 
     [TestFixture]
-    public class DeviceServiceTests : BackendUnitTest
+    public class LoRaWanDeviceServiceTests : BackendUnitTest
     {
         private Mock<IUnitOfWork> mockUnitOfWork;
-        private Mock<IDeviceRepository> mockDeviceRepository;
+        private Mock<ILorawanDeviceRepository> mockLorawanDeviceRepository;
         private Mock<IDeviceTagValueRepository> mockDeviceTagValueRepository;
         private Mock<IExternalDeviceService> mockExternalDevicesService;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
-        private Mock<IDeviceTwinMapper<DeviceListItem, DeviceDetails>> mockDeviceTwinMapper;
+        private Mock<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>> mockDeviceTwinMapper;
 
-        private IDeviceService<DeviceDetails> deviceService;
+        private IDeviceService<LoRaDeviceDetails> lorawanDeviceService;
 
         public override void Setup()
         {
             base.Setup();
 
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
-            this.mockDeviceRepository = MockRepository.Create<IDeviceRepository>();
+            this.mockLorawanDeviceRepository = MockRepository.Create<ILorawanDeviceRepository>();
             this.mockDeviceTagValueRepository = MockRepository.Create<IDeviceTagValueRepository>();
             this.mockExternalDevicesService = MockRepository.Create<IExternalDeviceService>();
             this.mockDeviceTagService = MockRepository.Create<IDeviceTagService>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
-            this.mockDeviceTwinMapper = MockRepository.Create<IDeviceTwinMapper<DeviceListItem, DeviceDetails>>();
+            this.mockDeviceTwinMapper = MockRepository.Create<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
-            _ = ServiceCollection.AddSingleton(this.mockDeviceRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockLorawanDeviceRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagValueRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockExternalDevicesService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceTwinMapper.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
-            _ = ServiceCollection.AddSingleton<IDeviceService<DeviceDetails>, DeviceService>();
+            _ = ServiceCollection.AddSingleton<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
 
             Services = ServiceCollection.BuildServiceProvider();
 
-            this.deviceService = Services.GetRequiredService<IDeviceService<DeviceDetails>>();
-        }
-
-        [Test]
-        public async Task GetDevices_DefaultFilter_ReturnsExpectedDevices()
-        {
-            // Arrange
-            var expectedTotalDevicesCount = 50;
-            var expectedPageSize = 10;
-            var expectedCurrentPage = 0;
-            var expectedDevices = Fixture.CreateMany<Device>(expectedTotalDevicesCount/2).ToList();
-            var expectedLorawanDevices = Fixture.CreateMany<LorawanDevice>(expectedTotalDevicesCount/2).ToList();
-
-            await DbContext.AddRangeAsync(expectedDevices);
-            await DbContext.AddRangeAsync(expectedLorawanDevices);
-            _ = await DbContext.SaveChangesAsync();
-
-            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
-                .Returns(Fixture.Create<Uri>());
-
-            // Act
-            var result = await this.deviceService.GetDevices();
-
-            // Assert
-            _ = result.Data.Count.Should().Be(expectedPageSize);
-            _ = result.TotalCount.Should().Be(expectedTotalDevicesCount);
-            _ = result.PageSize.Should().Be(expectedPageSize);
-            _ = result.CurrentPage.Should().Be(expectedCurrentPage);
-            MockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task GetDevices_CustomFilter_ReturnsExpectedDevices()
-        {
-            // Arrange
-            var keywordFilter = "WaNt tHiS DeViCe";
-
-            var tagFilter = new Dictionary<string, string>
-            {
-                {"location", "FR"}
-            };
-
-            var device1 = new Device
-            {
-                IsConnected = false,
-                IsEnabled = true,
-                Name = "I want this device",
-                Tags = new List<DeviceTagValue>
-                {
-                    new()
-                    {
-                        Name = "location",
-                        Value = "FR"
-                    }
-                },
-                DeviceModelId = Fixture.Create<string>()
-            };
-
-            var device2 = new Device
-            {
-                IsConnected = true,
-                IsEnabled = false,
-                Name = "I don't want this device",
-                Tags = new List<DeviceTagValue>
-                {
-                    new()
-                    {
-                        Name = "location",
-                        Value = "US"
-                    }
-                },
-                DeviceModelId = Fixture.Create<string>()
-            };
-
-            var expectedTotalDevicesCount = 1;
-            var expectedPageSize = 10;
-            var expectedCurrentPage = 0;
-
-            _ = await DbContext.AddAsync(device1);
-            _ = await DbContext.AddAsync(device2);
-            _ = await DbContext.SaveChangesAsync();
-
-            _ = this.mockDeviceTagService.Setup(service => service.GetAllSearchableTagsNames())
-                .Returns(new List<string> { "location" });
-
-            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
-                .Returns(Fixture.Create<Uri>());
-
-            // Act
-            var result = await this.deviceService.GetDevices(searchText: keywordFilter, searchState: false, searchStatus: true, tags: tagFilter);
-
-            // Assert
-            _ = result.Data.Count.Should().Be(expectedTotalDevicesCount);
-            _ = result.TotalCount.Should().Be(expectedTotalDevicesCount);
-            _ = result.PageSize.Should().Be(expectedPageSize);
-            _ = result.CurrentPage.Should().Be(expectedCurrentPage);
-            _ = result.Data.First().DeviceName.Should().Be(device1.Name);
-            MockRepository.VerifyAll();
+            this.lorawanDeviceService = Services.GetRequiredService<IDeviceService<LoRaDeviceDetails>>();
         }
 
         [Test]
         public async Task GetDevice_DeviceExist_ReturnsExpectedDevice()
         {
             // Arrange
-            var expectedDevice = Fixture.Create<Device>();
+            var expectedDevice = Fixture.Create<LorawanDevice>();
 
             var expectedImageUri = Fixture.Create<Uri>();
-            var expectedDeviceDto = Mapper.Map<DeviceDetails>(expectedDevice);
+            var expectedDeviceDto = Mapper.Map<LoRaDeviceDetails>(expectedDevice);
             expectedDeviceDto.ImageUrl = expectedImageUri;
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedDeviceDto.DeviceID))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedDeviceDto.DeviceID))
                 .ReturnsAsync(expectedDevice);
 
             _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
@@ -183,7 +86,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(expectedDevice.Tags.Select(tag => tag.Name));
 
             // Act
-            var result = await this.deviceService.GetDevice(expectedDeviceDto.DeviceID);
+            var result = await this.lorawanDeviceService.GetDevice(expectedDeviceDto.DeviceID);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceDto);
@@ -196,11 +99,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceId = Fixture.Create<string>();
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId))
-                .ReturnsAsync((Device)null);
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId))
+                .ReturnsAsync((LorawanDevice)null);
 
             // Act
-            var act = () => this.deviceService.GetDevice(deviceId);
+            var act = () => this.lorawanDeviceService.GetDevice(deviceId);
 
             // Assert
             _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
@@ -211,7 +114,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task CreateDevice_NewDevice_DeviceCreated()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new LoRaDeviceDetails
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -220,21 +123,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
+                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
                 .Verifiable();
 
             _ = this.mockExternalDevicesService.Setup(service =>
                     service.CreateDeviceWithTwin(deviceDto.DeviceID, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
                 .ReturnsAsync(new BulkRegistryOperationResult());
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<Device>()))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<LorawanDevice>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
             // Act
-            var result = await this.deviceService.CreateDevice(deviceDto);
+            var result = await this.lorawanDeviceService.CreateDevice(deviceDto);
 
             // Assert
             _ = result.Should().BeEquivalentTo(deviceDto);
@@ -245,7 +148,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task CreateDevice_DbUpdateExceptionIsThrown_InternalServerErrorExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new LoRaDeviceDetails
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -254,21 +157,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
+                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
                 .Verifiable();
 
             _ = this.mockExternalDevicesService.Setup(service =>
                     service.CreateDeviceWithTwin(deviceDto.DeviceID, false, It.IsAny<Twin>(), It.IsAny<DeviceStatus>()))
                 .ReturnsAsync(new BulkRegistryOperationResult());
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<Device>()))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<LorawanDevice>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .ThrowsAsync(new DbUpdateException());
 
             // Act
-            var act = () => this.deviceService.CreateDevice(deviceDto);
+            var act = () => this.lorawanDeviceService.CreateDevice(deviceDto);
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
@@ -279,7 +182,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateDevice_DeviceExist_DeviceUpdated()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new LoRaDeviceDetails
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -294,14 +197,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
+                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
                 .Verifiable();
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
-                .ReturnsAsync(new Device
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(new LorawanDevice
                 {
                     Tags = new List<DeviceTagValue>
                     {
@@ -315,14 +218,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
                 .Verifiable();
 
-            this.mockDeviceRepository.Setup(repository => repository.Update(It.IsAny<Device>()))
+            this.mockLorawanDeviceRepository.Setup(repository => repository.Update(It.IsAny<LorawanDevice>()))
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
             // Act
-            var result = await this.deviceService.UpdateDevice(deviceDto);
+            var result = await this.lorawanDeviceService.UpdateDevice(deviceDto);
 
             // Assert
             _ = result.Should().BeEquivalentTo(deviceDto);
@@ -333,7 +236,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateDevice_DeviceNotExist_ResourceNotFoundExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new LoRaDeviceDetails
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -348,17 +251,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
+                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
                 .Verifiable();
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
-                .ReturnsAsync((Device)null);
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync((LorawanDevice)null);
 
             // Act
-            var act = () => this.deviceService.UpdateDevice(deviceDto);
+            var act = () => this.lorawanDeviceService.UpdateDevice(deviceDto);
 
             // Assert
             _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
@@ -369,7 +272,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateDevice_DbUpdateExceptionIsRaised_InternalServerErrorExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new LoRaDeviceDetails
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -384,26 +287,26 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new Twin());
 
             this.mockDeviceTwinMapper
-                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<DeviceDetails>()))
+                .Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<LoRaDeviceDetails>()))
                 .Verifiable();
 
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
-                .ReturnsAsync(new Device
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(new LorawanDevice
                 {
                     Tags = new List<DeviceTagValue>()
                 });
 
-            this.mockDeviceRepository.Setup(repository => repository.Update(It.IsAny<Device>()))
+            this.mockLorawanDeviceRepository.Setup(repository => repository.Update(It.IsAny<LorawanDevice>()))
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .ThrowsAsync(new DbUpdateException());
 
             // Act
-            var act = () => this.deviceService.UpdateDevice(deviceDto);
+            var act = () => this.lorawanDeviceService.UpdateDevice(deviceDto);
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
@@ -414,7 +317,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteDevice_DeviceExist_DeviceDeleted()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new LoRaDeviceDetails
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -422,17 +325,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
-                .ReturnsAsync(new Device());
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(new LorawanDevice());
 
-            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+            this.mockLorawanDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
             // Act
-            await this.deviceService.DeleteDevice(deviceDto.DeviceID);
+            await this.lorawanDeviceService.DeleteDevice(deviceDto.DeviceID);
 
             // Assert
             MockRepository.VerifyAll();
@@ -442,7 +345,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteDevice_DeviceNotExist_NothingIsDone()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new LoRaDeviceDetails
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -450,11 +353,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
-                .ReturnsAsync((Device)null);
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync((LorawanDevice)null);
 
             // Act
-            await this.deviceService.DeleteDevice(deviceDto.DeviceID);
+            await this.lorawanDeviceService.DeleteDevice(deviceDto.DeviceID);
 
             // Assert
             MockRepository.VerifyAll();
@@ -464,7 +367,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteDevice_DbUpdateExceptionIsRaised_InternalServerErrorExceptionIsThrown()
         {
             // Arrange
-            var deviceDto = new DeviceDetails
+            var deviceDto = new LoRaDeviceDetails
             {
                 DeviceID = Fixture.Create<string>()
             };
@@ -472,42 +375,20 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
-                .ReturnsAsync(new Device());
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
+                .ReturnsAsync(new LorawanDevice());
 
-            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+            this.mockLorawanDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .ThrowsAsync(new DbUpdateException());
 
             // Act
-            var act = () => this.deviceService.DeleteDevice(deviceDto.DeviceID);
+            var act = () => this.lorawanDeviceService.DeleteDevice(deviceDto.DeviceID);
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
-            MockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task GetCredentials_DeviceExist_ReturnsEnrollmentCredentials()
-        {
-            // Arrange
-            var deviceDto = new DeviceDetails
-            {
-                DeviceID = Fixture.Create<string>()
-            };
-
-            var expectedEnrollmentCredentials = Fixture.Create<EnrollmentCredentials>();
-
-            _ = this.mockExternalDevicesService.Setup(service => service.GetEnrollmentCredentials(deviceDto.DeviceID))
-                .ReturnsAsync(expectedEnrollmentCredentials);
-
-            // Act
-            var result = await this.deviceService.GetCredentials(deviceDto.DeviceID);
-
-            // Assert
-            _ = result.Should().BeEquivalentTo(expectedEnrollmentCredentials);
             MockRepository.VerifyAll();
         }
     }

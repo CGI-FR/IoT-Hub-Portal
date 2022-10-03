@@ -29,7 +29,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <summary>
         /// The device idevice service.
         /// </summary>
-        private readonly IDeviceService devicesService;
+        private readonly IExternalDeviceService externalDevicesService;
 
         /// <summary>
         /// The edge device mapper.
@@ -43,13 +43,13 @@ namespace AzureIoTHub.Portal.Server.Services
 
         private readonly IDeviceTagService deviceTagService;
 
-        public EdgeDevicesService(RegistryManager registryManager, IDeviceService devicesService,
+        public EdgeDevicesService(RegistryManager registryManager, IExternalDeviceService externalDevicesService,
             IEdgeDeviceMapper edgeDeviceMapper,
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             IDeviceTagService deviceTagService)
         {
             this.registryManager = registryManager;
-            this.devicesService = devicesService;
+            this.externalDevicesService = externalDevicesService;
             this.edgeDeviceMapper = edgeDeviceMapper;
             this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
             this.deviceTagService = deviceTagService;
@@ -103,14 +103,14 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>IoTEdgeDevice object.</returns>
         public async Task<IoTEdgeDevice> GetEdgeDevice(string edgeDeviceId)
         {
-            var deviceTwin = await this.devicesService.GetDeviceTwin(edgeDeviceId);
+            var deviceTwin = await this.externalDevicesService.GetDeviceTwin(edgeDeviceId);
 
             if (deviceTwin is null)
             {
                 throw new ResourceNotFoundException($"Device {edgeDeviceId} not found.");
             }
 
-            var deviceTwinWithModules = await this.devicesService.GetDeviceTwinWithModule(edgeDeviceId);
+            var deviceTwinWithModules = await this.externalDevicesService.GetDeviceTwinWithModule(edgeDeviceId);
 
             var edgeDeviceLastConfiguration = await RetrieveLastConfiguration(deviceTwinWithModules);
             var edgeDeviceNbConnectedDevice = await RetrieveNbConnectedDevice(edgeDeviceId);
@@ -141,7 +141,7 @@ namespace AzureIoTHub.Portal.Server.Services
             DeviceHelper.SetTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId), edgeDevice.ModelId);
             DeviceHelper.SetTagValue(deviceTwin, nameof(IoTEdgeDevice.DeviceName), edgeDevice.DeviceName);
 
-            return await this.devicesService.CreateDeviceWithTwin(edgeDevice.DeviceId, true, deviceTwin, DeviceStatus.Enabled);
+            return await this.externalDevicesService.CreateDeviceWithTwin(edgeDevice.DeviceId, true, deviceTwin, DeviceStatus.Enabled);
         }
 
         /// <summary>
@@ -153,18 +153,18 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             ArgumentNullException.ThrowIfNull(edgeDevice, nameof(edgeDevice));
 
-            var device = await this.devicesService.GetDevice(edgeDevice.DeviceId);
+            var device = await this.externalDevicesService.GetDevice(edgeDevice.DeviceId);
 
             if (Enum.TryParse(edgeDevice.Status, out DeviceStatus status))
             {
                 device.Status = status;
             }
 
-            _ = await this.devicesService.UpdateDevice(device);
+            _ = await this.externalDevicesService.UpdateDevice(device);
 
-            var deviceTwin = await this.devicesService.GetDeviceTwin(edgeDevice.DeviceId);
+            var deviceTwin = await this.externalDevicesService.GetDeviceTwin(edgeDevice.DeviceId);
 
-            return await this.devicesService.UpdateDeviceTwin(deviceTwin);
+            return await this.externalDevicesService.UpdateDeviceTwin(deviceTwin);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             _ = method.SetPayloadJson(payload);
 
-            var result = await this.devicesService.ExecuteC2DMethod(deviceId, method);
+            var result = await this.externalDevicesService.ExecuteC2DMethod(deviceId, method);
 
             return new C2Dresult()
             {
@@ -220,7 +220,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             _ = method.SetPayloadJson(payload);
 
-            var result = await this.devicesService.ExecuteCustomCommandC2DMethod(deviceId,moduleName, method);
+            var result = await this.externalDevicesService.ExecuteCustomCommandC2DMethod(deviceId,moduleName, method);
 
             return new C2Dresult()
             {
@@ -237,7 +237,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <exception cref="ResourceNotFoundException"></exception>
         public async Task<EnrollmentCredentials> GetEdgeDeviceCredentials(string edgeDeviceId)
         {
-            var deviceTwin = await this.devicesService.GetDeviceTwin(edgeDeviceId);
+            var deviceTwin = await this.externalDevicesService.GetDeviceTwin(edgeDeviceId);
 
             if (deviceTwin == null)
             {

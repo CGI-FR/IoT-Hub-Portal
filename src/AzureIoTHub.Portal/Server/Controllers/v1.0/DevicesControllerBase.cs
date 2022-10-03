@@ -8,96 +8,81 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Linq;
     using System.Threading.Tasks;
     using Hellang.Middleware.ProblemDetails;
-    using Mappers;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
-    using Microsoft.Azure.Devices;
     using Microsoft.Extensions.Logging;
     using Models.v10;
     using Services;
     using Shared.Models;
 
-    public abstract class DevicesControllerBase<TListItem, TModel> : ControllerBase
-        where TListItem : DeviceListItem
-        where TModel : IDeviceDetails
+    public abstract class DevicesControllerBase<TDto> : ControllerBase
+        where TDto : IDeviceDetails
     {
-        private readonly IDeviceService devicesService;
-        private readonly IDeviceTagService deviceTagService;
-        private readonly IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper;
+        private readonly IDeviceService<TDto> deviceService;
 
         protected ILogger Logger { get; }
 
         protected DevicesControllerBase(
             ILogger logger,
-            IDeviceService devicesService,
-            IDeviceTagService deviceTagService,
-            IDeviceTwinMapper<TListItem, TModel> deviceTwinMapper)
+            IDeviceService<TDto> deviceService)
         {
             Logger = logger;
-            this.devicesService = devicesService;
-            this.deviceTagService = deviceTagService;
-            this.deviceTwinMapper = deviceTwinMapper;
+            this.deviceService = deviceService;
         }
 
         /// <summary>
         /// Gets the device list.
         /// </summary>
         /// <param name="routeName"></param>
-        /// <param name="continuationToken"></param>
         /// <param name="searchText"></param>
         /// <param name="searchStatus"></param>
         /// <param name="searchState"></param>
         /// <param name="pageSize"></param>
-        protected async Task<PaginationResult<TListItem>> GetItems(
+        /// <param name="pageNumber"></param>
+        /// <param name="orderBy"></param>
+        protected async Task<PaginationResult<DeviceListItem>> GetItems(
             string routeName = null,
-            string continuationToken = null,
             string searchText = null,
             bool? searchStatus = null,
             bool? searchState = null,
-            int pageSize = 10)
+            int pageSize = 10,
+            int pageNumber = 0,
+            string[] orderBy = null)
         {
-            var searchTags = new Dictionary<string, string>();
 
-            foreach (var tag in this.deviceTagService.GetAllSearchableTagsNames())
-            {
-                if (Request.Query.TryGetValue($"tag.{tag}", out var searchTag))
-                {
-                    searchTags.Add(tag, searchTag.Single());
-                }
-            }
+            var paginatedDevices = await this.deviceService.GetDevices(
+                searchText,
+                searchStatus,
+                searchState,
+                pageSize,
+                pageNumber,
+                orderBy,
+                GetTagsFromQueryString(Request.Query));
 
-            var result = await this.devicesService.GetAllDevice(
-                continuationToken: continuationToken,
-                pageSize: pageSize,
-                searchStatus: searchStatus,
-                searchText: searchText,
-                searchState: searchState,
-                searchTags: searchTags,
-                excludeDeviceType: "LoRa Concentrator");
+            var nextPage = string.Empty;
 
-            string nextPage = null;
-
-            if (!string.IsNullOrEmpty(result.NextPage))
+            if (paginatedDevices.HasNextPage)
             {
                 nextPage = Url.RouteUrl(new UrlRouteContext
                 {
                     RouteName = routeName,
                     Values = new
                     {
-                        continuationToken = result.NextPage,
                         searchText,
-                        searchState,
                         searchStatus,
-                        pageSize
+                        searchState,
+                        pageSize,
+                        pageNumber = pageNumber + 1,
+                        orderBy
                     }
                 });
             }
 
-            return new PaginationResult<TListItem>
+            return new PaginationResult<DeviceListItem>
             {
-                Items = result.Items.Select(x => this.deviceTwinMapper.CreateDeviceListItem(x)),
-                TotalItems = result.TotalItems,
+                Items = paginatedDevices.Data,
+                TotalItems = paginatedDevices.TotalCount,
                 NextPage = nextPage
             };
         }
@@ -106,19 +91,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the specified device.
         /// </summary>
         /// <param name="deviceID">The device identifier.</param>
-        public virtual async Task<TModel> GetItem(string deviceID)
+        public virtual async Task<TDto> GetItem(string deviceID)
         {
-            var item = await this.devicesService.GetDeviceTwin(deviceID);
-            var tagList = this.deviceTagService.GetAllTagsNames();
-
-            return this.deviceTwinMapper.CreateDeviceDetails(item, tagList);
+            return await this.deviceService.GetDevice(deviceID);
         }
 
         /// <summary>
         /// Creates the device.
         /// </summary>
         /// <param name="device">The device.</param>
-        public virtual async Task<IActionResult> CreateDeviceAsync(TModel device)
+        public virtual async Task<IActionResult> CreateDeviceAsync(TDto device)
         {
             ArgumentNullException.ThrowIfNull(device, nameof(device));
 
@@ -132,21 +114,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 throw new ProblemDetailsException(validation);
             }
 
-            var newTwin = await this.devicesService.CreateNewTwinFromDeviceId(device.DeviceID);
+            _ = await this.deviceService.CreateDevice(device);
 
-            this.deviceTwinMapper.UpdateTwin(newTwin, device);
-            var status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
-
-            var result = await this.devicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin, status);
-
-            return Ok(result);
+            return Ok(device);
         }
 
         /// <summary>
         /// Updates the device.
         /// </summary>
         /// <param name="device">The device.</param>
-        public virtual async Task<IActionResult> UpdateDeviceAsync(TModel device)
+        public virtual async Task<IActionResult> UpdateDeviceAsync(TDto device)
         {
 
             ArgumentNullException.ThrowIfNull(device, nameof(device));
@@ -161,19 +138,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 throw new ProblemDetailsException(validation);
             }
 
-            // Device status (enabled/disabled) has to be dealt with afterwards
-            var currentDevice = await this.devicesService.GetDevice(device.DeviceID);
-            currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
-
-            _ = await this.devicesService.UpdateDevice(currentDevice);
-
-            // Get the current twin from the hub, based on the device ID
-            var currentTwin = await this.devicesService.GetDeviceTwin(device.DeviceID);
-
-            // Update the twin properties
-            this.deviceTwinMapper.UpdateTwin(currentTwin, device);
-
-            _ = await this.devicesService.UpdateDeviceTwin(currentTwin);
+            _ = await this.deviceService.UpdateDevice(device);
 
             return Ok();
         }
@@ -184,7 +149,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceID">The device identifier.</param>
         public virtual async Task<IActionResult> Delete(string deviceID)
         {
-            await this.devicesService.DeleteDevice(deviceID);
+            await this.deviceService.DeleteDevice(deviceID);
 
             return Ok();
         }
@@ -195,7 +160,19 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="deviceID">The device identifier.</param>
         public virtual async Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
         {
-            return Ok(await this.devicesService.GetEnrollmentCredentials(deviceID));
+            return Ok(await this.deviceService.GetCredentials(deviceID));
+        }
+
+        private static Dictionary<string, string> GetTagsFromQueryString(IQueryCollection queryCollection)
+        {
+            return queryCollection
+                .Where(pair => pair.Key.StartsWith("tag.", StringComparison.InvariantCulture))
+                .Select(pair => new
+                {
+                    Tag = pair.Key.Split(new[] { "tag." }, StringSplitOptions.None).Skip(1).FirstOrDefault(),
+                    Value = pair.Value.ToString()
+                })
+                .ToDictionary(arg => arg.Tag, arg => arg.Value);
         }
     }
 }

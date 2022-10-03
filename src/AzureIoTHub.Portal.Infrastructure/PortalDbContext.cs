@@ -19,6 +19,7 @@ namespace AzureIoTHub.Portal.Infrastructure
         public DbSet<DeviceModel> DeviceModels { get; set; }
         public DbSet<Device> Devices { get; set; }
         public DbSet<LorawanDevice> LorawanDevices { get; set; }
+        public DbSet<DeviceTagValue> DeviceTagValues { get; set; }
         public DbSet<EdgeDeviceModel> EdgeDeviceModels { get; set; }
         public DbSet<EdgeDeviceModelCommand> EdgeDeviceModelCommands { get; set; }
 
@@ -32,18 +33,6 @@ namespace AzureIoTHub.Portal.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            _ = modelBuilder.Entity<Device>()
-                .Property(b => b.Tags)
-                .HasConversion(
-                    v => JsonConvert.SerializeObject(v),
-                    v => JsonConvert.DeserializeObject<Dictionary<string, string>>(v));
-
-            _ = modelBuilder.Entity<LorawanDevice>()
-                .Property(b => b.Tags)
-                .HasConversion(
-                    v => JsonConvert.SerializeObject(v),
-                    v => JsonConvert.DeserializeObject<Dictionary<string, string>>(v));
         }
     }
 }

@@ -14,13 +14,13 @@ namespace AzureIoTHub.Portal.Server.Services
     {
         private readonly ILogger<DeviceMetricLoaderService> logger;
         private readonly PortalMetric portalMetric;
-        private readonly IDeviceService deviceService;
+        private readonly IExternalDeviceService externalDeviceService;
 
-        public DeviceMetricLoaderService(ILogger<DeviceMetricLoaderService> logger, PortalMetric portalMetric, IDeviceService deviceService)
+        public DeviceMetricLoaderService(ILogger<DeviceMetricLoaderService> logger, PortalMetric portalMetric, IExternalDeviceService externalDeviceService)
         {
             this.logger = logger;
             this.portalMetric = portalMetric;
-            this.deviceService = deviceService;
+            this.externalDeviceService = externalDeviceService;
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -37,7 +37,7 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             try
             {
-                this.portalMetric.DeviceCount = await deviceService.GetDevicesCount();
+                this.portalMetric.DeviceCount = await this.externalDeviceService.GetDevicesCount();
             }
             catch (InternalServerErrorException e)
             {
@@ -49,7 +49,7 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             try
             {
-                this.portalMetric.ConnectedDeviceCount = await deviceService.GetConnectedDevicesCount();
+                this.portalMetric.ConnectedDeviceCount = await this.externalDeviceService.GetConnectedDevicesCount();
             }
             catch (InternalServerErrorException e)
             {
