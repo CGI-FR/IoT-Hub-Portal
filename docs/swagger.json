@@ -259,15 +259,6 @@
         "operationId": "GET Device list",
         "parameters": [
           {
-            "name": "continuationToken",
-            "in": "query",
-            "description": "",
-            "style": "form",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "searchText",
             "in": "query",
             "description": "",
@@ -303,6 +294,27 @@
               "type": "integer",
               "format": "int32",
               "default": 10
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
@@ -1682,15 +1694,6 @@
         "operationId": "GET LoRaWAN device list",
         "parameters": [
           {
-            "name": "continuationToken",
-            "in": "query",
-            "description": "",
-            "style": "form",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "searchText",
             "in": "query",
             "description": "",
@@ -1726,6 +1729,29 @@
               "type": "integer",
               "format": "int32",
               "default": 10
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
@@ -3716,6 +3742,11 @@
           "deviceName": {
             "type": "string",
             "description": "The device friendly name.",
+            "nullable": true
+          },
+          "deviceModelId": {
+            "type": "string",
+            "description": "The device Model Identifier.",
             "nullable": true
           },
           "imageUrl": {
