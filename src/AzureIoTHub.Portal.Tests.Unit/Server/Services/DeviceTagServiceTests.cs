@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
+    using AutoMapper;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Services;
@@ -43,6 +44,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             Services = ServiceCollection.BuildServiceProvider();
 
             this.deviceTagService = Services.GetRequiredService<IDeviceTagService>();
+            Mapper = Services.GetRequiredService<IMapper>();
         }
 
         [Test]

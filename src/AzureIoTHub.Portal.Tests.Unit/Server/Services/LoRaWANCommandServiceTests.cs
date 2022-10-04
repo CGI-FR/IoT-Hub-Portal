@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
     using System.Threading;
     using System.Threading.Tasks;
     using AutoFixture;
+    using AutoMapper;
     using Azure;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Domain;
@@ -79,6 +80,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
             Services = ServiceCollection.BuildServiceProvider();
 
             this.loRaWanCommandService = Services.GetRequiredService<ILoRaWANCommandService>();
+            Mapper = Services.GetRequiredService<IMapper>();
         }
 
         [Test]

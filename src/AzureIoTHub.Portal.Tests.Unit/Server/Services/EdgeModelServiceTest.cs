@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
+    using AutoMapper;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
@@ -59,6 +60,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             Services = ServiceCollection.BuildServiceProvider();
 
             this.edgeDeviceModelService = Services.GetRequiredService<IEdgeModelService>();
+            Mapper = Services.GetRequiredService<IMapper>();
 
         }
 

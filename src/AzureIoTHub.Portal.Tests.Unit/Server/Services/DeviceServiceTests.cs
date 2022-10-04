@@ -25,6 +25,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Device = Portal.Domain.Entities.Device;
     using Microsoft.EntityFrameworkCore;
     using Portal.Domain.Entities;
+    using AutoMapper;
 
     [TestFixture]
     public class DeviceServiceTests : BackendUnitTest
@@ -64,6 +65,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             Services = ServiceCollection.BuildServiceProvider();
 
             this.deviceService = Services.GetRequiredService<IDeviceService<DeviceDetails>>();
+            Mapper = Services.GetRequiredService<IMapper>();
         }
 
         [Test]
