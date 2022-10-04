@@ -425,7 +425,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
-                .ReturnsAsync(new Device());
+                .ReturnsAsync(new Device
+                {
+                    Tags = Fixture.CreateMany<DeviceTagValue>(5).ToList()
+                });
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
 
             this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
                 .Verifiable();
@@ -475,7 +481,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
-                .ReturnsAsync(new Device());
+                .ReturnsAsync(new Device
+                {
+                    Tags = new List<DeviceTagValue>()
+                });
 
             this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
                 .Verifiable();
