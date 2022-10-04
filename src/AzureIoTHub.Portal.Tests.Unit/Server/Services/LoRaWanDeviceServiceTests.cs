@@ -328,7 +328,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Task.CompletedTask);
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
-                .ReturnsAsync(new LorawanDevice());
+                .ReturnsAsync(new LorawanDevice
+                {
+                    Tags = Fixture.CreateMany<DeviceTagValue>(5).ToList()
+                });
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
 
             this.mockLorawanDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
                 .Verifiable();
@@ -378,7 +384,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Task.CompletedTask);
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID))
-                .ReturnsAsync(new LorawanDevice());
+                .ReturnsAsync(new LorawanDevice
+                {
+                    Tags = new List<DeviceTagValue>()
+                });
 
             this.mockLorawanDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
                 .Verifiable();

@@ -131,7 +131,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public abstract Task<TDto> GetDevice(string deviceId);
 
-        public virtual async Task<TDto> CreateDevice(TDto device)
+        public async Task<TDto> CreateDevice(TDto device)
         {
             var newTwin = await this.externalDevicesService.CreateNewTwinFromDeviceId(device.DeviceID);
 
@@ -140,10 +140,12 @@ namespace AzureIoTHub.Portal.Server.Services
 
             _ = await this.externalDevicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin, status);
 
-            return device;
+            return await CreateDeviceInDatabase(device);
         }
 
-        public virtual async Task<TDto> UpdateDevice(TDto device)
+        protected abstract Task<TDto> CreateDeviceInDatabase(TDto device);
+
+        public async Task<TDto> UpdateDevice(TDto device)
         {
             // Device status (enabled/disabled) has to be dealt with afterwards
             var currentDevice = await this.externalDevicesService.GetDevice(device.DeviceID);
@@ -159,13 +161,19 @@ namespace AzureIoTHub.Portal.Server.Services
 
             _ = await this.externalDevicesService.UpdateDeviceTwin(currentTwin);
 
-            return device;
+            return await UpdateDeviceInDatabase(device);
         }
+
+        protected abstract Task<TDto> UpdateDeviceInDatabase(TDto device);
 
         public virtual async Task DeleteDevice(string deviceId)
         {
             await this.externalDevicesService.DeleteDevice(deviceId);
+
+            await DeleteDeviceInDatabase(deviceId);
         }
+
+        protected abstract Task DeleteDeviceInDatabase(string deviceId);
 
         public virtual Task<EnrollmentCredentials> GetCredentials(string deviceId)
         {
