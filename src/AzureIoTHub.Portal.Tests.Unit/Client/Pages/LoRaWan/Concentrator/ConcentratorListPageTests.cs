@@ -50,9 +50,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
 
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
                     service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new PaginationResult<Concentrator>
+                .ReturnsAsync(new PaginationResult<ConcentratorDto>
                 {
-                    Items = new List<Concentrator>
+                    Items = new List<ConcentratorDto>
                     {
                         new(),
                         new(),
@@ -100,9 +100,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
 
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
                     service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new PaginationResult<Concentrator>
+                .ReturnsAsync(new PaginationResult<ConcentratorDto>
                 {
-                    Items = new List<Concentrator>
+                    Items = new List<ConcentratorDto>
                     {
                         new()
                         {
@@ -130,9 +130,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
 
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
                     service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new PaginationResult<Concentrator>
+                .ReturnsAsync(new PaginationResult<ConcentratorDto>
                 {
-                    Items = new List<Concentrator>
+                    Items = new List<ConcentratorDto>
                     {
                         new(),
                         new(),
@@ -159,9 +159,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
 
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
                     service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new PaginationResult<Concentrator>
+                .ReturnsAsync(new PaginationResult<ConcentratorDto>
                 {
-                    Items = Array.Empty<Concentrator>()
+                    Items = Array.Empty<ConcentratorDto>()
                 });
 
             var cut = RenderComponent<ConcentratorListPage>();

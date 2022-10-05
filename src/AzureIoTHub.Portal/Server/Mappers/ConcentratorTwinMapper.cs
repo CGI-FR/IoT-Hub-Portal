@@ -13,26 +13,26 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
     public class ConcentratorTwinMapper : IConcentratorTwinMapper
     {
-        public Concentrator CreateDeviceDetails(Twin twin)
+        public ConcentratorDto CreateDeviceDetails(Twin twin)
         {
             ArgumentNullException.ThrowIfNull(twin, nameof(twin));
 
-            return new Concentrator
+            return new ConcentratorDto
             {
                 DeviceId = twin.DeviceId,
-                DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(Concentrator.DeviceName)),
-                LoraRegion = DeviceHelper.RetrieveTagValue(twin, nameof(Concentrator.LoraRegion)),
+                DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(ConcentratorDto.DeviceName)),
+                LoraRegion = DeviceHelper.RetrieveTagValue(twin, nameof(ConcentratorDto.LoraRegion)),
                 ClientThumbprint = RetrieveClientThumbprintValue(twin),
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 AlreadyLoggedInOnce = DeviceHelper.RetrieveReportedPropertyValue(twin, "DevAddr") != null,
-                DeviceType = DeviceHelper.RetrieveTagValue(twin, nameof(Concentrator.DeviceType))
+                DeviceType = DeviceHelper.RetrieveTagValue(twin, nameof(ConcentratorDto.DeviceType))
             };
         }
 
         private static string RetrieveClientThumbprintValue(Twin twin)
         {
-            var serializedClientThumbprint = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(Concentrator.ClientThumbprint).ToCamelCase());
+            var serializedClientThumbprint = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(ConcentratorDto.ClientThumbprint).ToCamelCase());
 
             if (serializedClientThumbprint == null)
             {
@@ -59,7 +59,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             }
         }
 
-        public void UpdateTwin(Twin twin, Concentrator item)
+        public void UpdateTwin(Twin twin, ConcentratorDto item)
         {
             ArgumentNullException.ThrowIfNull(twin, nameof(twin));
             ArgumentNullException.ThrowIfNull(item, nameof(item));

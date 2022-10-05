@@ -155,6 +155,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddScoped<ILorawanDeviceRepository, LorawanDeviceRepository>();
             _ = services.AddScoped<IDeviceTagValueRepository, DeviceTagValueRepository>();
             _ = services.AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>();
+            _ = services.AddScoped<IConcentratorRepository, ConcentratorRepository>();
 
             _ = services.AddMudServices();
 
@@ -311,6 +312,14 @@ namespace AzureIoTHub.Portal.Server
                     .AddTrigger(t => t
                         .WithIdentity($"{nameof(SyncDevicesJob)}")
                         .ForJob(nameof(SyncDevicesJob))
+                        .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+
+                _ = q.AddJob<SyncConcentratorsJob>(j => j.WithIdentity(nameof(SyncConcentratorsJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncConcentratorsJob)}")
+                        .ForJob(nameof(SyncConcentratorsJob))
                         .WithSimpleSchedule(s => s
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));

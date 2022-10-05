@@ -54,7 +54,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
         public void ClickOnSaveShouldPostConcentratorDetails()
         {
             // Arrange
-            var mockConcentrator = new Concentrator
+            var mockConcentrator = new ConcentratorDto
             {
                 DeviceId = "1234567890123456",
                 DeviceName = Guid.NewGuid().ToString(),
@@ -68,7 +68,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
                 });
 
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
-                    service.CreateConcentrator(It.Is<Concentrator>(concentrator =>
+                    service.CreateConcentrator(It.Is<ConcentratorDto>(concentrator =>
                         mockConcentrator.DeviceId.Equals(concentrator.DeviceId, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
@@ -78,8 +78,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             cut.WaitForAssertion(() => cut.Find("#saveButton"));
 
 
-            cut.Find($"#{nameof(Concentrator.DeviceId)}").Change(mockConcentrator.DeviceId);
-            cut.Find($"#{nameof(Concentrator.DeviceName)}").Change(mockConcentrator.DeviceName);
+            cut.Find($"#{nameof(ConcentratorDto.DeviceId)}").Change(mockConcentrator.DeviceId);
+            cut.Find($"#{nameof(ConcentratorDto.DeviceName)}").Change(mockConcentrator.DeviceName);
             cut.Instance.ChangeRegion(mockConcentrator.LoraRegion);
 
             // Act
@@ -94,7 +94,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
         public void ClickOnSaveShouldProcessProblemDetailsExceptionWhenIssueOccursOnCreatingConcentratorDetails()
         {
             // Arrange
-            var mockConcentrator = new Concentrator
+            var mockConcentrator = new ConcentratorDto
             {
                 DeviceId = "1234567890123456",
                 DeviceName = Guid.NewGuid().ToString(),
@@ -108,7 +108,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
                 });
 
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service =>
-                    service.CreateConcentrator(It.Is<Concentrator>(concentrator =>
+                    service.CreateConcentrator(It.Is<ConcentratorDto>(concentrator =>
                         mockConcentrator.DeviceId.Equals(concentrator.DeviceId, StringComparison.Ordinal))))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
@@ -116,8 +116,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             cut.WaitForAssertion(() => cut.Find("#saveButton"));
 
 
-            cut.Find($"#{nameof(Concentrator.DeviceId)}").Change(mockConcentrator.DeviceId);
-            cut.Find($"#{nameof(Concentrator.DeviceName)}").Change(mockConcentrator.DeviceName);
+            cut.Find($"#{nameof(ConcentratorDto.DeviceId)}").Change(mockConcentrator.DeviceId);
+            cut.Find($"#{nameof(ConcentratorDto.DeviceName)}").Change(mockConcentrator.DeviceName);
             cut.Instance.ChangeRegion(mockConcentrator.LoraRegion);
 
             // Act

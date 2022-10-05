@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Client.Validators
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using FluentValidation;
 
-    public class ConcentratorValidator : AbstractValidator<Concentrator>
+    public class ConcentratorValidator : AbstractValidator<ConcentratorDto>
     {
         public ConcentratorValidator()
         {

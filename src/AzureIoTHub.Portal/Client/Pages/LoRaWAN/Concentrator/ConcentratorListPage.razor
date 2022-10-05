@@ -10,7 +10,7 @@
 <MudGrid>
 
     <MudItem xs="12">
-        <MudTable T="Concentrator" id="concentrators-listing" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
+        <MudTable T="ConcentratorDto" id="concentrators-listing" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
             <ColGroup>
                 <col style="width: 60%;" />
                 <col style="width: 10%;" />
@@ -97,17 +97,17 @@
     [CascadingParameter]
     public Error Error {get; set;}
     
-    private MudTable<Concentrator> table;
+    private MudTable<ConcentratorDto> table;
 
     private readonly Dictionary<int, string> pages = new();
 
     private bool IsLoading { get; set; } = true;
 
-    private async Task<TableData<Concentrator>> LoadItems(TableState state)
+    private async Task<TableData<ConcentratorDto>> LoadItems(TableState state)
     {
         try
         {
-            PaginationResult<Concentrator> result;
+            PaginationResult<ConcentratorDto> result;
 
             if (pages.Keys.Contains(state.Page))
             {
@@ -126,7 +126,7 @@
 
             IsLoading = false;
 
-            return new TableData<Concentrator>
+            return new TableData<ConcentratorDto>
             {
                 Items = result.Items,
                 TotalItems = result.TotalItems
@@ -135,7 +135,7 @@
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
-            return new TableData<Concentrator>();
+            return new TableData<ConcentratorDto>();
         }
     }
 
@@ -144,7 +144,7 @@
         NavigationManager.NavigateTo("lorawan/concentrators/new");
     }
 
-    private async Task DeleteDevice(Concentrator device)
+    private async Task DeleteDevice(ConcentratorDto device)
     {
         var parameters = new DialogParameters {{"deviceId", device.DeviceId}};
         
@@ -171,7 +171,7 @@
         table.ReloadServerData();
     }
 
-    private void GoToDetails(Concentrator item)
+    private void GoToDetails(ConcentratorDto item)
     {
         NavigationManager.NavigateTo($"/lorawan/concentrators/{item.DeviceId}");
     }

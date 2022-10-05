@@ -15,7 +15,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var concentratorValidator = new ConcentratorValidator();
-            var concentrator = new Concentrator()
+            var concentrator = new ConcentratorDto()
             {
                 DeviceId = "0123456789abcdef",
                 DeviceName = Guid.NewGuid().ToString(),
@@ -39,7 +39,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var concentratorValidator = new ConcentratorValidator();
-            var concentrator = new Concentrator()
+            var concentrator = new ConcentratorDto()
             {
                 DeviceId = "0123456789abcdef",
                 DeviceName =DeviceNameValue,
@@ -60,7 +60,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var concentratorValidator = new ConcentratorValidator();
-            var concentrator = new Concentrator()
+            var concentrator = new ConcentratorDto()
             {
                 DeviceId = "",
                 DeviceName = Guid.NewGuid().ToString(),
@@ -83,7 +83,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var concentratorValidator = new ConcentratorValidator();
-            var concentrator = new Concentrator()
+            var concentrator = new ConcentratorDto()
             {
                 DeviceId = Guid.NewGuid().ToString(),
                 DeviceName = Guid.NewGuid().ToString(),
@@ -104,7 +104,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var concentratorValidator = new ConcentratorValidator();
-            var concentrator = new Concentrator()
+            var concentrator = new ConcentratorDto()
             {
                 DeviceId = "0123456789abcdef",
                 DeviceName = Guid.NewGuid().ToString(),
@@ -126,7 +126,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Validators
         {
             // Arrange
             var concentratorValidator = new ConcentratorValidator();
-            var concentrator = new Concentrator();
+            var concentrator = new ConcentratorDto();
 
             // Act
             var concentratorValidation = concentratorValidator.Validate(concentrator);

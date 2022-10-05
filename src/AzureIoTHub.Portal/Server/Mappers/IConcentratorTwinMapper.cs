@@ -8,8 +8,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
     public interface IConcentratorTwinMapper
     {
-        Concentrator CreateDeviceDetails(Twin twin);
+        ConcentratorDto CreateDeviceDetails(Twin twin);
 
-        void UpdateTwin(Twin twin, Concentrator item);
+        void UpdateTwin(Twin twin, ConcentratorDto item);
     }
 }

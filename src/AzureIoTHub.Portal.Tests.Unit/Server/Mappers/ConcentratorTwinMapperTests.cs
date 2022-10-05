@@ -53,13 +53,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
                 DeviceId = Guid.NewGuid().ToString()
             };
 
-            twin.Tags[nameof(Concentrator.DeviceType).ToCamelCase()] = Guid.NewGuid().ToString();
-            twin.Tags[nameof(Concentrator.DeviceName).ToCamelCase()] = Guid.NewGuid().ToString();
-            twin.Tags[nameof(Concentrator.LoraRegion).ToCamelCase()] = Guid.NewGuid().ToString();
+            twin.Tags[nameof(ConcentratorDto.DeviceType).ToCamelCase()] = Guid.NewGuid().ToString();
+            twin.Tags[nameof(ConcentratorDto.DeviceName).ToCamelCase()] = Guid.NewGuid().ToString();
+            twin.Tags[nameof(ConcentratorDto.LoraRegion).ToCamelCase()] = Guid.NewGuid().ToString();
 
             twin.Properties.Reported["DevAddr"] = Guid.NewGuid().ToString();
 
-            twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()] = new List<string>() { Guid.NewGuid().ToString() };
+            twin.Properties.Desired[nameof(ConcentratorDto.ClientThumbprint).ToCamelCase()] = new List<string>() { Guid.NewGuid().ToString() };
 
             // Act
             var result = concentratorTwinMapper.CreateDeviceDetails(twin);
@@ -70,13 +70,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             Assert.IsFalse(result.IsConnected);
             Assert.IsFalse(result.IsEnabled);
 
-            Assert.AreEqual(twin.Tags[nameof(Concentrator.DeviceName).ToCamelCase()].ToString(), result.DeviceName);
-            Assert.AreEqual(twin.Tags[nameof(Concentrator.LoraRegion).ToCamelCase()].ToString(), result.LoraRegion);
-            Assert.AreEqual(twin.Tags[nameof(Concentrator.DeviceType).ToCamelCase()].ToString(), result.DeviceType);
+            Assert.AreEqual(twin.Tags[nameof(ConcentratorDto.DeviceName).ToCamelCase()].ToString(), result.DeviceName);
+            Assert.AreEqual(twin.Tags[nameof(ConcentratorDto.LoraRegion).ToCamelCase()].ToString(), result.LoraRegion);
+            Assert.AreEqual(twin.Tags[nameof(ConcentratorDto.DeviceType).ToCamelCase()].ToString(), result.DeviceType);
 
             Assert.IsTrue(result.AlreadyLoggedInOnce);
 
-            Assert.AreEqual(twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()][0].ToString(), result.ClientThumbprint);
+            Assert.AreEqual(twin.Properties.Desired[nameof(ConcentratorDto.ClientThumbprint).ToCamelCase()][0].ToString(), result.ClientThumbprint);
             this.mockRepository.VerifyAll();
         }
 
@@ -108,7 +108,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             {
                 DeviceId = Guid.NewGuid().ToString()
             };
-            twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()] = new List<string>();
+            twin.Properties.Desired[nameof(ConcentratorDto.ClientThumbprint).ToCamelCase()] = new List<string>();
 
             // Act
             var result = concentratorTwinMapper.CreateDeviceDetails(twin);
@@ -128,7 +128,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             {
                 DeviceId = Guid.NewGuid().ToString()
             };
-            twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()] = Guid.NewGuid().ToString();
+            twin.Properties.Desired[nameof(ConcentratorDto.ClientThumbprint).ToCamelCase()] = Guid.NewGuid().ToString();
 
             // Act
             var result = concentratorTwinMapper.CreateDeviceDetails(twin);
@@ -147,7 +147,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
 
             var twin = new Twin();
 
-            var item = new Concentrator
+            var item = new ConcentratorDto
             {
                 LoraRegion = Guid.NewGuid().ToString(),
                 DeviceName = Guid.NewGuid().ToString(),
@@ -173,17 +173,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             DeviceHelper.SetTagValue(twin, nameof(item.DeviceType), item.DeviceType);
             DeviceHelper.SetTagValue(twin, nameof(item.LoraRegion), item.LoraRegion);
 
-            twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()] = new List<string>() { item.ClientThumbprint };
+            twin.Properties.Desired[nameof(ConcentratorDto.ClientThumbprint).ToCamelCase()] = new List<string>() { item.ClientThumbprint };
 
             // Act
             concentratorTwinMapper.UpdateTwin(twin, item);
 
             // Assert
-            Assert.AreEqual(item.DeviceName, twin.Tags[nameof(Concentrator.DeviceName).ToCamelCase()].ToString());
-            Assert.AreEqual(item.DeviceType, twin.Tags[nameof(Concentrator.DeviceType).ToCamelCase()].ToString());
-            Assert.AreEqual(item.LoraRegion, twin.Tags[nameof(Concentrator.LoraRegion).ToCamelCase()].ToString());
+            Assert.AreEqual(item.DeviceName, twin.Tags[nameof(ConcentratorDto.DeviceName).ToCamelCase()].ToString());
+            Assert.AreEqual(item.DeviceType, twin.Tags[nameof(ConcentratorDto.DeviceType).ToCamelCase()].ToString());
+            Assert.AreEqual(item.LoraRegion, twin.Tags[nameof(ConcentratorDto.LoraRegion).ToCamelCase()].ToString());
 
-            Assert.AreEqual(item.ClientThumbprint, twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()][0].ToString());
+            Assert.AreEqual(item.ClientThumbprint, twin.Properties.Desired[nameof(ConcentratorDto.ClientThumbprint).ToCamelCase()][0].ToString());
 
             this.mockRepository.VerifyAll();
         }
