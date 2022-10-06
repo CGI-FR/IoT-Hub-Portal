@@ -70,7 +70,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
                 Tags = new TwinCollection
                 {
                     ["modelId"] = expectedDeviceModel.Id,
-                    ["deviceName"] = Fixture.Create<string>()
+                    ["deviceName"] = Fixture.Create<string>(),
+                    ["test"] = Fixture.Create<string>()
                 },
                 Capabilities = new DeviceCapabilities{ IotEdge = true }
             };
