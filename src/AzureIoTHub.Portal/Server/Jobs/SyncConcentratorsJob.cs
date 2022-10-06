@@ -18,23 +18,19 @@ namespace AzureIoTHub.Portal.Server.Jobs
     [DisallowConcurrentExecution]
     public class SyncConcentratorsJob : IJob
     {
-        private readonly ILoRaWANConcentratorService concentratorService;
         private readonly IConcentratorRepository concentratorRepository;
         private readonly IExternalDeviceService externalDeviceService;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly ILogger<SyncConcentratorsJob> logger;
 
-        //private const string ModelId = "modelId";
-
-        public SyncConcentratorsJob(ILoRaWANConcentratorService concentratorService,
+        public SyncConcentratorsJob(
             IConcentratorRepository concentratorRepository,
             IExternalDeviceService externalDeviceService,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             ILogger<SyncConcentratorsJob> logger)
         {
-            this.concentratorService = concentratorService;
             this.concentratorRepository = concentratorRepository;
             this.externalDeviceService = externalDeviceService;
             this.mapper = mapper;
