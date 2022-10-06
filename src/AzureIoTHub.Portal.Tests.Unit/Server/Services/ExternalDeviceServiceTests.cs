@@ -18,6 +18,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Graph.ExternalConnectors;
     using Models.v10;
     using Moq;
     using Newtonsoft.Json;
@@ -853,6 +854,30 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Assert
             Assert.IsNotNull(result);
             Assert.IsAssignableFrom<Twin>(result);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetDeviceTwinWithEdgeHubModule()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+
+            var mockQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync())
+                .ThrowsAsync(new Exception(""));
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{deviceId}']"), It.Is<int>(x => x == 1)))
+                .Returns(mockQuery.Object);
+
+            // Act
+            var act = async () => await service.GetDeviceTwinWithEdgeHubModule(deviceId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
 

@@ -105,7 +105,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
                 .ReturnsAsync(expectedDeviceModel);
 
             _ = this.mockEdgeDeviceRepository.Setup(x => x.GetByIdAsync(expectedTwinDevice.DeviceId)).
-                ReturnsAsync((EdgeDevice)null);
+                ReturnsAsync(value: null);
 
             _ = this.mockEdgeDeviceRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDevice>()))
                 .Returns(Task.CompletedTask);
