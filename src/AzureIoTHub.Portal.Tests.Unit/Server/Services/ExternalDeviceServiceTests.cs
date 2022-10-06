@@ -828,6 +828,34 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public async Task GetDeviceTwinWithEdgeHubModuleStateUnderTestExpectedBehavior()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+
+            var mockQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync())
+                .ReturnsAsync(new Twin[]
+                {
+                    new Twin(Guid.NewGuid().ToString())
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{deviceId}']"), It.Is<int>(x => x == 1)))
+                .Returns(mockQuery.Object);
+
+            // Act
+            var result = await service.GetDeviceTwinWithEdgeHubModule(deviceId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<Twin>(result);
+            this.mockRepository.VerifyAll();
+        }
+
         [TestCase(false, DeviceStatus.Enabled)]
         [TestCase(true, DeviceStatus.Enabled)]
         [TestCase(false, DeviceStatus.Disabled)]
