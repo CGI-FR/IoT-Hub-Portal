@@ -3,13 +3,9 @@
 
 namespace AzureIoTHub.Portal.Infrastructure
 {
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
-    using AzureIoTHub.Portal.Infrastructure.Seeds;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Infrastructure;
-    using Microsoft.Extensions.Logging;
-    using Newtonsoft.Json;
+
 
     public class PortalDbContext : DbContext
     {
