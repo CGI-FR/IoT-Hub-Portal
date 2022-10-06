@@ -128,14 +128,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 1, 2
             };
 
-            var mockQuery = this.mockRepository.Create<IQuery>();
-            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync())
-                .ReturnsAsync(new[] { edgeHubTwin });
-
-            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
-                It.Is<string>(x => x == $"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{expectedDevice.DeviceId}']"),
-                It.Is<int>(x => x == 1)))
-                .Returns(mockQuery.Object);
+            _ = this.mockDeviceService
+                .Setup(x => x.GetDeviceTwinWithEdgeHubModule(It.Is<string>(c => c.Equals(expectedDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(edgeHubTwin);
 
             _ = this.mockEdgeDeviceMapper
                 .Setup(x => x.CreateEdgeDevice(It.Is<Twin>(c => c.DeviceId.Equals(expectedDevice.DeviceId, StringComparison.Ordinal)),
