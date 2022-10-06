@@ -77,7 +77,6 @@ namespace AzureIoTHub.Portal.Server.Jobs
             do
             {
                 var result = await this.externalDeviceService.GetAllDevice(continuationToken: continuationToken,filterDeviceType: "LoRa Concentrator", pageSize: 100);
-                //var pouet = this.concentratorService.GetAllDeviceConcentrator(result, this.Url);
 
                 twins.AddRange(result.Items);
 
@@ -100,7 +99,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
             }
             else
             {
-                if (concentratorEntity.Version >= concentratorEntity.Version) return;
+                if (concentratorEntity.Version >= concentrator.Version) return;
 
                 _ = this.mapper.Map(concentrator, concentratorEntity);
                 this.concentratorRepository.Update(concentratorEntity);
