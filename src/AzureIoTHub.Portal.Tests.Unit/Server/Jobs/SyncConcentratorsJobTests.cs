@@ -57,7 +57,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
                 {
                     ["deviceName"] = Fixture.Create<string>(),
                     ["loraRegion"] = Fixture.Create<string>(),
-                    ["deviceType"] = Fixture.Create<string>()
+                    ["deviceType"] = Fixture.Create<string>(),
+                    ["clientThumbprint"] = Fixture.Create<string>()
                 }
             };
 
