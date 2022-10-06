@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Server.Services
         Task<Twin> GetDeviceTwin(string deviceId);
 
         Task<Twin> GetDeviceTwinWithModule(string deviceId);
+        Task<Twin> GetDeviceTwinWithEdgeHubModule(string deviceId);
 
         Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled);
 

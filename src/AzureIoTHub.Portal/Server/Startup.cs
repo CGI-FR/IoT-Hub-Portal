@@ -152,6 +152,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddScoped<IEdgeDeviceModelCommandRepository, EdgeDeviceModelCommandRepository>();
             _ = services.AddScoped<IDeviceModelRepository, DeviceModelRepository>();
             _ = services.AddScoped<IDeviceRepository, DeviceRepository>();
+            _ = services.AddScoped<IEdgeDeviceRepository, EdgeDeviceRepository>();
             _ = services.AddScoped<ILorawanDeviceRepository, LorawanDeviceRepository>();
             _ = services.AddScoped<IDeviceTagValueRepository, DeviceTagValueRepository>();
             _ = services.AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>();
@@ -323,9 +324,15 @@ namespace AzureIoTHub.Portal.Server
                         .WithSimpleSchedule(s => s
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));
+
+                _ = q.AddJob<SyncEdgeDeviceJob>(j => j.WithIdentity(nameof(SyncEdgeDeviceJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncEdgeDeviceJob)}")
+                        .ForJob(nameof(SyncEdgeDeviceJob))
+                        .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
             });
-
-
 
             // Add the Quartz.NET hosted service
             _ = services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

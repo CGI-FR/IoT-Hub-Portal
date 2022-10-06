@@ -255,8 +255,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <param name="deviceId">The device identifier.</param>
         private async Task<int> RetrieveNbConnectedDevice(string deviceId)
         {
-            var query = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{deviceId}']", 1);
-            var deviceWithClient = (await query.GetNextAsTwinAsync()).SingleOrDefault();
+            var deviceWithClient = await this.externalDevicesService.GetDeviceTwinWithEdgeHubModule(deviceId);
             var reportedProperties = JObject.Parse(deviceWithClient.Properties.Reported.ToJson());
 
             return reportedProperties.TryGetValue("clients", out var clients) ? clients.Count() : 0;
