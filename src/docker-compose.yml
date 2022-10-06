@@ -10,6 +10,18 @@ services:
       - 5432:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@changeme.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - 5050:80
+    volumes:
+       - pgadmin:/var/lib/pgadmin
+    depends_on:
+      - "database"
   azureiothub.portal.server:
     image: ${DOCKER_REGISTRY-}azureiothubportalserver
     build:
@@ -19,3 +31,4 @@ services:
       - "database"
 volumes:
   pgdata:
+  pgadmin:
