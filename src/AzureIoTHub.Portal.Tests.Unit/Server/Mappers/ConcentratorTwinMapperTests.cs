@@ -81,65 +81,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
         }
 
         [Test]
-        public void CreateDeviceDetailsClientThumbprintNotExistExpectedBehavior()
-        {
-            // Arrange
-            var concentratorTwinMapper = CreateConcentratorTwinMapper();
-            var twin = new Twin
-            {
-                DeviceId = Guid.NewGuid().ToString()
-            };
-
-            // Act
-            var result = concentratorTwinMapper.CreateDeviceDetails(twin);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsNull(result.ClientThumbprint);
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public void CreateDeviceDetailsClientThumbprintEmptyArrayExpectedBehavior()
-        {
-            // Arrange
-            var concentratorTwinMapper = CreateConcentratorTwinMapper();
-            var twin = new Twin
-            {
-                DeviceId = Guid.NewGuid().ToString()
-            };
-            twin.Properties.Desired[nameof(ConcentratorDto.ClientThumbprint).ToCamelCase()] = new List<string>();
-
-            // Act
-            var result = concentratorTwinMapper.CreateDeviceDetails(twin);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsNull(result.ClientThumbprint);
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public void CreateDeviceDetailsClientThumbprintBadFormatExpectedBehavior()
-        {
-            // Arrange
-            var concentratorTwinMapper = CreateConcentratorTwinMapper();
-            var twin = new Twin
-            {
-                DeviceId = Guid.NewGuid().ToString()
-            };
-            twin.Properties.Desired[nameof(ConcentratorDto.ClientThumbprint).ToCamelCase()] = Guid.NewGuid().ToString();
-
-            // Act
-            var result = concentratorTwinMapper.CreateDeviceDetails(twin);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsNull(result.ClientThumbprint);
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
         public void UpdateTwinStateUnderTestExpectedBehavior()
         {
             // Arrange

@@ -9,7 +9,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using Extensions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
-    using Newtonsoft.Json;
 
     public class ConcentratorTwinMapper : IConcentratorTwinMapper
     {
@@ -22,41 +21,12 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 DeviceId = twin.DeviceId,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(ConcentratorDto.DeviceName)),
                 LoraRegion = DeviceHelper.RetrieveTagValue(twin, nameof(ConcentratorDto.LoraRegion)),
-                ClientThumbprint = RetrieveClientThumbprintValue(twin),
+                ClientThumbprint = DeviceHelper.RetrieveClientThumbprintValue(twin),
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 AlreadyLoggedInOnce = DeviceHelper.RetrieveReportedPropertyValue(twin, "DevAddr") != null,
                 DeviceType = DeviceHelper.RetrieveTagValue(twin, nameof(ConcentratorDto.DeviceType))
             };
-        }
-
-        private static string RetrieveClientThumbprintValue(Twin twin)
-        {
-            var serializedClientThumbprint = DeviceHelper.RetrieveDesiredPropertyValue(twin, nameof(ConcentratorDto.ClientThumbprint).ToCamelCase());
-
-            if (serializedClientThumbprint == null)
-            {
-                // clientThumbprint does not exist in the device twin
-                return null;
-            }
-
-            try
-            {
-                var clientThumbprintArray=JsonConvert.DeserializeObject<string[]>(serializedClientThumbprint);
-
-                if (clientThumbprintArray.Length == 0)
-                {
-                    // clientThumbprint array is empty in the device twin
-                    return null;
-                }
-
-                return clientThumbprintArray[0];
-            }
-            catch (Newtonsoft.Json.JsonReaderException)
-            {
-                // clientThumbprint is not an array in the device twin
-                return null;
-            }
         }
 
         public void UpdateTwin(Twin twin, ConcentratorDto item)

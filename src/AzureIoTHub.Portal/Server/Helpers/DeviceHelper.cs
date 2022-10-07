@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
     using Microsoft.Azure.Devices.Shared;
     using Newtonsoft.Json.Linq;
     using Newtonsoft.Json;
+    using AzureIoTHub.Portal.Domain.Entities;
 
     public static class DeviceHelper
     {
@@ -244,6 +245,35 @@ namespace AzureIoTHub.Portal.Server.Helpers
             }
 
             return new TwinCollection(JsonConvert.SerializeObject(root));
+        }
+
+        public static string RetrieveClientThumbprintValue(Twin twin)
+        {
+            var serializedClientThumbprint = RetrieveDesiredPropertyValue(twin, nameof(Concentrator.ClientThumbprint).ToCamelCase());
+
+            if (serializedClientThumbprint == null)
+            {
+                // clientThumbprint does not exist in the device twin
+                return null;
+            }
+
+            try
+            {
+                var clientThumbprintArray=JsonConvert.DeserializeObject<string[]>(serializedClientThumbprint);
+
+                if (clientThumbprintArray.Length == 0)
+                {
+                    // clientThumbprint array is empty in the device twin
+                    return null;
+                }
+
+                return clientThumbprintArray[0];
+            }
+            catch (JsonReaderException)
+            {
+                // clientThumbprint is not an array in the device twin
+                return null;
+            }
         }
     }
 }
