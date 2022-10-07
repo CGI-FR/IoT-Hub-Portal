@@ -1496,17 +1496,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConcentratorPaginationResult"
+                  "$ref": "#/components/schemas/ConcentratorDtoPaginationResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConcentratorPaginationResult"
+                  "$ref": "#/components/schemas/ConcentratorDtoPaginationResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConcentratorPaginationResult"
+                  "$ref": "#/components/schemas/ConcentratorDtoPaginationResult"
                 }
               }
             }
@@ -1524,17 +1524,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Concentrator"
+                "$ref": "#/components/schemas/ConcentratorDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Concentrator"
+                "$ref": "#/components/schemas/ConcentratorDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Concentrator"
+                "$ref": "#/components/schemas/ConcentratorDto"
               }
             }
           }
@@ -1576,17 +1576,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Concentrator"
+                "$ref": "#/components/schemas/ConcentratorDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Concentrator"
+                "$ref": "#/components/schemas/ConcentratorDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Concentrator"
+                "$ref": "#/components/schemas/ConcentratorDto"
               }
             }
           }
@@ -1643,17 +1643,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/Concentrator"
+                  "$ref": "#/components/schemas/ConcentratorDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Concentrator"
+                  "$ref": "#/components/schemas/ConcentratorDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Concentrator"
+                  "$ref": "#/components/schemas/ConcentratorDto"
                 }
               }
             }
@@ -3437,7 +3437,7 @@
         "additionalProperties": false,
         "description": "LoRaWAN Concentrator Channel configuration."
       },
-      "Concentrator": {
+      "ConcentratorDto": {
         "required": [
           "deviceId",
           "deviceName",
@@ -3491,13 +3491,13 @@
         "additionalProperties": false,
         "description": "LoRaWAN Concentrator."
       },
-      "ConcentratorPaginationResult": {
+      "ConcentratorDtoPaginationResult": {
         "type": "object",
         "properties": {
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Concentrator"
+              "$ref": "#/components/schemas/ConcentratorDto"
             },
             "description": "The current page items.",
             "nullable": true
