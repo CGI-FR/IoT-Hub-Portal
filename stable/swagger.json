@@ -259,15 +259,6 @@
         "operationId": "GET Device list",
         "parameters": [
           {
-            "name": "continuationToken",
-            "in": "query",
-            "description": "",
-            "style": "form",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "searchText",
             "in": "query",
             "description": "",
@@ -303,6 +294,27 @@
               "type": "integer",
               "format": "int32",
               "default": 10
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
@@ -1484,17 +1496,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConcentratorPaginationResult"
+                  "$ref": "#/components/schemas/ConcentratorDtoPaginationResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConcentratorPaginationResult"
+                  "$ref": "#/components/schemas/ConcentratorDtoPaginationResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConcentratorPaginationResult"
+                  "$ref": "#/components/schemas/ConcentratorDtoPaginationResult"
                 }
               }
             }
@@ -1512,17 +1524,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Concentrator"
+                "$ref": "#/components/schemas/ConcentratorDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Concentrator"
+                "$ref": "#/components/schemas/ConcentratorDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Concentrator"
+                "$ref": "#/components/schemas/ConcentratorDto"
               }
             }
           }
@@ -1564,17 +1576,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Concentrator"
+                "$ref": "#/components/schemas/ConcentratorDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Concentrator"
+                "$ref": "#/components/schemas/ConcentratorDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Concentrator"
+                "$ref": "#/components/schemas/ConcentratorDto"
               }
             }
           }
@@ -1631,17 +1643,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/Concentrator"
+                  "$ref": "#/components/schemas/ConcentratorDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Concentrator"
+                  "$ref": "#/components/schemas/ConcentratorDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Concentrator"
+                  "$ref": "#/components/schemas/ConcentratorDto"
                 }
               }
             }
@@ -1682,15 +1694,6 @@
         "operationId": "GET LoRaWAN device list",
         "parameters": [
           {
-            "name": "continuationToken",
-            "in": "query",
-            "description": "",
-            "style": "form",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "searchText",
             "in": "query",
             "description": "",
@@ -1726,6 +1729,29 @@
               "type": "integer",
               "format": "int32",
               "default": 10
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
@@ -3411,7 +3437,7 @@
         "additionalProperties": false,
         "description": "LoRaWAN Concentrator Channel configuration."
       },
-      "Concentrator": {
+      "ConcentratorDto": {
         "required": [
           "deviceId",
           "deviceName",
@@ -3465,13 +3491,13 @@
         "additionalProperties": false,
         "description": "LoRaWAN Concentrator."
       },
-      "ConcentratorPaginationResult": {
+      "ConcentratorDtoPaginationResult": {
         "type": "object",
         "properties": {
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Concentrator"
+              "$ref": "#/components/schemas/ConcentratorDto"
             },
             "description": "The current page items.",
             "nullable": true
@@ -3716,6 +3742,11 @@
           "deviceName": {
             "type": "string",
             "description": "The device friendly name.",
+            "nullable": true
+          },
+          "deviceModelId": {
+            "type": "string",
+            "description": "The device Model Identifier.",
             "nullable": true
           },
           "imageUrl": {
