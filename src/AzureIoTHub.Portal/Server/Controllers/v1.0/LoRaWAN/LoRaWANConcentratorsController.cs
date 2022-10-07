@@ -67,7 +67,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         [HttpGet(Name = "GET LoRaWAN Concentrator list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginationResult<Concentrator>>> GetAllDeviceConcentrator(
+        public async Task<ActionResult<PaginationResult<ConcentratorDto>>> GetAllDeviceConcentrator(
             string continuationToken = null,
             int pageSize = 10)
         {
@@ -86,7 +86,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <param name="deviceId">The device identifier.</param>
         [HttpGet("{deviceId}", Name = "GET LoRaWAN Concentrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Concentrator>> GetDeviceConcentrator(string deviceId)
+        public async Task<ActionResult<ConcentratorDto>> GetDeviceConcentrator(string deviceId)
         {
             var item = await this.externalDevicesService.GetDeviceTwin(deviceId);
             return Ok(this.concentratorTwinMapper.CreateDeviceDetails(item));
@@ -99,7 +99,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [HttpPost(Name = "POST Create LoRaWAN concentrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateDeviceAsync(Concentrator device)
+        public async Task<IActionResult> CreateDeviceAsync(ConcentratorDto device)
         {
             if (!ModelState.IsValid)
             {
@@ -130,7 +130,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [HttpPut(Name = "PUT Update LoRaWAN concentrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateDeviceAsync(Concentrator device)
+        public async Task<IActionResult> UpdateDeviceAsync(ConcentratorDto device)
         {
             if (!ModelState.IsValid)
             {

@@ -51,7 +51,7 @@ namespace AzureIoTHub.Portal.Server.Services
             this.routerConfigManager = routerConfigManager;
         }
 
-        public async Task<bool> CreateDeviceAsync(Concentrator device)
+        public async Task<bool> CreateDeviceAsync(ConcentratorDto device)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace AzureIoTHub.Portal.Server.Services
             return true;
         }
 
-        public PaginationResult<Concentrator> GetAllDeviceConcentrator(PaginationResult<Twin> twinResults, IUrlHelper urlHelper)
+        public PaginationResult<ConcentratorDto> GetAllDeviceConcentrator(PaginationResult<Twin> twinResults, IUrlHelper urlHelper)
         {
             string nextPage = null;
 
@@ -107,7 +107,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 });
             }
 
-            return new PaginationResult<Concentrator>
+            return new PaginationResult<ConcentratorDto>
             {
                 Items = twinResults.Items.Select(this.concentratorTwinMapper.CreateDeviceDetails),
                 TotalItems = twinResults.TotalItems,
@@ -115,7 +115,7 @@ namespace AzureIoTHub.Portal.Server.Services
             };
         }
 
-        public async Task<bool> UpdateDeviceAsync(Concentrator device)
+        public async Task<bool> UpdateDeviceAsync(ConcentratorDto device)
         {
             ArgumentNullException.ThrowIfNull(device, nameof(device));
 

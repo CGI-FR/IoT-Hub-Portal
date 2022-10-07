@@ -18,7 +18,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
     using Quartz;
     using UnitTests.Bases;
 
-    public class SyncDeviceJobTests : BackendUnitTest
+    public class SyncDevicesJobTests : BackendUnitTest
     {
         private IJob syncDevicesJob;
 

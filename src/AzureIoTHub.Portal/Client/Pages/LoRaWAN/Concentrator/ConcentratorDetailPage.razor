@@ -116,7 +116,7 @@
     [Parameter]
     public string DeviceID { get; set; }
 
-    private Concentrator concentrator { get; set; } = new();
+    private ConcentratorDto concentrator { get; set; } = new();
     private MudForm form;
     private ConcentratorValidator concentratorValidator = new();
     private List<FrequencyPlan> FrequencyPlans = new List<FrequencyPlan>();

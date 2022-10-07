@@ -5,6 +5,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
 {
     using System;
     using System.Collections.Generic;
+    using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Server.Extensions;
     using AzureIoTHub.Portal.Server.Helpers;
     using FluentAssertions;
     using Microsoft.Azure.Devices.Provisioning.Service;
@@ -433,6 +435,76 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
 
             // Act
             var result = DeviceHelper.RetrieveDesiredPropertyValue(twin, PROPERTY_KEY);
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void RetrieveClientThumbprintShouldReturnClientThumbprintValue()
+        {
+            // Arrange
+            var expectedThumbprint = Guid.NewGuid().ToString();
+            var twin = new Twin
+            {
+                DeviceId = Guid.NewGuid().ToString()
+            };
+            twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()] = new List<string>() { expectedThumbprint };
+
+
+            // Act
+            var result = DeviceHelper.RetrieveClientThumbprintValue(twin);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(expectedThumbprint, result);
+        }
+
+        [Test]
+        public void RetrieveClientThumbprintValueNotExistShouldReturnNull()
+        {
+            // Arrange
+            var twin = new Twin
+            {
+                DeviceId = Guid.NewGuid().ToString()
+            };
+
+            // Act
+            var result = DeviceHelper.RetrieveClientThumbprintValue(twin);
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void RetrieveClientThumbprintValueEmptyArrayShouldReturnNull()
+        {
+            // Arrange
+            var twin = new Twin
+            {
+                DeviceId = Guid.NewGuid().ToString()
+            };
+            twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()] = new List<string>();
+
+            // Act
+            var result = DeviceHelper.RetrieveClientThumbprintValue(twin);
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void CreateDeviceDetailsClientThumbprintBadFormatShouldReturnNull()
+        {
+            // Arrange
+            var twin = new Twin
+            {
+                DeviceId = Guid.NewGuid().ToString()
+            };
+            twin.Properties.Desired[nameof(Concentrator.ClientThumbprint).ToCamelCase()] = Guid.NewGuid().ToString();
+
+            // Act
+            var result = DeviceHelper.RetrieveClientThumbprintValue(twin);
 
             // Assert
             Assert.IsNull(result);

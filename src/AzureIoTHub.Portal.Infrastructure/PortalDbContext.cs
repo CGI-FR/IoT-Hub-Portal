@@ -3,13 +3,9 @@
 
 namespace AzureIoTHub.Portal.Infrastructure
 {
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
-    using AzureIoTHub.Portal.Infrastructure.Seeds;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Infrastructure;
-    using Microsoft.Extensions.Logging;
-    using Newtonsoft.Json;
+
 
     public class PortalDbContext : DbContext
     {
@@ -22,6 +18,7 @@ namespace AzureIoTHub.Portal.Infrastructure
         public DbSet<DeviceTagValue> DeviceTagValues { get; set; }
         public DbSet<EdgeDeviceModel> EdgeDeviceModels { get; set; }
         public DbSet<EdgeDeviceModelCommand> EdgeDeviceModelCommands { get; set; }
+        public DbSet<Concentrator> Concentrators { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PortalDbContext(DbContextOptions<PortalDbContext> options)

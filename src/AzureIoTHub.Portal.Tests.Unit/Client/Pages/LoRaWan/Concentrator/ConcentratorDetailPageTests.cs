@@ -54,7 +54,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
         {
             // Arrange
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetConcentrator(this.mockDeviceId))
-                .ReturnsAsync(new Concentrator());
+                .ReturnsAsync(new ConcentratorDto());
 
             _ = this.mockLoRaWanConcentratorsClientService.Setup(service => service.GetFrequencyPlans())
                 .ReturnsAsync(new[]
@@ -98,7 +98,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
         public void ClickOnSaveShouldPutConcentratorDetails()
         {
             // Arrange
-            var mockConcentrator = new Concentrator()
+            var mockConcentrator = new ConcentratorDto()
             {
                 DeviceId = "1234567890123456",
                 DeviceName = Guid.NewGuid().ToString(),
@@ -133,7 +133,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
         public void ConcentratorShouldNotBeUpdatedWhenModelIsNotValid()
         {
             // Arrange
-            var mockConcentrator = new Concentrator()
+            var mockConcentrator = new ConcentratorDto()
             {
                 DeviceId = string.Empty,
                 DeviceName = Guid.NewGuid().ToString(),
@@ -163,7 +163,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
         public void ClickOnSaveShouldProcessProblemDetailsExceptionWhenIssueOccursOnUpdatingConcentratorDetails()
         {
             // Arrange
-            var mockConcentrator = new Concentrator()
+            var mockConcentrator = new ConcentratorDto()
             {
                 DeviceId = "1234567890123456",
                 DeviceName = Guid.NewGuid().ToString(),

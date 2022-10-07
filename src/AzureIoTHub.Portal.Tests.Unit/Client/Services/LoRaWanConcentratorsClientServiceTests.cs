@@ -36,9 +36,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetConcentratorsShouldReturnConcentrators()
         {
             // Arrange
-            var expectedConcentrators = new PaginationResult<Concentrator>
+            var expectedConcentrators = new PaginationResult<ConcentratorDto>
             {
-                Items = new List<Concentrator>()
+                Items = new List<ConcentratorDto>()
                 {
                     new ()
                 }
@@ -64,7 +64,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             // Arrange
             var deviceId = Fixture.Create<string>();
 
-            var expectedConcentrator = new Concentrator();
+            var expectedConcentrator = new ConcentratorDto();
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/concentrators/{deviceId}")
                 .RespondJson(expectedConcentrator);
@@ -82,13 +82,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task CreateConcentratorShouldCreateConcentrator()
         {
             // Arrange
-            var concentrator = new Concentrator();
+            var concentrator = new ConcentratorDto();
 
             _ = MockHttpClient.When(HttpMethod.Post, "/api/lorawan/concentrators")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<Concentrator>>();
-                    var body = m.Content as ObjectContent<Concentrator>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<ConcentratorDto>>();
+                    var body = m.Content as ObjectContent<ConcentratorDto>;
                     _ = body.Value.Should().BeEquivalentTo(concentrator);
                     return true;
                 })
@@ -106,13 +106,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task UpdateConcentratorShouldUpdateConcentrator()
         {
             // Arrange
-            var concentrator = new Concentrator();
+            var concentrator = new ConcentratorDto();
 
             _ = MockHttpClient.When(HttpMethod.Put, "/api/lorawan/concentrators")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<Concentrator>>();
-                    var body = m.Content as ObjectContent<Concentrator>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<ConcentratorDto>>();
+                    var body = m.Content as ObjectContent<ConcentratorDto>;
                     _ = body.Value.Should().BeEquivalentTo(concentrator);
                     return true;
                 })

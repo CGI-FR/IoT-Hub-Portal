@@ -19,22 +19,22 @@ namespace AzureIoTHub.Portal.Client.Services
             this.http = http;
         }
 
-        public Task<PaginationResult<Concentrator>> GetConcentrators(string continuationUri)
+        public Task<PaginationResult<ConcentratorDto>> GetConcentrators(string continuationUri)
         {
-            return this.http.GetFromJsonAsync<PaginationResult<Concentrator>>(continuationUri);
+            return this.http.GetFromJsonAsync<PaginationResult<ConcentratorDto>>(continuationUri);
         }
 
-        public Task<Concentrator> GetConcentrator(string deviceId)
+        public Task<ConcentratorDto> GetConcentrator(string deviceId)
         {
-            return this.http.GetFromJsonAsync<Concentrator>($"api/lorawan/concentrators/{deviceId}");
+            return this.http.GetFromJsonAsync<ConcentratorDto>($"api/lorawan/concentrators/{deviceId}");
         }
 
-        public Task CreateConcentrator(Concentrator concentrator)
+        public Task CreateConcentrator(ConcentratorDto concentrator)
         {
             return this.http.PostAsJsonAsync("api/lorawan/concentrators", concentrator);
         }
 
-        public Task UpdateConcentrator(Concentrator concentrator)
+        public Task UpdateConcentrator(ConcentratorDto concentrator)
         {
             return this.http.PutAsJsonAsync("api/lorawan/concentrators", concentrator);
         }

@@ -10,8 +10,8 @@ namespace AzureIoTHub.Portal.Server.Services
 
     public interface ILoRaWANConcentratorService
     {
-        Task<bool> CreateDeviceAsync(Concentrator device);
-        Task<bool> UpdateDeviceAsync(Concentrator device);
-        PaginationResult<Concentrator> GetAllDeviceConcentrator(PaginationResult<Twin> twinResults, IUrlHelper urlHelper);
+        Task<bool> CreateDeviceAsync(ConcentratorDto device);
+        Task<bool> UpdateDeviceAsync(ConcentratorDto device);
+        PaginationResult<ConcentratorDto> GetAllDeviceConcentrator(PaginationResult<Twin> twinResults, IUrlHelper urlHelper);
     }
 }
