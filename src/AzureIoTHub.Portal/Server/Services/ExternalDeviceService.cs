@@ -44,7 +44,7 @@ namespace AzureIoTHub.Portal.Server.Services
         }
 
         /// <summary>
-        /// this function return a list of all edge device wthiout tags.
+        /// this function return a list of all edge device without modules.
         /// </summary>
         /// <param name="continuationToken"></param>
         /// <param name="searchText"></param>
@@ -313,6 +313,21 @@ namespace AzureIoTHub.Portal.Server.Services
             }
 
             return null;
+        }
+
+        public async Task<Twin> GetDeviceTwinWithEdgeHubModule(string deviceId)
+        {
+            var query = this.registryManager.CreateQuery($"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{deviceId}']", 1);
+
+            try
+            {
+                var devicesTwins = await query.GetNextAsTwinAsync();
+                return devicesTwins.ElementAt(0);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerErrorException($"Unable to get devices twins", e);
+            }
         }
 
         /// <summary>
