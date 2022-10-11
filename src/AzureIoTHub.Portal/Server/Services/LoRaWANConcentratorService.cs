@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using System;
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
@@ -129,28 +128,48 @@ namespace AzureIoTHub.Portal.Server.Services
             return await CreateDeviceInDatabase(concentrator);
         }
 
-
-
-        public async Task<bool> UpdateDeviceAsync(ConcentratorDto device)
+        protected async Task<ConcentratorDto> UpdateDeviceInDatabase(ConcentratorDto concentrator)
         {
-            ArgumentNullException.ThrowIfNull(device, nameof(device));
+            try
+            {
+                var concentratorEntity = await this.concentratorRepository.GetByIdAsync(concentrator.DeviceId);
 
+                if (concentratorEntity == null)
+                {
+                    throw new ResourceNotFoundException($"The device {concentrator.DeviceId} doesn't exist");
+                }
+
+                _ = this.mapper.Map(concentrator, concentratorEntity);
+
+                this.concentratorRepository.Update(concentratorEntity);
+                await this.unitOfWork.SaveAsync();
+
+                return concentrator;
+            }
+            catch (DbUpdateException e)
+            {
+                throw new InternalServerErrorException($"Unable to update the concentrator {concentrator.DeviceName}", e);
+            }
+        }
+
+        public async Task<ConcentratorDto> UpdateDeviceAsync(ConcentratorDto concentrator)
+        {
             // Device status (enabled/disabled) has to be dealt with afterwards
-            var currentDevice = await this.externalDevicesService.GetDevice(device.DeviceId);
-            currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+            var currentConcentrator = await this.externalDevicesService.GetDevice(concentrator.DeviceId);
+            currentConcentrator.Status = concentrator.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
-            _ = await this.externalDevicesService.UpdateDevice(currentDevice);
+            _ = await this.externalDevicesService.UpdateDevice(currentConcentrator);
 
             // Get the current twin from the hub, based on the device ID
-            var currentTwin = await this.externalDevicesService.GetDeviceTwin(device.DeviceId);
-            device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
+            var currentTwin = await this.externalDevicesService.GetDeviceTwin(concentrator.DeviceId);
+            concentrator.RouterConfig = await this.routerConfigManager.GetRouterConfig(concentrator.LoraRegion);
 
             // Update the twin properties
-            this.concentratorTwinMapper.UpdateTwin(currentTwin, device);
+            this.concentratorTwinMapper.UpdateTwin(currentTwin, concentrator);
 
             _ = await this.externalDevicesService.UpdateDeviceTwin(currentTwin);
 
-            return true;
+            return await UpdateDeviceInDatabase(concentrator);
         }
     }
 }

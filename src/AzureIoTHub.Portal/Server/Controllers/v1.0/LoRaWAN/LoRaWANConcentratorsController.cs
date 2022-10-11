@@ -151,14 +151,21 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateDeviceAsync(ConcentratorDto device)
         {
+            ArgumentNullException.ThrowIfNull(device, nameof(device));
+
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                var validation = new ValidationProblemDetails(ModelState)
+                {
+                    Status = StatusCodes.Status422UnprocessableEntity
+                };
+
+                throw new ProblemDetailsException(validation);
             }
 
             _ = await this.loRaWANConcentratorService.UpdateDeviceAsync(device);
 
-            return Ok("Device updated.");
+            return Ok();
         }
 
         /// <summary>
