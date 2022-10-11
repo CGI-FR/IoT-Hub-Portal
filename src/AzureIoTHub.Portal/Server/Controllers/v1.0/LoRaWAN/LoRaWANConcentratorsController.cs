@@ -113,8 +113,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ConcentratorDto>> GetDeviceConcentrator(string deviceId)
         {
-            var item = await this.externalDevicesService.GetDeviceTwin(deviceId);
-            return Ok(this.concentratorTwinMapper.CreateDeviceDetails(item));
+            return Ok(await this.loRaWANConcentratorService.GetConcentrator(deviceId));
         }
 
         /// <summary>

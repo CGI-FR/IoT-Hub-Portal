@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Threading.Tasks;
     using AutoMapper;
     using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Infrastructure;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
@@ -126,6 +127,21 @@ namespace AzureIoTHub.Portal.Server.Services
             };
             return paginatedConcentratorDto;
         }
+
+        public async Task<ConcentratorDto> GetConcentrator(string deviceId)
+        {
+            var concentratorEntity = await this.concentratorRepository.GetByIdAsync(deviceId);
+
+            if (concentratorEntity == null)
+            {
+                throw new ResourceNotFoundException($"The concentrator with id {deviceId} doesn't exist");
+            }
+
+            var concentratorDto = this.mapper.Map<ConcentratorDto>(concentratorEntity);
+
+            return concentratorDto;
+        }
+
 
         public async Task<bool> UpdateDeviceAsync(ConcentratorDto device)
         {
