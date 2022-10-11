@@ -28,7 +28,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
     {
         private Mock<IDialogService> mockDialogService;
         private Mock<ISnackbar> mockSnackbarService;
-        private Mock<ILoRaWanConcentratorsClientService> mockLoRaWanConcentratorsClientService;
+        private Mock<ILoRaWanConcentratorClientService> mockLoRaWanConcentratorsClientService;
 
         private FakeNavigationManager mockNavigationManager;
 
@@ -38,7 +38,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockSnackbarService = MockRepository.Create<ISnackbar>();
-            this.mockLoRaWanConcentratorsClientService = MockRepository.Create<ILoRaWanConcentratorsClientService>();
+            this.mockLoRaWanConcentratorsClientService = MockRepository.Create<ILoRaWanConcentratorClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);

@@ -23,14 +23,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
     {
         private DialogService dialogService;
         private Mock<ISnackbar> mockSnackbarService;
-        private Mock<ILoRaWanConcentratorsClientService> mockLoRaWanConcentratorsClientService;
+        private Mock<ILoRaWanConcentratorClientService> mockLoRaWanConcentratorsClientService;
 
         public override void Setup()
         {
             base.Setup();
 
             this.mockSnackbarService = MockRepository.Create<ISnackbar>();
-            this.mockLoRaWanConcentratorsClientService = MockRepository.Create<ILoRaWanConcentratorsClientService>();
+            this.mockLoRaWanConcentratorsClientService = MockRepository.Create<ILoRaWanConcentratorClientService>();
 
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanConcentratorsClientService.Object);

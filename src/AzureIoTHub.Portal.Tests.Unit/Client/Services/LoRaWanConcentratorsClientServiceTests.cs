@@ -21,15 +21,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
     [TestFixture]
     public class LoRaWanConcentratorsClientServiceTests : BlazorUnitTest
     {
-        private ILoRaWanConcentratorsClientService loRaWanConcentratorsClientService;
+        private ILoRaWanConcentratorClientService loRaWanConcentratorsClientService;
 
         public override void Setup()
         {
             base.Setup();
 
-            _ = Services.AddSingleton<ILoRaWanConcentratorsClientService, LoRaWanConcentratorsClientService>();
+            _ = Services.AddSingleton<ILoRaWanConcentratorClientService, LoRaWanConcentratorClientService>();
 
-            this.loRaWanConcentratorsClientService = Services.GetRequiredService<ILoRaWanConcentratorsClientService>();
+            this.loRaWanConcentratorsClientService = Services.GetRequiredService<ILoRaWanConcentratorClientService>();
         }
 
         [Test]

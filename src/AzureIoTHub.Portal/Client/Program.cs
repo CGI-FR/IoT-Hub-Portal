@@ -62,7 +62,7 @@ namespace AzureIoTHub.Portal.Client
             _ = builder.Services.AddScoped<IDeviceConfigurationsClientService, DeviceConfigurationsClientService>();
             _ = builder.Services.AddScoped<IDeviceModelsClientService, DeviceModelsClientService>();
             _ = builder.Services.AddScoped<IDeviceTagSettingsClientService, DeviceTagSettingsClientService>();
-            _ = builder.Services.AddScoped<ILoRaWanConcentratorsClientService, LoRaWanConcentratorsClientService>();
+            _ = builder.Services.AddScoped<ILoRaWanConcentratorClientService, LoRaWanConcentratorClientService>();
             _ = builder.Services.AddScoped<IDeviceClientService, DeviceClientService>();
             _ = builder.Services.AddScoped<ILoRaWanDeviceModelsClientService, LoRaWanDeviceModelsClientService>();
             _ = builder.Services.AddScoped<ILoRaWanDeviceClientService, LoRaWanDeviceClientService>();

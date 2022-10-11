@@ -5,7 +5,7 @@
 @attribute [Authorize]
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
-@inject ILoRaWanConcentratorsClientService LoRaWanConcentratorsClientService
+@inject ILoRaWanConcentratorClientService LoRaWanConcentratorsClientService
 
 <MudGrid>
 
@@ -29,9 +29,9 @@
                 </MudTooltip>
             </ToolBarContent>
             <HeaderContent>
-                <MudTh>Device</MudTh>
-                <MudTh Style="text-align: center">Allowed</MudTh>
-                <MudTh Style="text-align: center">Connection state</MudTh>
+                <MudTh><MudTableSortLabel SortLabel="Name" T="ConcentratorDto">Device</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="ConcentratorDto">Allowed</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsConnected" T="ConcentratorDto">Connection state</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center">See details</MudTh>
                 <MudTh Style="text-align: center">Delete</MudTh>
             </HeaderContent>
@@ -107,35 +107,36 @@
     {
         try
         {
-            PaginationResult<ConcentratorDto> result;
+            string orderBy = null;
 
-            if (pages.Keys.Contains(state.Page))
+            switch (state.SortDirection)
             {
-                result = await LoRaWanConcentratorsClientService.GetConcentrators(pages[state.Page]);
-            }
-            else
-            {
-                var uri = $"api/lorawan/concentrators?pageSize={state.PageSize}";
-
-                _ = pages.TryAdd(state.Page, uri);
-
-                result = await LoRaWanConcentratorsClientService.GetConcentrators(uri);
+                case SortDirection.Ascending:
+                    orderBy = $"{state.SortLabel} asc";
+                    break;
+                case SortDirection.Descending:
+                    orderBy = $"{state.SortLabel} desc";
+                    break;
             }
 
-            _ = pages.TryAdd(state.Page + 1, result.NextPage);
+            var uri = $"api/lorawan/concentrators?pageNumber={state.Page}&pageSize={state.PageSize}&orderBy={orderBy}";
 
-            IsLoading = false;
+            var result = await LoRaWanConcentratorsClientService.GetConcentrators(uri);
 
             return new TableData<ConcentratorDto>
-            {
-                Items = result.Items,
-                TotalItems = result.TotalItems
-            };
+                {
+                    Items = result.Items,
+                    TotalItems = result.TotalItems
+                };
         }
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
             return new TableData<ConcentratorDto>();
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 

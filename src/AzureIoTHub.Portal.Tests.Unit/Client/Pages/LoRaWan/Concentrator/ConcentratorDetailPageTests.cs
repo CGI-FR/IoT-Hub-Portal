@@ -27,7 +27,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
     public class ConcentratorDetailPageTests : BlazorUnitTest
     {
         private Mock<IDialogService> mockDialogService;
-        private Mock<ILoRaWanConcentratorsClientService> mockLoRaWanConcentratorsClientService;
+        private Mock<ILoRaWanConcentratorClientService> mockLoRaWanConcentratorsClientService;
 
         private readonly string mockDeviceId = Guid.NewGuid().ToString();
 
@@ -38,7 +38,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             base.Setup();
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
-            this.mockLoRaWanConcentratorsClientService = MockRepository.Create<ILoRaWanConcentratorsClientService>();
+            this.mockLoRaWanConcentratorsClientService = MockRepository.Create<ILoRaWanConcentratorClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanConcentratorsClientService.Object);

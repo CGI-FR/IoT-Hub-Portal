@@ -6,11 +6,14 @@ namespace AzureIoTHub.Portal.Server.Services
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using AutoMapper;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Infrastructure;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
@@ -39,16 +42,32 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         private readonly ILogger<LoRaWANConcentratorService> logger;
 
+
+        private readonly PortalDbContext portalDbContext;
+        private readonly IMapper mapper;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IConcentratorRepository concentratorRepository;
+
+
         public LoRaWANConcentratorService(
             ILogger<LoRaWANConcentratorService> logger,
             IExternalDeviceService externalDevicesService,
             IConcentratorTwinMapper concentratorTwinMapper,
-            IRouterConfigManager routerConfigManager)
+            IRouterConfigManager routerConfigManager,
+            PortalDbContext portalDbContext,
+            IMapper mapper,
+            IUnitOfWork unitOfWork,
+            IConcentratorRepository concentratorRepository
+            )
         {
             this.logger = logger;
             this.externalDevicesService = externalDevicesService;
             this.concentratorTwinMapper = concentratorTwinMapper;
             this.routerConfigManager = routerConfigManager;
+            this.portalDbContext = portalDbContext;
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.concentratorRepository = concentratorRepository;
         }
 
         public async Task<bool> CreateDeviceAsync(ConcentratorDto device)
@@ -92,27 +111,20 @@ namespace AzureIoTHub.Portal.Server.Services
             return true;
         }
 
-        public PaginationResult<ConcentratorDto> GetAllDeviceConcentrator(PaginationResult<Twin> twinResults, IUrlHelper urlHelper)
+        public async Task<PaginatedResult<ConcentratorDto>> GetAllDeviceConcentrator(
+            int pageSize = 10,
+            int pageNumber = 0,
+            string[] orderBy = null)
         {
-            string nextPage = null;
-
-            if (!string.IsNullOrEmpty(twinResults.NextPage))
+            var paginatedConcentrator = await this.concentratorRepository.GetPaginatedListAsync(pageNumber, pageSize, orderBy);
+            var paginatedConcentratorDto = new PaginatedResult<ConcentratorDto>()
             {
-                nextPage = urlHelper.RouteUrl(new UrlRouteContext
-                {
-                    Values = new
-                    {
-                        continuationToken = twinResults.NextPage
-                    }
-                });
-            }
-
-            return new PaginationResult<ConcentratorDto>
-            {
-                Items = twinResults.Items.Select(this.concentratorTwinMapper.CreateDeviceDetails),
-                TotalItems = twinResults.TotalItems,
-                NextPage = nextPage
+                Data = paginatedConcentrator.Data.Select(x => mapper.Map<ConcentratorDto>(x)).ToList(),
+                TotalCount = paginatedConcentrator.TotalCount,
+                CurrentPage = paginatedConcentrator.CurrentPage,
+                PageSize = pageSize
             };
+            return paginatedConcentratorDto;
         }
 
         public async Task<bool> UpdateDeviceAsync(ConcentratorDto device)
