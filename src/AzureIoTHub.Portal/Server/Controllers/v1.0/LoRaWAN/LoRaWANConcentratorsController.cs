@@ -7,13 +7,13 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Filters;
+    using Hellang.Middleware.ProblemDetails;
     using Mappers;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.AspNetCore.Routing;
-    using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Extensions.Logging;
     using Services;
 
@@ -125,26 +125,21 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateDeviceAsync(ConcentratorDto device)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             ArgumentNullException.ThrowIfNull(device, nameof(device));
 
-            try
+            if (!ModelState.IsValid)
             {
-                if (await this.loRaWANConcentratorService.CreateDeviceAsync(device))
+                var validation = new ValidationProblemDetails(ModelState)
                 {
-                    return this.Ok();
-                }
-            }
-            catch (DeviceAlreadyExistsException e)
-            {
-                return this.BadRequest(e.Message);
+                    Status = StatusCodes.Status422UnprocessableEntity
+                };
+
+                throw new ProblemDetailsException(validation);
             }
 
-            return this.BadRequest();
+            _ = await this.loRaWANConcentratorService.CreateDeviceAsync(device);
+
+            return Ok(device);
         }
 
         /// <summary>

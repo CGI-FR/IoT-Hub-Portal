@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Threading.Tasks;
     using AutoMapper;
     using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Infrastructure;
@@ -16,10 +17,8 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Common.Exceptions;
-    using Microsoft.Azure.Devices.Shared;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
-    using Newtonsoft.Json;
 
     public class LoRaWANConcentratorService : ILoRaWANConcentratorService
     {
@@ -71,47 +70,6 @@ namespace AzureIoTHub.Portal.Server.Services
             this.concentratorRepository = concentratorRepository;
         }
 
-        public async Task<bool> CreateDeviceAsync(ConcentratorDto device)
-        {
-            try
-            {
-                // Create a new Twin from the form's fields.
-                var newTwin = new Twin()
-                {
-                    DeviceId = device.DeviceId,
-                };
-
-                device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
-
-                device.ClientThumbprint ??= string.Empty;
-
-                this.concentratorTwinMapper.UpdateTwin(newTwin, device);
-
-                var status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
-
-                var result = await this.externalDevicesService.CreateDeviceWithTwin(device.DeviceId, false, newTwin, status);
-
-                if (!result.IsSuccessful)
-                {
-                    this.logger?.LogWarning(message: $"Failed to create concentrator. {string.Join(Environment.NewLine, result.Errors?.Select(c => JsonConvert.SerializeObject(c)) ?? Array.Empty<string>())}");
-
-                    return false;
-                }
-            }
-            catch (DeviceAlreadyExistsException e)
-            {
-                this.logger?.LogError($"{device.DeviceId} - Create device failed", e);
-                throw;
-            }
-            catch (InvalidOperationException e)
-            {
-                this.logger?.LogError($"Create device failed for {device.DeviceId} \n {e.Message}");
-                return false;
-            }
-
-            return true;
-        }
-
         public async Task<PaginatedResult<ConcentratorDto>> GetAllDeviceConcentrator(
             int pageSize = 10,
             int pageNumber = 0,
@@ -141,6 +99,36 @@ namespace AzureIoTHub.Portal.Server.Services
 
             return concentratorDto;
         }
+
+        protected async Task<ConcentratorDto> CreateDeviceInDatabase(ConcentratorDto concentrator)
+        {
+            try
+            {
+                var concentratorEntity = this.mapper.Map<Concentrator>(concentrator);
+                await this.concentratorRepository.InsertAsync(concentratorEntity);
+                await this.unitOfWork.SaveAsync();
+                return concentrator;
+            }
+            catch (DbUpdateException e)
+            {
+                throw new InternalServerErrorException($"Unable to create the concentrator {concentrator.DeviceName}", e);
+            }
+        }
+
+        public async Task<ConcentratorDto> CreateDeviceAsync(ConcentratorDto concentrator)
+        {
+            var newTwin = await this.externalDevicesService.CreateNewTwinFromDeviceId(concentrator.DeviceId);
+            concentrator.RouterConfig = await this.routerConfigManager.GetRouterConfig(concentrator.LoraRegion);
+            concentrator.ClientThumbprint ??= string.Empty;
+
+            this.concentratorTwinMapper.UpdateTwin(newTwin, concentrator);
+            var status = concentrator.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+
+            _ = await this.externalDevicesService.CreateDeviceWithTwin(concentrator.DeviceId, false, newTwin, status);
+
+            return await CreateDeviceInDatabase(concentrator);
+        }
+
 
 
         public async Task<bool> UpdateDeviceAsync(ConcentratorDto device)
