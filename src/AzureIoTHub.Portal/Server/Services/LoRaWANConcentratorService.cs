@@ -171,5 +171,33 @@ namespace AzureIoTHub.Portal.Server.Services
 
             return await UpdateDeviceInDatabase(concentrator);
         }
+
+        protected async Task DeleteDeviceInDatabase(string deviceId)
+        {
+            try
+            {
+                var concentratorEntity = await this.concentratorRepository.GetByIdAsync(deviceId);
+
+                if (concentratorEntity == null)
+                {
+                    return;
+                }
+
+                this.concentratorRepository.Delete(deviceId);
+
+                await this.unitOfWork.SaveAsync();
+            }
+            catch (DbUpdateException e)
+            {
+                throw new InternalServerErrorException($"Unable to delete the concentrator {deviceId}", e);
+            }
+        }
+
+        public async Task DeleteDeviceAsync(string deviceId)
+        {
+            await this.externalDevicesService.DeleteDevice(deviceId);
+
+            await DeleteDeviceInDatabase(deviceId);
+        }
     }
 }

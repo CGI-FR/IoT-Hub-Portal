@@ -176,8 +176,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(string deviceId)
         {
-            await this.externalDevicesService.DeleteDevice(deviceId);
-            return Ok("the device was successfully deleted.");
+            await this.loRaWANConcentratorService.DeleteDeviceAsync(deviceId);
+
+            return Ok();
         }
     }
 }
