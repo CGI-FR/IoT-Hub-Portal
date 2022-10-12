@@ -171,7 +171,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             try
             {
-                return Ok(await this.edgeDevicesService.GetEdgeDeviceCredentials(deviceId));
+                return Ok(await this.externalDevicesService.GetEdgeDeviceCredentials(deviceId));
             }
             catch (ResourceNotFoundException e)
             {

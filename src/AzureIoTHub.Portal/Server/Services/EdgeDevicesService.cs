@@ -18,7 +18,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using AzureIoTHub.Portal.Shared.Models.v1._0.Filters;
     using Microsoft.Azure.Devices;
@@ -29,24 +28,9 @@ namespace AzureIoTHub.Portal.Server.Services
     public class EdgeDevicesService : IEdgeDevicesService
     {
         /// <summary>
-        /// The device registry manager.
-        /// </summary>
-        private readonly RegistryManager registryManager;
-
-        /// <summary>
         /// The device idevice service.
         /// </summary>
         private readonly IExternalDeviceService externalDevicesService;
-
-        /// <summary>
-        /// The edge device mapper.
-        /// </summary>
-        private readonly IEdgeDeviceMapper edgeDeviceMapper;
-
-        /// <summary>
-        /// The device provisioning srevice manager.
-        /// </summary>
-        private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
 
         private readonly IDeviceTagService deviceTagService;
 
@@ -57,9 +41,8 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IDeviceTagValueRepository deviceTagValueRepository;
         private readonly IDeviceModelImageManager deviceModelImageManager;
 
-        public EdgeDevicesService(RegistryManager registryManager, IExternalDeviceService externalDevicesService,
-            IEdgeDeviceMapper edgeDeviceMapper,
-            IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
+        public EdgeDevicesService(
+            IExternalDeviceService externalDevicesService,
             IDeviceTagService deviceTagService,
             PortalDbContext portalDbContext,
             IMapper mapper,
@@ -68,13 +51,8 @@ namespace AzureIoTHub.Portal.Server.Services
             IDeviceTagValueRepository deviceTagValueRepository,
             IDeviceModelImageManager deviceModelImageManager)
         {
-            this.registryManager = registryManager;
             this.externalDevicesService = externalDevicesService;
-            this.edgeDeviceMapper = edgeDeviceMapper;
-            this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
             this.deviceTagService = deviceTagService;
-            this.deviceTagService = deviceTagService;
-
             this.portalDbContext = portalDbContext;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -140,7 +118,6 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>IoTEdgeDevice object.</returns>
         public async Task<IoTEdgeDevice> GetEdgeDevice(string edgeDeviceId)
         {
-            //var deviceTwin = await this.externalDevicesService.GetDeviceTwin(edgeDeviceId);
             var deviceEntity = await this.edgeDeviceRepository.GetByIdAsync(edgeDeviceId);
 
             if (deviceEntity is null)
@@ -152,7 +129,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             var deviceTwinWithModules = await this.externalDevicesService.GetDeviceTwinWithModule(edgeDeviceId);
 
-            deviceDto.LastDeployment = await RetrieveLastConfiguration(deviceTwinWithModules);
+            deviceDto.LastDeployment = await this.externalDevicesService.RetrieveLastConfiguration(deviceTwinWithModules);
             deviceDto.ImageUrl = this.deviceModelImageManager.ComputeImageUri(deviceDto.ModelId);
             deviceDto.Modules = DeviceHelper.RetrieveModuleList(deviceTwinWithModules);
             deviceDto.RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceTwinWithModules);
@@ -160,9 +137,6 @@ namespace AzureIoTHub.Portal.Server.Services
             deviceDto.Status = deviceTwinWithModules.Status?.ToString();
             deviceDto.Tags = FilterDeviceTags(deviceDto);
 
-            //var edgeDeviceNbConnectedDevice = await RetrieveNbConnectedDevice(edgeDeviceId);
-            //var tagList = this.deviceTagService.GetAllTagsNames();
-            //return this.edgeDeviceMapper.CreateEdgeDevice(deviceTwin, deviceTwinWithModules, edgeDeviceNbConnectedDevice, edgeDeviceLastConfiguration, tagList);
             return deviceDto;
         }
 
@@ -193,7 +167,7 @@ namespace AzureIoTHub.Portal.Server.Services
             return await CreateEdgeDeviceInDatabase(edgeDevice);
         }
 
-        public async Task<IoTEdgeDevice> CreateEdgeDeviceInDatabase(IoTEdgeDevice device)
+        private async Task<IoTEdgeDevice> CreateEdgeDeviceInDatabase(IoTEdgeDevice device)
         {
             try
             {
@@ -264,7 +238,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
-        public async Task DeleteEdgeDeviceInDatabase(string deviceId)
+        private async Task DeleteEdgeDeviceInDatabase(string deviceId)
         {
             try
             {
@@ -350,63 +324,6 @@ namespace AzureIoTHub.Portal.Server.Services
                 Payload = result.GetPayloadAsJson(),
                 Status = result.Status
             };
-        }
-
-        /// <summary>
-        /// Gets the IoT Edge device enrollement credentials.
-        /// </summary>
-        /// <param name="edgeDeviceId">the edge device id.</param>
-        /// <returns>Enrollment credentials.</returns>
-        /// <exception cref="ResourceNotFoundException"></exception>
-        public async Task<EnrollmentCredentials> GetEdgeDeviceCredentials(string edgeDeviceId)
-        {
-            var deviceTwin = await this.externalDevicesService.GetDeviceTwin(edgeDeviceId);
-
-            if (deviceTwin == null)
-            {
-                throw new ResourceNotFoundException($"IoT Edge {edgeDeviceId} doesn't exist.");
-            }
-
-            var modelId = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId));
-
-            return await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(edgeDeviceId, modelId);
-        }
-
-        ///// <summary>
-        ///// Retrieves the connected devices number on the IoT Edge.
-        ///// </summary>
-        ///// <param name="deviceId">The device identifier.</param>
-        //private async Task<int> RetrieveNbConnectedDevice(string deviceId)
-        //{
-        //    var deviceWithClient = await this.externalDevicesService.GetDeviceTwinWithEdgeHubModule(deviceId);
-        //    var reportedProperties = JObject.Parse(deviceWithClient.Properties.Reported.ToJson());
-
-        //    return reportedProperties.TryGetValue("clients", out var clients) ? clients.Count() : 0;
-        //}
-
-        /// <summary>
-        /// Retrieves the last configuration of the IoT Edge.
-        /// </summary>
-        /// <param name="twin">The twin.</param>
-        private async Task<ConfigItem> RetrieveLastConfiguration(Twin twin)
-        {
-            var item = new ConfigItem();
-
-            if (twin.Configurations?.Count > 0)
-            {
-                foreach (var config in twin.Configurations)
-                {
-                    var confObj = await this.registryManager.GetConfigurationAsync(config.Key);
-                    if (item.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
-                    {
-                        item.Name = config.Key;
-                        item.DateCreation = confObj.CreatedTimeUtc;
-                        item.Status = nameof(ConfigurationStatus.Applied);
-                    }
-                }
-                return item;
-            }
-            return null;
         }
 
         private Dictionary<string, string> FilterDeviceTags(IoTEdgeDevice device)

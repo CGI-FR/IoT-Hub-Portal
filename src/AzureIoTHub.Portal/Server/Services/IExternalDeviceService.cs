@@ -63,6 +63,10 @@ namespace AzureIoTHub.Portal.Server.Services
 
         Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId);
 
+        Task<EnrollmentCredentials> GetEdgeDeviceCredentials(string edgeDeviceId);
+
+        Task<ConfigItem> RetrieveLastConfiguration(Twin twin);
+
         Task<Twin> CreateNewTwinFromDeviceId(string deviceId);
     }
 }
