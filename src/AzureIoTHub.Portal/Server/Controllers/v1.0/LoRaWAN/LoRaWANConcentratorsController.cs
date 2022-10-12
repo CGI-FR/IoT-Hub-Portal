@@ -8,7 +8,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Filters;
     using Hellang.Middleware.ProblemDetails;
-    using Mappers;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -26,16 +25,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     public class LoRaWANConcentratorsController : ControllerBase
     {
         /// <summary>
-        /// The device Idevice service.
-        /// </summary>
-        private readonly IExternalDeviceService externalDevicesService;
-
-        /// <summary>
-        /// The device IConcentrator twin mapper.
-        /// </summary>
-        private readonly IConcentratorTwinMapper concentratorTwinMapper;
-
-        /// <summary>
         /// The LoRaWAN concentrator service.
         /// </summary>
         private readonly ILoRaWANConcentratorService loRaWANConcentratorService;
@@ -49,17 +38,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// Initializes a new instance of the <see cref="LoRaWANConcentratorsController"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        /// <param name="externalDevicesService">The devices service.</param>
-        /// <param name="concentratorTwinMapper">The concentrator twin mapper.</param>
         /// <param name="loRaWANConcentratorService">The device Lora wan concentrators controller.</param>
         public LoRaWANConcentratorsController(
             ILogger<LoRaWANConcentratorsController> logger,
-            IExternalDeviceService externalDevicesService,
-            IConcentratorTwinMapper concentratorTwinMapper,
             ILoRaWANConcentratorService loRaWANConcentratorService)
         {
-            this.externalDevicesService = externalDevicesService;
-            this.concentratorTwinMapper = concentratorTwinMapper;
             this.logger = logger;
             this.loRaWANConcentratorService = loRaWANConcentratorService;
         }
@@ -165,7 +148,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 
             _ = await this.loRaWANConcentratorService.UpdateDeviceAsync(device);
 
-            return Ok();
+            return Ok(device);
         }
 
         /// <summary>

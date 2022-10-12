@@ -10,7 +10,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Infrastructure;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
@@ -41,8 +40,6 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         private readonly ILogger<LoRaWANConcentratorService> logger;
 
-
-        private readonly PortalDbContext portalDbContext;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IConcentratorRepository concentratorRepository;
@@ -53,7 +50,6 @@ namespace AzureIoTHub.Portal.Server.Services
             IExternalDeviceService externalDevicesService,
             IConcentratorTwinMapper concentratorTwinMapper,
             IRouterConfigManager routerConfigManager,
-            PortalDbContext portalDbContext,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IConcentratorRepository concentratorRepository
@@ -63,7 +59,6 @@ namespace AzureIoTHub.Portal.Server.Services
             this.externalDevicesService = externalDevicesService;
             this.concentratorTwinMapper = concentratorTwinMapper;
             this.routerConfigManager = routerConfigManager;
-            this.portalDbContext = portalDbContext;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.concentratorRepository = concentratorRepository;
