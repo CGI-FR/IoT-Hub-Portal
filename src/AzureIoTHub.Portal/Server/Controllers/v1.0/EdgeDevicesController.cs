@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Extensions.Logging;
 
@@ -56,29 +57,53 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the IoT Edge device list.
         /// </summary>
-        /// <param name="continuationToken"></param>
         /// <param name="searchText"></param>
         /// <param name="searchStatus"></param>
         /// <param name="searchType"></param>
         /// <param name="pageSize"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="orderBy"></param>
         [HttpGet(Name = "GET IoT Edge devices")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<IoTEdgeListItem>))]
-        public async Task<IActionResult> Get(
-            string continuationToken = null,
+        public async Task<PaginationResult<IoTEdgeListItem>> Get(
             string searchText = null,
             bool? searchStatus = null,
             string searchType = null,
-            int pageSize = 10)
+            int pageSize = 10,
+            int pageNumber = 0,
+            [FromQuery] string[] orderBy = null)
         {
-            var edgeDevicesTwin = await this.externalDevicesService.GetAllEdgeDevice(
-                continuationToken: continuationToken,
-                searchText: searchText,
-                searchStatus: searchStatus,
-                searchType: searchType,
-                pageSize: pageSize);
+            var paginatedEdgeDevices = await this.edgeDevicesService.GetEdgeDevicesPage(
+                searchText,
+                searchStatus,
+                pageSize,
+                pageNumber,
+                orderBy);
 
-            return Ok(this.edgeDevicesService.GetEdgeDevicesPage(
-                edgeDevicesTwin, Url, searchText, searchStatus, searchType, pageSize));
+            var nextPage = string.Empty;
+
+            if (paginatedEdgeDevices.HasNextPage)
+            {
+                nextPage = Url.RouteUrl(new UrlRouteContext
+                {
+                    RouteName = "GET IoT Edge devices",
+                    Values = new
+                    {
+                        searchText,
+                        searchType,
+                        searchStatus,
+                        pageSize,
+                        pageNumber = pageNumber + 1
+                    }
+                });
+            }
+
+            return new PaginationResult<IoTEdgeListItem>
+            {
+                Items = paginatedEdgeDevices.Data,
+                TotalItems = paginatedEdgeDevices.TotalCount,
+                NextPage = nextPage
+            };
         }
 
         /// <summary>

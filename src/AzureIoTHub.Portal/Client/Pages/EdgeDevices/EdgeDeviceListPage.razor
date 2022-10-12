@@ -148,22 +148,20 @@
     {
         try
         {
-            PaginationResult<IoTEdgeListItem> result;
+            string orderBy = null;
 
-            if (pages.Keys.Contains(state.Page))
+            switch (state.SortDirection)
             {
-                result = await EdgeDeviceClientService.GetDevices(pages[state.Page]);
-            }
-            else
-            {
-                var uri = $"api/edge/devices?pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&searchType={searchModel.Type}";
-
-                _ = pages.TryAdd(state.Page, uri);
-
-                result = await EdgeDeviceClientService.GetDevices(uri);
+                case SortDirection.Ascending:
+                    orderBy = $"{state.SortLabel} asc";
+                    break;
+                case SortDirection.Descending:
+                    orderBy = $"{state.SortLabel} desc";
+                    break;
             }
 
-            _ = pages.TryAdd(state.Page + 1, result.NextPage);
+            var uri = $"api/edge/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&searchType={searchModel.Type}&orderBy={orderBy}";
+            var result = await EdgeDeviceClientService.GetDevices(uri);
 
             return new TableData<IoTEdgeListItem>
                 {

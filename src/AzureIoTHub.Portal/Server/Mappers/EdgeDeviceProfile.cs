@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using System.Text.Json;
     using AutoMapper;
     using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
     using Microsoft.Azure.Devices.Shared;
     using Newtonsoft.Json.Linq;
@@ -28,6 +29,30 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 .ForMember(dest => dest.Scope, opts => opts.MapFrom(src => src.DeviceScope))
                 .ForMember(dest => dest.NbDevices, opts => opts.MapFrom((src, _, _, context) => GetNbConnectedDevice((Twin)context.Items["TwinClient"])))
                 .ForMember(dest => dest.NbModules, opts => opts.MapFrom((src, _, _, context) => DeviceHelper.RetrieveNbModuleCount((Twin)context.Items["TwinModules"], src.DeviceId)));
+
+            _ = CreateMap<EdgeDevice, IoTEdgeDevice>()
+                .ForMember(dest => dest.DeviceId, opts => opts.MapFrom(src => src.Id))
+                .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
+                .ForMember(dest => dest.ModelId, opts => opts.MapFrom(src => src.DeviceModelId))
+                .ForMember(dest => dest.Scope, opts => opts.MapFrom(src => src.Scope))
+                .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.IsEnabled))
+                .ForMember(dest => dest.NbDevices, opts => opts.MapFrom(src => src.NbDevices))
+                .ForMember(dest => dest.NbModules, opts => opts.MapFrom(src => src.NbModules))
+                .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.ToDictionary(tag => tag.Name, tag => tag.Value)));
+
+            _ = CreateMap<IoTEdgeDevice, EdgeDevice>()
+                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.DeviceName))
+                .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.ModelId))
+                .ForMember(dest => dest.Scope, opts => opts.MapFrom(src => src.Scope))
+                .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.IsEnabled))
+                .ForMember(dest => dest.NbDevices, opts => opts.MapFrom(src => src.NbDevices))
+                .ForMember(dest => dest.NbModules, opts => opts.MapFrom(src => src.NbModules))
+                .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.Select(pair => new DeviceTagValue
+                {
+                    Name = pair.Key,
+                    Value = pair.Value
+                })));
         }
 
         private static ICollection<DeviceTagValue> GetTags(Twin twin)

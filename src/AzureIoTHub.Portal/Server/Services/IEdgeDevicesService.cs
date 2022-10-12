@@ -5,24 +5,22 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Shared;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
 
     public interface IEdgeDevicesService
     {
-        PaginationResult<IoTEdgeListItem> GetEdgeDevicesPage(PaginationResult<Twin> edgeDevicesTwin,
-            IUrlHelper urlHelper,
+        Task<PaginatedResult<IoTEdgeListItem>> GetEdgeDevicesPage(
             string searchText = null,
             bool? searchStatus = null,
-            string searchType = null,
-            int pageSize = 10);
+            int pageSize = 10,
+            int pageNumber = 0,
+            string[] orderBy = null);
 
         Task<IoTEdgeDevice> GetEdgeDevice(string edgeDeviceId);
 
-        Task<BulkRegistryOperationResult> CreateEdgeDevice(IoTEdgeDevice edgeDevice);
+        Task<IoTEdgeDevice> CreateEdgeDevice(IoTEdgeDevice edgeDevice);
 
-        Task<Twin> UpdateEdgeDevice(IoTEdgeDevice edgeDevice);
+        Task<IoTEdgeDevice> UpdateEdgeDevice(IoTEdgeDevice edgeDevice);
 
         Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName);
 
