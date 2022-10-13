@@ -4,7 +4,6 @@
 namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
 {
     using System;
-    using System.Reflection;
     using AutoMapper;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -15,7 +14,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
     using NUnit.Framework;
     using Portal.Infrastructure;
     using Portal.Server;
-    using Portal.Server.Mappers;
     using RichardSzalay.MockHttp;
 
     public abstract class BackendUnitTest : IDisposable
