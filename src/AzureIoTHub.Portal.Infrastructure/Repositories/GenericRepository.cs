@@ -80,5 +80,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
 
             return new PaginatedResult<T>(items, count, pageNumber, pageSize);
         }
+
+        public async Task<int> CountAsync(Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default)
+        {
+            IQueryable<T> query = this.context.Set<T>();
+            if (expression != null) query = query.Where(expression);
+
+            return await query
+                .AsNoTracking()
+                .CountAsync(cancellationToken: cancellationToken);
+        }
     }
 }

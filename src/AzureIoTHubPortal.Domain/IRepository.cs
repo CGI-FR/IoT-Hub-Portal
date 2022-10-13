@@ -22,5 +22,8 @@ namespace AzureIoTHub.Portal.Domain
         void Delete(object id);
 
         Task<PaginatedResult<T>> GetPaginatedListAsync(int pageNumber, int pageSize, string[]? orderBy = null, Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default);
+
+        Task<int> CountAsync(Expression<Func<T, bool>>? expression = null,
+            CancellationToken cancellationToken = default);
     }
 }
