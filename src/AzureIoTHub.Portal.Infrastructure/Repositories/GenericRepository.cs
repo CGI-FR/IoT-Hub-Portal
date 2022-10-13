@@ -90,5 +90,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
                 .AsNoTracking()
                 .CountAsync(cancellationToken: cancellationToken);
         }
+
+        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)
+        {
+            return await this.context.Set<T>().AnyAsync(expression, cancellationToken: cancellationToken);
+        }
     }
 }

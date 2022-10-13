@@ -299,5 +299,61 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
             // Assert
             _ = result.Should().Be(1);
         }
+
+        [Test]
+        public async Task ExistsAsync_ExistingData_ReturnsTrue()
+        {
+            // Arrange
+            var context = SetupDbContext();
+
+            await context.AddRangeAsync(new List<DeviceTag>
+            {
+                new()
+                {
+                    Id = "device_tag_01",
+                    Label = "Location 1",
+                    Required = false,
+                    Searchable = true
+                }
+            });
+
+            _ = await context.SaveChangesAsync();
+
+            var instance = new GenericRepository<DeviceTag>(context);
+
+            // Act
+            var result = await instance.ExistsAsync(tag => tag.Id.Equals("device_tag_01"));
+
+            // Assert
+            _ = result.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task ExistsAsync_NonExistingData_ReturnsFalse()
+        {
+            // Arrange
+            var context = SetupDbContext();
+
+            await context.AddRangeAsync(new List<DeviceTag>
+            {
+                new()
+                {
+                    Id = "device_tag_01",
+                    Label = "Location 1",
+                    Required = false,
+                    Searchable = true
+                }
+            });
+
+            _ = await context.SaveChangesAsync();
+
+            var instance = new GenericRepository<DeviceTag>(context);
+
+            // Act
+            var result = await instance.ExistsAsync(tag => tag.Id.Equals("device_tag_03"));
+
+            // Assert
+            _ = result.Should().BeFalse();
+        }
     }
 }
