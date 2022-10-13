@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Client.Services
     using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN;
     using Portal.Models.v10.LoRaWAN;
 
-    public interface ILoRaWanConcentratorsClientService
+    public interface ILoRaWanConcentratorClientService
     {
         Task<PaginationResult<ConcentratorDto>> GetConcentrators(string continuationUri);
 

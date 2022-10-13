@@ -15,10 +15,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Controllers;
-    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.AspNetCore.Routing;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Primitives;
     using Models.v10;

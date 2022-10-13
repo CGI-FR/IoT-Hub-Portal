@@ -7,11 +7,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Filters;
-    using Mappers;
+    using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Azure.Devices.Common.Exceptions;
+    using Microsoft.AspNetCore.Routing;
     using Microsoft.Extensions.Logging;
     using Services;
 
@@ -23,16 +23,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     [LoRaFeatureActiveFilter]
     public class LoRaWANConcentratorsController : ControllerBase
     {
-        /// <summary>
-        /// The device Idevice service.
-        /// </summary>
-        private readonly IExternalDeviceService externalDevicesService;
-
-        /// <summary>
-        /// The device IConcentrator twin mapper.
-        /// </summary>
-        private readonly IConcentratorTwinMapper concentratorTwinMapper;
-
         /// <summary>
         /// The LoRaWAN concentrator service.
         /// </summary>
@@ -47,17 +37,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// Initializes a new instance of the <see cref="LoRaWANConcentratorsController"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        /// <param name="externalDevicesService">The devices service.</param>
-        /// <param name="concentratorTwinMapper">The concentrator twin mapper.</param>
         /// <param name="loRaWANConcentratorService">The device Lora wan concentrators controller.</param>
         public LoRaWANConcentratorsController(
             ILogger<LoRaWANConcentratorsController> logger,
-            IExternalDeviceService externalDevicesService,
-            IConcentratorTwinMapper concentratorTwinMapper,
             ILoRaWANConcentratorService loRaWANConcentratorService)
         {
-            this.externalDevicesService = externalDevicesService;
-            this.concentratorTwinMapper = concentratorTwinMapper;
             this.logger = logger;
             this.loRaWANConcentratorService = loRaWANConcentratorService;
         }
@@ -68,16 +52,20 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [HttpGet(Name = "GET LoRaWAN Concentrator list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginationResult<ConcentratorDto>>> GetAllDeviceConcentrator(
-            string continuationToken = null,
-            int pageSize = 10)
+            int pageSize = 10,
+            int pageNumber = 0,
+            [FromQuery] string[] orderBy = null)
         {
-            // Gets all the twins from this devices
-            var result = await this.externalDevicesService.GetAllDevice(
-                continuationToken: continuationToken,
-                filterDeviceType: "LoRa Concentrator",
-                pageSize: pageSize);
+            var paginatedDevices = await this.loRaWANConcentratorService.GetAllDeviceConcentrator(
+                pageSize,
+                pageNumber,
+                orderBy);
 
-            return this.Ok(this.loRaWANConcentratorService.GetAllDeviceConcentrator(result, this.Url));
+            return new PaginationResult<ConcentratorDto>
+            {
+                Items = paginatedDevices.Data,
+                TotalItems = paginatedDevices.TotalCount,
+            };
         }
 
         /// <summary>
@@ -88,8 +76,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ConcentratorDto>> GetDeviceConcentrator(string deviceId)
         {
-            var item = await this.externalDevicesService.GetDeviceTwin(deviceId);
-            return Ok(this.concentratorTwinMapper.CreateDeviceDetails(item));
+            return Ok(await this.loRaWANConcentratorService.GetConcentrator(deviceId));
         }
 
         /// <summary>
@@ -101,26 +88,21 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateDeviceAsync(ConcentratorDto device)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             ArgumentNullException.ThrowIfNull(device, nameof(device));
 
-            try
+            if (!ModelState.IsValid)
             {
-                if (await this.loRaWANConcentratorService.CreateDeviceAsync(device))
+                var validation = new ValidationProblemDetails(ModelState)
                 {
-                    return this.Ok();
-                }
-            }
-            catch (DeviceAlreadyExistsException e)
-            {
-                return this.BadRequest(e.Message);
+                    Status = StatusCodes.Status422UnprocessableEntity
+                };
+
+                throw new ProblemDetailsException(validation);
             }
 
-            return this.BadRequest();
+            _ = await this.loRaWANConcentratorService.CreateDeviceAsync(device);
+
+            return Ok(device);
         }
 
         /// <summary>
@@ -132,14 +114,21 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateDeviceAsync(ConcentratorDto device)
         {
+            ArgumentNullException.ThrowIfNull(device, nameof(device));
+
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                var validation = new ValidationProblemDetails(ModelState)
+                {
+                    Status = StatusCodes.Status422UnprocessableEntity
+                };
+
+                throw new ProblemDetailsException(validation);
             }
 
             _ = await this.loRaWANConcentratorService.UpdateDeviceAsync(device);
 
-            return Ok("Device updated.");
+            return Ok(device);
         }
 
         /// <summary>
@@ -150,8 +139,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(string deviceId)
         {
-            await this.externalDevicesService.DeleteDevice(deviceId);
-            return Ok("the device was successfully deleted.");
+            await this.loRaWANConcentratorService.DeleteDeviceAsync(deviceId);
+
+            return Ok();
         }
     }
 }

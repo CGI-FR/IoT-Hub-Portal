@@ -5,13 +5,14 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Azure.Devices.Shared;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
 
     public interface ILoRaWANConcentratorService
     {
-        Task<bool> CreateDeviceAsync(ConcentratorDto device);
-        Task<bool> UpdateDeviceAsync(ConcentratorDto device);
-        PaginationResult<ConcentratorDto> GetAllDeviceConcentrator(PaginationResult<Twin> twinResults, IUrlHelper urlHelper);
+        Task<PaginatedResult<ConcentratorDto>> GetAllDeviceConcentrator(int pageSize = 10, int pageNumber = 0, string[] orderBy = null);
+        Task<ConcentratorDto> GetConcentrator(string deviceId);
+        Task<ConcentratorDto> CreateDeviceAsync(ConcentratorDto concentrator);
+        Task<ConcentratorDto> UpdateDeviceAsync(ConcentratorDto concentrator);
+        Task DeleteDeviceAsync(string deviceId);
     }
 }

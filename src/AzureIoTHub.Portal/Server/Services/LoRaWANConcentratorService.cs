@@ -3,19 +3,19 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Server.Mappers;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
+    using AutoMapper;
+    using Domain;
+    using Domain.Entities;
+    using Domain.Exceptions;
+    using Domain.Repositories;
+    using Managers;
+    using Mappers;
     using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Common.Exceptions;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Extensions.Logging;
-    using Newtonsoft.Json;
+    using Microsoft.EntityFrameworkCore;
+    using Models.v10.LoRaWAN;
+    using Shared.Models.v1._0;
 
     public class LoRaWANConcentratorService : ILoRaWANConcentratorService
     {
@@ -34,107 +34,157 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         private readonly IRouterConfigManager routerConfigManager;
 
-        /// <summary>
-        /// The device Lora wan concentrators service logger.
-        /// </summary>
-        private readonly ILogger<LoRaWANConcentratorService> logger;
+        private readonly IMapper mapper;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IConcentratorRepository concentratorRepository;
+
 
         public LoRaWANConcentratorService(
-            ILogger<LoRaWANConcentratorService> logger,
             IExternalDeviceService externalDevicesService,
             IConcentratorTwinMapper concentratorTwinMapper,
-            IRouterConfigManager routerConfigManager)
+            IRouterConfigManager routerConfigManager,
+            IMapper mapper,
+            IUnitOfWork unitOfWork,
+            IConcentratorRepository concentratorRepository
+            )
         {
-            this.logger = logger;
             this.externalDevicesService = externalDevicesService;
             this.concentratorTwinMapper = concentratorTwinMapper;
             this.routerConfigManager = routerConfigManager;
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.concentratorRepository = concentratorRepository;
         }
 
-        public async Task<bool> CreateDeviceAsync(ConcentratorDto device)
+        public async Task<PaginatedResult<ConcentratorDto>> GetAllDeviceConcentrator(
+            int pageSize = 10,
+            int pageNumber = 0,
+            string[] orderBy = null)
         {
-            try
+            var paginatedConcentrator = await this.concentratorRepository.GetPaginatedListAsync(pageNumber, pageSize, orderBy);
+            var paginatedConcentratorDto = new PaginatedResult<ConcentratorDto>
             {
-                // Create a new Twin from the form's fields.
-                var newTwin = new Twin()
-                {
-                    DeviceId = device.DeviceId,
-                };
-
-                device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
-
-                device.ClientThumbprint ??= string.Empty;
-
-                this.concentratorTwinMapper.UpdateTwin(newTwin, device);
-
-                var status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
-
-                var result = await this.externalDevicesService.CreateDeviceWithTwin(device.DeviceId, false, newTwin, status);
-
-                if (!result.IsSuccessful)
-                {
-                    this.logger?.LogWarning(message: $"Failed to create concentrator. {string.Join(Environment.NewLine, result.Errors?.Select(c => JsonConvert.SerializeObject(c)) ?? Array.Empty<string>())}");
-
-                    return false;
-                }
-            }
-            catch (DeviceAlreadyExistsException e)
-            {
-                this.logger?.LogError($"{device.DeviceId} - Create device failed", e);
-                throw;
-            }
-            catch (InvalidOperationException e)
-            {
-                this.logger?.LogError($"Create device failed for {device.DeviceId} \n {e.Message}");
-                return false;
-            }
-
-            return true;
-        }
-
-        public PaginationResult<ConcentratorDto> GetAllDeviceConcentrator(PaginationResult<Twin> twinResults, IUrlHelper urlHelper)
-        {
-            string nextPage = null;
-
-            if (!string.IsNullOrEmpty(twinResults.NextPage))
-            {
-                nextPage = urlHelper.RouteUrl(new UrlRouteContext
-                {
-                    Values = new
-                    {
-                        continuationToken = twinResults.NextPage
-                    }
-                });
-            }
-
-            return new PaginationResult<ConcentratorDto>
-            {
-                Items = twinResults.Items.Select(this.concentratorTwinMapper.CreateDeviceDetails),
-                TotalItems = twinResults.TotalItems,
-                NextPage = nextPage
+                Data = paginatedConcentrator.Data.Select(x => mapper.Map<ConcentratorDto>(x)).ToList(),
+                TotalCount = paginatedConcentrator.TotalCount,
+                CurrentPage = paginatedConcentrator.CurrentPage,
+                PageSize = pageSize
             };
+            return paginatedConcentratorDto;
         }
 
-        public async Task<bool> UpdateDeviceAsync(ConcentratorDto device)
+        public async Task<ConcentratorDto> GetConcentrator(string deviceId)
         {
-            ArgumentNullException.ThrowIfNull(device, nameof(device));
+            var concentratorEntity = await this.concentratorRepository.GetByIdAsync(deviceId);
 
+            if (concentratorEntity == null)
+            {
+                throw new ResourceNotFoundException($"The concentrator with id {deviceId} doesn't exist");
+            }
+
+            var concentratorDto = this.mapper.Map<ConcentratorDto>(concentratorEntity);
+
+            return concentratorDto;
+        }
+
+        public async Task<ConcentratorDto> CreateDeviceAsync(ConcentratorDto concentrator)
+        {
+            var newTwin = await this.externalDevicesService.CreateNewTwinFromDeviceId(concentrator.DeviceId);
+            concentrator.RouterConfig = await this.routerConfigManager.GetRouterConfig(concentrator.LoraRegion);
+            concentrator.ClientThumbprint ??= string.Empty;
+
+            this.concentratorTwinMapper.UpdateTwin(newTwin, concentrator);
+            var status = concentrator.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+
+            _ = await this.externalDevicesService.CreateDeviceWithTwin(concentrator.DeviceId, false, newTwin, status);
+
+            return await CreateDeviceInDatabase(concentrator);
+        }
+
+        public async Task<ConcentratorDto> UpdateDeviceAsync(ConcentratorDto concentrator)
+        {
             // Device status (enabled/disabled) has to be dealt with afterwards
-            var currentDevice = await this.externalDevicesService.GetDevice(device.DeviceId);
-            currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+            var currentConcentrator = await this.externalDevicesService.GetDevice(concentrator.DeviceId);
+            currentConcentrator.Status = concentrator.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
-            _ = await this.externalDevicesService.UpdateDevice(currentDevice);
+            _ = await this.externalDevicesService.UpdateDevice(currentConcentrator);
 
             // Get the current twin from the hub, based on the device ID
-            var currentTwin = await this.externalDevicesService.GetDeviceTwin(device.DeviceId);
-            device.RouterConfig = await this.routerConfigManager.GetRouterConfig(device.LoraRegion);
+            var currentTwin = await this.externalDevicesService.GetDeviceTwin(concentrator.DeviceId);
+            concentrator.RouterConfig = await this.routerConfigManager.GetRouterConfig(concentrator.LoraRegion);
 
             // Update the twin properties
-            this.concentratorTwinMapper.UpdateTwin(currentTwin, device);
+            this.concentratorTwinMapper.UpdateTwin(currentTwin, concentrator);
 
             _ = await this.externalDevicesService.UpdateDeviceTwin(currentTwin);
 
-            return true;
+            return await UpdateDeviceInDatabase(concentrator);
+        }
+
+        public async Task DeleteDeviceAsync(string deviceId)
+        {
+            await this.externalDevicesService.DeleteDevice(deviceId);
+
+            await DeleteDeviceInDatabase(deviceId);
+        }
+
+        private async Task<ConcentratorDto> CreateDeviceInDatabase(ConcentratorDto concentrator)
+        {
+            try
+            {
+                var concentratorEntity = this.mapper.Map<Concentrator>(concentrator);
+                await this.concentratorRepository.InsertAsync(concentratorEntity);
+                await this.unitOfWork.SaveAsync();
+                return concentrator;
+            }
+            catch (DbUpdateException e)
+            {
+                throw new InternalServerErrorException($"Unable to create the concentrator {concentrator.DeviceName}", e);
+            }
+        }
+
+        private async Task<ConcentratorDto> UpdateDeviceInDatabase(ConcentratorDto concentrator)
+        {
+            try
+            {
+                var concentratorEntity = await this.concentratorRepository.GetByIdAsync(concentrator.DeviceId);
+
+                if (concentratorEntity == null)
+                {
+                    throw new ResourceNotFoundException($"The device {concentrator.DeviceId} doesn't exist");
+                }
+
+                _ = this.mapper.Map(concentrator, concentratorEntity);
+
+                this.concentratorRepository.Update(concentratorEntity);
+                await this.unitOfWork.SaveAsync();
+
+                return concentrator;
+            }
+            catch (DbUpdateException e)
+            {
+                throw new InternalServerErrorException($"Unable to update the concentrator {concentrator.DeviceName}", e);
+            }
+        }
+
+        private async Task DeleteDeviceInDatabase(string deviceId)
+        {
+            try
+            {
+                var concentratorEntity = await this.concentratorRepository.GetByIdAsync(deviceId);
+
+                if (concentratorEntity == null)
+                {
+                    return;
+                }
+
+                this.concentratorRepository.Delete(deviceId);
+
+                await this.unitOfWork.SaveAsync();
+            }
+            catch (DbUpdateException e)
+            {
+                throw new InternalServerErrorException($"Unable to delete the concentrator {deviceId}", e);
+            }
         }
     }
 }

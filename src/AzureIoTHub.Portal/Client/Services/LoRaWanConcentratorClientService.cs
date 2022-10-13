@@ -10,11 +10,11 @@ namespace AzureIoTHub.Portal.Client.Services
     using AzureIoTHub.Portal.Shared.Models.v10.LoRaWAN;
     using Portal.Models.v10.LoRaWAN;
 
-    public class LoRaWanConcentratorsClientService : ILoRaWanConcentratorsClientService
+    public class LoRaWanConcentratorClientService : ILoRaWanConcentratorClientService
     {
         private readonly HttpClient http;
 
-        public LoRaWanConcentratorsClientService(HttpClient http)
+        public LoRaWanConcentratorClientService(HttpClient http)
         {
             this.http = http;
         }

@@ -4,50 +4,52 @@
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AutoFixture;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
+    using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Azure.Devices.Common.Exceptions;
-    using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
 
     [TestFixture]
-    public class LoRaWANConcentratorsControllerTest
+    public class LoRaWANConcentratorsControllerTest : BackendUnitTest
     {
-        private MockRepository mockRepository;
+        //private MockRepository mockRepository;
 
         private Mock<ILogger<LoRaWANConcentratorsController>> mockLogger;
-        private Mock<IExternalDeviceService> mockDeviceService;
-        private Mock<IConcentratorTwinMapper> mockConcentratorTwinMapper;
         private Mock<IUrlHelper> mockUrlHelper;
         private Mock<ILoRaWANConcentratorService> mockLoRaWANConcentratorService;
 
         [SetUp]
         public void SetUp()
         {
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockLogger = this.mockRepository.Create<ILogger<LoRaWANConcentratorsController>>();
-            this.mockDeviceService = this.mockRepository.Create<IExternalDeviceService>();
-            this.mockConcentratorTwinMapper = this.mockRepository.Create<IConcentratorTwinMapper>();
-            this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
-            this.mockLoRaWANConcentratorService = this.mockRepository.Create<ILoRaWANConcentratorService>();
+            base.Setup();
+
+            this.mockLogger = this.MockRepository.Create<ILogger<LoRaWANConcentratorsController>>();
+            this.mockUrlHelper = this.MockRepository.Create<IUrlHelper>();
+            this.mockLoRaWANConcentratorService = this.MockRepository.Create<ILoRaWANConcentratorService>();
+
+            _ = ServiceCollection.AddSingleton(this.mockLogger.Object);
+            _ = ServiceCollection.AddSingleton(this.mockUrlHelper.Object);
+            _ = ServiceCollection.AddSingleton(this.mockLoRaWANConcentratorService.Object);
+
+            Services = ServiceCollection.BuildServiceProvider();
+
         }
 
         private LoRaWANConcentratorsController CreateLoRaWANConcentratorsController()
         {
             return new LoRaWANConcentratorsController(
                 this.mockLogger.Object,
-                this.mockDeviceService.Object,
-                this.mockConcentratorTwinMapper.Object,
                 this.mockLoRaWANConcentratorService.Object)
             {
                 Url = this.mockUrlHelper.Object
@@ -55,316 +57,236 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         }
 
         [Test]
-        public async Task GetAllDeviceConcentratorWithDeviceTypeShouldReturnNotEmptyList()
-        {
-            // Arrange
-            var concentratorsController = CreateLoRaWANConcentratorsController();
-            const int count = 100;
-            var twinCollection = new TwinCollection();
-            twinCollection["deviceType"] = "LoRa Concentrator";
-
-            _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
-                    It.IsAny<string>(),
-                    It.Is<string>(x => x == "LoRa Concentrator"),
-                    It.Is<string>(x => string.IsNullOrEmpty(x)),
-                    It.IsAny<string>(),
-                    It.IsAny<bool?>(),
-                    It.IsAny<bool?>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<int>()))
-                .ReturnsAsync(new PaginationResult<Twin>
-                {
-                    Items = Enumerable.Range(0, 100).Select(x => new Twin
-                    {
-                        DeviceId = FormattableString.Invariant($"{x}"),
-                        Tags = twinCollection
-                    }),
-                    NextPage = Guid.NewGuid().ToString()
-                });
-
-            _ = this.mockLoRaWANConcentratorService.Setup(c => c.GetAllDeviceConcentrator(It.IsAny<PaginationResult<Twin>>(), It.IsAny<IUrlHelper>()))
-                .Returns((PaginationResult<Twin> r, IUrlHelper h) => new PaginationResult<ConcentratorDto>
-                {
-                    Items = r.Items.Select(x => new ConcentratorDto { DeviceId = x.DeviceId }),
-                    NextPage = r.NextPage,
-                    TotalItems = r.TotalItems
-                });
-
-            // Act
-            var response = await concentratorsController.GetAllDeviceConcentrator().ConfigureAwait(false);
-
-            // Assert
-            Assert.IsNotNull(response.Result);
-            Assert.IsAssignableFrom<OkObjectResult>(response.Result);
-            var okObjectResult = response.Result as ObjectResult;
-
-            Assert.IsNotNull(okObjectResult);
-            Assert.AreEqual(200, okObjectResult.StatusCode);
-            Assert.IsNotNull(okObjectResult.Value);
-            var deviceList = okObjectResult.Value as PaginationResult<ConcentratorDto>;
-
-            Assert.IsNotNull(deviceList);
-            Assert.AreEqual(count, deviceList.Items.Count());
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task GetAllDeviceConcentratorWithNoDeviceTypeShouldReturnEmptyList()
+        public async Task GetAllDeviceConcentratorShouldReturnList()
         {
             // Arrange
             var concentratorsController = CreateLoRaWANConcentratorsController();
 
-            _ = this.mockLoRaWANConcentratorService.Setup(c => c.GetAllDeviceConcentrator(It.IsAny<PaginationResult<Twin>>(), It.IsAny<IUrlHelper>()))
-                .Returns((PaginationResult<Twin> r, IUrlHelper h) => new PaginationResult<ConcentratorDto>
+            var expectedPaginatedConcentrator= new PaginatedResult<ConcentratorDto>()
+            {
+                Data = Enumerable.Range(0, 100).Select(x => new ConcentratorDto
                 {
-                    Items = r.Items.Select(x => new ConcentratorDto { DeviceId = x.DeviceId }),
-                    NextPage = r.NextPage,
-                    TotalItems = r.TotalItems
-                });
+                    DeviceId = FormattableString.Invariant($"{x}")
+                }).ToList(),
+                TotalCount = 100
+            };
 
-            _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
-                    It.IsAny<string>(),
-                    It.Is<string>(x => x == "LoRa Concentrator"),
-                    It.Is<string>(x => string.IsNullOrEmpty(x)),
-                    It.IsAny<string>(),
-                    It.IsAny<bool?>(),
-                    It.IsAny<bool?>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<int>()))
-                .ReturnsAsync(new PaginationResult<Twin>
-                {
-                    Items = Enumerable.Range(0, 0).Select(x => new Twin(FormattableString.Invariant($"{x}")))
-                });
+            _ = this.mockLoRaWANConcentratorService.Setup(service => service.GetAllDeviceConcentrator(
+                    It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>()))
+                .ReturnsAsync(expectedPaginatedConcentrator);
 
             // Act
-            var response = await concentratorsController.GetAllDeviceConcentrator().ConfigureAwait(false);
+            var result = await concentratorsController.GetAllDeviceConcentrator().ConfigureAwait(false);
+
 
             // Assert
-            Assert.IsNotNull(response.Result);
-            Assert.IsAssignableFrom<OkObjectResult>(response.Result);
-            var okObjectResult = response.Result as ObjectResult;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(expectedPaginatedConcentrator.Data.Count, result.Value.Items.Count());
+            this.MockRepository.VerifyAll();
 
-            Assert.IsNotNull(okObjectResult);
-            Assert.AreEqual(200, okObjectResult.StatusCode);
-            var deviceList = okObjectResult.Value as IEnumerable<ConcentratorDto>;
-
-            Assert.IsNull(deviceList);
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task WhenGetAllDeviceThrowAnErrorGetAllDeviceConcentratorShouldThrowInternalserverErrorException()
-        {
-            // Arrange
-            var concentratorsController = CreateLoRaWANConcentratorsController();
-
-            _ = this.mockDeviceService.Setup(c => c.GetAllDevice(
-                    It.IsAny<string>(),
-                    It.Is<string>(x => x == "LoRa Concentrator"),
-                    It.Is<string>(x => string.IsNullOrEmpty(x)),
-                    It.IsAny<string>(),
-                    It.IsAny<bool?>(),
-                    It.IsAny<bool?>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<int>()))
-                .ThrowsAsync(new InternalServerErrorException(""));
-
-            // Act
-            var response = async () => await concentratorsController.GetAllDeviceConcentrator();
-
-            // Assert
-            _ = await response.Should().ThrowAsync<InternalServerErrorException>();
-
-            this.mockRepository.VerifyAll();
         }
 
         [Test]
         public async Task GetDeviceConcentratorWithValidArgumentShouldReturnConcentrator()
         {
             // Arrange
-            var twin = new Twin("aaa");
-            twin.Tags["deviceType"] = "LoRa Concentrator";
-            var concentrator = new ConcentratorDto
+            var expectedConcentrator = new ConcentratorDto
             {
-                DeviceId = twin.DeviceId,
+                DeviceId = Fixture.Create<string>(),
                 DeviceType = "LoRa Concentrator"
             };
 
-            _ = this.mockDeviceService.Setup(x => x.GetDeviceTwin(It.Is<string>(c => c == twin.DeviceId)))
-                .ReturnsAsync(twin);
-
-            _ = this.mockConcentratorTwinMapper.Setup(x => x.CreateDeviceDetails(It.Is<Twin>(c => c.DeviceId == twin.DeviceId)))
-                .Returns(concentrator);
+            _ = this.mockLoRaWANConcentratorService.Setup(x => x.GetConcentrator(It.IsAny<string>()))
+                .ReturnsAsync(expectedConcentrator);
 
             var concentratorController = CreateLoRaWANConcentratorsController();
 
             // Act
-            var response = await concentratorController.GetDeviceConcentrator(twin.DeviceId);
+            var response = await concentratorController.GetDeviceConcentrator(expectedConcentrator.DeviceId);
 
             // Assert
             Assert.IsNotNull(response);
             Assert.IsAssignableFrom<OkObjectResult>(response.Result);
-            var okObjectResult = response.Result as OkObjectResult;
 
+            var okObjectResult = response.Result as OkObjectResult;
             Assert.IsNotNull(okObjectResult);
             Assert.AreEqual(200, okObjectResult.StatusCode);
             Assert.IsNotNull(okObjectResult.Value);
             Assert.IsAssignableFrom<ConcentratorDto>(okObjectResult.Value);
+
             var device = okObjectResult.Value as ConcentratorDto;
             Assert.IsNotNull(device);
-            Assert.AreEqual(twin.DeviceId, device.DeviceId);
+            Assert.AreEqual(expectedConcentrator.DeviceId, device.DeviceId);
             Assert.AreEqual("LoRa Concentrator", device.DeviceType);
 
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task WhenGetDeviceTwinThrowAnErrorGetDeviceConcentratorShouldThrowInternalserverErrorException()
-        {
-            // Arrange
-            var twin = new Twin("aaa");
-            twin.Tags["deviceType"] = "LoRa Concentrator";
-
-            _ = this.mockDeviceService.Setup(x => x.GetDeviceTwin(It.Is<string>(c => c == twin.DeviceId)))
-                .ThrowsAsync(new InternalServerErrorException(""));
-
-            var concentratorController = CreateLoRaWANConcentratorsController();
-
-            // Act
-            var response = async () => await concentratorController.GetDeviceConcentrator(twin.DeviceId);
-
-            // Assert
-            _ = await response.Should().ThrowAsync<InternalServerErrorException>();
-
-            this.mockRepository.VerifyAll();
+            this.MockRepository.VerifyAll();
         }
 
         [Test]
         public async Task CreateDeviceAsyncWithValidArgumentShouldReturnOkResult()
         {
             // Arrange
-            var concentratorController = CreateLoRaWANConcentratorsController();
-            var concentrator = new ConcentratorDto
+            var expectedConcentrator = new ConcentratorDto
             {
-                DeviceId = "4512457896451156",
-                LoraRegion = Guid.NewGuid().ToString(),
+                DeviceId = Fixture.Create<string>(),
+                DeviceType = "LoRa Concentrator",
+                LoraRegion = Fixture.Create<string>(),
                 IsEnabled = true
             };
 
-            _ = this.mockLoRaWANConcentratorService.Setup(c => c.CreateDeviceAsync(concentrator))
-                .ReturnsAsync(true);
+            _ = this.mockLoRaWANConcentratorService.Setup(c => c.CreateDeviceAsync(expectedConcentrator))
+                .ReturnsAsync(expectedConcentrator);
+
+            var concentratorController = CreateLoRaWANConcentratorsController();
 
             // Act
-            var result = await concentratorController.CreateDeviceAsync(concentrator);
+            var response = await concentratorController.CreateDeviceAsync(expectedConcentrator);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<OkResult>(result);
-            var okObjectResult = result as OkResult;
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<OkObjectResult>(response);
+
+            var okObjectResult = response as OkObjectResult;
             Assert.IsNotNull(okObjectResult);
             Assert.AreEqual(200, okObjectResult.StatusCode);
+            Assert.IsNotNull(okObjectResult.Value);
+            Assert.IsAssignableFrom<ConcentratorDto>(okObjectResult.Value);
+
+            var device = okObjectResult.Value as ConcentratorDto;
+            Assert.IsNotNull(device);
+            Assert.AreEqual(expectedConcentrator.DeviceId, device.DeviceId);
+            Assert.AreEqual("LoRa Concentrator", device.DeviceType);
+
+            this.MockRepository.VerifyAll();
         }
 
         [Test]
-        public async Task WhenDeviceCreationFailedShouldReturnBadRequest()
+        public async Task CreateDeviceAsyncModelNotValidShouldThrowProblemDetailsException()
         {
             // Arrange
-            var concentratorController = CreateLoRaWANConcentratorsController();
-            var concentrator = new ConcentratorDto
+            var expectedConcentrator = new ConcentratorDto
             {
-                DeviceId = "4512457896451156",
-                LoraRegion = Guid.NewGuid().ToString(),
+                DeviceId = Fixture.Create<string>(),
+                DeviceType = "LoRa Concentrator",
+                LoraRegion = Fixture.Create<string>(),
                 IsEnabled = true
             };
 
-            _ = this.mockLoRaWANConcentratorService.Setup(c => c.CreateDeviceAsync(concentrator))
-                .ReturnsAsync(false);
+            var concentratorController = CreateLoRaWANConcentratorsController();
+            concentratorController.ModelState.AddModelError("Key", "Device model is invalid");
 
             // Act
-            var result = await concentratorController.CreateDeviceAsync(concentrator);
+            var result = () => concentratorController.CreateDeviceAsync(expectedConcentrator);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<BadRequestResult>(result);
-            var objectResult = result as BadRequestResult;
-            Assert.IsNotNull(objectResult);
-            Assert.AreEqual(400, objectResult.StatusCode);
-
-            this.mockRepository.VerifyAll();
+            _ = await result.Should().ThrowAsync<ProblemDetailsException>();
+            this.MockRepository.VerifyAll();
         }
 
         [Test]
-        public async Task WhenDeviceAlreadyExistsShouldReturnBadRequestWithAltreadyExistsMessage()
+        public async Task CreateDeviceAsyncNullDeviceShouldThrowArgumentNullException()
         {
             // Arrange
             var concentratorController = CreateLoRaWANConcentratorsController();
-            var concentrator = new ConcentratorDto
-            {
-                DeviceId = "4512457896451156",
-                LoraRegion = Guid.NewGuid().ToString(),
-                IsEnabled = true
-            };
-
-            _ = this.mockLoRaWANConcentratorService.Setup(c => c.CreateDeviceAsync(concentrator))
-                .Throws(new DeviceAlreadyExistsException(concentrator.DeviceId));
 
             // Act
-            var result = await concentratorController.CreateDeviceAsync(concentrator);
+            var result = () => concentratorController.CreateDeviceAsync(null);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<BadRequestObjectResult>(result);
-            var objectResult = result as BadRequestObjectResult;
-            Assert.IsNotNull(objectResult);
-            Assert.AreEqual(400, objectResult.StatusCode);
-            Assert.AreEqual($"Device {concentrator.DeviceId} already registered.", objectResult.Value);
-
-            this.mockRepository.VerifyAll();
+            _ = await result.Should().ThrowAsync<ArgumentNullException>();
+            this.MockRepository.VerifyAll();
         }
 
         [Test]
         public async Task UpdateDeviceAsyncWithValidArgumentShouldReturnOkResult()
         {
             // Arrange
-            var concentratorController = CreateLoRaWANConcentratorsController();
-            var concentrator = new ConcentratorDto
+            var expectedConcentrator = new ConcentratorDto
             {
-                DeviceId = "4512457896451156",
-                LoraRegion = Guid.NewGuid().ToString(),
-                IsEnabled = true,
-                RouterConfig = new RouterConfig()
+                DeviceId = Fixture.Create<string>(),
+                DeviceType = "LoRa Concentrator",
+                LoraRegion = Fixture.Create<string>(),
+                IsEnabled = true
             };
 
-            _ = this.mockLoRaWANConcentratorService.Setup(x => x.UpdateDeviceAsync(It.Is<ConcentratorDto>(c => c == concentrator)))
-                .ReturnsAsync(true);
+            _ = this.mockLoRaWANConcentratorService.Setup(c => c.UpdateDeviceAsync(expectedConcentrator))
+                .ReturnsAsync(expectedConcentrator);
+
+            var concentratorController = CreateLoRaWANConcentratorsController();
 
             // Act
-            var result = await concentratorController.UpdateDeviceAsync(concentrator);
+            var response = await concentratorController.UpdateDeviceAsync(expectedConcentrator);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<OkObjectResult>(result);
-            var okObjectResult = result as ObjectResult;
+            Assert.IsNotNull(response);
+            Assert.IsAssignableFrom<OkObjectResult>(response);
+
+            var okObjectResult = response as OkObjectResult;
             Assert.IsNotNull(okObjectResult);
             Assert.AreEqual(200, okObjectResult.StatusCode);
+            Assert.IsNotNull(okObjectResult.Value);
+            Assert.IsAssignableFrom<ConcentratorDto>(okObjectResult.Value);
+
+            var device = okObjectResult.Value as ConcentratorDto;
+            Assert.IsNotNull(device);
+            Assert.AreEqual(expectedConcentrator.DeviceId, device.DeviceId);
+            Assert.AreEqual("LoRa Concentrator", device.DeviceType);
+
+            this.MockRepository.VerifyAll();
         }
+
         [Test]
-        public async Task DeleteDeviceAsync()
+        public async Task UpdateDeviceAsyncModelNotValidShouldThrowProblemDetailsException()
+        {
+            // Arrange
+            var expectedConcentrator = new ConcentratorDto
+            {
+                DeviceId = Fixture.Create<string>(),
+                DeviceType = "LoRa Concentrator",
+                LoraRegion = Fixture.Create<string>(),
+                IsEnabled = true
+            };
+
+            var concentratorController = CreateLoRaWANConcentratorsController();
+            concentratorController.ModelState.AddModelError("Key", "Device model is invalid");
+
+            // Act
+            var result = () => concentratorController.UpdateDeviceAsync(expectedConcentrator);
+
+            // Assert
+            _ = await result.Should().ThrowAsync<ProblemDetailsException>();
+            this.MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateDeviceAsyncNullDeviceShouldThrowArgumentNullException()
         {
             // Arrange
             var concentratorController = CreateLoRaWANConcentratorsController();
-            var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceService.Setup(x => x.DeleteDevice(It.Is<string>(c => c == deviceId)))
+            // Act
+            var result = () => concentratorController.UpdateDeviceAsync(null);
+
+            // Assert
+            _ = await result.Should().ThrowAsync<ArgumentNullException>();
+            this.MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDeviceAsyncExpectedBehaviorShouldReturnOkResult()
+        {
+            // Arrange
+            var concentratorController = CreateLoRaWANConcentratorsController();
+            var deviceId = Fixture.Create<string>();
+
+            _ = this.mockLoRaWANConcentratorService.Setup(x => x.DeleteDeviceAsync(It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
             // Act
             _ = await concentratorController.Delete(deviceId);
 
             // Assert
-            this.mockRepository.VerifyAll();
+            this.MockRepository.VerifyAll();
         }
     }
 }
