@@ -6,17 +6,16 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Domain.Entities;
-    using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using Domain;
+    using Domain.Entities;
+    using Domain.Exceptions;
+    using Domain.Repositories;
+    using Managers;
+    using Mappers;
     using Microsoft.Azure.Devices;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Logging;
+    using Models.v10.LoRaWAN;
+    using Shared.Models.v1._0;
 
     public class LoRaWANConcentratorService : ILoRaWANConcentratorService
     {
@@ -35,18 +34,12 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         private readonly IRouterConfigManager routerConfigManager;
 
-        /// <summary>
-        /// The device Lora wan concentrators service logger.
-        /// </summary>
-        private readonly ILogger<LoRaWANConcentratorService> logger;
-
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IConcentratorRepository concentratorRepository;
 
 
         public LoRaWANConcentratorService(
-            ILogger<LoRaWANConcentratorService> logger,
             IExternalDeviceService externalDevicesService,
             IConcentratorTwinMapper concentratorTwinMapper,
             IRouterConfigManager routerConfigManager,
@@ -55,7 +48,6 @@ namespace AzureIoTHub.Portal.Server.Services
             IConcentratorRepository concentratorRepository
             )
         {
-            this.logger = logger;
             this.externalDevicesService = externalDevicesService;
             this.concentratorTwinMapper = concentratorTwinMapper;
             this.routerConfigManager = routerConfigManager;
@@ -70,7 +62,7 @@ namespace AzureIoTHub.Portal.Server.Services
             string[] orderBy = null)
         {
             var paginatedConcentrator = await this.concentratorRepository.GetPaginatedListAsync(pageNumber, pageSize, orderBy);
-            var paginatedConcentratorDto = new PaginatedResult<ConcentratorDto>()
+            var paginatedConcentratorDto = new PaginatedResult<ConcentratorDto>
             {
                 Data = paginatedConcentrator.Data.Select(x => mapper.Map<ConcentratorDto>(x)).ToList(),
                 TotalCount = paginatedConcentrator.TotalCount,
@@ -94,21 +86,6 @@ namespace AzureIoTHub.Portal.Server.Services
             return concentratorDto;
         }
 
-        protected async Task<ConcentratorDto> CreateDeviceInDatabase(ConcentratorDto concentrator)
-        {
-            try
-            {
-                var concentratorEntity = this.mapper.Map<Concentrator>(concentrator);
-                await this.concentratorRepository.InsertAsync(concentratorEntity);
-                await this.unitOfWork.SaveAsync();
-                return concentrator;
-            }
-            catch (DbUpdateException e)
-            {
-                throw new InternalServerErrorException($"Unable to create the concentrator {concentrator.DeviceName}", e);
-            }
-        }
-
         public async Task<ConcentratorDto> CreateDeviceAsync(ConcentratorDto concentrator)
         {
             var newTwin = await this.externalDevicesService.CreateNewTwinFromDeviceId(concentrator.DeviceId);
@@ -123,7 +100,49 @@ namespace AzureIoTHub.Portal.Server.Services
             return await CreateDeviceInDatabase(concentrator);
         }
 
-        protected async Task<ConcentratorDto> UpdateDeviceInDatabase(ConcentratorDto concentrator)
+        public async Task<ConcentratorDto> UpdateDeviceAsync(ConcentratorDto concentrator)
+        {
+            // Device status (enabled/disabled) has to be dealt with afterwards
+            var currentConcentrator = await this.externalDevicesService.GetDevice(concentrator.DeviceId);
+            currentConcentrator.Status = concentrator.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+
+            _ = await this.externalDevicesService.UpdateDevice(currentConcentrator);
+
+            // Get the current twin from the hub, based on the device ID
+            var currentTwin = await this.externalDevicesService.GetDeviceTwin(concentrator.DeviceId);
+            concentrator.RouterConfig = await this.routerConfigManager.GetRouterConfig(concentrator.LoraRegion);
+
+            // Update the twin properties
+            this.concentratorTwinMapper.UpdateTwin(currentTwin, concentrator);
+
+            _ = await this.externalDevicesService.UpdateDeviceTwin(currentTwin);
+
+            return await UpdateDeviceInDatabase(concentrator);
+        }
+
+        public async Task DeleteDeviceAsync(string deviceId)
+        {
+            await this.externalDevicesService.DeleteDevice(deviceId);
+
+            await DeleteDeviceInDatabase(deviceId);
+        }
+
+        private async Task<ConcentratorDto> CreateDeviceInDatabase(ConcentratorDto concentrator)
+        {
+            try
+            {
+                var concentratorEntity = this.mapper.Map<Concentrator>(concentrator);
+                await this.concentratorRepository.InsertAsync(concentratorEntity);
+                await this.unitOfWork.SaveAsync();
+                return concentrator;
+            }
+            catch (DbUpdateException e)
+            {
+                throw new InternalServerErrorException($"Unable to create the concentrator {concentrator.DeviceName}", e);
+            }
+        }
+
+        private async Task<ConcentratorDto> UpdateDeviceInDatabase(ConcentratorDto concentrator)
         {
             try
             {
@@ -147,27 +166,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
-        public async Task<ConcentratorDto> UpdateDeviceAsync(ConcentratorDto concentrator)
-        {
-            // Device status (enabled/disabled) has to be dealt with afterwards
-            var currentConcentrator = await this.externalDevicesService.GetDevice(concentrator.DeviceId);
-            currentConcentrator.Status = concentrator.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
-
-            _ = await this.externalDevicesService.UpdateDevice(currentConcentrator);
-
-            // Get the current twin from the hub, based on the device ID
-            var currentTwin = await this.externalDevicesService.GetDeviceTwin(concentrator.DeviceId);
-            concentrator.RouterConfig = await this.routerConfigManager.GetRouterConfig(concentrator.LoraRegion);
-
-            // Update the twin properties
-            this.concentratorTwinMapper.UpdateTwin(currentTwin, concentrator);
-
-            _ = await this.externalDevicesService.UpdateDeviceTwin(currentTwin);
-
-            return await UpdateDeviceInDatabase(concentrator);
-        }
-
-        protected async Task DeleteDeviceInDatabase(string deviceId)
+        private async Task DeleteDeviceInDatabase(string deviceId)
         {
             try
             {
@@ -186,13 +185,6 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 throw new InternalServerErrorException($"Unable to delete the concentrator {deviceId}", e);
             }
-        }
-
-        public async Task DeleteDeviceAsync(string deviceId)
-        {
-            await this.externalDevicesService.DeleteDevice(deviceId);
-
-            await DeleteDeviceInDatabase(deviceId);
         }
     }
 }
