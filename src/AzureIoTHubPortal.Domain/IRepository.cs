@@ -13,6 +13,8 @@ namespace AzureIoTHub.Portal.Domain
     {
         IEnumerable<T> GetAll();
 
+        Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default);
+
         Task<T?> GetByIdAsync(object id);
 
         Task InsertAsync(T obj);

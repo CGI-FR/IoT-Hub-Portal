@@ -355,5 +355,79 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
             // Assert
             _ = result.Should().BeFalse();
         }
+
+        [Test]
+        public async Task GetAllAsync_WithFilter_AllItemsReturned()
+        {
+            // Arrange
+            var context = SetupDbContext();
+
+            await context.AddRangeAsync(new List<DeviceTag>
+            {
+                new()
+                {
+                    Id = "device_tag_01",
+                    Label = "Location 1",
+                    Required = false,
+                    Searchable = true
+                },
+                new()
+                {
+                    Id = "device_tag_02",
+                    Label = "Location 2",
+                    Required = true,
+                    Searchable = true
+                }
+            });
+
+            _ = await context.SaveChangesAsync();
+
+            var instance = new GenericRepository<DeviceTag>(context);
+
+            // Act
+            var result = await instance.GetAllAsync();
+
+            // Assert
+            _ = result.Count().Should().Be(2);
+        }
+
+        [Test]
+        public async Task GetAllAsync_CustomFilter_ExpectedItemsReturned()
+        {
+            // Arrange
+            var context = SetupDbContext();
+
+            await context.AddRangeAsync(new List<DeviceTag>
+            {
+                new()
+                {
+                    Id = "device_tag_01",
+                    Label = "Location 1",
+                    Required = false,
+                    Searchable = true
+                },
+                new()
+                {
+                    Id = "device_tag_02",
+                    Label = "Location 2",
+                    Required = true,
+                    Searchable = true
+                }
+            });
+
+            _ = await context.SaveChangesAsync();
+
+            var instance = new GenericRepository<DeviceTag>(context);
+
+            // Filter only tags with labels required
+            var deviceTagPredicate = PredicateBuilder.True<DeviceTag>()
+                .And(tag => tag.Required);
+
+            // Act
+            var result = await instance.GetAllAsync(deviceTagPredicate);
+
+            // Assert
+            _ = result.Count().Should().Be(1);
+        }
     }
 }

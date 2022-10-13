@@ -27,6 +27,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
                                 .ToList<T>();
         }
 
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default)
+        {
+            IQueryable<T> query = this.context.Set<T>();
+            if (expression != null) query = query.Where(expression);
+
+            return await query.ToDynamicListAsync<T>(cancellationToken: cancellationToken);
+        }
+
         public virtual async Task<T?> GetByIdAsync(object id)
         {
             var t = await this.context.Set<T>().FindAsync(id);
