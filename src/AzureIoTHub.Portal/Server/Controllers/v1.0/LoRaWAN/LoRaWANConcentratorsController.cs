@@ -11,7 +11,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.Extensions.Logging;
     using Services;
@@ -53,38 +52,19 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         [HttpGet(Name = "GET LoRaWAN Concentrator list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginationResult<ConcentratorDto>>> GetAllDeviceConcentrator(
-            string routeName = null,
             int pageSize = 10,
             int pageNumber = 0,
             [FromQuery] string[] orderBy = null)
         {
-
             var paginatedDevices = await this.loRaWANConcentratorService.GetAllDeviceConcentrator(
                 pageSize,
                 pageNumber,
                 orderBy);
 
-            var nextPage = string.Empty;
-
-            if (paginatedDevices.HasNextPage)
-            {
-                nextPage = Url.RouteUrl(new UrlRouteContext
-                {
-                    RouteName = routeName,
-                    Values = new
-                    {
-                        pageSize,
-                        pageNumber = pageNumber + 1,
-                        orderBy
-                    }
-                });
-            }
-
             return new PaginationResult<ConcentratorDto>
             {
                 Items = paginatedDevices.Data,
                 TotalItems = paginatedDevices.TotalCount,
-                NextPage = nextPage
             };
         }
 
