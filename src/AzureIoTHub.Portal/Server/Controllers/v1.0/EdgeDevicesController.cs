@@ -67,7 +67,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public async Task<PaginationResult<IoTEdgeListItem>> Get(
             string searchText = null,
             bool? searchStatus = null,
-            string searchType = null,
             int pageSize = 10,
             int pageNumber = 0,
             [FromQuery] string[] orderBy = null)
@@ -78,6 +77,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 pageSize,
                 pageNumber,
                 orderBy);
+
 
             return new PaginationResult<IoTEdgeListItem>
             {

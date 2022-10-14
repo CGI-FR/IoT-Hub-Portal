@@ -160,7 +160,7 @@
                     break;
             }
 
-            var uri = $"api/edge/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&searchType={searchModel.Type}&orderBy={orderBy}";
+            var uri = $"api/edge/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&orderBy={orderBy}";
             var result = await EdgeDeviceClientService.GetDevices(uri);
 
             return new TableData<IoTEdgeListItem>
