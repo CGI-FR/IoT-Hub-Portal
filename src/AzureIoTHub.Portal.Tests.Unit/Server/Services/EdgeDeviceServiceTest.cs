@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using AutoFixture;
     using AutoMapper;
@@ -77,7 +78,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             await DbContext.AddRangeAsync(expectedEdgeDevices);
             _ = await DbContext.SaveChangesAsync();
 
-            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), null, default))
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<Expression<Func<EdgeDevice, bool>>>(), default))
                 .ReturnsAsync(new PaginatedResult<EdgeDevice>
                 {
                     Data = expectedEdgeDevices.Skip(expectedCurrentPage * expectedPageSize).Take(expectedPageSize).ToList(),
@@ -151,7 +152,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             await DbContext.AddRangeAsync(expectedEdgeDevices);
             _ = await DbContext.SaveChangesAsync();
 
-            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), null, default))
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<Expression<Func<EdgeDevice, bool>>>(), default))
                 .ReturnsAsync(new PaginatedResult<EdgeDevice>
                 {
                     Data = expectedEdgeDevices,
