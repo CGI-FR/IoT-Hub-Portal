@@ -656,15 +656,6 @@
         "operationId": "GET IoT Edge devices",
         "parameters": [
           {
-            "name": "continuationToken",
-            "in": "query",
-            "description": "",
-            "style": "form",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "searchText",
             "in": "query",
             "description": "",
@@ -683,15 +674,6 @@
             }
           },
           {
-            "name": "searchType",
-            "in": "query",
-            "description": "",
-            "style": "form",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "pageSize",
             "in": "query",
             "description": "",
@@ -700,6 +682,29 @@
               "type": "integer",
               "format": "int32",
               "default": 10
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
