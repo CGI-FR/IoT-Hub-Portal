@@ -89,26 +89,19 @@ namespace AzureIoTHub.Portal.Server.Services
                 devicePredicate = devicePredicate.And(device => device.Id.ToLower().Contains(deviceListFilter.Keyword.ToLower()) || device.Name.ToLower().Contains(deviceListFilter.Keyword.ToLower()));
             }
 
-            var query = this.portalDbContext.EdgeDevices
-                .Include(device => device.Tags)
-                .Where(devicePredicate)
-                .Select(device => new IoTEdgeListItem
+            var paginatedEdgeDevices = await this.edgeDeviceRepository.GetPaginatedListAsync(pageNumber, pageSize, orderBy);
+            var paginateEdgeDeviceDto = new PaginatedResult<IoTEdgeListItem>
+            {
+                Data = paginatedEdgeDevices.Data.Select(x => this.mapper.Map<IoTEdgeListItem>(x, opts =>
                 {
-                    DeviceId = device.Id,
-                    NbDevices = device.NbDevices,
-                    ImageUrl = this.deviceModelImageManager.ComputeImageUri(device.DeviceModelId),
-                    Status = device.IsEnabled? DeviceStatus.Enabled.ToString() : DeviceStatus.Disabled.ToString()
-                });
+                    opts.Items["imageUrl"] = this.deviceModelImageManager.ComputeImageUri(x.DeviceModelId);
+                })).ToList(),
+                TotalCount = paginatedEdgeDevices.TotalCount,
+                CurrentPage = paginatedEdgeDevices.CurrentPage,
+                PageSize = pageSize
+            };
 
-            var ordering = deviceListFilter.OrderBy?.Any() == true ? string.Join(",", deviceListFilter.OrderBy) : null;
-
-            query = !string.IsNullOrWhiteSpace(ordering) ? query.OrderBy(ordering) : query.OrderBy(device => device.DeviceId);
-
-            var resultCount = await query.AsNoTracking().CountAsync();
-
-            var devices = await query.Skip(deviceListFilter.PageNumber * deviceListFilter.PageSize).Take(deviceListFilter.PageSize).ToListAsync();
-
-            return new PaginatedResult<IoTEdgeListItem>(devices, resultCount);
+            return new PaginatedResult<IoTEdgeListItem>(paginateEdgeDeviceDto.Data, paginateEdgeDeviceDto.TotalCount);
         }
 
         /// <summary>

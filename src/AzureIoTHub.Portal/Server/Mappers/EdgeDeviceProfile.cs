@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
+    using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Newtonsoft.Json.Linq;
 
@@ -53,6 +54,12 @@ namespace AzureIoTHub.Portal.Server.Mappers
                     Name = pair.Key,
                     Value = pair.Value
                 })));
+
+            _ = CreateMap<EdgeDevice, IoTEdgeListItem>()
+                .ForMember(dest => dest.DeviceId, opts => opts.MapFrom(src => src.Id))
+                .ForMember(dest => dest.NbDevices, opts => opts.MapFrom(src => src.NbDevices))
+                .ForMember(dest => dest.ImageUrl, opts => opts.MapFrom((src, _, _, context) => context.Items["imageUrl"]))
+                .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.IsEnabled ? DeviceStatus.Enabled.ToString() : DeviceStatus.Disabled.ToString()));
         }
 
         private static ICollection<DeviceTagValue> GetTags(Twin twin)

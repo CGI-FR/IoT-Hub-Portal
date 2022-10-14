@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
     using Microsoft.Azure.Devices;
@@ -76,6 +77,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             await DbContext.AddRangeAsync(expectedEdgeDevices);
             _ = await DbContext.SaveChangesAsync();
 
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), null, default))
+                .ReturnsAsync(new PaginatedResult<EdgeDevice>
+                {
+                    Data = expectedEdgeDevices.Skip(expectedCurrentPage * expectedPageSize).Take(expectedPageSize).ToList(),
+                    PageSize = expectedPageSize,
+                    CurrentPage = expectedCurrentPage,
+                    TotalCount = expectedTotalDevicesCount
+                });
+
             _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
                 .Returns(Fixture.Create<Uri>());
 
@@ -97,49 +107,58 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var keywordFilter = "WaNt tHiS DeViCe";
-
-            var device1 = new EdgeDevice
+            var expectedEdgeDevices = new List<EdgeDevice>
             {
-                Id = "test",
-                IsEnabled = true,
-                Name = "I want this device",
-                Tags = new List<DeviceTagValue>
+                new EdgeDevice
                 {
-                    new()
+                    Id = "test",
+                    IsEnabled = true,
+                    Name = "I want this device",
+                    Tags = new List<DeviceTagValue>
                     {
-                        Name = "location",
-                        Value = "FR"
-                    }
+                        new()
+                        {
+                            Name = "location",
+                            Value = "FR"
+                        }
+                    },
+                    DeviceModelId = Fixture.Create<string>(),
+                    Scope = Fixture.Create<string>(),
+                    NbDevices = 1,
                 },
-                DeviceModelId = Fixture.Create<string>(),
-                Scope = Fixture.Create<string>(),
-                NbDevices = 1,
-            };
-
-            var device2 = new EdgeDevice
-            {
-                IsEnabled = false,
-                Name = "I don't want this device",
-                Tags = new List<DeviceTagValue>
+                new EdgeDevice
                 {
-                    new()
+                    IsEnabled = false,
+                    Name = "I don't want this device",
+                    Tags = new List<DeviceTagValue>
                     {
-                        Name = "location",
-                        Value = "US"
-                    }
-                },
-                DeviceModelId = Fixture.Create<string>(),
-                Scope = Fixture.Create<string>(),
-                NbDevices = 1
+                        new()
+                        {
+                            Name = "location",
+                            Value = "US"
+                        }
+                    },
+                    DeviceModelId = Fixture.Create<string>(),
+                    Scope = Fixture.Create<string>(),
+                    NbDevices = 1
+                }
             };
 
             var expectedTotalDevicesCount = 1;
             var expectedPageSize = 10;
             var expectedCurrentPage = 0;
 
-            _ = await DbContext.AddAsync(device1);
-            _ = await DbContext.AddAsync(device2);
+            await DbContext.AddRangeAsync(expectedEdgeDevices);
             _ = await DbContext.SaveChangesAsync();
+
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), null, default))
+                .ReturnsAsync(new PaginatedResult<EdgeDevice>
+                {
+                    Data = expectedEdgeDevices,
+                    PageSize = expectedPageSize,
+                    CurrentPage = expectedCurrentPage,
+                    TotalCount = expectedTotalDevicesCount
+                });
 
             _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
                 .Returns(Fixture.Create<Uri>());
@@ -147,11 +166,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Act
             var result = await this.edgeDevicesService.GetEdgeDevicesPage(searchText: keywordFilter, searchStatus: true);
 
-            _ = result.Data.Count.Should().Be(expectedTotalDevicesCount);
-            _ = result.TotalCount.Should().Be(expectedTotalDevicesCount);
             _ = result.PageSize.Should().Be(expectedPageSize);
             _ = result.CurrentPage.Should().Be(expectedCurrentPage);
-            _ = result.Data.First().DeviceId.Should().Be(device1.Id);
+            _ = result.Data.First().DeviceId.Should().Be("test");
             MockRepository.VerifyAll();
         }
 
