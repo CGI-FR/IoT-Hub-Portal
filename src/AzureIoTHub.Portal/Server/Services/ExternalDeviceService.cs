@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Shared.Constants;
     using Managers;
     using Microsoft.Azure.Devices;
@@ -626,6 +627,52 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 throw new InternalServerErrorException($"Unable to get model of the device with id {deviceId}: {e.Message}", e);
             }
+        }
+
+        /// <summary>
+        /// Gets the IoT Edge device enrollement credentials.
+        /// </summary>
+        /// <param name="edgeDeviceId">the edge device id.</param>
+        /// <returns>Enrollment credentials.</returns>
+        /// <exception cref="ResourceNotFoundException"></exception>
+        public async Task<EnrollmentCredentials> GetEdgeDeviceCredentials(string edgeDeviceId)
+        {
+            var deviceTwin = await GetDeviceTwin(edgeDeviceId);
+
+            if (deviceTwin == null)
+            {
+                throw new ResourceNotFoundException($"IoT Edge {edgeDeviceId} doesn't exist.");
+            }
+
+            var modelId = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId));
+
+            return await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(edgeDeviceId, modelId);
+        }
+
+        /// <summary>
+        /// Retrieves the last configuration of the IoT Edge.
+        /// </summary>
+        /// <param name="twin">The twin.</param>
+        public async Task<ConfigItem> RetrieveLastConfiguration(Twin twin)
+        {
+            var item = new ConfigItem();
+
+            if (twin.Configurations?.Count > 0)
+            {
+                foreach (var config in twin.Configurations)
+                {
+                    var confObj = await this.registryManager.GetConfigurationAsync(config.Key);
+
+                    if (item.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
+                    {
+                        item.Name = config.Key;
+                        item.DateCreation = confObj.CreatedTimeUtc;
+                        item.Status = nameof(ConfigurationStatus.Applied);
+                    }
+                }
+                return item;
+            }
+            return null;
         }
 
         public async Task<Twin> CreateNewTwinFromDeviceId(string deviceId)

@@ -6,174 +6,235 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
+    using AutoFixture;
+    using AutoMapper;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
 
     [TestFixture]
-    public class EdgeDeviceServiceTest
+    public class EdgeDeviceServiceTest : BackendUnitTest
     {
-        private MockRepository mockRepository;
-
-        private Mock<RegistryManager> mockRegistryManager;
-        private Mock<IEdgeDeviceMapper> mockEdgeDeviceMapper;
         private Mock<IExternalDeviceService> mockDeviceService;
         private Mock<IDeviceTagService> mockDeviceTagService;
-        private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
+        private Mock<IUnitOfWork> mockUnitOfWork;
+        private Mock<IEdgeDeviceRepository> mockEdgeDeviceRepository;
+        private Mock<IDeviceTagValueRepository> mockDeviceTagValueRepository;
+        private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
+
+        private IEdgeDevicesService edgeDevicesService;
 
         [SetUp]
         public void SetUp()
         {
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
+            base.Setup();
 
-            this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
-            this.mockRegistryManager = this.mockRepository.Create<RegistryManager>();
-            this.mockDeviceTagService = this.mockRepository.Create<IDeviceTagService>();
-            this.mockDeviceService = this.mockRepository.Create<IExternalDeviceService>();
-            this.mockEdgeDeviceMapper = this.mockRepository.Create<IEdgeDeviceMapper>();
-        }
+            this.mockDeviceTagService = MockRepository.Create<IDeviceTagService>();
+            this.mockDeviceService = MockRepository.Create<IExternalDeviceService>();
+            this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
+            this.mockEdgeDeviceRepository = MockRepository.Create<IEdgeDeviceRepository>();
+            this.mockDeviceTagValueRepository = MockRepository.Create<IDeviceTagValueRepository>();
+            this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
 
-        private EdgeDevicesService CreateEdgeDeviceService()
-        {
-            return new EdgeDevicesService(
-                this.mockRegistryManager.Object,
-                this.mockDeviceService.Object,
-                this.mockEdgeDeviceMapper.Object,
-                this.mockProvisioningServiceManager.Object,
-                this.mockDeviceTagService.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDeviceTagService.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDeviceService.Object);
+            _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
+            _ = ServiceCollection.AddSingleton(this.mockEdgeDeviceRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDeviceTagValueRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
+            _ = ServiceCollection.AddSingleton(DbContext);
+            _ = ServiceCollection.AddSingleton<IEdgeDevicesService, EdgeDevicesService>();
+
+            Services = ServiceCollection.BuildServiceProvider();
+
+            this.edgeDevicesService = Services.GetRequiredService<IEdgeDevicesService>();
+            Mapper = Services.GetRequiredService<IMapper>();
         }
 
         [Test]
-        public void GetEdgeDevicesPageShouldReturnList()
+        public async Task GetEdgeDevicesPageShouldReturnList()
         {
             // Arrange
-            var edgeDeviceService = CreateEdgeDeviceService();
+            var expectedTotalDevicesCount = 50;
+            var expectedPageSize = 10;
+            var expectedCurrentPage = 0;
+            var expectedEdgeDevices = Fixture.CreateMany<EdgeDevice>(expectedTotalDevicesCount).ToList();
 
-            const int count = 100;
-            var paginationResultSimul = new PaginationResult<Twin>
-            {
-                Items = Enumerable.Range(0, 100).Select(x => new Twin
+            await DbContext.AddRangeAsync(expectedEdgeDevices);
+            _ = await DbContext.SaveChangesAsync();
+
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<Expression<Func<EdgeDevice, bool>>>(), default))
+                .ReturnsAsync(new PaginatedResult<EdgeDevice>
                 {
-                    DeviceId = FormattableString.Invariant($"{x}"),
-                }),
-                TotalItems = 1000,
-                NextPage = Guid.NewGuid().ToString()
+                    Data = expectedEdgeDevices.Skip(expectedCurrentPage * expectedPageSize).Take(expectedPageSize).ToList(),
+                    PageSize = expectedPageSize,
+                    CurrentPage = expectedCurrentPage,
+                    TotalCount = expectedTotalDevicesCount
+                });
 
-            };
-
-            _ = this.mockEdgeDeviceMapper
-                .Setup(x => x.CreateEdgeDeviceListItem(It.IsAny<Twin>()))
-                .Returns(new IoTEdgeListItem());
-
-            var mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
-            _ = mockUrlHelper.Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
-                .Returns(Guid.NewGuid().ToString());
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
+                .Returns(Fixture.Create<Uri>());
 
             // Act
-            var result = edgeDeviceService.GetEdgeDevicesPage(paginationResultSimul,
-                mockUrlHelper.Object,
-                searchText: "bbb",
-                searchStatus: true,
-                pageSize: 2);
+            var result = await this.edgeDevicesService.GetEdgeDevicesPage();
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(count, result.Items.Count());
-            Assert.AreEqual(1000, result.TotalItems);
-            Assert.IsNotNull(result.NextPage);
+            _ = result.Data.Count.Should().Be(expectedPageSize);
+            _ = result.TotalCount.Should().Be(expectedTotalDevicesCount);
+            _ = result.PageSize.Should().Be(expectedPageSize);
+            _ = result.CurrentPage.Should().Be(expectedCurrentPage);
 
-            this.mockRepository.VerifyAll();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetEdgeDevicesCustomFilterReturnsExpectedDevices()
+        {
+            // Arrange
+            var keywordFilter = "WaNt tHiS DeViCe";
+            var expectedEdgeDevices = new List<EdgeDevice>
+            {
+                new EdgeDevice
+                {
+                    Id = "test",
+                    IsEnabled = true,
+                    Name = "I want this device",
+                    Tags = new List<DeviceTagValue>
+                    {
+                        new()
+                        {
+                            Name = "location",
+                            Value = "FR"
+                        }
+                    },
+                    DeviceModelId = Fixture.Create<string>(),
+                    Scope = Fixture.Create<string>(),
+                    NbDevices = 1,
+                },
+                new EdgeDevice
+                {
+                    IsEnabled = false,
+                    Name = "I don't want this device",
+                    Tags = new List<DeviceTagValue>
+                    {
+                        new()
+                        {
+                            Name = "location",
+                            Value = "US"
+                        }
+                    },
+                    DeviceModelId = Fixture.Create<string>(),
+                    Scope = Fixture.Create<string>(),
+                    NbDevices = 1
+                }
+            };
+
+            var expectedTotalDevicesCount = 1;
+            var expectedPageSize = 10;
+            var expectedCurrentPage = 0;
+
+            await DbContext.AddRangeAsync(expectedEdgeDevices);
+            _ = await DbContext.SaveChangesAsync();
+
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<Expression<Func<EdgeDevice, bool>>>(), default))
+                .ReturnsAsync(new PaginatedResult<EdgeDevice>
+                {
+                    Data = expectedEdgeDevices,
+                    PageSize = expectedPageSize,
+                    CurrentPage = expectedCurrentPage,
+                    TotalCount = expectedTotalDevicesCount
+                });
+
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
+                .Returns(Fixture.Create<Uri>());
+
+            // Act
+            var result = await this.edgeDevicesService.GetEdgeDevicesPage(searchText: keywordFilter, searchStatus: true);
+
+            _ = result.PageSize.Should().Be(expectedPageSize);
+            _ = result.CurrentPage.Should().Be(expectedCurrentPage);
+            _ = result.Data.First().DeviceId.Should().Be("test");
+            MockRepository.VerifyAll();
         }
 
         [Test]
         public async Task GetEdgeDeviceShouldReturnValue()
         {
             // Arrange
-            var edgeDeviceService = CreateEdgeDeviceService();
+            var expectedEdgeDevice = Fixture.Create<EdgeDevice>();
 
-            var expectedDevice = new IoTEdgeDevice()
-            {
-                DeviceId = Guid.NewGuid().ToString(),
-                Status = DeviceStatus.Enabled.ToString(),
-                NbDevices = 2,
-                NbModules = 1,
-                LastDeployment = new ConfigItem(),
-                Modules = new List<IoTEdgeModule>()
-                {
-                    new IoTEdgeModule()
-                }
-            };
+            var expectedImageUri = Fixture.Create<Uri>();
+            var expectedEdgeDeviceDto = Mapper.Map<IoTEdgeDevice>(expectedEdgeDevice);
+            expectedEdgeDeviceDto.ImageUrl = expectedImageUri;
+
+            _ = this.mockEdgeDeviceRepository
+                .Setup(x => x.GetByIdAsync(It.Is<string>(c => c.Equals(expectedEdgeDevice.Id, StringComparison.Ordinal))))
+                .ReturnsAsync(expectedEdgeDevice);
 
             _ = this.mockDeviceService
-                .Setup(x => x.GetDeviceTwin(It.Is<string>(c => c.Equals(expectedDevice.DeviceId, StringComparison.Ordinal))))
-                .ReturnsAsync(new Twin(expectedDevice.DeviceId));
+                .Setup(x => x.GetDeviceTwinWithModule(It.Is<string>(c => c.Equals(expectedEdgeDevice.Id, StringComparison.Ordinal))))
+                .ReturnsAsync(new Twin(expectedEdgeDevice.Id));
 
             _ = this.mockDeviceService
-                .Setup(x => x.GetDeviceTwinWithModule(It.Is<string>(c => c.Equals(expectedDevice.DeviceId, StringComparison.Ordinal))))
-                .ReturnsAsync(new Twin(expectedDevice.DeviceId));
+                .Setup(x => x.RetrieveLastConfiguration(It.IsAny<Twin>()))
+                .ReturnsAsync(new ConfigItem());
 
-            var edgeHubTwin = new Twin("edgeHub");
-            edgeHubTwin.Properties.Reported["clients"] = new[]
-            {
-                1, 2
-            };
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
+                .Returns(expectedImageUri);
 
-            _ = this.mockDeviceService
-                .Setup(x => x.GetDeviceTwinWithEdgeHubModule(It.Is<string>(c => c.Equals(expectedDevice.DeviceId, StringComparison.Ordinal))))
-                .ReturnsAsync(edgeHubTwin);
+            _ = this.mockDeviceTagService.Setup(service => service.GetAllTagsNames())
+                .Returns(expectedEdgeDevice.Tags.Select(tag => tag.Name));
 
-            _ = this.mockEdgeDeviceMapper
-                .Setup(x => x.CreateEdgeDevice(It.Is<Twin>(c => c.DeviceId.Equals(expectedDevice.DeviceId, StringComparison.Ordinal)),
-                It.Is<Twin>(c => c.DeviceId.Equals(expectedDevice.DeviceId, StringComparison.Ordinal)),
-                It.Is<int>(c => c.Equals(2)), It.IsAny<ConfigItem>(), It.IsAny<IEnumerable<string>>()))
-                .Returns(expectedDevice);
 
             _ = this.mockDeviceTagService.Setup(x => x.GetAllTagsNames()).Returns(new List<string>());
 
             // Act
-            var result = await edgeDeviceService.GetEdgeDevice(expectedDevice.DeviceId);
+            var result = await this.edgeDevicesService.GetEdgeDevice(expectedEdgeDevice.Id);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(expectedDevice, result);
+            Assert.AreEqual(expectedEdgeDeviceDto.DeviceId, result.DeviceId);
+            Assert.AreEqual(expectedEdgeDeviceDto.DeviceName, result.DeviceName);
 
-            this.mockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
         public void WhenDeviceTwinIsNullGetEdgeDeviceShouldResourceNotFoundException()
         {
             // Arrange
-            var edgeDeviceService = CreateEdgeDeviceService();
-
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceService
-                .Setup(x => x.GetDeviceTwin(It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal))))
+            _ = this.mockEdgeDeviceRepository
+                .Setup(x => x.GetByIdAsync(It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal))))
                 .ReturnsAsync(value: null);
 
             // Act
-            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => edgeDeviceService.GetEdgeDevice(deviceId));
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => this.edgeDevicesService.GetEdgeDevice(deviceId));
 
-            this.mockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
         public async Task CreateEdgeDeviceShouldReturnvalue()
         {
             // Arrange
-            var edgeDeviceService = CreateEdgeDeviceService();
-
             var mockResult = new BulkRegistryOperationResult
             {
                 IsSuccessful = true
@@ -191,34 +252,69 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 It.Is<DeviceStatus>(x => x == DeviceStatus.Enabled)))
                 .ReturnsAsync(mockResult);
 
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<EdgeDevice>()))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
             // Act
-            var result = await edgeDeviceService.CreateEdgeDevice(edgeDevice);
+            var result = await this.edgeDevicesService.CreateEdgeDevice(edgeDevice);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(mockResult.IsSuccessful, result.IsSuccessful);
+            Assert.AreEqual(edgeDevice.DeviceId, result.DeviceId);
 
-            this.mockRepository.VerifyAll();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task CreateEdgeDeviceDbUpdateExceptionIsThrownInternalServerErrorExceptionIsThrown()
+        {
+            // Arrange
+            var mockResult = new BulkRegistryOperationResult
+            {
+                IsSuccessful = true
+            };
+
+            var edgeDevice = new IoTEdgeDevice()
+            {
+                DeviceId = "aaa",
+            };
+
+            _ = this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(
+                It.Is<string>(x => x == edgeDevice.DeviceId),
+                It.Is<bool>(x => x),
+                It.Is<Twin>(x => x.DeviceId == edgeDevice.DeviceId),
+                It.Is<DeviceStatus>(x => x == DeviceStatus.Enabled)))
+                .ReturnsAsync(mockResult);
+
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<EdgeDevice>()))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.edgeDevicesService.CreateEdgeDevice(edgeDevice);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+
+            MockRepository.VerifyAll();
         }
 
         [Test]
         public void WhenEdgeDeviceIsNullCreateEdgeDeviceShouldThrowArgumentNullException()
         {
-            // Arrange
-            var edgeDeviceService = CreateEdgeDeviceService();
-
-            // Act
-
             // Assert
-            _ = Assert.ThrowsAsync<ArgumentNullException>(() => edgeDeviceService.CreateEdgeDevice(null));
+            _ = Assert.ThrowsAsync<ArgumentNullException>(() => this.edgeDevicesService.CreateEdgeDevice(null));
         }
 
         [Test]
         public async Task UpdateEdgeDeviceShouldReturnUpdatedTwin()
         {
             // Arrange
-            var edgeDeviceService = CreateEdgeDeviceService();
-
             var edgeDevice = new IoTEdgeDevice()
             {
                 DeviceId = Guid.NewGuid().ToString(),
@@ -226,15 +322,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             };
 
             var mockTwin = new Twin(edgeDevice.DeviceId);
-            mockTwin.Tags["env"] = "dev";
+            mockTwin.Tags["deviceName"] = "Test";
 
             _ = this.mockDeviceService
                 .Setup(x => x.GetDevice(It.Is<string>(c => c.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
-                .ReturnsAsync(new Device(edgeDevice.DeviceId));
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device(edgeDevice.DeviceId));
 
             _ = this.mockDeviceService
-                .Setup(x => x.UpdateDevice(It.Is<Device>(c => c.Id.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
-                .ReturnsAsync(new Device(edgeDevice.DeviceId));
+                .Setup(x => x.UpdateDevice(It.Is<Microsoft.Azure.Devices.Device>(c => c.Id.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device(edgeDevice.DeviceId));
 
             _ = this.mockDeviceService
                 .Setup(x => x.GetDeviceTwin(It.Is<string>(c => c.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
@@ -244,31 +340,237 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Setup(x => x.UpdateDeviceTwin(It.Is<Twin>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
                 .ReturnsAsync(mockTwin);
 
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(edgeDevice.DeviceId))
+                .ReturnsAsync(new EdgeDevice
+                {
+                    Tags = new List<DeviceTagValue>
+                    {
+                        new()
+                        {
+                            Id = Fixture.Create<string>()
+                        }
+                    }
+                });
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockEdgeDeviceRepository.Setup(repository => repository.Update(It.IsAny<EdgeDevice>()))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
             // Act
-            var result = await edgeDeviceService.UpdateEdgeDevice(edgeDevice);
+            var result = await this.edgeDevicesService.UpdateEdgeDevice(edgeDevice);
 
             // Assert
             Assert.IsNotNull(result);
+            Assert.AreEqual(edgeDevice.DeviceId, result.DeviceId);
 
-            this.mockRepository.VerifyAll();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateEdgeDeviceDeviceNotExistResourceNotFoundExceptionIsThrown()
+        {
+            // Arrange
+            var edgeDevice = new IoTEdgeDevice()
+            {
+                DeviceId = Guid.NewGuid().ToString(),
+                Status = DeviceStatus.Enabled.ToString(),
+            };
+
+            var mockTwin = new Twin(edgeDevice.DeviceId);
+            mockTwin.Tags["deviceName"] = "Test";
+
+            _ = this.mockDeviceService
+                .Setup(x => x.GetDevice(It.Is<string>(c => c.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device(edgeDevice.DeviceId));
+
+            _ = this.mockDeviceService
+                .Setup(x => x.UpdateDevice(It.Is<Microsoft.Azure.Devices.Device>(c => c.Id.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device(edgeDevice.DeviceId));
+
+            _ = this.mockDeviceService
+                .Setup(x => x.GetDeviceTwin(It.Is<string>(c => c.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(mockTwin);
+
+            _ = this.mockDeviceService
+                .Setup(x => x.UpdateDeviceTwin(It.Is<Twin>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(mockTwin);
+
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(edgeDevice.DeviceId))
+                .ReturnsAsync(value: null);
+
+            // Act
+            var act = () => this.edgeDevicesService.UpdateEdgeDevice(edgeDevice);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
+
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateEdgeDeviceDbUpdateExceptionIsThrownInternalServerErrorExceptionIsThrown()
+        {
+            // Arrange
+            var edgeDevice = new IoTEdgeDevice()
+            {
+                DeviceId = Guid.NewGuid().ToString(),
+                Status = DeviceStatus.Enabled.ToString(),
+            };
+
+            var mockTwin = new Twin(edgeDevice.DeviceId);
+            mockTwin.Tags["deviceName"] = "Test";
+
+            _ = this.mockDeviceService
+                .Setup(x => x.GetDevice(It.Is<string>(c => c.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device(edgeDevice.DeviceId));
+
+            _ = this.mockDeviceService
+                .Setup(x => x.UpdateDevice(It.Is<Microsoft.Azure.Devices.Device>(c => c.Id.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device(edgeDevice.DeviceId));
+
+            _ = this.mockDeviceService
+                .Setup(x => x.GetDeviceTwin(It.Is<string>(c => c.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(mockTwin);
+
+            _ = this.mockDeviceService
+                .Setup(x => x.UpdateDeviceTwin(It.Is<Twin>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(mockTwin);
+
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(edgeDevice.DeviceId))
+                .ReturnsAsync(new EdgeDevice
+                {
+                    Tags = new List<DeviceTagValue>
+                    {
+                        new()
+                        {
+                            Id = Fixture.Create<string>()
+                        }
+                    }
+                });
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockEdgeDeviceRepository.Setup(repository => repository.Update(It.IsAny<EdgeDevice>()))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.edgeDevicesService.UpdateEdgeDevice(edgeDevice);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+
+            MockRepository.VerifyAll();
         }
 
         [Test]
         public void WhenEdgeDeviceIsNullUpdateEdgeDeviceShouldThrowArgumentNullException()
         {
+            // 
+            // Assert
+            _ = Assert.ThrowsAsync<ArgumentNullException>(() => this.edgeDevicesService.UpdateEdgeDevice(null));
+        }
+
+        [Test]
+        public async Task DeleteEdgeDeviceAsyncDeviceExistDeviceDeleted()
+        {
             // Arrange
-            var edgeDeviceService = CreateEdgeDeviceService();
+            var deviceDto = new IoTEdgeDevice()
+            {
+                DeviceId = Fixture.Create<string>()
+            };
+
+            _ = this.mockDeviceService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId))
+                .ReturnsAsync(new EdgeDevice
+                {
+                    Tags = Fixture.CreateMany<DeviceTagValue>(5).ToList()
+                });
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockEdgeDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceId))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.edgeDevicesService.DeleteEdgeDeviceAsync(deviceDto.DeviceId);
 
             // Assert
-            _ = Assert.ThrowsAsync<ArgumentNullException>(() => edgeDeviceService.UpdateEdgeDevice(null));
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteEdgeDeviceDeviceNotExistNothingIsDone()
+        {
+            // Arrange
+            var deviceDto = new IoTEdgeDevice
+            {
+                DeviceId = Fixture.Create<string>()
+            };
+
+            _ = this.mockDeviceService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId))
+                .ReturnsAsync(value: null);
+
+            // Act
+            await this.edgeDevicesService.DeleteEdgeDeviceAsync(deviceDto.DeviceId);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteEdgeDeviceDbUpdateExceptionIsRaisedInternalServerErrorExceptionIsThrown()
+        {
+            // Arrange
+            var deviceDto = new IoTEdgeDevice
+            {
+                DeviceId = Fixture.Create<string>()
+            };
+
+            _ = this.mockDeviceService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId))
+                .ReturnsAsync(new EdgeDevice
+                {
+                    Tags = new List<DeviceTagValue>()
+                });
+
+            this.mockEdgeDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceId))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.edgeDevicesService.DeleteEdgeDeviceAsync(deviceDto.DeviceId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
         }
 
         [TestCase("RestartModule", /*lang=json,strict*/ "{\"id\":\"aaa\",\"schemaVersion\":\"1.0\"}")]
         public async Task ExecuteMethodShouldExecuteC2DMethod(string methodName, string expected)
         {
             // Arrange
-            var edgeDeviceService  = CreateEdgeDeviceService();
-
             var edgeModule = new IoTEdgeModule
             {
                 ModuleName = "aaa",
@@ -288,30 +590,26 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 });
 
             // Act
-            _ = await edgeDeviceService.ExecuteModuleMethod(deviceId, edgeModule.ModuleName, methodName);
+            _ = await this.edgeDevicesService.ExecuteModuleMethod(deviceId, edgeModule.ModuleName, methodName);
 
             // Assert
-            this.mockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [TestCase("RestartModule")]
         public void WhenEdgeModuleIsNullExecuteMethodShouldThrowArgumentNullException(string methodName)
         {
             // Arrange
-            var edgeDeviceService = CreateEdgeDeviceService();
-
             var deviceId = Guid.NewGuid().ToString();
 
             // Assert
-            _ = Assert.ThrowsAsync<ArgumentNullException>(() => edgeDeviceService.ExecuteModuleMethod(deviceId, null, methodName));
+            _ = Assert.ThrowsAsync<ArgumentNullException>(() => this.edgeDevicesService.ExecuteModuleMethod(deviceId, null, methodName));
         }
 
         [TestCase("test")]
         public async Task ExecuteModuleCommand(string commandName)
         {
             // Arrange
-            var edgeDeviceService  = CreateEdgeDeviceService();
-
             var edgeModule = new IoTEdgeModule
             {
                 ModuleName = "aaa",
@@ -331,19 +629,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 });
 
             // Act
-            var result = await edgeDeviceService.ExecuteModuleCommand(deviceId, edgeModule.ModuleName, commandName);
+            var result = await this.edgeDevicesService.ExecuteModuleCommand(deviceId, edgeModule.ModuleName, commandName);
 
             // Assert
             Assert.AreEqual(200, result.Status);
-            this.mockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [TestCase("test")]
         public void WhenDeviceIdIsNullExecuteModuleCommandShouldThrowArgumentNullException(string commandName)
         {
             // Arrange
-            var edgeDeviceService  = CreateEdgeDeviceService();
-
             var edgeModule = new IoTEdgeModule
             {
                 ModuleName = "aaa",
@@ -352,35 +648,31 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var deviceId = string.Empty;
 
             // Act
-            var result = async () => await edgeDeviceService.ExecuteModuleCommand(deviceId, edgeModule.ModuleName, commandName);
+            var result = async () => await this.edgeDevicesService.ExecuteModuleCommand(deviceId, edgeModule.ModuleName, commandName);
 
             // Assert
             _ = result.Should().ThrowAsync<ArgumentNullException>();
-            this.mockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [TestCase("test")]
         public void WhenModuleIsNullExecuteModuleCommandShouldThrowArgumentNullException(string commandName)
         {
             // Arrange
-            var edgeDeviceService  = CreateEdgeDeviceService();
-
             var deviceId = Guid.NewGuid().ToString();
 
             // Act
-            var result = async () => await edgeDeviceService.ExecuteModuleCommand(deviceId, null, commandName);
+            var result = async () => await this.edgeDevicesService.ExecuteModuleCommand(deviceId, null, commandName);
 
             // Assert
             _ = result.Should().ThrowAsync<ArgumentNullException>();
-            this.mockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
         public void WhenCommandNameIsNullExecuteModuleCommandShouldThrowArgumentNullException()
         {
             // Arrange
-            var edgeDeviceService  = CreateEdgeDeviceService();
-
             var deviceId = string.Empty;
 
             var edgeModule = new IoTEdgeModule
@@ -389,58 +681,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             };
 
             // Act
-            var result = async () => await edgeDeviceService.ExecuteModuleCommand(deviceId, edgeModule.ModuleName, null);
+            var result = async () => await this.edgeDevicesService.ExecuteModuleCommand(deviceId, edgeModule.ModuleName, null);
 
             // Assert
             _ = result.Should().ThrowAsync<ArgumentNullException>();
-            this.mockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
-        [Test]
-        public async Task GetEdgeDeviceCredentialsShouldReturnEnrollmentCredentials()
-        {
-            // Arrange
-            var edgeDeviceService = CreateEdgeDeviceService();
-
-            var mockRegistrationCredentials = new EnrollmentCredentials
-            {
-                RegistrationID = "aaa",
-                SymmetricKey = "dfhjkfdgh"
-            };
-
-            var mockTwin = new Twin("aaa");
-
-            _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", It.IsAny<string>()))
-                .ReturnsAsync(mockRegistrationCredentials);
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync(mockTwin);
-
-            // Act
-            var result = await edgeDeviceService.GetEdgeDeviceCredentials("aaa");
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(mockRegistrationCredentials, result);
-
-            this.mockRepository.VerifyAll();
-        }
-
-        [Test]
-        public void WhenDeviceTwinIsNullGetEdgeDeviceCredentialsShouldThrowResourceNotFoundException()
-        {
-            // Arrange
-            var edgeDeviceService = CreateEdgeDeviceService();
-
-            _ = this.mockDeviceService.Setup(c => c.GetDeviceTwin("aaa"))
-                .ReturnsAsync(value: null);
-
-            // Act
-
-            // Assert
-            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => edgeDeviceService.GetEdgeDeviceCredentials("aaa"));
-
-            this.mockRepository.VerifyAll();
-        }
     }
 }

@@ -18,7 +18,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Graph.ExternalConnectors;
     using Models.v10;
     using Moq;
     using Newtonsoft.Json;
@@ -1813,6 +1812,55 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetEdgeDeviceCredentialsShouldReturnEnrollmentCredentials()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockRegistrationCredentials = new EnrollmentCredentials
+            {
+                RegistrationID = "aaa",
+                SymmetricKey = "dfhjkfdgh"
+            };
+
+            var mockTwin = new Twin("aaa");
+
+            _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == mockTwin.DeviceId)))
+                .ReturnsAsync(mockTwin);
+
+            _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", It.IsAny<string>()))
+                .ReturnsAsync(mockRegistrationCredentials);
+
+            // Act
+            var result = await service.GetEdgeDeviceCredentials("aaa");
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(mockRegistrationCredentials, result);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void WhenDeviceTwinIsNullGetEdgeDeviceCredentialsShouldThrowResourceNotFoundException()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockTwin = new Twin("aaa");
+
+            _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == mockTwin.DeviceId)))
+                .ReturnsAsync(value: null);
+
+            // Act
+
+            // Assert
+            _ = Assert.ThrowsAsync<ResourceNotFoundException>(() => service.GetEdgeDeviceCredentials("aaa"));
+
             this.mockRepository.VerifyAll();
         }
     }

@@ -67,9 +67,9 @@
             </ToolBarContent>
             <HeaderContent>
                 <MudTh></MudTh>
-                <MudTh>Device ID</MudTh>
-                <MudTh Style="text-align: center">Allowed</MudTh>
-                <MudTh Style="text-align: center">Nb devices</MudTh>
+                <MudTh><MudTableSortLabel SortLabel="DeviceId" T="IoTEdgeListItem" id="sortDeviceId">Device ID</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="IoTEdgeListItem">Allowed</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="Nb devices" T="IoTEdgeListItem">Nb devices</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center">See details</MudTh>
                 <MudTh Style="text-align: center">Delete</MudTh>
             </HeaderContent>
@@ -128,13 +128,13 @@
     private SearchModel searchModel = new();
 
     readonly DialogOptions maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
-    private readonly Dictionary<int, string> pages = new();
+    //private readonly Dictionary<int, string> pages = new();
 
     private bool IsLoading { get; set; } = true;
 
     private void Search()
     {
-        pages.Clear();
+        //pages.Clear();
 
         table.ReloadServerData();
     }
@@ -148,22 +148,20 @@
     {
         try
         {
-            PaginationResult<IoTEdgeListItem> result;
+            string orderBy = null;
 
-            if (pages.Keys.Contains(state.Page))
+            switch (state.SortDirection)
             {
-                result = await EdgeDeviceClientService.GetDevices(pages[state.Page]);
-            }
-            else
-            {
-                var uri = $"api/edge/devices?pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&searchType={searchModel.Type}";
-
-                _ = pages.TryAdd(state.Page, uri);
-
-                result = await EdgeDeviceClientService.GetDevices(uri);
+                case SortDirection.Ascending:
+                    orderBy = $"{state.SortLabel} asc";
+                    break;
+                case SortDirection.Descending:
+                    orderBy = $"{state.SortLabel} desc";
+                    break;
             }
 
-            _ = pages.TryAdd(state.Page + 1, result.NextPage);
+            var uri = $"api/edge/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&orderBy={orderBy}";
+            var result = await EdgeDeviceClientService.GetDevices(uri);
 
             return new TableData<IoTEdgeListItem>
                 {

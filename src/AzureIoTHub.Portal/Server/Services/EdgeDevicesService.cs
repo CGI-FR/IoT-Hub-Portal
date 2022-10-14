@@ -6,94 +6,102 @@ namespace AzureIoTHub.Portal.Server.Services
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Dynamic.Core;
     using System.Threading.Tasks;
+    using AutoMapper;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Infrastructure;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Server.Mappers;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v1._0.Filters;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
+    using Microsoft.EntityFrameworkCore;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
 
     public class EdgeDevicesService : IEdgeDevicesService
     {
-        /// <summary>
-        /// The device registry manager.
-        /// </summary>
-        private readonly RegistryManager registryManager;
-
         /// <summary>
         /// The device idevice service.
         /// </summary>
         private readonly IExternalDeviceService externalDevicesService;
 
-        /// <summary>
-        /// The edge device mapper.
-        /// </summary>
-        private readonly IEdgeDeviceMapper edgeDeviceMapper;
-
-        /// <summary>
-        /// The device provisioning srevice manager.
-        /// </summary>
-        private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
-
         private readonly IDeviceTagService deviceTagService;
 
-        public EdgeDevicesService(RegistryManager registryManager, IExternalDeviceService externalDevicesService,
-            IEdgeDeviceMapper edgeDeviceMapper,
-            IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
-            IDeviceTagService deviceTagService)
+        private readonly PortalDbContext portalDbContext;
+        private readonly IMapper mapper;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IEdgeDeviceRepository edgeDeviceRepository;
+        private readonly IDeviceTagValueRepository deviceTagValueRepository;
+        private readonly IDeviceModelImageManager deviceModelImageManager;
+
+        public EdgeDevicesService(
+            IExternalDeviceService externalDevicesService,
+            IDeviceTagService deviceTagService,
+            PortalDbContext portalDbContext,
+            IMapper mapper,
+            IUnitOfWork unitOfWork,
+            IEdgeDeviceRepository edgeDeviceRepository,
+            IDeviceTagValueRepository deviceTagValueRepository,
+            IDeviceModelImageManager deviceModelImageManager)
         {
-            this.registryManager = registryManager;
             this.externalDevicesService = externalDevicesService;
-            this.edgeDeviceMapper = edgeDeviceMapper;
-            this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
             this.deviceTagService = deviceTagService;
-            this.deviceTagService = deviceTagService;
+            this.portalDbContext = portalDbContext;
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.edgeDeviceRepository = edgeDeviceRepository;
+            this.deviceTagValueRepository = deviceTagValueRepository;
+            this.deviceModelImageManager = deviceModelImageManager;
         }
 
-        public PaginationResult<IoTEdgeListItem> GetEdgeDevicesPage(PaginationResult<Twin> edgeDevicesTwin,
-            IUrlHelper urlHelper,
+        public async Task<PaginatedResult<IoTEdgeListItem>> GetEdgeDevicesPage(
             string searchText = null,
             bool? searchStatus = null,
-            string searchType = null,
-            int pageSize = 10)
+            int pageSize = 10,
+            int pageNumber = 0,
+            string[] orderBy = null)
         {
-            var newEdgeDevicesList = new List<IoTEdgeListItem>();
-
-            foreach (var deviceTwin in edgeDevicesTwin.Items)
+            var deviceListFilter = new EdgeDeviceListFilter
             {
-                newEdgeDevicesList.Add(this.edgeDeviceMapper.CreateEdgeDeviceListItem(deviceTwin));
-            }
-
-            var nextPage = string.Empty;
-
-            if (!string.IsNullOrEmpty(edgeDevicesTwin.NextPage))
-            {
-                nextPage = urlHelper.RouteUrl(new UrlRouteContext
-                {
-                    RouteName = "GET IoT Edge devices",
-                    Values = new
-                    {
-                        continuationToken = edgeDevicesTwin.NextPage,
-                        searchText,
-                        searchType,
-                        searchStatus,
-                        pageSize
-                    }
-                });
-            }
-
-            return new PaginationResult<IoTEdgeListItem>
-            {
-                Items = newEdgeDevicesList,
-                TotalItems = edgeDevicesTwin.TotalItems,
-                NextPage = nextPage
+                PageSize = pageSize,
+                PageNumber = pageNumber,
+                IsEnabled = searchStatus,
+                Keyword = searchText,
+                OrderBy = orderBy,
             };
+
+            var devicePredicate = PredicateBuilder.True<EdgeDevice>();
+
+            if (deviceListFilter.IsEnabled != null)
+            {
+                devicePredicate = devicePredicate.And(device => device.IsEnabled.Equals(deviceListFilter.IsEnabled));
+            }
+
+            if (!string.IsNullOrWhiteSpace(deviceListFilter.Keyword))
+            {
+                devicePredicate = devicePredicate.And(device => device.Id.ToLower().Contains(deviceListFilter.Keyword.ToLower()) || device.Name.ToLower().Contains(deviceListFilter.Keyword.ToLower()));
+            }
+
+            var paginatedEdgeDevices = await this.edgeDeviceRepository.GetPaginatedListAsync(pageNumber, pageSize, orderBy, devicePredicate);
+            var paginateEdgeDeviceDto = new PaginatedResult<IoTEdgeListItem>
+            {
+                Data = paginatedEdgeDevices.Data.Select(x => this.mapper.Map<IoTEdgeListItem>(x, opts =>
+                {
+                    opts.Items["imageUrl"] = this.deviceModelImageManager.ComputeImageUri(x.DeviceModelId);
+                })).ToList(),
+                TotalCount = paginatedEdgeDevices.TotalCount,
+                CurrentPage = paginatedEdgeDevices.CurrentPage,
+                PageSize = pageSize
+            };
+
+            return new PaginatedResult<IoTEdgeListItem>(paginateEdgeDeviceDto.Data, paginateEdgeDeviceDto.TotalCount);
         }
 
         /// <summary>
@@ -103,20 +111,26 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>IoTEdgeDevice object.</returns>
         public async Task<IoTEdgeDevice> GetEdgeDevice(string edgeDeviceId)
         {
-            var deviceTwin = await this.externalDevicesService.GetDeviceTwin(edgeDeviceId);
+            var deviceEntity = await this.edgeDeviceRepository.GetByIdAsync(edgeDeviceId);
 
-            if (deviceTwin is null)
+            if (deviceEntity is null)
             {
-                throw new ResourceNotFoundException($"Device {edgeDeviceId} not found.");
+                throw new ResourceNotFoundException($"The device with id {edgeDeviceId} doesn't exist");
             }
+
+            var deviceDto = this.mapper.Map<IoTEdgeDevice>(deviceEntity);
 
             var deviceTwinWithModules = await this.externalDevicesService.GetDeviceTwinWithModule(edgeDeviceId);
 
-            var edgeDeviceLastConfiguration = await RetrieveLastConfiguration(deviceTwinWithModules);
-            var edgeDeviceNbConnectedDevice = await RetrieveNbConnectedDevice(edgeDeviceId);
-            var tagList = this.deviceTagService.GetAllTagsNames();
+            deviceDto.LastDeployment = await this.externalDevicesService.RetrieveLastConfiguration(deviceTwinWithModules);
+            deviceDto.ImageUrl = this.deviceModelImageManager.ComputeImageUri(deviceDto.ModelId);
+            deviceDto.Modules = DeviceHelper.RetrieveModuleList(deviceTwinWithModules);
+            deviceDto.RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceTwinWithModules);
+            deviceDto.ConnectionState = deviceTwinWithModules.ConnectionState?.ToString();
+            deviceDto.Status = deviceTwinWithModules.Status?.ToString();
+            deviceDto.Tags = FilterDeviceTags(deviceDto);
 
-            return this.edgeDeviceMapper.CreateEdgeDevice(deviceTwin, deviceTwinWithModules, edgeDeviceNbConnectedDevice, edgeDeviceLastConfiguration, tagList);
+            return deviceDto;
         }
 
         /// <summary>
@@ -124,7 +138,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         /// <param name="edgeDevice"> the new edge device.</param>
         /// <returns>the result of the operation.</returns>
-        public async Task<BulkRegistryOperationResult> CreateEdgeDevice(IoTEdgeDevice edgeDevice)
+        public async Task<IoTEdgeDevice> CreateEdgeDevice(IoTEdgeDevice edgeDevice)
         {
             ArgumentNullException.ThrowIfNull(edgeDevice, nameof(edgeDevice));
 
@@ -141,7 +155,26 @@ namespace AzureIoTHub.Portal.Server.Services
             DeviceHelper.SetTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId), edgeDevice.ModelId);
             DeviceHelper.SetTagValue(deviceTwin, nameof(IoTEdgeDevice.DeviceName), edgeDevice.DeviceName);
 
-            return await this.externalDevicesService.CreateDeviceWithTwin(edgeDevice.DeviceId, true, deviceTwin, DeviceStatus.Enabled);
+            _ = await this.externalDevicesService.CreateDeviceWithTwin(edgeDevice.DeviceId, true, deviceTwin, DeviceStatus.Enabled);
+
+            return await CreateEdgeDeviceInDatabase(edgeDevice);
+        }
+
+        private async Task<IoTEdgeDevice> CreateEdgeDeviceInDatabase(IoTEdgeDevice device)
+        {
+            try
+            {
+                var edgeDeviceEntity = this.mapper.Map<EdgeDevice>(device);
+
+                await this.edgeDeviceRepository.InsertAsync(edgeDeviceEntity);
+                await this.unitOfWork.SaveAsync();
+
+                return device;
+            }
+            catch (DbUpdateException e)
+            {
+                throw new InternalServerErrorException($"Unable to create the device {device.DeviceName}", e);
+            }
         }
 
         /// <summary>
@@ -149,7 +182,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         /// <param name="edgeDevice">edge device object update.</param>
         /// <returns>device twin updated.</returns>
-        public async Task<Twin> UpdateEdgeDevice(IoTEdgeDevice edgeDevice)
+        public async Task<IoTEdgeDevice> UpdateEdgeDevice(IoTEdgeDevice edgeDevice)
         {
             ArgumentNullException.ThrowIfNull(edgeDevice, nameof(edgeDevice));
 
@@ -164,7 +197,71 @@ namespace AzureIoTHub.Portal.Server.Services
 
             var deviceTwin = await this.externalDevicesService.GetDeviceTwin(edgeDevice.DeviceId);
 
-            return await this.externalDevicesService.UpdateDeviceTwin(deviceTwin);
+            _ = await this.externalDevicesService.UpdateDeviceTwin(deviceTwin);
+
+            return await UpdateEdgeDeviceInDatabase(edgeDevice);
+        }
+
+        private async Task<IoTEdgeDevice> UpdateEdgeDeviceInDatabase(IoTEdgeDevice device)
+        {
+            try
+            {
+                var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(device.DeviceId);
+
+                if (edgeDeviceEntity == null)
+                {
+                    throw new ResourceNotFoundException($"The device {device.DeviceId} doesn't exist");
+                }
+
+                foreach (var deviceTagEntity in edgeDeviceEntity.Tags)
+                {
+                    this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
+                }
+
+                _ = this.mapper.Map(device, edgeDeviceEntity);
+
+                this.edgeDeviceRepository.Update(edgeDeviceEntity);
+                await this.unitOfWork.SaveAsync();
+
+                return device;
+            }
+            catch (DbUpdateException e)
+            {
+                throw new InternalServerErrorException($"Unable to create the device {device.DeviceName}", e);
+            }
+        }
+
+        public async Task DeleteEdgeDeviceAsync(string deviceId)
+        {
+            await this.externalDevicesService.DeleteDevice(deviceId);
+
+            await DeleteEdgeDeviceInDatabase(deviceId);
+        }
+
+        public async Task DeleteEdgeDeviceInDatabase(string deviceId)
+        {
+            try
+            {
+                var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(deviceId);
+
+                if (edgeDeviceEntity == null)
+                {
+                    return;
+                }
+
+                foreach (var deviceTagEntity in edgeDeviceEntity.Tags)
+                {
+                    this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
+                }
+
+                this.edgeDeviceRepository.Delete(deviceId);
+
+                await this.unitOfWork.SaveAsync();
+            }
+            catch (DbUpdateException e)
+            {
+                throw new InternalServerErrorException($"Unable to delete the device {deviceId}", e);
+            }
         }
 
         /// <summary>
@@ -229,61 +326,14 @@ namespace AzureIoTHub.Portal.Server.Services
             };
         }
 
-        /// <summary>
-        /// Gets the IoT Edge device enrollement credentials.
-        /// </summary>
-        /// <param name="edgeDeviceId">the edge device id.</param>
-        /// <returns>Enrollment credentials.</returns>
-        /// <exception cref="ResourceNotFoundException"></exception>
-        public async Task<EnrollmentCredentials> GetEdgeDeviceCredentials(string edgeDeviceId)
+        private Dictionary<string, string> FilterDeviceTags(IoTEdgeDevice device)
         {
-            var deviceTwin = await this.externalDevicesService.GetDeviceTwin(edgeDeviceId);
+            var tags = this.deviceTagService.GetAllTagsNames().ToList();
 
-            if (deviceTwin == null)
-            {
-                throw new ResourceNotFoundException($"IoT Edge {edgeDeviceId} doesn't exist.");
-            }
-
-            var modelId = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId));
-
-            return await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(edgeDeviceId, modelId);
-        }
-
-        /// <summary>
-        /// Retrieves the connected devices number on the IoT Edge.
-        /// </summary>
-        /// <param name="deviceId">The device identifier.</param>
-        private async Task<int> RetrieveNbConnectedDevice(string deviceId)
-        {
-            var deviceWithClient = await this.externalDevicesService.GetDeviceTwinWithEdgeHubModule(deviceId);
-            var reportedProperties = JObject.Parse(deviceWithClient.Properties.Reported.ToJson());
-
-            return reportedProperties.TryGetValue("clients", out var clients) ? clients.Count() : 0;
-        }
-
-        /// <summary>
-        /// Retrieves the last configuration of the IoT Edge.
-        /// </summary>
-        /// <param name="twin">The twin.</param>
-        private async Task<ConfigItem> RetrieveLastConfiguration(Twin twin)
-        {
-            var item = new ConfigItem();
-
-            if (twin.Configurations?.Count > 0)
-            {
-                foreach (var config in twin.Configurations)
-                {
-                    var confObj = await this.registryManager.GetConfigurationAsync(config.Key);
-                    if (item.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
-                    {
-                        item.Name = config.Key;
-                        item.DateCreation = confObj.CreatedTimeUtc;
-                        item.Status = nameof(ConfigurationStatus.Applied);
-                    }
-                }
-                return item;
-            }
-            return null;
+            return device.Tags.Where(pair => tags.Contains(pair.Key))
+                .Union(tags.Where(s => !device.Tags.ContainsKey(s))
+                    .Select(s => new KeyValuePair<string, string>(s, string.Empty)))
+                .ToDictionary(pair => pair.Key, pair => pair.Value);
         }
     }
 }

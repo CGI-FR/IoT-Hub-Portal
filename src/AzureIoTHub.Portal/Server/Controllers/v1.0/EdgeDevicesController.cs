@@ -56,29 +56,35 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the IoT Edge device list.
         /// </summary>
-        /// <param name="continuationToken"></param>
         /// <param name="searchText"></param>
         /// <param name="searchStatus"></param>
         /// <param name="searchType"></param>
         /// <param name="pageSize"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="orderBy"></param>
         [HttpGet(Name = "GET IoT Edge devices")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<IoTEdgeListItem>))]
-        public async Task<IActionResult> Get(
-            string continuationToken = null,
+        public async Task<PaginationResult<IoTEdgeListItem>> Get(
             string searchText = null,
             bool? searchStatus = null,
-            string searchType = null,
-            int pageSize = 10)
+            int pageSize = 10,
+            int pageNumber = 0,
+            [FromQuery] string[] orderBy = null)
         {
-            var edgeDevicesTwin = await this.externalDevicesService.GetAllEdgeDevice(
-                continuationToken: continuationToken,
-                searchText: searchText,
-                searchStatus: searchStatus,
-                searchType: searchType,
-                pageSize: pageSize);
+            var paginatedEdgeDevices = await this.edgeDevicesService.GetEdgeDevicesPage(
+                searchText,
+                searchStatus,
+                pageSize,
+                pageNumber,
+                orderBy);
 
-            return Ok(this.edgeDevicesService.GetEdgeDevicesPage(
-                edgeDevicesTwin, Url, searchText, searchStatus, searchType, pageSize));
+
+            return new PaginationResult<IoTEdgeListItem>
+            {
+                Items = paginatedEdgeDevices.Data,
+                TotalItems = paginatedEdgeDevices.TotalCount,
+                //NextPage = nextPage
+            };
         }
 
         /// <summary>
@@ -130,7 +136,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteDeviceAsync(string deviceId)
         {
-            await this.externalDevicesService.DeleteDevice(deviceId);
+            await this.edgeDevicesService.DeleteEdgeDeviceAsync(deviceId);
             this.logger.LogInformation($"iot hub device was delete  {deviceId}");
 
             return Ok($"iot hub device was delete  {deviceId}");
@@ -146,7 +152,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             try
             {
-                return Ok(await this.edgeDevicesService.GetEdgeDeviceCredentials(deviceId));
+                return Ok(await this.externalDevicesService.GetEdgeDeviceCredentials(deviceId));
             }
             catch (ResourceNotFoundException e)
             {
