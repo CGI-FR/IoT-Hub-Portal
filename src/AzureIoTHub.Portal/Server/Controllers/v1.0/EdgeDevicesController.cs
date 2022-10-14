@@ -136,7 +136,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteDeviceAsync(string deviceId)
         {
-            await this.externalDevicesService.DeleteDevice(deviceId);
+            await this.edgeDevicesService.DeleteEdgeDeviceAsync(deviceId);
             this.logger.LogInformation($"iot hub device was delete  {deviceId}");
 
             return Ok($"iot hub device was delete  {deviceId}");

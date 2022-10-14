@@ -238,6 +238,13 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
+        public async Task DeleteEdgeDeviceAsync(string deviceId)
+        {
+            await this.externalDevicesService.DeleteDevice(deviceId);
+
+            await DeleteEdgeDeviceInDatabase(deviceId);
+        }
+
         public async Task DeleteEdgeDeviceInDatabase(string deviceId)
         {
             try

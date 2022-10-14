@@ -461,6 +461,94 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = Assert.ThrowsAsync<ArgumentNullException>(() => this.edgeDevicesService.UpdateEdgeDevice(null));
         }
 
+        [Test]
+        public async Task DeleteEdgeDeviceAsyncDeviceExistDeviceDeleted()
+        {
+            // Arrange
+            var deviceDto = new IoTEdgeDevice()
+            {
+                DeviceId = Fixture.Create<string>()
+            };
+
+            _ = this.mockDeviceService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId))
+                .ReturnsAsync(new EdgeDevice
+                {
+                    Tags = Fixture.CreateMany<DeviceTagValue>(5).ToList()
+                });
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockEdgeDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceId))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.edgeDevicesService.DeleteEdgeDeviceAsync(deviceDto.DeviceId);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteEdgeDeviceDeviceNotExistNothingIsDone()
+        {
+            // Arrange
+            var deviceDto = new IoTEdgeDevice
+            {
+                DeviceId = Fixture.Create<string>()
+            };
+
+            _ = this.mockDeviceService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId))
+                .ReturnsAsync(value: null);
+
+            // Act
+            await this.edgeDevicesService.DeleteEdgeDeviceAsync(deviceDto.DeviceId);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteEdgeDeviceDbUpdateExceptionIsRaisedInternalServerErrorExceptionIsThrown()
+        {
+            // Arrange
+            var deviceDto = new IoTEdgeDevice
+            {
+                DeviceId = Fixture.Create<string>()
+            };
+
+            _ = this.mockDeviceService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId))
+                .ReturnsAsync(new EdgeDevice
+                {
+                    Tags = new List<DeviceTagValue>()
+                });
+
+            this.mockEdgeDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceId))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.edgeDevicesService.DeleteEdgeDeviceAsync(deviceDto.DeviceId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            MockRepository.VerifyAll();
+        }
+
         [TestCase("RestartModule", /*lang=json,strict*/ "{\"id\":\"aaa\",\"schemaVersion\":\"1.0\"}")]
         public async Task ExecuteMethodShouldExecuteC2DMethod(string methodName, string expected)
         {

@@ -213,7 +213,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
             var edgeDevicesController = CreateEdgeDevicesController();
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceService.Setup(c => c.DeleteDevice(It.Is<string>(x => x == deviceId)))
+            _ = this.mockEdgeDeviceService.Setup(c => c.DeleteEdgeDeviceAsync(It.Is<string>(x => x == deviceId)))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockLogger.Setup(c => c.Log(
