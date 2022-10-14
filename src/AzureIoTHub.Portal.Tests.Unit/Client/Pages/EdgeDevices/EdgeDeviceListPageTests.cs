@@ -159,7 +159,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         {
             // Arrange
             var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=";
+            var expectedUrlSort = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=DeviceId asc";
+
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
+                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
+                {
+                    Items = Array.Empty<IoTEdgeListItem>()
+                });
+
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrlSort))
                 .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
                 {
                     Items = Array.Empty<IoTEdgeListItem>()
@@ -168,6 +176,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var cut = RenderComponent<EdgeDeviceListPage>();
 
             // Act
+            cut.WaitForElement("#sortDeviceId").Click();
             cut.WaitForElement("#tableRefreshButton").Click();
 
             // Assert
