@@ -20,6 +20,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using FluentAssertions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
@@ -250,6 +251,42 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task CreateEdgeDeviceDbUpdateExceptionIsThrownInternalServerErrorExceptionIsThrown()
+        {
+            // Arrange
+            var mockResult = new BulkRegistryOperationResult
+            {
+                IsSuccessful = true
+            };
+
+            var edgeDevice = new IoTEdgeDevice()
+            {
+                DeviceId = "aaa",
+            };
+
+            _ = this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(
+                It.Is<string>(x => x == edgeDevice.DeviceId),
+                It.Is<bool>(x => x),
+                It.Is<Twin>(x => x.DeviceId == edgeDevice.DeviceId),
+                It.Is<DeviceStatus>(x => x == DeviceStatus.Enabled)))
+                .ReturnsAsync(mockResult);
+
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<EdgeDevice>()))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.edgeDevicesService.CreateEdgeDevice(edgeDevice);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
         public void WhenEdgeDeviceIsNullCreateEdgeDeviceShouldThrowArgumentNullException()
         {
             // Assert
@@ -312,6 +349,106 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(edgeDevice.DeviceId, result.DeviceId);
+
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateEdgeDeviceDeviceNotExistResourceNotFoundExceptionIsThrown()
+        {
+            // Arrange
+            var edgeDevice = new IoTEdgeDevice()
+            {
+                DeviceId = Guid.NewGuid().ToString(),
+                Status = DeviceStatus.Enabled.ToString(),
+            };
+
+            var mockTwin = new Twin(edgeDevice.DeviceId);
+            mockTwin.Tags["deviceName"] = "Test";
+
+            _ = this.mockDeviceService
+                .Setup(x => x.GetDevice(It.Is<string>(c => c.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device(edgeDevice.DeviceId));
+
+            _ = this.mockDeviceService
+                .Setup(x => x.UpdateDevice(It.Is<Microsoft.Azure.Devices.Device>(c => c.Id.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device(edgeDevice.DeviceId));
+
+            _ = this.mockDeviceService
+                .Setup(x => x.GetDeviceTwin(It.Is<string>(c => c.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(mockTwin);
+
+            _ = this.mockDeviceService
+                .Setup(x => x.UpdateDeviceTwin(It.Is<Twin>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(mockTwin);
+
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(edgeDevice.DeviceId))
+                .ReturnsAsync(value: null);
+
+            // Act
+            var act = () => this.edgeDevicesService.UpdateEdgeDevice(edgeDevice);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<ResourceNotFoundException>();
+
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task UpdateEdgeDeviceDbUpdateExceptionIsThrownInternalServerErrorExceptionIsThrown()
+        {
+            // Arrange
+            var edgeDevice = new IoTEdgeDevice()
+            {
+                DeviceId = Guid.NewGuid().ToString(),
+                Status = DeviceStatus.Enabled.ToString(),
+            };
+
+            var mockTwin = new Twin(edgeDevice.DeviceId);
+            mockTwin.Tags["deviceName"] = "Test";
+
+            _ = this.mockDeviceService
+                .Setup(x => x.GetDevice(It.Is<string>(c => c.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device(edgeDevice.DeviceId));
+
+            _ = this.mockDeviceService
+                .Setup(x => x.UpdateDevice(It.Is<Microsoft.Azure.Devices.Device>(c => c.Id.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(new Microsoft.Azure.Devices.Device(edgeDevice.DeviceId));
+
+            _ = this.mockDeviceService
+                .Setup(x => x.GetDeviceTwin(It.Is<string>(c => c.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(mockTwin);
+
+            _ = this.mockDeviceService
+                .Setup(x => x.UpdateDeviceTwin(It.Is<Twin>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(mockTwin);
+
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(edgeDevice.DeviceId))
+                .ReturnsAsync(new EdgeDevice
+                {
+                    Tags = new List<DeviceTagValue>
+                    {
+                        new()
+                        {
+                            Id = Fixture.Create<string>()
+                        }
+                    }
+                });
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockEdgeDeviceRepository.Setup(repository => repository.Update(It.IsAny<EdgeDevice>()))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            var act = () => this.edgeDevicesService.UpdateEdgeDevice(edgeDevice);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
 
             MockRepository.VerifyAll();
         }
