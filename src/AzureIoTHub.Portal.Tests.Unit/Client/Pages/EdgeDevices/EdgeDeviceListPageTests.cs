@@ -158,16 +158,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public void ClickOnRefreshShouldReloadEdgeDevices()
         {
             // Arrange
-            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=";
-            var expectedUrlSort = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=DeviceId asc";
 
-            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
-                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
-                {
-                    Items = Array.Empty<IoTEdgeListItem>()
-                });
-
-            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrlSort))
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(It.IsAny<string>()))
                 .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
                 {
                     Items = Array.Empty<IoTEdgeListItem>()
