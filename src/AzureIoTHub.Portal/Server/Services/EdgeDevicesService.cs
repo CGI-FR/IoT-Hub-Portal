@@ -89,7 +89,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 devicePredicate = devicePredicate.And(device => device.Id.ToLower().Contains(deviceListFilter.Keyword.ToLower()) || device.Name.ToLower().Contains(deviceListFilter.Keyword.ToLower()));
             }
 
-            var paginatedEdgeDevices = await this.edgeDeviceRepository.GetPaginatedListAsync(pageNumber, pageSize, orderBy);
+            var paginatedEdgeDevices = await this.edgeDeviceRepository.GetPaginatedListAsync(pageNumber, pageSize, orderBy, devicePredicate);
             var paginateEdgeDeviceDto = new PaginatedResult<IoTEdgeListItem>
             {
                 Data = paginatedEdgeDevices.Data.Select(x => this.mapper.Map<IoTEdgeListItem>(x, opts =>
