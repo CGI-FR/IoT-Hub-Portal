@@ -9,22 +9,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Infrastructure.Repositories;
-    using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using UnitTests.Bases;
     using FluentAssertions;
     using Microsoft.EntityFrameworkCore;
-    using Moq;
     using NUnit.Framework;
 
     [TestFixture]
     public class GenericRepositoryTests : RepositoryTestBase
     {
-        private MockRepository mockRepository;
-
         [SetUp]
         public void SetUp()
         {
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-
             var context = SetupDbContext();
 
             _ = context.Database.EnsureDeleted();
@@ -154,8 +149,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
             Assert.IsNull(context.Set<DeviceModelProperty>().Find(entityId));
         }
 
-
-
         [Test]
         public async Task GetPaginatedListAsync_CustomFilter_ExpectedPageReturned()
         {
@@ -231,6 +224,210 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
             _ = secondDeviceTag.Label.Should().Be("Location 1");
             _ = secondDeviceTag.Required.Should().BeFalse();
             _ = secondDeviceTag.Searchable.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task CountAsync_WithoutFilter_ExpectedCountReturned()
+        {
+            // Arrange
+            var context = SetupDbContext();
+
+            await context.AddRangeAsync(new List<DeviceTag>
+            {
+                new()
+                {
+                    Id = "device_tag_01",
+                    Label = "Location 1",
+                    Required = false,
+                    Searchable = true
+                },
+                new()
+                {
+                    Id = "device_tag_02",
+                    Label = "Location 2",
+                    Required = true,
+                    Searchable = true
+                }
+            });
+
+            _ = await context.SaveChangesAsync();
+
+            var instance = new GenericRepository<DeviceTag>(context);
+
+            // Act
+            var result = await instance.CountAsync();
+
+            // Assert
+            _ = result.Should().Be(2);
+        }
+
+        [Test]
+        public async Task CountAsync_CustomFilter_ExpectedCountReturned()
+        {
+            // Arrange
+            var context = SetupDbContext();
+
+            await context.AddRangeAsync(new List<DeviceTag>
+            {
+                new()
+                {
+                    Id = "device_tag_01",
+                    Label = "Location 1",
+                    Required = false,
+                    Searchable = true
+                },
+                new()
+                {
+                    Id = "device_tag_02",
+                    Label = "Location 2",
+                    Required = true,
+                    Searchable = true
+                }
+            });
+
+            _ = await context.SaveChangesAsync();
+
+            var instance = new GenericRepository<DeviceTag>(context);
+
+            // Filter only tags with labels containing "location 1"
+            var deviceTagPredicate = PredicateBuilder.True<DeviceTag>()
+                .And(tag => tag.Label.ToLowerInvariant().Contains("location 1"));
+
+            // Act
+            var result = await instance.CountAsync(deviceTagPredicate);
+
+            // Assert
+            _ = result.Should().Be(1);
+        }
+
+        [Test]
+        public async Task ExistsAsync_ExistingData_ReturnsTrue()
+        {
+            // Arrange
+            var context = SetupDbContext();
+
+            await context.AddRangeAsync(new List<DeviceTag>
+            {
+                new()
+                {
+                    Id = "device_tag_01",
+                    Label = "Location 1",
+                    Required = false,
+                    Searchable = true
+                }
+            });
+
+            _ = await context.SaveChangesAsync();
+
+            var instance = new GenericRepository<DeviceTag>(context);
+
+            // Act
+            var result = await instance.ExistsAsync(tag => tag.Id.Equals("device_tag_01"));
+
+            // Assert
+            _ = result.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task ExistsAsync_NonExistingData_ReturnsFalse()
+        {
+            // Arrange
+            var context = SetupDbContext();
+
+            await context.AddRangeAsync(new List<DeviceTag>
+            {
+                new()
+                {
+                    Id = "device_tag_01",
+                    Label = "Location 1",
+                    Required = false,
+                    Searchable = true
+                }
+            });
+
+            _ = await context.SaveChangesAsync();
+
+            var instance = new GenericRepository<DeviceTag>(context);
+
+            // Act
+            var result = await instance.ExistsAsync(tag => tag.Id.Equals("device_tag_03"));
+
+            // Assert
+            _ = result.Should().BeFalse();
+        }
+
+        [Test]
+        public async Task GetAllAsync_WithFilter_AllItemsReturned()
+        {
+            // Arrange
+            var context = SetupDbContext();
+
+            await context.AddRangeAsync(new List<DeviceTag>
+            {
+                new()
+                {
+                    Id = "device_tag_01",
+                    Label = "Location 1",
+                    Required = false,
+                    Searchable = true
+                },
+                new()
+                {
+                    Id = "device_tag_02",
+                    Label = "Location 2",
+                    Required = true,
+                    Searchable = true
+                }
+            });
+
+            _ = await context.SaveChangesAsync();
+
+            var instance = new GenericRepository<DeviceTag>(context);
+
+            // Act
+            var result = await instance.GetAllAsync();
+
+            // Assert
+            _ = result.Count().Should().Be(2);
+        }
+
+        [Test]
+        public async Task GetAllAsync_CustomFilter_ExpectedItemsReturned()
+        {
+            // Arrange
+            var context = SetupDbContext();
+
+            await context.AddRangeAsync(new List<DeviceTag>
+            {
+                new()
+                {
+                    Id = "device_tag_01",
+                    Label = "Location 1",
+                    Required = false,
+                    Searchable = true
+                },
+                new()
+                {
+                    Id = "device_tag_02",
+                    Label = "Location 2",
+                    Required = true,
+                    Searchable = true
+                }
+            });
+
+            _ = await context.SaveChangesAsync();
+
+            var instance = new GenericRepository<DeviceTag>(context);
+
+            // Filter only tags with labels required
+            var deviceTagPredicate = PredicateBuilder.True<DeviceTag>()
+                .And(tag => tag.Required);
+
+            // Act
+            var result = await instance.GetAllAsync(deviceTagPredicate);
+
+            // Assert
+            _ = result.Count().Should().Be(1);
         }
     }
 }

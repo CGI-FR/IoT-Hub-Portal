@@ -27,6 +27,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
                                 .ToList<T>();
         }
 
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default)
+        {
+            IQueryable<T> query = this.context.Set<T>();
+            if (expression != null) query = query.Where(expression);
+
+            return await query.ToDynamicListAsync<T>(cancellationToken: cancellationToken);
+        }
+
         public virtual async Task<T?> GetByIdAsync(object id)
         {
             var t = await this.context.Set<T>().FindAsync(id);
@@ -79,6 +87,21 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
                 .ToDynamicListAsync<T>(cancellationToken: cancellationToken);
 
             return new PaginatedResult<T>(items, count, pageNumber, pageSize);
+        }
+
+        public async Task<int> CountAsync(Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default)
+        {
+            IQueryable<T> query = this.context.Set<T>();
+            if (expression != null) query = query.Where(expression);
+
+            return await query
+                .AsNoTracking()
+                .CountAsync(cancellationToken: cancellationToken);
+        }
+
+        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)
+        {
+            return await this.context.Set<T>().AnyAsync(expression, cancellationToken: cancellationToken);
         }
     }
 }
