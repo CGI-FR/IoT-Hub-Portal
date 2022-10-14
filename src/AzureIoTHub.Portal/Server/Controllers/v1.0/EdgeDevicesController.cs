@@ -12,7 +12,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Extensions.Logging;
 
@@ -80,29 +79,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 pageNumber,
                 orderBy);
 
-            var nextPage = string.Empty;
-
-            if (paginatedEdgeDevices.HasNextPage)
-            {
-                nextPage = Url.RouteUrl(new UrlRouteContext
-                {
-                    RouteName = "GET IoT Edge devices",
-                    Values = new
-                    {
-                        searchText,
-                        searchType,
-                        searchStatus,
-                        pageSize,
-                        pageNumber = pageNumber + 1
-                    }
-                });
-            }
-
             return new PaginationResult<IoTEdgeListItem>
             {
                 Items = paginatedEdgeDevices.Data,
                 TotalItems = paginatedEdgeDevices.TotalCount,
-                NextPage = nextPage
+                //NextPage = nextPage
             };
         }
 

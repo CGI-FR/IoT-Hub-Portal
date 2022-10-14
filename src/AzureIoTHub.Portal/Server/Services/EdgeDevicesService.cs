@@ -68,7 +68,7 @@ namespace AzureIoTHub.Portal.Server.Services
             int pageNumber = 0,
             string[] orderBy = null)
         {
-            var deviceListFilter = new DeviceListFilter
+            var deviceListFilter = new EdgeDeviceListFilter
             {
                 PageSize = pageSize,
                 PageNumber = pageNumber,

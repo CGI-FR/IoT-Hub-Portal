@@ -662,6 +662,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 foreach (var config in twin.Configurations)
                 {
                     var confObj = await this.registryManager.GetConfigurationAsync(config.Key);
+
                     if (item.DateCreation < confObj.CreatedTimeUtc && config.Value.Status == ConfigurationStatus.Applied)
                     {
                         item.Name = config.Key;

@@ -92,6 +92,69 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task GetEdgeDevicesCustomFilterReturnsExpectedDevices()
+        {
+            // Arrange
+            var keywordFilter = "WaNt tHiS DeViCe";
+
+            var device1 = new EdgeDevice
+            {
+                Id = "test",
+                IsEnabled = true,
+                Name = "I want this device",
+                Tags = new List<DeviceTagValue>
+                {
+                    new()
+                    {
+                        Name = "location",
+                        Value = "FR"
+                    }
+                },
+                DeviceModelId = Fixture.Create<string>(),
+                Scope = Fixture.Create<string>(),
+                NbDevices = 1,
+            };
+
+            var device2 = new EdgeDevice
+            {
+                IsEnabled = false,
+                Name = "I don't want this device",
+                Tags = new List<DeviceTagValue>
+                {
+                    new()
+                    {
+                        Name = "location",
+                        Value = "US"
+                    }
+                },
+                DeviceModelId = Fixture.Create<string>(),
+                Scope = Fixture.Create<string>(),
+                NbDevices = 1
+            };
+
+            var expectedTotalDevicesCount = 1;
+            var expectedPageSize = 10;
+            var expectedCurrentPage = 0;
+
+            _ = await DbContext.AddAsync(device1);
+            _ = await DbContext.AddAsync(device2);
+            _ = await DbContext.SaveChangesAsync();
+
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
+                .Returns(Fixture.Create<Uri>());
+
+            // Act
+            var result = await this.edgeDevicesService.GetEdgeDevicesPage(searchText: keywordFilter, searchStatus: true);
+
+            _ = result.Data.Count.Should().Be(expectedTotalDevicesCount);
+            _ = result.TotalCount.Should().Be(expectedTotalDevicesCount);
+            _ = result.PageSize.Should().Be(expectedPageSize);
+            _ = result.CurrentPage.Should().Be(expectedCurrentPage);
+            _ = result.Data.First().DeviceId.Should().Be(device1.Id);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetEdgeDeviceShouldReturnValue()
         {
             // Arrange

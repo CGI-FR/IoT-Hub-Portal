@@ -12,14 +12,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using FluentAssertions;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Controllers;
-    using Microsoft.AspNetCore.Routing;
-    using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Primitives;
     using Models.v10;
     using Moq;
     using NUnit.Framework;
@@ -68,7 +64,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
                 {
                     DeviceId = FormattableString.Invariant($"{x}"),
                 }).ToList(),
-                TotalCount = 100
+                TotalCount = 100,
+                PageSize = 10,
+                TotalPages = 10,
+                CurrentPage = 0
             };
 
             _ = this.mockEdgeDeviceService
