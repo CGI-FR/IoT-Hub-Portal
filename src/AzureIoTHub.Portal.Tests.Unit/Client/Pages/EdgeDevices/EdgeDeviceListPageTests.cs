@@ -169,6 +169,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             // Act
             cut.WaitForElement("#sortDeviceId").Click();
+            cut.WaitForElement("#sortDeviceId").Click();
             cut.WaitForElement("#tableRefreshButton").Click();
 
             // Assert
