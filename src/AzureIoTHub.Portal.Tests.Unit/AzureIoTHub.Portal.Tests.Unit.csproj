@@ -16,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.17.0" />
     <PackageReference Include="Blazored.LocalStorage.TestExtensions" Version="4.2.0" />
-    <PackageReference Include="bunit" Version="1.10.14" />
+    <PackageReference Include="bunit" Version="1.11.7" />
     <PackageReference Include="bunit.core" Version="1.11.7" />
     <PackageReference Include="bunit.web" Version="1.10.14" />
     <PackageReference Include="bunit.web.testcomponents" Version="1.10.14" />
