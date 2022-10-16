@@ -155,6 +155,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
         public void GenerateModulesContentShouldReturnValue()
         {
             // Arrange
+            var expectedModuleName = "ModuleTest";
+            var expectedContainerCreateOptions = /*lang=json,strict*/
+                "{\"HostConfig\":{\"PortBindings\":{\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}],\"443/tcp\":[{\"HostPort\":\"443\"}]}}}";
+
             var edgeModel = new IoTEdgeModel()
             {
                 ModelId = Guid.NewGuid().ToString(),
@@ -164,13 +168,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
                 {
                     new()
                     {
-                        ModuleName = "ModuleTest",
+                        ModuleName = expectedModuleName,
                         Status = "running",
                         ImageURI = "image",
-                        ContainerCreateOptions = /*lang=json,strict*/ "{\"HostConfig\":{\"PortBindings\":{\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}],\"443/tcp\":[{\"HostPort\":\"443\"}]}}}",
+                        ContainerCreateOptions = expectedContainerCreateOptions,
                         EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
                         {
-                            new IoTEdgeModuleEnvironmentVariable(){ Name = "envTest01", Value = "test" }
+                            new() { Name = "envTest01", Value = "test" }
                         },
                         ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>()
                     }
@@ -184,6 +188,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
             Assert.IsNotNull(result);
             Assert.IsAssignableFrom<Dictionary<string, IDictionary<string, object>>>(result);
             Assert.AreEqual(2, result.Count);
+            var edgeHubPropertiesDesired = (EdgeAgentPropertiesDesired)result["$edgeAgent"]["properties.desired"];
+            _ = edgeHubPropertiesDesired.Modules[expectedModuleName].Settings.CreateOptions.Should()
+                .Be(expectedContainerCreateOptions);
         }
 
         [Test]
