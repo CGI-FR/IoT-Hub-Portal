@@ -24,6 +24,8 @@ namespace AzureIoTHub.Portal.Models.v10
         [Required(ErrorMessage = "The device image uri is required.")]
         public string ImageURI { get; set; }
 
+        public string ContainerCreateOptions { get; set; }
+
         /// <summary>
         /// The module status.
         /// </summary>

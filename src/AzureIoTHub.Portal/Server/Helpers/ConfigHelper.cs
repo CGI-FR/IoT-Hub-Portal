@@ -149,6 +149,7 @@ namespace AzureIoTHub.Portal.Server.Helpers
             {
                 ModuleName = module.Name,
                 ImageURI = module.Value["settings"]["image"]?.Value<string>(),
+                ContainerCreateOptions = module.Value["settings"]["createOptions"]?.Value<string>(),
                 Status = module.Value["status"]?.Value<string>(),
             };
 
@@ -248,7 +249,8 @@ namespace AzureIoTHub.Portal.Server.Helpers
                     Status = "running",
                     Settings = new ModuleSettings()
                     {
-                        Image = module.ImageURI
+                        Image = module.ImageURI,
+                        CreateOptions = module.ContainerCreateOptions
                     },
                     RestartPolicy = "always",
                     EnvironmentVariables = new Dictionary<string, EnvironmentVariable>()

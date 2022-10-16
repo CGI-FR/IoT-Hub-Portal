@@ -88,13 +88,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
             // Arrange
             var config = new Configuration("config_test");
 
+            var expectedContainerCreateOptions = /*lang=json,strict*/ "{\"HostConfig\":{\"PortBindings\":{\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}],\"443/tcp\":[{\"HostPort\":\"443\"}]}}}";
+
             var jPropModule = new Dictionary<string, object>()
             {
                 { "status", "running" },
                 { "version", "1.0" },
                 { "settings", new Dictionary<string, object>()
                     {
-                        { "image", "image_test" }
+                        { "image", "image_test" },
+                        { "createOptions", expectedContainerCreateOptions }
                     }
                 },
                 { "env", new Dictionary<string, object>()
@@ -118,6 +121,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
             Assert.IsNotNull(result);
             Assert.AreEqual("running", result.Status);
             Assert.AreEqual("image_test", result.ImageURI);
+            Assert.AreEqual(expectedContainerCreateOptions, result.ContainerCreateOptions);
             Assert.AreEqual(1, result.EnvironmentVariables.Count);
         }
 
@@ -151,6 +155,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
         public void GenerateModulesContentShouldReturnValue()
         {
             // Arrange
+            var expectedModuleName = "ModuleTest";
+            var expectedContainerCreateOptions = /*lang=json,strict*/
+                "{\"HostConfig\":{\"PortBindings\":{\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}],\"443/tcp\":[{\"HostPort\":\"443\"}]}}}";
+
             var edgeModel = new IoTEdgeModel()
             {
                 ModelId = Guid.NewGuid().ToString(),
@@ -158,14 +166,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
                 Description = "Description Test",
                 EdgeModules = new List<IoTEdgeModule>()
                 {
-                    new IoTEdgeModule()
+                    new()
                     {
-                        ModuleName = "ModuleTest",
+                        ModuleName = expectedModuleName,
                         Status = "running",
                         ImageURI = "image",
+                        ContainerCreateOptions = expectedContainerCreateOptions,
                         EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
                         {
-                            new IoTEdgeModuleEnvironmentVariable(){ Name = "envTest01", Value = "test" }
+                            new() { Name = "envTest01", Value = "test" }
                         },
                         ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>()
                     }
@@ -179,6 +188,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
             Assert.IsNotNull(result);
             Assert.IsAssignableFrom<Dictionary<string, IDictionary<string, object>>>(result);
             Assert.AreEqual(2, result.Count);
+            var edgeHubPropertiesDesired = (EdgeAgentPropertiesDesired)result["$edgeAgent"]["properties.desired"];
+            _ = edgeHubPropertiesDesired.Modules[expectedModuleName].Settings.CreateOptions.Should()
+                .Be(expectedContainerCreateOptions);
         }
 
         [Test]
