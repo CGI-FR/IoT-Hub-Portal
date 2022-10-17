@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
     using Domain;
@@ -62,14 +61,8 @@ namespace AzureIoTHub.Portal.Server.Services
             string[] orderBy = null)
         {
             var paginatedConcentrator = await this.concentratorRepository.GetPaginatedListAsync(pageNumber, pageSize, orderBy);
-            var paginatedConcentratorDto = new PaginatedResult<ConcentratorDto>
-            {
-                Data = paginatedConcentrator.Data.Select(x => mapper.Map<ConcentratorDto>(x)).ToList(),
-                TotalCount = paginatedConcentrator.TotalCount,
-                CurrentPage = paginatedConcentrator.CurrentPage,
-                PageSize = pageSize
-            };
-            return paginatedConcentratorDto;
+
+            return this.mapper.Map<PaginatedResult<ConcentratorDto>>(paginatedConcentrator);
         }
 
         public async Task<ConcentratorDto> GetConcentrator(string deviceId)

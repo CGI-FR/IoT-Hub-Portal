@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Controllers;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Primitives;
@@ -100,6 +101,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                     It.IsAny<bool?>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(),
                     It.IsAny<Dictionary<string, string>>()))
                 .ReturnsAsync(expectedPaginatedDevices);
+
+            var locationUrl = "http://location/devices";
+
+            _ = this.mockUrlHelper
+                .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(locationUrl);
 
             // Act
             var result = await devicesController.SearchItems();
