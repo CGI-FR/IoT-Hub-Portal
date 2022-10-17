@@ -14,7 +14,6 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0
             Data = data;
             CurrentPage = page;
             PageSize = pageSize;
-            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             TotalCount = count;
         }
 
@@ -22,11 +21,11 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0
 
         public int CurrentPage { get; set; }
 
-        public int TotalPages { get; set; }
-
         public int TotalCount { get; set; }
 
         public int PageSize { get; set; }
+
+        public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
 
         public bool HasPreviousPage => CurrentPage > 0;
 
