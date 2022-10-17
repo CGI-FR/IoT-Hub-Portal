@@ -4350,6 +4350,10 @@
             "type": "string",
             "description": "the device image URI."
           },
+          "containerCreateOptions": {
+            "type": "string",
+            "nullable": true
+          },
           "status": {
             "type": "string",
             "description": "The module status.",
