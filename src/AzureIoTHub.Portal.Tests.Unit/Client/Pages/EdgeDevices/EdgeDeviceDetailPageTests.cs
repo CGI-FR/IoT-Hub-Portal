@@ -51,7 +51,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            //_ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = Services.AddSingleton<IEdgeDeviceLayoutService, EdgeDeviceLayoutService>();
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 
