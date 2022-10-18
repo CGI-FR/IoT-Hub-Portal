@@ -105,6 +105,7 @@ namespace AzureIoTHub.Portal.Server
 
             _ = services.AddSingleton(configuration);
             _ = services.AddSingleton(new PortalMetric());
+            _ = services.AddSingleton(new GatewayIdList());
 
             _ = services.AddRazorPages();
 
@@ -329,6 +330,14 @@ namespace AzureIoTHub.Portal.Server
                     .AddTrigger(t => t
                         .WithIdentity($"{nameof(SyncEdgeDeviceJob)}")
                         .ForJob(nameof(SyncEdgeDeviceJob))
+                        .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+
+                _ = q.AddJob<SyncGatewayIDJob>(j => j.WithIdentity(nameof(SyncGatewayIDJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncGatewayIDJob)}")
+                        .ForJob(nameof(SyncGatewayIDJob))
                         .WithSimpleSchedule(s => s
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));

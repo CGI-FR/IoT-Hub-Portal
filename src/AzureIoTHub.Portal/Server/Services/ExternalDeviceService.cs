@@ -689,5 +689,26 @@ namespace AzureIoTHub.Portal.Server.Services
                 DeviceId = deviceId
             };
         }
+
+        public async Task<List<string>> GetAllGatewayID()
+        {
+            var query = this.registryManager.CreateQuery($"SELECT DeviceID FROM devices.modules WHERE devices.modules.moduleId = 'LoRaWanNetworkSrvModule'");
+            var list = new List<string>();
+
+            while (query.HasMoreResults)
+            {
+                try
+                {
+                    var value = await query.GetNextAsJsonAsync();
+                    list.Add(JObject.Parse(value.SingleOrDefault())["deviceId"]?.ToString());
+                }
+                catch (Exception e)
+                {
+                    throw new InternalServerErrorException($"Unable to get GatewayIDs", e);
+                }
+            }
+
+            return list;
+        }
     }
 }

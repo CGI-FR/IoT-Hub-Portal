@@ -68,5 +68,7 @@ namespace AzureIoTHub.Portal.Server.Services
         Task<ConfigItem> RetrieveLastConfiguration(Twin twin);
 
         Task<Twin> CreateNewTwinFromDeviceId(string deviceId);
+
+        Task<List<string>> GetAllGatewayID();
     }
 }
