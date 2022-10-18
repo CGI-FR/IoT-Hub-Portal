@@ -5,20 +5,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
     using AzureIoTHub.Portal.Client.Services;
-    using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Bunit;
     using Bunit.TestDoubles;
     using FluentAssertions;
-    using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
@@ -79,6 +76,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns(value: null);
 
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<CreateEdgeDevicePage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
@@ -87,6 +85,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             cut.WaitForElement($"#tag01").Change("testTag01");
             await cut.Instance.ChangeModel(edgeModel);
 
+            var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
+
+            mudButtonGroup.Find(".mud-menu button").Click();
+
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(3));
+
+            var items = popoverProvider.FindAll("div.mud-list-item");
+
+            // Click on Save and Duplicate
+            items[0].Click();
+
+            // Act
             saveButton.Click();
 
             // Assert
