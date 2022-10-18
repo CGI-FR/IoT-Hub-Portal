@@ -88,10 +88,23 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             _ = this.mockSnackbarService.Setup(c => c.Add($"Device {this.mockdeviceId} has been successfully updated!\r\nPlease note that changes might take some minutes to be visible in the list...", Severity.Success, null)).Returns((Snackbar)null);
 
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
 
+            var saveButton = cut.WaitForElement("#saveButton");
+
+            var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
+
+            mudButtonGroup.Find(".mud-menu button").Click();
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(2));
+
+            var items = popoverProvider.FindAll("div.mud-list-item");
+
+            // Click on Save
+            items[0].Click();
+
             // Act
-            cut.WaitForElement("#saveButton").Click();
+            saveButton.Click();
 
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
@@ -183,6 +196,35 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnDuplicateShouldDuplicateEdgeDeviceAndRedirectToCreateEdgeDevicePage()
+        {
+            // Arrange
+            var mockIoTEdgeDevice = SetupOnInitialisation();
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+
+            var saveButton = cut.WaitForElement("#saveButton");
+
+            var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
+
+            mudButtonGroup.Find(".mud-menu button").Click();
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(2));
+
+            var items = popoverProvider.FindAll("div.mud-list-item");
+
+            // Click on Duplicate
+            items[1].Click();
+
+            // Act
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/edge/devices/new"));
         }
 
         [Test]
