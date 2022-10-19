@@ -5,10 +5,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 {
     using System;
     using AzureIoTHub.Portal.Client.Pages.Devices.LoRaWAN;
+    using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Client.Validators;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
     using Bunit;
     using Microsoft.Extensions.DependencyInjection;
+    using Moq;
     using MudBlazor.Services;
     using NUnit.Framework;
     using UnitTests.Bases;
@@ -17,10 +20,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     [TestFixture]
     public class CreateLoraDeviceTests : BlazorUnitTest
     {
+        private Mock<ILoRaWanDeviceClientService> mockLoRaWanDeviceClientService;
 
         public override void Setup()
         {
             base.Setup();
+            this.mockLoRaWanDeviceClientService = MockRepository.Create<ILoRaWanDeviceClientService>();
+
+            _ = Services.AddSingleton(this.mockLoRaWanDeviceClientService.Object);
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
         }
@@ -43,6 +50,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
 
             var validator = new LoRaDeviceDetailsValidator();
+
+            _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
+                .ReturnsAsync(new LoRaGatewayIDList());
 
             // Act
 
@@ -75,6 +85,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 DevAddr = Guid.NewGuid().ToString(),
             };
             var validator = new LoRaDeviceDetailsValidator();
+
+            _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
+                .ReturnsAsync(new LoRaGatewayIDList());
 
             // Act
             var cut = RenderComponent<CreateLoraDevice>(

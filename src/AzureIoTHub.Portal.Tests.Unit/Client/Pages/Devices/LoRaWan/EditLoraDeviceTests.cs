@@ -20,6 +20,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using UnitTests.Mocks;
     using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
 
     [TestFixture]
     public class EditLoraDeviceTests : BlazorUnitTest
@@ -58,6 +59,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             var validator = new LoRaDeviceDetailsValidator();
 
+            _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
+                .ReturnsAsync(new LoRaGatewayIDList());
+
             // Act
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), deviceDetails),
@@ -88,6 +92,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 DevAddr = Guid.NewGuid().ToString(),
             };
             var validator = new LoRaDeviceDetailsValidator();
+
+            _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
+                .ReturnsAsync(new LoRaGatewayIDList());
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -122,6 +129,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             };
             var validator = new LoRaDeviceDetailsValidator();
 
+            _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
+                .ReturnsAsync(new LoRaGatewayIDList());
+
             // Act
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), deviceDetails),
@@ -152,6 +162,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             {
                 ModelId = model.ModelId
             };
+
+            _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
+                .ReturnsAsync(new LoRaGatewayIDList());
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -186,6 +199,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 ModelId = model.ModelId,
                 AlreadyLoggedInOnce = true
             };
+
+            _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
+                .ReturnsAsync(new LoRaGatewayIDList());
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -226,6 +242,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>()))
                 .Returns((Snackbar)null);
 
+            _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
+                .ReturnsAsync(new LoRaGatewayIDList());
+
             // Act
             var cut = RenderComponent<EditLoraDevice>(
                 ComponentParameter.CreateParameter(nameof(EditLoraDevice.LoRaDevice), device),
@@ -261,6 +280,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             var validator = new LoRaDeviceDetailsValidator();
             var LoraDevice = new LoRaDeviceDetails();
 
+            _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
+                .ReturnsAsync(new LoRaGatewayIDList());
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
@@ -295,6 +316,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             var validator = new LoRaDeviceDetailsValidator();
             var LoraDevice = new LoRaDeviceDetails();
 
+            _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
+                .ReturnsAsync(new LoRaGatewayIDList());
 
             // Act
             var cut = RenderComponent<EditLoraDevice>(
