@@ -21,7 +21,7 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// <summary>
         /// The IoT Edge scope tag value.
         /// </summary>
-        public string Scope { get; set; }
+        public string? Scope { get; set; }
 
         /// <summary>
         /// The number of connected devices on IoT Edge device.
