@@ -14,13 +14,13 @@ namespace AzureIoTHub.Portal.Server.Jobs
     public class SyncGatewayIDJob : IJob
     {
         private readonly IExternalDeviceService externalDeviceService;
-        private readonly GatewayIdList gatewayIdList;
+        private readonly LoRaGatewayIDList gatewayIdList;
 
         private readonly ILogger<SyncConcentratorsJob> logger;
 
         public SyncGatewayIDJob(
             IExternalDeviceService externalDeviceService,
-            GatewayIdList gatewayIdList,
+            LoRaGatewayIDList gatewayIdList,
             ILogger<SyncConcentratorsJob> logger)
         {
             this.externalDeviceService = externalDeviceService;
@@ -32,22 +32,21 @@ namespace AzureIoTHub.Portal.Server.Jobs
         {
             try
             {
-                this.logger.LogInformation("Start of sync job");
+                this.logger.LogInformation("Start of sync GatewayID job");
 
                 await SyncGatewayID();
 
-                this.logger.LogInformation("End of sync job");
+                this.logger.LogInformation("End of sync GatewayID job");
             }
             catch (Exception e)
             {
-                this.logger.LogError(e, "Sync job has failed");
+                this.logger.LogError(e, "Sync GatewayID job has failed");
             }
         }
 
         private async Task SyncGatewayID()
         {
-            var test = await this.externalDeviceService.GetAllGatewayID();
-            this.gatewayIdList.GatewayIds = test;
+            this.gatewayIdList.GatewayIds = await this.externalDeviceService.GetAllGatewayID();
         }
     }
 }

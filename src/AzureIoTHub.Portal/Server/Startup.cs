@@ -105,7 +105,7 @@ namespace AzureIoTHub.Portal.Server
 
             _ = services.AddSingleton(configuration);
             _ = services.AddSingleton(new PortalMetric());
-            _ = services.AddSingleton(new GatewayIdList());
+            _ = services.AddSingleton(new LoRaGatewayIDList());
 
             _ = services.AddRazorPages();
 
