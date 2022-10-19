@@ -1863,5 +1863,61 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             this.mockRepository.VerifyAll();
         }
+
+
+        [Test]
+        public async Task GetAllGatewayIDExpectedBehaviorShouldReturnList()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new[]
+                {
+                    /*lang=json*/
+                    "{ deviceId: 'value1'}",
+                    /*lang=json*/
+                    "{ deviceId: 'value2'}",
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT DeviceID FROM devices.modules WHERE devices.modules.moduleId = 'LoRaWanNetworkSrvModule'")))
+                .Returns(mockQuery.Object);
+
+            // Act
+            var result = await service.GetAllGatewayID();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<List<string>>(result);
+            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual("value1", result[0]);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetAllGatewayIDIssueOccuringShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ThrowsAsync(new Exception("test"));
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT DeviceID FROM devices.modules WHERE devices.modules.moduleId = 'LoRaWanNetworkSrvModule'")))
+                .Returns(mockQuery.Object);
+
+            // Act
+            var act = () => service.GetAllGatewayID();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
     }
 }
