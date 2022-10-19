@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AutoFixture;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
@@ -44,6 +45,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
 
+            _ = Services.AddSingleton<IEdgeDeviceLayoutService, EdgeDeviceLayoutService>();
+
             this.mockNavigationManager = Services.GetRequiredService<FakeNavigationManager>();
         }
 
@@ -73,6 +76,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns(value: null);
 
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
             var cut = RenderComponent<CreateEdgeDevicePage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
@@ -81,6 +85,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             cut.WaitForElement($"#tag01").Change("testTag01");
             await cut.Instance.ChangeModel(edgeModel);
 
+            var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
+
+            mudButtonGroup.Find(".mud-menu button").Click();
+
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(3));
+
+            var items = popoverProvider.FindAll("div.mud-list-item");
+
+            // Click on Save and Duplicate
+            items[0].Click();
+
+            // Act
             saveButton.Click();
 
             // Assert
@@ -140,6 +156,146 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             // Assert
             cut.WaitForAssertion(() => cut.Markup.Should().NotBeNullOrEmpty());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public async Task ClickOnSaveAndDuplicateShouldCreateDeviceAndDuplicateEdgeDeviceDetailsInCreateEdgeDevicePage()
+        {
+            var mockEdgeDeviceModel = new IoTEdgeModelListItem
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString(),
+                ImageUrl = Fixture.Create<Uri>(),
+            };
+
+            var expectedEdgeDevice = new IoTEdgeDevice
+            {
+                DeviceId = Guid.NewGuid().ToString(),
+                DeviceName = Guid.NewGuid().ToString(),
+                ModelId = mockEdgeDeviceModel.ModelId
+            };
+
+            _ = this.mockEdgeDeviceClientService
+                .Setup(service => service.CreateDevice(It.Is<IoTEdgeDevice>(device => expectedEdgeDevice.DeviceId.Equals(device.DeviceId, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockIEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+                .ReturnsAsync(new List<IoTEdgeModelListItem>
+                {
+                    mockEdgeDeviceModel
+                });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>
+                {
+                    new()
+                    {
+                        Label = Guid.NewGuid().ToString(),
+                        Name = Guid.NewGuid().ToString(),
+                        Required = false,
+                        Searchable = false
+                    }
+                });
+
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns(value: null);
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<CreateEdgeDevicePage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            cut.WaitForElement($"#{nameof(IoTEdgeDevice.DeviceName)}").Change("testName");
+            cut.WaitForElement($"#{nameof(IoTEdgeDevice.DeviceId)}").Change(expectedEdgeDevice.DeviceId);
+            await cut.Instance.ChangeModel(mockEdgeDeviceModel);
+
+            var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
+
+            mudButtonGroup.Find(".mud-menu button").Click();
+
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(3));
+
+            var items = popoverProvider.FindAll("div.mud-list-item");
+
+            // Click on Save and Duplicate
+            items[2].Click();
+
+            // Act
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().NotEndWith("/edge/devices"));
+        }
+
+        [Test]
+        public async Task ClickOnSaveAndAddNewShouldCreateEdgeDeviceAndResetCreateEdgeDevicePage()
+        {
+            var mockEdgeDeviceModel = new IoTEdgeModelListItem
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString(),
+                ImageUrl = Fixture.Create<Uri>(),
+            };
+
+            var expectedEdgeDevice = new IoTEdgeDevice
+            {
+                DeviceId = Guid.NewGuid().ToString(),
+                DeviceName = Guid.NewGuid().ToString(),
+                ModelId = mockEdgeDeviceModel.ModelId
+            };
+
+            _ = this.mockEdgeDeviceClientService
+                .Setup(service => service.CreateDevice(It.Is<IoTEdgeDevice>(device => expectedEdgeDevice.DeviceId.Equals(device.DeviceId, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockIEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+                .ReturnsAsync(new List<IoTEdgeModelListItem>
+                {
+                    mockEdgeDeviceModel
+                });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>
+                {
+                    new()
+                    {
+                        Label = Guid.NewGuid().ToString(),
+                        Name = Guid.NewGuid().ToString(),
+                        Required = false,
+                        Searchable = false
+                    }
+                });
+
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns(value: null);
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<CreateEdgeDevicePage>();
+            var saveButton = cut.WaitForElement("#SaveButton");
+
+            cut.WaitForElement($"#{nameof(IoTEdgeDevice.DeviceName)}").Change("testName");
+            cut.WaitForElement($"#{nameof(IoTEdgeDevice.DeviceId)}").Change(expectedEdgeDevice.DeviceId);
+            await cut.Instance.ChangeModel(mockEdgeDeviceModel);
+
+            var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
+
+            mudButtonGroup.Find(".mud-menu button").Click();
+
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(3));
+
+            var items = popoverProvider.FindAll("div.mud-list-item");
+
+            // Click on Save and Duplicate
+            items[1].Click();
+
+            // Act
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeDevice.DeviceName)}").TextContent.Should().BeEmpty());
+            cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeDevice.DeviceId)}").TextContent.Should().BeEmpty());
+            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().NotEndWith("/edge/devices"));
         }
     }
 }

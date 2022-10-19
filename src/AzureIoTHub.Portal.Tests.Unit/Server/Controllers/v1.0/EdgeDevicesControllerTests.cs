@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Controllers;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Extensions.Logging;
     using Models.v10;
@@ -77,6 +78,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
                     It.IsAny<int>(),
                     It.IsAny<string[]>()))
                 .ReturnsAsync(expectedPaginedEdgeDevice);
+
+            var locationUrl = "http://location/edge/devices";
+
+            _ = this.mockUrlHelper
+                .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(locationUrl);
 
             // Act
             var result = await edgeDeviceController.Get();
