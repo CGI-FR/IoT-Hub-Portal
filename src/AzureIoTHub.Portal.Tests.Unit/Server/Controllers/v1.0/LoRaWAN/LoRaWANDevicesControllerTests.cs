@@ -49,7 +49,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         {
             var loRaGatewayIDList = new LoRaGatewayIDList
             {
-                GatewayIds = new List<string>(){ Guid.NewGuid().ToString(), Guid.NewGuid().ToString() }
+                GatewayIds = new List<string>(){ "GatewayId1", "GatewayId2" }
             };
 
             return new LoRaWANDevicesController(
@@ -272,6 +272,34 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             // Assert
             Assert.IsNotNull(response);
             Assert.IsAssignableFrom<NotFoundResult>(response.Result);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void GetGatewaysExpectedBehavior()
+        {
+            // Arrange
+            var devicesController = CreateLoRaWANDevicesController();
+
+            var loRaGatewayIDList = new LoRaGatewayIDList
+            {
+                GatewayIds = new List<string>(){ "GatewayId1", "GatewayId2" }
+            };
+
+            // Act
+            var result = devicesController.GetGateways();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<OkObjectResult>(result.Result);
+
+            var okObjectResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okObjectResult);
+            Assert.IsNotNull(okObjectResult.Value);
+
+            Assert.IsAssignableFrom<LoRaGatewayIDList>(okObjectResult.Value);
+            _ = okObjectResult.Value.Should().BeEquivalentTo(loRaGatewayIDList);
+
             this.mockRepository.VerifyAll();
         }
     }

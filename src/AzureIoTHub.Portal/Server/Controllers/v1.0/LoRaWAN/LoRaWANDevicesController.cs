@@ -120,7 +120,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         [HttpGet("gateways", Name = "Get Gateways")]
         public ActionResult<LoRaGatewayIDList> GetGateways()
         {
-            return this.gatewayIdList;
+            return Ok(this.gatewayIdList);
         }
     }
 }
