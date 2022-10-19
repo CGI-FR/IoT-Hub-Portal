@@ -273,7 +273,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Migrations
                     b.Property<int>("NbModules")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Scope")
+                    b.Property<string?>("Scope")
                         .IsRequired()
                         .HasColumnType("text");
 
