@@ -47,10 +47,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
 
         private LoRaWANDevicesController CreateLoRaWANDevicesController()
         {
+            var loRaGatewayIDList = new LoRaGatewayIDList
+            {
+                GatewayIds = new List<string>(){ Guid.NewGuid().ToString(), Guid.NewGuid().ToString() }
+            };
+
             return new LoRaWANDevicesController(
                 this.mockLogger.Object,
                 this.mockLoRaWANCommandService.Object,
-                this.mockDeviceService.Object)
+                this.mockDeviceService.Object,
+                loRaGatewayIDList)
             {
                 Url = this.mockUrlHelper.Object
             };
