@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using Models.v10.LoRaWAN;
     using Microsoft.Azure.Devices.Shared;
     using AzureIoTHub.Portal.Server.Helpers;
+    using Shared.Models.v1._0;
 
     public class ConcentratorProfile : Profile
     {
@@ -32,6 +33,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 .ForMember(dest => dest.ClientThumbprint, opts => opts.MapFrom(src => DeviceHelper.RetrieveClientThumbprintValue(src)))
                 .ForMember(dest => dest.LoraRegion, opts => opts.MapFrom(src => src.Tags["loraRegion"]))
                 .ForMember(dest => dest.DeviceType, opts => opts.MapFrom(src => src.Tags["deviceType"]));
+
+            _ = CreateMap<PaginatedResult<Concentrator>, PaginatedResult<ConcentratorDto>>();
         }
     }
 }

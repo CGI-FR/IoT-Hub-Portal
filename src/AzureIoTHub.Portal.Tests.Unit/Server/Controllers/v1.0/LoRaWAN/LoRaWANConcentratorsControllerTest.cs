@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     using FluentAssertions;
     using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Moq;
@@ -74,6 +75,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             _ = this.mockLoRaWANConcentratorService.Setup(service => service.GetAllDeviceConcentrator(
                     It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>()))
                 .ReturnsAsync(expectedPaginatedConcentrator);
+
+            var locationUrl = "http://location/concentrators";
+
+            _ = this.mockUrlHelper
+                .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(locationUrl);
 
             // Act
             var result = await concentratorsController.GetAllDeviceConcentrator().ConfigureAwait(false);

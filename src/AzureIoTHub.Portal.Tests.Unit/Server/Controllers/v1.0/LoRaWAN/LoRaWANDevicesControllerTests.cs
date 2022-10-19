@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Controllers;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Primitives;
@@ -31,6 +32,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
         private Mock<ILogger<LoRaWANDevicesController>> mockLogger;
         private Mock<ILoRaWANCommandService> mockLoRaWANCommandService;
         private Mock<IDeviceService<LoRaDeviceDetails>> mockDeviceService;
+        private Mock<IUrlHelper> mockUrlHelper;
 
         [SetUp]
         public void SetUp()
@@ -40,6 +42,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             this.mockLogger = this.mockRepository.Create<ILogger<LoRaWANDevicesController>>();
             this.mockLoRaWANCommandService = this.mockRepository.Create<ILoRaWANCommandService>();
             this.mockDeviceService = this.mockRepository.Create<IDeviceService<LoRaDeviceDetails>>();
+            this.mockUrlHelper = this.mockRepository.Create<IUrlHelper>();
         }
 
         private LoRaWANDevicesController CreateLoRaWANDevicesController()
@@ -47,7 +50,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             return new LoRaWANDevicesController(
                 this.mockLogger.Object,
                 this.mockLoRaWANCommandService.Object,
-                this.mockDeviceService.Object);
+                this.mockDeviceService.Object)
+            {
+                Url = this.mockUrlHelper.Object
+            };
         }
 
         [Test]
@@ -105,6 +111,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
                     It.IsAny<bool?>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(),
                     It.IsAny<Dictionary<string, string>>()))
                 .ReturnsAsync(expectedPaginatedDevices);
+
+            var locationUrl = "http://location/devices";
+
+            _ = this.mockUrlHelper
+                .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(locationUrl);
 
             // Act
             var result = await devicesController.SearchItems();

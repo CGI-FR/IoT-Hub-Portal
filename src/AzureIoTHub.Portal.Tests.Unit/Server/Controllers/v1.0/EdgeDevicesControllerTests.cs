@@ -66,7 +66,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
                 }).ToList(),
                 TotalCount = 100,
                 PageSize = 10,
-                TotalPages = 10,
                 CurrentPage = 0
             };
 
