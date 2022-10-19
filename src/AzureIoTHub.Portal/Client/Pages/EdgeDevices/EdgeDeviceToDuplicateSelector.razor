@@ -1,0 +1,72 @@
+﻿@using AzureIoTHub.Portal.Models.v10
+@using System.Web
+
+@inject IEdgeDeviceClientService EdgeDeviceClientService
+@inject IEdgeModelClientService EdgeModelClientService
+@inject IEdgeDeviceLayoutService EdgeDeviceLayoutService
+
+<MudAutocomplete id="search-device"
+                 T="IoTEdgeListItem"
+                 Label="Search a device to duplicate"
+                 SearchFunc="@SearchDevicesToDuplicate"
+                 ToStringFunc="@(x => x?.DeviceId)"
+                 DebounceInterval="300"
+                 ValueChanged="OnDeviceSelected"
+                 Dense=true
+                 Clearable=true
+                 CoerceText=true
+                 CoerceValue=false
+                 Variant="Variant.Outlined"
+                 Required="true">
+    <ItemTemplate>
+        <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
+            Id: @context.DeviceId
+        </MudText>
+    </ItemTemplate>
+    <NoItemsTemplate>
+        <MudText Align="Align.Center" Class="px-4 py-1">
+            Type to search devices by id or name
+        </MudText>
+    </NoItemsTemplate>
+</MudAutocomplete>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; }
+
+    private async Task<IEnumerable<IoTEdgeListItem>> SearchDevicesToDuplicate(string query)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return Array.Empty<IoTEdgeListItem>();
+            }
+            var uri = $"api/edge/devices?pageSize=10&searchText={HttpUtility.UrlEncode(query)}";
+            var result = await EdgeDeviceClientService.GetDevices(uri);
+            return result.Items;
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+            return new List<IoTEdgeListItem>();
+        }
+    }
+
+    private async Task OnDeviceSelected(IoTEdgeListItem deviceToDuplicate)
+    {
+        try
+        {
+            var edgeDevice = await this.EdgeDeviceClientService.GetDevice(deviceToDuplicate.DeviceId);
+            var edgeModel = await this.EdgeModelClientService.GetIoTEdgeModel(edgeDevice.ModelId);
+
+            EdgeDeviceLayoutService.DuplicateSharedDevice(edgeDevice);
+            EdgeDeviceLayoutService.DuplicateSharedDeviceModel(edgeModel);
+            EdgeDeviceLayoutService.RefreshDevice();
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+}

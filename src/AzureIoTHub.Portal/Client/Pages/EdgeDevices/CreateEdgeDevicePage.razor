@@ -9,6 +9,7 @@
 @inject IEdgeDeviceClientService EdgeDeviceClientService
 @inject IEdgeModelClientService EdgeModelClientService
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
+@inject IEdgeDeviceLayoutService EdgeDeviceLayoutService
 
 
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Edge Device</MudText>
@@ -29,7 +30,12 @@
                 </MudCard>
                 <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
                     <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
-                        <MudButton id="SaveButton" OnClick="Save" Disabled="isProcessing">Save</MudButton>
+                        <MudButton id="SaveButton" OnClick="Save" Disabled="isProcessing">@saveButtonText</MudButton>
+                        <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                            <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Save)">Save</MudMenuItem>
+                            <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.SaveAndAddNew)">Save and add new</MudMenuItem>
+                            <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.SaveAndDuplicate)">Save and duplicate</MudMenuItem>
+                        </MudMenu>
                     </MudButtonGroup>
                 </MudItem>
             </MudItem>
@@ -44,7 +50,12 @@
                                         <ChildContent>
                                             <MudGrid>
                                                 <MudItem xs="12" md="6">
-
+                                                @if (duplicateDevice)
+                                                {
+                                                    <EdgeDeviceToDuplicateSelector />
+                                                }
+                                                else
+                                                {
                                                     <MudAutocomplete T="IoTEdgeModelListItem"
                                                                  id="@nameof(IoTEdgeModelListItem.ModelId)"
                                                                  @bind-Value="edgeModel"
@@ -70,6 +81,8 @@
                                                     {
                                                         <p class="validation-error-message">The Model is required.</p>
                                                     }
+                                                }
+
                                             </MudItem>
                                             <MudItem xs="12" md="6">
                                                     <MudTextField @bind-Value="@EdgeDevice.DeviceId"
@@ -79,9 +92,9 @@
                                                               For="@(()=> EdgeDevice.DeviceId)"
                                                               HelperText="The device identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters" />
                                             </MudItem>
-                                           @* <MudItem xs="12">
+                                            <MudItem xs="12">
                                                 <MudSwitch @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
-                                            </MudItem>*@
+                                            </MudItem>
                                             <MudItem xs="12">
                                                 <MudTextField @bind-Value="@EdgeDevice.DeviceName"
                                                               id="@nameof(IoTEdgeDevice.DeviceName)"
@@ -162,11 +175,19 @@
     private bool displayValidationErrorMessages = false;
 
     private bool isProcessing;
+    private bool duplicateDevice;
+
+    private DeviceSaveAction deviceSaveAction = DeviceSaveAction.Save;
+    private string saveButtonText = "Save";
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            EdgeDeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred;
+            EdgeDevice = EdgeDeviceLayoutService.GetSharedDevice() ?? this.EdgeDevice;
+            edgeModel = EdgeDeviceLayoutService.GetSharedDeviceModel() ?? this.edgeModel;
+
             this.edgeModelList = await this.EdgeModelClientService.GetIoTEdgeModelList();
 
             TagList = await DeviceTagSettingsClientService.GetDeviceTags();
@@ -180,6 +201,13 @@
         {
             Error?.ProcessProblemDetails(exception);
         }
+    }
+
+    public void Dispose()
+    {
+        EdgeDeviceLayoutService.ResetSharedDevice();
+        EdgeDeviceLayoutService.ResetSharedDeviceModel();
+        EdgeDeviceLayoutService.RefreshDeviceOccurred -= DeviceServiceOnRefreshDeviceOccurred;
     }
 
     public async void Save()
@@ -208,7 +236,7 @@
 
             Snackbar.Add($"Device {EdgeDevice.DeviceId} has been successfully created!", Severity.Success);
 
-            NavigationManager.NavigateTo("/edge/devices");
+            ProcessPostDeviceCreation();
         }
         catch (ProblemDetailsException exception)
         {
@@ -232,6 +260,24 @@
             }
         }
         return tagValidationError;
+    }
+
+    private void ProcessPostDeviceCreation()
+    {
+        switch (deviceSaveAction)
+        {
+            case DeviceSaveAction.Save:
+                NavigationManager.NavigateTo("/edge/devices");
+                break;
+            case DeviceSaveAction.SaveAndAddNew:
+                EdgeDevice = EdgeDeviceLayoutService.ResetSharedDevice(TagList.ToList());
+                edgeModel = EdgeDeviceLayoutService.ResetSharedDeviceModel();
+                break;
+            case DeviceSaveAction.SaveAndDuplicate:
+                EdgeDevice = EdgeDeviceLayoutService.DuplicateSharedDevice(EdgeDevice);
+                edgeModel = EdgeDeviceLayoutService.DuplicateSharedDeviceModel(edgeModel);
+                break;
+        }
     }
 
     /// <summary>
@@ -271,5 +317,24 @@
         {
             await InvokeAsync(StateHasChanged);
         }
-    } 
+    }
+
+    private void SetSaveButtonText(DeviceSaveAction saveAction)
+    {
+        deviceSaveAction = saveAction;
+        saveButtonText = deviceSaveAction switch
+        {
+            DeviceSaveAction.Save => "Save",
+            DeviceSaveAction.SaveAndAddNew => "Save and add new",
+            DeviceSaveAction.SaveAndDuplicate => "Save and duplicate",
+            _ => saveButtonText
+        };
+    }
+
+    private void DeviceServiceOnRefreshDeviceOccurred(object sender, EventArgs e)
+    {
+        EdgeDevice = EdgeDeviceLayoutService.GetSharedDevice();
+        edgeModel = EdgeDeviceLayoutService.GetSharedDeviceModel();
+        StateHasChanged();
+    }
 }

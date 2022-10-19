@@ -9,6 +9,7 @@
 @inject IDialogService DialogService
 @inject IEdgeDeviceClientService EdgeDeviceClientService
 @inject IEdgeModelClientService EdgeModelClientService
+@inject IEdgeDeviceLayoutService EdgeDeviceLayoutService
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
@@ -43,7 +44,14 @@
 
             <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
                 <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="ShowDeleteModal" id="deleteButton" Disabled="isProcessing">Delete edge device</MudButton>
-                <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="UpdateDevice" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>
+                @*<MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="UpdateDevice" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>*@
+                <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                    <MudButton id="saveButton" OnClick="ProcessActionOnDevice" Disabled="isProcessing">@saveButtonText</MudButton>
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                        <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Save)">Save</MudMenuItem>
+                        <MudMenuItem OnClick="() => SetSaveButtonText(DeviceSaveAction.Duplicate)">Duplicate</MudMenuItem>
+                    </MudMenu>
+                </MudButtonGroup>
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
@@ -208,6 +216,9 @@
     private bool isLoaded = false;
     private bool isProcessing;
 
+    private DeviceSaveAction deviceSaveAction = DeviceSaveAction.Save;
+    private string saveButtonText = "Save";
+
     protected override async Task OnInitializedAsync()
     {
         edgeDevice = new IoTEdgeDevice();
@@ -297,6 +308,21 @@
         }
     }
 
+    private async Task ProcessActionOnDevice()
+    {
+        switch (deviceSaveAction)
+        {
+            case DeviceSaveAction.Save:
+                await UpdateDevice();
+                break;
+            case DeviceSaveAction.Duplicate:
+                EdgeDeviceLayoutService.DuplicateSharedDevice(edgeDevice);
+                EdgeDeviceLayoutService.DuplicateSharedDeviceModel(edgeModel);
+                NavigationManager.NavigateTo("edge/devices/new");
+                break;
+        }
+    }
+
     public async Task OnMethod(string moduleName, string methodName)
     {
         isProcessing = true;
@@ -377,5 +403,16 @@
             }
         }
         return tagValidationError;
+    }
+
+    private void SetSaveButtonText(DeviceSaveAction saveAction)
+    {
+        deviceSaveAction = saveAction;
+        saveButtonText = deviceSaveAction switch
+        {
+            DeviceSaveAction.Save => "Save",
+            DeviceSaveAction.Duplicate => "Duplicate",
+            _ => saveButtonText
+        };
     }
 }
