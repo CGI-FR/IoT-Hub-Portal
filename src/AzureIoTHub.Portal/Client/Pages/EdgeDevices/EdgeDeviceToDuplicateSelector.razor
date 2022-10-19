@@ -19,13 +19,9 @@
                  Variant="Variant.Outlined"
                  Required="true">
     <ItemTemplate>
-        @*@context.DeviceName*@
         <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
             Id: @context.DeviceId
         </MudText>
-        @*<MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
-            LoRaWAN: @(@context.SupportLoRaFeatures ? "Yes" : "No")
-        </MudText>*@
     </ItemTemplate>
     <NoItemsTemplate>
         <MudText Align="Align.Center" Class="px-4 py-1">
