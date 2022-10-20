@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
     using Models.v10.LoRaWAN;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
 
     [TestFixture]
     public class LoRaWanDeviceClientServiceTests : BlazorUnitTest
@@ -115,6 +116,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             await this.loRaWanDeviceClientService.ExecuteCommand(deviceId, commandId);
 
             // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task GetGatewayIdListShouldReturnGatewayIdList()
+        {
+            // Arrange
+            var expectedLoRaGatewayIDList = Fixture.Create<LoRaGatewayIDList>();
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/devices/gateways")
+                .RespondJson(expectedLoRaGatewayIDList);
+
+            // Act
+            var result = await this.loRaWanDeviceClientService.GetGatewayIdList();
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedLoRaGatewayIDList);
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
