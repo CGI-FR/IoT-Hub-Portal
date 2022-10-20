@@ -16,12 +16,12 @@ namespace AzureIoTHub.Portal.Server.Jobs
         private readonly IExternalDeviceService externalDeviceService;
         private readonly LoRaGatewayIDList gatewayIdList;
 
-        private readonly ILogger<SyncConcentratorsJob> logger;
+        private readonly ILogger<SyncGatewayIDJob> logger;
 
         public SyncGatewayIDJob(
             IExternalDeviceService externalDeviceService,
             LoRaGatewayIDList gatewayIdList,
-            ILogger<SyncConcentratorsJob> logger)
+            ILogger<SyncGatewayIDJob> logger)
         {
             this.externalDeviceService = externalDeviceService;
             this.gatewayIdList = gatewayIdList;
