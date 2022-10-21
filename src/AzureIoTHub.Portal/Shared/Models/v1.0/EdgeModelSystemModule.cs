@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Shared.Models.v10
 {
-    using AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule;
     using System.Collections.Generic;
 
     public class EdgeModelSystemModule
