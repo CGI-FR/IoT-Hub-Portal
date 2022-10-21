@@ -1,6 +1,7 @@
 ﻿@using AzureIoTHub.Portal.Client.Validators
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 @using AzureIoTHub.Portal.Models.v10
+@inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
 
 <MudExpansionPanels MultiExpansion="true">
     <MudGrid>
@@ -40,6 +41,22 @@
                                 <MudTextField id="@nameof(LoRaDevice.DevAddr)" @bind-Value="@LoRaDevice.DevAddr" Label="DevAddr" For="@(() => LoRaDevice.DevAddr)" Variant="Variant.Outlined" Required="true"></MudTextField>
                             </MudItem>
                         }
+                        <MudItem xs="12" md="6">
+                            <MudAutocomplete T="string"
+                                             id="@nameof(LoRaDevice.GatewayID)"
+                                             @bind-Value="LoRaDevice.GatewayID"
+                                             SearchFunc="@SearchGatewayID"
+                                             Label="GatewayID"
+                                             Dense=true
+                                             For="@(() => LoRaDevice.GatewayID)"
+                                             Variant="Variant.Outlined"
+                                             ResetValueOnEmptyText=true
+                                             Immediate=true
+                                             Clearable=true
+                                             CoerceText=true
+                                             CoerceValue=false>
+                            </MudAutocomplete>
+                        </MudItem>
                     </MudGrid>
                 </ChildContent>
             </MudExpansionPanel>
@@ -48,6 +65,9 @@
 </MudExpansionPanels>
 
 @code {
+    [CascadingParameter]
+    public Error Error { get; set; }
+
     [Parameter]
     public LoRaDeviceDetails LoRaDevice { get; set; }
 
@@ -57,4 +77,27 @@
     [Parameter]
     public LoRaDeviceModelDto LoraModelDto { get; set; }
 
+    public List<string> GatewayIdList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            GatewayIdList = (await LoRaWanDeviceClientService.GetGatewayIdList()).GatewayIds;
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    private async Task<IEnumerable<string>> SearchGatewayID(string value)
+    {
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return GatewayIdList;
+
+        return GatewayIdList
+                    .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
 }

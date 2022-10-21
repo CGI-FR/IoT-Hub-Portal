@@ -54,7 +54,7 @@
                                 </MudItem>
                                 <MudItem md="3" xs="6">
                                     <MudSelect id="@nameof(LoRaDevice.Deduplication)"
-                                        Disabled="true"
+                                               Disabled="true"
                                                @bind-Value="@LoRaDevice.Deduplication"
                                                For="@(() => LoRaDevice.Deduplication)"
                                                AnchorOrigin="Origin.BottomCenter"
@@ -66,8 +66,21 @@
                                         }
                                     </MudSelect>
                                 </MudItem>
-                                <MudItem md="6" xs="12">
-                                    <MudTextField id="@nameof(LoRaDevice.GatewayID)" @bind-Value="@LoRaDevice.GatewayID" Label="Gateway Id" For="@(() => LoRaDevice.GatewayID)" Variant="Variant.Outlined"></MudTextField>
+                                <MudItem xs="12" md="6">
+                                    <MudAutocomplete T="string"
+                                                     id="@nameof(LoRaDevice.GatewayID)"
+                                                     @bind-Value="LoRaDevice.GatewayID"
+                                                     SearchFunc="@SearchGatewayID"
+                                                     Label="GatewayID"
+                                                     Dense=true
+                                                     For="@(() => LoRaDevice.GatewayID)"
+                                                     Variant="Variant.Outlined"
+                                                     ResetValueOnEmptyText=true
+                                                     Immediate=true
+                                                     Clearable=true
+                                                     CoerceText=true
+                                                     CoerceValue=false>
+                                    </MudAutocomplete>
                                 </MudItem>
                             </MudGrid>
                         </MudItem>
@@ -157,8 +170,8 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
-    
+    public Error Error { get; set; }
+
     [Parameter]
     public LoRaDeviceDetails LoRaDevice { get; set; }
 
@@ -172,6 +185,30 @@
     public IEnumerable<DeviceModelCommandDto> Commands { get; set; }
 
     private bool isProcessing;
+
+    public List<string> GatewayIdList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            GatewayIdList = (await LoRaWanDeviceClientService.GetGatewayIdList()).GatewayIds;
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    private async Task<IEnumerable<string>> SearchGatewayID(string value)
+    {
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return GatewayIdList;
+
+        return GatewayIdList
+                    .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
 
     private async Task ExecuteMethod(DeviceModelCommandDto method)
     {

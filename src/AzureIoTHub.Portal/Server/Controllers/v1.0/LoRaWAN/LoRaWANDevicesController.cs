@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
     using Filters;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -21,14 +22,17 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     public class LoRaWANDevicesController : DevicesControllerBase<LoRaDeviceDetails>
     {
         private readonly ILoRaWANCommandService loRaWanCommandService;
+        private readonly LoRaGatewayIDList gatewayIdList;
 
         public LoRaWANDevicesController(
             ILogger<LoRaWANDevicesController> logger,
             ILoRaWANCommandService loRaWanCommandService,
-            IDeviceService<LoRaDeviceDetails> deviceService)
+            IDeviceService<LoRaDeviceDetails> deviceService,
+            LoRaGatewayIDList gatewayIdList)
             : base(logger, deviceService)
         {
             this.loRaWanCommandService = loRaWanCommandService;
+            this.gatewayIdList = gatewayIdList;
         }
 
         /// <summary>
@@ -111,6 +115,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public override Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
         {
             return Task.FromResult<ActionResult<EnrollmentCredentials>>(NotFound());
+        }
+
+        [HttpGet("gateways", Name = "Get Gateways")]
+        public ActionResult<LoRaGatewayIDList> GetGateways()
+        {
+            return Ok(this.gatewayIdList);
         }
     }
 }

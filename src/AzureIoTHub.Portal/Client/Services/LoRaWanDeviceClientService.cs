@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Client.Services
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
     using Portal.Models.v10.LoRaWAN;
 
     public class LoRaWanDeviceClientService : ILoRaWanDeviceClientService
@@ -35,6 +36,11 @@ namespace AzureIoTHub.Portal.Client.Services
         public Task ExecuteCommand(string deviceId, string commandId)
         {
             return this.http.PostAsJsonAsync($"api/lorawan/devices/{deviceId}/_command/{commandId}", string.Empty);
+        }
+
+        public Task<LoRaGatewayIDList> GetGatewayIdList()
+        {
+            return this.http.GetFromJsonAsync<LoRaGatewayIDList>($"api/lorawan/devices/gateways");
         }
     }
 }
