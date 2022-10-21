@@ -656,15 +656,6 @@
         "operationId": "GET IoT Edge devices",
         "parameters": [
           {
-            "name": "continuationToken",
-            "in": "query",
-            "description": "",
-            "style": "form",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "searchText",
             "in": "query",
             "description": "",
@@ -683,15 +674,6 @@
             }
           },
           {
-            "name": "searchType",
-            "in": "query",
-            "description": "",
-            "style": "form",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "pageSize",
             "in": "query",
             "description": "",
@@ -700,6 +682,29 @@
               "type": "integer",
               "format": "int32",
               "default": 10
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
@@ -1955,6 +1960,36 @@
         "responses": {
           "200": {
             "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/lorawan/devices/gateways": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "operationId": "Get Gateways",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaGatewayIDList"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaGatewayIDList"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaGatewayIDList"
+                }
+              }
+            }
           }
         }
       }
@@ -4345,6 +4380,10 @@
             "type": "string",
             "description": "the device image URI."
           },
+          "containerCreateOptions": {
+            "type": "string",
+            "nullable": true
+          },
           "status": {
             "type": "string",
             "description": "The module status.",
@@ -4844,6 +4883,19 @@
         },
         "additionalProperties": false,
         "description": "LoRa Device model."
+      },
+      "LoRaGatewayIDList": {
+        "type": "object",
+        "properties": {
+          "gatewayIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "PortalMetric": {
         "type": "object",
