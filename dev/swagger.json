@@ -1964,6 +1964,36 @@
         }
       }
     },
+    "/api/lorawan/devices/gateways": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "operationId": "Get Gateways",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaGatewayIDList"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaGatewayIDList"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoRaGatewayIDList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/lorawan/freqencyplans": {
       "get": {
         "tags": [
@@ -4853,6 +4883,19 @@
         },
         "additionalProperties": false,
         "description": "LoRa Device model."
+      },
+      "LoRaGatewayIDList": {
+        "type": "object",
+        "properties": {
+          "gatewayIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "PortalMetric": {
         "type": "object",
