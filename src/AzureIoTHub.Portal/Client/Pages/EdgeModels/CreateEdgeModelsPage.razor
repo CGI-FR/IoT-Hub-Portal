@@ -65,6 +65,48 @@
 
                         <MudGrid>
                             <MudItem xs="12">
+                                <MudExpansionPanel Text="System Modules" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">System Modules</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudItem xs="12">
+                                            <MudTable Items="Model.SystemModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                <ColGroup>
+                                                    <col style="width: 15%;" />
+                                                    <col style="width: 40%;" />
+                                                    <col style="width: 15%;" />
+                                                    <col style="width: 10%;" />
+                                                </ColGroup>
+
+                                                <HeaderContent>
+                                                    <MudTh Style="text-align: center">Module name</MudTh>
+                                                    <MudTh Style="text-align: center">Image URI</MudTh>
+                                                    <MudTh Style="text-align: center">Version</MudTh>
+                                                    <MudTh Style="text-align: center">Detail</MudTh>
+                                                </HeaderContent>
+
+                                                <RowTemplate Context="sysModule">
+                                                    <MudTd DataLabel="System module Name" Style="word-break: break-all;">
+                                                        <MudTextField id="" @bind-Value="@sysModule.Name" Margin="Margin.Dense" Label="Module name" For="@(() => sysModule.Name )" Variant="Variant.Outlined" Disabled />
+                                                    </MudTd>
+                                                    <MudTd DataLabel="System module Image URI" Style="word-break: break-all;">
+                                                        <MudTextField id="" @bind-Value="@sysModule.ImageUri" Margin="Margin.Dense" Label="Image URI" For="@(() => sysModule.ImageUri )" Variant="Variant.Outlined" />
+                                                    </MudTd>
+                                                    <MudTd DataLabel="System module version" Style="word-break: break-all;">
+                                                        <MudTextField id="" @bind-Value="@sysModule.SchemaVersion" Margin="Margin.Dense" Label="Version" For="@(() => sysModule.SchemaVersion )" Variant="Variant.Outlined" />
+                                                    </MudTd>
+                                                    <MudTd DataLabel="See detail" Style="text-align: center;">
+                                                        <MudButton Variant="Variant.Filled" id="editSystModuleButton" OnClick="@(async () => await ShowSystemModuleDetail(sysModule))">Detail</MudButton>
+                                                    </MudTd>
+                                                </RowTemplate>
+                                            </MudTable>
+                                        </MudItem>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+
+                        <MudGrid>
+                            <MudItem xs="12">
                                 <MudExpansionPanel Text="Modules" IsInitiallyExpanded="true">
                                     <TitleContent><MudText Typo="Typo.h6">Modules</MudText></TitleContent>
                                     <ChildContent>
@@ -232,6 +274,21 @@
             {
                 return;
             }
+        }
+    }
+
+    private async Task ShowSystemModuleDetail(EdgeModelSystemModule systemModule)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("module", systemModule);
+
+        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+
+        var result = await DialogService.Show<SystemModuleDialog>(systemModule.Name, parameters, options).Result;
+
+        if (result.Cancelled)
+        {
+            return;
         }
     }
 

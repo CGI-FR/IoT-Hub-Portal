@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Models.v10
 {
     using System.Collections.Generic;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     public class IoTEdgeModel : IoTEdgeModelListItem
     {
@@ -13,5 +14,16 @@ namespace AzureIoTHub.Portal.Models.v10
         public List<IoTEdgeModule> EdgeModules { get; set; } = new List<IoTEdgeModule>();
 
         public List<IoTEdgeRoute> EdgeRoutes { get; set; } = new List<IoTEdgeRoute>();
+
+        public List<EdgeModelSystemModule> SystemModules { get; set; }
+
+        public IoTEdgeModel()
+        {
+            SystemModules = new List<EdgeModelSystemModule>
+            {
+                new EdgeModelSystemModule("edgeAgent"),
+                new EdgeModelSystemModule("edgeHub")
+            };
+        }
     }
 }
