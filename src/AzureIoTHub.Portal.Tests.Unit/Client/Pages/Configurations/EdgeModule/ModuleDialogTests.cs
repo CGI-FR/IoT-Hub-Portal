@@ -66,7 +66,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
         {
             //Arrange
             var moduleName = Guid.NewGuid().ToString();
-            var moduleVersion = Guid.NewGuid().ToString();
             var moduleImageUri = Guid.NewGuid().ToString();
 
             var module = new IoTEdgeModule()
