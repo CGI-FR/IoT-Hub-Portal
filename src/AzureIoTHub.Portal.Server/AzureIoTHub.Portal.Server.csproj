@@ -16,10 +16,10 @@
   </ProjectExtensions>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\AzureIoTHub.Portal.Infrastructure\AzureIoTHub.Portal.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\AzureIoTHubPortal.Domain\AzureIoTHub.Portal.Domain.csproj" />
-    <ProjectReference Include="..\Client\AzureIoTHub.Portal.Client.csproj" />
-    <ProjectReference Include="..\Shared\AzureIoTHub.Portal.Shared.csproj" />
+    <ProjectReference Include="..\AzureIoTHub.Portal.Infrastructure\AzureIoTHub.Portal.Infrastructure.csproj" />
+    <ProjectReference Include="..\AzureIoTHub.Portal.Domain\AzureIoTHub.Portal.Domain.csproj" />
+    <ProjectReference Include="..\AzureIoTHub.Portal.Client\AzureIoTHub.Portal.Client.csproj" />
+    <ProjectReference Include="..\AzureIoTHub.Portal.Shared\AzureIoTHub.Portal.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
