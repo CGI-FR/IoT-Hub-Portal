@@ -25,7 +25,7 @@ namespace AzureIoTHub.Portal.Client.Validators
                     _ = c.RuleFor(x => x.Value)
                         .NotEmpty()
                         .WithMessage("The route value is required.")
-                        .Matches(@"^(?i)FROM [\S]+( WHERE [\S]+)? INTO [\S]+$")
+                        .Matches(@"^(?i)FROM [\S]+( WHERE (NOT )?[\S]+)? INTO [\S]+$")
                         .WithMessage("Route should be 'FROM <source> (WHERE <condition>) INTO <sink>'.");
 
                     _ = c.RuleFor(x => x.Priority)
