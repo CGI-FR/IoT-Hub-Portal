@@ -79,6 +79,13 @@ jobs:
         with:
           name: swagger-doc
           path: docs
+      
+      - name: Generate app token
+        id: generate_app_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.BOT_APP_ID }}
+          private_key: ${{ secrets.BOT_PRIVATE_KEY }}
 
       - name: Push Open API Markdown to GitHub
         uses: peter-evans/create-pull-request@v4
@@ -86,7 +93,7 @@ jobs:
           base: 'docs/main'
           branch: 'docs/feature/open-api'
           commit-message: 'Adds auto-generated Open API doc.'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.generate_app_token.outputs.token }}
           title: 'Update API documentation'
           labels: 'documentation'
           team-reviewers: '@CGI-FR/azure-iot-portal-authors'
