@@ -4486,7 +4486,7 @@
           },
           "value": {
             "minLength": 1,
-            "pattern": "^(?i)FROM [\\S]+( WHERE [\\S]+)? INTO [\\S]+$",
+            "pattern": "^(?i)FROM [\\S]+( WHERE (NOT )?[\\S]+)? INTO [\\S]+$",
             "type": "string",
             "description": "The route value.\r\nEg : FROM /messages/* INTO $upstream."
           },
