@@ -320,7 +320,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 DevAddr = Guid.NewGuid().ToString(),
             };
             var validator = new LoRaDeviceDetailsValidator();
-            var LoraDevice = new LoRaDeviceDetails();
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
                 .ReturnsAsync(Fixture.Create<LoRaGatewayIDList>);
