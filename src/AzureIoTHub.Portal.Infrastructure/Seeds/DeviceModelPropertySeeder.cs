@@ -8,7 +8,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Seeds
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Models;
     using AzureIoTHub.Portal.Infrastructure.Factories;
-    using Microsoft.EntityFrameworkCore;
 
     internal static class DeviceModelPropertySeeder
     {
@@ -19,10 +18,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Seeds
 
             var set = ctx.Set<DeviceModelProperty>();
 
-            foreach (var item in table.Query<TableEntity>().ToArray())
+            foreach (var item in table.Query<TableEntity>()
+                    .Where(item => set.Any(c => c.Id == item.RowKey))
+                    .ToArray())
             {
-                if (await set.AnyAsync(c => c.Id == item.RowKey))
-                    continue;
 
 #pragma warning disable CS8629 // Nullable value type may be null.
                 _ = await set.AddAsync(new DeviceModelProperty
