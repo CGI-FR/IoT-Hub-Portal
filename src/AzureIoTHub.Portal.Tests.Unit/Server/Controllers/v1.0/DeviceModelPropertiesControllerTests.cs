@@ -103,9 +103,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var deviceModelPropertiesController = CreateDeviceModelPropertiesController();
             var modelId = Guid.NewGuid().ToString();
 
-            var mockResponse = this.mockRepository.Create<Response>();
-            var existingProperty = Guid.NewGuid().ToString();
-
             var properties = new[]
             {
                 new DeviceProperty
