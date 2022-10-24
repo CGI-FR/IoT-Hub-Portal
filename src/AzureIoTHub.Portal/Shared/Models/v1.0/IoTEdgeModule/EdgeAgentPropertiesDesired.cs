@@ -68,7 +68,8 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
             EdgeAgent = new ConfigModule()
             {
                 Settings = new ModuleSettings { Image = "mcr.microsoft.com/azureiotedge-agent:1.1" },
-                Type = "docker"
+                Type = "docker",
+                EnvironmentVariables = new Dictionary<string, EnvironmentVariable>()
             };
 
             EdgeHub = new ConfigModule()
@@ -80,7 +81,8 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.IoTEdgeModule
                 {
                     Image = "mcr.microsoft.com/azureiotedge-hub:1.1",
                     CreateOptions = /*lang=json,strict*/ "{\"HostConfig\":{\"PortBindings\":{\"443/tcp\":[{\"HostPort\":\"443\"}],\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}]}}}"
-                }
+                },
+                EnvironmentVariables = new Dictionary<string, EnvironmentVariable>()
             };
         }
     }
