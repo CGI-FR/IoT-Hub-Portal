@@ -4245,6 +4245,11 @@
             "type": "string",
             "description": "The device identifier."
           },
+          "deviceName": {
+            "type": "string",
+            "description": "The device status.",
+            "nullable": true
+          },
           "status": {
             "type": "string",
             "description": "The device status.",
