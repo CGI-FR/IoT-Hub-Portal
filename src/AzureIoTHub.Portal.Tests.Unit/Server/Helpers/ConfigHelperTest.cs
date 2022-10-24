@@ -178,6 +178,27 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
                         },
                         ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>()
                     }
+                },
+                SystemModules = new List<EdgeModelSystemModule>()
+                {
+                    new EdgeModelSystemModule("edgeAgent")
+                    {
+                        ImageUri = "image",
+                        SchemaVersion = "1.0",
+                        EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
+                        {
+                            new IoTEdgeModuleEnvironmentVariable(){ Name ="test", Value = "test" }
+                        }
+                    },
+                    new EdgeModelSystemModule("edgeHub")
+                    {
+                        ImageUri = "image",
+                        SchemaVersion = "1.0",
+                        EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
+                        {
+                            new IoTEdgeModuleEnvironmentVariable(){ Name ="test", Value = "test" }
+                        }
+                    }
                 }
             };
 
