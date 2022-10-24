@@ -23,6 +23,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             return new IoTEdgeListItem()
             {
                 DeviceId = deviceTwin?.DeviceId,
+                DeviceName = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.DeviceName)),
                 Status = deviceTwin?.Status.ToString(),
                 NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin),
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId)))
