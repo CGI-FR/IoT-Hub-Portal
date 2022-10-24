@@ -181,23 +181,14 @@ There are several optional security settings that the user can configure. These 
 
 The IoT Hub portal uses some tags to configure the devices. The tags are stored in the Azure IoT Hub in Device Twins.
 
-* **deviceType**: The device type, can be "LoRa Device" or "null".
-    > By setting the device type to "LoRa Device", the device will be configured to send LoRaWAN and receive C2D commands.
 * **modelId**: The device model ID that is used to retrieve the device model configuration.
 
 ## Storage Account
 
-The Storage Account is used to store the device models configuration. You can use the same Storage Account that is used by the LoRa Key Management Facade.
-This solution will use tables and blob storage to store its data. There is no need to create the tables and containers, the application will do it for you.
+The Storage Account is used to store the device models images. You can use the same Storage Account that is used by the LoRa Key Management Facade.
+This solution will use tables and blob storage to store its data. There is no need to create the containers, the application will do it for you.
 
-### Tables
-
-The application uses the following tables:
-
-* **DeviceTemplates**: The table that contains the device model configurations.
-* **DeviceCommands**: The table that contains the device commands linked to the device models.
-
-#### Blob Storage
+### Blob Storage
 
 The application uses the following blob storage:
 
