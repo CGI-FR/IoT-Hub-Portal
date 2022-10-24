@@ -259,18 +259,9 @@
 <nav aria-label="Storage Account" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#tables">
-    Tables
-  </a>
-<nav aria-label="Tables" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
 <a class="md-nav__link" href="#blob-storage">
     Blob Storage
   </a>
-</li>
-</ul>
-</nav>
 </li>
 </ul>
 </nav>
@@ -468,18 +459,9 @@
 <nav aria-label="Storage Account" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#tables">
-    Tables
-  </a>
-<nav aria-label="Tables" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
 <a class="md-nav__link" href="#blob-storage">
     Blob Storage
   </a>
-</li>
-</ul>
-</nav>
 </li>
 </ul>
 </nav>
@@ -726,20 +708,12 @@
 <h2 id="device-tags">Device tags<a class="headerlink" href="#device-tags" title="Permanent link">¶</a></h2>
 <p>The IoT Hub portal uses some tags to configure the devices. The tags are stored in the Azure IoT Hub in Device Twins.</p>
 <ul>
-<li><strong>deviceType</strong>: The device type, can be "LoRa Device" or "null".
-    &gt; By setting the device type to "LoRa Device", the device will be configured to send LoRaWAN and receive C2D commands.</li>
 <li><strong>modelId</strong>: The device model ID that is used to retrieve the device model configuration.</li>
 </ul>
 <h2 id="storage-account">Storage Account<a class="headerlink" href="#storage-account" title="Permanent link">¶</a></h2>
-<p>The Storage Account is used to store the device models configuration. You can use the same Storage Account that is used by the LoRa Key Management Facade.
-This solution will use tables and blob storage to store its data. There is no need to create the tables and containers, the application will do it for you.</p>
-<h3 id="tables">Tables<a class="headerlink" href="#tables" title="Permanent link">¶</a></h3>
-<p>The application uses the following tables:</p>
-<ul>
-<li><strong>DeviceTemplates</strong>: The table that contains the device model configurations.</li>
-<li><strong>DeviceCommands</strong>: The table that contains the device commands linked to the device models.</li>
-</ul>
-<h4 id="blob-storage">Blob Storage<a class="headerlink" href="#blob-storage" title="Permanent link">¶</a></h4>
+<p>The Storage Account is used to store the device models images. You can use the same Storage Account that is used by the LoRa Key Management Facade.
+This solution will use tables and blob storage to store its data. There is no need to create the containers, the application will do it for you.</p>
+<h3 id="blob-storage">Blob Storage<a class="headerlink" href="#blob-storage" title="Permanent link">¶</a></h3>
 <p>The application uses the following blob storage:</p>
 <ul>
 <li><strong>device-images</strong>: The blob storage that contains the device images.</li>
