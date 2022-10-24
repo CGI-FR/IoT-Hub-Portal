@@ -44,7 +44,6 @@
 
             <MudItem xs="12" Class="d-flex justify-space-around py-2 px-1 mt-4">
                 <MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Error" OnClick="ShowDeleteModal" id="deleteButton" Disabled="isProcessing">Delete edge device</MudButton>
-                @*<MudButton Variant="Variant.Filled" Class="mx-1" Color="Color.Primary" OnClick="UpdateDevice" id="saveButton" Disabled="isProcessing">Save Changes</MudButton>*@
                 <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
                     <MudButton id="saveButton" OnClick="ProcessActionOnDevice" Disabled="isProcessing">@saveButtonText</MudButton>
                     <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
