@@ -20,6 +20,11 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The device status.
         /// </summary>
+        public string DeviceName { get; set; }
+
+        /// <summary>
+        /// The device status.
+        /// </summary>
         public string Status { get; set; }
 
         /// <summary>
