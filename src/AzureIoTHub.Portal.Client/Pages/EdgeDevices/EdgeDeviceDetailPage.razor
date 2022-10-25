@@ -105,6 +105,15 @@
                                             <MudItem xs="12" md="6">
                                                 <MudTextField @bind-Value="@edgeDevice.NbModules" Label="Nbr of desired modules" Variant="Variant.Outlined" ReadOnly="true" />
                                             </MudItem>
+
+                                            <MudItem xs="12" md="6">
+                                                <MudTextField @bind-Value="@edgeDevice.DeviceName"
+                                                              id=@nameof(IoTEdgeDevice.DeviceName)
+                                                              Label="Device name"
+                                                              Variant="Variant.Outlined"
+                                                              For="@(()=> edgeDevice.DeviceName)"
+                                                              Required="true" />
+                                            </MudItem>
                                         </MudGrid>
                                     </ChildContent>
                                 </MudExpansionPanel>

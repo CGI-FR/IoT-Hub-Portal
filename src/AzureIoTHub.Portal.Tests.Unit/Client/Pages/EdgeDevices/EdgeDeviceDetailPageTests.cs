@@ -549,6 +549,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var mockIoTEdgeDevice = new IoTEdgeDevice()
             {
                 DeviceId = this.mockdeviceId,
+                DeviceName = "test",
                 ConnectionState = "Connected",
                 ModelId = Guid.NewGuid().ToString(),
                 Tags = tags,
