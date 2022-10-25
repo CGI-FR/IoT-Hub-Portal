@@ -310,13 +310,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 ImageUrl = Fixture.Create<Uri>()
             };
 
-            var expectedEdgeDevice = new IoTEdgeDevice()
-            {
-                DeviceId = Guid.NewGuid().ToString(),
-                ModelId = edgeModel.ModelId,
-                DeviceName = Guid.NewGuid().ToString()
-            };
-
             _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList())
                 .ReturnsAsync(new List<IoTEdgeModelListItem>() { edgeModel });
 
