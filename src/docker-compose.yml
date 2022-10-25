@@ -26,7 +26,7 @@ services:
     image: ${DOCKER_REGISTRY-}azureiothubportalserver
     build:
       context: .
-      dockerfile: AzureIoTHub.Portal/Server/Dockerfile
+      dockerfile: AzureIoTHub.Portal.Server/Dockerfile
     depends_on:
       - "database"
 volumes:

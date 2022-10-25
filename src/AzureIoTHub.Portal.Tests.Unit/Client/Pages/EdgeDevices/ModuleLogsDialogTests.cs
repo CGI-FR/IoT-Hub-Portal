@@ -51,7 +51,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 new()
             };
 
-            _ = this.edgeDeviceClientServiceMock.Setup(c => c.GetEdgeDeviceLogs(It.Is<string>(x => x.Equals(deviceId, StringComparison.Ordinal)), It.Is<IoTEdgeModule>(x => x.Equals(edgeModule))))
+            _ = this.edgeDeviceClientServiceMock.Setup(c => c.GetEdgeDeviceLogs(It.Is<string>(x => x.Equals(deviceId, StringComparison.Ordinal)), edgeModule))
                 .ReturnsAsync(expectedLogs);
 
             var cut = RenderComponent<MudDialogProvider>();
@@ -86,7 +86,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 ModuleName = Guid.NewGuid().ToString()
             };
 
-            _ = this.edgeDeviceClientServiceMock.Setup(c => c.GetEdgeDeviceLogs(It.Is<string>(x => x.Equals(deviceId, StringComparison.Ordinal)), It.Is<IoTEdgeModule>(x => x.Equals(edgeModule))))
+            _ = this.edgeDeviceClientServiceMock.Setup(c => c.GetEdgeDeviceLogs(It.Is<string>(x => x.Equals(deviceId, StringComparison.Ordinal)), edgeModule))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<MudDialogProvider>();
@@ -126,7 +126,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 new()
             };
 
-            _ = this.edgeDeviceClientServiceMock.Setup(c => c.GetEdgeDeviceLogs(It.Is<string>(x => x.Equals(deviceId, StringComparison.Ordinal)), It.Is<IoTEdgeModule>(x => x.Equals(edgeModule))))
+            _ = this.edgeDeviceClientServiceMock.Setup(c => c.GetEdgeDeviceLogs(It.Is<string>(x => x.Equals(deviceId, StringComparison.Ordinal)), edgeModule))
                 .ReturnsAsync(expectedLogs);
 
             var cut = RenderComponent<MudDialogProvider>();
