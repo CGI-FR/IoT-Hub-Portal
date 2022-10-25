@@ -4056,6 +4056,31 @@
         "additionalProperties": false,
         "description": "Device tag."
       },
+      "EdgeModelSystemModule": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUri": {
+            "type": "string",
+            "nullable": true
+          },
+          "schemaVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "environmentVariables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeModuleEnvironmentVariable"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "EnrollmentCredentials": {
         "type": "object",
         "properties": {
@@ -4333,6 +4358,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/IoTEdgeRoute"
+            },
+            "nullable": true
+          },
+          "systemModules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EdgeModelSystemModule"
             },
             "nullable": true
           }
