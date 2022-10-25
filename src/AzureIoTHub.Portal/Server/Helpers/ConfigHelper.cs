@@ -226,20 +226,39 @@ namespace AzureIoTHub.Portal.Server.Helpers
         public static Dictionary<string, IDictionary<string, object>> GenerateModulesContent(IoTEdgeModel edgeModel)
         {
             var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
-            var edgeHubPropertiesDesired = GenerateRoutesContent(edgeModel.EdgeRoutes);
 
-            var modulesContent =  new Dictionary<string, IDictionary<string, object>>
+            if (string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ImageUri))
             {
-                {
-                    "$edgeHub",
-                    new Dictionary<string , object>()
-                    {
-                        {
-                            "properties.desired", edgeHubPropertiesDesired
-                        }
-                    }
-                }
-            };
+                edgeAgentPropertiesDesired.SystemModules.EdgeAgent.Settings.Image = edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ImageUri;
+            }
+
+            if (string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").SchemaVersion))
+            {
+                edgeAgentPropertiesDesired.SchemaVersion = edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").SchemaVersion;
+            }
+
+            if (string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeHub").ImageUri))
+            {
+                edgeAgentPropertiesDesired.SystemModules.EdgeHub.Settings.Image = edgeModel.SystemModules.Single(x => x.Name == "edgeHub").ImageUri;
+            }
+
+            var edgeHubPropertiesDesired = GenerateRoutesContent(edgeModel.EdgeRoutes);
+            if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeHub").SchemaVersion))
+            {
+                edgeHubPropertiesDesired.SchemaVersion = edgeModel.SystemModules.Single(x => x.Name == "edgeHub").SchemaVersion;
+            }
+
+            foreach (var item in edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").EnvironmentVariables)
+            {
+                edgeAgentPropertiesDesired.SystemModules.EdgeAgent.EnvironmentVariables.Add(item.Name, new EnvironmentVariable() { EnvValue = item.Value });
+            }
+
+            foreach (var item in edgeModel.SystemModules.Single(x => x.Name == "edgeHub").EnvironmentVariables)
+            {
+                edgeAgentPropertiesDesired.SystemModules.EdgeHub.EnvironmentVariables.Add(item.Name, new EnvironmentVariable() { EnvValue = item.Value });
+            }
+
+            var modulesContent =  new Dictionary<string, IDictionary<string, object>>();
 
             foreach (var module in edgeModel.EdgeModules)
             {
@@ -284,6 +303,14 @@ namespace AzureIoTHub.Portal.Server.Helpers
                             "properties.desired", edgeAgentPropertiesDesired
                         }
                     });
+
+            modulesContent.Add("$edgeHub",
+                new Dictionary<string, object>()
+                {
+                    {
+                        "properties.desired", edgeHubPropertiesDesired
+                    }
+                });
 
 
             return modulesContent;
