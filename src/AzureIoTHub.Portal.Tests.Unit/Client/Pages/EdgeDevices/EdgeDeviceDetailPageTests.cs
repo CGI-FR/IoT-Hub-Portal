@@ -99,6 +99,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var items = popoverProvider.FindAll("div.mud-list-item");
 
+            var actualDeviceName = cut.WaitForElement($"#{nameof(IoTEdgeDevice.DeviceName)}").GetAttribute("value");
+            cut.WaitForAssertion(() => mockIoTEdgeDevice.DeviceName.Equals(actualDeviceName, StringComparison.Ordinal));
+
             // Click on Save
             items[0].Click();
 
@@ -549,6 +552,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var mockIoTEdgeDevice = new IoTEdgeDevice()
             {
                 DeviceId = this.mockdeviceId,
+                DeviceName = "test",
                 ConnectionState = "Connected",
                 ModelId = Guid.NewGuid().ToString(),
                 Tags = tags,
