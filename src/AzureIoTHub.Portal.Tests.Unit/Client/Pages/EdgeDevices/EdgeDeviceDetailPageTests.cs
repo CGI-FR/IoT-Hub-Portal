@@ -99,6 +99,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             var items = popoverProvider.FindAll("div.mud-list-item");
 
+            cut.WaitForElement($"#{nameof(IoTEdgeDevice.DeviceName)}").Change("testName");
+
             // Click on Save
             items[0].Click();
 
