@@ -305,10 +305,21 @@
         {
             this._edgeModel = edgeModel;
 
+            this.EdgeDevice = new IoTEdgeDevice()
+                {
+                    DeviceId = this.EdgeDevice.DeviceId,
+                    DeviceName = this.EdgeDevice.DeviceName,
+                    ModelId = edgeModel?.ModelId,
+                    ImageUrl = edgeModel?.ImageUrl,
+                    Tags = this.EdgeDevice.Tags,
+                    IsEnabled = this.EdgeDevice.IsEnabled
+                };
+
             if (edgeModel == null || string.IsNullOrWhiteSpace(edgeModel.ModelId))
             {
                 return;
             }
+
         }
         catch (ProblemDetailsException exception)
         {
