@@ -87,7 +87,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 .ReturnsAsync(new List<DeviceTagDto>());
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
-                    service.CreateDeviceConfiguration(It.Is<DeviceConfig>(config => configuration.Equals(config))))
+                    service.CreateDeviceConfiguration(configuration))
                 .Returns(Task.CompletedTask);
 
             var cut = RenderComponent<CreateDeviceConfigurationsPage>();
@@ -123,7 +123,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
                 .ReturnsAsync(new List<DeviceTagDto>());
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
-                    service.CreateDeviceConfiguration(It.Is<DeviceConfig>(config => configuration.Equals(config))))
+                    service.CreateDeviceConfiguration(configuration))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             var cut = RenderComponent<CreateDeviceConfigurationsPage>();

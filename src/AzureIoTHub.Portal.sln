@@ -15,12 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00. Solution Items", "00. S
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Server", "AzureIoTHub.Portal\Server\AzureIoTHub.Portal.Server.csproj", "{EF219BC4-0C53-4DE7-92D1-F970C6E56E71}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Client", "AzureIoTHub.Portal\Client\AzureIoTHub.Portal.Client.csproj", "{24B26D0B-F293-484E-8175-1CF69FBEE992}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Shared", "AzureIoTHub.Portal\Shared\AzureIoTHub.Portal.Shared.csproj", "{9F0A43D6-D7C2-4C92-AE22-BE48B7F83ACB}"
-EndProject
+
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{3CA153F4-1172-4AF5-B483-94200717AB5C}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\CODEOWNERS = ..\.github\CODEOWNERS
@@ -36,8 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		..\.github\workflows\publish.yml = ..\.github\workflows\publish.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Tests.Unit", "AzureIoTHub.Portal.Tests.Unit\AzureIoTHub.Portal.Tests.Unit.csproj", "{51FD5B90-B422-47BF-83F2-516520CFB124}"
-EndProject
+
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{3F7A2982-4F0B-45F9-9FCA-923D5A7A1511}"
 	ProjectSection(SolutionItems) = preProject
 		..\templates\azuredeploy.json = ..\templates\azuredeploy.json
@@ -54,12 +48,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATES", "ISSUE_TE
 		..\.github\ISSUE_TEMPLATE\user_story.md = ..\.github\ISSUE_TEMPLATE\user_story.md
 	EndProjectSection
 EndProject
+
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{B9D2DE01-84DE-461F-998C-20B57E4AA021}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Domain", "AzureIoTHubPortal.Domain\AzureIoTHub.Portal.Domain.csproj", "{BC1E7AEF-393D-4771-8AD2-C0BE7E5C405F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Server", "AzureIoTHub.Portal.Server\AzureIoTHub.Portal.Server.csproj", "{EF219BC4-0C53-4DE7-92D1-F970C6E56E71}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Client", "AzureIoTHub.Portal.Client\AzureIoTHub.Portal.Client.csproj", "{24B26D0B-F293-484E-8175-1CF69FBEE992}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Shared", "AzureIoTHub.Portal.Shared\AzureIoTHub.Portal.Shared.csproj", "{9F0A43D6-D7C2-4C92-AE22-BE48B7F83ACB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Domain", "AzureIoTHub.Portal.Domain\AzureIoTHub.Portal.Domain.csproj", "{BC1E7AEF-393D-4771-8AD2-C0BE7E5C405F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Infrastructure", "AzureIoTHub.Portal.Infrastructure\AzureIoTHub.Portal.Infrastructure.csproj", "{C0E587A8-607D-4746-8536-44AB34074522}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Tests.Unit", "AzureIoTHub.Portal.Tests.Unit\AzureIoTHub.Portal.Tests.Unit.csproj", "{51FD5B90-B422-47BF-83F2-516520CFB124}"
+EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

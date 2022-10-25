@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AzureIoTHub.Portal\Shared\AzureIoTHub.Portal.Shared.csproj" />
+    <ProjectReference Include="..\AzureIoTHub.Portal.Shared\AzureIoTHub.Portal.Shared.csproj" />
   </ItemGroup>
 
 </Project>
