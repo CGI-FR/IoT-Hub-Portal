@@ -297,5 +297,44 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             cut.WaitForAssertion(() => cut.Find($"#{nameof(IoTEdgeDevice.DeviceId)}").TextContent.Should().BeEmpty());
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().NotEndWith("/edge/devices"));
         }
+
+        [Test]
+        public async Task ChangeEdgeModelShouldDisplayModelImage()
+        {
+            // Arrange
+            var edgeModel = new IoTEdgeModelListItem()
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                ImageUrl = Fixture.Create<Uri>()
+            };
+
+            var expectedEdgeDevice = new IoTEdgeDevice()
+            {
+                DeviceId = Guid.NewGuid().ToString(),
+                ModelId = edgeModel.ModelId,
+                DeviceName = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList())
+                .ReturnsAsync(new List<IoTEdgeModelListItem>() { edgeModel });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(x => x.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>()
+                {
+                    new DeviceTagDto(){ Name = "tag01", Required = true}
+                });
+
+            var cut = RenderComponent<CreateEdgeDevicePage>();
+
+            var ModelImageElement = cut.WaitForElement($"#{nameof(IoTEdgeDevice.ImageUrl)}");
+
+            await cut.Instance.ChangeModel(edgeModel);
+
+            // Assert
+            Assert.IsFalse(string.IsNullOrEmpty(ModelImageElement.InnerHtml));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
     }
 }
