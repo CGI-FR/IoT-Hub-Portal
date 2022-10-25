@@ -8,6 +8,7 @@
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 @inject IEdgeDeviceClientService EdgeDeviceClientService
+@inject IEdgeModelClientService EdgeModelClientService
 
 <MudGrid>
     <MudItem xs="12">
@@ -127,16 +128,14 @@
 
     private MudTable<IoTEdgeListItem> table;
     private SearchModel searchModel = new();
+    private List<IoTEdgeModelListItem> modelList = new List<IoTEdgeModelListItem>();
 
     readonly DialogOptions maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
-    //private readonly Dictionary<int, string> pages = new();
 
     private bool IsLoading { get; set; } = true;
 
     private void Search()
     {
-        //pages.Clear();
-
         table.ReloadServerData();
     }
 
