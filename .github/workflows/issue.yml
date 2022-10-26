@@ -1,0 +1,23 @@
+name: Adds all issues to project board
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  add-to-project:
+    name: Add issue to project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate app token
+        id: generate_app_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.BOT_APP_ID }}
+          private_key: ${{ secrets.BOT_PRIVATE_KEY }}
+
+      - uses: actions/add-to-project@v0.3.0
+        with:
+          project-url: https://github.com/orgs/CGI-FR/projects/1
+          github-token: ${{ steps.generate_app_token.outputs.token }}
