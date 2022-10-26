@@ -227,25 +227,26 @@ namespace AzureIoTHub.Portal.Server.Helpers
         {
             var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
 
-            if (string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ImageUri))
+            if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ImageUri))
             {
                 edgeAgentPropertiesDesired.SystemModules.EdgeAgent.Settings.Image = edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ImageUri;
             }
 
-            if (string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").SchemaVersion))
+            if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ContainerCreateOptions))
             {
-                edgeAgentPropertiesDesired.SchemaVersion = edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").SchemaVersion;
+                edgeAgentPropertiesDesired.SystemModules.EdgeAgent.Settings.CreateOptions = edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").ContainerCreateOptions;
             }
 
-            if (string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeHub").ImageUri))
+            if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeHub").ImageUri))
             {
                 edgeAgentPropertiesDesired.SystemModules.EdgeHub.Settings.Image = edgeModel.SystemModules.Single(x => x.Name == "edgeHub").ImageUri;
             }
 
             var edgeHubPropertiesDesired = GenerateRoutesContent(edgeModel.EdgeRoutes);
-            if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeHub").SchemaVersion))
+
+            if (!string.IsNullOrEmpty(edgeModel.SystemModules.Single(x => x.Name == "edgeHub").ContainerCreateOptions))
             {
-                edgeHubPropertiesDesired.SchemaVersion = edgeModel.SystemModules.Single(x => x.Name == "edgeHub").SchemaVersion;
+                edgeAgentPropertiesDesired.SystemModules.EdgeHub.Settings.CreateOptions = edgeModel.SystemModules.Single(x => x.Name == "edgeHub").ContainerCreateOptions;
             }
 
             foreach (var item in edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").EnvironmentVariables)

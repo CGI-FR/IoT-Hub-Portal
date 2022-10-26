@@ -72,15 +72,13 @@
                                             <MudTable Items="Model.SystemModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
                                                 <ColGroup>
                                                     <col style="width: 15%;" />
-                                                    <col style="width: 40%;" />
-                                                    <col style="width: 15%;" />
+                                                    <col style="width: 50%;" />
                                                     <col style="width: 10%;" />
                                                 </ColGroup>
 
                                                 <HeaderContent>
                                                     <MudTh Style="text-align: center">Module name</MudTh>
                                                     <MudTh Style="text-align: center">Image URI</MudTh>
-                                                    <MudTh Style="text-align: center">Version</MudTh>
                                                     <MudTh Style="text-align: center">Detail</MudTh>
                                                 </HeaderContent>
 
@@ -90,9 +88,6 @@
                                                     </MudTd>
                                                     <MudTd DataLabel="System module Image URI" Style="word-break: break-all;">
                                                         <MudTextField id=@nameof(EdgeModelSystemModule.ImageUri) @bind-Value="@sysModule.ImageUri" Margin="Margin.Dense" Label="Image URI" For="@(() => sysModule.ImageUri )" Variant="Variant.Outlined" />
-                                                    </MudTd>
-                                                    <MudTd DataLabel="System module version" Style="word-break: break-all;">
-                                                        <MudTextField id=@nameof(EdgeModelSystemModule.SchemaVersion) @bind-Value="@sysModule.SchemaVersion" Margin="Margin.Dense" Label="Version" For="@(() => sysModule.SchemaVersion )" Variant="Variant.Outlined" />
                                                     </MudTd>
                                                     <MudTd DataLabel="See detail" Style="text-align: center;">
                                                         <MudButton Variant="Variant.Filled" id="@("editSystModuleButton_"+sysModule.Name)" OnClick="@(async () => await ShowSystemModuleDetail(sysModule))">Detail</MudButton>
