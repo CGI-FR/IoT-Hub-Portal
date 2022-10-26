@@ -612,6 +612,131 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task GetModelSystemModuleReturnList()
+        {
+            // Arrange
+            var configService = CreateConfigsServices();
+
+            var configTest = new Configuration(Guid.NewGuid().ToString());
+            var listConfig = new List<Configuration>()
+            {
+                configTest
+            };
+
+            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
+            var modules = new Dictionary<string, ConfigModule>()
+            {
+                {"module test 01", new ConfigModule() },
+            };
+
+            edgeAgentPropertiesDesired.Modules = modules;
+
+            var mockConfigEnumerator = this.mockRepository.Create<IEnumerable<Configuration>>();
+
+            configTest.Content.ModulesContent = new Dictionary<string, IDictionary<string, object>>()
+            {
+                {
+                    "$edgeAgent", new Dictionary<string, object>()
+                    {
+                        {
+                            "properties.desired", JObject.Parse(JsonConvert.SerializeObject(edgeAgentPropertiesDesired))
+                        }
+                    }
+                }
+            };
+
+            _ = mockConfigEnumerator.Setup(x => x.GetEnumerator()).Returns(listConfig.GetEnumerator);
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ReturnsAsync(mockConfigEnumerator.Object);
+
+            // Act
+            var result = await configService.GetModelSystemModule(configTest.Id);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count);
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void WhenGetConfigIsNullGetModelSystemModuleShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var configService = CreateConfigsServices();
+
+            var configTest = new Configuration(Guid.NewGuid().ToString());
+            var listConfig = new List<Configuration>()
+            {
+            };
+
+            var mockConfigEnumerator = this.mockRepository.Create<IEnumerable<Configuration>>();
+
+            _ = mockConfigEnumerator.Setup(x => x.GetEnumerator()).Returns(listConfig.GetEnumerator);
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ReturnsAsync(mockConfigEnumerator.Object);
+
+            // Act
+            var result = async () => await configService.GetModelSystemModule(configTest.Id);
+
+            // Assert
+            _ = result.Should().ThrowAsync<InternalServerErrorException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void WhenPropertiesDesiredIsInWrongFormatConfigIsNullGetModelSystemModuleShouldThrowInvalidOperationException()
+        {
+            // Arrange
+            var configService = CreateConfigsServices();
+
+            var configTest = new Configuration(Guid.NewGuid().ToString());
+            var listConfig = new List<Configuration>()
+            {
+                configTest
+            };
+
+            var edgeAgentPropertiesDesired = new EdgeAgentPropertiesDesired();
+            var modules = new Dictionary<string, ConfigModule>()
+            {
+                {"module test 01", new ConfigModule() },
+                {"module test 02", new ConfigModule() }
+            };
+
+            edgeAgentPropertiesDesired.Modules = modules;
+
+            var mockConfigEnumerator = this.mockRepository.Create<IEnumerable<Configuration>>();
+
+            configTest.Content.ModulesContent = new Dictionary<string, IDictionary<string, object>>()
+            {
+                {
+                    "$edgeAgent", new Dictionary<string, object>()
+                    {
+                        {
+                            "properties.desired", edgeAgentPropertiesDesired
+                        }
+                    }
+                }
+            };
+
+            _ = mockConfigEnumerator.Setup(x => x.GetEnumerator()).Returns(listConfig.GetEnumerator);
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
+                .ReturnsAsync(mockConfigEnumerator.Object);
+
+            // Act
+            var result = async () => await configService.GetModelSystemModule(configTest.Id);
+
+            // Assert
+            _ = result.Should().ThrowAsync<InvalidOperationException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetConfigRouteListShouldReturnAList()
         {
             // Arrange

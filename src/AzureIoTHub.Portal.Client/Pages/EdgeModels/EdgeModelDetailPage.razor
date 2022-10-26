@@ -4,6 +4,7 @@
 @using AzureIoTHub.Portal.Client.Pages.EdgeModels.EdgeModule
 @using System.Net.Http.Headers
 @using AzureIoTHub.Portal.Models.v10
+@using AzureIoTHub.Portal.Shared.Models.v10
 @using AzureIoTHub.Portal.Client.Validators
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
@@ -64,6 +65,43 @@
                                                 <MudTextField id="@nameof(EdgeModel.Description)" @bind-Value="@EdgeModel.Description" For="@(() => EdgeModel.Description)" Label="Description" Variant="Variant.Outlined" Lines="5" />
                                             </MudItem>
                                         </MudGrid>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="System Modules" IsInitiallyExpanded="true">
+                                    <TitleContent><MudText Typo="Typo.h6">System Modules</MudText></TitleContent>
+                                    <ChildContent>
+                                        <MudItem xs="12">
+                                            <MudTable Items="EdgeModel.SystemModules" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                                                <ColGroup>
+                                                    <col style="width: 15%;" />
+                                                    <col style="width: 50%;" />
+                                                    <col style="width: 10%;" />
+                                                </ColGroup>
+
+                                                <HeaderContent>
+                                                    <MudTh Style="text-align: center">Module name</MudTh>
+                                                    <MudTh Style="text-align: center">Image URI</MudTh>
+                                                    <MudTh Style="text-align: center">Detail</MudTh>
+                                                </HeaderContent>
+
+                                                <RowTemplate Context="sysModule">
+                                                    <MudTd DataLabel="System module Name" Style="word-break: break-all;">
+                                                        <MudTextField id=@nameof(EdgeModelSystemModule.Name) @bind-Value="@sysModule.Name" Margin="Margin.Dense" Label="Module name" For="@(() => sysModule.Name )" Variant="Variant.Outlined" Disabled />
+                                                    </MudTd>
+                                                    <MudTd DataLabel="System module Image URI" Style="word-break: break-all;">
+                                                        <MudTextField id=@nameof(EdgeModelSystemModule.ImageUri) @bind-Value="@sysModule.ImageUri" Margin="Margin.Dense" Label="Image URI" For="@(() => sysModule.ImageUri )" Variant="Variant.Outlined" />
+                                                    </MudTd>
+                                                    <MudTd DataLabel="See detail" Style="text-align: center;">
+                                                        <MudButton Variant="Variant.Filled" id="@("editSystModuleButton_"+sysModule.Name)" OnClick="@(async () => await ShowSystemModuleDetail(sysModule))">Detail</MudButton>
+                                                    </MudTd>
+                                                </RowTemplate>
+                                            </MudTable>
+                                        </MudItem>
                                     </ChildContent>
                                 </MudExpansionPanel>
                             </MudItem>
@@ -360,6 +398,21 @@
         if (EdgeModel.EdgeRoutes.Count == 0 || (last.Name is not null && last.Value is not null))
         {
             EdgeModel.EdgeRoutes.Add(new IoTEdgeRoute());
+        }
+    }
+
+    private async Task ShowSystemModuleDetail(EdgeModelSystemModule systemModule)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("module", systemModule);
+
+        DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+
+        var result = await DialogService.Show<SystemModuleDialog>(systemModule.Name, parameters, options).Result;
+
+        if (result.Cancelled)
+        {
+            return;
         }
     }
 }

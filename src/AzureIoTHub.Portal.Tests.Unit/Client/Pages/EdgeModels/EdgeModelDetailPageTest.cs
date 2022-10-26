@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
     using AzureIoTHub.Portal.Client.Pages.EdgeModels.EdgeModule;
     using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Bunit;
     using Bunit.TestDoubles;
@@ -290,6 +291,60 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             var editButton = cut.WaitForElement("#editButton");
 
             editButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnShowSystemModuleDetailShouldShowDialog()
+        {
+            // Arrange
+            _ = SetupLoadEdgeModel();
+
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
+
+            _ = this.mockDialogService
+                .Setup(c => c.Show<SystemModuleDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsAny<DialogOptions>()))
+                .Returns(mockDialogReference.Object);
+
+            // Act
+            var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
+
+            cut.WaitForAssertion(() => Assert.AreEqual(1, cut.FindAll("#editSystModuleButton_edgeAgent").Count));
+            var editEdgeAgentButton = cut.WaitForElement("#editSystModuleButton_edgeAgent");
+
+            cut.WaitForElement($"#{nameof(EdgeModelSystemModule.ImageUri)}").Change("image/test");
+
+            editEdgeAgentButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnShowSystemModuleDetailShouldShowDialogAndReturnIfAborted()
+        {
+            // Arrange
+            _ = SetupLoadEdgeModel();
+
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
+
+            _ = this.mockDialogService
+                .Setup(c => c.Show<SystemModuleDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsAny<DialogOptions>()))
+                .Returns(mockDialogReference.Object);
+
+            // Act
+            var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
+
+            cut.WaitForAssertion(() => Assert.AreEqual(1, cut.FindAll("#editSystModuleButton_edgeAgent").Count));
+            var editEdgeAgentButton = cut.WaitForElement("#editSystModuleButton_edgeAgent");
+
+            cut.WaitForElement($"#{nameof(EdgeModelSystemModule.ImageUri)}").Change("image/test");
+
+            editEdgeAgentButton.Click();
 
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());

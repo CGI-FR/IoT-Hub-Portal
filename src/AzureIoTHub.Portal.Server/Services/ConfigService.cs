@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Extensions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Extensions;
@@ -98,6 +99,48 @@ namespace AzureIoTHub.Portal.Server.Services
                     {
                         newModule.ModuleIdentityTwinSettings = ConfigHelper.CreateModuleTwinSettings(config.Content.ModulesContent, newModule.ModuleName);
                         moduleList.Add(newModule);
+                    }
+                }
+            }
+
+            return moduleList;
+        }
+
+        public async Task<List<EdgeModelSystemModule>> GetModelSystemModule(string modelId)
+        {
+            var configList = await GetIoTEdgeConfigurations();
+
+            var config = configList.FirstOrDefault((x) => x.Id.StartsWith(modelId, StringComparison.Ordinal));
+
+            if (config == null)
+            {
+                throw new InternalServerErrorException("Config does not exist.");
+            }
+
+            var moduleList = new List<EdgeModelSystemModule>();
+
+            // Details of every modules are stored within the EdgeAgent module data
+            if (config.Content.ModulesContent != null
+                && config.Content.ModulesContent.TryGetValue("$edgeAgent", out var edgeAgentModule)
+                && edgeAgentModule.TryGetValue("properties.desired", out var edgeAgentDesiredProperties))
+            {
+                // Converts the object to a JObject to access its properties more easily
+                if (edgeAgentDesiredProperties is not JObject modObject)
+                {
+                    throw new InvalidOperationException($"Could not parse properties.desired for the configuration id {config.Id}");
+                }
+
+                // Adds regular modules to the list of modules
+                if (modObject.TryGetValue("systemModules", out var modules))
+                {
+                    foreach (var newModule in modules.Values<JProperty>().Select(module => ConfigHelper.CreateGatewayModule(config, module)))
+                    {
+                        moduleList.Add(new EdgeModelSystemModule(newModule.ModuleName)
+                        {
+                            ImageUri = newModule.ImageURI,
+                            EnvironmentVariables = newModule.EnvironmentVariables,
+                            ContainerCreateOptions = newModule.ContainerCreateOptions,
+                        });
                     }
                 }
             }
