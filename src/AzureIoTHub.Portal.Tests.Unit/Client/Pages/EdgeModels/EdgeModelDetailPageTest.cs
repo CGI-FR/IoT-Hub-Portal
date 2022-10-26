@@ -324,6 +324,33 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         }
 
         [Test]
+        public void ClickOnShowSystemModuleDetailShouldShowDialogAndReturnIfAborted()
+        {
+            // Arrange
+            _ = SetupLoadEdgeModel();
+
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Cancel());
+
+            _ = this.mockDialogService
+                .Setup(c => c.Show<SystemModuleDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsAny<DialogOptions>()))
+                .Returns(mockDialogReference.Object);
+
+            // Act
+            var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
+
+            cut.WaitForAssertion(() => Assert.AreEqual(1, cut.FindAll("#editSystModuleButton_edgeAgent").Count));
+            var editEdgeAgentButton = cut.WaitForElement("#editSystModuleButton_edgeAgent");
+
+            cut.WaitForElement($"#{nameof(EdgeModelSystemModule.ImageUri)}").Change("image/test");
+
+            editEdgeAgentButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
         public void DeleteAvatarShouldRemoveTheImage()
         {
             // Arrange
