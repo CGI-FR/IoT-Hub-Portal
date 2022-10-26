@@ -17,6 +17,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
     using Microsoft.AspNetCore.Http;
@@ -98,6 +99,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var expectedModules = Fixture.CreateMany<IoTEdgeModule>(2).ToList();
             var expectedRoutes = Fixture.CreateMany<IoTEdgeRoute>(2).ToList();
+            var expectedSysModule = Fixture.CreateMany<EdgeModelSystemModule>(2).ToList();
             var expectedImageUri = Fixture.Create<Uri>();
 
             var expectedEdgeDeviceModel = new IoTEdgeModel()
@@ -107,7 +109,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 ImageUrl = expectedImageUri,
                 Description = Guid.NewGuid().ToString(),
                 EdgeModules = expectedModules,
-                EdgeRoutes = expectedRoutes
+                EdgeRoutes = expectedRoutes,
+                SystemModules = expectedSysModule
             };
 
             var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
@@ -127,8 +130,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             _ = this.mockConfigService.Setup(x => x.GetConfigModuleList(It.IsAny<string>()))
                 .ReturnsAsync(expectedModules);
+
+            _ = this.mockConfigService.Setup(x => x.GetModelSystemModule(It.IsAny<string>()))
+                .ReturnsAsync(expectedSysModule);
+
             _ = this.mockConfigService.Setup(x => x.GetConfigRouteList(It.IsAny<string>()))
                 .ReturnsAsync(expectedRoutes);
+
             _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
                 .Returns(expectedCommands);
 
