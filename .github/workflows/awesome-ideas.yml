@@ -1,0 +1,26 @@
+name: Create issue for Awesome Ideas
+
+on:
+  discussion:
+    types: [created]
+
+jobs:
+  link_issue:
+    name: "Create issue for ${{ github.event.discussion.title }}"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: hmarr/debug-action@v2
+
+      - uses: actions/checkout@v2
+
+      - uses: JasonEtco/create-an-issue@v2
+        if: github.event.discussion.category.name == 'Ideas'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          filename: .github/issue_from_discussion.md
+
+      - uses: actions/add-to-project@v0.3.0
+        with:
+          project-url: https://github.com/orgs/CGI-FR/projects/1
+          github-token: ${{ steps.generate_app_token.outputs.token }}
