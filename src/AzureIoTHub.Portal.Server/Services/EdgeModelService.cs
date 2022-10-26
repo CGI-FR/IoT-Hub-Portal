@@ -164,6 +164,7 @@ namespace AzureIoTHub.Portal.Server.Services
             }
 
             var modules = await this.configService.GetConfigModuleList(modelId);
+            var sysModules = await this.configService.GetModelSystemModule(modelId);
             var routes = await this.configService.GetConfigRouteList(modelId);
             var commands =  this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == modelId).ToList();
 
@@ -176,7 +177,8 @@ namespace AzureIoTHub.Portal.Server.Services
                 Name = edgeModelEntity.Name,
                 Description = edgeModelEntity.Description,
                 EdgeModules = modules,
-                EdgeRoutes = routes
+                EdgeRoutes = routes,
+                SystemModules = sysModules,
             };
 
             foreach (var command in commands)

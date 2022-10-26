@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.Azure.Devices;
 
     public interface IConfigService
@@ -27,6 +28,8 @@ namespace AzureIoTHub.Portal.Server.Services
         Task<int> GetFailedDeploymentsCount();
 
         Task<List<IoTEdgeModule>> GetConfigModuleList(string modelId);
+
+        Task<List<EdgeModelSystemModule>> GetModelSystemModule(string modelId);
 
         Task<List<IoTEdgeRoute>> GetConfigRouteList(string modelId);
     }
