@@ -184,7 +184,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
                     new EdgeModelSystemModule("edgeAgent")
                     {
                         ImageUri = "image",
-                        SchemaVersion = "1.0",
+                        ContainerCreateOptions = Guid.NewGuid().ToString(),
                         EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
                         {
                             new IoTEdgeModuleEnvironmentVariable(){ Name ="test", Value = "test" }
@@ -193,7 +193,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Helpers
                     new EdgeModelSystemModule("edgeHub")
                     {
                         ImageUri = "image",
-                        SchemaVersion = "1.0",
+                        ContainerCreateOptions = Guid.NewGuid().ToString(),
                         EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>()
                         {
                             new IoTEdgeModuleEnvironmentVariable(){ Name ="test", Value = "test" }

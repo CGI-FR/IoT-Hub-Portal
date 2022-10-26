@@ -38,7 +38,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                         Value = Fixture.Create<string>()
                     }
                 },
-                SchemaVersion = "1.0"
+                ContainerCreateOptions = Fixture.Create<string>(),
             };
 
             var cut = RenderComponent<MudDialogProvider>();
