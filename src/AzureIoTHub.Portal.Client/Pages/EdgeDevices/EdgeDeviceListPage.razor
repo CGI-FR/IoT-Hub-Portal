@@ -148,7 +148,7 @@
 
     private List<IoTEdgeModelListItem> edgeModelList = new List<IoTEdgeModelListItem>();
     private IoTEdgeModelListItem _edgeModel;
-    private IoTEdgeModelListItem edgeModel
+    public IoTEdgeModelListItem edgeModel
     {
         get => _edgeModel;
         set
@@ -223,6 +223,7 @@
     private void ResetFilter()
     {
         searchModel = new SearchModel();
+        edgeModel = new IoTEdgeModelListItem();
 
         Search();
     }

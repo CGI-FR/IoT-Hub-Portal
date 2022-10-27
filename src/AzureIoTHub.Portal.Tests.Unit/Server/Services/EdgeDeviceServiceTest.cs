@@ -108,6 +108,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var keywordFilter = "WaNt tHiS DeViCe";
+            var deviceModelId = Fixture.Create<string>();
             var expectedEdgeDevices = new List<EdgeDevice>
             {
                 new EdgeDevice
@@ -123,7 +124,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                             Value = "FR"
                         }
                     },
-                    DeviceModelId = Fixture.Create<string>(),
+                    DeviceModelId = deviceModelId,
                     Scope = Fixture.Create<string>(),
                     ConnectionState = Fixture.Create<string>(),
                     NbDevices = 1,
@@ -140,7 +141,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                             Value = "US"
                         }
                     },
-                    DeviceModelId = Fixture.Create<string>(),
+                    DeviceModelId = deviceModelId,
                     Scope = Fixture.Create<string>(),
                     ConnectionState = Fixture.Create<string>(),
                     NbDevices = 1
@@ -167,7 +168,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Fixture.Create<Uri>());
 
             // Act
-            var result = await this.edgeDevicesService.GetEdgeDevicesPage(searchText: keywordFilter, searchStatus: true);
+            var result = await this.edgeDevicesService.GetEdgeDevicesPage(searchText: keywordFilter, searchStatus: true, modelId: deviceModelId);
 
             _ = result.PageSize.Should().Be(expectedPageSize);
             _ = result.CurrentPage.Should().Be(expectedCurrentPage);
