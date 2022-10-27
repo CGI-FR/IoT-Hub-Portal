@@ -220,7 +220,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             autocompleteComponent.Find(TagNames.Input).Input(query);
 
             // Assert
-            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(2));
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(3));
             cut.WaitForAssertion(() => autocompleteComponent.Instance.IsOpen.Should().BeTrue());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }

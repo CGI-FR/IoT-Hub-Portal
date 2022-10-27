@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
 {
+    using System;
     using System.ComponentModel.DataAnnotations;
 
     /// <summary>
@@ -10,6 +11,11 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
     /// </summary>
     public class DeviceModelCommandDto
     {
+        /// <summary>
+        /// The command identifier.
+        /// </summary>
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+
         /// <summary>
         /// The command name.
         /// </summary>

@@ -4,11 +4,10 @@
 namespace AzureIoTHub.Portal.Domain.Entities
 {
     using Base;
-    using System.ComponentModel.DataAnnotations.Schema;
 
     public class DeviceModelCommand : EntityBase
     {
-        [NotMapped] public string Name => Id;
+        public string Name { get; set; }
 
         public string Frame { get; set; }
 
