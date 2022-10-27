@@ -22,14 +22,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     public class EdgeDeviceListPageTests : BlazorUnitTest
     {
         private Mock<IEdgeDeviceClientService> mockEdgeDeviceClientService;
+        private Mock<IEdgeModelClientService> mockEdgeModelClientService;
 
         public override void Setup()
         {
             base.Setup();
 
             this.mockEdgeDeviceClientService = MockRepository.Create<IEdgeDeviceClientService>();
+            this.mockEdgeModelClientService = MockRepository.Create<IEdgeModelClientService>();
 
             _ = Services.AddSingleton(this.mockEdgeDeviceClientService.Object);
+            _ = Services.AddSingleton(this.mockEdgeModelClientService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
             _ = Services.AddSingleton<ClipboardService>();
         }
@@ -38,7 +41,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public void EdgeDeviceListPageShouldShowEdgeDevices()
         {
             // Arrange
-            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=";
+            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
                 .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
                 {
@@ -47,6 +50,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                         new(),
                         new(),
                         new()
+                    }
+                });
+
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+                {
+                    new IoTEdgeModelListItem()
+                    {
+                        Name = Guid.NewGuid().ToString()
                     }
                 });
 
@@ -63,9 +75,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public void EdgeDeviceListPageShouldShowNoContentWhenNoEdgeDevices()
         {
             // Arrange
-            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=";
+            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
                 .ReturnsAsync(new PaginationResult<IoTEdgeListItem>());
+
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+                {
+                    new IoTEdgeModelListItem()
+                    {
+                        Name = Guid.NewGuid().ToString()
+                    }
+                });
 
             // Act
             var cut = RenderComponent<EdgeDeviceListPage>();
@@ -81,9 +102,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public void EdgeDeviceListPageShouldShowNoContentWhenProblemDetailsExceptionOccurs()
         {
             // Arrange
-            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=";
+            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+                {
+                    new IoTEdgeModelListItem()
+                    {
+                        Name = Guid.NewGuid().ToString()
+                    }
+                });
 
             // Act
             var cut = RenderComponent<EdgeDeviceListPage>();
@@ -99,7 +129,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public void EdgeDeviceListPageShouldResetOnClickOnReset()
         {
             // Arrange
-            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=";
+            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
                 .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
                 {
@@ -108,6 +138,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                         new(),
                         new(),
                         new()
+                    }
+                });
+
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+                {
+                    new IoTEdgeModelListItem()
+                    {
+                        Name = Guid.NewGuid().ToString()
                     }
                 });
 
@@ -129,7 +168,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=";
+            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
                 .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
                 {
@@ -140,6 +179,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                             DeviceId = deviceId,
                         },
                         new()
+                    }
+                });
+
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+                {
+                    new IoTEdgeModelListItem()
+                    {
+                        Name = Guid.NewGuid().ToString()
                     }
                 });
 
@@ -163,6 +211,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
                 {
                     Items = Array.Empty<IoTEdgeListItem>()
+                });
+
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+                {
+                    new IoTEdgeModelListItem()
+                    {
+                        Name = Guid.NewGuid().ToString()
+                    }
                 });
 
             var cut = RenderComponent<EdgeDeviceListPage>();
