@@ -14,7 +14,8 @@ namespace AzureIoTHub.Portal.Server.Services
             bool? searchStatus = null,
             int pageSize = 10,
             int pageNumber = 0,
-            string[] orderBy = null);
+            string[] orderBy = null,
+            string modelId = null);
 
         Task<IoTEdgeDevice> GetEdgeDevice(string edgeDeviceId);
 
