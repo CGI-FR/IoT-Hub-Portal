@@ -27,6 +27,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Migrations
                     Version = table.Column<int>(type: "integer", nullable: false),
                     IsEnabled = table.Column<bool>(type: "boolean", nullable: false),
                     Scope = table.Column<string>(type: "text", nullable: true),
+                    ConnectionState = table.Column<string>(type: "text", nullable: true),
                     NbDevices = table.Column<int>(type: "integer", nullable: false),
                     NbModules = table.Column<int>(type: "integer", nullable: false)
                 },
