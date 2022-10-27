@@ -38,10 +38,10 @@ jobs:
               repo: context.repo.repo,
               labels: ['arm-templates']
             })
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@v3
 
       - name: Checkout Azure/arm-ttk
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v3
         with: 
           repository: Azure/arm-ttk
           path: arm-ttk
