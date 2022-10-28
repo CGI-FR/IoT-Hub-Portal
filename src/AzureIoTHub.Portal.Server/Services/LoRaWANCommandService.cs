@@ -55,7 +55,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 foreach (var deviceModelCommand in existingDeviceModelCommands)
                 {
-                    this.deviceModelCommandRepository.Delete(deviceModelCommand.Name);
+                    this.deviceModelCommandRepository.Delete(deviceModelCommand.Id);
                 }
 
                 foreach (var deviceModelCommand in commands)
