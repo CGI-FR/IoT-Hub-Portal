@@ -283,9 +283,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Migrations
                     b.Property<int>("Version")
                         .HasColumnType("integer");
 
-                    b.Property<string>("ConnectionState")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.ToTable("EdgeDevices");

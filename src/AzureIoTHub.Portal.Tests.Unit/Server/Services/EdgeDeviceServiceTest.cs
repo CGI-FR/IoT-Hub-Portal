@@ -125,7 +125,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     },
                     DeviceModelId = Fixture.Create<string>(),
                     Scope = Fixture.Create<string>(),
-                    ConnectionState = Fixture.Create<string>(),
                     NbDevices = 1,
                 },
                 new EdgeDevice
@@ -142,7 +141,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     },
                     DeviceModelId = Fixture.Create<string>(),
                     Scope = Fixture.Create<string>(),
-                    ConnectionState = Fixture.Create<string>(),
                     NbDevices = 1
                 }
             };
