@@ -13,6 +13,9 @@ namespace AzureIoTHub.Portal.Domain.Entities
 
         public int Version { get; set; }
 
+        public string ConnectionState { get; set; }
+
+
         /// <summary>
         ///   <c>true</c> if this instance is enabled; otherwise, <c>false</c>.
         /// </summary>
