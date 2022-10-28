@@ -3,11 +3,8 @@
 
 namespace AzureIoTHub.Portal.Infrastructure.Factories
 {
-    using System;
-    using Azure;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Domain.Exceptions;
 
     public class TableClientFactory : ITableClientFactory
     {

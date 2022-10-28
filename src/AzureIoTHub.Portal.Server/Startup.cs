@@ -16,7 +16,6 @@ namespace AzureIoTHub.Portal.Server
     using Hellang.Middleware.ProblemDetails.Mvc;
     using Identity;
     using Infrastructure;
-    using Infrastructure.Factories;
     using Infrastructure.Repositories;
     using Infrastructure.Seeds;
     using Jobs;
@@ -117,11 +116,9 @@ namespace AzureIoTHub.Portal.Server
 
             _ = services.AddTransient<IProvisioningServiceClient, ProvisioningServiceClientWrapper>();
             _ = services.AddTransient(_ => new BlobServiceClient(configuration.StorageAccountConnectionString));
-            _ = services.AddTransient<ITableClientFactory>(_ => new TableClientFactory(configuration.StorageAccountConnectionString));
             _ = services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
             _ = services.AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>();
             _ = services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
-            _ = services.AddTransient<IDeviceModelCommandsManager, DeviceModelCommandsManager>();
             _ = services.AddTransient<IDeviceProvisioningServiceManager, DeviceProvisioningServiceManager>();
             _ = services.AddTransient<IRouterConfigManager, RouterConfigManager>();
 
