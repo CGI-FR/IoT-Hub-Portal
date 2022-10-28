@@ -254,7 +254,7 @@
     /// </summary>
     /// <param name="value">Text entered in the field</param>
     /// <returns>Item of the device model list that matches the user's value</returns>
-    private async Task<IEnumerable<IoTEdgeModelListItem>> Search(string value)
+    public async Task<IEnumerable<IoTEdgeModelListItem>> Search(string value)
     {
         // In real life use an asynchronous function for fetching data from an api.
         await Task.Delay(0);
