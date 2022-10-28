@@ -17,6 +17,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
+    using System.Threading.Tasks;
+    using System.Linq;
 
     [TestFixture]
     public class EdgeDeviceListPageTests : BlazorUnitTest
@@ -58,7 +60,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 {
                     new IoTEdgeModelListItem()
                     {
-                        Name = Guid.NewGuid().ToString()
+                        Name = Guid.NewGuid().ToString(),
+                        Description = Guid.NewGuid().ToString(),
                     }
                 });
 
@@ -122,6 +125,34 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
             _ = cut.FindAll("table tbody tr").Count.Should().Be(1);
             _ = cut.Markup.Should().Contain("No matching records found");
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void EdgeDeviceListPageShouldShowNoContentWhenProblemDetailsExceptionOccursOnGetModels()
+        {
+            // Arrange
+            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
+                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>()
+                {
+                    Items = new List<IoTEdgeListItem>
+                    {
+                        new(),
+                        new(),
+                        new()
+                    }
+                });
+
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            // Act
+            var cut = RenderComponent<EdgeDeviceListPage>();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            _ = cut.FindAll("table tbody tr").Count.Should().Be(3);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -230,6 +261,55 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             cut.WaitForElement("#tableRefreshButton").Click();
 
             // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public async Task FliterBySelectModelShould()
+        {
+            // Arrange
+            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
+                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
+                {
+                    Items = new List<IoTEdgeListItem>
+                    {
+                        new IoTEdgeListItem()
+                        {
+                            DeviceId = Guid.NewGuid().ToString(),
+                            DeviceName = Guid.NewGuid().ToString(),
+                        },
+                        new IoTEdgeListItem()
+                        {
+                            DeviceId = Guid.NewGuid().ToString(),
+                            DeviceName = Guid.NewGuid().ToString(),
+                        }
+                    }
+                });
+
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+                {
+                    new IoTEdgeModelListItem()
+                    {
+                        Name = "model_01",
+                        Description = Guid.NewGuid().ToString(),
+                    },
+                    new IoTEdgeModelListItem()
+                    {
+                        Name = "model_02",
+                        Description = Guid.NewGuid().ToString(),
+                    },
+                });
+
+            // Act
+            var cut = RenderComponent<EdgeDeviceListPage>();
+            var newModelList = await cut.Instance.Search("01");
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            _ = cut.FindAll("table tbody tr").Count.Should().Be(2);
+            Assert.AreEqual(1, newModelList.Count());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
