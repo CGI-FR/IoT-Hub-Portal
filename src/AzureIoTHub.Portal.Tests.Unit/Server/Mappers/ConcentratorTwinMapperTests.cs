@@ -129,6 +129,26 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public void WhenClientThumbprintNotProvidedTheDesiredPropertyShouldBeNull()
+        {
+            // Arrange
+            var concentratorTwinMapper = CreateConcentratorTwinMapper();
+
+            var twin = new Twin();
+            twin.Properties.Desired[nameof(ConcentratorDto.ClientThumbprint).ToCamelCase()] = new List<string>() { Guid.NewGuid().ToString() };
+
+            var item = new ConcentratorDto();
+
+            // Act
+            concentratorTwinMapper.UpdateTwin(twin, item);
+
+            // Assert
+            Assert.IsNull(twin.Properties.Desired[nameof(ConcentratorDto.ClientThumbprint).ToCamelCase()].Value);
+
+            this.mockRepository.VerifyAll();
+        }
+
         public void Dispose()
         {
             Dispose(true);
