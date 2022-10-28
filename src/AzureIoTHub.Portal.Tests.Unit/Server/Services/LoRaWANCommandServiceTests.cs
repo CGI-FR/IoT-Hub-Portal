@@ -169,7 +169,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
 
             _ = this.mockLoraDeviceMethodManager.Setup(c => c.ExecuteLoRaDeviceMessage(
                 It.Is<string>(x => x == deviceId),
-                It.Is<DeviceModelCommandDto>(x => x.Name == commandId)))
+                It.Is<DeviceModelCommandDto>(x => x.Id == commandId)))
                 .ReturnsAsync(success);
 
             // Act

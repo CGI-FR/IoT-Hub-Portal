@@ -12,7 +12,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
         public DeviceModelCommandProfile()
         {
             _ = CreateMap<DeviceModelCommandDto, DeviceModelCommand>()
-                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Name))
+                .ForMember(c => c.Id, opts => opts.MapFrom(c => c.Id))
                 .ReverseMap();
         }
     }

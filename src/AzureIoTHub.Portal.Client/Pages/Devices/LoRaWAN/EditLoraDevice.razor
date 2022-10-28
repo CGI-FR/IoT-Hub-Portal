@@ -216,7 +216,7 @@
         {
             isProcessing = true;
 
-            await LoRaWanDeviceClientService.ExecuteCommand(LoRaDevice.DeviceID, method.Name);
+            await LoRaWanDeviceClientService.ExecuteCommand(LoRaDevice.DeviceID, method.Id);
 
             Snackbar.Add($"{method.Name} has been successfully executed!", Severity.Success);
         }

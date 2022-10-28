@@ -21,7 +21,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
         private MockRepository mockRepository;
 
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
-        private Mock<IDeviceModelCommandsManager> mockDeviceModelCommandsManager;
         private Mock<ITableClientFactory> mockTableClientFactory;
 
         [SetUp]
@@ -30,7 +29,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
             this.mockDeviceModelImageManager = this.mockRepository.Create<IDeviceModelImageManager>();
-            this.mockDeviceModelCommandsManager = this.mockRepository.Create<IDeviceModelCommandsManager>();
             this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
         }
 

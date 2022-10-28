@@ -11,9 +11,8 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Text;
     using System.Threading.Tasks;
     using Azure;
-    using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Shared.Constants;
     using Managers;
@@ -29,17 +28,19 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly RegistryManager registryManager;
         private readonly ServiceClient serviceClient;
         private readonly ILogger<ExternalDeviceService> log;
-        private readonly ITableClientFactory tableClientFactory;
         private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
+        private readonly IDeviceModelRepository deviceModelRepository;
 
         public ExternalDeviceService(
             ILogger<ExternalDeviceService> log,
             RegistryManager registryManager,
-            ServiceClient serviceClient, ITableClientFactory tableClientFactory, IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
+            ServiceClient serviceClient,
+            IDeviceModelRepository deviceModelRepository,
+            IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
         {
             this.log = log;
             this.serviceClient = serviceClient;
-            this.tableClientFactory = tableClientFactory;
+            this.deviceModelRepository = deviceModelRepository;
             this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
             this.registryManager = registryManager;
         }
@@ -616,12 +617,9 @@ namespace AzureIoTHub.Portal.Server.Services
 
             try
             {
-                var response = await this.tableClientFactory.GetDeviceTemplates()
-                    .GetEntityAsync<TableEntity>("0", device.Tags["modelId"].ToString());
+                var model = await this.deviceModelRepository.GetByIdAsync(device.Tags["modelId"].ToString());
 
-                var modelEntity = response.Value;
-
-                return await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceId, modelEntity[nameof(DeviceModelDto.Name)].ToString());
+                return await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceId, model.Name);
             }
             catch (RequestFailedException e)
             {

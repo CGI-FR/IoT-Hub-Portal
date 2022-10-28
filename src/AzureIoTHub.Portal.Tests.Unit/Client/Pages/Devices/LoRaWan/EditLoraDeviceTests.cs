@@ -278,7 +278,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 AlreadyLoggedInOnce = true
             };
 
-            _ = this.mockLoRaWanDeviceClientService.Setup(c => c.ExecuteCommand(device.DeviceID, commands.Single().Name))
+            _ = this.mockLoRaWanDeviceClientService.Setup(c => c.ExecuteCommand(device.DeviceID, commands.Single().Id))
                             .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>()))
@@ -297,7 +297,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             cut.WaitForAssertion(() => cut.FindAll("#LoRaWANCommandsTable tbody tr").Count.Should().Be(1));
             cut.WaitForElement("#LoRaWANCommandsTable tbody tr:first-child #ExecuteCommand").Click();
 
-            this.mockLoRaWanDeviceClientService.Verify(c => c.ExecuteCommand(device.DeviceID, commands.Single().Name), Times.Once);
+            this.mockLoRaWanDeviceClientService.Verify(c => c.ExecuteCommand(device.DeviceID, commands.Single().Id), Times.Once);
             this.mockSnackbarService.Verify(c => c.Add(It.Is<string>(x => x.Contains($"{commands.Single().Name} has been successfully executed!", StringComparison.OrdinalIgnoreCase)), Severity.Success, It.IsAny<Action<SnackbarOptions>>()), Times.Once);
         }
 
