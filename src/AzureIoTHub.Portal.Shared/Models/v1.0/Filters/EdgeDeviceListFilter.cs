@@ -3,8 +3,6 @@
 
 namespace AzureIoTHub.Portal.Shared.Models.v1._0.Filters
 {
-    using System.Collections.Generic;
-
     public class EdgeDeviceListFilter : PaginationFilter
     {
         public string Keyword { get; set; }
@@ -12,7 +10,5 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0.Filters
         public bool? IsEnabled { get; set; }
 
         public string ModelId { get; set; }
-
-        public Dictionary<string, string> Tags { get; set; }
     }
 }
