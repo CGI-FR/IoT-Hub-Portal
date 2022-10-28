@@ -3857,6 +3857,11 @@
         ],
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "The command identifier.",
+            "nullable": true
+          },
           "name": {
             "minLength": 1,
             "type": "string",
@@ -4056,6 +4061,31 @@
         "additionalProperties": false,
         "description": "Device tag."
       },
+      "EdgeModelSystemModule": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUri": {
+            "type": "string",
+            "nullable": true
+          },
+          "containerCreateOptions": {
+            "type": "string",
+            "nullable": true
+          },
+          "environmentVariables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IoTEdgeModuleEnvironmentVariable"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "EnrollmentCredentials": {
         "type": "object",
         "properties": {
@@ -4245,6 +4275,11 @@
             "type": "string",
             "description": "The device identifier."
           },
+          "deviceName": {
+            "type": "string",
+            "description": "The device status.",
+            "nullable": true
+          },
           "status": {
             "type": "string",
             "description": "The device status.",
@@ -4328,6 +4363,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/IoTEdgeRoute"
+            },
+            "nullable": true
+          },
+          "systemModules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EdgeModelSystemModule"
             },
             "nullable": true
           }
@@ -4486,7 +4528,7 @@
           },
           "value": {
             "minLength": 1,
-            "pattern": "^(?i)FROM [\\S]+( WHERE [\\S]+)? INTO [\\S]+$",
+            "pattern": "^(?i)FROM [\\S]+( WHERE (NOT )?[\\S]+)? INTO [\\S]+$",
             "type": "string",
             "description": "The route value.\r\nEg : FROM /messages/* INTO $upstream."
           },
