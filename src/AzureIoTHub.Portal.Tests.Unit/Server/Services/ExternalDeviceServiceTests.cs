@@ -9,9 +9,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Threading;
     using System.Threading.Tasks;
     using Azure;
-    using Azure.Data.Tables;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Constants;
     using FluentAssertions;
@@ -32,8 +32,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         private Mock<RegistryManager> mockRegistryManager;
         private Mock<ServiceClient> mockServiceClient;
         private Mock<ILogger<ExternalDeviceService>> mockLogger;
-        private Mock<ITableClientFactory> mockTableClientFactory;
         private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
+        private Mock<IDeviceModelRepository> mockDeviceModelRepository;
 
         [SetUp]
         public void SetUp()
@@ -43,8 +43,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockRegistryManager = this.mockRepository.Create<RegistryManager>();
             this.mockServiceClient = this.mockRepository.Create<ServiceClient>();
             this.mockLogger = this.mockRepository.Create<ILogger<ExternalDeviceService>>();
-            this.mockTableClientFactory = this.mockRepository.Create<ITableClientFactory>();
             this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
+            this.mockDeviceModelRepository = this.mockRepository.Create<IDeviceModelRepository>();
         }
 
         private ExternalDeviceService CreateService()
@@ -53,7 +53,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 this.mockLogger.Object,
                 this.mockRegistryManager.Object,
                 this.mockServiceClient.Object,
-                this.mockTableClientFactory.Object,
+                this.mockDeviceModelRepository.Object,
                 this.mockProvisioningServiceManager.Object);
         }
 
@@ -1216,7 +1216,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 logger,
                 this.mockRegistryManager.Object,
                 this.mockServiceClient.Object,
-                this.mockTableClientFactory.Object,
+                this.mockDeviceModelRepository.Object,
                 this.mockProvisioningServiceManager.Object);
 
             // Act
@@ -1277,7 +1277,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 logger,
                 this.mockRegistryManager.Object,
                 this.mockServiceClient.Object,
-                this.mockTableClientFactory.Object,
+                this.mockDeviceModelRepository.Object,
                 this.mockProvisioningServiceManager.Object);
 
             // Act
@@ -1335,7 +1335,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 logger,
                 this.mockRegistryManager.Object,
                 this.mockServiceClient.Object,
-                this.mockTableClientFactory.Object,
+                this.mockDeviceModelRepository.Object,
                 this.mockProvisioningServiceManager.Object);
 
             // Act
@@ -1665,28 +1665,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 SymmetricKey = "dfhjkfdgh"
             };
 
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-            var mockDeviceModelEntity = new TableEntity
-            {
-                [nameof(DeviceModelDto.Name)] = "ccc"
-            };
-            var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
-
-            _ = mockResponse.SetupGet(c => c.Value)
-                .Returns(mockDeviceModelEntity);
-
-            _ = mockTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
-                It.Is<string>(x => x == "0"),
-                It.Is<string>(x => x == "bbb"),
-                It.IsAny<IEnumerable<string>>(),
-                It.IsAny<CancellationToken>()))
-                .ReturnsAsync(mockResponse.Object);
+            _ = this.mockDeviceModelRepository.Setup(c => c.GetByIdAsync("bbb"))
+                .ReturnsAsync(new Portal.Domain.Entities.DeviceModel
+                {
+                    Id = "bbb",
+                    Name = "ccc"
+                });
 
             _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync(deviceId, "ccc"))
                 .ReturnsAsync(mockRegistrationCredentials);
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
-                .Returns(mockTableClient.Object);
 
             // Act
             var enrollmentCredentials = await service.GetEnrollmentCredentials(deviceId);
@@ -1749,28 +1736,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == deviceId)))
                 .ReturnsAsync(mockTwin);
 
-            var mockTableClient = this.mockRepository.Create<TableClient>();
-            var mockDeviceModelEntity = new TableEntity
-            {
-                [nameof(DeviceModelDto.Name)] = "ccc"
-            };
-            var mockResponse = this.mockRepository.Create<Response<TableEntity>>();
-
-            _ = mockResponse.SetupGet(c => c.Value)
-                .Returns(mockDeviceModelEntity);
-
-            _ = mockTableClient.Setup(c => c.GetEntityAsync<TableEntity>(
-                It.Is<string>(x => x == "0"),
-                It.Is<string>(x => x == "bbb"),
-                It.IsAny<IEnumerable<string>>(),
-                It.IsAny<CancellationToken>()))
-                .ReturnsAsync(mockResponse.Object);
+            _ = this.mockDeviceModelRepository.Setup(c => c.GetByIdAsync("bbb"))
+                .ReturnsAsync(new Portal.Domain.Entities.DeviceModel
+                {
+                    Id = "bbb",
+                    Name = "ccc"
+                });
 
             _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync(deviceId, "ccc"))
                 .Throws(new RequestFailedException("test"));
-
-            _ = this.mockTableClientFactory.Setup(c => c.GetDeviceTemplates())
-                .Returns(mockTableClient.Object);
 
             // Act
             var act = () => service.GetEnrollmentCredentials(deviceId);
