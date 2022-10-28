@@ -13,6 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\js\FileDownload.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <TypeScriptCompile Remove="assets\script.ts" />
   </ItemGroup>
 
@@ -23,6 +27,7 @@
 
   <ItemGroup>
     <None Include="assets\src\index.ts" />
+    <None Include="wwwroot\js\FileDownload.js" />
   </ItemGroup>
   
   <ItemGroup>
@@ -54,10 +59,6 @@
     <PackageReference Include="Tewr.Blazor.FileReader" Version="3.3.1.21360" />
     <PackageReference Include="Microsoft.AspNetCore.Components.DataAnnotations.Validation" Version="3.2.0-rc1.20223.4" />
     <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="13.1.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,6 +2,7 @@
 @using AzureIoTHub.Portal
 @using AzureIoTHub.Portal.Models.v10
 @using System.Web
+@using System.IO
 
 @attribute [Authorize]
 @inject IDialogService DialogService
@@ -9,6 +10,7 @@
 @inject PortalSettings Portal
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 @inject IDeviceClientService DeviceClientService
+@inject IJSRuntime JS
 @inject IDeviceModelsClientService DeviceModelsClientService
 
 <MudGrid>
@@ -112,6 +114,12 @@
                 </MudTooltip>
                 <MudTooltip Text="Add device">
                     <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="addDeviceButton" />
+                </MudTooltip>
+                <MudTooltip Text="Export device list">
+                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Outlined.Download" Size="Size.Medium" OnClick="ExportDeviceList" id="export1Button" />
+                </MudTooltip>
+                <MudTooltip Text="Export LoRaWAN device list">
+                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Download" Size="Size.Medium" OnClick="ExportLorawanDeviceList" id="export2Button" />
                 </MudTooltip>
             </ToolBarContent>
             <HeaderContent>

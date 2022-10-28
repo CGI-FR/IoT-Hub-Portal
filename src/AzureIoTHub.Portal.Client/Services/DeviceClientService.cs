@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Client.Services
 {
     using System.Collections.Generic;
+    using System.IO;
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
@@ -56,6 +57,22 @@ namespace AzureIoTHub.Portal.Client.Services
         public Task DeleteDevice(string deviceId)
         {
             return this.http.DeleteAsync($"api/devices/{deviceId}");
+        }
+
+        public async Task<Stream> ExportDeviceList()
+        {
+            //var stream = await this.http.GetStreamAsync($"api/export/devices");
+            //return stream;
+
+            using var stream = await this.http.GetStreamAsync($"api/export/devices");
+            using var fileStream = new FileStream("test", FileMode.CreateNew);
+            await stream.CopyToAsync(fileStream);
+            return stream;
+        }
+
+        public async Task<Stream> ExportLorawanDeviceList()
+        {
+            return await this.http.GetFromJsonAsync<Stream>($"api/export/lorawandevices");
         }
     }
 }

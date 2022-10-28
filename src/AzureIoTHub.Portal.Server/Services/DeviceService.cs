@@ -13,6 +13,10 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Domain.Entities;
     using Domain;
     using Mappers;
+    using System;
+    using System.Linq;
+    using System.IO;
+    using System.Text;
 
     public class DeviceService : DeviceServiceBase<DeviceDetails>
     {
@@ -107,6 +111,45 @@ namespace AzureIoTHub.Portal.Server.Services
             this.deviceRepository.Delete(deviceId);
 
             await this.unitOfWork.SaveAsync();
+        }
+
+        public override async Task<Stream> ExportDeviceList()
+        {
+            Console.WriteLine("Call to ExportDeviceList() on DeviceService");
+            Console.Clear();
+
+            var tags = this.deviceTagService.GetAllTagsNames();
+
+            var query = this.portalDbContext.Devices
+                .Include(device => device.Tags);
+
+            var devices = await query.ToListAsync();
+
+            var header = "Id,Name,DeviceModelId,IsEnabled,Version";
+            foreach (var tag in tags)
+            {
+                header += $",TAG:{tag}";
+            }
+
+            var stream = new FileStream("test2.csv",FileMode.OpenOrCreate);
+            //var writer = new StreamWriter(stream, Encoding.UTF8);
+            using var writer = new StreamWriter(stream, Encoding.UTF8);
+            writer.WriteLine(header);
+            Console.WriteLine(header);
+
+            foreach (var device in devices)
+            {
+                var line =$"{device.Id},{device.Name},{device.DeviceModelId},{device.IsEnabled},{device.Version}";
+                foreach (var tag in tags)
+                {
+                    var value = device.Tags.Where(x => x.Name == tag).Select(x => x.Value).SingleOrDefault();
+                    line += $",{value}";
+                }
+                Console.WriteLine(line);
+                writer.WriteLine(line);
+            }
+
+            return stream;
         }
     }
 }

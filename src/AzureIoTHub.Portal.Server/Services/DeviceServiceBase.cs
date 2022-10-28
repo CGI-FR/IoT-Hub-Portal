@@ -19,13 +19,14 @@ namespace AzureIoTHub.Portal.Server.Services
     using Mappers;
     using Shared.Models.v1._0.Filters;
     using Device = Domain.Entities.Device;
+    using System.IO;
 
     public abstract class DeviceServiceBase<TDto> : IDeviceService<TDto>
         where TDto : IDeviceDetails
     {
-        private readonly PortalDbContext portalDbContext;
+        protected readonly PortalDbContext portalDbContext;
         private readonly IExternalDeviceService externalDevicesService;
-        private readonly IDeviceTagService deviceTagService;
+        protected readonly IDeviceTagService deviceTagService;
         private readonly IDeviceModelImageManager deviceModelImageManager;
         private readonly IDeviceTwinMapper<DeviceListItem, TDto> deviceTwinMapper;
 
@@ -206,5 +207,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     .Select(tag => new { tag, tagValue = tags[tag] })
                     .ToDictionary(pair => pair.tag, pair => pair.tagValue);
         }
+
+        public abstract Task<Stream> ExportDeviceList();
     }
 }

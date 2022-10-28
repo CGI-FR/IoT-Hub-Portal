@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Client.Services
 {
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
     using Portal.Models.v10;
 
@@ -24,5 +25,9 @@ namespace AzureIoTHub.Portal.Client.Services
         Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId);
 
         Task DeleteDevice(string deviceId);
+
+        Task<Stream> ExportDeviceList();
+
+        Task<Stream> ExportLorawanDeviceList();
     }
 }
