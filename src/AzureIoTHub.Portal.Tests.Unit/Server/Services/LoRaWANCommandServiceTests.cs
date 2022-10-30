@@ -152,7 +152,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
         public async Task ExecuteCommandStateUnderTestExpectedBehavior()
         {
             // Arrange
-            var modelId = Guid.NewGuid().ToString();
             var deviceId = Guid.NewGuid().ToString();
             var commandId = Guid.NewGuid().ToString();
 
@@ -183,7 +182,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
         public async Task ExecuteCommandShouldThrowInternalServerErrorExceptionWheIssueOccursWhenQueryingCommands()
         {
             // Arrange
-            var modelId = Guid.NewGuid().ToString();
             var deviceId = Guid.NewGuid().ToString();
             var commandId = Guid.NewGuid().ToString();
 
@@ -196,8 +194,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
                     Port = 125
                 });
 
+            using var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+
             _ = this.mockLoraDeviceMethodManager.Setup(c => c.ExecuteLoRaDeviceMessage(deviceId, It.IsAny<DeviceModelCommandDto>()))
-                .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+                .ReturnsAsync(response);
 
             // Act
             var act = () => this.loRaWanCommandService.ExecuteLoRaWANCommand(deviceId, commandId);
@@ -211,7 +211,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
         public void ExecuteCommandShouldReturnNotFoundWhenCommandIsNotFound()
         {
             // Arrange
-            var modelId = Guid.NewGuid().ToString();
             var deviceId = Guid.NewGuid().ToString();
             var commandId = Guid.NewGuid().ToString();
 
