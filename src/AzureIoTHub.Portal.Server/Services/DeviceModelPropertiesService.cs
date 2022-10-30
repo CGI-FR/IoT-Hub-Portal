@@ -59,9 +59,10 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModelId);
 
-            return deviceModelEntity == null
-                ? throw new ResourceNotFoundException($"The device model {deviceModelId} doesn't exist")
-                : true;
+            if (deviceModelEntity == null)
+                throw new ResourceNotFoundException($"The device model {deviceModelId} doesn't exist");
+
+            return true;
         }
     }
 }
