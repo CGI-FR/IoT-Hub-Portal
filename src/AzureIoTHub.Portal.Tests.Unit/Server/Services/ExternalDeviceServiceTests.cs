@@ -9,7 +9,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Threading;
     using System.Threading.Tasks;
     using Azure;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Services;
@@ -106,7 +105,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
             _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
                 .ReturnsAsync(new string[]
@@ -141,7 +140,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
             _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
                 It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true")))
@@ -203,7 +202,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
             _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
                     It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false")))
@@ -234,7 +233,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
 
             _ = mockQuery.Setup(c => c.GetNextAsTwinAsync())
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => service.GetDeviceTwinWithModule(deviceId);
@@ -255,7 +254,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
                 .ReturnsAsync(new string[]
@@ -748,7 +747,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockRegistryManager.Setup(c => c.GetDeviceAsync(It.Is<string>(x => x == deviceId)))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => service.GetDevice(deviceId);
@@ -786,7 +785,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == deviceId)))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => service.GetDeviceTwin(deviceId);
@@ -866,7 +865,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockQuery = this.mockRepository.Create<IQuery>();
 
             _ = mockQuery.Setup(c => c.GetNextAsTwinAsync())
-                .ThrowsAsync(new Exception(""));
+                .ThrowsAsync(new RequestFailedException(""));
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
                 It.Is<string>(x => x == $"SELECT * FROM devices.modules WHERE devices.modules.moduleId = '$edgeHub' AND deviceId in ['{deviceId}']"), It.Is<int>(x => x == 1)))
@@ -925,7 +924,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockRegistryManager
                 .Setup(c => c.AddDeviceWithTwinAsync(It.Is<Device>(x => x.Id == deviceId),
                     It.Is<Twin>(x => x == twin)))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => service.CreateDeviceWithTwin(deviceId, true, twin);
@@ -960,7 +959,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockRegistryManager.Setup(c => c.RemoveDeviceAsync(It.Is<string>(x => x == deviceId)))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => service.DeleteDevice(deviceId);
@@ -997,7 +996,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var device = new Device();
 
             _ = this.mockRegistryManager.Setup(c => c.UpdateDeviceAsync(It.Is<Device>(x => x == device)))
-                .ThrowsAsync(new Exception());
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => service.UpdateDevice(device);
@@ -1050,7 +1049,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     It.Is<string>(x => x == deviceId),
                     It.Is<Twin>(x => x == twin),
                     It.Is<string>(x => x == twin.ETag)))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => service.UpdateDeviceTwin(twin);
@@ -1102,7 +1101,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     It.Is<string>(x => x == "$edgeAgent"),
                     It.Is<CloudToDeviceMethod>(x => x == method),
                     It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => service.ExecuteC2DMethod(deviceId, method);
@@ -1156,7 +1155,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 It.Is<string>(x => x.Equals(moduleName, StringComparison.Ordinal)),
                 It.Is<CloudToDeviceMethod>(x => x == method),
                 It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new Exception(""));
+                .ThrowsAsync(new RequestFailedException(""));
 
             // Act
             var result = async () => await service.ExecuteCustomCommandC2DMethod(deviceId, moduleName, method);
@@ -1329,7 +1328,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     It.Is<string>(x => x == "$edgeAgent"),
                     It.Is<CloudToDeviceMethod>(x => x.MethodName == method.MethodName && x.GetPayloadAsJson() == payload),
                     It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             var deviceService = new ExternalDeviceService(
                 logger,
@@ -1382,7 +1381,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
             _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
                 It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != 'LoRa Concentrator')")))
@@ -1432,7 +1431,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
             _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
                     It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND connectionState = 'Connected' AND (NOT is_defined(tags.deviceType) OR devices.tags.deviceType != 'LoRa Concentrator')")))
@@ -1482,7 +1481,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
             _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
                     It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true")))
@@ -1532,7 +1531,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
             _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
                     It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true AND connectionState = 'Connected'")))
@@ -1582,7 +1581,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
             _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
                     It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND devices.tags.deviceType = 'LoRa Concentrator'")))
@@ -1632,7 +1631,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
             _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
                     It.Is<string>(x => x == "SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND devices.tags.deviceType = 'LoRa Concentrator' AND connectionState = 'Connected'")))
@@ -1880,7 +1879,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockQuery = this.mockRepository.Create<IQuery>();
 
             _ = mockQuery.Setup(c => c.GetNextAsJsonAsync())
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
                 It.Is<string>(x => x == $"SELECT DeviceID FROM devices.modules WHERE devices.modules.moduleId = 'LoRaWanNetworkSrvModule'")))

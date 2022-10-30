@@ -94,7 +94,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     .CreateQuery($"SELECT COUNT() as totalNumber FROM devices {filter}")
                     .GetNextAsJsonAsync();
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException("Unable to get the count of edge devices", e);
             }
@@ -126,7 +126,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     NextPage = response.ContinuationToken
                 };
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException("Unable to get edge devices", e);
             }
@@ -211,7 +211,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     .CreateQuery($"SELECT COUNT() as totalNumber FROM devices {filter}")
                     .GetNextAsJsonAsync();
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException("Unable to get devices count", e);
             }
@@ -250,7 +250,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     NextPage = response.ContinuationToken
                 };
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException($"Unable to query devices", e);
             }
@@ -267,7 +267,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return await this.registryManager.GetDeviceAsync(deviceId);
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException($"Unable to get device with id {deviceId}", e);
             }
@@ -285,7 +285,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return await this.registryManager.GetTwinAsync(deviceId);
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException($"Unable to get device twin with id {deviceId}", e);
             }
@@ -308,7 +308,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     var devicesTwins = await devicesWithModules.GetNextAsTwinAsync();
                     return devicesTwins.ElementAt(0);
                 }
-                catch (Exception e)
+                catch (RequestFailedException e)
                 {
                     throw new InternalServerErrorException($"Unable to get devices twins", e);
                 }
@@ -326,7 +326,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 var devicesTwins = await query.GetNextAsTwinAsync();
                 return devicesTwins.ElementAt(0);
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException($"Unable to get devices twins", e);
             }
@@ -352,7 +352,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return await this.registryManager.AddDeviceWithTwinAsync(device, twin);
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException($"Unable to create the device twin with id {deviceId}: {e.Message}", e);
             }
@@ -368,7 +368,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 await this.registryManager.RemoveDeviceAsync(deviceId);
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException($"Unable to delete the device with id {deviceId}", e);
             }
@@ -385,7 +385,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return await this.registryManager.UpdateDeviceAsync(device);
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException($"Unable to update the device with id {device.Id}", e);
             }
@@ -404,7 +404,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return await this.registryManager.UpdateTwinAsync(twin.DeviceId, twin, twin.ETag);
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException($"Unable to update the device twin with id {twin.DeviceId}", e);
             }
@@ -422,7 +422,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return await this.serviceClient.InvokeDeviceMethodAsync(deviceId, "$edgeAgent", method);
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException($"Unable to execute the cloud to device method {method.MethodName} on the device with id {deviceId}", e);
             }
@@ -442,7 +442,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return await this.serviceClient.InvokeDeviceMethodAsync(deviceId, moduleName, method);
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException($"Unable to execute the cloud to device method {method.MethodName} on the device with id {deviceId}", e);
             }
@@ -515,7 +515,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 return !JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result) ? 0 : result.Value<int>();
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException("Unable to get devices count", e);
             }
@@ -531,7 +531,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 return !JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result) ? 0 : result.Value<int>();
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException("Unable to get connected devices count", e);
             }
@@ -547,7 +547,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 return !JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result) ? 0 : result.Value<int>();
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException("Unable to get edge devices count", e);
             }
@@ -563,7 +563,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 return !JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result) ? 0 : result.Value<int>();
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException("Unable to get connected edge devices count", e);
             }
@@ -579,7 +579,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 return !JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result) ? 0 : result.Value<int>();
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException("Unable to get connected LoRaWAN concentrators count", e);
             }
@@ -595,7 +595,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 return !JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result) ? 0 : result.Value<int>();
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException("Unable to get connected LoRaWAN concentrators count", e);
             }
@@ -690,19 +690,20 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task<List<string>> GetAllGatewayID()
         {
-            var query = this.registryManager.CreateQuery($"SELECT DeviceID FROM devices.modules WHERE devices.modules.moduleId = 'LoRaWanNetworkSrvModule'");
-            var list = new List<string>();
-
             try
             {
+                var query = this.registryManager.CreateQuery($"SELECT DeviceID FROM devices.modules WHERE devices.modules.moduleId = 'LoRaWanNetworkSrvModule'");
+                var list = new List<string>();
+
                 var value = (await query.GetNextAsJsonAsync()).ToList();
                 list.AddRange(value.Select(x => JObject.Parse(x)["deviceId"]?.ToString()));
+
+                return list;
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException($"Unable to get GatewayIDs", e);
+                throw new InternalServerErrorException($"Failed to parse device identifier", e);
             }
-            return list;
         }
     }
 }
