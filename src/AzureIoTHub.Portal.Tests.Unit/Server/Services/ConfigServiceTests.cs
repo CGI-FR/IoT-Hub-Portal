@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Azure;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Services;
@@ -73,7 +74,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             iotEdgeConfiguration.Content.ModulesContent.Add("test", new Dictionary<string, object>());
             _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => configsServices.GetIoTEdgeConfigurations();
@@ -119,7 +120,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             iotEdgeConfiguration.Content.ModulesContent.Add("test", new Dictionary<string, object>());
             _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => configsServices.GetDevicesConfigurations();
@@ -155,7 +156,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var configsServices = CreateConfigsServices();
             const string id = "aaa";
             _ = this.mockRegistryManager.Setup(c => c.GetConfigurationAsync(It.Is<string>(x => x == id)))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => configsServices.GetConfigItem(id);
@@ -264,7 +265,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var configurationId = Guid.NewGuid().ToString();
 
             _ = this.mockRegistryManager.Setup(c => c.RemoveConfigurationAsync(It.Is<string>(x => x == configurationId)))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => configsServices.DeleteConfiguration(configurationId);
@@ -333,7 +334,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var modelId = Guid.NewGuid().ToString();
 
             _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => configsServices.RollOutDeviceConfiguration(modelId, desiredProperties, configurationName, targetTags);
@@ -363,7 +364,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(new[] { new Configuration(configurationName) });
 
             _ = this.mockRegistryManager.Setup(c => c.RemoveConfigurationAsync(It.IsAny<string>()))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => configsServices.RollOutDeviceConfiguration(modelId, desiredProperties, configurationName, targetTags);
@@ -393,7 +394,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .ReturnsAsync(Array.Empty<Configuration>());
 
             _ = this.mockRegistryManager.Setup(c => c.AddConfigurationAsync(It.Is<Configuration>(x => x.Id.StartsWith(configurationName))))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => configsServices.RollOutDeviceConfiguration(modelId, desiredProperties, configurationName, targetTags);
@@ -474,7 +475,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var configsServices = CreateConfigsServices();
 
             _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.Is<int>(x => x == 0)))
-                .ThrowsAsync(new Exception("test"));
+                .ThrowsAsync(new RequestFailedException("test"));
 
             // Act
             var act = () => configsServices.GetFailedDeploymentsCount();

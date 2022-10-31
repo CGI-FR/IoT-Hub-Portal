@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using Azure;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
@@ -35,7 +36,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 var configurations = await this.registryManager.GetConfigurationsAsync(0);
                 return configurations.Where(c => c.Content.ModulesContent.Count > 0);
             }
-            catch (Exception ex)
+            catch (RequestFailedException ex)
             {
                 throw new InternalServerErrorException("Unable to get IOT Edge configurations", ex);
             }
@@ -50,7 +51,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 return configurations
                     .Where(c => c.Priority > 0 && c.Content.ModulesContent.Count == 0);
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException("Unable to get devices configurations", e);
             }
@@ -62,7 +63,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 return await this.registryManager.GetConfigurationAsync(id);
             }
-            catch (Exception ex)
+            catch (RequestFailedException ex)
             {
                 throw new InternalServerErrorException($"Unable to get the configuration for id {id}", ex);
             }
@@ -192,7 +193,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 await this.registryManager.RemoveConfigurationAsync(configId);
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException($"Unable to delete the configuration for id {configId}", e);
             }
@@ -256,7 +257,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException("Unable to create configuration.", e);
             }
@@ -275,7 +276,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 configurations = await this.registryManager.GetConfigurationsAsync(0);
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException("Unable to get configurations", e);
             }
@@ -293,7 +294,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 {
                     await this.registryManager.RemoveConfigurationAsync(item.Id);
                 }
-                catch (Exception e)
+                catch (RequestFailedException e)
                 {
                     throw new InternalServerErrorException($"Unable to remove configuration {item.Id}", e);
                 }
@@ -321,7 +322,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
             }
-            catch (Exception e)
+            catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException($"Unable to add configuration {newConfiguration.Id}", e);
             }
@@ -338,7 +339,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 return Convert.ToInt32(failedDeploymentsCount);
             }
-            catch (Exception ex)
+            catch (RequestFailedException ex)
             {
                 throw new InternalServerErrorException("Unable to get failed deployments count", ex);
             }
