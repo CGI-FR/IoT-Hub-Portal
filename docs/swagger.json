@@ -706,6 +706,14 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "name": "modelId",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
