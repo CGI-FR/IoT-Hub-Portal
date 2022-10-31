@@ -70,14 +70,16 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             bool? searchStatus = null,
             int pageSize = 10,
             int pageNumber = 0,
-            [FromQuery] string[] orderBy = null)
+            [FromQuery] string[] orderBy = null,
+            string modelId = null)
         {
             var paginatedEdgeDevices = await this.edgeDevicesService.GetEdgeDevicesPage(
                 searchText,
                 searchStatus,
                 pageSize,
                 pageNumber,
-                orderBy);
+                orderBy,
+                modelId);
 
             var nextPage = string.Empty;
 

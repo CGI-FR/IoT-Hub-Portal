@@ -66,7 +66,8 @@ namespace AzureIoTHub.Portal.Server.Services
             bool? searchStatus = null,
             int pageSize = 10,
             int pageNumber = 0,
-            string[] orderBy = null)
+            string[] orderBy = null,
+            string modelId = null)
         {
             var deviceListFilter = new EdgeDeviceListFilter
             {
@@ -75,6 +76,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 IsEnabled = searchStatus,
                 Keyword = searchText,
                 OrderBy = orderBy,
+                ModelId = modelId
             };
 
             var devicePredicate = PredicateBuilder.True<EdgeDevice>();
@@ -82,6 +84,11 @@ namespace AzureIoTHub.Portal.Server.Services
             if (deviceListFilter.IsEnabled != null)
             {
                 devicePredicate = devicePredicate.And(device => device.IsEnabled.Equals(deviceListFilter.IsEnabled));
+            }
+
+            if (!string.IsNullOrWhiteSpace(deviceListFilter.ModelId))
+            {
+                devicePredicate = devicePredicate.And(device => device.DeviceModelId.Equals(deviceListFilter.ModelId));
             }
 
             if (!string.IsNullOrWhiteSpace(deviceListFilter.Keyword))
