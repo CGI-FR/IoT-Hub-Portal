@@ -31,8 +31,8 @@
             </ToolBarContent>
             <HeaderContent>
                 <MudTh></MudTh>
-                <MudTh>Name</MudTh>
-                <MudTh Style="text-align: center">Description</MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<IoTEdgeModelListItem, object>(x => x.Name)" id="NameLabel" >Name</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center"><MudTableSortLabel SortBy="new Func<IoTEdgeModelListItem, object>(x => x.Description)" id="DescriptionLabel">Description</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center">Details</MudTh>
                 <MudTh Style="text-align: center">Delete</MudTh>
             </HeaderContent>
