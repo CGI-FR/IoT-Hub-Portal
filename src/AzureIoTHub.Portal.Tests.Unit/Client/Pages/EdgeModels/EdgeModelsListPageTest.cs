@@ -204,5 +204,40 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             cut.WaitForAssertion(() => this.mockEdgeModelServiceClient.Verify(service => service.GetIoTEdgeModelList(), Times.Exactly(2)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
+
+        [Test]
+        public void ClickOnSortLabel()
+        {
+            // Arrange
+            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList())
+                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+                {
+                    new IoTEdgeModelListItem()
+                    {
+                        ModelId = Guid.NewGuid().ToString(),
+                        Name = Guid.NewGuid().ToString()
+                    },
+                    new IoTEdgeModelListItem()
+                    {
+                        ModelId = Guid.NewGuid().ToString(),
+                        Name = Guid.NewGuid().ToString()
+                    },
+                });
+
+            // Act
+            var cut = RenderComponent<EdgeModelListPage>();
+
+            cut.WaitForAssertion(() => cut.WaitForElement("#NameLabel").Should().NotBeNull());
+            var sortNameButtons = cut.WaitForElement("#NameLabel");
+            sortNameButtons.Click();
+
+            cut.WaitForAssertion(() => cut.WaitForElement("#DescriptionLabel").Should().NotBeNull());
+            var sortDescriptionButtons = cut.WaitForElement("#DescriptionLabel");
+            sortDescriptionButtons.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => Assert.AreEqual(3, cut.FindAll("tr").Count));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
     }
 }
