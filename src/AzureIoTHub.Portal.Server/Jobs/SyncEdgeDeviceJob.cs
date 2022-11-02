@@ -15,7 +15,6 @@ namespace AzureIoTHub.Portal.Server.Jobs
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Quartz;
-    using static MudBlazor.CategoryTypes;
 
     [DisallowConcurrentExecution]
     public class SyncEdgeDeviceJob : IJob
