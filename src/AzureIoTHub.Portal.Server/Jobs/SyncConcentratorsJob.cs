@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Quartz;
+    using System.Linq;
 
     [DisallowConcurrentExecution]
     public class SyncConcentratorsJob : IJob
@@ -56,9 +57,16 @@ namespace AzureIoTHub.Portal.Server.Jobs
 
         private async Task SyncConcentrators()
         {
-            foreach (var twin in await GetTwinConcentrators())
+            var concentratorTwins = await GetTwinConcentrators();
+
+            foreach (var twin in concentratorTwins)
             {
                 await CreateOrUpdateConcentrator(twin);
+            }
+
+            foreach (var item in (await this.concentratorRepository.GetAllAsync()).Where(device => !concentratorTwins.Exists(x => x.DeviceId == device.Id)))
+            {
+                this.concentratorRepository.Delete(item.Id);
             }
 
             await this.unitOfWork.SaveAsync();

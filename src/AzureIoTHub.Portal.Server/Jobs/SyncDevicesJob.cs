@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Quartz;
+    using System.Linq;
 
     [DisallowConcurrentExecution]
     public class SyncDevicesJob : IJob
@@ -66,7 +67,9 @@ namespace AzureIoTHub.Portal.Server.Jobs
 
         private async Task SyncDevices()
         {
-            foreach (var twin in await GetTwinDevices())
+            var deviceTwins = await GetTwinDevices();
+
+            foreach (var twin in deviceTwins)
             {
                 var deviceModel = await this.deviceModelRepository.GetByIdAsync(twin.Tags[ModelId]?.ToString() ?? string.Empty);
 
@@ -84,6 +87,16 @@ namespace AzureIoTHub.Portal.Server.Jobs
                 {
                     await CreateOrUpdateDevice(twin);
                 }
+            }
+
+            foreach (var item in (await this.deviceRepository.GetAllAsync()).Where(device => !deviceTwins.Exists(x => x.DeviceId == device.Id)))
+            {
+                this.deviceRepository.Delete(item.Id);
+            }
+
+            foreach (var item in (await this.lorawanDeviceRepository.GetAllAsync()).Where(lorawanDevice => !deviceTwins.Exists(x => x.DeviceId == lorawanDevice.Id)))
+            {
+                this.lorawanDeviceRepository.Delete(item.Id);
             }
 
             await this.unitOfWork.SaveAsync();

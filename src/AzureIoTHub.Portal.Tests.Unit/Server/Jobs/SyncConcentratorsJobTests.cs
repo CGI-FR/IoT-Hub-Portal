@@ -3,7 +3,10 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
+    using System.Threading;
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Domain;
@@ -87,6 +90,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
             _ = this.mockConcentratorRepository.Setup(repository => repository.InsertAsync(It.IsAny<Concentrator>()))
                 .Returns(Task.CompletedTask);
 
+            _ = this.mockConcentratorRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Concentrator, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Concentrator>
+                {
+                    new Concentrator
+                    {
+                        Id = expectedTwinConcentrator.DeviceId
+                    },
+                    new Concentrator
+                    {
+                        Id = Guid.NewGuid().ToString()
+                    }
+                });
+
+            this.mockConcentratorRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
+
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
@@ -146,6 +164,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
             this.mockConcentratorRepository.Setup(repository => repository.Update(It.IsAny<Concentrator>()))
                 .Verifiable();
 
+            _ = this.mockConcentratorRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Concentrator, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Concentrator>
+                {
+                    new Concentrator
+                    {
+                        Id = expectedTwinConcentrator.DeviceId
+                    }
+                });
+
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
@@ -201,6 +228,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 
             _ = this.mockConcentratorRepository.Setup(repository => repository.GetByIdAsync(expectedTwinConcentrator.DeviceId))
                 .ReturnsAsync(existingConcentrator);
+
+            _ = this.mockConcentratorRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Concentrator, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Concentrator>
+                {
+                    new Concentrator
+                    {
+                        Id = expectedTwinConcentrator.DeviceId
+                    }
+                });
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
