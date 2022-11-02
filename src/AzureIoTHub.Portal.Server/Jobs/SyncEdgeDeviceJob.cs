@@ -82,7 +82,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
                 await CreateOrUpdateDevice(twin);
             }
 
-            foreach (var item in this.edgeDeviceRepository.GetAll())
+            foreach (var item in await this.edgeDeviceRepository.GetAllAsync())
             {
                 if (!deviceTwins.Exists(x => x.DeviceId == item.Id))
                 {
