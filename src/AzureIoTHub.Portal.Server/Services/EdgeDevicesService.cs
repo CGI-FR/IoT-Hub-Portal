@@ -133,7 +133,7 @@ namespace AzureIoTHub.Portal.Server.Services
             deviceDto.ImageUrl = this.deviceModelImageManager.ComputeImageUri(deviceDto.ModelId);
             deviceDto.Modules = DeviceHelper.RetrieveModuleList(deviceTwinWithModules);
             deviceDto.RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceTwinWithModules);
-            deviceDto.ConnectionState = deviceTwinWithModules.ConnectionState?.ToString();
+
             deviceDto.Status = deviceTwinWithModules.Status?.ToString();
             deviceDto.Tags = FilterDeviceTags(deviceDto);
 
