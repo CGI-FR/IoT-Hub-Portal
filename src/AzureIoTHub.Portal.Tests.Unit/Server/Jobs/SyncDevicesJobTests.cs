@@ -3,7 +3,10 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
+    using System.Threading;
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Domain;
@@ -103,6 +106,36 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
             _ = this.mockDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<Device>()))
                 .Returns(Task.CompletedTask);
 
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Device>
+                {
+                    new Device
+                    {
+                        Id = expectedTwinDevice.DeviceId
+                    },
+                    new Device
+                    {
+                        Id = Guid.NewGuid().ToString()
+                    }
+                });
+
+            this.mockDeviceRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
+
+            _ = this.mockLorawanDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<LorawanDevice, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<LorawanDevice>
+                {
+                    new LorawanDevice
+                    {
+                        Id = expectedTwinDevice.DeviceId
+                    },
+                    new LorawanDevice
+                    {
+                        Id = Guid.NewGuid().ToString()
+                    }
+                });
+
+            this.mockLorawanDeviceRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
+
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
@@ -181,6 +214,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
             this.mockDeviceRepository.Setup(repository => repository.Update(It.IsAny<Device>()))
                 .Verifiable();
 
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Device>
+                {
+                    new Device
+                    {
+                        Id = expectedTwinDevice.DeviceId
+                    }
+                });
+
+            _ = this.mockLorawanDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<LorawanDevice, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<LorawanDevice>
+                {
+                    new LorawanDevice
+                    {
+                        Id = expectedTwinDevice.DeviceId
+                    }
+                });
+
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
@@ -239,6 +290,36 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<LorawanDevice>()))
                 .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Device>
+                {
+                    new Device
+                    {
+                        Id = expectedTwinDevice.DeviceId
+                    },
+                    new Device
+                    {
+                        Id = Guid.NewGuid().ToString()
+                    }
+                });
+
+            this.mockDeviceRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
+
+            _ = this.mockLorawanDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<LorawanDevice, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<LorawanDevice>
+                {
+                    new LorawanDevice
+                    {
+                        Id = expectedTwinDevice.DeviceId
+                    },
+                    new LorawanDevice
+                    {
+                        Id = Guid.NewGuid().ToString()
+                    }
+                });
+
+            this.mockLorawanDeviceRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
@@ -317,6 +398,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 
             this.mockLorawanDeviceRepository.Setup(repository => repository.Update(It.IsAny<LorawanDevice>()))
                 .Verifiable();
+
+            _ = this.mockDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Device, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Device>
+                {
+                    new Device
+                    {
+                        Id = expectedTwinDevice.DeviceId
+                    }
+                });
+
+            _ = this.mockLorawanDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<LorawanDevice, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<LorawanDevice>
+                {
+                    new LorawanDevice
+                    {
+                        Id = expectedTwinDevice.DeviceId
+                    }
+                });
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);

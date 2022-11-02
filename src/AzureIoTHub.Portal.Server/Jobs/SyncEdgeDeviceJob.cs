@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
     using AzureIoTHub.Portal.Domain;
@@ -67,7 +68,9 @@ namespace AzureIoTHub.Portal.Server.Jobs
 
         private async Task SyncEdgeDevices()
         {
-            foreach (var twin in await GetTwinDevices())
+            var deviceTwins = await GetTwinDevices();
+
+            foreach (var twin in deviceTwins)
             {
                 var deviceModel = await this.edgeDeviceModelRepository.GetByIdAsync(twin.Tags[ModelId]?.ToString() ?? string.Empty);
 
@@ -78,6 +81,11 @@ namespace AzureIoTHub.Portal.Server.Jobs
                 }
 
                 await CreateOrUpdateDevice(twin);
+            }
+
+            foreach (var item in (await this.edgeDeviceRepository.GetAllAsync()).Where(edgeDevice => !deviceTwins.Exists(twin => twin.DeviceId == edgeDevice.Id)))
+            {
+                this.edgeDeviceRepository.Delete(item.Id);
             }
 
             await this.unitOfWork.SaveAsync();

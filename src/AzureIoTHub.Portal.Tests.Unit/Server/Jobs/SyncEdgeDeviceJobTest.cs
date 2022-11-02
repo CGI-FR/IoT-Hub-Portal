@@ -3,7 +3,10 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
+    using System.Threading;
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Domain;
@@ -110,6 +113,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
             _ = this.mockEdgeDeviceRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDevice>()))
                 .Returns(Task.CompletedTask);
 
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDevice, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<EdgeDevice>
+                {
+                    new EdgeDevice
+                    {
+                        Id = expectedTwinDevice.DeviceId
+                    },
+                    new EdgeDevice
+                    {
+                        Id = Guid.NewGuid().ToString()
+                    }
+                });
+
+            this.mockEdgeDeviceRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
+
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
@@ -191,6 +209,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 
             this.mockEdgeDeviceRepository.Setup(repository => repository.Update(It.IsAny<EdgeDevice>()))
                 .Verifiable();
+
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDevice, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<EdgeDevice>
+                {
+                    new EdgeDevice
+                    {
+                        Id = expectedTwinDevice.DeviceId
+                    }
+                });
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
