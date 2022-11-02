@@ -119,8 +119,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
                     new EdgeDevice
                     {
                         Id = expectedTwinDevice.DeviceId
+                    },
+                    new EdgeDevice
+                    {
+                        Id = Guid.NewGuid().ToString()
                     }
                 });
+
+            this.mockEdgeDeviceRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);

@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
     using AzureIoTHub.Portal.Domain;
@@ -14,6 +15,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Quartz;
+    using static MudBlazor.CategoryTypes;
 
     [DisallowConcurrentExecution]
     public class SyncEdgeDeviceJob : IJob
@@ -82,12 +84,9 @@ namespace AzureIoTHub.Portal.Server.Jobs
                 await CreateOrUpdateDevice(twin);
             }
 
-            foreach (var item in await this.edgeDeviceRepository.GetAllAsync())
+            foreach (var item in (await this.edgeDeviceRepository.GetAllAsync()).Where(edgeDevice => !deviceTwins.Exists(twin => twin.DeviceId == edgeDevice.Id)))
             {
-                if (!deviceTwins.Exists(x => x.DeviceId == item.Id))
-                {
-                    this.edgeDeviceRepository.Delete(item.Id);
-                }
+                this.edgeDeviceRepository.Delete(item.Id);
             }
 
             await this.unitOfWork.SaveAsync();
