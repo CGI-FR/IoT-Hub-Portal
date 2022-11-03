@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -29,6 +30,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
         private Mock<BlobContainerClient> mockBlobContainerClient;
         private Mock<BlobClient> mockBlobClient;
         private Mock<ConfigHandler> mockConfigHandler;
+        private Mock<EnvVariableRegistry> mockEnvVariableRegistry;
 
         private IDeviceModelImageManager deviceModelImageManager;
 
@@ -40,8 +42,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             this.mockBlobContainerClient = MockRepository.Create<BlobContainerClient>();
             this.mockBlobClient = MockRepository.Create<BlobClient>();
             this.mockConfigHandler = MockRepository.Create<ConfigHandler>();
+            this.mockEnvVariableRegistry = MockRepository.Create<EnvVariableRegistry>();
 
             _ = ServiceCollection.AddSingleton(this.mockBlobServiceClient.Object);
+            _ = ServiceCollection.AddSingleton(this.mockEnvVariableRegistry.Object);
             _ = ServiceCollection.AddSingleton(this.mockConfigHandler.Object);
             _ = ServiceCollection.AddSingleton<IDeviceModelImageManager, DeviceModelImageManager>();
 

@@ -5,7 +5,6 @@ namespace AzureIoTHub.Portal.Server.Managers
 {
     using System;
     using System.IO;
-    using System.Net.Http;
     using System.Reflection;
     using System.Threading.Tasks;
     using Azure;
@@ -13,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using Azure.Storage.Blobs.Models;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.Extensions.Logging;
 
     public class DeviceModelImageManager : IDeviceModelImageManager
@@ -24,11 +24,19 @@ namespace AzureIoTHub.Portal.Server.Managers
         private readonly ILogger<DeviceModelImageManager> logger;
         private readonly ConfigHandler configHandler;
 
-        public DeviceModelImageManager(ILogger<DeviceModelImageManager> logger, BlobServiceClient blobService, ConfigHandler configHandler)
+        private readonly EnvVariableRegistry enVariableRegistry;
+
+        public DeviceModelImageManager(
+            ILogger<DeviceModelImageManager> logger,
+            BlobServiceClient blobService,
+            EnvVariableRegistry variableRegistry,
+            ConfigHandler configHandler)
         {
             this.logger = logger;
             this.blobService = blobService;
             this.configHandler = configHandler;
+
+            this.enVariableRegistry = variableRegistry;
 
             var blobClient = this.blobService.GetBlobContainerClient(ImageContainerName);
 
@@ -73,22 +81,22 @@ namespace AzureIoTHub.Portal.Server.Managers
         {
             var imageName = string.IsNullOrWhiteSpace(deviceModelId) ? DefaultImageName : deviceModelId;
 
-            var container = this.blobService.GetBlobContainerClient(ImageContainerName);
-            var blobClient = container.GetBlobClient(imageName);
+            return new Uri(this.enVariableRegistry.BaseImageFolderUri, $"{this.enVariableRegistry.BaseImageFolderUri}/{imageName}");
 
             // Checking if the image exists in the blob container
-            using (var request = new HttpRequestMessage(HttpMethod.Head, blobClient.Uri.ToString()))
-            {
-                using var client = new HttpClient();
-                var response = client.Send(request);
+            //using (var request = new HttpRequestMessage(HttpMethod.Head, $"{this.variableRegistry.BaseImageFolderUri}/{imageName}"))
+            //{
+            //    using var client = new HttpClient();
+            //    var response = client.Send(request);
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    blobClient = container.GetBlobClient(DefaultImageName);
-                }
-            }
+            //    if (!response.IsSuccessStatusCode)
+            //    {
+            //        blobClient = container.GetBlobClient(DefaultImageName);
+            //          return new Uri(this.variableRegistry.BaseImageFolderUri, $"{this.variableRegistry.BaseImageFolderUri}/{DefaultImageName}");
+            //    }
+            //}
 
-            return blobClient.Uri;
+            //return new Uri(this.variableRegistry.BaseImageFolderUri, $"{this.variableRegistry.BaseImageFolderUri}/{imageName}");
         }
 
         public async Task InitializeDefaultImageBlob()

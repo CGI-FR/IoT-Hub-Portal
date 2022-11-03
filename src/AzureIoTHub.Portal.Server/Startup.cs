@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server
     using System.Net;
     using System.Threading.Tasks;
     using Azure.Storage.Blobs;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Domain;
     using Domain.Exceptions;
     using Domain.Repositories;
@@ -105,6 +106,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddSingleton(configuration);
             _ = services.AddSingleton(new PortalMetric());
             _ = services.AddSingleton(new LoRaGatewayIDList());
+            _ = services.AddSingleton(new EnvVariableRegistry());
 
             _ = services.AddRazorPages();
 
@@ -338,6 +340,12 @@ namespace AzureIoTHub.Portal.Server
                         .WithSimpleSchedule(s => s
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));
+
+                _ = q.AddJob<GetBaseImageUriFolderJob>(j => j.WithIdentity(nameof(GetBaseImageUriFolderJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(GetBaseImageUriFolderJob)}")
+                        .ForJob(nameof(GetBaseImageUriFolderJob))
+                        .StartNow());
             });
 
             // Add the Quartz.NET hosted service
