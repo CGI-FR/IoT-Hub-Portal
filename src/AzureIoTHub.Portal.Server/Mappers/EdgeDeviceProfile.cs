@@ -48,7 +48,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.DeviceName))
                 .ForMember(dest => dest.DeviceModelId, opts => opts.MapFrom(src => src.ModelId))
                 .ForMember(dest => dest.Scope, opts => opts.MapFrom(src => src.Scope))
-                .ForMember(dest => dest.ConnectionState, opts => opts.MapFrom(src => src.ConnectionState))
+                .ForMember(dest => dest.ConnectionState, opts => opts.MapFrom(src => src.ConnectionState ?? "Disconnected"))
                 .ForMember(dest => dest.IsEnabled, opts => opts.MapFrom(src => src.IsEnabled))
                 .ForMember(dest => dest.NbDevices, opts => opts.MapFrom(src => src.NbDevices))
                 .ForMember(dest => dest.NbModules, opts => opts.MapFrom(src => src.NbModules))
