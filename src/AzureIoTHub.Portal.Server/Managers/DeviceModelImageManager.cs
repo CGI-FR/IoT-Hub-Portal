@@ -82,21 +82,6 @@ namespace AzureIoTHub.Portal.Server.Managers
             var imageName = string.IsNullOrWhiteSpace(deviceModelId) ? DefaultImageName : deviceModelId;
 
             return new Uri(this.enVariableRegistry.BaseImageFolderUri, $"{this.enVariableRegistry.BaseImageFolderUri}/{imageName}");
-
-            // Checking if the image exists in the blob container
-            //using (var request = new HttpRequestMessage(HttpMethod.Head, $"{this.variableRegistry.BaseImageFolderUri}/{imageName}"))
-            //{
-            //    using var client = new HttpClient();
-            //    var response = client.Send(request);
-
-            //    if (!response.IsSuccessStatusCode)
-            //    {
-            //        blobClient = container.GetBlobClient(DefaultImageName);
-            //          return new Uri(this.variableRegistry.BaseImageFolderUri, $"{this.variableRegistry.BaseImageFolderUri}/{DefaultImageName}");
-            //    }
-            //}
-
-            //return new Uri(this.variableRegistry.BaseImageFolderUri, $"{this.variableRegistry.BaseImageFolderUri}/{imageName}");
         }
 
         public async Task InitializeDefaultImageBlob()
