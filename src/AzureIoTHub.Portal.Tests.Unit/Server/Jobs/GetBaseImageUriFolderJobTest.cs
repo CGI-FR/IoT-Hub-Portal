@@ -17,6 +17,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
     using Azure;
     using System.Collections.Generic;
     using System.Threading;
+    using FluentAssertions;
 
     public class GetBaseImageUriFolderJobTest : BackendUnitTest
     {
@@ -78,6 +79,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 
             // Assert
             Assert.AreEqual(expectedImageUri, this.mockEnvVariableRegistry.Object.BaseImageFolderUri);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void ExecuteShouldThrowExceptionWhenErrorOccursInGetBaseImageUriFolder()
+        {
+            // Arrange
+            var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
+
+            _ = this.mockBlobServiceClient
+                .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
+                .Throws(new Exception(""));
+
+            // Act
+            var act = () => this.getBaseImageUriFolderJob.Execute(mockJobExecutionContext.Object);
+
+            // Assert
+            _ = act.Should().ThrowAsync<Exception>();
             MockRepository.VerifyAll();
         }
     }
