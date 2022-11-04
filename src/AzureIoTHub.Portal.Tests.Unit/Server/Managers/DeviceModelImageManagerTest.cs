@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
     using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Shared.Models.v10;
@@ -191,6 +192,31 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
 
             // Assert
             Assert.AreEqual($"{imageUri}/{deviceModelId}", result.ToString());
+        }
+
+        [Test]
+        public async Task InitializeDefaultImageBlob()
+        {
+            // Arrange
+            _ = this.mockBlobServiceClient
+                .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
+                .Returns(this.mockBlobContainerClient.Object);
+
+            _ = this.mockBlobContainerClient
+                .Setup(x => x.GetBlobClient(It.IsAny<string>()))
+                .Returns(this.mockBlobClient.Object);
+
+            _ = this.mockBlobClient
+                .Setup(client => client.UploadAsync(It.IsAny<Stream>(), true, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Response.FromValue(
+                    BlobsModelFactory.BlobContentInfo(ETag.All, DateTimeOffset.Now, Array.Empty<byte>(), string.Empty,
+                        1L), Mock.Of<Response>()));
+
+            // Act
+            await this.deviceModelImageManager.InitializeDefaultImageBlob();
+
+            // Assert
+            MockRepository.VerifyAll();
         }
     }
 }
