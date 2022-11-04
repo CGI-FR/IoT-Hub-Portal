@@ -61,13 +61,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public async Task<Stream> ExportDeviceList()
         {
-            //var stream = await this.http.GetStreamAsync($"api/export/devices");
-            //return stream;
-
-            using var stream = await this.http.GetStreamAsync($"api/export/devices");
-            using var fileStream = new FileStream("test", FileMode.CreateNew);
-            await stream.CopyToAsync(fileStream);
-            return stream;
+            return await this.http.GetStreamAsync($"api/export/devices");
         }
 
         public async Task<Stream> ExportLorawanDeviceList()

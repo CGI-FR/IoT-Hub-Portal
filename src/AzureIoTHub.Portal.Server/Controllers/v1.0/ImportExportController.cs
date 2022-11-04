@@ -38,6 +38,18 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             var stream = await this.deviceService.ExportDeviceList();
             return stream;
+
+            //var httpResponseMessage = new HttpResponseMessage
+            //{
+            //    Content = new StreamContent(stream)
+            //};
+            //httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+            //{
+            //    FileName = "test2.csv"
+            //};
+            //httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            //return httpResponseMessage;
+
         }
 
         [HttpGet("export/lorawandevices", Name = "Export lorawan devices")]
