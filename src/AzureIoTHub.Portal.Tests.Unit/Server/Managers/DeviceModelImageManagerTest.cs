@@ -176,5 +176,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             // Assert
             MockRepository.VerifyAll();
         }
+
+        [Test]
+        public void ComputeImageUriShouldReturnTheRightUri()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+            var imageUri = Fixture.Create<Uri>();
+
+            this.mockEnvVariableRegistry.Object.BaseImageFolderUri = imageUri;
+
+            // Act
+            var result = this.deviceModelImageManager.ComputeImageUri(deviceModelId);
+
+            // Assert
+            Assert.AreEqual($"{imageUri}/{deviceModelId}", result.ToString());
+        }
     }
 }

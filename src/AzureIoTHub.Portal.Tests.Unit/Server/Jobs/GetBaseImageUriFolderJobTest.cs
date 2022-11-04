@@ -67,8 +67,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
             var mockBlobContainer = MockRepository.Create<BlobContainerClient>();
             var expectedImageUri = Fixture.Create<Uri>();
 
-            //_ = this.mockEnvVariableRegistry.Setup(x => x.BaseImageFolderUri).Returns(expectedImageUri);
-
             _ = this.mockBlobServiceClient
                 .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
                 .Returns(mockBlobContainer.Object);
