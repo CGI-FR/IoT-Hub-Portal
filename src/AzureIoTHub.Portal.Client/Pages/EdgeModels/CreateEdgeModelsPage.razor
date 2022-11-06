@@ -216,9 +216,9 @@
     private bool isProcessing;
 
     private IoTEdgeModel Model = new IoTEdgeModel()
-    {
-        ModelId = Guid.NewGuid().ToString()
-    };
+        {
+            ModelId = Guid.NewGuid().ToString()
+        };
 
     // Used to manage the picture
     private MultipartFormDataContent content;
@@ -261,7 +261,7 @@
 
         DialogOptions options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
 
-        if (!string.IsNullOrWhiteSpace( module.ModuleName))
+        if (!string.IsNullOrWhiteSpace(module.ModuleName))
         {
             var result = await DialogService.Show<ModuleDialog>(module.ModuleName, parameters, options).Result;
 
@@ -312,7 +312,7 @@
             return;
         }
 
-        if(Model.EdgeRoutes.Any() && !edgeRouteValidator.Validate(Model.EdgeRoutes).IsValid)
+        if (Model.EdgeRoutes.Any() && !edgeRouteValidator.Validate(Model.EdgeRoutes).IsValid)
         {
 
             Snackbar.Add("One or more validation errors occured with the routes.", Severity.Error);
@@ -327,7 +327,6 @@
             this.Model.EdgeModules = edgeModules;
 
             await EdgeModelService.CreateIoTEdgeModel(Model);
-            //result.EnsureSuccessStatusCode();
 
             if (content is not null)
             {
@@ -337,9 +336,13 @@
             this.Snackbar.Add("Device model successfully created.", Severity.Success);
             this.NavigationManager.NavigateTo("/edge/models");
         }
-        catch(ProblemDetailsException exception)
+        catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            isProcessing = false;
         }
     }
 

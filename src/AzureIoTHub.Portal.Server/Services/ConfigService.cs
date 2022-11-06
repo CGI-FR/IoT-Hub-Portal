@@ -236,16 +236,6 @@ namespace AzureIoTHub.Portal.Server.Services
                                                 .ToLowerInvariant()
                                                 .Replace(" ", "-", StringComparison.OrdinalIgnoreCase);
 
-            foreach (var item in configurations)
-            {
-                if (!item.Id.StartsWith(configurationNamePrefix, StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                await this.registryManager.RemoveConfigurationAsync(item.Id);
-            }
-
             var newConfiguration = new Configuration($"{configurationNamePrefix}-{DateTime.UtcNow.Ticks}");
             newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
             newConfiguration.TargetCondition = $"tags.modelId = '{edgeModel.ModelId}'";
@@ -260,6 +250,16 @@ namespace AzureIoTHub.Portal.Server.Services
             catch (RequestFailedException e)
             {
                 throw new InternalServerErrorException("Unable to create configuration.", e);
+            }
+
+            foreach (var item in configurations)
+            {
+                if (!item.Id.StartsWith(configurationNamePrefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                await this.registryManager.RemoveConfigurationAsync(item.Id);
             }
         }
 
