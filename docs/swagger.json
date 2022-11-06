@@ -4494,6 +4494,7 @@
         "type": "object",
         "properties": {
           "name": {
+            "pattern": "^[^\\.^\\$^\\#$\\ ]{1,128}$",
             "type": "string",
             "description": "The module environment variable name",
             "nullable": true
