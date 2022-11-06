@@ -84,31 +84,27 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <exception cref="InternalServerErrorException"></exception>
         public async Task CreateEdgeModel(IoTEdgeModel edgeModel)
         {
-            if (!string.IsNullOrEmpty(edgeModel?.ModelId))
+            try
             {
-                try
+                var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId);
+                if (edgeModelEntity == null)
                 {
-                    var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel.ModelId);
-                    if (edgeModelEntity == null)
-                    {
-                        edgeModelEntity = this.mapper.Map<EdgeDeviceModel>(edgeModel);
-                        await this.edgeModelRepository.InsertAsync(edgeModelEntity);
-                        await this.unitOfWork.SaveAsync();
-                    }
-                    else
-                    {
-                        throw new ResourceAlreadyExistsException($"The edge model with id {edgeModel?.ModelId} already exists");
-                    }
+                    edgeModelEntity = this.mapper.Map<EdgeDeviceModel>(edgeModel);
+                    await this.edgeModelRepository.InsertAsync(edgeModelEntity);
+                    await this.unitOfWork.SaveAsync();
                 }
-                catch (DbUpdateException e)
+                else
                 {
-                    throw new InternalServerErrorException($"Unable to create the device model with id {edgeModel?.ModelId}", e);
+                    throw new ResourceAlreadyExistsException($"The edge model with id {edgeModel?.ModelId} already exists");
                 }
-
-                await SaveModuleCommands(edgeModel);
-                await this.configService.RollOutEdgeModelConfiguration(edgeModel);
+            }
+            catch (DbUpdateException e)
+            {
+                throw new InternalServerErrorException($"Unable to create the device model with id {edgeModel?.ModelId}", e);
             }
 
+            await SaveModuleCommands(edgeModel);
+            await this.configService.RollOutEdgeModelConfiguration(edgeModel);
         }
 
         /// <summary>
@@ -204,28 +200,25 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <exception cref="InternalServerErrorException"></exception>
         public async Task UpdateEdgeModel(IoTEdgeModel edgeModel)
         {
-            if (!string.IsNullOrEmpty(edgeModel?.ModelId))
+            try
             {
-                try
+                var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId);
+                if (edgeModelEntity == null)
                 {
-                    var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel.ModelId);
-                    if (edgeModelEntity == null)
-                    {
-                        throw new ResourceNotFoundException($"The edge model with id {edgeModel.ModelId} doesn't exist");
-                    }
-
-                    _ = this.mapper.Map(edgeModel, edgeModelEntity);
-                    this.edgeModelRepository.Update(edgeModelEntity);
-
-                    await this.unitOfWork.SaveAsync();
-
-                    await SaveModuleCommands(edgeModel);
-                    await this.configService.RollOutEdgeModelConfiguration(edgeModel);
+                    throw new ResourceNotFoundException($"The edge model with id {edgeModel?.ModelId} doesn't exist");
                 }
-                catch (DbUpdateException e)
-                {
-                    throw new InternalServerErrorException($"Unable to create the device model with id {edgeModel?.ModelId}", e);
-                }
+
+                _ = this.mapper.Map(edgeModel, edgeModelEntity);
+                this.edgeModelRepository.Update(edgeModelEntity);
+
+                await this.unitOfWork.SaveAsync();
+
+                await SaveModuleCommands(edgeModel);
+                await this.configService.RollOutEdgeModelConfiguration(edgeModel);
+            }
+            catch (DbUpdateException e)
+            {
+                throw new InternalServerErrorException($"Unable to create the device model with id {edgeModel?.ModelId}", e);
             }
         }
 
