@@ -8,6 +8,8 @@ namespace AzureIoTHub.Portal.Server
     using System.Net;
     using System.Threading.Tasks;
     using Azure.Storage.Blobs;
+    using Azure.Storage.Blobs.Models;
+    using AzureIoTHub.Portal.Domain.Options;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using Domain;
     using Domain.Exceptions;
@@ -340,16 +342,22 @@ namespace AzureIoTHub.Portal.Server
                         .WithSimpleSchedule(s => s
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));
-
-                _ = q.AddJob<GetBaseImageUriFolderJob>(j => j.WithIdentity(nameof(GetBaseImageUriFolderJob)))
-                    .AddTrigger(t => t
-                        .WithIdentity($"{nameof(GetBaseImageUriFolderJob)}")
-                        .ForJob(nameof(GetBaseImageUriFolderJob))
-                        .StartNow());
             });
 
             // Add the Quartz.NET hosted service
             _ = services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+            // Options
+            _ = services.Configure<DeviceModelImageOptions>((opts) =>
+                {
+                    var serviceClient = new BlobServiceClient(configuration.StorageAccountConnectionString);
+                    var container = serviceClient.GetBlobContainerClient(opts.ImageContainerName);
+
+                    _ = container.SetAccessPolicy(PublicAccessType.Blob);
+                    _ = container.CreateIfNotExists();
+
+                    opts.BaseUri = container.Uri;
+                });
         }
 
         private static void ConfigureIdeasFeature(IServiceCollection services, ConfigHandler configuration)

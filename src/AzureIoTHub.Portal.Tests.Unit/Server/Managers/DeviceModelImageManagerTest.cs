@@ -4,7 +4,6 @@
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Text;
     using System.Threading;
@@ -14,12 +13,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
     using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Options;
     using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Shared.Models.v10;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Options;
     using Moq;
     using NUnit.Framework;
     using UnitTests.Bases;
@@ -31,7 +30,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
         private Mock<BlobContainerClient> mockBlobContainerClient;
         private Mock<BlobClient> mockBlobClient;
         private Mock<ConfigHandler> mockConfigHandler;
-        private Mock<EnvVariableRegistry> mockEnvVariableRegistry;
+        private Mock<IOptions<DeviceModelImageOptions>> mockDeviceModelImageOptions;
 
         private IDeviceModelImageManager deviceModelImageManager;
 
@@ -43,29 +42,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             this.mockBlobContainerClient = MockRepository.Create<BlobContainerClient>();
             this.mockBlobClient = MockRepository.Create<BlobClient>();
             this.mockConfigHandler = MockRepository.Create<ConfigHandler>();
-            this.mockEnvVariableRegistry = MockRepository.Create<EnvVariableRegistry>();
+            this.mockDeviceModelImageOptions = MockRepository.Create<IOptions<DeviceModelImageOptions>>();
 
             _ = ServiceCollection.AddSingleton(this.mockBlobServiceClient.Object);
-            _ = ServiceCollection.AddSingleton(this.mockEnvVariableRegistry.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageOptions.Object);
             _ = ServiceCollection.AddSingleton(this.mockConfigHandler.Object);
             _ = ServiceCollection.AddSingleton<IDeviceModelImageManager, DeviceModelImageManager>();
 
             Services = ServiceCollection.BuildServiceProvider();
-
-            _ = this.mockBlobServiceClient
-                .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
-                .Returns(this.mockBlobContainerClient.Object);
-
-            _ = this.mockBlobContainerClient
-                .Setup(x => x.SetAccessPolicy(It.IsAny<PublicAccessType>(),
-                    It.IsAny<IEnumerable<BlobSignedIdentifier>>(),
-                    It.IsAny<BlobRequestConditions>(),
-                    It.IsAny<CancellationToken>())).Returns(Response.FromValue(BlobsModelFactory.BlobContainerInfo(ETag.All, DateTimeOffset.Now), Mock.Of<Response>()));
-
-            _ = this.mockBlobContainerClient.Setup(x => x.CreateIfNotExists(It.IsAny<PublicAccessType>(),
-                It.IsAny<IDictionary<string, string>>(),
-                It.IsAny<BlobContainerEncryptionScopeOptions>(),
-                It.IsAny<CancellationToken>())).Returns(Response.FromValue(BlobsModelFactory.BlobContainerInfo(ETag.All, DateTimeOffset.Now), Mock.Of<Response>()));
 
             this.deviceModelImageManager = Services.GetRequiredService<IDeviceModelImageManager>();
         }
@@ -185,7 +169,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             var deviceModelId = Fixture.Create<string>();
             var imageUri = Fixture.Create<Uri>();
 
-            this.mockEnvVariableRegistry.Object.BaseImageFolderUri = imageUri;
+            var mockOptions = new DeviceModelImageOptions()
+            {
+                BaseUri = imageUri
+            };
+
+            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
 
             // Act
             var result = this.deviceModelImageManager.ComputeImageUri(deviceModelId);
