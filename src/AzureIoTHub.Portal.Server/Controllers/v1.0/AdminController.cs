@@ -5,38 +5,33 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.IO;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Server.Managers;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using Services;
 
     [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api")]
+    [Route("api/admin")]
     [ApiExplorerSettings(GroupName = "IoT Devices")]
-    public class ImportExportController : ControllerBase
+    public class AdminController : ControllerBase
     {
-        private readonly ILogger<ImportExportController> logger;
-        private readonly IDeviceService<DeviceDetails> deviceService;
-        private readonly IDeviceService<LoRaDeviceDetails> lorawanDeviceService;
+        private readonly ILogger<AdminController> logger;
+        private readonly IExportManager exportManager;
 
-        public ImportExportController(
-            ILogger<ImportExportController> logger,
-            IDeviceService<LoRaDeviceDetails> lorawanDeviceService,
-            IDeviceService<DeviceDetails> deviceService)
+        public AdminController(
+            ILogger<AdminController> logger,
+            IExportManager exportManager)
         {
-            this.lorawanDeviceService = lorawanDeviceService;
-            this.deviceService = deviceService;
+            this.exportManager = exportManager;
             this.logger = logger;
         }
 
         [HttpGet("export/devices", Name = "Export devices")]
         public async Task<Stream> ExportDeviceList()
         {
-            var stream = await this.deviceService.ExportDeviceList();
+            var stream = await this.exportManager.ExportDeviceList();
             return stream;
 
             //var httpResponseMessage = new HttpResponseMessage
@@ -49,13 +44,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             //};
             //httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
             //return httpResponseMessage;
-
-        }
-
-        [HttpGet("export/lorawandevices", Name = "Export lorawan devices")]
-        public async Task<Stream> ExportLorawanDeviceList()
-        {
-            return await this.lorawanDeviceService.ExportDeviceList();
         }
     }
 }
