@@ -4,7 +4,6 @@
 namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
     using Models.v10;
     using Shared.Models;

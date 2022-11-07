@@ -4,13 +4,12 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using System.IO;
+    using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
-    using System;
     using AzureIoTHub.Portal.Infrastructure;
     using AzureIoTHub.Portal.Server.Services;
     using Microsoft.EntityFrameworkCore;
-    using System.Linq;
-    using System.Text;
 
     public class ExportManager : IExportManager
     {
