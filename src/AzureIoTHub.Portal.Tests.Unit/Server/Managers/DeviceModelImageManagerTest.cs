@@ -62,6 +62,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             var expectedImageUri = Fixture.Create<Uri>();
             using var imageAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<string>()));
 
+            var mockOptions = new DeviceModelImageOptions()
+            {
+                BaseUri = Fixture.Create<Uri>()
+            };
+
+            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
+
             _ = this.mockBlobServiceClient
                 .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
                 .Returns(this.mockBlobContainerClient.Object);
@@ -102,6 +109,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             var deviceModelId = Fixture.Create<string>();
             var imageUri = Fixture.Create<Uri>();
 
+            var mockOptions = new DeviceModelImageOptions()
+            {
+                BaseUri = imageUri
+            };
+
+            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
+
             _ = this.mockBlobServiceClient
                 .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
                 .Returns(this.mockBlobContainerClient.Object);
@@ -135,6 +149,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             var blob = BlobsModelFactory.BlobItem(name:deviceModelId);
             var blobsPage = Page<BlobItem>.FromValues(new[] { blob }, default, new Mock<Response>().Object);
             var blobsPageable = AsyncPageable<BlobItem>.FromPages(new[] { blobsPage });
+
+            var mockOptions = new DeviceModelImageOptions()
+            {
+                BaseUri = Fixture.Create<Uri>()
+            };
+
+            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
 
             _ = this.mockBlobServiceClient
                 .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
@@ -200,6 +221,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
                 .ReturnsAsync(Response.FromValue(
                     BlobsModelFactory.BlobContentInfo(ETag.All, DateTimeOffset.Now, Array.Empty<byte>(), string.Empty,
                         1L), Mock.Of<Response>()));
+
+            var mockOptions = new DeviceModelImageOptions()
+            {
+                BaseUri = Fixture.Create<Uri>()
+            };
+
+            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
 
             // Act
             await this.deviceModelImageManager.InitializeDefaultImageBlob();
