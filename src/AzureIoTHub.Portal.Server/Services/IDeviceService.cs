@@ -32,7 +32,5 @@ namespace AzureIoTHub.Portal.Server.Services
         Task DeleteDevice(string deviceId);
 
         Task<EnrollmentCredentials> GetCredentials(string deviceId);
-
-        Task<Stream> ExportDeviceList();
     }
 }

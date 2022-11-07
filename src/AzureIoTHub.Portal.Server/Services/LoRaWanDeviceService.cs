@@ -4,18 +4,17 @@
 namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Threading.Tasks;
-    using Models.v10.LoRaWAN;
     using AutoMapper;
+    using Domain;
     using Domain.Entities;
+    using Domain.Exceptions;
     using Domain.Repositories;
-    using Managers;
     using Infrastructure;
     using Domain.Exceptions;
+    using Microsoft.EntityFrameworkCore;
     using Domain;
     using Models.v10;
-    using Mappers;
-    using System;
-    using System.IO;
+    using Models.v10.LoRaWAN;
 
     public class LoRaWanDeviceService : DeviceServiceBase<LoRaDeviceDetails>
     {
@@ -112,17 +111,5 @@ namespace AzureIoTHub.Portal.Server.Services
             await this.unitOfWork.SaveAsync();
         }
 
-        public override async Task<Stream> ExportDeviceList()
-        {
-            Console.WriteLine("Call to ExportDeviceList() on LoRaWanDeviceService");
-
-            var query = portalDbContext.LorawanDevices
-                .Include(device => device.Tags);
-
-            //var test = (await query.ToListAsync()).ToCsv();
-            //Console.WriteLine(test);
-
-            return new FileStream("test.csv", FileMode.OpenOrCreate);
-        }
     }
 }

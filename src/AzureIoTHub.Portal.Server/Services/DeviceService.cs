@@ -112,35 +112,5 @@ namespace AzureIoTHub.Portal.Server.Services
 
             await this.unitOfWork.SaveAsync();
         }
-
-        public override async Task<Stream> ExportDeviceList()
-        {
-            Console.WriteLine("Call to ExportDeviceList() on DeviceService");
-
-            var tags = this.deviceTagService.GetAllTagsNames();
-            var query = this.portalDbContext.Devices
-                .Include(device => device.Tags);
-            var devices = await query.ToListAsync();
-
-            var textContent = "Id,Name,DeviceModelId,IsEnabled,Version";
-            foreach (var tag in tags)
-            {
-                textContent += $",TAG:{tag}";
-            }
-
-            foreach (var device in devices)
-            {
-                textContent += $"\n{device.Id},{device.Name},{device.DeviceModelId},{device.IsEnabled},{device.Version}";
-                foreach (var tag in tags)
-                {
-                    var value = device.Tags.Where(x => x.Name == tag).Select(x => x.Value).SingleOrDefault();
-                    textContent += $",{value}";
-                }
-            }
-
-            var textAsBytes = Encoding.Unicode.GetBytes(textContent);
-            var stream = new MemoryStream(textAsBytes);
-            return stream;
-        }
     }
 }
