@@ -689,5 +689,15 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new InternalServerErrorException($"Failed to parse device identifier", e);
             }
         }
+
+        public async Task<IEnumerable<string>> GetDevicesToExport()
+        {
+            var filter = "WHERE (NOT IS_DEFINED (tags.deviceType) OR tags.deviceType <> 'LoRa Concentrator') AND (capabilities.iotEdge = false)";
+            var query = this.registryManager.CreateQuery($"SELECT deviceId, tags, properties.desired FROM devices { filter }");
+
+            var response = await query.GetNextAsJsonAsync();
+
+            return response;
+        }
     }
 }
