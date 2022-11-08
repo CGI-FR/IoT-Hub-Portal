@@ -11,5 +11,7 @@ namespace AzureIoTHub.Portal.Server.Services
     {
         Task<IEnumerable<DeviceModelProperty>> GetModelProperties(string modelId);
         Task SavePropertiesForModel(string modelId, IEnumerable<DeviceModelProperty> items);
+
+        IEnumerable<string> GetAllPropertiesNames();
     }
 }
