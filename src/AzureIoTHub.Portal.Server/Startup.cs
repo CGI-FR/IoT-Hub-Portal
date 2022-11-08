@@ -10,7 +10,6 @@ namespace AzureIoTHub.Portal.Server
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
     using AzureIoTHub.Portal.Domain.Options;
-    using AzureIoTHub.Portal.Shared.Models.v10;
     using Domain;
     using Domain.Exceptions;
     using Domain.Repositories;
@@ -108,7 +107,6 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddSingleton(configuration);
             _ = services.AddSingleton(new PortalMetric());
             _ = services.AddSingleton(new LoRaGatewayIDList());
-            _ = services.AddSingleton(new EnvVariableRegistry());
 
             _ = services.AddRazorPages();
 
