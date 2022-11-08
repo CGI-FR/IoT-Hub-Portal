@@ -41,6 +41,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="pageSize"></param>
         /// <param name="pageNumber"></param>
         /// <param name="orderBy"></param>
+        /// <param name="modelId"></param>
         protected async Task<PaginationResult<DeviceListItem>> GetItems(
             string routeName = null,
             string searchText = null,
@@ -48,7 +49,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             bool? searchState = null,
             int pageSize = 10,
             int pageNumber = 0,
-            string[] orderBy = null)
+            string[] orderBy = null,
+            string modelId = null)
         {
 
             var paginatedDevices = await this.deviceService.GetDevices(
@@ -58,7 +60,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 pageSize,
                 pageNumber,
                 orderBy,
-                GetTagsFromQueryString(Request.Query));
+                GetTagsFromQueryString(Request.Query),
+                modelId);
 
             var nextPage = string.Empty;
 
