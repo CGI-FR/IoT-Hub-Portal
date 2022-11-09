@@ -710,6 +710,7 @@
           {
             "name": "modelId",
             "in": "query",
+            "description": "",
             "style": "form",
             "schema": {
               "type": "string"
