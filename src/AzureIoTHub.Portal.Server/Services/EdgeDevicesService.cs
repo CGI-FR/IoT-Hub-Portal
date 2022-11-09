@@ -13,7 +13,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Infrastructure;
     using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Helpers;
@@ -34,7 +33,6 @@ namespace AzureIoTHub.Portal.Server.Services
 
         private readonly IDeviceTagService deviceTagService;
 
-        private readonly PortalDbContext portalDbContext;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IEdgeDeviceRepository edgeDeviceRepository;
@@ -44,7 +42,6 @@ namespace AzureIoTHub.Portal.Server.Services
         public EdgeDevicesService(
             IExternalDeviceService externalDevicesService,
             IDeviceTagService deviceTagService,
-            PortalDbContext portalDbContext,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IEdgeDeviceRepository edgeDeviceRepository,
@@ -53,7 +50,6 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             this.externalDevicesService = externalDevicesService;
             this.deviceTagService = deviceTagService;
-            this.portalDbContext = portalDbContext;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.edgeDeviceRepository = edgeDeviceRepository;
@@ -169,19 +165,12 @@ namespace AzureIoTHub.Portal.Server.Services
 
         private async Task<IoTEdgeDevice> CreateEdgeDeviceInDatabase(IoTEdgeDevice device)
         {
-            try
-            {
-                var edgeDeviceEntity = this.mapper.Map<EdgeDevice>(device);
+            var edgeDeviceEntity = this.mapper.Map<EdgeDevice>(device);
 
-                await this.edgeDeviceRepository.InsertAsync(edgeDeviceEntity);
-                await this.unitOfWork.SaveAsync();
+            await this.edgeDeviceRepository.InsertAsync(edgeDeviceEntity);
+            await this.unitOfWork.SaveAsync();
 
-                return device;
-            }
-            catch (DbUpdateException e)
-            {
-                throw new InternalServerErrorException($"Unable to create the device {device.DeviceName}", e);
-            }
+            return device;
         }
 
         /// <summary>
@@ -211,31 +200,24 @@ namespace AzureIoTHub.Portal.Server.Services
 
         private async Task<IoTEdgeDevice> UpdateEdgeDeviceInDatabase(IoTEdgeDevice device)
         {
-            try
+            var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(device.DeviceId);
+
+            if (edgeDeviceEntity == null)
             {
-                var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(device.DeviceId);
-
-                if (edgeDeviceEntity == null)
-                {
-                    throw new ResourceNotFoundException($"The device {device.DeviceId} doesn't exist");
-                }
-
-                foreach (var deviceTagEntity in edgeDeviceEntity.Tags)
-                {
-                    this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
-                }
-
-                _ = this.mapper.Map(device, edgeDeviceEntity);
-
-                this.edgeDeviceRepository.Update(edgeDeviceEntity);
-                await this.unitOfWork.SaveAsync();
-
-                return device;
+                throw new ResourceNotFoundException($"The device {device.DeviceId} doesn't exist");
             }
-            catch (DbUpdateException e)
+
+            foreach (var deviceTagEntity in edgeDeviceEntity.Tags)
             {
-                throw new InternalServerErrorException($"Unable to create the device {device.DeviceName}", e);
+                this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
             }
+
+            _ = this.mapper.Map(device, edgeDeviceEntity);
+
+            this.edgeDeviceRepository.Update(edgeDeviceEntity);
+            await this.unitOfWork.SaveAsync();
+
+            return device;
         }
 
         public async Task DeleteEdgeDeviceAsync(string deviceId)
@@ -247,28 +229,21 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task DeleteEdgeDeviceInDatabase(string deviceId)
         {
-            try
+            var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(deviceId);
+
+            if (edgeDeviceEntity == null)
             {
-                var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(deviceId);
-
-                if (edgeDeviceEntity == null)
-                {
-                    return;
-                }
-
-                foreach (var deviceTagEntity in edgeDeviceEntity.Tags)
-                {
-                    this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
-                }
-
-                this.edgeDeviceRepository.Delete(deviceId);
-
-                await this.unitOfWork.SaveAsync();
+                return;
             }
-            catch (DbUpdateException e)
+
+            foreach (var deviceTagEntity in edgeDeviceEntity.Tags)
             {
-                throw new InternalServerErrorException($"Unable to delete the device {deviceId}", e);
+                this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
             }
+
+            this.edgeDeviceRepository.Delete(deviceId);
+
+            await this.unitOfWork.SaveAsync();
         }
 
         /// <summary>

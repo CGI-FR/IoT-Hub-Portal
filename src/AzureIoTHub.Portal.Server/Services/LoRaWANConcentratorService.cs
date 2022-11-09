@@ -122,62 +122,41 @@ namespace AzureIoTHub.Portal.Server.Services
 
         private async Task<ConcentratorDto> CreateDeviceInDatabase(ConcentratorDto concentrator)
         {
-            try
-            {
-                var concentratorEntity = this.mapper.Map<Concentrator>(concentrator);
-                await this.concentratorRepository.InsertAsync(concentratorEntity);
-                await this.unitOfWork.SaveAsync();
-                return concentrator;
-            }
-            catch (DbUpdateException e)
-            {
-                throw new InternalServerErrorException($"Unable to create the concentrator {concentrator.DeviceName}", e);
-            }
+            var concentratorEntity = this.mapper.Map<Concentrator>(concentrator);
+            await this.concentratorRepository.InsertAsync(concentratorEntity);
+            await this.unitOfWork.SaveAsync();
+            return concentrator;
         }
 
         private async Task<ConcentratorDto> UpdateDeviceInDatabase(ConcentratorDto concentrator)
         {
-            try
+            var concentratorEntity = await this.concentratorRepository.GetByIdAsync(concentrator.DeviceId);
+
+            if (concentratorEntity == null)
             {
-                var concentratorEntity = await this.concentratorRepository.GetByIdAsync(concentrator.DeviceId);
-
-                if (concentratorEntity == null)
-                {
-                    throw new ResourceNotFoundException($"The device {concentrator.DeviceId} doesn't exist");
-                }
-
-                _ = this.mapper.Map(concentrator, concentratorEntity);
-
-                this.concentratorRepository.Update(concentratorEntity);
-                await this.unitOfWork.SaveAsync();
-
-                return concentrator;
+                throw new ResourceNotFoundException($"The device {concentrator.DeviceId} doesn't exist");
             }
-            catch (DbUpdateException e)
-            {
-                throw new InternalServerErrorException($"Unable to update the concentrator {concentrator.DeviceName}", e);
-            }
+
+            _ = this.mapper.Map(concentrator, concentratorEntity);
+
+            this.concentratorRepository.Update(concentratorEntity);
+            await this.unitOfWork.SaveAsync();
+
+            return concentrator;
         }
 
         private async Task DeleteDeviceInDatabase(string deviceId)
         {
-            try
+            var concentratorEntity = await this.concentratorRepository.GetByIdAsync(deviceId);
+
+            if (concentratorEntity == null)
             {
-                var concentratorEntity = await this.concentratorRepository.GetByIdAsync(deviceId);
-
-                if (concentratorEntity == null)
-                {
-                    return;
-                }
-
-                this.concentratorRepository.Delete(deviceId);
-
-                await this.unitOfWork.SaveAsync();
+                return;
             }
-            catch (DbUpdateException e)
-            {
-                throw new InternalServerErrorException($"Unable to delete the concentrator {deviceId}", e);
-            }
+
+            this.concentratorRepository.Delete(deviceId);
+
+            await this.unitOfWork.SaveAsync();
         }
     }
 }

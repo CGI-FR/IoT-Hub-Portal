@@ -42,36 +42,29 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task PostDeviceModelCommands(string id, DeviceModelCommandDto[] commands)
         {
-            try
+            var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(id);
+
+            if (deviceModelEntity == null)
             {
-                var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(id);
-
-                if (deviceModelEntity == null)
-                {
-                    throw new ResourceNotFoundException($"The device model {id} doesn't exist");
-                }
-
-                var existingDeviceModelCommands = await GetDeviceModelCommandsFromModel(id);
-
-                foreach (var deviceModelCommand in existingDeviceModelCommands)
-                {
-                    this.deviceModelCommandRepository.Delete(deviceModelCommand.Id);
-                }
-
-                foreach (var deviceModelCommand in commands)
-                {
-                    var deviceModelCommandEntity = this.mapper.Map<DeviceModelCommand>(deviceModelCommand);
-                    deviceModelCommandEntity.DeviceModelId = id;
-
-                    await this.deviceModelCommandRepository.InsertAsync(deviceModelCommandEntity);
-                }
-
-                await this.unitOfWork.SaveAsync();
+                throw new ResourceNotFoundException($"The device model {id} doesn't exist");
             }
-            catch (DbUpdateException e)
+
+            var existingDeviceModelCommands = await GetDeviceModelCommandsFromModel(id);
+
+            foreach (var deviceModelCommand in existingDeviceModelCommands)
             {
-                throw new InternalServerErrorException($"Unable to create the commands for the model with id {id}", e);
+                this.deviceModelCommandRepository.Delete(deviceModelCommand.Id);
             }
+
+            foreach (var deviceModelCommand in commands)
+            {
+                var deviceModelCommandEntity = this.mapper.Map<DeviceModelCommand>(deviceModelCommand);
+                deviceModelCommandEntity.DeviceModelId = id;
+
+                await this.deviceModelCommandRepository.InsertAsync(deviceModelCommandEntity);
+            }
+
+            await this.unitOfWork.SaveAsync();
         }
 
         public Task<DeviceModelCommandDto[]> GetDeviceModelCommandsFromModel(string id)

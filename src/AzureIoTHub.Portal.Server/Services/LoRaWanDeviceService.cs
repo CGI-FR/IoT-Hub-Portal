@@ -11,7 +11,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using Managers;
     using Infrastructure;
     using Domain.Exceptions;
-    using Microsoft.EntityFrameworkCore;
     using Domain;
     using Models.v10;
     using Mappers;
@@ -62,74 +61,53 @@ namespace AzureIoTHub.Portal.Server.Services
 
         protected override async Task<LoRaDeviceDetails> CreateDeviceInDatabase(LoRaDeviceDetails device)
         {
-            try
-            {
-                var deviceEntity = this.mapper.Map<LorawanDevice>(device);
+            var deviceEntity = this.mapper.Map<LorawanDevice>(device);
 
-                await this.lorawanDeviceRepository.InsertAsync(deviceEntity);
-                await this.unitOfWork.SaveAsync();
+            await this.lorawanDeviceRepository.InsertAsync(deviceEntity);
+            await this.unitOfWork.SaveAsync();
 
-                return device;
-            }
-            catch (DbUpdateException e)
-            {
-                throw new InternalServerErrorException($"Unable to create the LoRaWAN device {device.DeviceName}", e);
-            }
+            return device;
         }
 
         protected override async Task<LoRaDeviceDetails> UpdateDeviceInDatabase(LoRaDeviceDetails device)
         {
-            try
+            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(device.DeviceID);
+
+            if (deviceEntity == null)
             {
-                var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(device.DeviceID);
-
-                if (deviceEntity == null)
-                {
-                    throw new ResourceNotFoundException($"The LoRaWAN device {device.DeviceID} doesn't exist");
-                }
-
-                foreach (var deviceTagEntity in deviceEntity.Tags)
-                {
-                    this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
-                }
-
-                _ = this.mapper.Map(device, deviceEntity);
-
-                this.lorawanDeviceRepository.Update(deviceEntity);
-                await this.unitOfWork.SaveAsync();
-
-                return device;
+                throw new ResourceNotFoundException($"The LoRaWAN device {device.DeviceID} doesn't exist");
             }
-            catch (DbUpdateException e)
+
+            foreach (var deviceTagEntity in deviceEntity.Tags)
             {
-                throw new InternalServerErrorException($"Unable to update the LoRaWAN device {device.DeviceName}", e);
+                this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
             }
+
+            _ = this.mapper.Map(device, deviceEntity);
+
+            this.lorawanDeviceRepository.Update(deviceEntity);
+            await this.unitOfWork.SaveAsync();
+
+            return device;
         }
 
         protected override async Task DeleteDeviceInDatabase(string deviceId)
         {
-            try
+            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId);
+
+            if (deviceEntity == null)
             {
-                var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId);
-
-                if (deviceEntity == null)
-                {
-                    return;
-                }
-
-                foreach (var deviceTagEntity in deviceEntity.Tags)
-                {
-                    this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
-                }
-
-                this.lorawanDeviceRepository.Delete(deviceId);
-
-                await this.unitOfWork.SaveAsync();
+                return;
             }
-            catch (DbUpdateException e)
+
+            foreach (var deviceTagEntity in deviceEntity.Tags)
             {
-                throw new InternalServerErrorException($"Unable to delete the LoRaWAN device {deviceId}", e);
+                this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
             }
+
+            this.lorawanDeviceRepository.Delete(deviceId);
+
+            await this.unitOfWork.SaveAsync();
         }
     }
 }

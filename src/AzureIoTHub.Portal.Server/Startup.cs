@@ -13,6 +13,8 @@ namespace AzureIoTHub.Portal.Server
     using Domain;
     using Domain.Exceptions;
     using Domain.Repositories;
+    using EntityFramework.Exceptions.Common;
+    using EntityFramework.Exceptions.PostgreSQL;
     using Extensions;
     using Hellang.Middleware.ProblemDetails;
     using Hellang.Middleware.ProblemDetails.Mvc;
@@ -210,6 +212,61 @@ namespace AzureIoTHub.Portal.Server
                         ["params"] = exception.ParamName
                     }
                 });
+
+                setup.Map<UniqueConstraintException>(exception => new ProblemDetails
+                {
+                    Title = "Unique Violation",
+                    Detail = exception.Message,
+                    Status = StatusCodes.Status500InternalServerError,
+                    Extensions =
+                    {
+                        ["params"] = exception.Entries.ToString()
+                    }
+                });
+
+                setup.Map<CannotInsertNullException>(exception => new ProblemDetails
+                {
+                    Title = "Not Null Violation",
+                    Detail = exception.Message,
+                    Status = StatusCodes.Status500InternalServerError,
+                    Extensions =
+                    {
+                        ["params"] = exception.Entries.ToString(),
+                    }
+                });
+
+                setup.Map<MaxLengthExceededException>(exception => new ProblemDetails
+                {
+                    Title = "String Data Right Truncation",
+                    Detail = exception.Message,
+                    Status = StatusCodes.Status500InternalServerError,
+                    Extensions =
+                    {
+                        ["params"] = exception.Entries.ToString()
+                    }
+                });
+
+                setup.Map<NumericOverflowException>(exception => new ProblemDetails
+                {
+                    Title = "Numeric Value Out Of Range",
+                    Detail = exception.Message,
+                    Status = StatusCodes.Status500InternalServerError,
+                    Extensions =
+                    {
+                        ["params"] = exception.Entries.ToString()
+                    }
+                });
+
+                setup.Map<ReferenceConstraintException>(exception => new ProblemDetails
+                {
+                    Title = "Foreign Key Violation",
+                    Detail = exception.Message,
+                    Status = StatusCodes.Status500InternalServerError,
+                    Extensions =
+                    {
+                        ["params"] = exception.Entries.ToString()
+                    }
+                });
             });
 
             _ = services.AddControllers();
@@ -374,7 +431,11 @@ namespace AzureIoTHub.Portal.Server
         private static void ConfigureDatabase(IServiceCollection services, ConfigHandler configuration)
         {
             _ = services
-                .AddDbContextPool<PortalDbContext>(opts => opts.UseNpgsql(configuration.PostgreSQLConnectionString));
+                .AddDbContextPool<PortalDbContext>(opts =>
+                {
+                    _ = opts.UseNpgsql(configuration.PostgreSQLConnectionString);
+                    _ = opts.UseExceptionProcessor();
+                });
 
             if (string.IsNullOrEmpty(configuration.PostgreSQLConnectionString))
                 return;

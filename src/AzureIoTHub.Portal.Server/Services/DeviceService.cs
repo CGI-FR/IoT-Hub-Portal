@@ -11,7 +11,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using Managers;
     using Infrastructure;
     using AzureIoTHub.Portal.Domain.Entities;
-    using Microsoft.EntityFrameworkCore;
     using Domain;
     using Mappers;
 
@@ -61,74 +60,53 @@ namespace AzureIoTHub.Portal.Server.Services
 
         protected override async Task<DeviceDetails> CreateDeviceInDatabase(DeviceDetails device)
         {
-            try
-            {
-                var deviceEntity = this.mapper.Map<Device>(device);
+            var deviceEntity = this.mapper.Map<Device>(device);
 
-                await this.deviceRepository.InsertAsync(deviceEntity);
-                await this.unitOfWork.SaveAsync();
+            await this.deviceRepository.InsertAsync(deviceEntity);
+            await this.unitOfWork.SaveAsync();
 
-                return device;
-            }
-            catch (DbUpdateException e)
-            {
-                throw new InternalServerErrorException($"Unable to create the device {device.DeviceName}", e);
-            }
+            return device;
         }
 
         protected override async Task<DeviceDetails> UpdateDeviceInDatabase(DeviceDetails device)
         {
-            try
+            var deviceEntity = await this.deviceRepository.GetByIdAsync(device.DeviceID);
+
+            if (deviceEntity == null)
             {
-                var deviceEntity = await this.deviceRepository.GetByIdAsync(device.DeviceID);
-
-                if (deviceEntity == null)
-                {
-                    throw new ResourceNotFoundException($"The device {device.DeviceID} doesn't exist");
-                }
-
-                foreach (var deviceTagEntity in deviceEntity.Tags)
-                {
-                    this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
-                }
-
-                _ = this.mapper.Map(device, deviceEntity);
-
-                this.deviceRepository.Update(deviceEntity);
-                await this.unitOfWork.SaveAsync();
-
-                return device;
+                throw new ResourceNotFoundException($"The device {device.DeviceID} doesn't exist");
             }
-            catch (DbUpdateException e)
+
+            foreach (var deviceTagEntity in deviceEntity.Tags)
             {
-                throw new InternalServerErrorException($"Unable to update the device {device.DeviceName}", e);
+                this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
             }
+
+            _ = this.mapper.Map(device, deviceEntity);
+
+            this.deviceRepository.Update(deviceEntity);
+            await this.unitOfWork.SaveAsync();
+
+            return device;
         }
 
         protected override async Task DeleteDeviceInDatabase(string deviceId)
         {
-            try
+            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId);
+
+            if (deviceEntity == null)
             {
-                var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId);
-
-                if (deviceEntity == null)
-                {
-                    return;
-                }
-
-                foreach (var deviceTagEntity in deviceEntity.Tags)
-                {
-                    this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
-                }
-
-                this.deviceRepository.Delete(deviceId);
-
-                await this.unitOfWork.SaveAsync();
+                return;
             }
-            catch (DbUpdateException e)
+
+            foreach (var deviceTagEntity in deviceEntity.Tags)
             {
-                throw new InternalServerErrorException($"Unable to delete the device {deviceId}", e);
+                this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
             }
+
+            this.deviceRepository.Delete(deviceId);
+
+            await this.unitOfWork.SaveAsync();
         }
     }
 }

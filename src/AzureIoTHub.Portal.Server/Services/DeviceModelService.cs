@@ -17,7 +17,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using Microsoft.AspNetCore.Http;
     using Microsoft.Azure.Devices.Shared;
     using Helpers;
-    using Microsoft.EntityFrameworkCore;
 
     public class DeviceModelService<TListItem, TModel> : IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel
@@ -81,83 +80,62 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task CreateDeviceModel(TModel deviceModel)
         {
-            try
-            {
-                var deviceModelEntity = this.mapper.Map<DeviceModel>(deviceModel);
+            var deviceModelEntity = this.mapper.Map<DeviceModel>(deviceModel);
 
-                await this.deviceModelRepository.InsertAsync(deviceModelEntity);
-                await this.unitOfWork.SaveAsync();
+            await this.deviceModelRepository.InsertAsync(deviceModelEntity);
+            await this.unitOfWork.SaveAsync();
 
-                await CreateDeviceModelConfiguration(deviceModel);
-            }
-            catch (DbUpdateException e)
-            {
-                throw new InternalServerErrorException($"Unable to create the device model {deviceModel.Name}", e);
-            }
+            await CreateDeviceModelConfiguration(deviceModel);
         }
 
         public async Task UpdateDeviceModel(TModel deviceModel)
         {
-            try
+            var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModel.ModelId);
+
+            if (deviceModelEntity == null)
             {
-                var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModel.ModelId);
-
-                if (deviceModelEntity == null)
-                {
-                    throw new ResourceNotFoundException($"The device model {deviceModel.ModelId} doesn't exist");
-                }
-
-                _ = this.mapper.Map(deviceModel, deviceModelEntity);
-
-                this.deviceModelRepository.Update(deviceModelEntity);
-                await this.unitOfWork.SaveAsync();
-
-                await CreateDeviceModelConfiguration(deviceModel);
+                throw new ResourceNotFoundException($"The device model {deviceModel.ModelId} doesn't exist");
             }
-            catch (DbUpdateException e)
-            {
-                throw new InternalServerErrorException($"Unable to update the device model {deviceModel.Name}", e);
-            }
+
+            _ = this.mapper.Map(deviceModel, deviceModelEntity);
+
+            this.deviceModelRepository.Update(deviceModelEntity);
+            await this.unitOfWork.SaveAsync();
+
+            await CreateDeviceModelConfiguration(deviceModel);
         }
 
         public async Task DeleteDeviceModel(string deviceModelId)
         {
-            try
+            var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModelId);
+
+            if (deviceModelEntity == null)
             {
-                var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModelId);
+                return;
+            }
 
-                if (deviceModelEntity == null)
-                {
-                    return;
-                }
+            var devices = await this.externalDeviceService.GetAllDevice();
 
-                var devices = await this.externalDeviceService.GetAllDevice();
+            if (devices.Items.Any(x => DeviceHelper.RetrieveTagValue(x, "modelId") == deviceModelId))
+            {
+                throw new ResourceAlreadyExistsException(
+                    $"The device model {deviceModelId} is already in use by a device and cannot be deleted");
+            }
 
-                if (devices.Items.Any(x => DeviceHelper.RetrieveTagValue(x, "modelId") == deviceModelId))
-                {
-                    throw new ResourceAlreadyExistsException(
-                        $"The device model {deviceModelId} is already in use by a device and cannot be deleted");
-                }
-
-                var deviceModelCommands = this.deviceModelCommandRepository.GetAll().Where(command =>
+            var deviceModelCommands = this.deviceModelCommandRepository.GetAll().Where(command =>
                     command.DeviceModelId.Equals(deviceModelId, StringComparison.Ordinal)).ToList();
 
-                foreach (var deviceModelCommand in deviceModelCommands)
-                {
-                    this.deviceModelCommandRepository.Delete(deviceModelCommand.Id);
-                }
-
-                // Image deletion
-                await this.deviceModelImageManager.DeleteDeviceModelImageAsync(deviceModelId);
-
-                this.deviceModelRepository.Delete(deviceModelId);
-
-                await this.unitOfWork.SaveAsync();
-            }
-            catch (DbUpdateException e)
+            foreach (var deviceModelCommand in deviceModelCommands)
             {
-                throw new InternalServerErrorException($"Unable to delete the device model {deviceModelId}", e);
+                this.deviceModelCommandRepository.Delete(deviceModelCommand.Id);
             }
+
+            // Image deletion
+            await this.deviceModelImageManager.DeleteDeviceModelImageAsync(deviceModelId);
+
+            this.deviceModelRepository.Delete(deviceModelId);
+
+            await this.unitOfWork.SaveAsync();
         }
 
         public Task<string> GetDeviceModelAvatar(string deviceModelId)

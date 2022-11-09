@@ -9,7 +9,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Domain.Entities;
     using Domain.Exceptions;
     using Domain.Repositories;
-    using Microsoft.EntityFrameworkCore;
 
     public class DeviceModelPropertiesService : IDeviceModelPropertiesService
     {
@@ -43,16 +42,9 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             _ = await AssertModelExists(modelId);
 
-            try
-            {
-                await this.deviceModelPropertiesRepository.SavePropertiesForModel(modelId, items);
+            await this.deviceModelPropertiesRepository.SavePropertiesForModel(modelId, items);
 
-                await this.unitOfWork.SaveAsync();
-            }
-            catch (DbUpdateException e)
-            {
-                throw new InternalServerErrorException($"Unable to set properties for model {modelId}", e);
-            }
+            await this.unitOfWork.SaveAsync();
         }
 
         private async Task<bool> AssertModelExists(string deviceModelId)
