@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Shared
     using MudBlazor;
     using NUnit.Framework;
     using Portal.Client.Constants;
+    using Microsoft.AspNetCore.Components.Web;
 
     [TestFixture]
     public class MainLayoutTests : BlazorUnitTest
@@ -51,7 +52,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Shared
             cut.WaitForAssertion(() => cut.FindComponent<MudThemeProvider>().Instance.Should().NotBeNull());
             cut.WaitForAssertion(() => cut.FindComponent<MudDialogProvider>().Instance.Should().NotBeNull());
             cut.WaitForAssertion(() => cut.FindComponent<MudSnackbarProvider>().Instance.Should().NotBeNull());
-            cut.WaitForAssertion(() => cut.FindComponent<Title>().Instance.Value.Should().Be("TEST"));
+            cut.WaitForAssertion(() => cut.FindComponent<PageTitle>().Instance.Should().NotBeNull());
             cut.WaitForAssertion(() => cut.FindComponents<MudAppBar>().Count.Should().Be(2));
             cut.WaitForAssertion(() => cut.FindComponent<Appbar>().Instance.Should().NotBeNull());
             cut.WaitForAssertion(() => cut.FindComponent<MudDrawer>().Instance.Should().NotBeNull());

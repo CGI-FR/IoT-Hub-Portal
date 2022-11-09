@@ -21,7 +21,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
 
     - name: Restore Dotnet tools
       run: dotnet tool restore
@@ -36,7 +36,7 @@ jobs:
       working-directory: src/
     
     - name: Generate Open API documentation
-      run: dotnet swagger tofile --output ./swagger.json AzureIoTHub.Portal.Server/bin/Debug/net6.0/AzureIoTHub.Portal.Server.dll v1
+      run: dotnet swagger tofile --output ./swagger.json AzureIoTHub.Portal.Server/bin/Debug/net7.0/AzureIoTHub.Portal.Server.dll v1
       working-directory: src/
     
     # Upload swagger docs to GitHub
@@ -47,7 +47,7 @@ jobs:
         path: ./src/swagger.json
 
     - name: Run unit tests
-      run: dotnet test --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura AzureIoTHub.Portal.Tests.Unit/AzureIoTHub.Portal.Tests.Unit.csproj
+      run: dotnet test --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" AzureIoTHub.Portal.sln
       working-directory: src/
 
     # Upload test results as artifact

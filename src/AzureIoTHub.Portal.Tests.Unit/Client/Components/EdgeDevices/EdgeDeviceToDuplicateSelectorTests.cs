@@ -6,18 +6,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.EdgeDevices
     using System.Collections.Generic;
     using AngleSharp.Dom;
     using AutoFixture;
+    using AzureIoTHub.Portal.Client.Components.EdgeDevices;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Services;
-    using Models.v10;
-    using UnitTests.Bases;
     using Bunit;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
+    using Models.v10;
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
-    using AzureIoTHub.Portal.Client.Components.EdgeDevices;
+    using UnitTests.Bases;
 
     [TestFixture]
     public class EdgeDeviceToDuplicateSelectorTests : BlazorUnitTest

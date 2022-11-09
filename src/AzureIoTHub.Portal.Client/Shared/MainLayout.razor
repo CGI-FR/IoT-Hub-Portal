@@ -1,7 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
 @using AzureIoTHub.Portal.Models.v10
-@using Microsoft.AspNetCore.Components.Web.Extensions.Head
 
 @inject PortalSettings Portal
 @inject ILayoutService LayoutService
@@ -12,7 +11,7 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<Title value="@Portal.PortalName" />
+<PageTitle>@Portal.PortalName</PageTitle>
 
 <MudLayout>
 

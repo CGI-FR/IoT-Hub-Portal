@@ -6,19 +6,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Components.Devices
     using System.Collections.Generic;
     using AngleSharp.Dom;
     using AutoFixture;
+    using AzureIoTHub.Portal.Client.Components.Devices;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Services;
-    using Models.v10;
-    using UnitTests.Bases;
     using Bunit;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
+    using Models.v10;
     using Models.v10.LoRaWAN;
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
-    using AzureIoTHub.Portal.Client.Components.Devices;
+    using UnitTests.Bases;
 
     [TestFixture]
     public class DeviceToDuplicateSelectorTests : BlazorUnitTest
