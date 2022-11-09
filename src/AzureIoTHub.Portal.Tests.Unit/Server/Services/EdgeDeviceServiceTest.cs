@@ -246,6 +246,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var edgeDevice = new IoTEdgeDevice()
             {
                 DeviceId = "aaa",
+                Tags = new Dictionary<string, string>()
+                {
+                    { "test", "test" }
+                }
             };
 
             _ = this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(

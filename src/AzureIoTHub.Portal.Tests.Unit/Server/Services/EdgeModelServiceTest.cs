@@ -49,7 +49,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockEdgeDeviceModelCommandRepository = MockRepository.Create<IEdgeDeviceModelCommandRepository>();
             this.mockConfigService = MockRepository.Create<IConfigService>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
-            //this.mockEdgeDeviceModelMapper = MockRepository.Create<IEdgeDeviceModelMapper>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockEdgeDeviceModelRepository.Object);
@@ -119,6 +118,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 command.ModuleName = expectedModules[0].ModuleName;
                 return command;
             }) .ToList();
+
+            expectedCommands.Add(new EdgeDeviceModelCommand
+            {
+                EdgeDeviceModelId = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString(),
+                ModuleName = Guid.NewGuid().ToString()
+            });
 
             var expectedEdgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(expectedEdgeDeviceModel);
 
