@@ -28,10 +28,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             this.logger = logger;
         }
 
-        [HttpGet("export/devices", Name = "Export devices")]
-        public async Task<Stream> ExportDeviceList()
+        [HttpGet("export/devices/{isLoRaSupported}", Name = "Export devices")]
+        public async Task<Stream> ExportDeviceList(bool isLoRaSupported)
         {
-            var stream = await this.exportManager.ExportDeviceList();
+            var stream = await this.exportManager.ExportDeviceList(isLoRaSupported);
             return stream;
 
             //var httpResponseMessage = new HttpResponseMessage

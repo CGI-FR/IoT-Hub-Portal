@@ -59,9 +59,9 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.DeleteAsync($"api/devices/{deviceId}");
         }
 
-        public async Task<Stream> ExportDeviceList()
+        public async Task<Stream> ExportDeviceList(bool isLoRaSupported)
         {
-            return await this.http.GetStreamAsync($"api/admin/export/devices");
+            return await this.http.GetStreamAsync($"api/admin/export/devices/{isLoRaSupported}");
         }
     }
 }

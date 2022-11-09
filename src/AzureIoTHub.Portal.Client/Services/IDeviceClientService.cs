@@ -26,6 +26,6 @@ namespace AzureIoTHub.Portal.Client.Services
 
         Task DeleteDevice(string deviceId);
 
-        Task<Stream> ExportDeviceList();
+        Task<Stream> ExportDeviceList(bool isLoRaSupported);
     }
 }

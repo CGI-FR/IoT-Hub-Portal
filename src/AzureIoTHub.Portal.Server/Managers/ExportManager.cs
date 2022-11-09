@@ -19,13 +19,11 @@ namespace AzureIoTHub.Portal.Server.Managers
         private readonly IDeviceTagService deviceTagService;
         private readonly IDeviceModelPropertiesService deviceModelPropertiesService;
         private readonly ILogger<ExportManager> log;
-        //private readonly PortalSettings portalSettings;
 
         public ExportManager(PortalDbContext portalDbContext,
                                 IExternalDeviceService externalDevicesService,
                                 IDeviceTagService deviceTagService,
                                 IDeviceModelPropertiesService deviceModelPropertiesService,
-                                //PortalSettings portalSettings
                                 ILogger<ExportManager> log)
         {
             this.portalDbContext = portalDbContext;
@@ -33,17 +31,16 @@ namespace AzureIoTHub.Portal.Server.Managers
             this.deviceTagService = deviceTagService;
             this.deviceModelPropertiesService = deviceModelPropertiesService;
             this.log = log;
-            //this.portalSettings = portalSettings;
         }
 
 
-        public async Task<Stream> ExportDeviceList()
+        public async Task<Stream> ExportDeviceList(bool isLoRaSupported)
         {
             var list = await this.externalDevicesService.GetDevicesToExport();
             var tags = this.deviceTagService.GetAllTagsNames();
             var properties = this.deviceModelPropertiesService.GetAllPropertiesNames() as List<string>;
-            //if (portalSettings.IsLoRaSupported)
-            if (true)
+
+            if (isLoRaSupported)
             {
                 properties.AddRange(new List<string>()
                 {

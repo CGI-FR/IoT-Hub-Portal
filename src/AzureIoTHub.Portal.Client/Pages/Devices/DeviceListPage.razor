@@ -368,10 +368,10 @@
         // In real life use an asynchronous function for fetching data from an api.
         await Task.Delay(0);
 
-        // if text is null or empty, show complete list
+       // if text is null or empty, show complete list
         if (string.IsNullOrEmpty(value))
             return ModelList;
-
+        
         return ModelList
                     .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
