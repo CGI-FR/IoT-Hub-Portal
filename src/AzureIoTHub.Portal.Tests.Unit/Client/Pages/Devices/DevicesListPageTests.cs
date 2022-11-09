@@ -27,6 +27,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         private Mock<IDialogService> mockDialogService;
         private Mock<IDeviceTagSettingsClientService> mockDeviceTagSettingsClientService;
         private Mock<IDeviceClientService> mockDeviceClientService;
+        private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
 
         private readonly string apiBaseUrl = "api/devices";
 
@@ -37,10 +38,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockDeviceTagSettingsClientService = MockRepository.Create<IDeviceTagSettingsClientService>();
             this.mockDeviceClientService = MockRepository.Create<IDeviceClientService>();
+            this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceClientService.Object);
+            _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
         }
 
         [Test]
@@ -52,8 +55,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
 
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
+
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy="))
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
@@ -76,7 +82,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         {
             // Arrange
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy="))
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
@@ -86,6 +92,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
 
 
             // Act
@@ -113,11 +122,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         {
             // Arrange
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy="))
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
                 });
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -142,7 +153,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         {
             // Arrange
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy="))
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
@@ -152,6 +163,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             var cut = RenderComponent<DeviceListPage>();
 
@@ -169,7 +183,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy="))
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = new[] { new DeviceListItem { DeviceID = deviceId } }
@@ -179,6 +193,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             var cut = RenderComponent<DeviceListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
@@ -197,7 +214,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy="))
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
@@ -207,6 +224,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             var cut = RenderComponent<DeviceListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
@@ -223,7 +243,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         {
             // Arrange
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy="))
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
                     Items = Array.Empty<DeviceListItem>()
@@ -233,6 +253,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             // Act
             var cut = RenderComponent<DeviceListPage>();
@@ -249,13 +272,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         {
             // Arrange
             _ = this.mockDeviceClientService.Setup(service =>
-                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy="))
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
 
             // Act
             var cut = RenderComponent<DeviceListPage>();
