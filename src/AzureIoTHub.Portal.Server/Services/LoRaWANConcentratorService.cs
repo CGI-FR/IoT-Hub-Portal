@@ -12,7 +12,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using Managers;
     using Mappers;
     using Microsoft.Azure.Devices;
-    using Microsoft.EntityFrameworkCore;
     using Models.v10.LoRaWAN;
     using Shared.Models.v1._0;
 
