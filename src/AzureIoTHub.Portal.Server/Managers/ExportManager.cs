@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Managers
 {
     using System.Collections.Generic;
+    using System.Globalization;
     using System.IO;
     using System.Text;
     using System.Text.Json.Nodes;
@@ -37,7 +38,7 @@ namespace AzureIoTHub.Portal.Server.Managers
         public async Task<Stream> ExportDeviceList(bool isLoRaSupported)
         {
             var list = await this.externalDevicesService.GetDevicesToExport();
-            var tags = this.deviceTagService.GetAllTagsNames();
+            var tags = this.deviceTagService.GetAllTagsNames() as List<string>;
             var properties = this.deviceModelPropertiesService.GetAllPropertiesNames() as List<string>;
 
             if (isLoRaSupported)
@@ -73,28 +74,21 @@ namespace AzureIoTHub.Portal.Server.Managers
             _ = stringBuilder.Append(",PROPERTY:");
             _ = stringBuilder.AppendJoin(",PROPERTY:", properties);
 
-            //
-
             foreach (var item in list)
             {
                 var deviceObject = JsonNode.Parse(item)!;
                 var deviceTags = deviceObject!["tags"]!;
 
-                //textContent += $"\n{deviceObject["deviceId"]!},{deviceObject["tags"]["deviceName"]!},{deviceObject["tags"]["modelId"]!}";
-                _ = stringBuilder.Append($"\n{deviceObject["deviceId"]!},{deviceObject["tags"]["deviceName"]!},{deviceObject["tags"]["modelId"]!}");
+                _ = stringBuilder.Append(CultureInfo.InvariantCulture, $"\n{deviceObject["deviceId"]!},{deviceObject["tags"]["deviceName"]!},{deviceObject["tags"]["modelId"]!}");
 
                 foreach (var tag in tags)
                 {
-                    var value = deviceObject!["tags"][tag];
-                    //textContent += $",{value}";
-                    _ = stringBuilder.Append($",{value}");
+                    _ = stringBuilder.Append($",{deviceObject!["tags"][tag]}");
                 }
-                //_ = stringBuilder.AppendJoin(',', deviceObject!["tags"][(tag => n tags)]);
+
                 foreach (var property in properties)
                 {
-                    var value = deviceObject!["desired"][property];
-                    //textContent += $",{value}";
-                    _ = stringBuilder.Append($",{value}");
+                    _ = stringBuilder.Append($",{deviceObject!["desired"][property]}");
                 }
             }
 
@@ -103,32 +97,6 @@ namespace AzureIoTHub.Portal.Server.Managers
             var textAsBytes = Encoding.Unicode.GetBytes(textContent);
             var stream = new MemoryStream(textAsBytes);
             return stream;
-
-            //var tags = this.deviceTagService.GetAllTagsNames();
-
-            //var query = this.portalDbContext.Devices
-            //    .Include(device => device.Tags);
-            //var devices = await query.ToListAsync();
-
-            //var textContent = "Id,Name,DeviceModelId,IsEnabled,Version";
-            //foreach (var tag in tags)
-            //{
-            //    textContent += $",TAG:{tag}";
-            //}
-
-            //foreach (var device in devices)
-            //{
-            //    textContent += $"\n{device.Id},{device.Name},{device.DeviceModelId},{device.IsEnabled},{device.Version}";
-            //    foreach (var tag in tags)
-            //    {
-            //        var value = device.Tags.Where(x => x.Name == tag).Select(x => x.Value).SingleOrDefault();
-            //        textContent += $",{value}";
-            //    }
-            //}
-
-            //var textAsBytes = Encoding.Unicode.GetBytes(textContent);
-            //var stream = new MemoryStream(textAsBytes);
-            //return stream;
         }
     }
 }
