@@ -38,7 +38,15 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
                 new FrequencyPlan { FrequencyPlanID = "US_902_928_FSB_4",   Name = "United States 902-928 MHz, FSB 4"},
                 new FrequencyPlan { FrequencyPlanID = "US_902_928_FSB_5",   Name = "United States 902-928 MHz, FSB 5"},
                 new FrequencyPlan { FrequencyPlanID = "US_902_928_FSB_6",   Name = "United States 902-928 MHz, FSB 6"},
-                new FrequencyPlan { FrequencyPlanID = "US_902_928_FSB_7",   Name = "United States 902-928 MHz, FSB 7"}
+                new FrequencyPlan { FrequencyPlanID = "US_902_928_FSB_7",   Name = "United States 902-928 MHz, FSB 7"},
+                new FrequencyPlan { FrequencyPlanID = "AU_915_928_FSB_1",   Name = "Australia 915-928 MHz, FSB 1"},
+                new FrequencyPlan { FrequencyPlanID = "AU_915_928_FSB_2",   Name = "Australia 915-928 MHz, FSB 2"},
+                new FrequencyPlan { FrequencyPlanID = "AU_915_928_FSB_3",   Name = "Australia 915-928 MHz, FSB 3"},
+                new FrequencyPlan { FrequencyPlanID = "AU_915_928_FSB_4",   Name = "Australia 915-928 MHz, FSB 4"},
+                new FrequencyPlan { FrequencyPlanID = "AU_915_928_FSB_5",   Name = "Australia 915-928 MHz, FSB 5"},
+                new FrequencyPlan { FrequencyPlanID = "AU_915_928_FSB_6",   Name = "Australia 915-928 MHz, FSB 6"},
+                new FrequencyPlan { FrequencyPlanID = "AU_915_928_FSB_7",   Name = "Australia 915-928 MHz, FSB 7"},
+                new FrequencyPlan { FrequencyPlanID = "AU_915_928_FSB_7",   Name = "Australia 915-928 MHz, FSB 8"}
             });
         }
     }
