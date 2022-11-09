@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Services;
+    using EntityFramework.Exceptions.Common;
     using FluentAssertions;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
@@ -97,7 +98,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
         }
 
         [Test]
-        public async Task PostShouldCreateCommandShouldThrowInternalServerErrorExceptionWhenDDbUpdateExceptionIsThrown()
+        public async Task PostShouldCreateCommandShouldThrowUniqueConstraintExceptionWhenDDbUpdateExceptionIsThrown()
         {
             // Arrange
             var deviceModel = Fixture.Create<DeviceModel>();
@@ -114,13 +115,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
                 .Returns(Task.CompletedTask);
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .ThrowsAsync(new DbUpdateException());
+                .ThrowsAsync(new UniqueConstraintException());
 
             // Act
             var act = () =>  this.loRaWanCommandService.PostDeviceModelCommands(deviceModel.Id, commands.ToArray());
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<UniqueConstraintException>();
             MockRepository.VerifyAll();
         }
 

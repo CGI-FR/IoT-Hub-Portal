@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AutoMapper;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Server.Services;
+    using EntityFramework.Exceptions.Common;
     using FluentAssertions;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Azure.Devices.Provisioning.Service;
@@ -167,7 +168,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task CreateDeviceModelShouldThrowInternalServerErrorExceptionWhenDDbUpdateExceptionIsThrown()
+        public async Task CreateDeviceModelShouldThrowCannotInsertNullExceptionWhenDDbUpdateExceptionIsThrown()
         {
             // Arrange
             var deviceModelDto = Fixture.Create<DeviceModelDto>();
@@ -176,13 +177,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Task.CompletedTask);
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .ThrowsAsync(new DbUpdateException());
+                .ThrowsAsync(new CannotInsertNullException());
 
             // Act
             var act = () => this.deviceModelService.CreateDeviceModel(deviceModelDto);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<CannotInsertNullException>();
             MockRepository.VerifyAll();
         }
 
@@ -223,7 +224,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task UpdateDeviceModelShouldThrowInternalServerErrorExceptionWhenDDbUpdateExceptionIsThrown()
+        public async Task UpdateDeviceModelShouldThrowMaxLengthExceededExceptionWhenDDbUpdateExceptionIsThrown()
         {
             // Arrange
             var deviceModelDto = Fixture.Create<DeviceModelDto>();
@@ -235,13 +236,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .ThrowsAsync(new DbUpdateException());
+                .ThrowsAsync(new MaxLengthExceededException());
 
             // Act
             var act = () => this.deviceModelService.UpdateDeviceModel(deviceModelDto);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<MaxLengthExceededException>();
             MockRepository.VerifyAll();
         }
 
@@ -315,7 +316,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task DeleteDeviceModelShouldThrowInternalServerErrorExceptionWhenDDbUpdateExceptionIsThrown()
+        public async Task DeleteDeviceModelShouldThrowAnErrorExceptionWhenDDbUpdateExceptionIsThrown()
         {
             // Arrange
             var deviceModelDto = Fixture.Create<DeviceModelDto>();
@@ -363,7 +364,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var act = () => this.deviceModelService.DeleteDeviceModel(deviceModelDto.ModelId);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<DbUpdateException>();
             MockRepository.VerifyAll();
         }
 

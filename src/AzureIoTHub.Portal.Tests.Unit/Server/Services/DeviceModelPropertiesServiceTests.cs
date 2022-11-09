@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Services;
+    using EntityFramework.Exceptions.Common;
     using Microsoft.EntityFrameworkCore;
     using Moq;
     using NUnit.Framework;
@@ -123,10 +124,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Task.CompletedTask);
 
             _ = this.mockUnitOfWork.Setup(c => c.SaveAsync())
-                .Throws<DbUpdateException>();
+                .Throws<CannotInsertNullException>();
 
             // Act
-            _ = Assert.ThrowsAsync<InternalServerErrorException>(async () => await instance.SavePropertiesForModel(entity.Id, Array.Empty<DeviceModelProperty>()));
+            _ = Assert.ThrowsAsync<CannotInsertNullException>(async () => await instance.SavePropertiesForModel(entity.Id, Array.Empty<DeviceModelProperty>()));
         }
 
         private DeviceModel SetupMockEntity()

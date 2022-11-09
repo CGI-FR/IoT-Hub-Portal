@@ -269,7 +269,23 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public async Task FliterBySelectModelShould()
         {
             // Arrange
+            var modelList = new List<IoTEdgeModelListItem>()
+                {
+                    new IoTEdgeModelListItem()
+                    {
+                        ModelId = Guid.NewGuid().ToString(),
+                        Name = "model_01",
+                        Description = Guid.NewGuid().ToString(),
+                    },
+                    new IoTEdgeModelListItem()
+                    {
+                        ModelId = Guid.NewGuid().ToString(),
+                        Name = "model_02",
+                        Description = Guid.NewGuid().ToString(),
+                    },
+                };
             var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";
+            var expectedUrlFilter = $"api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId={modelList[0].ModelId}";
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
                 .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
                 {
@@ -288,20 +304,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                     }
                 });
 
-            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
-                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrlFilter))
+                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
                 {
-                    new IoTEdgeModelListItem()
+                    Items = new List<IoTEdgeListItem>
                     {
-                        Name = "model_01",
-                        Description = Guid.NewGuid().ToString(),
-                    },
-                    new IoTEdgeModelListItem()
-                    {
-                        Name = "model_02",
-                        Description = Guid.NewGuid().ToString(),
-                    },
+                        new IoTEdgeListItem()
+                        {
+                            DeviceId = Guid.NewGuid().ToString(),
+                            DeviceName = Guid.NewGuid().ToString(),
+                        }
+                    }
                 });
+
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+                .ReturnsAsync(modelList);
 
             // Act
             var popoverProvider = RenderComponent<MudPopoverProvider>();
@@ -312,6 +329,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             popoverProvider.WaitForAssertion(() => popoverProvider.FindAll(".mud-input-helper-text").Count.Should().Be(2));
 
             var newModelList = await cut.Instance.Search("01");
+
+            await cut.Instance.ChangeModel(modelList[0]);
+
+            cut.WaitForElement("#searchFilterButton").Click();
 
             // Assert
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));

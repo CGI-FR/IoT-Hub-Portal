@@ -26,6 +26,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Microsoft.Azure.Devices;
     using Microsoft.EntityFrameworkCore;
     using AutoMapper;
+    using EntityFramework.Exceptions.Common;
 
     [TestFixture]
     public class LoRaWanDeviceServiceTests : BackendUnitTest
@@ -147,7 +148,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task CreateDevice_DbUpdateExceptionIsThrown_InternalServerErrorExceptionIsThrown()
+        public async Task CreateDevice_DbUpdateExceptionIsThrown_UniqueConstraintExceptionIsThrown()
         {
             // Arrange
             var deviceDto = new LoRaDeviceDetails
@@ -170,13 +171,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Task.CompletedTask);
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .ThrowsAsync(new DbUpdateException());
+                .ThrowsAsync(new UniqueConstraintException());
 
             // Act
             var act = () => this.lorawanDeviceService.CreateDevice(deviceDto);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<UniqueConstraintException>();
             MockRepository.VerifyAll();
         }
 
@@ -271,7 +272,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task UpdateDevice_DbUpdateExceptionIsRaised_InternalServerErrorExceptionIsThrown()
+        public async Task UpdateDevice_DbUpdateExceptionIsRaised_CannotInsertNullExceptionIsThrown()
         {
             // Arrange
             var deviceDto = new LoRaDeviceDetails
@@ -305,13 +306,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .ThrowsAsync(new DbUpdateException());
+                .ThrowsAsync(new CannotInsertNullException());
 
             // Act
             var act = () => this.lorawanDeviceService.UpdateDevice(deviceDto);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<CannotInsertNullException>();
             MockRepository.VerifyAll();
         }
 
@@ -372,7 +373,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task DeleteDevice_DbUpdateExceptionIsRaised_InternalServerErrorExceptionIsThrown()
+        public async Task DeleteDevice_DbUpdateExceptionIsRaised_ReferenceConstraintExceptionIsThrown()
         {
             // Arrange
             var deviceDto = new LoRaDeviceDetails
@@ -393,13 +394,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .ThrowsAsync(new DbUpdateException());
+                .ThrowsAsync(new ReferenceConstraintException());
 
             // Act
             var act = () => this.lorawanDeviceService.DeleteDevice(deviceDto.DeviceID);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<ReferenceConstraintException>();
             MockRepository.VerifyAll();
         }
     }
