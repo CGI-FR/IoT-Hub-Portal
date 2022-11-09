@@ -337,6 +337,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             // Assert
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
             Assert.AreEqual(1, newModelList.Count());
+            _ = cut.FindAll("table tbody tr").Count.Should().Be(1);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
