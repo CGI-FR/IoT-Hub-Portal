@@ -83,12 +83,12 @@ namespace AzureIoTHub.Portal.Server.Managers
 
                 foreach (var tag in tags)
                 {
-                    _ = stringBuilder.Append($",{deviceObject!["tags"][tag]}");
+                    _ = stringBuilder.Append(CultureInfo.InvariantCulture, $",{deviceObject!["tags"][tag]}");
                 }
 
                 foreach (var property in properties)
                 {
-                    _ = stringBuilder.Append($",{deviceObject!["desired"][property]}");
+                    _ = stringBuilder.Append(CultureInfo.InvariantCulture, $",{deviceObject!["desired"][property]}");
                 }
             }
 
