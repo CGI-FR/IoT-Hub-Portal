@@ -57,9 +57,16 @@ namespace AzureIoTHub.Portal.Server.Managers
                     "ClassType",
                     "PreferredWindow",
                     "Deduplication",
+                    "RX1DROffset",
+                    "RX2DataRate",
                     "RXDelay",
                     "ABPRelaxMode",
-                    "SensorDecoder"
+                    "SensorDecoder",
+                    "FCntUpStart",
+                    "FCntDownStart",
+                    "FCntResetCounter",
+                    "Supports32BitFCnt",
+                    "KeepAliveTimeout"
                 });
             }
 
