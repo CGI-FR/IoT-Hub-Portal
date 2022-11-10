@@ -575,7 +575,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [TestCase("RestartModule", /*lang=json,strict*/ "{\"id\":\"aaa\",\"schemaVersion\":\"1.0\"}")]
-        public async Task ExecuteMethodShouldExecuteC2DMethod(string methodName, string expected)
+        public async Task ExecuteMethodRestartModuleShouldExecuteC2DMethod(string methodName, string expected)
         {
             // Arrange
             var edgeModule = new IoTEdgeModule
@@ -591,6 +591,33 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     x.MethodName == methodName
                     && x.GetPayloadAsJson() == expected
                 )))
+                .ReturnsAsync(new CloudToDeviceMethodResult
+                {
+                    Status = 200
+                });
+
+            // Act
+            _ = await this.edgeDevicesService.ExecuteModuleMethod(deviceId, edgeModule.ModuleName, methodName);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [TestCase("test", /*lang=json,strict*/ "{\"id\":\"aaa\",\"schemaVersion\":\"1.0\"}")]
+        public async Task ExecuteMethodTestShouldExecuteC2DMethod(string methodName, string expected)
+        {
+            // Arrange
+            var edgeModule = new IoTEdgeModule
+            {
+                ModuleName = "aaa",
+            };
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockDeviceService.Setup(c => c.ExecuteCustomCommandC2DMethod(
+                It.Is<string>(x => x == deviceId),
+                It.Is<string>(x => x.Equals(edgeModule.ModuleName, StringComparison.Ordinal)),
+                It.Is<CloudToDeviceMethod>(x => x.MethodName == methodName)))
                 .ReturnsAsync(new CloudToDeviceMethodResult
                 {
                     Status = 200
