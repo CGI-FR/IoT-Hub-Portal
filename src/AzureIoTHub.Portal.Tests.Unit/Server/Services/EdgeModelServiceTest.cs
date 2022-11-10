@@ -121,7 +121,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             expectedCommands.Add(new EdgeDeviceModelCommand
             {
-                EdgeDeviceModelId = Guid.NewGuid().ToString(),
+                EdgeDeviceModelId = expectedEdgeDeviceModel.ModelId,
                 Id = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
                 ModuleName = Guid.NewGuid().ToString()
