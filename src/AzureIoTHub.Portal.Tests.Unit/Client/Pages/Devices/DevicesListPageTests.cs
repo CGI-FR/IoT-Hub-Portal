@@ -20,6 +20,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using System.Linq;
 
     [TestFixture]
     public class DevicesListPageTests : BlazorUnitTest
@@ -44,6 +45,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
         }
 
         [Test]
@@ -289,6 +291,63 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             cut.WaitForAssertion(() => cut.Markup.Should().NotBeNullOrEmpty());
             cut.WaitForAssertion(() => cut.FindAll("tr").Count.Should().Be(2));
 
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public async Task FliterBySelectModelShould()
+        {
+            // Arrange
+            //var expectedUrl = "api/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = new List<DeviceListItem>
+                    {
+                        new DeviceListItem()
+                        {
+                            DeviceID = Guid.NewGuid().ToString(),
+                            DeviceName = Guid.NewGuid().ToString(),
+                        },
+                        new DeviceListItem()
+                        {
+                            DeviceID = Guid.NewGuid().ToString(),
+                            DeviceName = Guid.NewGuid().ToString(),
+                        }
+                    }
+                });
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>()
+                {
+                    new DeviceModelDto()
+                    {
+                        Name = "model_01",
+                        Description = Guid.NewGuid().ToString(),
+                    },
+                    new DeviceModelDto()
+                    {
+                        Name = "model_02",
+                        Description = Guid.NewGuid().ToString(),
+                    },
+                });
+
+            // Act
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<DeviceListPage>();
+
+            cut.WaitForElement($"#{nameof(DeviceModelDto.ModelId)}").Click();
+
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll(".mud-input-helper-text").Count.Should().Be(2));
+
+            var newModelList = await cut.Instance.Search("01");
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            Assert.AreEqual(1, newModelList.Count());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
