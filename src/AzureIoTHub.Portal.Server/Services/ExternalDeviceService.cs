@@ -692,12 +692,17 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task<IEnumerable<string>> GetDevicesToExport()
         {
-            var filter = "WHERE (NOT IS_DEFINED (tags.deviceType) OR tags.deviceType <> 'LoRa Concentrator') AND (capabilities.iotEdge = false)";
-            var query = this.registryManager.CreateQuery($"SELECT deviceId, tags, properties.desired FROM devices { filter }");
-
-            var response = await query.GetNextAsJsonAsync();
-
-            return response;
+            try
+            {
+                var filter = "WHERE (NOT IS_DEFINED (tags.deviceType) OR tags.deviceType <> 'LoRa Concentrator') AND (capabilities.iotEdge = false)";
+                var query = this.registryManager.CreateQuery($"SELECT deviceId, tags, properties.desired FROM devices { filter }");
+                var response = await query.GetNextAsJsonAsync();
+                return response;
+            }
+            catch (RequestFailedException e)
+            {
+                throw new InternalServerErrorException($"Failed to query devices to export", e);
+            }
         }
     }
 }
