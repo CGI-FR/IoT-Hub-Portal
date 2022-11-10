@@ -39,7 +39,10 @@ namespace AzureIoTHub.Portal.Server.Managers
         {
             var list = await this.externalDevicesService.GetDevicesToExport();
             var tags = this.deviceTagService.GetAllTagsNames() as List<string>;
-            var properties = this.deviceModelPropertiesService.GetAllPropertiesNames() as List<string>;
+            if (this.deviceModelPropertiesService.GetAllPropertiesNames() is not List<string> properties)
+            {
+                properties = new List<string>();
+            }
 
             if (isLoRaSupported)
             {
@@ -77,18 +80,23 @@ namespace AzureIoTHub.Portal.Server.Managers
             foreach (var item in list)
             {
                 var deviceObject = JsonNode.Parse(item)!;
-                var deviceTags = deviceObject!["tags"]!;
 
                 _ = stringBuilder.Append(CultureInfo.InvariantCulture, $"\n{deviceObject["deviceId"]!},{deviceObject["tags"]["deviceName"]!},{deviceObject["tags"]["modelId"]!}");
 
-                foreach (var tag in tags)
+                if (tags != null)
                 {
-                    _ = stringBuilder.Append(CultureInfo.InvariantCulture, $",{deviceObject!["tags"][tag]}");
+                    foreach (var tag in tags)
+                    {
+                        _ = stringBuilder.Append(CultureInfo.InvariantCulture, $",{deviceObject!["tags"][tag]}");
+                    }
                 }
 
-                foreach (var property in properties)
+                if (properties != null)
                 {
-                    _ = stringBuilder.Append(CultureInfo.InvariantCulture, $",{deviceObject!["desired"][property]}");
+                    foreach (var property in properties)
+                    {
+                        _ = stringBuilder.Append(CultureInfo.InvariantCulture, $",{deviceObject!["desired"][property]}");
+                    }
                 }
             }
 
