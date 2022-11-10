@@ -350,13 +350,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         {
             // Arrange
             var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";
+            var deviceList = new List<IoTEdgeListItem>
+                    {
+                        Fixture.Create<IoTEdgeListItem>()
+                    };
+
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
                 .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
                 {
-                    Items = new List<IoTEdgeListItem>
-                    {
-                        Fixture.Create<IoTEdgeListItem>()
-                    }
+                    Items = deviceList
                 });
 
             _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
@@ -377,7 +379,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             // Act
             var cut = RenderComponent<EdgeDeviceListPage>();
 
-            var deleteIcon = cut.WaitForElement(".deleteDeviceIcon");
+            var deleteIcon = cut.WaitForElement($"#delete_{deviceList[0].DeviceId}");
             deleteIcon.Click();
 
             // Assert

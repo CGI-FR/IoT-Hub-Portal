@@ -122,7 +122,7 @@
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
                     <MudTooltip Text="Delete device">
-                        <MudIconButton Class="deleteDeviceIcon" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => ShowDeleteDialog(context))"></MudIconButton>
+                        <MudIconButton id="@($"delete_{context.DeviceId}")" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => ShowDeleteDialog(context))"></MudIconButton>
                     </MudTooltip>
                 </MudTd>
             </RowTemplate>
