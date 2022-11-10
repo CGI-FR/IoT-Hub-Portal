@@ -20,22 +20,26 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using System.Threading.Tasks;
     using System.Linq;
     using MudBlazor;
+    using AutoFixture;
 
     [TestFixture]
     public class EdgeDeviceListPageTests : BlazorUnitTest
     {
         private Mock<IEdgeDeviceClientService> mockEdgeDeviceClientService;
         private Mock<IEdgeModelClientService> mockEdgeModelClientService;
+        private Mock<IDialogService> mockDialogService;
 
         public override void Setup()
         {
             base.Setup();
 
+            this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockEdgeDeviceClientService = MockRepository.Create<IEdgeDeviceClientService>();
             this.mockEdgeModelClientService = MockRepository.Create<IEdgeModelClientService>();
 
             _ = Services.AddSingleton(this.mockEdgeDeviceClientService.Object);
             _ = Services.AddSingleton(this.mockEdgeModelClientService.Object);
+            _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
             _ = Services.AddSingleton<ClipboardService>();
         }
@@ -338,6 +342,45 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
             Assert.AreEqual(1, newModelList.Count());
             _ = cut.FindAll("table tbody tr").Count.Should().Be(1);
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnDeleteShouldShowDeleteDialog()
+        {
+            // Arrange
+            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
+                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
+                {
+                    Items = new List<IoTEdgeListItem>
+                    {
+                        Fixture.Create<IoTEdgeListItem>()
+                    }
+                });
+
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+                {
+                    new IoTEdgeModelListItem()
+                    {
+                        Name = Guid.NewGuid().ToString(),
+                        Description = Guid.NewGuid().ToString(),
+                    }
+                });
+
+            var mockDialogReference = new DialogReference(Guid.NewGuid(), this.mockDialogService.Object);
+
+            _ = this.mockDialogService.Setup(c => c.Show<EdgeDeviceDeleteConfirmationDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference);
+
+            // Act
+            var cut = RenderComponent<EdgeDeviceListPage>();
+
+            var deleteIcon = cut.WaitForElement(".deleteDeviceIcon");
+            deleteIcon.Click();
+
+            // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }

@@ -122,7 +122,7 @@
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
                     <MudTooltip Text="Delete device">
-                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => ShowDeleteDialog(context))"></MudIconButton>
+                        <MudIconButton Class="deleteDeviceIcon" Color="Color.Default" Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" OnClick="@(e => ShowDeleteDialog(context))"></MudIconButton>
                     </MudTooltip>
                 </MudTd>
             </RowTemplate>
@@ -269,23 +269,14 @@
 
     internal async Task ChangeModel(IoTEdgeModelListItem edgeModel)
     {
-        try
-        {
-            this._edgeModel = edgeModel;
 
-            if (edgeModel == null || string.IsNullOrWhiteSpace(edgeModel.ModelId))
-            {
-                return;
-            }
+        this._edgeModel = edgeModel;
 
-        }
-        catch (ProblemDetailsException exception)
+        if (edgeModel == null || string.IsNullOrWhiteSpace(edgeModel.ModelId))
         {
-            Error?.ProcessProblemDetails(exception);
+            return;
         }
-        finally
-        {
-            await InvokeAsync(StateHasChanged);
-        }
+
+        await InvokeAsync(StateHasChanged);
     }
 }
