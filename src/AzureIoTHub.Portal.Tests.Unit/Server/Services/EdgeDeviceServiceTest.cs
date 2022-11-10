@@ -603,8 +603,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             MockRepository.VerifyAll();
         }
 
-        [TestCase("test", /*lang=json,strict*/ "{\"id\":\"aaa\",\"schemaVersion\":\"1.0\"}")]
-        public async Task ExecuteMethodTestShouldExecuteC2DMethod(string methodName, string expected)
+        [TestCase("test"]
+        public async Task ExecuteMethodTestShouldExecuteC2DMethod(string methodName)
         {
             // Arrange
             var edgeModule = new IoTEdgeModule
