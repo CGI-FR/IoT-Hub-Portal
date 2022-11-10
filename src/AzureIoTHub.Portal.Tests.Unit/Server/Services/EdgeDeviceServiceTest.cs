@@ -603,7 +603,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             MockRepository.VerifyAll();
         }
 
-        [TestCase("test"]
+        [TestCase("test")]
         public async Task ExecuteMethodTestShouldExecuteC2DMethod(string methodName)
         {
             // Arrange
