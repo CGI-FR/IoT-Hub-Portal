@@ -26,6 +26,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Microsoft.EntityFrameworkCore;
     using Portal.Domain.Entities;
     using AutoMapper;
+    using EntityFramework.Exceptions.Common;
 
     [TestFixture]
     public class DeviceServiceTests : BackendUnitTest
@@ -267,13 +268,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Task.CompletedTask);
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .ThrowsAsync(new DbUpdateException());
+                .ThrowsAsync(new UniqueConstraintException());
 
             // Act
             var act = () => this.deviceService.CreateDevice(deviceDto);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<UniqueConstraintException>();
             MockRepository.VerifyAll();
         }
 
@@ -368,7 +369,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task UpdateDevice_DbUpdateExceptionIsRaised_InternalServerErrorExceptionIsThrown()
+        public async Task UpdateDevice_DbUpdateExceptionIsRaised_CannotInsertNullExceptionIsThrown()
         {
             // Arrange
             var deviceDto = new DeviceDetails
@@ -402,13 +403,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .ThrowsAsync(new DbUpdateException());
+                .ThrowsAsync(new CannotInsertNullException());
 
             // Act
             var act = () => this.deviceService.UpdateDevice(deviceDto);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<CannotInsertNullException>();
             MockRepository.VerifyAll();
         }
 
@@ -469,7 +470,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task DeleteDevice_DbUpdateExceptionIsRaised_InternalServerErrorExceptionIsThrown()
+        public async Task DeleteDevice_DbUpdateExceptionIsRaised_DbUpdateExceptionIsThrown()
         {
             // Arrange
             var deviceDto = new DeviceDetails
@@ -496,7 +497,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var act = () => this.deviceService.DeleteDevice(deviceDto.DeviceID);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<DbUpdateException>();
             MockRepository.VerifyAll();
         }
 

@@ -17,6 +17,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using EntityFramework.Exceptions.Common;
     using FluentAssertions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
@@ -167,7 +168,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task CreateDeviceAsyncDbUpdateExceptionShouldThrowInternalServerErrorException()
+        public async Task CreateDeviceAsyncDbUpdateExceptionShouldThrowMaxLengthExceededException()
         {
             // Arrange
             var expectedConcentrator = Fixture.Create<Concentrator>();
@@ -177,7 +178,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Task.CompletedTask);
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .ThrowsAsync(new DbUpdateException());
+                .ThrowsAsync(new MaxLengthExceededException());
 
             _ = this.mockExternalDeviceService.Setup(service => service.CreateNewTwinFromDeviceId(It.IsAny<string>()))
                 .ReturnsAsync(new Twin { DeviceId = expectedConcentratorDto.DeviceId });
@@ -195,7 +196,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var act = () => this.concentratorService.CreateDeviceAsync(expectedConcentratorDto);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<MaxLengthExceededException>();
             MockRepository.VerifyAll();
         }
 
@@ -278,7 +279,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task UpdateDeviceAsyncDbUpdateExceptionShouldThrowInternalServerErrorException()
+        public async Task UpdateDeviceAsyncDbUpdateExceptionShouldThrowUniqueConstraintException()
         {
             // Arrange
             var expectedConcentrator = Fixture.Create<Concentrator>();
@@ -291,7 +292,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .ThrowsAsync(new DbUpdateException());
+                .ThrowsAsync(new UniqueConstraintException());
 
             _ = this.mockExternalDeviceService.Setup(service => service.GetDevice(It.IsAny<string>()))
                 .ReturnsAsync(new Device());
@@ -315,7 +316,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var act = () => this.concentratorService.UpdateDeviceAsync(expectedConcentratorDto);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<UniqueConstraintException>();
             MockRepository.VerifyAll();
         }
 
@@ -366,7 +367,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task DeleteDeviceAsyncDbUpdateExceptionShouldThrowInternalServerErrorException()
+        public async Task DeleteDeviceAsyncDbUpdateExceptionShouldThrowReferenceConstraintException()
         {
             // Arrange
             var expectedConcentrator = Fixture.Create<Concentrator>();
@@ -379,7 +380,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .ThrowsAsync(new DbUpdateException());
+                .ThrowsAsync(new ReferenceConstraintException());
 
             _ = this.mockExternalDeviceService.Setup(service => service.DeleteDevice(It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
@@ -388,7 +389,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var act = () => this.concentratorService.DeleteDeviceAsync(expectedConcentratorDto.DeviceId);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<ReferenceConstraintException>();
             MockRepository.VerifyAll();
         }
     }

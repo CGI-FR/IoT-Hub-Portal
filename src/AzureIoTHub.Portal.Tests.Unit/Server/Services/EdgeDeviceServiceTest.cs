@@ -19,10 +19,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using EntityFramework.Exceptions.Common;
     using FluentAssertions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
@@ -246,6 +246,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var edgeDevice = new IoTEdgeDevice()
             {
                 DeviceId = "aaa",
+                Tags = new Dictionary<string, string>()
+                {
+                    { "test", "test" }
+                }
             };
 
             _ = this.mockDeviceService.Setup(c => c.CreateDeviceWithTwin(
@@ -272,7 +276,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task CreateEdgeDeviceDbUpdateExceptionIsThrownInternalServerErrorExceptionIsThrown()
+        public async Task CreateEdgeDeviceDbUpdateExceptionIsThrownMaxLengthExceededExceptionIsThrown()
         {
             // Arrange
             var mockResult = new BulkRegistryOperationResult
@@ -296,13 +300,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Task.CompletedTask);
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .ThrowsAsync(new DbUpdateException());
+                .ThrowsAsync(new MaxLengthExceededException());
 
             // Act
             var act = () => this.edgeDevicesService.CreateEdgeDevice(edgeDevice);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<MaxLengthExceededException>();
 
             MockRepository.VerifyAll();
         }
@@ -416,7 +420,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task UpdateEdgeDeviceDbUpdateExceptionIsThrownInternalServerErrorExceptionIsThrown()
+        public async Task UpdateEdgeDeviceDbUpdateExceptionIsThrownNumericOverflowExceptionIsThrown()
         {
             // Arrange
             var edgeDevice = new IoTEdgeDevice()
@@ -463,13 +467,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .ThrowsAsync(new DbUpdateException());
+                .ThrowsAsync(new NumericOverflowException());
 
             // Act
             var act = () => this.edgeDevicesService.UpdateEdgeDevice(edgeDevice);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<NumericOverflowException>();
 
             MockRepository.VerifyAll();
         }
@@ -539,7 +543,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task DeleteEdgeDeviceDbUpdateExceptionIsRaisedInternalServerErrorExceptionIsThrown()
+        public async Task DeleteEdgeDeviceDbUpdateExceptionIsRaisedReferenceConstraintExceptionIsThrown()
         {
             // Arrange
             var deviceDto = new IoTEdgeDevice
@@ -560,18 +564,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .ThrowsAsync(new DbUpdateException());
+                .ThrowsAsync(new ReferenceConstraintException());
 
             // Act
             var act = () => this.edgeDevicesService.DeleteEdgeDeviceAsync(deviceDto.DeviceId);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<ReferenceConstraintException>();
             MockRepository.VerifyAll();
         }
 
         [TestCase("RestartModule", /*lang=json,strict*/ "{\"id\":\"aaa\",\"schemaVersion\":\"1.0\"}")]
-        public async Task ExecuteMethodShouldExecuteC2DMethod(string methodName, string expected)
+        public async Task ExecuteMethodRestartModuleShouldExecuteC2DMethod(string methodName, string expected)
         {
             // Arrange
             var edgeModule = new IoTEdgeModule
@@ -587,6 +591,33 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     x.MethodName == methodName
                     && x.GetPayloadAsJson() == expected
                 )))
+                .ReturnsAsync(new CloudToDeviceMethodResult
+                {
+                    Status = 200
+                });
+
+            // Act
+            _ = await this.edgeDevicesService.ExecuteModuleMethod(deviceId, edgeModule.ModuleName, methodName);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [TestCase("test")]
+        public async Task ExecuteMethodTestShouldExecuteC2DMethod(string methodName)
+        {
+            // Arrange
+            var edgeModule = new IoTEdgeModule
+            {
+                ModuleName = "aaa",
+            };
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockDeviceService.Setup(c => c.ExecuteCustomCommandC2DMethod(
+                It.Is<string>(x => x == deviceId),
+                It.Is<string>(x => x.Equals(edgeModule.ModuleName, StringComparison.Ordinal)),
+                It.Is<CloudToDeviceMethod>(x => x.MethodName == methodName)))
                 .ReturnsAsync(new CloudToDeviceMethodResult
                 {
                     Status = 200

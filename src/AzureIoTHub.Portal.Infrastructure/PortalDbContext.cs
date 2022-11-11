@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Infrastructure
 {
     using AzureIoTHub.Portal.Domain.Entities;
+    using EntityFramework.Exceptions.PostgreSQL;
     using Microsoft.EntityFrameworkCore;
 
 
@@ -31,6 +32,12 @@ namespace AzureIoTHub.Portal.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            _ = optionsBuilder.UseExceptionProcessor();
+            base.OnConfiguring(optionsBuilder);
         }
     }
 }
