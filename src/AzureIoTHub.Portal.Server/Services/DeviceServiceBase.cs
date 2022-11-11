@@ -43,7 +43,7 @@ namespace AzureIoTHub.Portal.Server.Services
         }
 
         public async Task<PaginatedResult<DeviceListItem>> GetDevices(string searchText = null, bool? searchStatus = null, bool? searchState = null, int pageSize = 10,
-            int pageNumber = 0, string[] orderBy = null, Dictionary<string, string> tags = default)
+            int pageNumber = 0, string[] orderBy = null, Dictionary<string, string> tags = default, string modelId = null)
         {
             var deviceListFilter = new DeviceListFilter
             {
@@ -53,7 +53,8 @@ namespace AzureIoTHub.Portal.Server.Services
                 IsEnabled = searchStatus,
                 Keyword = searchText,
                 OrderBy = orderBy,
-                Tags = GetSearchableTags(tags)
+                Tags = GetSearchableTags(tags),
+                ModelId = modelId
             };
 
             var devicePredicate = PredicateBuilder.True<Device>();
@@ -84,6 +85,12 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 lorawanDevicePredicate = lorawanDevicePredicate.And(device => device.Tags.Any(value =>
                     value.Name.Equals(keyValuePair.Key) && value.Value.Equals(keyValuePair.Value)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(deviceListFilter.ModelId))
+            {
+                devicePredicate = devicePredicate.And(device => device.DeviceModelId.Equals(deviceListFilter.ModelId));
+                lorawanDevicePredicate = lorawanDevicePredicate.And(device => device.DeviceModelId.Equals(deviceListFilter.ModelId));
             }
 
             var query = this.portalDbContext.Devices

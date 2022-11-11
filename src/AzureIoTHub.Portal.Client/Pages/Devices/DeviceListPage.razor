@@ -9,13 +9,14 @@
 @inject PortalSettings Portal
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 @inject IDeviceClientService DeviceClientService
+@inject IDeviceModelsClientService DeviceModelsClientService
 
 <MudGrid>
     <MudItem xs="12">
         <MudExpansionPanels>
             <MudExpansionPanel Text="Search panel">
                 <MudGrid>
-                    <MudItem xs="12" md="12">
+                    <MudItem xs="12" md="6">
                         <MudTextField @bind-Value="searchID" Placeholder="DeviceID / DeviceName" id="searchID"></MudTextField>
                     </MudItem>
                     @foreach (DeviceTagDto tag in TagList)
@@ -27,6 +28,29 @@
                             </MudItem>
                         }
                     }
+                    <MudItem xs="12" md="6">
+                        <MudAutocomplete T="DeviceModelDto"
+                                         id="@nameof(DeviceModelDto.ModelId)"
+                                         @bind-Value="Model"
+                                         SearchFunc="@Search"
+                                         Label="Model"
+                                         Dense=true
+                                         For=@(() => this.Model)
+                                         Variant="Variant.Outlined"
+                                         ToStringFunc="@(x => x?.Name)"
+                                         ResetValueOnEmptyText=true
+                                         Immediate=true
+                                         Clearable=true
+                                         CoerceText=true
+                                         CoerceValue=false>
+                            <ItemTemplate>
+                                @context.Name
+                                <MudText Typo="Typo.subtitle1" Class="mud-input-helper-text">
+                                    @((!string.IsNullOrEmpty(@context.Description) && @context.Description.Length > 100) ? @context.Description.Substring(0, 100) + "..." : @context.Description)
+                                </MudText>
+                            </ItemTemplate>
+                        </MudAutocomplete>
+                    </MudItem>
                     <MudGrid>
                         <MudItem sm="12" md="6">
                             <MudText>Status</MudText>
@@ -168,10 +192,23 @@
     private string searchID = "";
     private string searchStatus;
     private string searchState;
+    
     private MudTable<DeviceListItem> table;
     private Dictionary<string, string> searchTags = new();
 
     private bool IsLoading { get; set; } = true;
+
+    private List<DeviceModelDto> ModelList = new List<DeviceModelDto>();
+    private DeviceModelDto _model;
+
+    public DeviceModelDto Model
+    {
+        get => _model;
+        set
+        {
+            Task.Run(async () => await ChangeModel(value));
+        }
+    }
 
     private IEnumerable<DeviceTagDto> TagList { get; set; } = new List<DeviceTagDto>();
 
@@ -181,6 +218,7 @@
     {
         try
         {
+            this.ModelList = (await DeviceModelsClientService.GetDeviceModels()).ToList();
             // Gets the custom tags that can be searched via the panel
             TagList = await DeviceTagSettingsClientService.GetDeviceTags();
             foreach (var tag in TagList)
@@ -212,7 +250,7 @@
                     break;
             }
 
-            var uri = $"api/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchID)}&searchStatus={searchStatus}&searchState={searchState}&orderBy={orderBy}";
+            var uri = $"api/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchID)}&searchStatus={searchStatus}&searchState={searchState}&orderBy={orderBy}&modelId={this.Model?.ModelId}";
 
             foreach (var searchTag in searchTags.Where(c => !string.IsNullOrEmpty(c.Value)))
             {
@@ -291,5 +329,45 @@
     private void GoToDetails(DeviceListItem item)
     {
         navigationManager.NavigateTo($"devices/{item.DeviceID}{((item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
+    }
+
+    internal async Task ChangeModel(DeviceModelDto Model)
+    {
+        try
+        {
+            this._model = Model;
+
+            if (Model == null || string.IsNullOrWhiteSpace(Model.ModelId))
+            {
+                return;
+            }
+
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+        finally
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    /// <summary>
+    /// Allows to autocomplete the Device Model field in the form.
+    /// </summary>
+    /// <param name="value">Text entered in the field</param>
+    /// <returns>Item of the device model list that matches the user's value</returns>
+    public async Task<IEnumerable<DeviceModelDto>> Search(string value)
+    {
+        // In real life use an asynchronous function for fetching data from an api.
+        await Task.Delay(0);
+
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return ModelList;
+
+        return ModelList
+                    .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 }

@@ -45,6 +45,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="pageSize"></param>
         /// <param name="pageNumber"></param>
         /// <param name="orderBy"></param>
+        /// <param name="modelId"></param>
         [HttpGet(Name = "GET LoRaWAN device list")]
         public Task<PaginationResult<DeviceListItem>> SearchItems(
             string searchText = null,
@@ -52,9 +53,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             bool? searchState = null,
             int pageSize = 10,
             int pageNumber = 0,
-            [FromQuery] string[] orderBy = null)
+            [FromQuery] string[] orderBy = null,
+            string modelId = null)
         {
-            return GetItems("GET LoRaWAN device list", searchText, searchStatus, searchState, pageSize, pageNumber, orderBy);
+            return GetItems("GET LoRaWAN device list", searchText, searchStatus, searchState, pageSize, pageNumber, orderBy, modelId);
         }
 
         /// <summary>
