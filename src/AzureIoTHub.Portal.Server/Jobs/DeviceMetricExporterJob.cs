@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Services
+namespace AzureIoTHub.Portal.Server.Jobs
 {
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
@@ -11,15 +11,15 @@ namespace AzureIoTHub.Portal.Server.Services
     using Shared.Models.v1._0;
 
     [DisallowConcurrentExecution]
-    public class DeviceMetricExporterService : IJob
+    public class DeviceMetricExporterJob : IJob
     {
-        private readonly ILogger<DeviceMetricExporterService> logger;
+        private readonly ILogger<DeviceMetricExporterJob> logger;
         private readonly PortalMetric portalMetric;
 
         private readonly Counter deviceCounter = Metrics.CreateCounter(MetricName.DeviceCount, "Devices count");
         private readonly Counter connectedDeviceCounter = Metrics.CreateCounter(MetricName.ConnectedDeviceCount, "Connected devices count");
 
-        public DeviceMetricExporterService(ILogger<DeviceMetricExporterService> logger, PortalMetric portalMetric)
+        public DeviceMetricExporterJob(ILogger<DeviceMetricExporterJob> logger, PortalMetric portalMetric)
         {
             this.logger = logger;
             this.portalMetric = portalMetric;

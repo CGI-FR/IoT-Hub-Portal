@@ -1,10 +1,11 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
+namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 {
     using System;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Server.Jobs;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using FluentAssertions;
@@ -13,13 +14,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using NUnit.Framework;
 
     [TestFixture]
-    public class DeviceMetricLoaderServiceTests : IDisposable
+    public class DeviceMetricLoaderJobTests : IDisposable
     {
         private MockRepository mockRepository;
-        private DeviceMetricLoaderService deviceMetricLoaderService;
+        private DeviceMetricLoaderJob deviceMetricLoaderService;
         private PortalMetric portalMetric;
 
-        private Mock<ILogger<DeviceMetricLoaderService>> mockLogger;
+        private Mock<ILogger<DeviceMetricLoaderJob>> mockLogger;
         private Mock<IExternalDeviceService> mockDeviceService;
 
         [SetUp]
@@ -27,13 +28,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockLogger = this.mockRepository.Create<ILogger<DeviceMetricLoaderService>>();
+            this.mockLogger = this.mockRepository.Create<ILogger<DeviceMetricLoaderJob>>();
             this.mockDeviceService = this.mockRepository.Create<IExternalDeviceService>();
 
             this.portalMetric = new PortalMetric();
 
             this.deviceMetricLoaderService =
-                new DeviceMetricLoaderService(this.mockLogger.Object, this.portalMetric, this.mockDeviceService.Object);
+                new DeviceMetricLoaderJob(this.mockLogger.Object, this.portalMetric, this.mockDeviceService.Object);
         }
 
         [Test]

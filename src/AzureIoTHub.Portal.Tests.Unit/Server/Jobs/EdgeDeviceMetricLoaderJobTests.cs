@@ -1,12 +1,12 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
+namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 {
     using System;
     using System.Threading;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Server.Jobs;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using FluentAssertions;
@@ -15,13 +15,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using NUnit.Framework;
 
     [TestFixture]
-    public class EdgeDeviceMetricLoaderServiceTests : IDisposable
+    public class EdgeDeviceMetricLoaderJobTests : IDisposable
     {
         private MockRepository mockRepository;
-        private EdgeDeviceMetricLoaderService edgeDeviceMetricLoaderService;
+        private EdgeDeviceMetricLoaderJob edgeDeviceMetricLoaderService;
         private PortalMetric portalMetric;
 
-        private Mock<ILogger<EdgeDeviceMetricLoaderService>> mockLogger;
+        private Mock<ILogger<EdgeDeviceMetricLoaderJob>> mockLogger;
         private Mock<IExternalDeviceService> mockDeviceService;
         private Mock<IConfigService> mockConfigService;
 
@@ -30,14 +30,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockLogger = this.mockRepository.Create<ILogger<EdgeDeviceMetricLoaderService>>();
+            this.mockLogger = this.mockRepository.Create<ILogger<EdgeDeviceMetricLoaderJob>>();
             this.mockDeviceService = this.mockRepository.Create<IExternalDeviceService>();
             this.mockConfigService = this.mockRepository.Create<IConfigService>();
 
             this.portalMetric = new PortalMetric();
 
             this.edgeDeviceMetricLoaderService =
-                new EdgeDeviceMetricLoaderService(this.mockLogger.Object, this.portalMetric, this.mockDeviceService.Object, this.mockConfigService.Object);
+                new EdgeDeviceMetricLoaderJob(this.mockLogger.Object, this.portalMetric, this.mockDeviceService.Object, this.mockConfigService.Object);
         }
 
         [Test]

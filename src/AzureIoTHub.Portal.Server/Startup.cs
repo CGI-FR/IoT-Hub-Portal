@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Server
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
     using AzureIoTHub.Portal.Domain.Options;
+    using AzureIoTHub.Portal.Server.Jobs;
     using Domain;
     using Domain.Exceptions;
     using Domain.Repositories;
@@ -22,7 +23,6 @@ namespace AzureIoTHub.Portal.Server
     using Infrastructure;
     using Infrastructure.Repositories;
     using Infrastructure.Seeds;
-    using Jobs;
     using Managers;
     using Mappers;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -362,9 +362,9 @@ namespace AzureIoTHub.Portal.Server
                     });
                 });
 
-                q.AddMetricsService<DeviceMetricExporterService, DeviceMetricLoaderService>(configuration);
-                q.AddMetricsService<EdgeDeviceMetricExporterService, EdgeDeviceMetricLoaderService>(configuration);
-                q.AddMetricsService<ConcentratorMetricExporterService, ConcentratorMetricLoaderService>(configuration);
+                q.AddMetricsService<DeviceMetricExporterJob, DeviceMetricLoaderJob>(configuration);
+                q.AddMetricsService<EdgeDeviceMetricExporterJob, EdgeDeviceMetricLoaderJob>(configuration);
+                q.AddMetricsService<ConcentratorMetricExporterJob, ConcentratorMetricLoaderJob>(configuration);
 
                 _ = q.AddJob<SyncDevicesJob>(j => j.WithIdentity(nameof(SyncDevicesJob)))
                     .AddTrigger(t => t
