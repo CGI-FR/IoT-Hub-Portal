@@ -706,6 +706,15 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "name": "modelId",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -4486,6 +4495,7 @@
         "type": "object",
         "properties": {
           "name": {
+            "pattern": "^[^\\.^\\$^\\#$\\ ]{1,128}$",
             "type": "string",
             "description": "The module environment variable name",
             "nullable": true
