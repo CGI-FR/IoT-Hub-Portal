@@ -1,10 +1,13 @@
 ﻿@page "/devices"
 @using AzureIoTHub.Portal
 @using AzureIoTHub.Portal.Models.v10
+@using Microsoft.Net.Http.Headers
 @using System.Web
 @using System.IO
+@using System.Text.RegularExpressions
 
 @attribute [Authorize]
+
 @inject IDialogService DialogService
 @inject NavigationManager navigationManager
 @inject PortalSettings Portal
@@ -368,6 +371,7 @@
         // In real life use an asynchronous function for fetching data from an api.
         await Task.Delay(0);
 
+
        // if text is null or empty, show complete list
         if (string.IsNullOrEmpty(value))
             return ModelList;
@@ -375,4 +379,12 @@
         return ModelList
                     .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
+    
+    private async Task ExportDeviceList()
+    {
+        var export = await this.DeviceClientService.ExportDeviceList();
+        var fileName = export.Headers.ContentDisposition.Parameters.Single(c => c.Name == "filename").Value;
+
+        using var streamRef = new DotNetStreamReference(stream: await export.ReadAsStreamAsync());
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
 }

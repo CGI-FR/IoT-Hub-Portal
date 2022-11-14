@@ -8,6 +8,6 @@ namespace AzureIoTHub.Portal.Server.Managers
 
     public interface IExportManager
     {
-        Task<Stream> ExportDeviceList(bool isLoRaSupported);
+        Task ExportDeviceList(Stream stream);
     }
 }

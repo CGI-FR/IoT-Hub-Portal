@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
+    using System;
     using System.IO;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Managers;
@@ -14,36 +15,25 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/admin")]
-    [ApiExplorerSettings(GroupName = "IoT Devices")]
+    [ApiExplorerSettings(GroupName = "Admin APIs")]
     public class AdminController : ControllerBase
     {
-        private readonly ILogger<AdminController> logger;
         private readonly IExportManager exportManager;
 
-        public AdminController(
-            ILogger<AdminController> logger,
-            IExportManager exportManager)
+        public AdminController(IExportManager exportManager)
         {
             this.exportManager = exportManager;
-            this.logger = logger;
         }
 
-        [HttpGet("export/devices/{isLoRaSupported}", Name = "Export devices")]
-        public async Task<Stream> ExportDeviceList(bool isLoRaSupported)
+        [HttpPost("devices/_export", Name = "Export devices")]
+        public async Task<IActionResult> ExportDeviceList()
         {
-            var stream = await this.exportManager.ExportDeviceList(isLoRaSupported);
-            return stream;
+            var stream = new MemoryStream();
 
-            //var httpResponseMessage = new HttpResponseMessage
-            //{
-            //    Content = new StreamContent(stream)
-            //};
-            //httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
-            //{
-            //    FileName = "test2.csv"
-            //};
-            //httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
-            //return httpResponseMessage;
+            await this.exportManager.ExportDeviceList(stream);
+            stream.Position = 0;
+
+            return this.File(stream, "text/csv", $"Devices_{DateTime.Now:yyyyMMddHHmm}.csv");
         }
     }
 }

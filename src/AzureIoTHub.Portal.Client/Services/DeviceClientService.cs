@@ -4,7 +4,6 @@
 namespace AzureIoTHub.Portal.Client.Services
 {
     using System.Collections.Generic;
-    using System.IO;
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
@@ -59,9 +58,10 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.DeleteAsync($"api/devices/{deviceId}");
         }
 
-        public async Task<Stream> ExportDeviceList(bool isLoRaSupported)
+        public async Task<HttpContent> ExportDeviceList()
         {
-            return await this.http.GetStreamAsync($"api/admin/export/devices/{isLoRaSupported}");
+            var response = await this.http.PostAsync($"/api/admin/devices/_export", null);
+            return response.Content;
         }
     }
 }
