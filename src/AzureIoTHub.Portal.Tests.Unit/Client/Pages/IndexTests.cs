@@ -41,9 +41,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages
             var cut = RenderComponent<Index>();
 
             // Assert
-            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-icon").Count.Should().Be(7));
-            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-title").Count.Should().Be(7));
-            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-value").Count.Should().Be(7));
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-icon").Count.Should().Be(6));
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-title").Count.Should().Be(6));
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-value").Count.Should().Be(6));
 
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }

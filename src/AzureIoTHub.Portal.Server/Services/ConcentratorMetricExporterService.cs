@@ -17,7 +17,6 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly PortalMetric portalMetric;
 
         private readonly Counter concentratorCounter = Metrics.CreateCounter(MetricName.ConcentratorCount, "Concentrators count");
-        private readonly Counter connectedConcentratorCounter = Metrics.CreateCounter(MetricName.ConnectedConcentratorCount, "Connected concentrators count");
 
         public ConcentratorMetricExporterService(ILogger<ConcentratorMetricExporterService> logger, PortalMetric portalMetric)
         {
@@ -30,7 +29,6 @@ namespace AzureIoTHub.Portal.Server.Services
             this.logger.LogInformation("Start exporting concentrators metrics");
 
             this.concentratorCounter.IncTo(this.portalMetric.ConcentratorCount);
-            this.connectedConcentratorCounter.IncTo(this.portalMetric.ConnectedConcentratorCount);
 
             this.logger.LogInformation("End exporting concentrators metrics");
 

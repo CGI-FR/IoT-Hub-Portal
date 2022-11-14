@@ -31,8 +31,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
                 EdgeDeviceCount = 3,
                 ConnectedEdgeDeviceCount = 4,
                 FailedDeploymentCount = 5,
-                ConcentratorCount = 6,
-                ConnectedConcentratorCount = 7
+                ConcentratorCount = 6
             };
 
             using var mockHttp = new MockHttpMessageHandler();

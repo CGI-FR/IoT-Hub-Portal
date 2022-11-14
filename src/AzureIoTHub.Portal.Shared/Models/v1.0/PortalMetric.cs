@@ -16,7 +16,5 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0
         public int FailedDeploymentCount { get; set; }
 
         public int ConcentratorCount { get; set; }
-
-        public int ConnectedConcentratorCount { get; set; }
     }
 }

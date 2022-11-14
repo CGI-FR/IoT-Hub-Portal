@@ -45,14 +45,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             this.portalMetric.ConcentratorCount = 15;
-            this.portalMetric.ConnectedConcentratorCount = 8;
 
             // Act
             _ = this.concentratorMetricExporterService.Execute(null);
 
             // Assert
             _ = this.concentratorCounter.Value.Should().Be(this.portalMetric.ConcentratorCount);
-            _ = this.connectedConcentratorCounter.Value.Should().Be(this.portalMetric.ConnectedConcentratorCount);
             this.mockRepository.VerifyAll();
         }
 

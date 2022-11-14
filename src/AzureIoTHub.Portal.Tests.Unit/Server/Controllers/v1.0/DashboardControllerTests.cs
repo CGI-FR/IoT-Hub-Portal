@@ -22,8 +22,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
                 EdgeDeviceCount = 3,
                 ConnectedEdgeDeviceCount = 4,
                 FailedDeploymentCount = 5,
-                ConcentratorCount = 6,
-                ConnectedConcentratorCount = 7
+                ConcentratorCount = 6
             };
 
             var dashboardController = new DashboardController(portalMetric);

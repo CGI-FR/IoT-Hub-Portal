@@ -43,14 +43,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             _ = this.mockDeviceService.Setup(service => service.GetConcentratorsCount()).ReturnsAsync(10);
-            _ = this.mockDeviceService.Setup(service => service.GetConnectedConcentratorsCount()).ReturnsAsync(3);
 
             // Act
             _ = this.concentratorMetricLoaderService.Execute(null);
 
             // Assert
             _ = this.portalMetric.ConcentratorCount.Should().Be(10);
-            _ = this.portalMetric.ConnectedConcentratorCount.Should().Be(3);
             this.mockRepository.VerifyAll();
         }
 
@@ -61,14 +59,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             _ = this.mockDeviceService.Setup(service => service.GetConcentratorsCount()).ThrowsAsync(new InternalServerErrorException("test"));
-            _ = this.mockDeviceService.Setup(service => service.GetConnectedConcentratorsCount()).ReturnsAsync(3);
 
             // Act
             _ = this.concentratorMetricLoaderService.Execute(null);
 
             // Assert
             _ = this.portalMetric.ConcentratorCount.Should().Be(0);
-            _ = this.portalMetric.ConnectedConcentratorCount.Should().Be(3);
             this.mockRepository.VerifyAll();
         }
 
@@ -80,14 +76,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockLogger.Setup(x => x.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()));
 
             _ = this.mockDeviceService.Setup(service => service.GetConcentratorsCount()).ReturnsAsync(10);
-            _ = this.mockDeviceService.Setup(service => service.GetConnectedConcentratorsCount()).ThrowsAsync(new InternalServerErrorException("test"));
 
             // Act
             _ = this.concentratorMetricLoaderService.Execute(null);
 
             // Assert
             _ = this.portalMetric.ConcentratorCount.Should().Be(10);
-            _ = this.portalMetric.ConnectedConcentratorCount.Should().Be(0);
             this.mockRepository.VerifyAll();
         }
 

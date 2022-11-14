@@ -43,8 +43,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
                 EdgeDeviceCount = 3,
                 ConnectedEdgeDeviceCount = 4,
                 FailedDeploymentCount = 5,
-                ConcentratorCount = 6,
-                ConnectedConcentratorCount = 7
+                ConcentratorCount = 6
             };
 
             _ = this.mockDashboardMetricsClientService.Setup(c => c.GetPortalMetrics())
@@ -54,9 +53,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
             var cut = RenderComponent<Dashboard>();
 
             // Assert
-            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-icon").Count.Should().Be(7));
-            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-title").Count.Should().Be(7));
-            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-value").Count.Should().Be(7));
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-icon").Count.Should().Be(6));
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-title").Count.Should().Be(6));
+            cut.WaitForAssertion(() => cut.FindAll("#dashboard-metric-counter-value").Count.Should().Be(6));
 
             cut.WaitForAssertion(() => cut.Find("#dashboard-metric-counter-title").TextContent.Should().Be("Devices"));
             cut.WaitForAssertion(() => cut.Find("#dashboard-metric-counter-value").TextContent.Should().Be(portalMetric.DeviceCount.ToString(CultureInfo.InvariantCulture)));
@@ -75,8 +74,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Dashboard
                 EdgeDeviceCount = 3,
                 ConnectedEdgeDeviceCount = 4,
                 FailedDeploymentCount = 5,
-                ConcentratorCount = 6,
-                ConnectedConcentratorCount = 7
+                ConcentratorCount = 6
             };
 
             var receivedEvents = new List<string>();
