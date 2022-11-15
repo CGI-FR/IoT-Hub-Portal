@@ -4,13 +4,12 @@
 namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
-    using Domain;
     using AzureIoTHub.Portal.Domain.Entities;
+    using Domain;
     using Domain.Exceptions;
     using Domain.Repositories;
-    using Microsoft.EntityFrameworkCore;
-    using System.Linq;
 
     public class DeviceModelPropertiesService : IDeviceModelPropertiesService
     {

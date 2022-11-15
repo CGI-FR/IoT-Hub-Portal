@@ -9,7 +9,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using AzureIoTHub.Portal.Server.Managers;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
 
     [Authorize]
     [ApiController]

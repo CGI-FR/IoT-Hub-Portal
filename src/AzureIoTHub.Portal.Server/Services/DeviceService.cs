@@ -12,7 +12,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using Infrastructure;
     using Managers;
     using Mappers;
-    using Microsoft.EntityFrameworkCore;
     using Models.v10;
 
     public class DeviceService : DeviceServiceBase<DeviceDetails>
