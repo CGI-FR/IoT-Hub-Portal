@@ -1,22 +1,23 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Services
+namespace AzureIoTHub.Portal.Server.Jobs
 {
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Server.Services;
     using Microsoft.Extensions.Logging;
     using Quartz;
     using Shared.Models.v1._0;
 
     [DisallowConcurrentExecution]
-    public class ConcentratorMetricLoaderService : IJob
+    public class ConcentratorMetricLoaderJob : IJob
     {
-        private readonly ILogger<ConcentratorMetricLoaderService> logger;
+        private readonly ILogger<ConcentratorMetricLoaderJob> logger;
         private readonly PortalMetric portalMetric;
         private readonly IExternalDeviceService externalDeviceService;
 
-        public ConcentratorMetricLoaderService(ILogger<ConcentratorMetricLoaderService> logger, PortalMetric portalMetric, IExternalDeviceService externalDeviceService)
+        public ConcentratorMetricLoaderJob(ILogger<ConcentratorMetricLoaderJob> logger, PortalMetric portalMetric, IExternalDeviceService externalDeviceService)
         {
             this.logger = logger;
             this.portalMetric = portalMetric;
@@ -28,7 +29,6 @@ namespace AzureIoTHub.Portal.Server.Services
             this.logger.LogInformation("Start loading concentrators metrics");
 
             await LoadConcentratorsCountMetric();
-            await LoadConnectedConcentratorsCountMetric();
 
             this.logger.LogInformation("End loading concentrators metrics");
         }
@@ -42,18 +42,6 @@ namespace AzureIoTHub.Portal.Server.Services
             catch (InternalServerErrorException e)
             {
                 this.logger.LogError($"Unable to load concentrators count metric: {e.Detail}", e);
-            }
-        }
-
-        private async Task LoadConnectedConcentratorsCountMetric()
-        {
-            try
-            {
-                this.portalMetric.ConnectedConcentratorCount = await this.externalDeviceService.GetConnectedConcentratorsCount();
-            }
-            catch (InternalServerErrorException e)
-            {
-                this.logger.LogError($"Unable to load connected concentrators count metric: {e.Detail}", e);
             }
         }
     }

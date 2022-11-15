@@ -1,11 +1,11 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
+namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 {
     using System;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
-    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Server.Jobs;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using FluentAssertions;
     using Microsoft.Extensions.Logging;
@@ -14,13 +14,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Prometheus;
 
     [TestFixture]
-    public class EdgeDeviceMetricExporterServiceTests : IDisposable
+    public class EdgeDeviceMetricExporterJobTests : IDisposable
     {
         private MockRepository mockRepository;
-        private EdgeDeviceMetricExporterService edgeDeviceMetricExporterService;
+        private EdgeDeviceMetricExporterJob edgeDeviceMetricExporterService;
         private PortalMetric portalMetric;
 
-        private Mock<ILogger<EdgeDeviceMetricExporterService>> mockLogger;
+        private Mock<ILogger<EdgeDeviceMetricExporterJob>> mockLogger;
 
         private readonly Counter edgeDeviceCounter = Metrics.CreateCounter(MetricName.EdgeDeviceCount, "Edge devices count");
         private readonly Counter connectedEdgeDeviceCounter = Metrics.CreateCounter(MetricName.ConnectedEdgeDeviceCount, "Connected edge devices count");
@@ -31,12 +31,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockLogger = this.mockRepository.Create<ILogger<EdgeDeviceMetricExporterService>>();
+            this.mockLogger = this.mockRepository.Create<ILogger<EdgeDeviceMetricExporterJob>>();
 
             this.portalMetric = new PortalMetric();
 
             this.edgeDeviceMetricExporterService =
-                new EdgeDeviceMetricExporterService(this.mockLogger.Object, this.portalMetric);
+                new EdgeDeviceMetricExporterJob(this.mockLogger.Object, this.portalMetric);
         }
 
         [Test]

@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Services
+namespace AzureIoTHub.Portal.Server.Jobs
 {
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
@@ -11,15 +11,14 @@ namespace AzureIoTHub.Portal.Server.Services
     using Shared.Models.v1._0;
 
     [DisallowConcurrentExecution]
-    public class ConcentratorMetricExporterService : IJob
+    public class ConcentratorMetricExporterJob : IJob
     {
-        private readonly ILogger<ConcentratorMetricExporterService> logger;
+        private readonly ILogger<ConcentratorMetricExporterJob> logger;
         private readonly PortalMetric portalMetric;
 
         private readonly Counter concentratorCounter = Metrics.CreateCounter(MetricName.ConcentratorCount, "Concentrators count");
-        private readonly Counter connectedConcentratorCounter = Metrics.CreateCounter(MetricName.ConnectedConcentratorCount, "Connected concentrators count");
 
-        public ConcentratorMetricExporterService(ILogger<ConcentratorMetricExporterService> logger, PortalMetric portalMetric)
+        public ConcentratorMetricExporterJob(ILogger<ConcentratorMetricExporterJob> logger, PortalMetric portalMetric)
         {
             this.logger = logger;
             this.portalMetric = portalMetric;
@@ -30,7 +29,6 @@ namespace AzureIoTHub.Portal.Server.Services
             this.logger.LogInformation("Start exporting concentrators metrics");
 
             this.concentratorCounter.IncTo(this.portalMetric.ConcentratorCount);
-            this.connectedConcentratorCounter.IncTo(this.portalMetric.ConnectedConcentratorCount);
 
             this.logger.LogInformation("End exporting concentrators metrics");
 

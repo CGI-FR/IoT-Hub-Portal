@@ -1,11 +1,11 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
+namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 {
     using System;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
-    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Server.Jobs;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using FluentAssertions;
     using Microsoft.Extensions.Logging;
@@ -14,13 +14,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Prometheus;
 
     [TestFixture]
-    public class DeviceMetricExporterServiceTests : IDisposable
+    public class DeviceMetricExporterJobTests : IDisposable
     {
         private MockRepository mockRepository;
-        private DeviceMetricExporterService deviceMetricExporterService;
+        private DeviceMetricExporterJob deviceMetricExporterService;
         private PortalMetric portalMetric;
 
-        private Mock<ILogger<DeviceMetricExporterService>> mockLogger;
+        private Mock<ILogger<DeviceMetricExporterJob>> mockLogger;
 
         private readonly Counter deviceCounter = Metrics.CreateCounter(MetricName.DeviceCount, "Devices count");
         private readonly Counter connectedDeviceCounter = Metrics.CreateCounter(MetricName.ConnectedDeviceCount, "Connected devices count");
@@ -30,12 +30,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockLogger = this.mockRepository.Create<ILogger<DeviceMetricExporterService>>();
+            this.mockLogger = this.mockRepository.Create<ILogger<DeviceMetricExporterJob>>();
 
             this.portalMetric = new PortalMetric();
 
             this.deviceMetricExporterService =
-                new DeviceMetricExporterService(this.mockLogger.Object, this.portalMetric);
+                new DeviceMetricExporterJob(this.mockLogger.Object, this.portalMetric);
         }
 
         [Test]

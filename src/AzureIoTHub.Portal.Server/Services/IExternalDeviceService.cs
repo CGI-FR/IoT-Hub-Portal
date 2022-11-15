@@ -59,8 +59,6 @@ namespace AzureIoTHub.Portal.Server.Services
 
         Task<int> GetConcentratorsCount();
 
-        Task<int> GetConnectedConcentratorsCount();
-
         Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId);
 
         Task<EnrollmentCredentials> GetEdgeDeviceCredentials(string edgeDeviceId);

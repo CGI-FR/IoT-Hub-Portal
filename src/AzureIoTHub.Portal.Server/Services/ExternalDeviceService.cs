@@ -585,22 +585,6 @@ namespace AzureIoTHub.Portal.Server.Services
             }
         }
 
-        public async Task<int> GetConnectedConcentratorsCount()
-        {
-            try
-            {
-                var count = await this.registryManager
-                    .CreateQuery("SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = false AND devices.tags.deviceType = 'LoRa Concentrator' AND connectionState = 'Connected'")
-                    .GetNextAsJsonAsync();
-
-                return !JObject.Parse(count.Single()).TryGetValue("totalNumber", out var result) ? 0 : result.Value<int>();
-            }
-            catch (RequestFailedException e)
-            {
-                throw new InternalServerErrorException("Unable to get connected LoRaWAN concentrators count", e);
-            }
-        }
-
         public async Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId)
         {
             var device = await GetDeviceTwin(deviceId);
