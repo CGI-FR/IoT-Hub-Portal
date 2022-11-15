@@ -27,7 +27,7 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// <summary>
         /// The client certificate thumbprint.
         /// </summary>
-        public string ClientThumbprint { get; set; }
+        public string? ClientThumbprint { get; set; }
 
         /// <summary>
         ///   <c>true</c> if this instance is connected; otherwise, <c>false</c>.
