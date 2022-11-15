@@ -299,6 +299,7 @@
           {
             "name": "pageNumber",
             "in": "query",
+            "description": "",
             "style": "form",
             "schema": {
               "type": "integer",
@@ -309,12 +310,22 @@
           {
             "name": "orderBy",
             "in": "query",
+            "description": "",
             "style": "form",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
               }
+            }
+          },
+          {
+            "name": "modelId",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -1779,6 +1790,15 @@
               "items": {
                 "type": "string"
               }
+            }
+          },
+          {
+            "name": "modelId",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -4973,10 +4993,6 @@
             "format": "int32"
           },
           "concentratorCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "connectedConcentratorCount": {
             "type": "integer",
             "format": "int32"
           }
