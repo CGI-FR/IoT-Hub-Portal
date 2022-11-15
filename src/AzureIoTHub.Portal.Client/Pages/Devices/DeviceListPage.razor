@@ -200,7 +200,7 @@
     private string searchID = "";
     private string searchStatus;
     private string searchState;
-    
+
     private MudTable<DeviceListItem> table;
     private Dictionary<string, string> searchTags = new();
 
@@ -239,7 +239,6 @@
         {
             Error?.ProcessProblemDetails(exception);
         }
-
     }
 
     private async Task<TableData<DeviceListItem>> LoadItems(TableState state)
@@ -371,15 +370,14 @@
         // In real life use an asynchronous function for fetching data from an api.
         await Task.Delay(0);
 
-
-       // if text is null or empty, show complete list
+        // if text is null or empty, show complete list
         if (string.IsNullOrEmpty(value))
             return ModelList;
-        
+
         return ModelList
                     .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
-    
+
     private async Task ExportDeviceList()
     {
         var export = await this.DeviceClientService.ExportDeviceList();
@@ -387,4 +385,5 @@
 
         using var streamRef = new DotNetStreamReference(stream: await export.ReadAsStreamAsync());
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
 }
