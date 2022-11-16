@@ -1,0 +1,362 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
+    "view": {
+        "kind": "Form",
+        "properties": {
+            "title": "IoT Hub Portal Deployment",
+            "steps": [
+                {
+                    "name": "basics",
+                    "label": "Basics",
+                    "elements": [
+                        {
+                            "name": "resourceScope",
+                            "type": "Microsoft.Common.ResourceScope",
+                            "location": {
+                                "resourceTypes": [
+                                    "microsoft.resources/resourcegroups"
+                                ]
+                            }
+                        }
+                    ]
+                },
+				{
+					"name": "commonStep",
+					"label": "Common Settings",
+					"elements": [
+						{
+							"name": "uniqueSolutionPrefix",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Unique Solution Prefix",
+							"toolTip": "Prefix used for resource names. Should be unique as this will also be used for domain names",
+							"constraints": {
+								"required": true,
+								"validations": [
+								  {
+									"regex": "^[a-z0-9A-Z]{1,16}$",
+									"message": "Only alphanumeric characters are allowed, and the value must be 1-16 characters long."
+								  }
+								]
+							},
+							"visible": true
+						},
+						{
+							"name": "databaseSection",
+							"type": "Microsoft.Common.Section",
+							"label": "Database",
+							"elements": [
+								{
+									"name": "pgsqlAdminLogin",
+									"type": "Microsoft.Common.TextBox",
+									"label": "PostgreSQL user",
+									"toolTip": "PostgreSQL user",
+									"constraints": {
+										"required": true
+									}
+								},
+								{
+									"name": "pgsqlAdminPassword",
+									"type": "Microsoft.Common.PasswordBox",
+									"label": {
+										"password": "PostgreSQL password",
+										"confirmPassword": "Confirm PostgreSQL password"
+									},
+									"toolTip": "PostgreSQL password",
+									"constraints": {
+										"required": true,
+										"regex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{12,}$",
+										"validationMessage": "The password must be alphanumeric, contain at least 12 characters, and have at least 1 letter and 1 number"
+									}
+								}
+							],
+							"visible": true
+						},
+						{
+							"name": "identityProviderSection",
+							"type": "Microsoft.Common.Section",
+							"label": "Identity Provider",
+							"elements": [
+								{
+									"name": "openIdAuthority",
+									"type": "Microsoft.Common.TextBox",
+									"label": "Open Id Authority",
+									"toolTip": "The Open ID Authority",
+									"constraints": {
+										"required": true
+									}
+								},
+								{
+									"name": "openIdMetadataURL",
+									"type": "Microsoft.Common.TextBox",
+									"label": "Open Id Metadata URL",
+									"toolTip": "The Open ID metadata Url from the Identity provider",
+									"constraints": {
+										"required": true
+									}
+								},
+								{
+									"name": "clientId",
+									"type": "Microsoft.Common.TextBox",
+									"label": "Client Id",
+									"toolTip": "The client ID for the B2C tenant",
+									"constraints": {
+										"required": true
+									}
+								},
+								{
+									"name": "apiClientId",
+									"type": "Microsoft.Common.TextBox",
+									"label": "Api Client Id",
+									"toolTip": "The API client ID for the B2C tenant",
+									"constraints": {
+										"required": true
+									}
+								}
+							],
+							"visible": true
+						}
+					]
+				},
+				{
+					"name": "lorawanStep",
+					"label": "LoRaWAN Settings",
+					"elements": [
+						{
+							"name": "isLoRaFeatureEnabled",
+							"type": "Microsoft.Common.OptionsGroup",
+							"label": "Do you want to enable LoRaWAN feature?",
+							"defaultValue": "No",
+							"toolTip": "Enable LoRaWAN feature",
+							"constraints": {
+								"allowedValues": [
+									{
+										"label": "No",
+										"value": false
+									},
+									{
+										"label": "Yes",
+										"value": true
+									}
+								],
+								"required": true
+							},
+							"visible": true
+						},
+						{
+							"name": "lorawanSection",
+							"type": "Microsoft.Common.Section",
+							"label": "LoRaWAN Settings",
+							"visible": "[equals(steps('lorawanStep').isLoRaFeatureEnabled,true)]",
+							"elements": [
+								{
+									"name": "deployDevice",
+									"type": "Microsoft.Common.OptionsGroup",
+									"label": "Do you want to deploy a device ?",
+									"toolTip": "Provision a final LoRa device in the IoT hub in addition to the gateway",
+									"defaultValue": "No",
+									"constraints": {
+										"allowedValues": [
+											{
+												"label": "No",
+												"value": false
+											},
+											{
+												"label": "Yes",
+												"value": true
+											}
+										],
+										"required": true
+									},
+									"visible": true
+								},
+								{
+									"name": "edgeGatewayName",
+									"type": "Microsoft.Common.TextBox",
+									"label": "Edge Gateway Name",
+									"toolTip": "The name of the Edge gateway",
+									"visible": "[equals(steps('lorawanStep').lorawanSection.deployDevice,true)]",
+									"defaultValue": "TestLoRaWANGateway",
+									"constraints": {
+										"required": true
+									}
+								},
+								{
+									"name": "resetPin",
+									"type": "Microsoft.Common.TextBox",
+									"label": "Reset Pin",
+									"toolTip": "Provide the reset pin value of your gateway. Please refer to the doc if you are unfamiliar with the value",
+									"visible": "[equals(steps('lorawanStep').lorawanSection.deployDevice,true)]",
+									"defaultValue": "2",
+									"constraints": {
+										"required": true,
+										"validations": [
+											{
+												"regex": "^[0-9]+$",
+												"message": "Only numeric characters are allowed"
+											}
+										]
+									}
+								},
+								{
+									"name": "region",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Region",
+									"defaultValue": "EU",
+									"toolTip": "In what region is your gateway deployed?",
+									"visible": "[equals(steps('lorawanStep').lorawanSection.deployDevice,true)]",
+									"constraints": {
+										"allowedValues": [
+											{
+												"label": "EU",
+												"value": "EU"
+											},
+											{
+												"label": "US",
+												"value": "US"
+											}
+										]
+									}
+								},
+								{
+									"name": "spiSpeed",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Spi Speed",
+									"defaultValue": "8",
+									"toolTip": "[In Mbps] Custom SPI speed for your gateway, currently only supported for ARM gateways",
+									"visible": "[equals(steps('lorawanStep').lorawanSection.deployDevice,true)]",
+									"constraints": {
+										"allowedValues": [
+											{
+												"label": "8",
+												"value": 8
+											},
+											{
+												"label": "2",
+												"value": 2
+											}
+										]
+									}
+								},
+								{
+									"name": "spiDev",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Spi Dev",
+									"defaultValue": "2",
+									"toolTip": "SPI Dev version for x86 based gateway",
+									"visible": "[equals(steps('lorawanStep').lorawanSection.deployDevice,true)]",
+									"constraints": {
+										"allowedValues": [
+											{
+												"label": "1",
+												"value": 1
+											},
+											{
+												"label": "2",
+												"value": 2
+											}
+										]
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "awesomeIdeasStep",
+					"label": "Awesome-Ideas",
+					"elements": [
+						{
+							"name": "ideasInfo",
+							"type": "Microsoft.Common.InfoBox",
+							"visible": true,
+							"options": {
+								"icon": "Info",
+								"text": "Awesome-Ideas allows users to submit ideas using Iot Portal Hub. By this feature is disabled",
+								"uri": "https://github.com/CGI-FR/IoT-Hub-Portal/discussions/categories/ideas"
+							}
+						},
+						{
+							"name": "ideasEnabled",
+							"type": "Microsoft.Common.OptionsGroup",
+							"label": "Do you want to enable Awesome-Ideas feature?",
+							"defaultValue": "No",
+							"toolTip": "Enable Awesome-Ideas feature",
+							"constraints": {
+								"allowedValues": [
+									{
+										"label": "No",
+										"value": false
+									},
+									{
+										"label": "Yes",
+										"value": true
+									}
+								],
+								"required": true
+							},
+							"visible": true
+						},
+						{
+							"name": "ideasUrl",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Awesome-Ideas url",
+							"toolTip": "Url of Awesome-Ideas, to publish ideas submitted by users",
+							"visible": "[equals(steps('awesomeIdeasStep').ideasEnabled,true)]",
+							"constraints": {
+								"required": true
+							}
+						},
+						{
+							"name": "ideasAuthenticationHeader",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Awesome-Ideas authentication header",
+							"toolTip": "Authentication header to interact with Awesome-Ideas",
+							"visible": "[equals(steps('awesomeIdeasStep').ideasEnabled,true)]",
+							"defaultValue": "Ocp-Apim-Subscription-Key",
+							"constraints": {
+								"required": true
+							}
+						},
+						{
+							"name": "ideasAuthenticationToken",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Awesome-Ideas authentication token",
+							"toolTip": "Authentication token to interact with Awesome-Ideas",
+							"visible": "[equals(steps('awesomeIdeasStep').ideasEnabled,true)]",
+							"constraints": {
+								"required": true
+							}
+						}
+					]
+				}
+            ]
+        },
+        "outputs": {
+            "parameters": {
+                "uniqueSolutionPrefix": "[steps('commonStep').uniqueSolutionPrefix]",
+
+				"pgsqlAdminLogin": "[steps('commonStep').databaseSection.pgsqlAdminLogin]",
+				"pgsqlAdminPassword": "[steps('commonStep').databaseSection.pgsqlAdminPassword]",
+
+				"openIdAuthority": "[steps('commonStep').identityProviderSection.openIdAuthority]",
+				"openIdMetadataURL": "[steps('commonStep').identityProviderSection.openIdMetadataURL]",
+				"clientId": "[steps('commonStep').identityProviderSection.clientId]",
+				"apiClientId": "[steps('commonStep').identityProviderSection.apiClientId]",
+				"isLoRaFeatureEnabled": "[steps('lorawanStep').isLoRaFeatureEnabled]",
+				"edgeGatewayName": "[steps('lorawanStep').lorawanSection.edgeGatewayName]",
+				"deployDevice": "[steps('lorawanStep').lorawanSection.deployDevice]",
+				"resetPin": "[steps('lorawanStep').lorawanSection.resetPin]",
+				"region": "[steps('lorawanStep').lorawanSection.region]",
+				"spiSpeed": "[steps('lorawanStep').lorawanSection.spiSpeed]",
+				"spiDev": "[steps('lorawanStep').lorawanSection.spiDev]",
+				"ideasEnabled": "[steps('awesomeIdeasStep').ideasEnabled]",
+				"ideasUrl": "[steps('awesomeIdeasStep').ideasUrl]",
+				"ideasAuthenticationHeader": "[steps('awesomeIdeasStep').ideasAuthenticationHeader]",
+				"ideasAuthenticationToken": "[steps('awesomeIdeasStep').ideasAuthenticationToken]"
+            },
+            "kind": "ResourceGroup",
+            "location": "[steps('basics').resourceScope.location.name]",
+            "resourceGroupId": "[steps('basics').resourceScope.resourceGroup.id]"
+        }
+    }
+}
