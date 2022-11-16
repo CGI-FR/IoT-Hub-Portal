@@ -15,7 +15,6 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
     name: Build & Push Solution
     # The type of runner that the job will run on
@@ -68,3 +67,68 @@ jobs:
             GITHUB_RUN_NUMBER=${{ github.run_number }}
           tags: 
             ${{ steps.meta.outputs.tags }}
+
+  arm_templates:
+    name: Publish ARM templates
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3.1.0
+        with:
+          path: IoT-Hub-Portal
+
+      - name: Checkout Azure/iotedge-lorawan-starterkit
+        uses: actions/checkout@v3.1.0
+        with: 
+          repository: Azure/iotedge-lorawan-starterkit
+          ref: dev
+          path: iotedge-lorawan-starterkit
+
+      - uses: actions/checkout@v3.1.0
+        with:
+         ref: arm/main
+         path: arm-templates
+
+      - name: Generate app token
+        id: generate_app_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.BOT_APP_ID }}
+          private_key: ${{ secrets.BOT_PRIVATE_KEY }}
+
+      - name: Copy templates      
+        working-directory: arm-templates
+        run: |
+            rm -rf ./templates/
+            mkdir -p templates/iotedge-lorawan-starterkit
+            touch ./templates/.gitkeep
+            cp -r ../IoT-Hub-Portal/templates/* ./templates/
+            cp -r ../iotedge-lorawan-starterkit/TemplateBicep/* ./templates/iotedge-lorawan-starterkit/
+            sed -r -i 's/..\/iotedge-lorawan-starterkit\/TemplateBicep\/main.bicep/.\/iotedge-lorawan-starterkit\/main.bicep/g' ./templates/azuredeploy.bicep
+      
+      - name: Generate ARM file
+        working-directory: arm-templates/templates
+        run: az bicep build --file azuredeploy.bicep --outfile azuredeploy.json 
+    
+      - name: Upload templates to release assets
+        uses: AButler/upload-release-assets@v2.0
+        with:
+          files: 'arm-templates/templates/*.json'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create PR for template updates
+        uses: peter-evans/create-pull-request@v4
+        with:
+          base: 'arm/main'
+          branch: 'arm/feature/update-templates'
+          path: 'arm-templates'
+          commit-message: 'Update templates from release.'
+          token: ${{ steps.generate_app_token.outputs.token }}
+          title: '[ARM Templates] Update templates from release'
+          labels: |
+            arm-templates
+            automated pr
+          team-reviewers: '@CGI-FR/azure-iot-portal-authors'
+          body: | 
+            Automated changes to the Azure templates.
