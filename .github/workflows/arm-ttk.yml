@@ -1,8 +1,8 @@
-name: Validate ARM templates
+name: Validate Bicep templates
 
 on:
   pull_request:
-    branches: [ main, v3-dev ]
+    branches: [ main ]
     paths:
       - 'templates/**'
   push:
@@ -24,6 +24,7 @@ on:
 
 jobs:
   validate_arm_templates:
+    name: Build Bicep and Validate ARM Templates
     runs-on: ubuntu-latest
     
     steps:
@@ -45,9 +46,20 @@ jobs:
         with: 
           repository: Azure/arm-ttk
           path: arm-ttk
-      
+
+      - name: Checkout Azure/iotedge-lorawan-starterkit
+        uses: actions/checkout@v3.1.0
+        with: 
+          repository: Azure/iotedge-lorawan-starterkit
+          ref: dev
+          path: iotedge-lorawan-starterkit
+
+      - name: Generate ARM file
+        working-directory: templates
+        run: az bicep build --file azuredeploy.bicep --outfile azuredeploy.json 
+          
       - name: Run arm-ttk
         shell: pwsh
         run: |
           Import-Module ./arm-ttk/arm-ttk/arm-ttk.psd1
-          Test-AzTemplate -TemplatePath ./templates
+          Test-AzTemplate -TemplatePath ./templates/azuredeploy.json -Skip 'Template Should Not Contain Blanks','URIs Should Be Properly Constructed'
