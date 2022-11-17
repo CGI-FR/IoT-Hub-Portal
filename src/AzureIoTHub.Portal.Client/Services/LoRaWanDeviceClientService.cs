@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Client.Services
 {
+    using System.Collections.Generic;
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
@@ -46,6 +47,11 @@ namespace AzureIoTHub.Portal.Client.Services
         public Task<LoRaGatewayIDList> GetGatewayIdList()
         {
             return this.http.GetFromJsonAsync<LoRaGatewayIDList>($"api/lorawan/devices/gateways");
+        }
+
+        public async Task<IEnumerable<DeviceTelemetryDto>> GetDeviceTelemetries(string deviceId)
+        {
+            return await this.http.GetFromJsonAsync<List<DeviceTelemetryDto>>($"api/lorawan/devices/{deviceId}/telemetries");
         }
     }
 }

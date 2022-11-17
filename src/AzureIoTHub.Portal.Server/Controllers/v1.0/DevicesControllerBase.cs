@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Models.v10;
     using Services;
     using Shared.Models;
+    using Shared.Models.v1._0;
 
     public abstract class DevicesControllerBase<TDto> : ControllerBase
         where TDto : IDeviceDetails
@@ -164,6 +165,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public virtual async Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
         {
             return Ok(await this.deviceService.GetCredentials(deviceID));
+        }
+
+        [HttpGet("{deviceId}/telemetries")]
+        public Task<IEnumerable<DeviceTelemetryDto>> GetDeviceTelemetries(string deviceId)
+        {
+            return this.deviceService.GetDeviceTelemetries(deviceId);
         }
 
         private static Dictionary<string, string> GetTagsFromQueryString(IQueryCollection queryCollection)

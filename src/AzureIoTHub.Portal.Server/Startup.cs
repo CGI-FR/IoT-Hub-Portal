@@ -169,6 +169,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddScoped<IDeviceTagValueRepository, DeviceTagValueRepository>();
             _ = services.AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>();
             _ = services.AddScoped<IConcentratorRepository, ConcentratorRepository>();
+            _ = services.AddScoped<IDeviceTelemetryRepository, DeviceTelemetryRepository>();
 
             _ = services.AddMudServices();
 
@@ -409,6 +410,12 @@ namespace AzureIoTHub.Portal.Server
                         .WithSimpleSchedule(s => s
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));
+
+                _ = q.AddJob<SyncDeviceTelemetryJob>(j => j.WithIdentity(nameof(SyncDeviceTelemetryJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncDeviceTelemetryJob)}")
+                        .ForJob(nameof(SyncDeviceTelemetryJob))
+                        .StartNow());
             });
 
             // Add the Quartz.NET hosted service

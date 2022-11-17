@@ -3,11 +3,16 @@
 
 namespace AzureIoTHub.Portal.Domain.Entities
 {
-    using AzureIoTHub.Portal.Domain.Base;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using Base;
+    using Models.v10.LoRaWAN;
 
     public class LorawanDevice : EntityBase
     {
+
+        public LorawanDevice()
+        {
+            Telemetries = new HashSet<DeviceTelemetry>();
+        }
 
         /// <summary>
         /// The name of the device.
@@ -198,5 +203,10 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// The sensor decoder API Url.
         /// </summary>
         public string? SensorDecoder { get; set; }
+
+        /// <summary>
+        /// Device Telemetries
+        /// </summary>
+        public ICollection<DeviceTelemetry> Telemetries { get; set; }
     }
 }

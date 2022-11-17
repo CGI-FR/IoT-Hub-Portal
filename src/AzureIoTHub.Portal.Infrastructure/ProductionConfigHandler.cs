@@ -24,6 +24,10 @@ namespace AzureIoTHub.Portal.Infrastructure
 
         public override string IoTHubConnectionString => this.config.GetConnectionString(IoTHubConnectionStringKey);
 
+        public override string IoTHubEventHubEndpoint => this.config.GetConnectionString(IoTHubEventHubEndpointKey);
+
+        public override string IoTHubEventHubConsumerGroup => this.config[IoTHubEventHubConsumerGroupKey];
+
         public override string DPSConnectionString => this.config.GetConnectionString(DPSConnectionStringKey);
 
         public override string DPSEndpoint => this.config[DPSServiceEndpointKey];

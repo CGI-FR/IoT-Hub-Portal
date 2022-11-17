@@ -31,5 +31,7 @@ namespace AzureIoTHub.Portal.Server.Services
         Task DeleteDevice(string deviceId);
 
         Task<EnrollmentCredentials> GetCredentials(string deviceId);
+
+        Task<IEnumerable<DeviceTelemetryDto>> GetDeviceTelemetries(string deviceId);
     }
 }

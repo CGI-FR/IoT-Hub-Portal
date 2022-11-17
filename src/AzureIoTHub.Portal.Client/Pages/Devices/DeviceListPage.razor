@@ -108,6 +108,7 @@
                 <col style="width: 15%;" />
                 <col style="width: 10%;" />
                 <col style="width: 10%;" />
+                <col style="width: 10%;" />
             </ColGroup>
             <ToolBarContent>
                 <MudText Typo="Typo.h6">Devices</MudText>
@@ -128,6 +129,7 @@
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="DeviceListItem">Allowed</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsConnected" T="DeviceListItem">Connection state</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="StatusUpdatedTime" T="DeviceListItem">Last status update</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align: center">Telemetry</MudTh>
                 <MudTh Style="text-align: center">See details</MudTh>
                 <MudTh Style="text-align: center">Delete</MudTh>
             </HeaderContent>
@@ -169,6 +171,16 @@
                     }
                 </MudTd>
                 <MudTd DataLabel="LSU" Style="text-align: center">@context.StatusUpdatedTime</MudTd>
+
+                <MudTd DataLabel="Telemetry" Style="text-align: center">
+                    @if (context.SupportLoRaFeatures)
+                    {
+                        <MudTooltip Text="See device telemetries">
+                            <MudIconButton Icon="@Icons.Filled.ShowChart" Color="Color.Default" OnClick="@(() => ShowDeviceTelemetries(context))"/>
+                        </MudTooltip>
+                    }
+                </MudTd>
+
                 <MudTd DataLabel="Details" Style="text-align: center">
                     <MudTooltip Text="See device details">
                         <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
@@ -387,5 +399,13 @@
 
         using var streamRef = new DotNetStreamReference(stream: await export.ReadAsStreamAsync());
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
+
+    private async Task ShowDeviceTelemetries(DeviceListItem device)
+    {
+        var parameters = new DialogParameters {{"DeviceID", device.DeviceID}};
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+
+        await DialogService.Show<DeviceTelemetriesDialog>(string.Empty, parameters, options).Result;
     }
 }

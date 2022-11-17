@@ -35,10 +35,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
             return await query.ToDynamicListAsync<T>(cancellationToken: cancellationToken);
         }
 
-        public virtual async Task<T?> GetByIdAsync(object id)
+        public virtual async Task<T?> GetByIdAsync(object id, params Expression<Func<T, object>>[] includes)
         {
-            var t = await this.context.Set<T>().FindAsync(id);
-            return t;
+            IQueryable<T> query = this.context.Set<T>();
+
+            query = query.Where(entity => entity.Id.Equals(id));
+
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+
+            return await query.FirstOrDefaultAsync();
         }
 
         public async Task InsertAsync(T obj)

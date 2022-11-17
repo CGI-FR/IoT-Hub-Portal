@@ -100,7 +100,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
                 .Setup(x => x.GetByIdAsync(expectedDeviceModel.Id))
                 .ReturnsAsync(expectedDeviceModel);
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedTwinDevice.DeviceId))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedTwinDevice.DeviceId, d => d.Tags))
                 .ReturnsAsync((Device)null);
 
             _ = this.mockDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<Device>()))
@@ -205,7 +205,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
                 .Setup(x => x.GetByIdAsync(expectedDeviceModel.Id))
                 .ReturnsAsync(expectedDeviceModel);
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedTwinDevice.DeviceId))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedTwinDevice.DeviceId, d => d.Tags))
                 .ReturnsAsync(existingDevice);
 
             this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
@@ -285,7 +285,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
                 .Setup(x => x.GetByIdAsync(expectedDeviceModel.Id))
                 .ReturnsAsync(expectedDeviceModel);
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedTwinDevice.DeviceId))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedTwinDevice.DeviceId, d => d.Tags))
                 .ReturnsAsync((LorawanDevice)null);
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.InsertAsync(It.IsAny<LorawanDevice>()))
@@ -390,7 +390,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
                 .Setup(x => x.GetByIdAsync(expectedDeviceModel.Id))
                 .ReturnsAsync(expectedDeviceModel);
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedTwinDevice.DeviceId))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedTwinDevice.DeviceId, d => d.Tags))
                 .ReturnsAsync(existingLorawanDevice);
 
             this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))

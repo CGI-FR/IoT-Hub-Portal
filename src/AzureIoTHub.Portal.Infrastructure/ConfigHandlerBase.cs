@@ -9,6 +9,8 @@ namespace AzureIoTHub.Portal.Infrastructure
     {
         internal const string PortalNameKey = "PortalName";
         internal const string IoTHubConnectionStringKey = "IoTHub:ConnectionString";
+        internal const string IoTHubEventHubEndpointKey = "IoTHub:EventHub:Endpoint";
+        internal const string IoTHubEventHubConsumerGroupKey = "IoTHub:EventHub:ConsumerGroup";
         internal const string DPSConnectionStringKey = "IoTDPS:ConnectionString";
         internal const string DPSServiceEndpointKey = "IoTDPS:ServiceEndpoint";
         internal const string DPSIDScopeKey = "IoTDPS:IDScope";

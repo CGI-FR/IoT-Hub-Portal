@@ -114,7 +114,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>IoTEdgeDevice object.</returns>
         public async Task<IoTEdgeDevice> GetEdgeDevice(string edgeDeviceId)
         {
-            var deviceEntity = await this.edgeDeviceRepository.GetByIdAsync(edgeDeviceId);
+            var deviceEntity = await this.edgeDeviceRepository.GetByIdAsync(edgeDeviceId, d => d.Tags);
 
             if (deviceEntity is null)
             {
@@ -200,7 +200,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         private async Task<IoTEdgeDevice> UpdateEdgeDeviceInDatabase(IoTEdgeDevice device)
         {
-            var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(device.DeviceId);
+            var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(device.DeviceId, d => d.Tags);
 
             if (edgeDeviceEntity == null)
             {
@@ -229,7 +229,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task DeleteEdgeDeviceInDatabase(string deviceId)
         {
-            var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(deviceId);
+            var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(deviceId, d => d.Tags);
 
             if (edgeDeviceEntity == null)
             {

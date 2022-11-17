@@ -3,12 +3,13 @@
 
 namespace AzureIoTHub.Portal.Infrastructure.Repositories
 {
+    using System.Linq.Dynamic.Core;
     using Domain.Entities;
     using AzureIoTHub.Portal.Domain.Repositories;
 
-    public class EdgeDeviceRepository : GenericRepository<EdgeDevice>, IEdgeDeviceRepository
+    public class DeviceTelemetryRepository : GenericRepository<DeviceTelemetry>, IDeviceTelemetryRepository
     {
-        public EdgeDeviceRepository(PortalDbContext context) : base(context)
+        public DeviceTelemetryRepository(PortalDbContext context) : base(context)
         {
         }
     }

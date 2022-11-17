@@ -3,9 +3,9 @@
 
 namespace AzureIoTHub.Portal.Infrastructure
 {
-    using AzureIoTHub.Portal.Domain.Entities;
+    using Domain.Entities;
     using Microsoft.EntityFrameworkCore;
-
+    using Newtonsoft.Json;
 
     public class PortalDbContext : DbContext
     {
@@ -20,6 +20,7 @@ namespace AzureIoTHub.Portal.Infrastructure
         public DbSet<EdgeDeviceModel> EdgeDeviceModels { get; set; }
         public DbSet<EdgeDeviceModelCommand> EdgeDeviceModelCommands { get; set; }
         public DbSet<Concentrator> Concentrators { get; set; }
+        public DbSet<DeviceTelemetry> DeviceTelemetries { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PortalDbContext(DbContextOptions<PortalDbContext> options)
@@ -31,6 +32,12 @@ namespace AzureIoTHub.Portal.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            _ = modelBuilder.Entity<DeviceTelemetry>()
+                .Property(b => b.Telemetry)
+                .HasConversion(
+                    v => JsonConvert.SerializeObject(v),
+                    v => JsonConvert.DeserializeObject<Telemetry>(v));
         }
     }
 }

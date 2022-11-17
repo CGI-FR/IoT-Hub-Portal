@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Client.Services
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
@@ -20,5 +21,7 @@ namespace AzureIoTHub.Portal.Client.Services
         Task ExecuteCommand(string deviceId, string commandId);
 
         Task<LoRaGatewayIDList> GetGatewayIdList();
+
+        Task<IEnumerable<DeviceTelemetryDto>> GetDeviceTelemetries(string deviceId);
     }
 }

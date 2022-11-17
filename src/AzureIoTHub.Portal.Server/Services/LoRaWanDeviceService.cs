@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Models.v10.LoRaWAN;
     using AutoMapper;
@@ -14,6 +15,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Domain;
     using Models.v10;
     using Mappers;
+    using Shared.Models.v1._0;
 
     public class LoRaWanDeviceService : DeviceServiceBase<LoRaDeviceDetails>
     {
@@ -43,7 +45,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public override async Task<LoRaDeviceDetails> GetDevice(string deviceId)
         {
-            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId);
+            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId, d => d.Tags);
 
             if (deviceEntity == null)
             {
@@ -71,7 +73,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         protected override async Task<LoRaDeviceDetails> UpdateDeviceInDatabase(LoRaDeviceDetails device)
         {
-            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(device.DeviceID);
+            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(device.DeviceID, d => d.Tags);
 
             if (deviceEntity == null)
             {
@@ -93,7 +95,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         protected override async Task DeleteDeviceInDatabase(string deviceId)
         {
-            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId);
+            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId, d => d.Tags);
 
             if (deviceEntity == null)
             {
@@ -110,5 +112,11 @@ namespace AzureIoTHub.Portal.Server.Services
             await this.unitOfWork.SaveAsync();
         }
 
+        public override async Task<IEnumerable<DeviceTelemetryDto>> GetDeviceTelemetries(string deviceId)
+        {
+            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId, d => d.Telemetries);
+
+            return deviceEntity == null ? new List<DeviceTelemetryDto>() : this.mapper.Map<ICollection<DeviceTelemetry>, IEnumerable<DeviceTelemetryDto>>(deviceEntity.Telemetries);
+        }
     }
 }

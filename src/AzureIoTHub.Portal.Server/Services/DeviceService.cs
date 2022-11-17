@@ -3,6 +3,8 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
+    using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
     using AzureIoTHub.Portal.Domain.Entities;
@@ -13,6 +15,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Managers;
     using Mappers;
     using Models.v10;
+    using Shared.Models.v1._0;
 
     public class DeviceService : DeviceServiceBase<DeviceDetails>
     {
@@ -40,9 +43,10 @@ namespace AzureIoTHub.Portal.Server.Services
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
+
         public override async Task<DeviceDetails> GetDevice(string deviceId)
         {
-            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId);
+            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId, d => d.Tags);
 
             if (deviceEntity == null)
             {
@@ -70,7 +74,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         protected override async Task<DeviceDetails> UpdateDeviceInDatabase(DeviceDetails device)
         {
-            var deviceEntity = await this.deviceRepository.GetByIdAsync(device.DeviceID);
+            var deviceEntity = await this.deviceRepository.GetByIdAsync(device.DeviceID, d => d.Tags);
 
             if (deviceEntity == null)
             {
@@ -90,9 +94,10 @@ namespace AzureIoTHub.Portal.Server.Services
             return device;
         }
 
+
         protected override async Task DeleteDeviceInDatabase(string deviceId)
         {
-            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId);
+            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId, d => d.Tags);
 
             if (deviceEntity == null)
             {
@@ -107,6 +112,11 @@ namespace AzureIoTHub.Portal.Server.Services
             this.deviceRepository.Delete(deviceId);
 
             await this.unitOfWork.SaveAsync();
+        }
+
+        public override async Task<IEnumerable<DeviceTelemetryDto>> GetDeviceTelemetries(string deviceId)
+        {
+            return await Task.Run(Array.Empty<DeviceTelemetryDto>);
         }
     }
 }
