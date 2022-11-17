@@ -19,7 +19,7 @@ namespace AzureIoTHub.Portal.Server.Managers
         private readonly IExternalDeviceService externalDevicesService;
         private readonly IDeviceTagService deviceTagService;
         private readonly IDeviceModelPropertiesService deviceModelPropertiesService;
-        private readonly LoRaWANOptions loRaWANOptions;
+        private readonly IOptions<LoRaWANOptions> loRaWANOptions;
 
         public ExportManager(IExternalDeviceService externalDevicesService,
             IDeviceTagService deviceTagService,
@@ -29,7 +29,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             this.externalDevicesService = externalDevicesService;
             this.deviceTagService = deviceTagService;
             this.deviceModelPropertiesService = deviceModelPropertiesService;
-            this.loRaWANOptions = loRaWANOptions.Value;
+            this.loRaWANOptions = loRaWANOptions;
         }
 
         public async Task ExportDeviceList(Stream stream)
@@ -40,7 +40,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
 
-            if (loRaWANOptions.Enabled)
+            if (loRaWANOptions.Value.Enabled)
             {
                 properties.AddRange(new[] {
                     "AppKey",

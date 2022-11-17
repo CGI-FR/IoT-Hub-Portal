@@ -1853,7 +1853,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var mockQuery = this.mockRepository.Create<IQuery>();
 
             _ = mockQuery.Setup(c => c.GetNextAsJsonAsync())
-                .ReturnsAsync(new[]
+                .ReturnsAsync(new List<string>
                 {
                     /*lang=json*/
                     "{ \"deviceId\": \"000001\", \"tags\": { \"deviceName\": \"DeviceExport01\", \"supportLoRaFeatures\": \"true\", \"modelId\": \"01a440ca-9a67-4334-84a8-0f39995612a4\", \"Tag1\": \"Tag1-1\"}, \"desired\": { \"Property1\": \"123\", \"Property2\": \"456\" }}",
@@ -1870,7 +1870,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsAssignableFrom<string[]>(result);
+            Assert.IsAssignableFrom<List<string>>(result);
             Assert.AreEqual(2, result.Count());
             var deviceObjectResult = JsonNode.Parse(result.First())!;
             Assert.AreEqual("000001", deviceObjectResult["deviceId"].ToString());
