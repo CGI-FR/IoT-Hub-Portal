@@ -4,19 +4,20 @@
 namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
 {
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Client.Services;
-    using UnitTests.Bases;
-    using UnitTests.Helpers;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using UnitTests.Bases;
+    using UnitTests.Helpers;
 
     [TestFixture]
     public class DeviceClientServiceTests : BlazorUnitTest
@@ -205,6 +206,27 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             await this.deviceClientService.DeleteDevice(deviceId);
 
             // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task ExportDeviceListShouldExportDeviceList()
+        {
+            // Arrange
+            var randomBinaryData = new byte[50 * 1024];
+            using var expectedStream = new MemoryStream(randomBinaryData,false);
+
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/admin/devices/_export")
+                .Respond(HttpStatusCode.Created, "text/csv", expectedStream);
+
+            // Act
+            var result = await this.deviceClientService.ExportDeviceList();
+
+            // Assert
+            var actualStream = await result.ReadAsStreamAsync();
+            _ = actualStream.Length.Should().Be(expectedStream.Length);
+
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
