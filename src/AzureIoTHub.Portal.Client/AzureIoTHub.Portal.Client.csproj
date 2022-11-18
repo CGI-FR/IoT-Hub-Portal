@@ -13,10 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\js\FileDownload.js" />
-  </ItemGroup>
-
-  <ItemGroup>
     <TypeScriptCompile Remove="assets\script.ts" />
   </ItemGroup>
 
@@ -27,7 +23,6 @@
 
   <ItemGroup>
     <None Include="assets\src\index.ts" />
-    <None Include="wwwroot\js\FileDownload.js" />
   </ItemGroup>
   
   <ItemGroup>
