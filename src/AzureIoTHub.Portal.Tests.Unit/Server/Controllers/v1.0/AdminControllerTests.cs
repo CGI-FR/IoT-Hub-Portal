@@ -50,10 +50,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var adminController = CreateAdminController();
 
             var result = await adminController.ExportDeviceList();
-            _ = result.Should().NotBeNull();
+            Assert.IsNotNull(result);
 
             var response = result as FileStreamResult;
-            _ = response.Should().NotBeNull();
+            Assert.IsNotNull(response);
 
             var stream = response.FileStream;
             var fileName = response.FileDownloadName;
