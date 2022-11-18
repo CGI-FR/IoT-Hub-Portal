@@ -6,6 +6,19 @@
     "version": "1.0"
   },
   "paths": {
+    "/api/admin/devices/_export": {
+      "post": {
+        "tags": [
+          "Admin APIs"
+        ],
+        "operationId": "Export devices",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/api/dashboard/metrics": {
       "get": {
         "tags": [
