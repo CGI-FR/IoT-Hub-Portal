@@ -5,14 +5,14 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Threading.Tasks;
     using AutoMapper;
-    using Models.v10;
-    using Domain.Repositories;
-    using Domain.Exceptions;
-    using Managers;
-    using Infrastructure;
     using AzureIoTHub.Portal.Domain.Entities;
     using Domain;
+    using Domain.Exceptions;
+    using Domain.Repositories;
+    using Infrastructure;
+    using Managers;
     using Mappers;
+    using Models.v10;
 
     public class DeviceService : DeviceServiceBase<DeviceDetails>
     {

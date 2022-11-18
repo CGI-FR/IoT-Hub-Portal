@@ -57,5 +57,11 @@ namespace AzureIoTHub.Portal.Client.Services
         {
             return this.http.DeleteAsync($"api/devices/{deviceId}");
         }
+
+        public async Task<HttpContent> ExportDeviceList()
+        {
+            var response = await this.http.PostAsync($"/api/admin/devices/_export", null);
+            return response.Content;
+        }
     }
 }

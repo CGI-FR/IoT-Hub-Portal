@@ -1,14 +1,19 @@
 ﻿@page "/devices"
 @using AzureIoTHub.Portal
 @using AzureIoTHub.Portal.Models.v10
+@using Microsoft.Net.Http.Headers
 @using System.Web
+@using System.IO
+@using System.Text.RegularExpressions
 
 @attribute [Authorize]
+
 @inject IDialogService DialogService
 @inject NavigationManager navigationManager
 @inject PortalSettings Portal
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 @inject IDeviceClientService DeviceClientService
+@inject IJSRuntime JS
 @inject IDeviceModelsClientService DeviceModelsClientService
 
 <MudGrid>
@@ -108,10 +113,13 @@
                 <MudText Typo="Typo.h6">Devices</MudText>
                 <MudSpacer />
                 <MudTooltip Text="Refresh list">
-                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick="@Refresh" Size="Size.Medium" id="tableRefreshButton" Class="ma-2"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick="@Refresh" Size="Size.Medium" id="tableRefreshButton" Class="ma-1"></MudIconButton>
                 </MudTooltip>
                 <MudTooltip Text="Add device">
-                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="addDeviceButton" />
+                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="addDeviceButton" Class="ma-1" />
+                </MudTooltip>
+                <MudTooltip Text="Export device list">
+                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Outlined.Download" Size="Size.Medium" OnClick="ExportDeviceList" id="exportButton" Class="ma-1" />
                 </MudTooltip>
             </ToolBarContent>
             <HeaderContent>
@@ -192,7 +200,7 @@
     private string searchID = "";
     private string searchStatus;
     private string searchState;
-    
+
     private MudTable<DeviceListItem> table;
     private Dictionary<string, string> searchTags = new();
 
@@ -231,7 +239,6 @@
         {
             Error?.ProcessProblemDetails(exception);
         }
-
     }
 
     private async Task<TableData<DeviceListItem>> LoadItems(TableState state)
@@ -369,5 +376,14 @@
 
         return ModelList
                     .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    private async Task ExportDeviceList()
+    {
+        var export = await this.DeviceClientService.ExportDeviceList();
+        var fileName = export.Headers.ContentDisposition.Parameters.Single(c => c.Name == "filename").Value;
+
+        using var streamRef = new DotNetStreamReference(stream: await export.ReadAsStreamAsync());
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 }

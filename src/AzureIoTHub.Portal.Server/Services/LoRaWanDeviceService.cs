@@ -109,5 +109,6 @@ namespace AzureIoTHub.Portal.Server.Services
 
             await this.unitOfWork.SaveAsync();
         }
+
     }
 }

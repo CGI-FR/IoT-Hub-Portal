@@ -39,6 +39,7 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
     using Microsoft.Extensions.Primitives;
     using Microsoft.OpenApi.Models;
     using Models.v10;
@@ -84,6 +85,14 @@ namespace AzureIoTHub.Portal.Server
                 opts.Authority = configuration.OIDCAuthority;
             });
 
+            _ = services.Configure<LoRaWANOptions>(opts =>
+            {
+                opts.Enabled = configuration.IsLoRaEnabled;
+                opts.KeyManagementApiVersion = configuration.LoRaKeyManagementApiVersion;
+                opts.KeyManagementCode = configuration.LoRaKeyManagementCode;
+                opts.KeyManagementUrl = configuration.LoRaKeyManagementUrl;
+            });
+
             _ = services
                 .AddAuthentication(options =>
                 {
@@ -125,6 +134,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
             _ = services.AddTransient<IDeviceProvisioningServiceManager, DeviceProvisioningServiceManager>();
             _ = services.AddTransient<IRouterConfigManager, RouterConfigManager>();
+            _ = services.AddTransient<IExportManager, ExportManager>();
 
             _ = services.AddTransient<IDeviceTwinMapper<DeviceListItem, DeviceDetails>, DeviceTwinMapper>();
             _ = services.AddTransient<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>, LoRaDeviceTwinMapper>();
@@ -170,11 +180,13 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddHttpClient("RestClient")
                 .AddPolicyHandler(transientHttpErrorPolicy);
 
-            _ = services.AddHttpClient<ILoraDeviceMethodManager, LoraDeviceMethodManager>(client =>
+            _ = services.AddHttpClient<ILoraDeviceMethodManager, LoraDeviceMethodManager>((sp, client) =>
             {
-                client.BaseAddress = new Uri(configuration.LoRaKeyManagementUrl);
-                client.DefaultRequestHeaders.Add("x-functions-key", configuration.LoRaKeyManagementCode);
-                client.DefaultRequestHeaders.Add("api-version", configuration.LoRaKeyManagementApiVersion ?? "2022-03-04");
+                var opts = sp.GetService<IOptions<LoRaWANOptions>>().Value;
+
+                client.BaseAddress = new Uri(opts.KeyManagementUrl);
+                client.DefaultRequestHeaders.Add("x-functions-key", opts.KeyManagementCode);
+                client.DefaultRequestHeaders.Add("api-version", opts.KeyManagementApiVersion ?? "2022-03-04");
             })
                 .AddPolicyHandler(transientHttpErrorPolicy);
 

@@ -4,9 +4,10 @@
 namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
-    using Domain;
     using AzureIoTHub.Portal.Domain.Entities;
+    using Domain;
     using Domain.Exceptions;
     using Domain.Repositories;
 
@@ -55,6 +56,15 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new ResourceNotFoundException($"The device model {deviceModelId} doesn't exist");
 
             return true;
+        }
+
+        public IEnumerable<string> GetAllPropertiesNames()
+        {
+            return this.deviceModelPropertiesRepository
+                .GetAll()
+                .Select(property => property.Name)
+                .Distinct()
+                .ToList();
         }
     }
 }

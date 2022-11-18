@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.Json.Nodes;
     using System.Threading;
     using System.Threading.Tasks;
     using Azure;
@@ -1837,6 +1838,62 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Act
             var act = () => service.GetAllGatewayID();
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetDevicesToExportExpectedBehaviorShouldReturnList()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new List<string>
+                {
+                    /*lang=json*/
+                    "{ \"deviceId\": \"000001\", \"tags\": { \"deviceName\": \"DeviceExport01\", \"supportLoRaFeatures\": \"true\", \"modelId\": \"01a440ca-9a67-4334-84a8-0f39995612a4\", \"Tag1\": \"Tag1-1\"}, \"desired\": { \"Property1\": \"123\", \"Property2\": \"456\" }}",
+                    /*lang=json*/
+                    "{ \"deviceId\": \"000002\", \"tags\": { \"deviceName\": \"DeviceExport02\", \"supportLoRaFeatures\": \"true\", \"modelId\": \"01a440ca-9a67-4334-84a8-0f39995612a4\", \"Tag1\": \"Tag1-2\"}, \"desired\": { \"Property1\": \"789\", \"Property2\": \"000\" }}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT deviceId, tags, properties.desired FROM devices WHERE (NOT IS_DEFINED (tags.deviceType) OR tags.deviceType <> 'LoRa Concentrator') AND (capabilities.iotEdge = false)")))
+                .Returns(mockQuery.Object);
+
+            // Act
+            var result = await service.GetDevicesToExport();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsAssignableFrom<List<string>>(result);
+            Assert.AreEqual(2, result.Count());
+            var deviceObjectResult = JsonNode.Parse(result.First())!;
+            Assert.AreEqual("000001", deviceObjectResult["deviceId"].ToString());
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetDevicesToExportIssueOccuringShouldThrowInternalServerErrorException()
+        {
+            // Arrange
+            var service = CreateService();
+
+            var mockQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ThrowsAsync(new RequestFailedException("test"));
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT deviceId, tags, properties.desired FROM devices WHERE (NOT IS_DEFINED (tags.deviceType) OR tags.deviceType <> 'LoRa Concentrator') AND (capabilities.iotEdge = false)")))
+                .Returns(mockQuery.Object);
+
+            // Act
+            var act = () => service.GetDevicesToExport();
 
             // Assert
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
