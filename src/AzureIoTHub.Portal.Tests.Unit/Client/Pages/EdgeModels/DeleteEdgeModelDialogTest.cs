@@ -45,7 +45,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService
-                .Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null))
+                .Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
                 .Returns(value: null);
 
             var cut = RenderComponent<MudDialogProvider>();

@@ -213,7 +213,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .Setup(service => service.SetDeviceProperties(mockDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValue>>()))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns((Snackbar)null);
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
 
             // Act
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));
@@ -335,7 +335,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 .Setup(service => service.GetDeviceProperties(mockDeviceDetails.DeviceID))
                 .ReturnsAsync(new List<DevicePropertyValue>());
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, null)).Returns((Snackbar)null);
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
 
             // Act
             var cut = RenderComponent<DeviceDetailPage>(ComponentParameter.CreateParameter("DeviceID", mockDeviceDetails.DeviceID));

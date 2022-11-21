@@ -76,7 +76,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(list => list.Count.Equals(expectedProperties.Length))))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns((Snackbar)null);
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
 
             // Act
             var cut = RenderComponent<DeviceModelDetailPage>
@@ -137,7 +137,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             _ = SetupMockDeviceModel(properties: expectedProperties);
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, null)).Returns((Snackbar)null);
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
 
             // Act
             var cut = RenderComponent<DeviceModelDetailPage>
@@ -183,7 +183,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(properties => properties.Count.Equals(1))))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns(value: null);
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns(value: null);
 
             // Act
             var cut = RenderComponent<DeviceModelDetailPage>
@@ -239,7 +239,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                     service.SetDeviceModelModelProperties(It.IsAny<string>(), It.Is<List<DeviceProperty>>(properties => properties.Count.Equals(0))))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns((Snackbar)null);
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
 
             // Act
             var cut = RenderComponent<DeviceModelDetailPage>
