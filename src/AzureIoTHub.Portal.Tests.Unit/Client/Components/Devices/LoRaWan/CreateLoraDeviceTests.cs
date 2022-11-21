@@ -7,9 +7,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using System.Collections.Generic;
     using AngleSharp.Dom;
     using AutoFixture;
+    using AzureIoTHub.Portal.Client.Components.Devices.LoRaWAN;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
-    using AzureIoTHub.Portal.Client.Pages.Devices.LoRaWAN;
     using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Client.Validators;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;

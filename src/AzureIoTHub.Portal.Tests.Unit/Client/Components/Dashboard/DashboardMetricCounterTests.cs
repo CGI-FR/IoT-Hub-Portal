@@ -4,12 +4,12 @@
 namespace AzureIoTHub.Portal.Tests.Unit.Components.Dashboard
 {
     using System.Globalization;
-    using AzureIoTHub.Portal.Client.Pages.Dashboard;
     using UnitTests.Bases;
     using Bunit;
     using FluentAssertions;
     using MudBlazor;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Client.Components.Dashboard;
 
     [TestFixture]
     public class DashboardMetricCounterTests : BlazorUnitTest
