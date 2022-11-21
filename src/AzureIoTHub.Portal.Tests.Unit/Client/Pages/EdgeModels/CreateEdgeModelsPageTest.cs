@@ -55,7 +55,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService
-                .Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>()))
+                .Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
                 .Returns(value: null);
 
             // Act
@@ -77,7 +77,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
 
             _ = this.mockSnackbarService
-                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>()))
+                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
                 .Returns(value: null);
 
             // Act
@@ -100,7 +100,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             };
 
             _ = this.mockSnackbarService
-                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>()))
+                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
                 .Returns(value: null);
 
             // Act
@@ -130,7 +130,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             };
 
             _ = this.mockSnackbarService
-                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>()))
+                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
                 .Returns(value: null);
 
             // Act

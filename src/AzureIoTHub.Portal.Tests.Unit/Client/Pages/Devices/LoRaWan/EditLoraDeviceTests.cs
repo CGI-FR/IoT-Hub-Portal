@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
+namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices.LoRaWan
 {
     using System;
     using System.Collections.Generic;
@@ -281,7 +281,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.ExecuteCommand(device.DeviceID, commands.Single().Id))
                             .Returns(Task.CompletedTask);
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>()))
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
                 .Returns((Snackbar)null);
 
             _ = this.mockLoRaWanDeviceClientService.Setup(c => c.GetGatewayIdList())
@@ -298,7 +298,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             cut.WaitForElement("#LoRaWANCommandsTable tbody tr:first-child #ExecuteCommand").Click();
 
             this.mockLoRaWanDeviceClientService.Verify(c => c.ExecuteCommand(device.DeviceID, commands.Single().Id), Times.Once);
-            this.mockSnackbarService.Verify(c => c.Add(It.Is<string>(x => x.Contains($"{commands.Single().Name} has been successfully executed!", StringComparison.OrdinalIgnoreCase)), Severity.Success, It.IsAny<Action<SnackbarOptions>>()), Times.Once);
+            this.mockSnackbarService.Verify(c => c.Add(It.Is<string>(x => x.Contains($"{commands.Single().Name} has been successfully executed!", StringComparison.OrdinalIgnoreCase)), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]

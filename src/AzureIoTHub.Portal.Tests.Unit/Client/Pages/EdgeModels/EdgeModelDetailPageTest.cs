@@ -75,7 +75,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService
-                .Setup(c => c.Add($"Edge model successfully updated.", Severity.Success, null))
+                .Setup(c => c.Add($"Edge model successfully updated.", Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
                 .Returns(value: null);
 
             var cut = RenderComponent<EdgeModelDetailPage>(ComponentParameter.CreateParameter("ModelID", this.mockEdgeModleId));
@@ -94,7 +94,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             var edgeModel =  SetupLoadEdgeModel();
 
             _ = this.mockSnackbarService
-                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>()))
+                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
                 .Returns(value: null);
 
             // Act
@@ -121,7 +121,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             var edgeModel =  SetupLoadEdgeModel();
 
             _ = this.mockSnackbarService
-                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>()))
+                .Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>()))
                 .Returns(value: null);
 
             // Act

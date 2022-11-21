@@ -141,7 +141,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Settings
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.CreateOrUpdateDeviceTag(It.IsAny<DeviceTagDto>()))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, null)).Returns((Snackbar)null);
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
 
 
             var cut = RenderComponent<DeviceTagsPage>();
@@ -198,8 +198,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Settings
                     mockTag
                 });
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Warning, null)).Returns((Snackbar)null);
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, null)).Returns((Snackbar)null);
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Warning, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
 
 
             var cut = RenderComponent<DeviceTagsPage>();
@@ -231,8 +231,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Settings
                     mockTag
                 });
 
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Warning, null)).Returns((Snackbar)null);
-            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, null)).Returns((Snackbar)null);
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Warning, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
+            _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Error, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
 
 
             var cut = RenderComponent<DeviceTagsPage>();
