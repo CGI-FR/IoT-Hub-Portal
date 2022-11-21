@@ -49,11 +49,16 @@ var iamScopeName = 'API.Access'
 var storageAccountId = '${resourceGroup().id}/providers/Microsoft.Storage/storageAccounts/${storageAccountName}'
 var appInsightName = '${uniqueSolutionPrefix}insight'
 var functionAppDefaultHost = '${resourceId('Microsoft.Web/sites', functionAppName)}/host/default/'
+var ioTHubEventHubConsumerGroupName = 'iothub-portal'
+
+resource iotHub 'Microsoft.Devices/IotHubs@2021-07-02' existing = {
+  name: iotHubName
+}
 
 resource ioTHubEventHubConsumerGroup 'Microsoft.Devices/IotHubs/eventHubEndpoints/ConsumerGroups@2021-07-02' = {
-  name: 'portal'
+  name: '${iotHub.name}/events/${ioTHubEventHubConsumerGroupName}'
   properties: {
-    name: 'portal'
+    name: ioTHubEventHubConsumerGroupName
   }
 }
 
@@ -160,7 +165,7 @@ resource site 'Microsoft.Web/sites@2021-02-01' = {
         {
           name: 'IoTHub__EventHub__Endpoint'
           type: 'Custom'
-          connectionString: 'HostName=${iotHubName}.azure-devices.net;SharedAccessKeyName=${iotHubOwnerPolicyName};SharedAccessKey=${listKeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', iotHubName, iotHubOwnerPolicyName), '2021-07-02').primaryKey}'
+          connectionString: 'Endpoint=${iotHub.properties.eventHubEndpoints.events.endpoint};SharedAccessKeyName=service;SharedAccessKey=${listKeys(iotHub.id, '2021-07-02').service};EntityPath=${iotHub.name}'
         }
         {
           name: 'IoTDPS__ConnectionString'
@@ -186,7 +191,7 @@ resource site 'Microsoft.Web/sites@2021-02-01' = {
       appSettings: [
         {
           name: 'IoTHub__EventHub__ConsumerGroup'
-          value: 'portal'
+          value: ioTHubEventHubConsumerGroupName
         }
         {
           name: 'IoTDPS__ServiceEndpoint'
