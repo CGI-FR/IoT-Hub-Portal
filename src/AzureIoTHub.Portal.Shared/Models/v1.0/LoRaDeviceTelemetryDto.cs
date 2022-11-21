@@ -6,16 +6,16 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0
     using System;
     using System.Collections.Generic;
 
-    public class DeviceTelemetryDto
+    public class LoRaDeviceTelemetryDto
     {
         public string Id { get; set; }
 
         public DateTime EnqueuedTime { get; set; }
 
-        public TelemetryDto Telemetry { get; set; }
+        public LoRaTelemetryDto Telemetry { get; set; }
     }
 
-    public class TelemetryDto
+    public class LoRaTelemetryDto
     {
         public ulong Time { get; set; }
 

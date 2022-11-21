@@ -6,14 +6,14 @@ namespace AzureIoTHub.Portal.Domain.Entities
     using System.Text.Json.Serialization;
     using Base;
 
-    public class DeviceTelemetry : EntityBase
+    public class LoRaDeviceTelemetry : EntityBase
     {
         public DateTime EnqueuedTime { get; set; }
 
-        public Telemetry Telemetry { get; set; }
+        public LoRaTelemetry Telemetry { get; set; }
     }
 
-    public class Telemetry
+    public class LoRaTelemetry
     {
         [JsonPropertyName("time")]
         public ulong Time { get; set; }

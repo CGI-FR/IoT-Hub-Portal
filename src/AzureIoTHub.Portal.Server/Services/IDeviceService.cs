@@ -32,6 +32,6 @@ namespace AzureIoTHub.Portal.Server.Services
 
         Task<EnrollmentCredentials> GetCredentials(string deviceId);
 
-        Task<IEnumerable<DeviceTelemetryDto>> GetDeviceTelemetries(string deviceId);
+        Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId);
     }
 }

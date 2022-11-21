@@ -36,6 +36,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         [TestCase(ConfigHandlerBase.StorageAccountConnectionStringKey, nameof(ConfigHandlerBase.StorageAccountConnectionString))]
         [TestCase(ConfigHandlerBase.LoRaKeyManagementCodeKey, nameof(ConfigHandlerBase.LoRaKeyManagementCode))]
         [TestCase(ConfigHandlerBase.PostgreSQLConnectionStringKey, nameof(ConfigHandlerBase.PostgreSQLConnectionString))]
+        [TestCase(ConfigHandlerBase.IoTHubEventHubEndpointKey, nameof(ConfigHandlerBase.IoTHubEventHubEndpoint))]
         public void SecretsShouldGetValueFromConnectionStrings(string configKey, string configPropertyName)
         {
             // Arrange
@@ -261,6 +262,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
 
             // Assert
             _ = productionConfigHandler.StorageAccountDeviceModelImageMaxAge.Should().Be(86400);
+        }
+
+        [Test]
+        public void IoTHubEventHubConsumerGroup_GetDefaultValue_ReturnsExpectedDefaultValue()
+        {
+            // Arrange
+            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = productionConfigHandler.IoTHubEventHubConsumerGroup.Should().Be("iothub-portal");
         }
     }
 }

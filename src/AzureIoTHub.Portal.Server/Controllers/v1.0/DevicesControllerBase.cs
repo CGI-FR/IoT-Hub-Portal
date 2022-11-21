@@ -167,10 +167,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             return Ok(await this.deviceService.GetCredentials(deviceID));
         }
 
-        [HttpGet("{deviceId}/telemetries")]
-        public Task<IEnumerable<DeviceTelemetryDto>> GetDeviceTelemetries(string deviceId)
+        [HttpGet("{deviceId}/telemetry")]
+        public Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId)
         {
-            return this.deviceService.GetDeviceTelemetries(deviceId);
+            return this.deviceService.GetDeviceTelemetry(deviceId);
         }
 
         private static Dictionary<string, string> GetTagsFromQueryString(IQueryCollection queryCollection)

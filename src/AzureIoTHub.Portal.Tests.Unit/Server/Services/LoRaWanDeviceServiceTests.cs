@@ -24,9 +24,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Domain.Exceptions;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Azure.Devices;
-    using Microsoft.EntityFrameworkCore;
     using AutoMapper;
     using EntityFramework.Exceptions.Common;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
 
     [TestFixture]
     public class LoRaWanDeviceServiceTests : BackendUnitTest
@@ -401,6 +401,56 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Assert
             _ = await act.Should().ThrowAsync<ReferenceConstraintException>();
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetDeviceTelemetry_ExistingDevice_ReturnsTelemetry()
+        {
+            // Arrange
+            var deviceDto = new LoRaDeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            var deviceEntity = new LorawanDevice
+            {
+                Id = deviceDto.DeviceID,
+                Telemetry = Fixture.CreateMany<LoRaDeviceTelemetry>(1).ToList()
+            };
+
+            var expectedTelemetry = Mapper.Map<ICollection<LoRaDeviceTelemetry>, IEnumerable<LoRaDeviceTelemetryDto>>(deviceEntity.Telemetry);
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Telemetry))
+               .ReturnsAsync(deviceEntity);
+
+            // Act
+            var result = await this.lorawanDeviceService.GetDeviceTelemetry(deviceDto.DeviceID);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedTelemetry);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetDeviceTelemetry_NonExistingDevice_ReturnsEmptyArray()
+        {
+            // Arrange
+            var deviceDto = new LoRaDeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            var expectedTelemetry = Array.Empty<LoRaDeviceTelemetryDto>();
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Telemetry))
+               .ReturnsAsync((LorawanDevice)null);
+
+            // Act
+            var result = await this.lorawanDeviceService.GetDeviceTelemetry(deviceDto.DeviceID);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedTelemetry);
             MockRepository.VerifyAll();
         }
     }

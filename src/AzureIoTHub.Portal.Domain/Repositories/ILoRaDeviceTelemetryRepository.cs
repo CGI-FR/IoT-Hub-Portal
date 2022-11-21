@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Domain.Repositories
 {
     using Entities;
 
-    public interface IDeviceTelemetryRepository : IRepository<DeviceTelemetry>
+    public interface ILoRaDeviceTelemetryRepository : IRepository<LoRaDeviceTelemetry>
     {
     }
 }

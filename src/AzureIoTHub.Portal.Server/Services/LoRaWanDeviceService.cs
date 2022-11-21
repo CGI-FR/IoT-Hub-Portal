@@ -112,11 +112,11 @@ namespace AzureIoTHub.Portal.Server.Services
             await this.unitOfWork.SaveAsync();
         }
 
-        public override async Task<IEnumerable<DeviceTelemetryDto>> GetDeviceTelemetries(string deviceId)
+        public override async Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId)
         {
-            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId, d => d.Telemetries);
+            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId, d => d.Telemetry);
 
-            return deviceEntity == null ? new List<DeviceTelemetryDto>() : this.mapper.Map<ICollection<DeviceTelemetry>, IEnumerable<DeviceTelemetryDto>>(deviceEntity.Telemetries);
+            return deviceEntity == null ? new List<LoRaDeviceTelemetryDto>() : this.mapper.Map<ICollection<LoRaDeviceTelemetry>, IEnumerable<LoRaDeviceTelemetryDto>>(deviceEntity.Telemetry);
         }
     }
 }

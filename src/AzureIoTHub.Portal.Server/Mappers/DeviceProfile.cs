@@ -100,8 +100,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 .ForMember(dest => dest.PreferredWindow, opts => opts.MapFrom(src => GetDesiredPropertyAsIntegerValue(src, nameof(LoRaDeviceDetails.PreferredWindow)) ?? 0))
                 .ForMember(dest => dest.ClassType, opts => opts.MapFrom(src => GetDesiredPropertyAsEnum<ClassType>(src, nameof(LoRaDeviceDetails.ClassType))));
 
-            _ = CreateMap<Telemetry, TelemetryDto>();
-            _ = CreateMap<DeviceTelemetry, DeviceTelemetryDto>();
+            _ = CreateMap<LoRaTelemetry, LoRaTelemetryDto>();
+            _ = CreateMap<LoRaDeviceTelemetry, LoRaDeviceTelemetryDto>();
         }
 
         private static ICollection<DeviceTagValue> GetTags(Twin twin)

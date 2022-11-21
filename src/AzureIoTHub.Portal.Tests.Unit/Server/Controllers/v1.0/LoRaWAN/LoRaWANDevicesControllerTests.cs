@@ -302,5 +302,29 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
 
             this.mockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task GetDeviceTelemetry_ExistingDevice_ReturnsTelemetry()
+        {
+            // Arrange
+            var devicesController = CreateLoRaWANDevicesController();
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            var expectedTelemetry = new List<LoRaDeviceTelemetryDto>()
+            {
+                new LoRaDeviceTelemetryDto()
+            };
+
+            _ = this.mockDeviceService.Setup(service => service.GetDeviceTelemetry(deviceId))
+                .ReturnsAsync(expectedTelemetry);
+
+            // Act
+            var result = await devicesController.GetDeviceTelemetry(deviceId);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedTelemetry);
+            this.mockRepository.VerifyAll();
+        }
     }
 }

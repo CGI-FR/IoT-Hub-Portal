@@ -187,7 +187,7 @@ namespace AzureIoTHub.Portal.Server.Services
             return this.externalDevicesService.GetEnrollmentCredentials(deviceId);
         }
 
-        public abstract Task<IEnumerable<DeviceTelemetryDto>> GetDeviceTelemetries(string deviceId);
+        public abstract Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId);
 
         protected Dictionary<string, string> FilterDeviceTags(TDto device)
         {

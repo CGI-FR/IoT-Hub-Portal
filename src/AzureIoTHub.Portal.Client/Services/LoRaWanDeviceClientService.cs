@@ -49,9 +49,9 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.GetFromJsonAsync<LoRaGatewayIDList>($"api/lorawan/devices/gateways");
         }
 
-        public async Task<IEnumerable<DeviceTelemetryDto>> GetDeviceTelemetries(string deviceId)
+        public async Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId)
         {
-            return await this.http.GetFromJsonAsync<List<DeviceTelemetryDto>>($"api/lorawan/devices/{deviceId}/telemetries");
+            return await this.http.GetFromJsonAsync<List<LoRaDeviceTelemetryDto>>($"api/lorawan/devices/{deviceId}/telemetry");
         }
     }
 }

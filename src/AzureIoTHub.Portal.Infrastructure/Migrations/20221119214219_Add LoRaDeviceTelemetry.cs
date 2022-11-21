@@ -5,14 +5,15 @@
 
 namespace AzureIoTHub.Portal.Infrastructure.Migrations
 {
+    using System;
     using Microsoft.EntityFrameworkCore.Migrations;
 
-    public partial class AddDeviceTelemetry : Migration
+    public partial class AddLoRaDeviceTelemetry : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             _ = migrationBuilder.CreateTable(
-                name: "DeviceTelemetries",
+                name: "LoRaDeviceTelemetry",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
@@ -22,24 +23,24 @@ namespace AzureIoTHub.Portal.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_DeviceTelemetries", x => x.Id);
+                    _ = table.PrimaryKey("PK_LoRaDeviceTelemetry", x => x.Id);
                     _ = table.ForeignKey(
-                        name: "FK_DeviceTelemetries_LorawanDevices_LorawanDeviceId",
+                        name: "FK_LoRaDeviceTelemetry_LorawanDevices_LorawanDeviceId",
                         column: x => x.LorawanDeviceId,
                         principalTable: "LorawanDevices",
                         principalColumn: "Id");
                 });
 
             _ = migrationBuilder.CreateIndex(
-                name: "IX_DeviceTelemetries_LorawanDeviceId",
-                table: "DeviceTelemetries",
+                name: "IX_LoRaDeviceTelemetry_LorawanDeviceId",
+                table: "LoRaDeviceTelemetry",
                 column: "LorawanDeviceId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             _ = migrationBuilder.DropTable(
-                name: "DeviceTelemetries");
+                name: "LoRaDeviceTelemetry");
         }
     }
 }

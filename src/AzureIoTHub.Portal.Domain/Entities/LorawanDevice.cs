@@ -11,7 +11,7 @@ namespace AzureIoTHub.Portal.Domain.Entities
 
         public LorawanDevice()
         {
-            Telemetries = new HashSet<DeviceTelemetry>();
+            Telemetry = new HashSet<LoRaDeviceTelemetry>();
         }
 
         /// <summary>
@@ -207,6 +207,6 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// <summary>
         /// Device Telemetries
         /// </summary>
-        public ICollection<DeviceTelemetry> Telemetries { get; set; }
+        public ICollection<LoRaDeviceTelemetry> Telemetry { get; set; }
     }
 }

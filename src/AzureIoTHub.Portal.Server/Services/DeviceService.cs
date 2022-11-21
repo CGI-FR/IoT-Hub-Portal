@@ -114,9 +114,9 @@ namespace AzureIoTHub.Portal.Server.Services
             await this.unitOfWork.SaveAsync();
         }
 
-        public override async Task<IEnumerable<DeviceTelemetryDto>> GetDeviceTelemetries(string deviceId)
+        public override async Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId)
         {
-            return await Task.Run(Array.Empty<DeviceTelemetryDto>);
+            return await Task.Run(Array.Empty<LoRaDeviceTelemetryDto>);
         }
     }
 }

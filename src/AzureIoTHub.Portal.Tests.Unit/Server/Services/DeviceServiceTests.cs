@@ -27,6 +27,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Portal.Domain.Entities;
     using AutoMapper;
     using EntityFramework.Exceptions.Common;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
 
     [TestFixture]
     public class DeviceServiceTests : BackendUnitTest
@@ -520,6 +521,25 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedEnrollmentCredentials);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetDeviceTelemetry_AnyDeviceId_ReturnsEmptyArray()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            var expectedTelemetry = Array.Empty<LoRaDeviceTelemetryDto>();
+
+            // Act
+            var result = await this.deviceService.GetDeviceTelemetry(deviceDto.DeviceID);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedTelemetry);
             MockRepository.VerifyAll();
         }
     }

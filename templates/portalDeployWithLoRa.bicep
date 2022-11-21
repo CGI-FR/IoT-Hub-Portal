@@ -50,6 +50,13 @@ var storageAccountId = '${resourceGroup().id}/providers/Microsoft.Storage/storag
 var appInsightName = '${uniqueSolutionPrefix}insight'
 var functionAppDefaultHost = '${resourceId('Microsoft.Web/sites', functionAppName)}/host/default/'
 
+resource ioTHubEventHubConsumerGroup 'Microsoft.Devices/IotHubs/eventHubEndpoints/ConsumerGroups@2021-07-02' = {
+  name: 'portal'
+  properties: {
+    name: 'portal'
+  }
+}
+
 resource storageAccountName_default_deviceImageContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
   name: '${storageAccountName}/default/${deviceImageContainerName}'
 }
@@ -151,6 +158,11 @@ resource site 'Microsoft.Web/sites@2021-02-01' = {
           connectionString: 'HostName=${iotHubName}.azure-devices.net;SharedAccessKeyName=${iotHubOwnerPolicyName};SharedAccessKey=${listKeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', iotHubName, iotHubOwnerPolicyName), '2021-07-02').primaryKey}'
         }
         {
+          name: 'IoTHub__EventHub__Endpoint'
+          type: 'Custom'
+          connectionString: 'HostName=${iotHubName}.azure-devices.net;SharedAccessKeyName=${iotHubOwnerPolicyName};SharedAccessKey=${listKeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', iotHubName, iotHubOwnerPolicyName), '2021-07-02').primaryKey}'
+        }
+        {
           name: 'IoTDPS__ConnectionString'
           type: 'Custom'
           connectionString: 'HostName=${dpsName}.azure-devices-provisioning.net;SharedAccessKeyName=${provisioningserviceownerPolicyName};SharedAccessKey=${listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', dpsName, provisioningserviceownerPolicyName), '2021-10-15').primaryKey}'
@@ -172,6 +184,10 @@ resource site 'Microsoft.Web/sites@2021-02-01' = {
         }
       ]
       appSettings: [
+        {
+          name: 'IoTHub__EventHub__ConsumerGroup'
+          value: 'portal'
+        }
         {
           name: 'IoTDPS__ServiceEndpoint'
           value: '${dpsName}.azure-devices-provisioning.net'

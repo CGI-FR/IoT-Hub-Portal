@@ -254,28 +254,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Migrations
                     b.ToTable("DeviceTagValues");
                 });
 
-            modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.DeviceTelemetry", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("EnqueuedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("LorawanDeviceId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Telemetry")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LorawanDeviceId");
-
-                    b.ToTable("DeviceTelemetries");
-                });
-
             modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.EdgeDevice", b =>
                 {
                     b.Property<string>("Id")
@@ -350,6 +328,28 @@ namespace AzureIoTHub.Portal.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EdgeDeviceModelCommands");
+                });
+
+            modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.LoRaDeviceTelemetry", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("EnqueuedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LorawanDeviceId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Telemetry")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LorawanDeviceId");
+
+                    b.ToTable("LoRaDeviceTelemetry");
                 });
 
             modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.LorawanDevice", b =>
@@ -481,10 +481,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Migrations
                         .HasForeignKey("LorawanDeviceId");
                 });
 
-            modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.DeviceTelemetry", b =>
+            modelBuilder.Entity("AzureIoTHub.Portal.Domain.Entities.LoRaDeviceTelemetry", b =>
                 {
                     b.HasOne("AzureIoTHub.Portal.Domain.Entities.LorawanDevice", null)
-                        .WithMany("Telemetries")
+                        .WithMany("Telemetry")
                         .HasForeignKey("LorawanDeviceId");
                 });
 
@@ -502,7 +502,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Migrations
                 {
                     b.Navigation("Tags");
 
-                    b.Navigation("Telemetries");
+                    b.Navigation("Telemetry");
                 });
 #pragma warning restore 612, 618
         }

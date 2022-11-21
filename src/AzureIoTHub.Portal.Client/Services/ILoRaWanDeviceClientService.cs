@@ -22,6 +22,6 @@ namespace AzureIoTHub.Portal.Client.Services
 
         Task<LoRaGatewayIDList> GetGatewayIdList();
 
-        Task<IEnumerable<DeviceTelemetryDto>> GetDeviceTelemetries(string deviceId);
+        Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId);
     }
 }

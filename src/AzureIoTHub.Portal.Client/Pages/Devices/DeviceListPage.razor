@@ -106,7 +106,10 @@
                 <col style="width: 10%;" />
                 <col style="width: 10%;" />
                 <col style="width: 15%;" />
-                <col style="width: 10%;" />
+                @if (Portal.IsLoRaSupported)
+                {
+                    <col style="width: 10%;" />
+                }
                 <col style="width: 10%;" />
                 <col style="width: 10%;" />
             </ColGroup>
@@ -129,7 +132,10 @@
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="DeviceListItem">Allowed</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsConnected" T="DeviceListItem">Connection state</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="StatusUpdatedTime" T="DeviceListItem">Last status update</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align: center">Telemetry</MudTh>
+                @if(Portal.IsLoRaSupported)
+                {
+                    <MudTh Style="text-align: center">Telemetry</MudTh>
+                }
                 <MudTh Style="text-align: center">See details</MudTh>
                 <MudTh Style="text-align: center">Delete</MudTh>
             </HeaderContent>
@@ -172,15 +178,18 @@
                 </MudTd>
                 <MudTd DataLabel="LSU" Style="text-align: center">@context.StatusUpdatedTime</MudTd>
 
-                <MudTd DataLabel="Telemetry" Style="text-align: center">
-                    @if (context.SupportLoRaFeatures)
-                    {
-                        <MudTooltip Text="See device telemetries">
-                            <MudIconButton Icon="@Icons.Filled.ShowChart" Color="Color.Default" OnClick="@(() => ShowDeviceTelemetries(context))"/>
-                        </MudTooltip>
-                    }
-                </MudTd>
-
+                @if (Portal.IsLoRaSupported)
+                {
+                    <MudTd DataLabel="Telemetry" Style="text-align: center">
+                        @if (context.SupportLoRaFeatures)
+                        {
+                            <MudTooltip Text="See device telemetries">
+                                <MudIconButton Icon="@Icons.Filled.ShowChart" Color="Color.Default" OnClick="@(() => ShowDeviceTelemetries(context))" />
+                            </MudTooltip>
+                        }
+                    </MudTd>
+                }
+                
                 <MudTd DataLabel="Details" Style="text-align: center">
                     <MudTooltip Text="See device details">
                         <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
@@ -406,6 +415,6 @@
         var parameters = new DialogParameters {{"DeviceID", device.DeviceID}};
         var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
 
-        await DialogService.Show<DeviceTelemetriesDialog>(string.Empty, parameters, options).Result;
+        await DialogService.Show<LoRaDeviceTelemetryDialog>(string.Empty, parameters, options).Result;
     }
 }
