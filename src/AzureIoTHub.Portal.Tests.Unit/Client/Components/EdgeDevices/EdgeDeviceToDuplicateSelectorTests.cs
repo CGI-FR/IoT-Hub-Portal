@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
+namespace AzureIoTHub.Portal.Tests.Unit.Components.EdgeDevices
 {
     using System.Collections.Generic;
     using AngleSharp.Dom;
