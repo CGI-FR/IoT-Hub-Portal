@@ -9,5 +9,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     public interface IExportManager
     {
         Task ExportDeviceList(Stream stream);
+
+        Task DownloadTemplateFile(Stream stream);
     }
 }

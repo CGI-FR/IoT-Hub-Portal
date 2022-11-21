@@ -125,6 +125,9 @@
                 <MudTooltip Text="Export device list">
                     <MudFab Color="Color.Secondary" Icon="@Icons.Material.Outlined.Download" Size="Size.Medium" OnClick="ExportDeviceList" id="exportButton" Class="ma-1" />
                 </MudTooltip>
+                <MudTooltip Text="Download template file">
+                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Download" Size="Size.Medium" OnClick="DownloadTemplateFile" id="donwloadTemplateButton" Class="ma-1" />
+                </MudTooltip>
             </ToolBarContent>
             <HeaderContent>
                 <MudTh></MudTh>
@@ -404,6 +407,14 @@
     private async Task ExportDeviceList()
     {
         var export = await this.DeviceClientService.ExportDeviceList();
+        var fileName = export.Headers.ContentDisposition.Parameters.Single(c => c.Name == "filename").Value;
+
+        using var streamRef = new DotNetStreamReference(stream: await export.ReadAsStreamAsync());
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
+
+    private async Task DownloadTemplateFile() {
+        var export = await this.DeviceClientService.DownloadTemplateFile();
         var fileName = export.Headers.ContentDisposition.Parameters.Single(c => c.Name == "filename").Value;
 
         using var streamRef = new DotNetStreamReference(stream: await export.ReadAsStreamAsync());

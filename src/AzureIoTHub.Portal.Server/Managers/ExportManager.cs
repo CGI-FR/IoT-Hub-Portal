@@ -35,52 +35,14 @@ namespace AzureIoTHub.Portal.Server.Managers
         public async Task ExportDeviceList(Stream stream)
         {
             var list = await this.externalDevicesService.GetDevicesToExport();
-            var tags = this.deviceTagService.GetAllTagsNames();
-            var properties = new List<string>(this.deviceModelPropertiesService.GetAllPropertiesNames());
+            var tags = new List<string>(this.deviceTagService.GetAllTagsNames());
+            var properties = GetPropertiesToExport();
 
             using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
 
-            if (loRaWANOptions.Value.Enabled)
-            {
-                properties.AddRange(new[] {
-                    "AppKey",
-                    "AppEUI",
-                    "AppSKey",
-                    "NwkSKey",
-                    "DevAddr",
-                    "GatewayID",
-                    "Downlink",
-                    "ClassType",
-                    "PreferredWindow",
-                    "Deduplication",
-                    "RX1DROffset",
-                    "RX2DataRate",
-                    "RXDelay",
-                    "ABPRelaxMode",
-                    "SensorDecoder",
-                    "FCntUpStart",
-                    "FCntDownStart",
-                    "FCntResetCounter",
-                    "Supports32BitFCnt",
-                    "KeepAliveTimeout"
-                });
-            }
-
             using var csvWriter = new CsvWriter(writer, CultureInfo.CurrentCulture, leaveOpen: true);
 
-            csvWriter.WriteField("Id");
-            csvWriter.WriteField("Name");
-            csvWriter.WriteField("ModelId");
-
-            foreach (var tag in tags)
-            {
-                csvWriter.WriteField(string.Format(CultureInfo.InvariantCulture, $"TAG:{tag}"));
-            }
-
-            foreach (var property in properties)
-            {
-                csvWriter.WriteField(string.Format(CultureInfo.InvariantCulture, $"PROPERTY:{property}"));
-            }
+            WriteHeader(tags, properties, csvWriter);
 
             await csvWriter.NextRecordAsync();
 
@@ -106,6 +68,70 @@ namespace AzureIoTHub.Portal.Server.Managers
             }
 
             await csvWriter.FlushAsync();
+        }
+
+        public async Task DownloadTemplateFile(Stream stream)
+        {
+            var tags = new List<string>(this.deviceTagService.GetAllTagsNames());
+            var properties = GetPropertiesToExport();
+
+            using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
+
+            using var csvWriter = new CsvWriter(writer, CultureInfo.CurrentCulture, leaveOpen: true);
+
+            WriteHeader(tags, properties, csvWriter);
+
+            await csvWriter.FlushAsync();
+        }
+
+        private List<string> GetPropertiesToExport()
+        {
+            var properties = new List<string>(this.deviceModelPropertiesService.GetAllPropertiesNames());
+
+            if (this.loRaWANOptions.Value.Enabled)
+            {
+                properties.AddRange(new[] {
+                    "AppKey",
+                    "AppEUI",
+                    "AppSKey",
+                    "NwkSKey",
+                    "DevAddr",
+                    "GatewayID",
+                    "Downlink",
+                    "ClassType",
+                    "PreferredWindow",
+                    "Deduplication",
+                    "RX1DROffset",
+                    "RX2DataRate",
+                    "RXDelay",
+                    "ABPRelaxMode",
+                    "SensorDecoder",
+                    "FCntUpStart",
+                    "FCntDownStart",
+                    "FCntResetCounter",
+                    "Supports32BitFCnt",
+                    "KeepAliveTimeout"
+                });
+            }
+
+            return properties;
+        }
+
+        private static void WriteHeader(List<string> tags, List<string> properties, CsvWriter csvWriter)
+        {
+            csvWriter.WriteField("Id");
+            csvWriter.WriteField("Name");
+            csvWriter.WriteField("ModelId");
+
+            foreach (var tag in tags)
+            {
+                csvWriter.WriteField(string.Format(CultureInfo.InvariantCulture, $"TAG:{tag}"));
+            }
+
+            foreach (var property in properties)
+            {
+                csvWriter.WriteField(string.Format(CultureInfo.InvariantCulture, $"PROPERTY:{property}"));
+            }
         }
     }
 }

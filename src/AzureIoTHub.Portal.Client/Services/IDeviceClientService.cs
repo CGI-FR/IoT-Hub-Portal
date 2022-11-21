@@ -27,5 +27,7 @@ namespace AzureIoTHub.Portal.Client.Services
         Task DeleteDevice(string deviceId);
 
         Task<HttpContent> ExportDeviceList();
+
+        Task<HttpContent> DownloadTemplateFile();
     }
 }
