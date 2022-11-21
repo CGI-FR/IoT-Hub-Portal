@@ -56,14 +56,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Shared
             // Assert
             _ = cut.Markup.Should().NotBeNullOrEmpty();
             _ = cut.Find("#title").TextContent.Should().Be("TEST");
-            _ = cut.FindAll("button.mud-button-root").Count.Should().Be(3);
-            _ = cut.FindAll("div.mud-avatar").Count.Should().Be(1);
+            _ = cut.FindAll("button.mud-button-root").Count.Should().Be(4);
         }
 
         [Test]
         public void ClickOnUserMenuShouldOpenUserMenuOverlay()
         {
             // Arrange
+            var menuSelector = ".mud-menu.account-menu .mud-menu-activator";
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
             _ = Services.AddSingleton(new PortalSettings
             {
@@ -72,10 +72,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Shared
             });
 
             var cut = RenderComponent<Appbar>();
-            cut.WaitForAssertion(() => cut.Find("div.mud-menu-activator"));
+            cut.WaitForAssertion(() => cut.Find(menuSelector));
 
             // Act
-            cut.Find("div.mud-menu-activator").Click();
+            cut.Find(menuSelector).Click();
 
             // Assert
             cut.WaitForAssertion(() => cut.Find("div.mud-overlay"));
@@ -85,6 +85,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Shared
         public void ClickOnOpenUserMenuShouldCloseUserMenuOverlay()
         {
             // Arrange
+            var menuSelector = ".mud-menu.account-menu .mud-menu-activator";
             _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
             _ = Services.AddSingleton(new PortalSettings
             {
@@ -93,12 +94,58 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Shared
             });
 
             var cut = RenderComponent<Appbar>();
-            cut.WaitForAssertion(() => cut.Find("div.mud-menu-activator"));
-            cut.Find("div.mud-menu-activator").Click();
+            cut.WaitForAssertion(() => cut.Find(menuSelector));
+            cut.Find(menuSelector).Click();
             cut.WaitForAssertion(() => cut.Find("div.mud-overlay"));
 
             // Act
-            cut.Find("div.mud-menu-activator").Click();
+            cut.Find(menuSelector).Click();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.FindAll("div.mud-overlay").Count.Should().Be(0));
+        }
+
+        [Test]
+        public void ClickOnHelpMenuShouldOpenHelpMenuOverlay()
+        {
+            // Arrange
+            var menuSelector = ".mud-menu.help-menu .mud-menu-activator";
+            _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            _ = Services.AddSingleton(new PortalSettings
+            {
+                PortalName = "TEST",
+                IsLoRaSupported = false
+            });
+
+            var cut = RenderComponent<Appbar>();
+            cut.WaitForAssertion(() => cut.Find(menuSelector));
+
+            // Act
+            cut.Find(menuSelector).Click();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Find("div.mud-overlay"));
+        }
+
+        [Test]
+        public void ClickOnOpenHelpMenuShouldCloseHelpMenuOverlay()
+        {
+            // Arrange
+            var menuSelector = ".mud-menu.help-menu .mud-menu-activator";
+            _ = this.authContext.SetAuthorized(Guid.NewGuid().ToString());
+            _ = Services.AddSingleton(new PortalSettings
+            {
+                PortalName = "TEST",
+                IsLoRaSupported = false
+            });
+
+            var cut = RenderComponent<Appbar>();
+            cut.WaitForAssertion(() => cut.Find(menuSelector));
+            cut.Find(menuSelector).Click();
+            cut.WaitForAssertion(() => cut.Find("div.mud-overlay"));
+
+            // Act
+            cut.Find(menuSelector).Click();
 
             // Assert
             cut.WaitForAssertion(() => cut.FindAll("div.mud-overlay").Count.Should().Be(0));
