@@ -70,7 +70,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             await csvWriter.FlushAsync();
         }
 
-        public async Task DownloadTemplateFile(Stream stream)
+        public async Task ExportTemplateFile(Stream stream)
         {
             var tags = new List<string>(this.deviceTagService.GetAllTagsNames());
             var properties = GetPropertiesToExport();

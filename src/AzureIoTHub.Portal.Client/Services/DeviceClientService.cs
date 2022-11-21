@@ -64,7 +64,7 @@ namespace AzureIoTHub.Portal.Client.Services
             return response.Content;
         }
 
-        public async Task<HttpContent> DownloadTemplateFile()
+        public async Task<HttpContent> ExportTemplateFile()
         {
             var response = await this.http.PostAsync($"/api/admin/devices/_template", null);
             return response.Content;

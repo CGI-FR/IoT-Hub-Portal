@@ -36,11 +36,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpPost("devices/_template", Name = "Download template file")]
-        public async Task<IActionResult> DownloadTemplateFile()
+        public async Task<IActionResult> ExportTemplateFile()
         {
             var stream = new MemoryStream();
 
-            await this.exportManager.DownloadTemplateFile(stream);
+            await this.exportManager.ExportTemplateFile(stream);
             stream.Position = 0;
 
             return this.File(stream, "text/csv", $"Devices_Template.csv");

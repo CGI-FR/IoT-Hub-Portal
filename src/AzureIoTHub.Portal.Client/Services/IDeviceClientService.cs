@@ -28,6 +28,6 @@ namespace AzureIoTHub.Portal.Client.Services
 
         Task<HttpContent> ExportDeviceList();
 
-        Task<HttpContent> DownloadTemplateFile();
+        Task<HttpContent> ExportTemplateFile();
     }
 }
