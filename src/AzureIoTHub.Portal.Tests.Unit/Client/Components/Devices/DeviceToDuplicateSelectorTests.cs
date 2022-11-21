@@ -1,14 +1,13 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
+namespace AzureIoTHub.Portal.Tests.Unit.Components.Devices
 {
     using System.Collections.Generic;
     using AngleSharp.Dom;
     using AutoFixture;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
-    using AzureIoTHub.Portal.Client.Pages.Devices;
     using AzureIoTHub.Portal.Client.Services;
     using Models.v10;
     using UnitTests.Bases;
@@ -19,6 +18,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Client.Components.Devices;
 
     [TestFixture]
     public class DeviceToDuplicateSelectorTests : BlazorUnitTest

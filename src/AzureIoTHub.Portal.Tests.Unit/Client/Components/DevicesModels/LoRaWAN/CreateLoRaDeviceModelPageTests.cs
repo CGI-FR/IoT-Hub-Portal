@@ -4,14 +4,15 @@
 namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels.LoRaWAN
 {
     using System.Collections.Generic;
-    using AzureIoTHub.Portal.Client.Pages.DeviceModels.LoRaWAN;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using UnitTests.Bases;
     using Bunit;
     using FluentAssertions;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Client.Components.DeviceModels.LoRaWAN;
 
-    public class EditLoraDeviceModelPageTests : BlazorUnitTest
+    [TestFixture]
+    public class CreateLoRaDeviceModelPageTests : BlazorUnitTest
     {
         public override void Setup()
         {
@@ -25,7 +26,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels.LoRaWAN
             var model = new LoRaDeviceModelDto();
             var commands = new List<DeviceModelCommandDto>();
 
-            var cut = RenderComponent<EditLoraDeviceModel>(
+            var cut = RenderComponent<CreateLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
                 ComponentParameter.CreateParameter("Commands", commands)
             );
@@ -40,7 +41,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels.LoRaWAN
             var model = new LoRaDeviceModelDto();
             var commands = new List<DeviceModelCommandDto>();
 
-            var cut = RenderComponent<EditLoraDeviceModel>(
+            var cut = RenderComponent<CreateLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
                 ComponentParameter.CreateParameter("Commands", commands)
             );
@@ -58,7 +59,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels.LoRaWAN
             var model = new LoRaDeviceModelDto();
             var commands = new List<DeviceModelCommandDto>();
 
-            var cut = RenderComponent<EditLoraDeviceModel>(
+            var cut = RenderComponent<CreateLoraDeviceModel>(
                 ComponentParameter.CreateParameter("LoRaDeviceModel", model),
                 ComponentParameter.CreateParameter("Commands", commands)
             );

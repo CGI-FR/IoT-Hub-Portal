@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices.LoRaWan
+namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
 {
     using System;
     using System.Collections.Generic;
@@ -9,9 +9,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices.LoRaWan
     using System.Threading.Tasks;
     using AngleSharp.Dom;
     using AutoFixture;
+    using AzureIoTHub.Portal.Client.Components.Devices.LoRaWAN;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
-    using AzureIoTHub.Portal.Client.Pages.Devices.LoRaWAN;
     using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Client.Validators;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
