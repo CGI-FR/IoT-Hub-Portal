@@ -65,5 +65,38 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             this.mockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task ExportTemplateFileShouldReturnFileStreamResult()
+        {
+            var streamContent = Guid.NewGuid().ToString();
+
+            _ = this.mockExportManager.Setup(x => x.ExportTemplateFile(It.IsAny<MemoryStream>()))
+                .Callback((Stream stream) =>
+                {
+                    using var writer = new StreamWriter(stream, leaveOpen: true);
+                    writer.Write(streamContent);
+                }
+                )
+            .Returns(Task.CompletedTask);
+
+            var adminController = CreateAdminController();
+
+            var result = await adminController.ExportTemplateFile();
+            Assert.IsNotNull(result);
+
+            var response = result as FileStreamResult;
+            Assert.IsNotNull(response);
+
+            var stream = response.FileStream;
+            var fileName = response.FileDownloadName;
+
+            using var reader = new StreamReader(stream);
+            var line = reader.ReadLine();
+            _ = line.Should().Be(streamContent);
+            _ = fileName.Should().Be("Devices_Template.csv");
+
+            this.mockRepository.VerifyAll();
+        }
     }
 }

@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
@@ -45,7 +44,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             Services = ServiceCollection.BuildServiceProvider();
 
             this.exportManager = Services.GetRequiredService<IExportManager>();
-
         }
 
         [Test]
@@ -85,7 +83,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             _ = header.Split(",").Length.Should().Be(7);
             var content = reader.ReadToEnd();
             _ = content.TrimEnd().Split("\r\n").Length.Should().Be(2);
-
         }
 
         [Test]
@@ -125,6 +122,66 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             _ = header.Split(",").Length.Should().Be(27);
             var content = reader.ReadToEnd();
             _ = content.TrimEnd().Split("\r\n").Length.Should().Be(2);
+
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void ExportTemplateFileLoRaDisabledShouldWriteStream()
+        {
+            _ = this.mockLoRaWANOptions.Setup(x => x.Value)
+                .Returns(new LoRaWANOptions
+                {
+                    Enabled = false
+                });
+
+            using var fileStream = new MemoryStream();
+
+            _ = this.mockDeviceTagService.Setup(x => x.GetAllTagsNames())
+                .Returns(new List<string>() { "Tag1", "Tag2" });
+
+            _ = this.mockDeviceModelPropertiesService.Setup(x => x.GetAllPropertiesNames())
+                .Returns(new List<string>() { "Property1", "Property2" });
+
+            // Act + Assert
+            Assert.AreEqual(0, fileStream.Length);
+            _ = this.exportManager.ExportTemplateFile(fileStream);
+            fileStream.Position = 0;
+            Assert.AreNotEqual(0, fileStream.Length);
+
+            using var reader = new StreamReader(fileStream);
+            var content = reader.ReadToEnd();
+            _ = content.TrimEnd().Split("\r\n").Length.Should().Be(1);
+            _ = content.Split(",").Length.Should().Be(7);
+        }
+
+        [Test]
+        public void ExportTemplateFileLoRaEnabledShouldWriteStreamAndDisplayLoRaSpecificField()
+        {
+            _ = this.mockLoRaWANOptions.Setup(x => x.Value)
+                .Returns(new LoRaWANOptions
+                {
+                    Enabled = true
+                });
+
+            using var fileStream = new MemoryStream();
+
+            _ = this.mockDeviceTagService.Setup(x => x.GetAllTagsNames())
+                .Returns(new List<string>() { "Tag1", "Tag2" });
+
+            _ = this.mockDeviceModelPropertiesService.Setup(x => x.GetAllPropertiesNames())
+                .Returns(new List<string>() { "Property1", "Property2" });
+
+            // Act + Assert
+            Assert.AreEqual(0, fileStream.Length);
+            _ = this.exportManager.ExportTemplateFile(fileStream);
+            fileStream.Position = 0;
+            Assert.AreNotEqual(0, fileStream.Length);
+
+            using var reader = new StreamReader(fileStream);
+            var content = reader.ReadToEnd();
+            _ = content.TrimEnd().Split("\r\n").Length.Should().Be(1);
+            _ = content.Split(",").Length.Should().Be(27);
 
             MockRepository.VerifyAll();
         }

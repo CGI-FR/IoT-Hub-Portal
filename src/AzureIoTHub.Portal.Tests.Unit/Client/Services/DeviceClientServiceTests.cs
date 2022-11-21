@@ -230,5 +230,26 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
+
+        [Test]
+        public async Task ExportTemplateFileShouldExportTemplateFile()
+        {
+            // Arrange
+            var randomBinaryData = new byte[50 * 1024];
+            using var expectedStream = new MemoryStream(randomBinaryData,false);
+
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/admin/devices/_template")
+                .Respond(HttpStatusCode.Created, "text/csv", expectedStream);
+
+            // Act
+            var result = await this.deviceClientService.ExportTemplateFile();
+
+            // Assert
+            var actualStream = await result.ReadAsStreamAsync();
+            _ = actualStream.Length.Should().Be(expectedStream.Length);
+
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
     }
 }
