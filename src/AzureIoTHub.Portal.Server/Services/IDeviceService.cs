@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Azure.Messaging.EventHubs;
     using Models.v10;
     using Shared.Models;
     using Shared.Models.v1._0;
@@ -33,5 +34,7 @@ namespace AzureIoTHub.Portal.Server.Services
         Task<EnrollmentCredentials> GetCredentials(string deviceId);
 
         Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId);
+
+        Task ProcessTelemetryEvent(EventData eventMessage);
     }
 }

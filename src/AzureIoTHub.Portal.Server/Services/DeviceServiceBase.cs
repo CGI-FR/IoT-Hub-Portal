@@ -19,6 +19,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Mappers;
     using Shared.Models.v1._0.Filters;
     using Device = Domain.Entities.Device;
+    using Azure.Messaging.EventHubs;
 
     public abstract class DeviceServiceBase<TDto> : IDeviceService<TDto>
         where TDto : IDeviceDetails
@@ -188,6 +189,8 @@ namespace AzureIoTHub.Portal.Server.Services
         }
 
         public abstract Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId);
+
+        public abstract Task ProcessTelemetryEvent(EventData eventMessage);
 
         protected Dictionary<string, string> FilterDeviceTags(TDto device)
         {

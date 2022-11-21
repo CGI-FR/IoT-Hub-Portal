@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
+    using Azure.Messaging.EventHubs;
     using AzureIoTHub.Portal.Domain.Entities;
     using Domain;
     using Domain.Exceptions;
@@ -117,6 +118,11 @@ namespace AzureIoTHub.Portal.Server.Services
         public override async Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId)
         {
             return await Task.Run(Array.Empty<LoRaDeviceTelemetryDto>);
+        }
+
+        public override Task ProcessTelemetryEvent(EventData eventMessage)
+        {
+            return Task.CompletedTask;
         }
     }
 }
