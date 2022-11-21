@@ -8,7 +8,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Components.Devices
     using AutoFixture;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
-    using AzureIoTHub.Portal.Client.Pages.Devices;
     using AzureIoTHub.Portal.Client.Services;
     using Models.v10;
     using UnitTests.Bases;
@@ -19,6 +18,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Components.Devices
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Client.Components.Devices;
 
     [TestFixture]
     public class DeviceToDuplicateSelectorTests : BlazorUnitTest

@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Components.Dashboard
     using System.Globalization;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
-    using AzureIoTHub.Portal.Client.Pages.Dashboard;
     using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using UnitTests.Bases;
@@ -15,6 +14,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Components.Dashboard
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Client.Components.Dashboard;
 
     [TestFixture]
     public class DashboardMetricsTests : BlazorUnitTest
