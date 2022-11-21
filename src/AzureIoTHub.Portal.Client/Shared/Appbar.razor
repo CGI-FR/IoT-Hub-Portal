@@ -16,18 +16,47 @@
         @if (Portal.IsIdeasFeatureEnabled)
         {
             <MudTooltip id="ideas" Duration="1000" Text="New Ideas ?">
-                <MudIconButton Icon="@Icons.Filled.Lightbulb" Color="Color.Inherit" OnClick="@OpenSubmitIdeaDialog"/>
+                <MudIconButton Icon="@Icons.Filled.Lightbulb" Color="Color.Inherit" OnClick="@OpenSubmitIdeaDialog" />
             </MudTooltip>
         }
         <MudTooltip id="dark_light_switch" Duration="1000" Text="@(LayoutService.IsDarkMode ? "Switch to Light Theme" : "Switch to Dark Theme")">
-            <MudIconButton Icon="@(LayoutService.IsDarkMode ? @Icons.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@LayoutService.ToggleDarkMode"/>
+            <MudIconButton Icon="@(LayoutService.IsDarkMode ? @Icons.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@LayoutService.ToggleDarkMode" />
         </MudTooltip>
-        <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+        <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" Class="help-menu">
             <ActivatorContent>
-                <MudAvatar>
-                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Style="color: white;" Size="Size.Medium"/>
-                </MudAvatar>
-                <MudIconButton Icon="@Icons.Filled.KeyboardArrowDown" Style="color: white !important;" Size="Size.Small"/>
+                <MudTooltip id="dark_light_switch" Duration="1000" Text="Support + documentation">
+                    <MudIconButton Icon="@Icons.Rounded.HelpOutline" Style="color: white;" Size="Size.Medium" />
+                </MudTooltip>
+            </ActivatorContent>
+            <ChildContent>
+                <MudContainer>
+                    <MudItem sm="12">
+                        <MudText Typo="Typo.h6" Style="margin-bottom: 15px;">Support resources</MudText>
+                        <MudLink Href="https://cgi-fr.github.io/IoT-Hub-Portal/stable/concepts/" Target="_blank" Style="display: flex">
+                            <MudIcon Icon="@Icons.Material.Outlined.Subject" />&nbsp;
+                            <MudText Typo="Typo.body1">
+                                Explore the portal documentation
+                            </MudText>
+                        </MudLink>
+                    </MudItem>
+                </MudContainer>
+                <MudContainer Style="margin-top: 20px">
+                    <MudItem sm="12">
+                        <MudText Typo="Typo.h6" Style="margin-bottom: 15px;">Need more help?</MudText>
+                        <MudText Typo="Typo.body1" style="margin-bottom: 10px">Visit our github repository, create an issue or feature requests.</MudText>
+                        <MudLink Href="https://github.com/CGI-FR/IoT-Hub-Portal/issues" Target="_blank" Style="display: flex">
+                            <MudIcon Icon="@Icons.Custom.Brands.GitHub" Style="font-size: 1.2em" />&nbsp;
+                            <MudText Typo="Typo.body1">
+                                Visit our GitHub repository
+                            </MudText>
+                        </MudLink>
+                    </MudItem>
+                </MudContainer>
+            </ChildContent>
+        </MudMenu>
+        <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" Class="account-menu">
+            <ActivatorContent>
+                <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" Style="color: white;" Size="Size.Medium" />
             </ActivatorContent>
             <ChildContent>
                 <MudList Clickable="true">
@@ -35,7 +64,7 @@
                         <MudText Typo="Typo.caption">Signed in as</MudText>
                         <MudText Typo="Typo.body1"><b>@context.User.Identity.Name</b></MudText>
                     </MudListSubheader>
-                    <MudDivider/>
+                    <MudDivider />
                     <MudListItem Href="#" OnClick="BeginLogout" Icon="@Icons.Material.Filled.Logout">Log out</MudListItem>
                 </MudList>
             </ChildContent>
@@ -61,11 +90,11 @@
     private void OpenSubmitIdeaDialog()
     {
         var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = true,
-            DisableBackdropClick = true
-        };
+            {
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = true,
+                DisableBackdropClick = true
+            };
 
         DialogService.Show<SubmitIdeaDialog>(string.Empty, options);
     }
