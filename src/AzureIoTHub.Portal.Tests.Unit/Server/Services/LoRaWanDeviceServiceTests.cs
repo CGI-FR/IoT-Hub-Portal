@@ -27,12 +27,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AutoMapper;
     using EntityFramework.Exceptions.Common;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using Azure.Messaging.EventHubs;
+    using System.Text.Json;
+    using System.Globalization;
+    using Microsoft.EntityFrameworkCore;
 
     [TestFixture]
     public class LoRaWanDeviceServiceTests : BackendUnitTest
     {
         private Mock<IUnitOfWork> mockUnitOfWork;
         private Mock<ILorawanDeviceRepository> mockLorawanDeviceRepository;
+        private Mock<ILoRaDeviceTelemetryRepository> mockLoRaDeviceTelemetryRepository;
         private Mock<IDeviceTagValueRepository> mockDeviceTagValueRepository;
         private Mock<IExternalDeviceService> mockExternalDevicesService;
         private Mock<IDeviceTagService> mockDeviceTagService;
@@ -47,6 +52,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
             this.mockLorawanDeviceRepository = MockRepository.Create<ILorawanDeviceRepository>();
+            this.mockLoRaDeviceTelemetryRepository = MockRepository.Create<ILoRaDeviceTelemetryRepository>();
             this.mockDeviceTagValueRepository = MockRepository.Create<IDeviceTagValueRepository>();
             this.mockExternalDevicesService = MockRepository.Create<IExternalDeviceService>();
             this.mockDeviceTagService = MockRepository.Create<IDeviceTagService>();
@@ -55,6 +61,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockLorawanDeviceRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockLoRaDeviceTelemetryRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagValueRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockExternalDevicesService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagService.Object);
@@ -452,6 +459,166 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Assert
             _ = result.Should().BeEquivalentTo(expectedTelemetry);
             MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ProcessTelemetryEvent_EventDataForExistingDevice_TelemetryIsAddedToDevice()
+        {
+            // Arrange
+            var telemeryMessage = Fixture.Create<LoRaTelemetry>();
+            var enqueuedAt = Fixture.Create<DateTimeOffset>();
+            var sequenceNumber = Fixture.Create<long>();
+
+            var lorawanDevice = new LorawanDevice
+            {
+                Id = telemeryMessage.DeviceEUI
+            };
+
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber);
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
+               .ReturnsAsync(lorawanDevice);
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.lorawanDeviceService.ProcessTelemetryEvent(eventMessage);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ProcessTelemetryEvent_DbUpdateExceptionIsThrown_NothingIsDone()
+        {
+            // Arrange
+            var telemeryMessage = Fixture.Create<LoRaTelemetry>();
+            var enqueuedAt = Fixture.Create<DateTimeOffset>();
+            var sequenceNumber = Fixture.Create<long>();
+
+            var lorawanDevice = new LorawanDevice
+            {
+                Id = telemeryMessage.DeviceEUI
+            };
+
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber);
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
+               .ReturnsAsync(lorawanDevice);
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .ThrowsAsync(new DbUpdateException());
+
+            // Act
+            await this.lorawanDeviceService.ProcessTelemetryEvent(eventMessage);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ProcessTelemetryEvent_EventDataNotValid_TelemetryIsNotAddedToDevice()
+        {
+            // Arrange
+            var enqueuedAt = Fixture.Create<DateTimeOffset>();
+            var sequenceNumber = Fixture.Create<long>();
+
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(Fixture.Create<string>()), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber);
+
+            // Act
+            await this.lorawanDeviceService.ProcessTelemetryEvent(eventMessage);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ProcessTelemetryEvent_EventDataForExistingDeviceWithSameTelemetryId_TelemetryIsNotAddedToDevice()
+        {
+            // Arrange
+            var telemeryMessage = Fixture.Create<LoRaTelemetry>();
+            var enqueuedAt = Fixture.Create<DateTimeOffset>();
+            var sequenceNumber = Fixture.Create<long>();
+
+            var lorawanDevice = new LorawanDevice
+            {
+                Id = telemeryMessage.DeviceEUI,
+                Telemetry = new List<LoRaDeviceTelemetry>()
+                {
+                    new LoRaDeviceTelemetry
+                    {
+                        Id= sequenceNumber.ToString(CultureInfo.InvariantCulture),
+                        EnqueuedTime = enqueuedAt.DateTime,
+                        Telemetry = telemeryMessage
+                    }
+                }
+            };
+
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber);
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
+               .ReturnsAsync(lorawanDevice);
+
+            // Act
+            await this.lorawanDeviceService.ProcessTelemetryEvent(eventMessage);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ProcessTelemetryEvent_EventDataForNonExistingDevice_TelemetryIsNotAddedToDevice()
+        {
+            // Arrange
+            var telemeryMessage = Fixture.Create<LoRaTelemetry>();
+            var enqueuedAt = Fixture.Create<DateTimeOffset>();
+            var sequenceNumber = Fixture.Create<long>();
+
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber);
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
+               .ReturnsAsync((LorawanDevice)null);
+
+            // Act
+            await this.lorawanDeviceService.ProcessTelemetryEvent(eventMessage);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ProcessTelemetryEvent_NewEventDataForExistingDeviceWith100Telemetry_OnlyLatestHundredTelemetryMustBeKeptByDevice()
+        {
+            // Arrange
+            var telemeryMessage = Fixture.Create<LoRaTelemetry>();
+            var enqueuedAt = Fixture.Create<DateTimeOffset>();
+            var sequenceNumber = Fixture.Create<long>();
+
+            var lorawanDevice = new LorawanDevice
+            {
+                Id = telemeryMessage.DeviceEUI,
+                Telemetry = Fixture.CreateMany<LoRaDeviceTelemetry>(100).ToList()
+            };
+
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber);
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
+               .ReturnsAsync(lorawanDevice);
+
+            this.mockLoRaDeviceTelemetryRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.lorawanDeviceService.ProcessTelemetryEvent(eventMessage);
+
+            // Assert
+            MockRepository.VerifyAll();
+            this.mockLoRaDeviceTelemetryRepository.Verify(repository => repository.Delete(It.IsAny<string>()), Times.Once);
+            this.mockUnitOfWork.Verify(work => work.SaveAsync(), Times.Exactly(2));
         }
     }
 }

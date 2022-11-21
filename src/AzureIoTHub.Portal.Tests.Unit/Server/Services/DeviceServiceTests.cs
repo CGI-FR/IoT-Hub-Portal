@@ -28,6 +28,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AutoMapper;
     using EntityFramework.Exceptions.Common;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using Azure.Messaging.EventHubs;
 
     [TestFixture]
     public class DeviceServiceTests : BackendUnitTest
@@ -540,6 +541,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedTelemetry);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ProcessTelemetryEvent_AnyEventData_NothingIsDone()
+        {
+            // Arrange
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(Fixture.Create<string>()));
+
+            // Act
+            await this.deviceService.ProcessTelemetryEvent(eventMessage);
+
+            // Assert
             MockRepository.VerifyAll();
         }
     }
