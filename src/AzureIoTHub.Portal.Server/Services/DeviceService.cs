@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using AutoMapper;
     using Azure.Messaging.EventHubs;
     using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Domain;
     using Domain.Exceptions;
     using Domain.Repositories;
@@ -16,7 +17,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using Managers;
     using Mappers;
     using Models.v10;
-    using Shared.Models.v1._0;
 
     public class DeviceService : DeviceServiceBase<DeviceDetails>
     {

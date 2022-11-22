@@ -26,11 +26,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Microsoft.Azure.Devices;
     using AutoMapper;
     using EntityFramework.Exceptions.Common;
-    using AzureIoTHub.Portal.Shared.Models.v1._0;
     using Azure.Messaging.EventHubs;
     using System.Text.Json;
     using System.Globalization;
     using Microsoft.EntityFrameworkCore;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     [TestFixture]
     public class LoRaWanDeviceServiceTests : BackendUnitTest

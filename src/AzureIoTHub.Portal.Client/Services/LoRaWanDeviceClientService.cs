@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Client.Services
     using System.Net.Http.Json;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Portal.Models.v10.LoRaWAN;
 
     public class LoRaWanDeviceClientService : ILoRaWanDeviceClientService

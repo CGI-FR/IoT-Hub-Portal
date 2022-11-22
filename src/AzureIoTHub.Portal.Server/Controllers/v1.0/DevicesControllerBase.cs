@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Models.v10;
     using Services;
     using Shared.Models;
-    using Shared.Models.v1._0;
 
     public abstract class DevicesControllerBase<TDto> : ControllerBase
         where TDto : IDeviceDetails

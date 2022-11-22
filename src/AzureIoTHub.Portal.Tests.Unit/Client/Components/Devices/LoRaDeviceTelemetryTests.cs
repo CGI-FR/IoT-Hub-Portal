@@ -10,12 +10,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
-    using AzureIoTHub.Portal.Shared.Models.v1._0;
     using System.Linq;
     using AzureIoTHub.Portal.Client.Models;
     using FluentAssertions;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Components.Devices;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     [TestFixture]
     public class LoRaDeviceTelemetryTests : BlazorUnitTest

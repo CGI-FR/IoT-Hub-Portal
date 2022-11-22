@@ -12,7 +12,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using Models.v10.LoRaWAN;
     using Microsoft.Azure.Devices.Shared;
     using Models.v10;
-    using Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     public class DeviceProfile : Profile
     {

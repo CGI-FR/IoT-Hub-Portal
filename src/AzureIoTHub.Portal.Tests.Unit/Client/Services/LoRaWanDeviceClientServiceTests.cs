@@ -17,6 +17,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
     using RichardSzalay.MockHttp;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using System.Linq;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     [TestFixture]
     public class LoRaWanDeviceClientServiceTests : BlazorUnitTest

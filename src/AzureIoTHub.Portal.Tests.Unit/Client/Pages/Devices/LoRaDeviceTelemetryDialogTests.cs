@@ -14,9 +14,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using MudBlazor;
     using NUnit.Framework;
     using AutoFixture;
-    using AzureIoTHub.Portal.Shared.Models.v1._0;
     using System.Linq;
     using FluentAssertions;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     [TestFixture]
     public class LoRaDeviceTelemetryDialogTests : BlazorUnitTest

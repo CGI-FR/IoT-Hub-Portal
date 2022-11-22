@@ -15,7 +15,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using Domain;
     using Models.v10;
     using Mappers;
-    using Shared.Models.v1._0;
     using System.Linq;
     using Microsoft.EntityFrameworkCore;
     using System.Globalization;
@@ -23,6 +22,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Text.Json;
     using Microsoft.Extensions.Logging;
     using Azure.Messaging.EventHubs;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     public class LoRaWanDeviceService : DeviceServiceBase<LoRaDeviceDetails>
     {
