@@ -73,6 +73,8 @@ _Secrets_ are used to fill in the login credentials to the cloud platform. You h
   "LoRaFeature:Enabled": "<TRUE_OR_FALSE>",
   "Kestrel:Certificates:Development:Password": "<DEV_PASSWORD>",
   "IoTHub:ConnectionString": "<IOT_HUB_CONNECTION_STRING>",
+  "IoTHub:EventHub:Endpoint": "<IOT_HUB_EVENT_HUB_ENDPOINT>",
+  "IoTHub:EventHub:ConsumerGroup": "<IOT_HUB_EVENT_HUB_CONSUMER_GROUP>",
   "IoTDPS:ServiceEndpoint": "<SERVICE_END_POINT>",
   "IoTDPS:LoRaEnrollmentGroup": "<LORA_WAN_ENROLLMENT_GROUP>",
   "IoTDPS:DefaultEnrollmentGroup": "<LORA_WAN_DEFAULT_ENROLLMENT_GROUP>",
@@ -108,6 +110,8 @@ Here are different settings that the user can configure:
 * **LoRaFeature__Enabled**: Whether the LoRaWAN feature is enabled or not.
 * **LoRaKeyManagement__Url**: The LoRa Key Management Facade URL.
 * **StorageAccount__BlobContainerName**: The name of the Azure Storage container where the device models images are stored.
+* **IoTHub__EventHub__Endpoint**: The IotHub Event Hub compatible endpoint.
+* **IoTHub__EventHub__ConsumerGroup**: (Default value `iothub-portal`) The name of the consumer group used to to pull data from the IoT Hub (Automatically created by the Bicep/ARM deployement)
 * **ASPNETCORE_ENVIRONMENT**: Built-in environment variable, used to target the configuration provided by a specific environment. Two accepted values:
   * `Development`: On this environment, logs are produced up to `Debug` level.
   * `Production`: Default value if ASPNETCORE_ENVIRONMENT is not set. On this environment, logs are produced up to `Information` level.
