@@ -184,7 +184,7 @@
                         @if (context.SupportLoRaFeatures)
                         {
                             <MudTooltip Text="See device telemetries">
-                                <MudIconButton Icon="@Icons.Filled.ShowChart" Color="Color.Default" OnClick="@(() => ShowDeviceTelemetries(context))" />
+                                <MudIconButton id="@($"show-device-telemetry-{@context.DeviceID}")" Icon="@Icons.Filled.ShowChart" Color="Color.Default" OnClick="@(() => ShowDeviceTelemetry(context))" />
                             </MudTooltip>
                         }
                     </MudTd>
@@ -410,7 +410,7 @@
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 
-    private async Task ShowDeviceTelemetries(DeviceListItem device)
+    private async Task ShowDeviceTelemetry(DeviceListItem device)
     {
         var parameters = new DialogParameters {{"DeviceID", device.DeviceID}};
         var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
