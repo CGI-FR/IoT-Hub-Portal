@@ -165,7 +165,7 @@ resource site 'Microsoft.Web/sites@2021-02-01' = {
         {
           name: 'IoTHub__EventHub__Endpoint'
           type: 'Custom'
-          connectionString: 'Endpoint=${iotHub.properties.eventHubEndpoints.events.endpoint};SharedAccessKeyName=service;SharedAccessKey=${listKeys(iotHub.id, '2021-07-02').service};EntityPath=${iotHub.name}'
+          connectionString: 'Endpoint=${iotHub.properties.eventHubEndpoints.events.endpoint};SharedAccessKeyName=service;SharedAccessKey=${listKeys(resourceId('Microsoft.Devices/IotHubs/IotHubKeys', iotHub.name, 'service'), '2021-07-02').primaryKey};EntityPath=${iotHub.name}'
         }
         {
           name: 'IoTDPS__ConnectionString'
