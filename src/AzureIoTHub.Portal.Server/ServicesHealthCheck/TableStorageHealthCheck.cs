@@ -7,7 +7,7 @@ namespace AzureIoTHub.Portal.Server.ServicesHealthCheck
     using System.Threading;
     using System.Threading.Tasks;
     using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Infrastructure;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
 
     public class TableStorageHealthCheck : IHealthCheck

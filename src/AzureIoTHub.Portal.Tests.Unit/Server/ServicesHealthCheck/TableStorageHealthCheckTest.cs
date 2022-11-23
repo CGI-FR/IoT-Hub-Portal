@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.ServicesHealthCheck
     using Azure;
     using Azure.Data.Tables;
     using Azure.Data.Tables.Models;
-    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Infrastructure;
     using AzureIoTHub.Portal.Server.ServicesHealthCheck;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
     using Moq;

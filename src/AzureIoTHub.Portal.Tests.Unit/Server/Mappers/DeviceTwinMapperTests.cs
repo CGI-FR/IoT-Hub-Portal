@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
 {
     using System;
     using System.Collections.Generic;
-    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Infrastructure;
     using AzureIoTHub.Portal.Server.Extensions;
     using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Server.Managers;
