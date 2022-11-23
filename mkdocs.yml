@@ -110,6 +110,8 @@ nav:
     - 'Testing':
       - 'dev-guide/testing/unit-tests-common-practices.md'
       - 'dev-guide/testing/unit-tests-on-blazor-components.md'
+    - 'Migrations':
+      - 'dev-guide/migrations/v3-to-v4.md'
   - Concepts: 'concepts.md'
   - Web API Reference: 'open-api.md'
   - About:
