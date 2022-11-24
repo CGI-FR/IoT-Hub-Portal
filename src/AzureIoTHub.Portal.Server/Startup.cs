@@ -22,7 +22,6 @@ namespace AzureIoTHub.Portal.Server
     using Identity;
     using Infrastructure;
     using Infrastructure.Repositories;
-    using Infrastructure.Seeds;
     using Managers;
     using Mappers;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -38,7 +37,6 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Microsoft.Extensions.Primitives;
     using Microsoft.OpenApi.Models;
@@ -349,7 +347,6 @@ namespace AzureIoTHub.Portal.Server
                 .AddDbContextCheck<PortalDbContext>()
                 .AddCheck<IoTHubHealthCheck>("iothubHealth")
                 .AddCheck<StorageAccountHealthCheck>("storageAccountHealth")
-                .AddCheck<TableStorageHealthCheck>("tableStorageHealth")
                 .AddCheck<ProvisioningServiceClientHealthCheck>("dpsHealth")
                 .AddCheck<LoRaManagementKeyFacadeHealthCheck>("loraManagementFacadeHealth")
                 .AddCheck<DatabaseHealthCheck>("databaseHealthCheck");
@@ -542,7 +539,7 @@ namespace AzureIoTHub.Portal.Server
             await deviceModelImageManager?.InitializeDefaultImageBlob()!;
             await deviceModelImageManager?.SyncImagesCacheControl()!;
 
-            await EnsureDatabaseCreatedAndUpToDate(app)!;
+            //await EnsureDatabaseCreatedAndUpToDate(app)!;
         }
 
         private static void UseApiExceptionMiddleware(IApplicationBuilder app)
@@ -566,38 +563,38 @@ namespace AzureIoTHub.Portal.Server
             return Task.CompletedTask;
         }
 
-        private static async Task EnsureDatabaseCreatedAndUpToDate(IApplicationBuilder app)
-        {
-            using var scope = app.ApplicationServices.CreateScope();
-            using var context = scope.ServiceProvider.GetRequiredService<PortalDbContext>();
-            var config = scope.ServiceProvider.GetRequiredService<ConfigHandler>();
+        //private static async Task EnsureDatabaseCreatedAndUpToDate(IApplicationBuilder app)
+        //{
+        //    using var scope = app.ApplicationServices.CreateScope();
+        //    using var context = scope.ServiceProvider.GetRequiredService<PortalDbContext>();
+        //    var config = scope.ServiceProvider.GetRequiredService<ConfigHandler>();
 
-            try
-            {
-                await context
-                    .MigrateDeviceModelProperties(config);
+        //    try
+        //    {
+        //        await context
+        //            .MigrateDeviceModelProperties(config);
 
-                await context
-                    .MigrateDeviceTags(config);
+        //        await context
+        //            .MigrateDeviceTags(config);
 
-                await context
-                    .MigrateDeviceModelCommands(config);
+        //        await context
+        //            .MigrateDeviceModelCommands(config);
 
-                await context
-                    .MigrateDeviceModels(config);
+        //        await context
+        //            .MigrateDeviceModels(config);
 
-                await context
-                    .MigrateEdgeDeviceModels(config);
+        //        await context
+        //            .MigrateEdgeDeviceModels(config);
 
-                await context
-                    .MigrateEdgeDeviceModelCommands(config);
+        //        await context
+        //            .MigrateEdgeDeviceModelCommands(config);
 
-                _ = await context.SaveChangesAsync();
-            }
-            catch (InvalidOperationException e)
-            {
-                scope.ServiceProvider.GetRequiredService<ILogger>().LogError(e, "Failed to seed the database.");
-            }
-        }
+        //        _ = await context.SaveChangesAsync();
+        //    }
+        //    catch (InvalidOperationException e)
+        //    {
+        //        scope.ServiceProvider.GetRequiredService<ILogger>().LogError(e, "Failed to seed the database.");
+        //    }
+        //}
     }
 }

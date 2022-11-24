@@ -7,8 +7,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Factories
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
-    using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Infrastructure.Factories;
     using Docker.DotNet;
     using Docker.DotNet.Models;
     using NUnit.Framework;
@@ -23,26 +21,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Factories
 
         private string containerId;
 
-        [TestCase(nameof(TableClientFactory.GetDeviceCommands), TableClientFactory.DeviceCommandTableName)]
-        [TestCase(nameof(TableClientFactory.GetDeviceTagSettings), TableClientFactory.DeviceTagSettingTableName)]
-        [TestCase(nameof(TableClientFactory.GetEdgeDeviceTemplates), TableClientFactory.EdgeDeviceTemplateTableName)]
-        [TestCase(nameof(TableClientFactory.GetEdgeModuleCommands), TableClientFactory.EdgeModuleCommandsTableName)]
-        [TestCase(nameof(TableClientFactory.GetDeviceTemplateProperties), TableClientFactory.DeviceTemplatePropertiesTableName)]
-        [TestCase(nameof(TableClientFactory.GetDeviceTemplates), TableClientFactory.DeviceTemplateTableName)]
-        public void GetTableShoudReturnExpectedTableClient(string methodName, string tableName)
-        {
-            // Arrange
-            var connectionString = "UseDevelopmentStorage=true";
-            var tableClientFactory = new TableClientFactory(connectionString);
 
-            // Act
-            var result = tableClientFactory
-                                .GetType()
-                                .GetMethod(methodName)
-                                .Invoke(tableClientFactory, Array.Empty<object>()) as TableClient;
-            // Assert
-            Assert.AreEqual(tableName, result.Name);
-        }
 
         [OneTimeSetUp]
         protected void SetUp()
