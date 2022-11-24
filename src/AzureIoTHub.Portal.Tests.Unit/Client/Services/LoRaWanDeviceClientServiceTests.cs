@@ -137,5 +137,22 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
+
+        [Test]
+        public async Task DeleteDevice_ExistingDevice_DevicDeleted()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            _ = MockHttpClient.When(HttpMethod.Delete, $"/api/lorawan/devices/{deviceId}")
+                .Respond(HttpStatusCode.NoContent);
+
+            // Act
+            await this.loRaWanDeviceClientService.DeleteDevice(deviceId);
+
+            // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
     }
 }

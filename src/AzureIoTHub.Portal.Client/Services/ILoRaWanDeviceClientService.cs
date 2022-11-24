@@ -15,6 +15,8 @@ namespace AzureIoTHub.Portal.Client.Services
 
         Task UpdateDevice(LoRaDeviceDetails device);
 
+        Task DeleteDevice(string deviceId);
+
         Task ExecuteCommand(string deviceId, string commandId);
 
         Task<LoRaGatewayIDList> GetGatewayIdList();

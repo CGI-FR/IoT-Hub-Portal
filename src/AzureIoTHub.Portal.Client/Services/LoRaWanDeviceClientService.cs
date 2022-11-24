@@ -33,6 +33,11 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.http.PutAsJsonAsync("api/lorawan/devices", device);
         }
 
+        public Task DeleteDevice(string deviceId)
+        {
+            return this.http.DeleteAsync($"api/lorawan/devices/{deviceId}");
+        }
+
         public Task ExecuteCommand(string deviceId, string commandId)
         {
             return this.http.PostAsJsonAsync($"api/lorawan/devices/{deviceId}/_command/{commandId}", string.Empty);

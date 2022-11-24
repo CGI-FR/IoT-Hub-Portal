@@ -1,5 +1,6 @@
 ﻿@inject ISnackbar Snackbar
 @inject IDeviceClientService DeviceClientService
+@inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
 
 <MudDialog>
     <DialogContent>
@@ -16,17 +17,18 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="DeleteDevice">Delete</MudButton>
+        <MudButton id="delete-device" Color="Color.Primary" OnClick="DeleteDevice">Delete</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
     [CascadingParameter]
     public Error Error {get; set;}
-    
+
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string deviceID { get; set; }
     [Parameter] public string deviceName { get; set; }
+    [Parameter] public bool IsLoRaWan { get; set; }
 
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
@@ -39,7 +41,14 @@
     {
         try
         {
-            await DeviceClientService.DeleteDevice(deviceID);
+            if (IsLoRaWan)
+            {
+                await LoRaWanDeviceClientService.DeleteDevice(deviceID);
+            }
+            else
+            {
+                await DeviceClientService.DeleteDevice(deviceID);
+            }
 
             Snackbar.Add($"Device {deviceName} has been successfully deleted!", Severity.Success);
         }
