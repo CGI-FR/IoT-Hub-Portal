@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Managers;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     [Authorize]
@@ -44,6 +45,14 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             stream.Position = 0;
 
             return this.File(stream, "text/csv", $"Devices_Template.csv");
+        }
+
+        [HttpPost("devices/_import", Name = "Import devices")]
+        public async Task<IActionResult> ImportDeviceList(IFormFile file)
+        {
+            using var stream = file.OpenReadStream();
+            await this.exportManager.ImportDeviceList(stream);
+            return Ok();
         }
     }
 }

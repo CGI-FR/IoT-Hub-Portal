@@ -1,10 +1,10 @@
 ﻿@page "/devices"
 @using AzureIoTHub.Portal
 @using AzureIoTHub.Portal.Models.v10
-@using Microsoft.Net.Http.Headers
 @using System.Web
 @using System.IO
 @using System.Text.RegularExpressions
+@using System.Net.Http.Headers
 
 @attribute [Authorize]
 
@@ -128,6 +128,18 @@
                 <MudTooltip Text="Download template file">
                     <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Download" Size="Size.Medium" OnClick="ExportTemplateFile" id="donwloadTemplateButton" Class="ma-1" />
                 </MudTooltip>
+
+                <MudFileUpload T="IBrowserFile" FilesChanged="ImportDeviceList">
+                    <ButtonTemplate>
+                        <MudFab HtmlTag="label"
+                                Color="Color.Primary"
+                                Icon="@Icons.Filled.UploadFile"
+                                Size="Size.Medium"
+                                Class="ma-1"
+                                for="@context" />
+                    </ButtonTemplate>
+                </MudFileUpload>
+
             </ToolBarContent>
             <HeaderContent>
                 <MudTh></MudTh>
@@ -413,7 +425,8 @@
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 
-    private async Task ExportTemplateFile() {
+    private async Task ExportTemplateFile()
+    {
         var export = await this.DeviceClientService.ExportTemplateFile();
         var fileName = export.Headers.ContentDisposition.Parameters.Single(c => c.Name == "filename").Value;
 
@@ -427,5 +440,18 @@
         var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
 
         await DialogService.Show<LoRaDeviceTelemetryDialog>(string.Empty, parameters, options).Result;
+    }
+
+    private async Task ImportDeviceList(IBrowserFile file)
+    {
+        var fileContent = new StreamContent(file.OpenReadStream());
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+        var content = new MultipartFormDataContent();
+        content.Add(content: fileContent,
+                      name: "\"file\"",
+                      fileName: file.Name);
+
+        await this.DeviceClientService.ImportDeviceList(content);
     }
 }

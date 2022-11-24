@@ -11,5 +11,8 @@ namespace AzureIoTHub.Portal.Server.Managers
         Task ExportDeviceList(Stream stream);
 
         Task ExportTemplateFile(Stream stream);
+
+        Task ImportDeviceList(Stream stream);
+
     }
 }

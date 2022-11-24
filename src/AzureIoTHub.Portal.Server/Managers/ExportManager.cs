@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Managers
 {
+    using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
@@ -10,6 +11,8 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Text.Json.Nodes;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Domain.Options;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Services;
     using CsvHelper;
     using Microsoft.Extensions.Options;
@@ -17,16 +20,22 @@ namespace AzureIoTHub.Portal.Server.Managers
     public class ExportManager : IExportManager
     {
         private readonly IExternalDeviceService externalDevicesService;
+        private readonly IDeviceService<DeviceDetails> deviceService;
+        private readonly IDeviceService<LoRaDeviceDetails> loraDeviceService;
         private readonly IDeviceTagService deviceTagService;
         private readonly IDeviceModelPropertiesService deviceModelPropertiesService;
         private readonly IOptions<LoRaWANOptions> loRaWANOptions;
 
         public ExportManager(IExternalDeviceService externalDevicesService,
+            IDeviceService<DeviceDetails> deviceService,
+            IDeviceService<LoRaDeviceDetails> loraDeviceService,
             IDeviceTagService deviceTagService,
             IDeviceModelPropertiesService deviceModelPropertiesService,
             IOptions<LoRaWANOptions> loRaWANOptions)
         {
             this.externalDevicesService = externalDevicesService;
+            this.deviceService = deviceService;
+            this.loraDeviceService = loraDeviceService;
             this.deviceTagService = deviceTagService;
             this.deviceModelPropertiesService = deviceModelPropertiesService;
             this.loRaWANOptions = loRaWANOptions;
@@ -35,7 +44,7 @@ namespace AzureIoTHub.Portal.Server.Managers
         public async Task ExportDeviceList(Stream stream)
         {
             var list = await this.externalDevicesService.GetDevicesToExport();
-            var tags = new List<string>(this.deviceTagService.GetAllTagsNames());
+            var tags = GetTagsToExport();
             var properties = GetPropertiesToExport();
 
             using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
@@ -117,6 +126,18 @@ namespace AzureIoTHub.Portal.Server.Managers
             return properties;
         }
 
+        private List<string> GetTagsToExport()
+        {
+            var tags = new List<string>(this.deviceTagService.GetAllTagsNames());
+
+            if (this.loRaWANOptions.Value.Enabled)
+            {
+                tags.Add("supportLoRaFeatures");
+            }
+
+            return tags;
+        }
+
         private static void WriteHeader(List<string> tags, List<string> properties, CsvWriter csvWriter)
         {
             csvWriter.WriteField("Id");
@@ -132,6 +153,11 @@ namespace AzureIoTHub.Portal.Server.Managers
             {
                 csvWriter.WriteField(string.Format(CultureInfo.InvariantCulture, $"PROPERTY:{property}"));
             }
+        }
+
+        public async Task ImportDeviceList(Stream stream)
+        {
+            throw new NotImplementedException();
         }
     }
 }
