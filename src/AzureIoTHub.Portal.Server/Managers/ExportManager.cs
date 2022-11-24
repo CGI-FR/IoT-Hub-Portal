@@ -157,7 +157,84 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         public async Task ImportDeviceList(Stream stream)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var tags = GetTagsToExport();
+                var properties = new List<string>(this.deviceModelPropertiesService.GetAllPropertiesNames());
+
+                using var reader = new StreamReader(stream);
+                using var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
+                _ = csvReader.Read();
+                _ = csvReader.ReadHeader();
+                var header = csvReader.HeaderRecord;
+
+                while (csvReader.Read())
+                {
+                    var isLora = csvReader.GetField("TAG:supportLoRaFeatures");
+
+                    var deviceTags = new Dictionary<string,string>();
+                    var deviceProperties = new Dictionary<string,string>();
+                    foreach (var tag in tags)
+                    {
+                        deviceTags.Add(tag, csvReader.GetField($"TAG:{tag}"));
+                    }
+
+                    foreach (var property in properties)
+                    {
+                        deviceProperties.Add(property, csvReader.GetField($"PROPERTY:{property}"));
+                    }
+
+                    if (isLora == "true")
+                    {
+                        var newDevice = new LoRaDeviceDetails()
+                        {
+                            DeviceID = csvReader.GetField("Id"),
+                            DeviceName = csvReader.GetField("Name"),
+                            ModelId = csvReader.GetField("ModelId"),
+                            AppKey = csvReader.GetField("PROPERTY:AppKey"),
+                            AppEUI = csvReader.GetField("PROPERTY:AppEUI"),
+                            AppSKey = csvReader.GetField("PROPERTY:AppSKey"),
+                            NwkSKey= csvReader.GetField("PROPERTY:NwkSKey"),
+                            DevAddr= csvReader.GetField("PROPERTY:DevAddr"),
+                            GatewayID= csvReader.GetField("PROPERTY:GatewayID"),
+                            Downlink= csvReader.GetField<bool?>("PROPERTY:Downlink"),
+                            ClassType = Enum.TryParse<ClassType>(csvReader.GetField("PROPERTY:ClassType"), out var classType) ? classType : ClassType.A,
+                            PreferredWindow= csvReader.GetField<int>("PROPERTY:PreferredWindow"),
+                            Deduplication = Enum.TryParse<DeduplicationMode>(csvReader.GetField("PROPERTY:Deduplication"), out var deduplication) ? deduplication : DeduplicationMode.None,
+                            RX1DROffset= csvReader.GetField<int?>("PROPERTY:RX1DROffset"),
+                            RX2DataRate= csvReader.GetField<int?>("PROPERTY:RX2DataRate"),
+                            RXDelay= csvReader.GetField<int?>("PROPERTY:RXDelay"),
+                            ABPRelaxMode= csvReader.GetField<bool?>("PROPERTY:ABPRelaxMode"),
+                            SensorDecoder= csvReader.GetField("PROPERTY:SensorDecoder"),
+                            FCntUpStart= csvReader.GetField<int?>("PROPERTY:FCntUpStart"),
+                            FCntDownStart= csvReader.GetField<int?>("PROPERTY:FCntDownStart"),
+                            FCntResetCounter= csvReader.GetField<int?>("PROPERTY:FCntResetCounter"),
+                            Supports32BitFCnt= csvReader.GetField<bool?>("PROPERTY:Supports32BitFCnt"),
+                            KeepAliveTimeout= csvReader.GetField<int?>("PROPERTY:KeepAliveTimeout"),
+                            Tags = deviceTags
+                        };
+
+                        _ = await this.loraDeviceService.CreateDevice(newDevice);
+                    }
+                    else
+                    {
+                        var newDevice = new DeviceDetails()
+                        {
+                            DeviceID = csvReader.GetField("Id"),
+                            DeviceName = csvReader.GetField("Name"),
+                            ModelId = csvReader.GetField("ModelId"),
+                            Tags = deviceTags
+                        };
+
+                        _ = await this.deviceService.CreateDevice(newDevice);
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }
