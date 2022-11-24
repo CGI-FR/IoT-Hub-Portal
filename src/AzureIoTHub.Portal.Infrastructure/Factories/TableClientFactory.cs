@@ -4,7 +4,6 @@
 namespace AzureIoTHub.Portal.Infrastructure.Factories
 {
     using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Domain;
 
     public class TableClientFactory : ITableClientFactory
     {
