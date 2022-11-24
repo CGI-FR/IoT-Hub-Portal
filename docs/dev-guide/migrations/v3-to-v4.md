@@ -14,7 +14,7 @@ Below the required steps for each settings:
 1. Go to your IoT Hub
 2. Navigate to menu Built-in endpoints
 3. Create a consumer group with the name `iothub-portal`
-    ![iothub-create-consumer-group.png](/images/iothub-create-consumer-group.png)
+    ![iothub-create-consumer-group.png](../../images/iothub-create-consumer-group.png)
 4. Back to the portal web app, add a new application setting with name `IoTHub__EventHub__ConsumerGroup` and with value `iothub-portal`
 
 ## `IoTHub__EventHub__Endpoint`
@@ -24,7 +24,7 @@ Below the required steps for each settings:
 3. On the section Event Hub compatible endpoint
       1. Select the shared access policy `service`
       2. Copy the value of the event Hub-compatible endpoint
-      ![iothub-get-event-hub-endpoint.png](/images/iothub-get-event-hub-endpoint.png)
+      ![iothub-get-event-hub-endpoint.png](../../images/iothub-get-event-hub-endpoint.png)
 4. Back to the portal web app, add a new connection setting with name `IoTHub__EventHub__Endpoint` and with value the event Hub-compatible endpoint copied earlier
 
 !!! info
