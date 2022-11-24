@@ -28,4 +28,4 @@ Below the required steps for each settings:
 4. Back to the portal web app, add a new connection setting with name `IoTHub__EventHub__Endpoint` and with value the event Hub-compatible endpoint copied earlier
 
 !!! info
-    You can create your own shared access policies. But the portal needs at least the `Service Connect permission`
+    You can create your own shared access policy. But the portal needs at least the `Service Connect` permission
