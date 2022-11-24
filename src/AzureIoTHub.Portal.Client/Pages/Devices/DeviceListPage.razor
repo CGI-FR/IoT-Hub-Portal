@@ -323,6 +323,8 @@
         var parameters = new DialogParameters();
         parameters.Add("deviceID", device.DeviceID);
         parameters.Add("deviceName", device.DeviceName);
+        parameters.Add("IsLoRaWan", device.SupportLoRaFeatures);
+
         var result = await DialogService.Show<DeleteDevicePage>("Confirm Deletion", parameters).Result;
 
         if (result.Cancelled)

@@ -399,7 +399,8 @@
         var parameters = new DialogParameters
         {
             {"deviceID", Device.DeviceID},
-            {"deviceName", Device.DeviceName}
+            {"deviceName", Device.DeviceName},
+            {"IsLoRaWan", IsLoRa}
         };
         var result = await DialogService.Show<DeleteDevicePage>("Confirm Deletion", parameters).Result;
 
