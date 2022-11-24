@@ -1,0 +1,81 @@
+﻿<div class="mx-auto" style="max-width: 900px;">
+    <MudExpansionPanels>
+        <MudExpansionPanel>
+            <TitleContent>
+                <div class="d-flex">
+                    <MudTextField onclick="event.stopPropagation()" T="string" Label="Display Name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    <MudTextField onclick="event.stopPropagation()" T="string" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    <MudSelect onclick="event.stopPropagation()" Margin="Margin.Dense" T="string" Label="Capability type" Variant="Variant.Outlined">
+                        <MudSelectItem Value="@("Command")" />
+                    </MudSelect>
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudGrid>
+                    <MudItem xs="4" md="4">
+                        <MudTextField T="string" Label="Comment" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="4" md="4">
+                        <MudTextField T="string" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+
+
+                    <MudItem xs="12">
+                        <MudSwitch @bind-Checked="@requestOn" LabelPosition="LabelPosition.Start" id="SupportLoRaFeatures" Color="Color.Info" Label="Request"></MudSwitch>
+                    </MudItem>
+
+
+                    <MudItem xs="4" md="4">
+                        <MudTextField T="string" Label="Display name *" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="4" md="4">
+                        <MudTextField T="string" Label="Name *" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="3" md="3">
+                        <MudSelect Margin="Margin.Dense" T="string" Label="Schema" Variant="Variant.Outlined">
+                            <MudSelectItem Value="@("DateTime")" />
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="4" md="4">
+                        <MudTextField T="string" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="4" md="4">
+                        <MudTextField T="string" Label="Comment" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="4" md="4">
+                        <MudTextField T="string" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+
+
+                    <MudItem xs="12">
+                        <MudSwitch @bind-Checked="@responseOn" LabelPosition="LabelPosition.Start" id="SupportLoRaFeatures" Color="Color.Info" Label="Response"></MudSwitch>
+                    </MudItem>
+
+
+                    <MudItem xs="4" md="4">
+                        <MudTextField T="string" Label="Display name *" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="4" md="4">
+                        <MudTextField T="string" Label="Name *" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="3" md="3">
+                        <MudSelect Margin="Margin.Dense" T="string" Label="Schema" Variant="Variant.Outlined">
+                            <MudSelectItem Value="@("DateTime")" />
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="4" md="4">
+                        <MudTextField T="string" Label="Comment" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="4" md="4">
+                        <MudTextField T="string" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                </MudGrid>
+            </ChildContent>
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+</div>
+
+@code {
+    bool requestOn;
+    bool responseOn;
+}
