@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "17387124495892153513"
+      "templateHash": "3153302710712743226"
     }
   },
   "parameters": {
@@ -1662,7 +1662,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "12852281927986574849"
+              "templateHash": "10870162487845391970"
             }
           },
           "parameters": {
@@ -1759,9 +1759,18 @@
             "iamScopeName": "API.Access",
             "storageAccountId": "[format('{0}/providers/Microsoft.Storage/storageAccounts/{1}', resourceGroup().id, variables('storageAccountName'))]",
             "appInsightName": "[format('{0}insight', parameters('uniqueSolutionPrefix'))]",
-            "functionAppDefaultHost": "[format('{0}/host/default/', resourceId('Microsoft.Web/sites', variables('functionAppName')))]"
+            "functionAppDefaultHost": "[format('{0}/host/default/', resourceId('Microsoft.Web/sites', variables('functionAppName')))]",
+            "ioTHubEventHubConsumerGroupName": "iothub-portal"
           },
           "resources": [
+            {
+              "type": "Microsoft.Devices/IotHubs/eventHubEndpoints/ConsumerGroups",
+              "apiVersion": "2021-07-02",
+              "name": "[format('{0}/events/{1}', variables('iotHubName'), variables('ioTHubEventHubConsumerGroupName'))]",
+              "properties": {
+                "name": "[variables('ioTHubEventHubConsumerGroupName')]"
+              }
+            },
             {
               "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
               "apiVersion": "2022-05-01",
@@ -1869,6 +1878,11 @@
                       "connectionString": "[format('HostName={0}.azure-devices.net;SharedAccessKeyName={1};SharedAccessKey={2}', variables('iotHubName'), variables('iotHubOwnerPolicyName'), listKeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', variables('iotHubName'), variables('iotHubOwnerPolicyName')), '2021-07-02').primaryKey)]"
                     },
                     {
+                      "name": "IoTHub__EventHub__Endpoint",
+                      "type": "Custom",
+                      "connectionString": "[format('Endpoint={0};SharedAccessKeyName=service;SharedAccessKey={1};EntityPath={2}', reference(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2021-07-02').eventHubEndpoints.events.endpoint, listKeys(resourceId('Microsoft.Devices/IotHubs/IotHubKeys', variables('iotHubName'), 'service'), '2021-07-02').primaryKey, variables('iotHubName'))]"
+                    },
+                    {
                       "name": "IoTDPS__ConnectionString",
                       "type": "Custom",
                       "connectionString": "[format('HostName={0}.azure-devices-provisioning.net;SharedAccessKeyName={1};SharedAccessKey={2}', variables('dpsName'), variables('provisioningserviceownerPolicyName'), listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', variables('dpsName'), variables('provisioningserviceownerPolicyName')), '2021-10-15').primaryKey)]"
@@ -1890,6 +1904,10 @@
                     }
                   ],
                   "appSettings": [
+                    {
+                      "name": "IoTHub__EventHub__ConsumerGroup",
+                      "value": "[variables('ioTHubEventHubConsumerGroupName')]"
+                    },
                     {
                       "name": "IoTDPS__ServiceEndpoint",
                       "value": "[format('{0}.azure-devices-provisioning.net', variables('dpsName'))]"
@@ -1957,6 +1975,7 @@
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Devices/provisioningServices', variables('dpsName'))]",
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('pgsqlServerName'))]",
                 "[resourceId('Microsoft.Web/serverfarms', variables('servicePlanName'))]"
               ]
             }
@@ -2022,7 +2041,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "10334931924907449452"
+              "templateHash": "6727468130436739515"
             }
           },
           "parameters": {
@@ -2339,6 +2358,7 @@
               "dependsOn": [
                 "[resourceId('Microsoft.Insights/components', variables('appInsightName'))]",
                 "[resourceId('Microsoft.Devices/provisioningServices', variables('dpsName'))]",
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('pgsqlServerName'))]",
                 "[resourceId('Microsoft.Web/serverfarms', variables('servicePlanName'))]",
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
               ]

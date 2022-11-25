@@ -260,8 +260,7 @@ resource site 'Microsoft.Web/sites@2021-03-01' = {
     httpsOnly: true
   }
   dependsOn: [
-
     storageAccount
-
+    pgsqlServer
   ]
 }
