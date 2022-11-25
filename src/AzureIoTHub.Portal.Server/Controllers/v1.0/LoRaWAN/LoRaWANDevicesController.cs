@@ -3,8 +3,10 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Filters;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -23,6 +25,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     {
         private readonly ILoRaWANCommandService loRaWanCommandService;
         private readonly LoRaGatewayIDList gatewayIdList;
+        private readonly IDeviceService<LoRaDeviceDetails> deviceService;
 
         public LoRaWANDevicesController(
             ILogger<LoRaWANDevicesController> logger,
@@ -33,6 +36,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             this.loRaWanCommandService = loRaWanCommandService;
             this.gatewayIdList = gatewayIdList;
+            this.deviceService = deviceService;
         }
 
         /// <summary>
@@ -123,6 +127,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public ActionResult<LoRaGatewayIDList> GetGateways()
         {
             return Ok(this.gatewayIdList);
+        }
+
+        [HttpGet("{deviceId}/telemetry")]
+        public Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId)
+        {
+            return this.deviceService.GetDeviceTelemetry(deviceId);
         }
     }
 }
