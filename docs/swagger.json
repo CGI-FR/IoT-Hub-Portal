@@ -671,6 +671,55 @@
         }
       }
     },
+    "/api/devices/{deviceId}/telemetry": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoRaDeviceTelemetryDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoRaDeviceTelemetryDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoRaDeviceTelemetryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/edge/devices": {
       "get": {
         "tags": [
@@ -2002,6 +2051,55 @@
         "responses": {
           "200": {
             "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/lorawan/devices/{deviceId}/telemetry": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoRaDeviceTelemetryDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoRaDeviceTelemetryDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoRaDeviceTelemetryDto"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -4969,6 +5067,23 @@
         "additionalProperties": false,
         "description": "LoRa Device model."
       },
+      "LoRaDeviceTelemetryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "enqueuedTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "telemetry": {
+            "$ref": "#/components/schemas/LoRaTelemetryDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "LoRaGatewayIDList": {
         "type": "object",
         "properties": {
@@ -4978,6 +5093,91 @@
               "type": "string"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoRaTelemetryDto": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "gpsTime": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "freq": {
+            "type": "number",
+            "format": "double"
+          },
+          "chan": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rfch": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "modu": {
+            "type": "string",
+            "nullable": true
+          },
+          "datr": {
+            "type": "string",
+            "nullable": true
+          },
+          "rssi": {
+            "type": "number",
+            "format": "double"
+          },
+          "lsnr": {
+            "type": "number",
+            "format": "float"
+          },
+          "data": {
+            "nullable": true
+          },
+          "port": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fcnt": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "edgets": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rawdata": {
+            "type": "string",
+            "nullable": true
+          },
+          "deviceEUI": {
+            "type": "string",
+            "nullable": true
+          },
+          "gatewayID": {
+            "type": "string",
+            "nullable": true
+          },
+          "stationEui": {
+            "type": "string",
+            "nullable": true
+          },
+          "dupMsg": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "extraData": {
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            },
+            "nullable": true,
+            "readOnly": true
           }
         },
         "additionalProperties": false
