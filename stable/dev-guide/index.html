@@ -337,6 +337,26 @@
 </ul>
 </nav>
 </li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_3" id="__nav_2_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2_3">
+          Migrations
+          <span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-label="Migrations" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_2_3">
+<span class="md-nav__icon md-icon"></span>
+          Migrations
+        </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="migrations/v3-to-v4/">
+        Migrate from v3 to v4
+      </a>
+</li>
+</ul>
+</nav>
+</li>
 </ul>
 </nav>
 </li>
@@ -594,7 +614,9 @@
 <span class="normal"><a href="#__codelineno-0-17">17</a></span>
 <span class="normal"><a href="#__codelineno-0-18">18</a></span>
 <span class="normal"><a href="#__codelineno-0-19">19</a></span>
-<span class="normal"><a href="#__codelineno-0-20">20</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="p">{</span><span class="w"></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="p">{</span><span class="w"></span>
 <a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="nt">"StorageAccount:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;CONNECTION_STRING_STORAGE_ACCOUNT&gt;"</span><span class="p">,</span><span class="w"></span>
 <a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span><span class="nt">"StorageAccount:BlobContainerName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;BLOB_CONTAINER_NAME&gt;"</span><span class="p">,</span><span class="w"></span>
 <a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">  </span><span class="nt">"OIDC:Scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SCOPE&gt;"</span><span class="p">,</span><span class="w"></span>
@@ -608,12 +630,14 @@
 <a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">  </span><span class="nt">"LoRaFeature:Enabled"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;TRUE_OR_FALSE&gt;"</span><span class="p">,</span><span class="w"></span>
 <a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">  </span><span class="nt">"Kestrel:Certificates:Development:Password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;DEV_PASSWORD&gt;"</span><span class="p">,</span><span class="w"></span>
 <a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">  </span><span class="nt">"IoTHub:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_HUB_CONNECTION_STRING&gt;"</span><span class="p">,</span><span class="w"></span>
-<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">  </span><span class="nt">"IoTDPS:ServiceEndpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SERVICE_END_POINT&gt;"</span><span class="p">,</span><span class="w"></span>
-<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">  </span><span class="nt">"IoTDPS:LoRaEnrollmentGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_ENROLLMENT_GROUP&gt;"</span><span class="p">,</span><span class="w"></span>
-<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">  </span><span class="nt">"IoTDPS:DefaultEnrollmentGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_DEFAULT_ENROLLMENT_GROUP&gt;"</span><span class="p">,</span><span class="w"></span>
-<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">  </span><span class="nt">"IoTDPS:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_DPS_CONNECTION_STRING&gt;"</span><span class="p">,</span><span class="w"></span>
-<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">  </span><span class="nt">"PostgreSQL:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;POSTGRE_SQL_CONNECTION_STRING&gt;"</span><span class="w"></span>
-<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">  </span><span class="nt">"IoTHub:EventHub:Endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_HUB_EVENT_HUB_ENDPOINT&gt;"</span><span class="p">,</span><span class="w"></span>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">  </span><span class="nt">"IoTHub:EventHub:ConsumerGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_HUB_EVENT_HUB_CONSUMER_GROUP&gt;"</span><span class="p">,</span><span class="w"></span>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">  </span><span class="nt">"IoTDPS:ServiceEndpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;SERVICE_END_POINT&gt;"</span><span class="p">,</span><span class="w"></span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">  </span><span class="nt">"IoTDPS:LoRaEnrollmentGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_ENROLLMENT_GROUP&gt;"</span><span class="p">,</span><span class="w"></span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">  </span><span class="nt">"IoTDPS:DefaultEnrollmentGroup"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;LORA_WAN_DEFAULT_ENROLLMENT_GROUP&gt;"</span><span class="p">,</span><span class="w"></span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">  </span><span class="nt">"IoTDPS:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IOT_DPS_CONNECTION_STRING&gt;"</span><span class="p">,</span><span class="w"></span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">  </span><span class="nt">"PostgreSQL:ConnectionString"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;POSTGRE_SQL_CONNECTION_STRING&gt;"</span><span class="w"></span>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div></td></tr></table></div>
 <blockquote>
 <p><u>Note:</u> You must replace all values in the brackets by your own Azure settings. If you can't find them in the Azure Portal, please contact an administrator of this project to have more information.</p>
@@ -637,6 +661,8 @@
 <li><strong>LoRaFeature__Enabled</strong>: Whether the LoRaWAN feature is enabled or not.</li>
 <li><strong>LoRaKeyManagement__Url</strong>: The LoRa Key Management Facade URL.</li>
 <li><strong>StorageAccount__BlobContainerName</strong>: The name of the Azure Storage container where the device models images are stored.</li>
+<li><strong>IoTHub__EventHub__Endpoint</strong>: The IotHub Event Hub compatible endpoint.</li>
+<li><strong>IoTHub__EventHub__ConsumerGroup</strong>: (Default value <code>iothub-portal</code>) The name of the consumer group used to to pull data from the IoT Hub (Automatically created by the Bicep/ARM deployement)</li>
 <li><strong>ASPNETCORE_ENVIRONMENT</strong>: Built-in environment variable, used to target the configuration provided by a specific environment. Two accepted values:</li>
 <li><code>Development</code>: On this environment, logs are produced up to <code>Debug</code> level.</li>
 <li><code>Production</code>: Default value if ASPNETCORE_ENVIRONMENT is not set. On this environment, logs are produced up to <code>Information</code> level.</li>
