@@ -49,6 +49,18 @@ var iamScopeName = 'API.Access'
 var storageAccountId = '${resourceGroup().id}/providers/Microsoft.Storage/storageAccounts/${storageAccountName}'
 var appInsightName = '${uniqueSolutionPrefix}insight'
 var functionAppDefaultHost = '${resourceId('Microsoft.Web/sites', functionAppName)}/host/default/'
+var ioTHubEventHubConsumerGroupName = 'iothub-portal'
+
+resource iotHub 'Microsoft.Devices/IotHubs@2021-07-02' existing = {
+  name: iotHubName
+}
+
+resource ioTHubEventHubConsumerGroup 'Microsoft.Devices/IotHubs/eventHubEndpoints/ConsumerGroups@2021-07-02' = {
+  name: '${iotHub.name}/events/${ioTHubEventHubConsumerGroupName}'
+  properties: {
+    name: ioTHubEventHubConsumerGroupName
+  }
+}
 
 resource storageAccountName_default_deviceImageContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
   name: '${storageAccountName}/default/${deviceImageContainerName}'
@@ -151,6 +163,11 @@ resource site 'Microsoft.Web/sites@2021-02-01' = {
           connectionString: 'HostName=${iotHubName}.azure-devices.net;SharedAccessKeyName=${iotHubOwnerPolicyName};SharedAccessKey=${listKeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', iotHubName, iotHubOwnerPolicyName), '2021-07-02').primaryKey}'
         }
         {
+          name: 'IoTHub__EventHub__Endpoint'
+          type: 'Custom'
+          connectionString: 'Endpoint=${iotHub.properties.eventHubEndpoints.events.endpoint};SharedAccessKeyName=service;SharedAccessKey=${listKeys(resourceId('Microsoft.Devices/IotHubs/IotHubKeys', iotHub.name, 'service'), '2021-07-02').primaryKey};EntityPath=${iotHub.name}'
+        }
+        {
           name: 'IoTDPS__ConnectionString'
           type: 'Custom'
           connectionString: 'HostName=${dpsName}.azure-devices-provisioning.net;SharedAccessKeyName=${provisioningserviceownerPolicyName};SharedAccessKey=${listKeys(resourceId('Microsoft.Devices/provisioningServices/keys', dpsName, provisioningserviceownerPolicyName), '2021-10-15').primaryKey}'
@@ -172,6 +189,10 @@ resource site 'Microsoft.Web/sites@2021-02-01' = {
         }
       ]
       appSettings: [
+        {
+          name: 'IoTHub__EventHub__ConsumerGroup'
+          value: ioTHubEventHubConsumerGroupName
+        }
         {
           name: 'IoTDPS__ServiceEndpoint'
           value: '${dpsName}.azure-devices-provisioning.net'
@@ -237,4 +258,7 @@ resource site 'Microsoft.Web/sites@2021-02-01' = {
     httpsOnly: true
     storageAccountRequired: false
   }
+  dependsOn: [
+    pgsqlServer
+  ]
 }
