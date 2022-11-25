@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -164,6 +165,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public virtual async Task<ActionResult<EnrollmentCredentials>> GetCredentials(string deviceID)
         {
             return Ok(await this.deviceService.GetCredentials(deviceID));
+        }
+
+        [HttpGet("{deviceId}/telemetry")]
+        public Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId)
+        {
+            return this.deviceService.GetDeviceTelemetry(deviceId);
         }
 
         private static Dictionary<string, string> GetTagsFromQueryString(IQueryCollection queryCollection)

@@ -125,7 +125,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
         {
             var lorawanDevice = this.mapper.Map<LorawanDevice>(twin);
 
-            var lorawanDeviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(lorawanDevice.Id);
+            var lorawanDeviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(lorawanDevice.Id, d => d.Tags);
             if (lorawanDeviceEntity == null)
             {
                 await this.lorawanDeviceRepository.InsertAsync(lorawanDevice);
@@ -148,7 +148,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
         {
             var device = this.mapper.Map<Device>(twin);
 
-            var deviceEntity = await this.deviceRepository.GetByIdAsync(device.Id);
+            var deviceEntity = await this.deviceRepository.GetByIdAsync(device.Id, d => d.Tags);
             if (deviceEntity == null)
             {
                 await this.deviceRepository.InsertAsync(device);

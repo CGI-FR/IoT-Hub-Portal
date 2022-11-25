@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using FluentAssertions;
     using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
@@ -300,6 +301,30 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             Assert.IsAssignableFrom<LoRaGatewayIDList>(okObjectResult.Value);
             _ = okObjectResult.Value.Should().BeEquivalentTo(loRaGatewayIDList);
 
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetDeviceTelemetry_ExistingDevice_ReturnsTelemetry()
+        {
+            // Arrange
+            var devicesController = CreateLoRaWANDevicesController();
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            var expectedTelemetry = new List<LoRaDeviceTelemetryDto>()
+            {
+                new LoRaDeviceTelemetryDto()
+            };
+
+            _ = this.mockDeviceService.Setup(service => service.GetDeviceTelemetry(deviceId))
+                .ReturnsAsync(expectedTelemetry);
+
+            // Act
+            var result = await devicesController.GetDeviceTelemetry(deviceId);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedTelemetry);
             this.mockRepository.VerifyAll();
         }
     }

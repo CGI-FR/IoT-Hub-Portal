@@ -169,6 +169,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddScoped<IDeviceTagValueRepository, DeviceTagValueRepository>();
             _ = services.AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>();
             _ = services.AddScoped<IConcentratorRepository, ConcentratorRepository>();
+            _ = services.AddScoped<ILoRaDeviceTelemetryRepository, LoRaDeviceTelemetryRepository>();
 
             _ = services.AddMudServices();
 
@@ -409,6 +410,16 @@ namespace AzureIoTHub.Portal.Server
                         .WithSimpleSchedule(s => s
                             .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
                             .RepeatForever()));
+
+                if (configuration.IsLoRaEnabled)
+                {
+                    _ = q.AddJob<SyncLoRaDeviceTelemetryJob>(j => j.WithIdentity(nameof(SyncLoRaDeviceTelemetryJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncLoRaDeviceTelemetryJob)}")
+                        .ForJob(nameof(SyncLoRaDeviceTelemetryJob))
+                        .StartNow());
+                }
+
             });
 
             // Add the Quartz.NET hosted service

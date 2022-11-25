@@ -16,6 +16,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using System.Linq;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     [TestFixture]
     public class LoRaWanDeviceClientServiceTests : BlazorUnitTest
@@ -151,6 +153,25 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             await this.loRaWanDeviceClientService.DeleteDevice(deviceId);
 
             // Assert
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task GetDeviceTelemetry_DeviceExists_ReturnsTelemetry()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+            var expectedLoRaDeviceTelemetry = Fixture.CreateMany<LoRaDeviceTelemetryDto>().ToList();
+
+            _ = MockHttpClient.When(HttpMethod.Get, $"/api/lorawan/devices/{deviceId}/telemetry")
+                .RespondJson(expectedLoRaDeviceTelemetry);
+
+            // Act
+            var result = await this.loRaWanDeviceClientService.GetDeviceTelemetry(deviceId);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedLoRaDeviceTelemetry);
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }

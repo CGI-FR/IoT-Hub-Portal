@@ -238,5 +238,25 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
             // Assert
             _ = developmentConfigHandler.StorageAccountDeviceModelImageMaxAge.Should().Be(86400);
         }
+
+        [Test]
+        public void IoTHubEventHubEndpoint_GetDefaultValue_ReturnsEmpty()
+        {
+            // Arrange
+            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = developmentConfigHandler.IoTHubEventHubEndpoint.Should().BeEmpty();
+        }
+
+        [Test]
+        public void IoTHubEventHubConsumerGroup_GetDefaultValue_ReturnsExpectedDefaultValue()
+        {
+            // Arrange
+            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = developmentConfigHandler.IoTHubEventHubConsumerGroup.Should().Be("iothub-portal");
+        }
     }
 }

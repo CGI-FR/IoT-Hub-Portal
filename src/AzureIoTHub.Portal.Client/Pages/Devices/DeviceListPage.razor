@@ -106,6 +106,10 @@
                 <col style="width: 10%;" />
                 <col style="width: 10%;" />
                 <col style="width: 15%;" />
+                @if (Portal.IsLoRaSupported)
+                {
+                    <col style="width: 10%;" />
+                }
                 <col style="width: 10%;" />
                 <col style="width: 10%;" />
             </ColGroup>
@@ -128,6 +132,10 @@
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="DeviceListItem">Allowed</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsConnected" T="DeviceListItem">Connection state</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="StatusUpdatedTime" T="DeviceListItem">Last status update</MudTableSortLabel></MudTh>
+                @if(Portal.IsLoRaSupported)
+                {
+                    <MudTh Style="text-align: center">Telemetry</MudTh>
+                }
                 <MudTh Style="text-align: center">See details</MudTh>
                 <MudTh Style="text-align: center">Delete</MudTh>
             </HeaderContent>
@@ -169,6 +177,19 @@
                     }
                 </MudTd>
                 <MudTd DataLabel="LSU" Style="text-align: center">@context.StatusUpdatedTime</MudTd>
+
+                @if (Portal.IsLoRaSupported)
+                {
+                    <MudTd DataLabel="Telemetry" Style="text-align: center">
+                        @if (context.SupportLoRaFeatures)
+                        {
+                            <MudTooltip Text="See device telemetries">
+                                <MudIconButton id="@($"show-device-telemetry-{@context.DeviceID}")" Icon="@Icons.Filled.ShowChart" Color="Color.Default" OnClick="@(() => ShowDeviceTelemetry(context))" />
+                            </MudTooltip>
+                        }
+                    </MudTd>
+                }
+                
                 <MudTd DataLabel="Details" Style="text-align: center">
                     <MudTooltip Text="See device details">
                         <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
@@ -387,5 +408,13 @@
 
         using var streamRef = new DotNetStreamReference(stream: await export.ReadAsStreamAsync());
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
+
+    private async Task ShowDeviceTelemetry(DeviceListItem device)
+    {
+        var parameters = new DialogParameters {{"DeviceID", device.DeviceID}};
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+
+        await DialogService.Show<LoRaDeviceTelemetryDialog>(string.Empty, parameters, options).Result;
     }
 }

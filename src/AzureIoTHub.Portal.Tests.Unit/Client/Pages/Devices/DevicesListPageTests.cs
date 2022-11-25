@@ -350,5 +350,41 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             Assert.AreEqual(1, newModelList.Count());
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
+
+        [Test]
+        public void ShowDeviceTelemetry_Clicked_LoRaDeviceTelemetryDialogIsShown()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
+                });
+
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
+
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
+            _ = this.mockDialogService.Setup(c => c.Show<LoRaDeviceTelemetryDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsAny<DialogOptions>()))
+                .Returns(mockDialogReference.Object);
+
+            var cut = RenderComponent<DeviceListPage>();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+
+            // Act
+            cut.WaitForElement($"#show-device-telemetry-{deviceId}").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
     }
 }

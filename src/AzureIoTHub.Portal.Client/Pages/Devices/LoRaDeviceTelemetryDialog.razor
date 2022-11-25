@@ -1,0 +1,17 @@
+﻿<MudDialog>
+    <DialogContent>
+        <LoRaDeviceTelemetry DeviceId="@DeviceId" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton id="cancel-telemetry-dialog" OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string DeviceId { get; set; }
+
+    void Cancel() => MudDialog.Cancel();
+}

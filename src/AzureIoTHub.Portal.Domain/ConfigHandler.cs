@@ -7,6 +7,10 @@ namespace AzureIoTHub.Portal.Domain
     {
         public abstract string IoTHubConnectionString { get; }
 
+        public abstract string IoTHubEventHubEndpoint { get; }
+
+        public abstract string IoTHubEventHubConsumerGroup { get; }
+
         public abstract string DPSConnectionString { get; }
 
         public abstract string DPSEndpoint { get; }

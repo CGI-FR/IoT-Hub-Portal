@@ -1,0 +1,130 @@
+﻿@using AzureIoTHub.Portal.Shared.Models.v10;
+@using ChartJs.Blazor.Common;
+@using ChartJs.Blazor.Common.Axes;
+@using ChartJs.Blazor.Common.Enums;
+@using ChartJs.Blazor.Common.Time;
+@using ChartJs.Blazor.LineChart;
+@using ChartJs.Blazor.PieChart;
+@using ChartJs.Blazor.Util;
+
+@inject ILoRaWanDeviceClientService LoRaWanDeviceClientService
+
+@if (chartConfig != null)
+{
+    <Chart Config="chartConfig"></Chart>
+}
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; }
+
+    [Parameter]
+    public string DeviceId { get; set; }
+
+    private IEnumerable<LoRaDeviceTelemetryDto> Telemetries = new List<LoRaDeviceTelemetryDto>();
+    private LineConfig chartConfig;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadDeviceTelemetries();
+        }
+    }
+
+    private async Task LoadDeviceTelemetries()
+    {
+        try
+        {
+            Telemetries = (await LoRaWanDeviceClientService.GetDeviceTelemetry(DeviceId))
+                .OrderByDescending(telemetry => telemetry.EnqueuedTime)
+                .ToList();
+
+            await UpdateChartConfig();
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    private async Task UpdateChartConfig()
+    {
+        chartConfig = new LineConfig
+        {
+            Options = new LineOptions
+            {
+                Responsive = true,
+                Title = new OptionsTitle
+                {
+                    Display = true,
+                    Text = $"Telemetry for device {DeviceId}"
+                },
+                Tooltips = new Tooltips
+                {
+                    Mode = InteractionMode.Nearest,
+                    Intersect = true
+                },
+                Hover = new Hover
+                {
+                    Mode = InteractionMode.Nearest,
+                    Intersect = true
+                },
+                Scales = new Scales
+                {
+                    XAxes = new List<CartesianAxis>
+                    {
+                        new TimeAxis
+                        {
+                            ScaleLabel = new ScaleLabel
+                            {
+                                LabelString = "Date"
+                            },
+                            Time = new TimeOptions
+                            {
+                                TooltipFormat = "ll HH:mm:ss"
+                            },
+                        }
+                    },
+                    YAxes = new List<CartesianAxis>
+                    {
+                        new LinearCartesianAxis
+                        {
+                            ScaleLabel = new ScaleLabel
+                            {
+                                LabelString = "Value"
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        foreach (var label in Telemetries.Select(d => d.EnqueuedTime.ToString("o")))
+        {
+            chartConfig.Data.Labels.Add(label);
+        }
+
+        var rssiDataset = new LineDataset<TimePoint>(Telemetries.Select(telemetry => new TimePoint(telemetry.EnqueuedTime, telemetry.Telemetry.Rssi)))
+            {
+            Label = "RSSI",
+            BackgroundColor = ColorUtil.ColorHexString(255, 99, 132),
+            BorderColor = ColorUtil.ColorHexString(255, 99, 132),
+            Fill = FillingMode.Disabled
+        };
+
+        var lsnrDataset = new LineDataset<TimePoint>(Telemetries.Select(telemetry => new TimePoint(telemetry.EnqueuedTime, telemetry.Telemetry.Lsnr)))
+        {
+            Label = "LSNR",
+            BackgroundColor = ColorUtil.ColorHexString(54, 162, 235),
+            BorderColor = ColorUtil.ColorHexString(54, 162, 235),
+            Fill = FillingMode.Disabled
+        };
+
+        chartConfig.Data.Datasets.Add(rssiDataset);
+        chartConfig.Data.Datasets.Add(lsnrDataset);
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

@@ -51,8 +51,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
 
             _ = context.Add(new DeviceModelProperty()
             {
-                Id = entityId
+                Id = entityId,
+                Name = Guid.NewGuid().ToString(),
+                DisplayName = Guid.NewGuid().ToString(),
+                ModelId = Guid.NewGuid().ToString()
             });
+
+            _ = await context.SaveChangesAsync();
 
             // Act
             var result = await instance.GetByIdAsync(entityId);

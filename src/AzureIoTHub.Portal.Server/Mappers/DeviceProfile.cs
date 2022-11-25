@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using Models.v10.LoRaWAN;
     using Microsoft.Azure.Devices.Shared;
     using Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     public class DeviceProfile : Profile
     {
@@ -98,6 +99,9 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 .ForMember(dest => dest.Deduplication, opts => opts.MapFrom(src => GetDesiredPropertyAsEnum<DeduplicationMode>(src, nameof(LoRaDeviceDetails.Deduplication))))
                 .ForMember(dest => dest.PreferredWindow, opts => opts.MapFrom(src => GetDesiredPropertyAsIntegerValue(src, nameof(LoRaDeviceDetails.PreferredWindow)) ?? 0))
                 .ForMember(dest => dest.ClassType, opts => opts.MapFrom(src => GetDesiredPropertyAsEnum<ClassType>(src, nameof(LoRaDeviceDetails.ClassType))));
+
+            _ = CreateMap<LoRaTelemetry, LoRaTelemetryDto>();
+            _ = CreateMap<LoRaDeviceTelemetry, LoRaDeviceTelemetryDto>();
         }
 
         private static ICollection<DeviceTagValue> GetTags(Twin twin)

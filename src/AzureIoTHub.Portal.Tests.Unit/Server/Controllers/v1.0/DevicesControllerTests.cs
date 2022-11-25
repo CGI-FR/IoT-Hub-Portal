@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using FluentAssertions;
     using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
@@ -330,6 +331,27 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var okResult = (OkResult)result.Result;
             Assert.IsNotNull(okResult);
 
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetDeviceTelemetry_ExistingDevice_ReturnsEmptyArray()
+        {
+            // Arrange
+            var devicesController = CreateDevicesController();
+
+            var deviceId = Guid.NewGuid().ToString();
+
+            var expectedTelemetry = Array.Empty<LoRaDeviceTelemetryDto>();
+
+            _ = this.mockDeviceService.Setup(service => service.GetDeviceTelemetry(deviceId))
+                .ReturnsAsync(expectedTelemetry);
+
+            // Act
+            var result = await devicesController.GetDeviceTelemetry(deviceId);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedTelemetry);
             this.mockRepository.VerifyAll();
         }
     }

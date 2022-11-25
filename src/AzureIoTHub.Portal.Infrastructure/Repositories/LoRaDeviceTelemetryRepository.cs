@@ -3,12 +3,12 @@
 
 namespace AzureIoTHub.Portal.Infrastructure.Repositories
 {
-    using AzureIoTHub.Portal.Domain.Repositories;
     using Domain.Entities;
+    using AzureIoTHub.Portal.Domain.Repositories;
 
-    public class LorawanDeviceRepository : GenericRepository<LorawanDevice>, ILorawanDeviceRepository
+    public class LoRaDeviceTelemetryRepository : GenericRepository<LoRaDeviceTelemetry>, ILoRaDeviceTelemetryRepository
     {
-        public LorawanDeviceRepository(PortalDbContext context) : base(context)
+        public LoRaDeviceTelemetryRepository(PortalDbContext context) : base(context)
         {
         }
     }
