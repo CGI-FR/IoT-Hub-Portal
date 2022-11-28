@@ -208,5 +208,10 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// Device Telemetries
         /// </summary>
         public ICollection<LoRaDeviceTelemetry> Telemetry { get; set; }
+
+        /// <summary>
+        /// The device model
+        /// </summary>
+        public DeviceModel DeviceModel { get; set; }
     }
 }
