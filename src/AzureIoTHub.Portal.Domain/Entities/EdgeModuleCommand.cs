@@ -20,5 +20,24 @@ namespace AzureIoTHub.Portal.Domain.Entities
         public string? DisplayName { get; set; }
 
         public string? CommandType { get; set; }
+
+        public EdgeModuleCommandPayload? Request { get; set; }
+
+        public EdgeModuleCommandPayload? Response { get; set; }
+    }
+
+    public class EdgeModuleCommandPayload
+    {
+        public string Name { get; set; }
+
+        public object Schema { get; set; }
+
+        public string EdgeModuleCommandId { get; set; }
+
+        public string? Comment { get; set; }
+
+        public string? Description { get; set; }
+
+        public string? DisplayName { get; set; }
     }
 }

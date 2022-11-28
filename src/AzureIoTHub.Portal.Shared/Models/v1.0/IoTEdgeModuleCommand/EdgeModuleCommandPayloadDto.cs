@@ -7,13 +7,13 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand
     using Newtonsoft.Json;
     using System.Text.Json.Serialization;
 
-    public class EdgeModuleCommandPayload
+    public class EdgeModuleCommandPayloadDto
     {
         [MaxLength(ErrorMessage = "The device identifier should be up to 64 characters long.")]
         [RegularExpression("^[a-zA-Z](?:[a-zA-Z0-9_]{0,62}[a-zA-Z0-9])?$")]
         public string Name { get; set; }
 
-        public PayloadDataType Schema { get; set; }
+        public PayloadDataTypeDto Schema { get; set; }
 
         [JsonPropertyName("@id")]
         [JsonProperty("@id")]
