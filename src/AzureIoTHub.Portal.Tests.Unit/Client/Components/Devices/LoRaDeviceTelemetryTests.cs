@@ -3,19 +3,19 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 {
+    using System.Linq;
     using AutoFixture;
+    using AzureIoTHub.Portal.Client.Components.Devices;
+    using AzureIoTHub.Portal.Client.Exceptions;
+    using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Services;
-    using UnitTests.Bases;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Bunit;
+    using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
-    using System.Linq;
-    using AzureIoTHub.Portal.Client.Models;
-    using FluentAssertions;
-    using AzureIoTHub.Portal.Client.Exceptions;
-    using AzureIoTHub.Portal.Client.Components.Devices;
-    using AzureIoTHub.Portal.Shared.Models.v10;
+    using UnitTests.Bases;
 
     [TestFixture]
     public class LoRaDeviceTelemetryTests : BlazorUnitTest

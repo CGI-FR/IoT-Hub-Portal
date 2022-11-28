@@ -44,7 +44,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Shared
 
             var errorSnackBar = snackBars.First();
 
-            _ = errorSnackBar.Message.Should().Be(problemDetailsException.ProblemDetailsWithExceptionDetails.Detail);
             _ = errorSnackBar.Severity.Should().Be(Severity.Error);
         }
     }
