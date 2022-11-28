@@ -609,35 +609,6 @@
             }
           }
         ],
-        "requestBody": {
-          "description": "The properties values.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/DevicePropertyValue"
-                }
-              }
-            },
-            "text/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/DevicePropertyValue"
-                }
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/DevicePropertyValue"
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Success",
@@ -3299,35 +3270,6 @@
             }
           }
         ],
-        "requestBody": {
-          "description": "The model properties",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/DeviceProperty"
-                }
-              }
-            },
-            "text/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/DeviceProperty"
-                }
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/DeviceProperty"
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Success"
@@ -3362,35 +3304,6 @@
         ],
         "summary": "Updates the device tag settings to be used in the application.",
         "operationId": "POST Update the Device tags settings",
-        "requestBody": {
-          "description": "List of tags.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/DeviceTagDto"
-                }
-              }
-            },
-            "text/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/DeviceTagDto"
-                }
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/DeviceTagDto"
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Success"
