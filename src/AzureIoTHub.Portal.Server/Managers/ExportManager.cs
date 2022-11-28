@@ -15,6 +15,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Services;
     using CsvHelper;
+    using CsvHelper.Configuration;
     using Microsoft.Extensions.Options;
 
     public class ExportManager : IExportManager
@@ -24,6 +25,7 @@ namespace AzureIoTHub.Portal.Server.Managers
         private readonly IDeviceService<LoRaDeviceDetails> loraDeviceService;
         private readonly IDeviceTagService deviceTagService;
         private readonly IDeviceModelPropertiesService deviceModelPropertiesService;
+        private readonly IDevicePropertyService devicePropertyService;
         private readonly IOptions<LoRaWANOptions> loRaWANOptions;
 
         public ExportManager(IExternalDeviceService externalDevicesService,
@@ -31,6 +33,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             IDeviceService<LoRaDeviceDetails> loraDeviceService,
             IDeviceTagService deviceTagService,
             IDeviceModelPropertiesService deviceModelPropertiesService,
+            IDevicePropertyService devicePropertyService,
             IOptions<LoRaWANOptions> loRaWANOptions)
         {
             this.externalDevicesService = externalDevicesService;
@@ -38,6 +41,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             this.loraDeviceService = loraDeviceService;
             this.deviceTagService = deviceTagService;
             this.deviceModelPropertiesService = deviceModelPropertiesService;
+            this.devicePropertyService = devicePropertyService;
             this.loRaWANOptions = loRaWANOptions;
         }
 
@@ -160,31 +164,29 @@ namespace AzureIoTHub.Portal.Server.Managers
             try
             {
                 var tags = GetTagsToExport();
-                var properties = new List<string>(this.deviceModelPropertiesService.GetAllPropertiesNames());
-
                 using var reader = new StreamReader(stream);
-                using var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
+
+                var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    MissingFieldFound = null
+                };
+
+                using var csvReader = new CsvReader(reader, config);
                 _ = csvReader.Read();
                 _ = csvReader.ReadHeader();
-                var header = csvReader.HeaderRecord;
 
                 while (csvReader.Read())
                 {
-                    var isLora = csvReader.GetField("TAG:supportLoRaFeatures");
+                    var isLoRa = bool.TryParse(csvReader.GetField("TAG:supportLoRaFeatures"), out var supportLoRaFeatures) && supportLoRaFeatures;
 
                     var deviceTags = new Dictionary<string,string>();
-                    var deviceProperties = new Dictionary<string,string>();
+
                     foreach (var tag in tags)
                     {
                         deviceTags.Add(tag, csvReader.GetField($"TAG:{tag}"));
                     }
 
-                    foreach (var property in properties)
-                    {
-                        deviceProperties.Add(property, csvReader.GetField($"PROPERTY:{property}"));
-                    }
-
-                    if (isLora == "true")
+                    if (isLoRa)
                     {
                         var newDevice = new LoRaDeviceDetails()
                         {
@@ -218,15 +220,33 @@ namespace AzureIoTHub.Portal.Server.Managers
                     }
                     else
                     {
+                        var deviceId = csvReader.GetField("Id");
+                        var modelId = csvReader.GetField("ModelId");
+
+                        var properties = await this.deviceModelPropertiesService.GetModelProperties(modelId);
+                        var deviceProperties = new List<DevicePropertyValue>();
+
+                        foreach (var property in properties)
+                        {
+                            deviceProperties.Add(new DevicePropertyValue()
+                            {
+                                Name = property.Name,
+                                PropertyType = property.PropertyType,
+                                IsWritable = true,
+                                Value = csvReader.GetField($"PROPERTY:{property.Name}")
+                            });
+                        }
+
                         var newDevice = new DeviceDetails()
                         {
-                            DeviceID = csvReader.GetField("Id"),
+                            DeviceID = deviceId,
                             DeviceName = csvReader.GetField("Name"),
-                            ModelId = csvReader.GetField("ModelId"),
+                            ModelId = modelId,
                             Tags = deviceTags
                         };
 
                         _ = await this.deviceService.CreateDevice(newDevice);
+                        await this.devicePropertyService.SetProperties(deviceId, deviceProperties);
                     }
                 }
             }
