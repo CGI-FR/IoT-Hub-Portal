@@ -38,6 +38,16 @@ namespace AzureIoTHub.Portal.Infrastructure
                 .HasConversion(
                     v => JsonConvert.SerializeObject(v),
                     v => JsonConvert.DeserializeObject<LoRaTelemetry>(v));
+
+            _ = modelBuilder.Entity<Device>()
+                .HasOne(x => x.DeviceModel)
+                .WithMany()
+                .HasForeignKey(x => x.DeviceModelId);
+
+            _ = modelBuilder.Entity<LorawanDevice>()
+                .HasOne(x => x.DeviceModel)
+                .WithMany()
+                .HasForeignKey(x => x.DeviceModelId);
         }
     }
 }

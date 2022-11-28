@@ -38,5 +38,10 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// List of custom device tags and their values.
         /// </summary>
         public ICollection<DeviceTagValue> Tags { get; set; }
+
+        /// <summary>
+        /// The device model
+        /// </summary>
+        public DeviceModel DeviceModel { get; set; }
     }
 }
