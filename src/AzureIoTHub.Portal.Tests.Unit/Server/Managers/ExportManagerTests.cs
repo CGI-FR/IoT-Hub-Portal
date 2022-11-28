@@ -7,6 +7,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
     using System.IO;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Domain.Options;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
@@ -21,8 +23,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
     {
         private IExportManager exportManager;
         private Mock<IExternalDeviceService> mockExternalDeviceService;
+        private Mock<IDeviceService<DeviceDetails>> mockDeviceService;
+        private Mock<IDeviceService<LoRaDeviceDetails>> mockLoraDeviceService;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceModelPropertiesService> mockDeviceModelPropertiesService;
+        private Mock<IDevicePropertyService> mockDevicePropertyService;
         private Mock<IOptions<LoRaWANOptions>> mockLoRaWANOptions;
 
         public override void Setup()
@@ -30,13 +35,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             base.Setup();
 
             this.mockExternalDeviceService = MockRepository.Create<IExternalDeviceService>();
+            this.mockDeviceService = MockRepository.Create<IDeviceService<DeviceDetails>>();
+            this.mockLoraDeviceService = MockRepository.Create<IDeviceService<LoRaDeviceDetails>>();
             this.mockDeviceTagService = MockRepository.Create<IDeviceTagService>();
             this.mockDeviceModelPropertiesService = MockRepository.Create<IDeviceModelPropertiesService>();
+            this.mockDevicePropertyService = MockRepository.Create<IDevicePropertyService>();
             this.mockLoRaWANOptions = MockRepository.Create<IOptions<LoRaWANOptions>>();
 
             _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDeviceService.Object);
+            _ = ServiceCollection.AddSingleton(this.mockLoraDeviceService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelPropertiesService.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDevicePropertyService.Object);
             _ = ServiceCollection.AddSingleton(this.mockLoRaWANOptions.Object);
 
             _ = ServiceCollection.AddSingleton<IExportManager, ExportManager>();
@@ -119,7 +130,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
 
             using var reader = new StreamReader(fileStream);
             var header = reader.ReadLine();
-            _ = header.Split(",").Length.Should().Be(27);
+            _ = header.Split(",").Length.Should().Be(28);
             var content = reader.ReadToEnd();
             _ = content.TrimEnd().Split("\r\n").Length.Should().Be(2);
 
