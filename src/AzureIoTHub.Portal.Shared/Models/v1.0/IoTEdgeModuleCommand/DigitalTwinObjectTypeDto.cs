@@ -7,12 +7,12 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand
     using System.Collections.Generic;
     using System.Text.Json.Serialization;
 
-    public class DigitalTwinObjectType : PayloadDataType
+    public class DigitalTwinObjectTypeDto : PayloadDataTypeDto
     {
         [JsonPropertyName("@type")]
         [JsonProperty("@type")]
-        public string Type { get; set; }
+        public override string Type { get; } = "Object";
 
-        public IEnumerable<DigitalTwinFieldType> Fileds { get; set; }
+        public IEnumerable<DigitalTwinFieldTypeDto> Fileds { get; set; }
     }
 }
