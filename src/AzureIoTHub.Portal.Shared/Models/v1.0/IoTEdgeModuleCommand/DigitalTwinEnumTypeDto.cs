@@ -7,14 +7,14 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand
     using Newtonsoft.Json;
     using System.Text.Json.Serialization;
 
-    public class DigitalTwinEnumType : PayloadDataType
+    public class DigitalTwinEnumTypeDto : PayloadDataTypeDto
     {
         [JsonPropertyName("@type")]
         [JsonProperty("@type")]
-        public string Type { get; set; }
-
-        public IEnumerable<DigitalTwinEnumValueType> EnumValues { get; set; }
+        public override string Type { get; } = "Enum";
 
         public string valueSchema { get; set; }
+
+        public IEnumerable<DigitalTwinEnumValueTypeDto> EnumValues { get; set; }
     }
 }
