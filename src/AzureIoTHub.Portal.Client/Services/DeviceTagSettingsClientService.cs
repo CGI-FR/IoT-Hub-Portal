@@ -23,7 +23,8 @@ namespace AzureIoTHub.Portal.Client.Services
         public Task CreateOrUpdateDeviceTag(DeviceTagDto deviceTag)
         {
             var deviceTagAsJson = JsonConvert.SerializeObject(deviceTag);
-            using var content = new StringContent(deviceTagAsJson, Encoding.UTF8, "application/json");
+            var content = new StringContent(deviceTagAsJson, Encoding.UTF8, "application/json");
+
             return this.http.PatchAsync("api/settings/device-tags", content);
         }
 
