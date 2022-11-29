@@ -48,6 +48,11 @@ namespace AzureIoTHub.Portal.Infrastructure
                 .HasOne(x => x.DeviceModel)
                 .WithMany()
                 .HasForeignKey(x => x.DeviceModelId);
+
+            _ = modelBuilder.Entity<EdgeDevice>()
+                .HasOne(x => x.DeviceModel)
+                .WithMany()
+                .HasForeignKey(x => x.DeviceModelId);
         }
     }
 }
