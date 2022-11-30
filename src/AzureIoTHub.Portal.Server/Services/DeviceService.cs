@@ -63,6 +63,12 @@ namespace AzureIoTHub.Portal.Server.Services
             return deviceDto;
         }
 
+        public override async Task<bool> CheckIfDeviceExists(string deviceId)
+        {
+            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId, d => d.Tags);
+            return deviceEntity != null;
+        }
+
         protected override async Task<DeviceDetails> CreateDeviceInDatabase(DeviceDetails device)
         {
             var deviceEntity = this.mapper.Map<Device>(device);
