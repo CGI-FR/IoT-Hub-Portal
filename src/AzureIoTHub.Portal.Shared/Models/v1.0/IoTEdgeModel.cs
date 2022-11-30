@@ -17,6 +17,11 @@ namespace AzureIoTHub.Portal.Models.v10
 
         public List<EdgeModelSystemModule> SystemModules { get; set; }
 
+        /// <summary>
+        /// Labels
+        /// </summary>
+        public List<LabelDto> Labels { get; set; } = new();
+
         public IoTEdgeModel()
         {
             SystemModules = new List<EdgeModelSystemModule>

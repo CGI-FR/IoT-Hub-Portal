@@ -32,6 +32,7 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly ILorawanDeviceRepository lorawanDeviceRepository;
         private readonly ILoRaDeviceTelemetryRepository deviceTelemetryRepository;
         private readonly IDeviceTagValueRepository deviceTagValueRepository;
+        private readonly ILabelRepository labelRepository;
         private readonly IDeviceModelImageManager deviceModelImageManager;
 
         public LoRaWanDeviceService(
@@ -41,6 +42,7 @@ namespace AzureIoTHub.Portal.Server.Services
             ILorawanDeviceRepository lorawanDeviceRepository,
             ILoRaDeviceTelemetryRepository deviceTelemetryRepository,
             IDeviceTagValueRepository deviceTagValueRepository,
+            ILabelRepository labelRepository,
             IExternalDeviceService externalDevicesService,
             IDeviceTagService deviceTagService,
             PortalDbContext portalDbContext,
@@ -54,12 +56,13 @@ namespace AzureIoTHub.Portal.Server.Services
             this.lorawanDeviceRepository = lorawanDeviceRepository;
             this.deviceTelemetryRepository = deviceTelemetryRepository;
             this.deviceTagValueRepository = deviceTagValueRepository;
+            this.labelRepository = labelRepository;
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
         public override async Task<LoRaDeviceDetails> GetDevice(string deviceId)
         {
-            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId, d => d.Tags);
+            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId, d => d.Tags, d => d.Labels);
 
             if (deviceEntity == null)
             {
@@ -93,7 +96,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         protected override async Task<LoRaDeviceDetails> UpdateDeviceInDatabase(LoRaDeviceDetails device)
         {
-            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(device.DeviceID, d => d.Tags);
+            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(device.DeviceID, d => d.Tags, d => d.Labels);
 
             if (deviceEntity == null)
             {
@@ -103,6 +106,11 @@ namespace AzureIoTHub.Portal.Server.Services
             foreach (var deviceTagEntity in deviceEntity.Tags)
             {
                 this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
+            }
+
+            foreach (var labelEntity in deviceEntity.Labels)
+            {
+                this.labelRepository.Delete(labelEntity.Id);
             }
 
             _ = this.mapper.Map(device, deviceEntity);
@@ -115,7 +123,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         protected override async Task DeleteDeviceInDatabase(string deviceId)
         {
-            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId, d => d.Tags);
+            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId, d => d.Tags, d => d.Labels);
 
             if (deviceEntity == null)
             {
@@ -125,6 +133,11 @@ namespace AzureIoTHub.Portal.Server.Services
             foreach (var deviceTagEntity in deviceEntity.Tags)
             {
                 this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
+            }
+
+            foreach (var labelEntity in deviceEntity.Labels)
+            {
+                this.labelRepository.Delete(labelEntity.Id);
             }
 
             this.lorawanDeviceRepository.Delete(deviceId);

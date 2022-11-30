@@ -43,5 +43,10 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// The device model
         /// </summary>
         public DeviceModel DeviceModel { get; set; }
+
+        /// <summary>
+        /// Labels
+        /// </summary>
+        public ICollection<Label> Labels { get; set; }
     }
 }

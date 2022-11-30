@@ -3,18 +3,12 @@
 
 namespace AzureIoTHub.Portal.Domain.Entities
 {
-    using Base;
+    using AzureIoTHub.Portal.Domain.Base;
 
-    public class EdgeDeviceModel : EntityBase
+    public class Label : EntityBase
     {
         public string Name { get; set; }
 
-        public string? Description { get; set; }
-
-        /// <summary>
-        /// Labels
-        /// </summary>
-        public ICollection<Label> Labels { get; set; }
-
+        public string Color { get; set; }
     }
 }

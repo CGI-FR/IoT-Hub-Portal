@@ -54,7 +54,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public async Task SaveShouldCreateEdgeDeviceAndRedirectToEdgeDeviceList()
         {
             // Arrange
-            var edgeModel = new IoTEdgeModelListItem(){ Name = "model01", ModelId = "model01"};
+            var edgeModel = new IoTEdgeModel(){ Name = "model01", ModelId = "model01"};
 
             var edgeDevice = new IoTEdgeDevice()
             {
@@ -108,7 +108,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public async Task CreateEdgeDevicePageSaveShouldProcessProblemDetailsExceptionWhenIssueOccurs()
         {
             // Arrange
-            var edgeModel = new IoTEdgeModelListItem(){ Name = "model01", ModelId = "model01"};
+            var edgeModel = new IoTEdgeModel(){ Name = "model01", ModelId = "model01"};
 
             var edgeDevice = new IoTEdgeDevice()
             {
@@ -161,7 +161,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         [Test]
         public async Task ClickOnSaveAndDuplicateShouldCreateDeviceAndDuplicateEdgeDeviceDetailsInCreateEdgeDevicePage()
         {
-            var mockEdgeDeviceModel = new IoTEdgeModelListItem
+            var mockEdgeDeviceModel = new IoTEdgeModel
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -230,7 +230,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         [Test]
         public async Task ClickOnSaveAndAddNewShouldCreateEdgeDeviceAndResetCreateEdgeDevicePage()
         {
-            var mockEdgeDeviceModel = new IoTEdgeModelListItem
+            var mockEdgeDeviceModel = new IoTEdgeModel
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
@@ -302,7 +302,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public async Task ChangeEdgeModelShouldDisplayModelImage()
         {
             // Arrange
-            var edgeModel = new IoTEdgeModelListItem()
+            var edgeModel = new IoTEdgeModel()
             {
                 ModelId = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),

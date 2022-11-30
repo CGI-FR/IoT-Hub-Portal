@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Client.Services
     public class EdgeDeviceLayoutService : IEdgeDeviceLayoutService
     {
         private IoTEdgeDevice sharedDevice;
-        private IoTEdgeModelListItem sharedDeviceModel;
+        private IoTEdgeModel sharedDeviceModel;
 
         public event EventHandler RefreshDeviceOccurred;
 
@@ -24,7 +24,7 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.sharedDevice;
         }
 
-        public IoTEdgeModelListItem GetSharedDeviceModel()
+        public IoTEdgeModel GetSharedDeviceModel()
         {
             return this.sharedDeviceModel;
         }
@@ -41,9 +41,9 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.sharedDevice;
         }
 
-        public IoTEdgeModelListItem ResetSharedDeviceModel()
+        public IoTEdgeModel ResetSharedDeviceModel()
         {
-            this.sharedDeviceModel = new IoTEdgeModelListItem();
+            this.sharedDeviceModel = new IoTEdgeModel();
 
             return this.sharedDeviceModel;
         }
@@ -58,7 +58,7 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.sharedDevice;
         }
 
-        public IoTEdgeModelListItem DuplicateSharedDeviceModel(IoTEdgeModelListItem deviceModelToDuplicate)
+        public IoTEdgeModel DuplicateSharedDeviceModel(IoTEdgeModel deviceModelToDuplicate)
         {
             this.sharedDeviceModel = deviceModelToDuplicate;
 

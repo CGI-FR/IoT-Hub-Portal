@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Shared.Models
 {
     using System;
     using System.Collections.Generic;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     public interface IDeviceDetails
     {
@@ -47,5 +48,10 @@ namespace AzureIoTHub.Portal.Shared.Models
         /// List of custom device tags and their values.
         /// </summary>
         public Dictionary<string, string> Tags { get; set; }
+
+        /// <summary>
+        /// Labels
+        /// </summary>
+        public List<LabelDto> Labels { get; set; }
     }
 }

@@ -26,6 +26,7 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly IDeviceModelRepository deviceModelRepository;
         private readonly IDeviceModelCommandRepository deviceModelCommandRepository;
+        private readonly ILabelRepository labelRepository;
 
         private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
         private readonly IConfigService configService;
@@ -37,6 +38,7 @@ namespace AzureIoTHub.Portal.Server.Services
             IUnitOfWork unitOfWork,
             IDeviceModelRepository deviceModelRepository,
             IDeviceModelCommandRepository deviceModelCommandRepository,
+            ILabelRepository labelRepository,
             IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
             IConfigService configService,
             IDeviceModelImageManager deviceModelImageManager,
@@ -47,6 +49,7 @@ namespace AzureIoTHub.Portal.Server.Services
             this.unitOfWork = unitOfWork;
             this.deviceModelRepository = deviceModelRepository;
             this.deviceModelCommandRepository = deviceModelCommandRepository;
+            this.labelRepository = labelRepository;
             this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
             this.configService = configService;
             this.deviceModelImageManager = deviceModelImageManager;
@@ -68,7 +71,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task<TModel> GetDeviceModel(string deviceModelId)
         {
-            var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModelId);
+            var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModelId, d => d.Labels);
 
             if (deviceModelEntity == null)
             {
@@ -90,11 +93,16 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task UpdateDeviceModel(TModel deviceModel)
         {
-            var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModel.ModelId);
+            var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModel.ModelId, d => d.Labels);
 
             if (deviceModelEntity == null)
             {
                 throw new ResourceNotFoundException($"The device model {deviceModel.ModelId} doesn't exist");
+            }
+
+            foreach (var labelEntity in deviceModelEntity.Labels)
+            {
+                this.labelRepository.Delete(labelEntity.Id);
             }
 
             _ = this.mapper.Map(deviceModel, deviceModelEntity);
@@ -107,7 +115,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task DeleteDeviceModel(string deviceModelId)
         {
-            var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModelId);
+            var deviceModelEntity = await this.deviceModelRepository.GetByIdAsync(deviceModelId, d => d.Labels);
 
             if (deviceModelEntity == null)
             {
@@ -128,6 +136,11 @@ namespace AzureIoTHub.Portal.Server.Services
             foreach (var deviceModelCommand in deviceModelCommands)
             {
                 this.deviceModelCommandRepository.Delete(deviceModelCommand.Id);
+            }
+
+            foreach (var labelEntity in deviceModelEntity.Labels)
+            {
+                this.labelRepository.Delete(labelEntity.Id);
             }
 
             // Image deletion

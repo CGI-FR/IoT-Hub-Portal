@@ -4,7 +4,9 @@
 namespace AzureIoTHub.Portal.Shared.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     public interface IDeviceModel
     {
@@ -38,5 +40,10 @@ namespace AzureIoTHub.Portal.Shared.Models
         /// A value indicating whether the device model supports LoRa features.
         /// </summary>
         public bool SupportLoRaFeatures { get; }
+
+        /// <summary>
+        /// Labels
+        /// </summary>
+        public List<LabelDto> Labels { get; set; }
     }
 }
