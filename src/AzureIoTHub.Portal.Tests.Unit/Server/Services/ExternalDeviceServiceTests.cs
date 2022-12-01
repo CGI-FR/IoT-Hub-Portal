@@ -1896,5 +1896,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             this.mockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task RetrieveLastConfigurationTwinHasNoConfigurationShouldReturnNull()
+        {
+            // Arrange
+            var service = CreateService();
+            var mockTwin = new Twin("aaa");
+
+            // Act
+            var result = await service.RetrieveLastConfiguration(mockTwin);
+
+            // Assert            
+            Assert.IsNull(result);
+        }
     }
 }
