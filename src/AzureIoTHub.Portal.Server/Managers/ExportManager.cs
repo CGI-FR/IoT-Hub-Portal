@@ -189,20 +189,20 @@ namespace AzureIoTHub.Portal.Server.Managers
 
                 if (!csvReader.TryGetField<string>("Id", out var deviceId) || deviceId.IsNullOrEmpty())
                 {
-                    errorReport.Add($"<b>Error</b> occured while processing device on <b>line {lineNumber}</b>: The parameter deviceId cannot be null or empty. Device was not imported.");
+                    errorReport.Add($"<b>Error</b> occured on <b>line {lineNumber}</b>: The parameter deviceId cannot be null or empty. Device was not imported.");
                     continue;
                 }
 
                 if (!csvReader.TryGetField<string>("Name", out var deviceName) || deviceName.IsNullOrEmpty())
                 {
-                    errorReport.Add($"<b>Error</b> occured while processing device on <b>line {lineNumber}</b>: The parameter deviceName cannot be null or empty. Device was not imported.");
+                    errorReport.Add($"<b>Error</b> occured on <b>line {lineNumber}</b>: The parameter deviceName cannot be null or empty. Device was not imported.");
 
                     continue;
                 }
 
                 if (!csvReader.TryGetField<string>("ModelId", out var modelId) || modelId.IsNullOrEmpty())
                 {
-                    errorReport.Add($"<b>Error</b> occured while processing device on <b>line {lineNumber}</b>: The parameter modelId cannot be null or empty. Device was not imported.");
+                    errorReport.Add($"<b>Error</b> occured on <b>line {lineNumber}</b>: The parameter modelId cannot be null or empty. Device was not imported.");
                     continue;
                 }
 
