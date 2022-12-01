@@ -104,6 +104,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         [Test]
         public async Task ImportDeviceListShouldReturnErrorReport()
         {
+            // Arrange
             var expectedResult = Guid.NewGuid().ToString();
             var file = new FormFile(new MemoryStream(),1,1,"a","a");
 
@@ -112,13 +113,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             var adminController = CreateAdminController();
 
+            // Act
             var result = await adminController.ImportDeviceList(file);
+
+            // Assert
             Assert.IsNotNull(result);
 
             var okObjectResult = result as OkObjectResult;
             Assert.IsNotNull(okObjectResult);
 
             _ = okObjectResult.Value.Should().Be(expectedResult);
+
+            this.mockRepository.VerifyAll();
         }
     }
 }

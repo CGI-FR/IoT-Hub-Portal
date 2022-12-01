@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -248,6 +249,32 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             var actualStream = await result.ReadAsStreamAsync();
             _ = actualStream.Length.Should().Be(expectedStream.Length);
 
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task ImportDeviceListShouldReturnErrorReport()
+        {
+            // Arrange
+            var dataContent = new MultipartFormDataContent();
+            var expectedResult = new string[2]{Guid.NewGuid().ToString(),Guid.NewGuid().ToString()};
+
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/admin/devices/_import")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<MultipartFormDataContent>();
+                    var body = m.Content as MultipartFormDataContent;
+                    _ = body.Should().BeEquivalentTo(dataContent);
+                    return true;
+                })
+                .RespondJson(expectedResult);
+
+            // Act
+            var result = await this.deviceClientService.ImportDeviceList(dataContent);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedResult);
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }
