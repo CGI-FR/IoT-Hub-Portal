@@ -13,7 +13,9 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand
         [RegularExpression("^[a-zA-Z](?:[a-zA-Z0-9_]{0,62}[a-zA-Z0-9])?$")]
         public string Name { get; set; }
 
-        public PayloadDataTypeDto Schema { get; set; }
+        public object Schema { get; set; }
+
+        public object? InitialValue { get; set; }
 
         [JsonPropertyName("@id")]
         [JsonProperty("@id")]

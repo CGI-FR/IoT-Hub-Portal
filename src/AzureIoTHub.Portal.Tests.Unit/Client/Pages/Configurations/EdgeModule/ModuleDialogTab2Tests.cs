@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
     using Bunit;
     using FluentAssertions;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand;
 
     public class ModuleDialogTab2Tests : BlazorUnitTest
     {
@@ -25,7 +26,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
                 Status = "running",
                 EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
                 ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
-                Commands = new List<IoTEdgeModuleCommand>()
+                Commands = new List<EdgeModuleCommandDto>()
             };
 
             var cut = RenderComponent<ModuleDialogTab2>
@@ -57,7 +58,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
                         Value = Guid.NewGuid().ToString()
                     }
                 },
-                Commands = new List<IoTEdgeModuleCommand>()
+                Commands = new List<EdgeModuleCommandDto>()
             };
 
             var cut = RenderComponent<ModuleDialogTab2>
@@ -91,7 +92,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
                         Value = Guid.NewGuid().ToString()
                     }
                 },
-                Commands = new List<IoTEdgeModuleCommand>()
+                Commands = new List<EdgeModuleCommandDto>()
             };
 
             var cut = RenderComponent<ModuleDialogTab2>

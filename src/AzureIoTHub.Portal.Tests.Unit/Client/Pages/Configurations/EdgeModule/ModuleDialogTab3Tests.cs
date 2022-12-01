@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
     using Bunit;
     using FluentAssertions;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand;
 
     public class ModuleDialogTab3Tests : BlazorUnitTest
     {
@@ -25,7 +26,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
                 Status = "running",
                 EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
                 ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
-                Commands = new List<IoTEdgeModuleCommand>()
+                Commands = new List<EdgeModuleCommandDto>()
             };
 
             var cut = RenderComponent<ModuleDialogTab3>
@@ -45,13 +46,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
                 Status = "running",
                 EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
                 ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
-                Commands = new List<IoTEdgeModuleCommand>()
+                Commands = new List<EdgeModuleCommandDto>()
                 {
-                    new IoTEdgeModuleCommand()
+                    new EdgeModuleCommandDto()
                     {
                         Name = Guid.NewGuid().ToString()
                     },
-                    new IoTEdgeModuleCommand()
+                    new EdgeModuleCommandDto()
                     {
                         Name = Guid.NewGuid().ToString()
                     }
@@ -77,13 +78,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Configurations.EdgeModule
                 Status = "running",
                 EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(),
                 ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(),
-                Commands = new List<IoTEdgeModuleCommand>()
+                Commands = new List<EdgeModuleCommandDto>()
                 {
-                    new IoTEdgeModuleCommand()
+                    new EdgeModuleCommandDto()
                     {
                         Name = Guid.NewGuid().ToString()
                     },
-                    new IoTEdgeModuleCommand()
+                    new EdgeModuleCommandDto()
                     {
                         Name = Guid.NewGuid().ToString()
                     }
