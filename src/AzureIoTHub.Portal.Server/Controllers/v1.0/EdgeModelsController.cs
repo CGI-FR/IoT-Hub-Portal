@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -41,6 +42,69 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
         [HttpPost]
         public async Task<IActionResult> CreateEdgeModel(IoTEdgeModel EdgeModel)
         {
+            var test = new IoTEdgeModel
+            {
+                ModelId = "1234",
+                Name = "testModel01",
+                Description = "model de test pour les nouvelles command.",
+                EdgeModules = new List<IoTEdgeModule>()
+                {
+                    new IoTEdgeModule
+                    {
+                        ModuleName = "moduleTest",
+                        ImageURI = "imageUriTest",
+                        Commands = new List<EdgeModuleCommandDto>
+                        {
+                            new EdgeModuleCommandDto
+                            {
+                                Id = "commandId",
+                                Type = "Command",
+                                Name = "getMaxMinReport",
+                                DisplayName = "Get Max-Min report.",
+                                Description = "This command returns the max, min and average temperature from the specified time to the current time.",
+                                Request = new EdgeModuleCommandPayloadDto
+                                {
+                                    Name = "since",
+                                    DisplayName = "since",
+                                    Description = "Period to return the max-min report.",
+                                    Schema = "dateTime"
+                                },
+                                Response = new EdgeModuleCommandPayloadDto
+                                {
+                                    Name = "tempReport",
+                                    DisplayName = "Temperature Report",
+                                    Schema = new DigitalTwinObjectTypeDto
+                                    {
+                                        Fileds = new List<DigitalTwinFieldTypeDto>
+                                        {
+                                            new DigitalTwinFieldTypeDto
+                                            {
+                                                Name = "maxTemp",
+                                                DisplayName = "Max temperature",
+                                                Schema = "double"
+                                            },
+                                            new DigitalTwinFieldTypeDto
+                                            {
+                                                Name = "minTemp",
+                                                DisplayName = "Min temperature",
+                                                Schema = "double"
+                                            },
+                                            new DigitalTwinFieldTypeDto
+                                            {
+                                                Name = "avgTemp",
+                                                DisplayName = "Average temperature",
+                                                Schema = "double"
+                                            },
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            await this.edgeModelService.CreateEdgeModel(test);
             await this.edgeModelService.CreateEdgeModel(EdgeModel);
 
             return Ok();

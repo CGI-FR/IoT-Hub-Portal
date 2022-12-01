@@ -13,11 +13,41 @@ namespace AzureIoTHub.Portal.Server.Mappers
         {
             _ = CreateMap<EdgeModuleCommand, EdgeModuleCommand>();
 
-            _ = CreateMap<EdgeModuleCommandDto, EdgeModuleCommand>();
+            _ = CreateMap<EdgeModuleCommandDto, EdgeModuleCommand>()
+                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Type, opts => opts.MapFrom(src => src.Type))
+                .ForMember(dest => dest.DisplayName, opts => opts.MapFrom(src => src.DisplayName))
+                .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
+                .ForMember(dest => dest.Comment, opts => opts.MapFrom(src => src.Comment))
+                .ForMember(dest => dest.CommandType, opts => opts.MapFrom(src => src.CommandType));
 
-            _ = CreateMap<EdgeModuleCommand, EdgeModuleCommandDto>();
+            _ = CreateMap<EdgeModuleCommand, EdgeModuleCommandDto>()
+                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Type, opts => opts.MapFrom(src => src.Type))
+                .ForMember(dest => dest.DisplayName, opts => opts.MapFrom(src => src.DisplayName))
+                .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
+                .ForMember(dest => dest.Comment, opts => opts.MapFrom(src => src.Comment))
+                .ForMember(dest => dest.CommandType, opts => opts.MapFrom(src => src.CommandType));
 
-            _ = CreateMap<EdgeModuleCommandPayload, EdgeModuleCommandPayloadDto>();
+            _ = CreateMap<EdgeModuleCommandPayloadDto, EdgeModuleCommandPayload>()
+                .ForMember(dest => dest.EdgeModuleCommandId, opts => opts.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+                .ForMember(dest => dest.DisplayName, opts => opts.MapFrom(src => src.DisplayName))
+                .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
+                .ForMember(dest => dest.Schema, opts => opts.MapFrom(src => src.Schema))
+                .ForMember(dest => dest.Comment, opts => opts.MapFrom(src => src.Comment))
+                .ForMember(dest => dest.InitialValue, opts => opts.MapFrom(src => src.InitialValue));
+
+            _ = CreateMap<EdgeModuleCommandPayload, EdgeModuleCommandPayloadDto>()
+                .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.EdgeModuleCommandId))
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+                .ForMember(dest => dest.DisplayName, opts => opts.MapFrom(src => src.DisplayName))
+                .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
+                .ForMember(dest => dest.Schema, opts => opts.MapFrom(src => src.Schema))
+                .ForMember(dest => dest.Comment, opts => opts.MapFrom(src => src.Comment))
+                .ForMember(dest => dest.InitialValue, opts => opts.MapFrom(src => src.InitialValue));
         }
     }
 }

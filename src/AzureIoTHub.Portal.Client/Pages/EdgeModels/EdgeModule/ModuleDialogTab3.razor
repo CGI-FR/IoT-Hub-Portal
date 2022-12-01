@@ -1,4 +1,5 @@
-﻿@using AzureIoTHub.Portal.Shared.Models.v10
+﻿@using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand
+
 <MudGrid>
     <MudItem xs="12">
         <MudTable Items=@(Commands) Loading="IsLoading" Dense=true Hover=true Bordered=true Striped=true>
@@ -18,8 +19,7 @@
             </HeaderContent>
             <RowTemplate Context="Context">
                 <MudTd DataLabel="Key" Style="word-break: break-all;">
-                    <MudTextField @bind-Value="@Context.Name"
-                                  Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+                    <AzureIoTHub.Portal.Client.Components.EdgeModel.EdgeModuleCommand></AzureIoTHub.Portal.Client.Components.EdgeModel.EdgeModuleCommand>
                 </MudTd>
 
                 <MudTd DataLabel="Delete" Style="text-align: center">
@@ -44,7 +44,7 @@
 
 @code {
     [Parameter]
-    public IList<IoTEdgeModuleCommand> Commands { get; set; }
+    public IList<EdgeModuleCommandDto> Commands { get; set; }
     private bool IsLoading = false;
 
     public void AddRow()
@@ -53,11 +53,11 @@
 
         if (Commands.Count == 0 || (last.Name is not null))
         {
-            Commands.Add(new IoTEdgeModuleCommand());
+            Commands.Add(new EdgeModuleCommandDto());
         }
     }
 
-    public void DeleteRow(IoTEdgeModuleCommand item)
+    public void DeleteRow(EdgeModuleCommandDto item)
     {
         Commands.Remove(item);
     }

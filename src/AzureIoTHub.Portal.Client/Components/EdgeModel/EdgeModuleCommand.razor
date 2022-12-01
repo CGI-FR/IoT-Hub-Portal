@@ -1,11 +1,13 @@
-﻿<div class="mx-auto" style="max-width: 900px;">
+﻿@using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand
+
+<div class="mx-auto" style="max-width: 900px;">
     <MudExpansionPanels>
         <MudExpansionPanel>
             <TitleContent>
                 <div class="d-flex">
-                    <MudTextField onclick="event.stopPropagation()" T="string" Label="Display Name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-                    <MudTextField onclick="event.stopPropagation()" T="string" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-                    <MudSelect onclick="event.stopPropagation()" Margin="Margin.Dense" T="string" Label="Capability type" Variant="Variant.Outlined">
+                    <MudTextField onclick="event.stopPropagation()" For="@(() => this.Command.DisplayName)" @bind-Value="Command.DisplayName" Label="Display Name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    <MudTextField onclick="event.stopPropagation()" For="@(() => this.Command.Name)" @bind-Value="Command.Name" Variant="Variant.Outlined" Label="Name" Margin="Margin.Dense" Required></MudTextField>
+                    <MudSelect onclick="event.stopPropagation()" Margin="Margin.Dense" For="@(() => this.Command.Type)" @bind-Value="Command.Type" Label="Capability type" Variant="Variant.Outlined" Required>
                         <MudSelectItem Value="@("Command")" />
                     </MudSelect>
                 </div>
@@ -13,62 +15,102 @@
             <ChildContent>
                 <MudGrid>
                     <MudItem xs="4" md="4">
-                        <MudTextField T="string" Label="Comment" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                        <MudTextField For="@(() => this.Command.Comment)" @bind-Value="Command.Comment" Label="Comment" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
                     </MudItem>
                     <MudItem xs="4" md="4">
-                        <MudTextField T="string" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                        <MudTextField For="@(() => this.Command.Description)" @bind-Value="Command.Description" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
                     </MudItem>
 
 
                     <MudItem xs="12">
-                        <MudSwitch @bind-Checked="@requestOn" LabelPosition="LabelPosition.Start" id="SupportLoRaFeatures" Color="Color.Info" Label="Request"></MudSwitch>
+                        <MudSwitch @bind-Checked="@requestOn" @onchange="@(()=> InitRequest())" LabelPosition="LabelPosition.Start" id="SupportLoRaFeatures" Color="Color.Info" Label="Request"></MudSwitch>
                     </MudItem>
 
-
-                    <MudItem xs="4" md="4">
-                        <MudTextField T="string" Label="Display name *" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-                    </MudItem>
-                    <MudItem xs="4" md="4">
-                        <MudTextField T="string" Label="Name *" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-                    </MudItem>
-                    <MudItem xs="3" md="3">
-                        <MudSelect Margin="Margin.Dense" T="string" Label="Schema" Variant="Variant.Outlined">
-                            <MudSelectItem Value="@("DateTime")" />
-                        </MudSelect>
-                    </MudItem>
-                    <MudItem xs="4" md="4">
-                        <MudTextField T="string" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-                    </MudItem>
-                    <MudItem xs="4" md="4">
-                        <MudTextField T="string" Label="Comment" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-                    </MudItem>
-                    <MudItem xs="4" md="4">
-                        <MudTextField T="string" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-                    </MudItem>
+                    @if (requestOn)
+                    {
+                        <MudItem xs="4" md="4">
+                            <MudTextField For="@(() => this.Command.Request.DisplayName)" @bind-Value="Command.Request.DisplayName" Label="Display name *" Variant="Variant.Outlined" Margin="Margin.Dense" Required></MudTextField>
+                        </MudItem>
+                        <MudItem xs="4" md="4">
+                            <MudTextField For="@(() => this.Command.Request.Name)" @bind-Value="Command.Request.Name" Label="Name *" Variant="Variant.Outlined" Margin="Margin.Dense" Required></MudTextField>
+                        </MudItem>
+                        <MudItem xs="3" md="3">
+                            <MudSelect @bind-Value="@requestSelectedSchema" For="@(() => this.requestSelectedSchema)" Margin="Margin.Dense" Label="Schema" Variant="Variant.Outlined">
+                                @foreach (var schema in PrimitiveSchemaList)
+                                {
+                                    <MudSelectItem Value="@schema">@schema</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        @switch (requestSelectedSchema)
+                        {
+                            case "boolean":
+                                <MudItem xs="4" md="4">
+                                    <MudSwitch @bind-Checked="@Command.Request.InitialValue" Label="Initiale Value" Color="Color.Info" />
+                                </MudItem>
+                                break;
+                            case "double":
+                                <MudItem xs="4" md="4">
+                                    <MudNumericField @bind-Value="@Command.Request.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                                </MudItem>
+                                break;
+                            case "float":
+                                <MudItem xs="4" md="4">
+                                    <MudNumericField @bind-Value="@Command.Request.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                                </MudItem>
+                                break;
+                            case "integer":
+                                <MudItem xs="4" md="4">
+                                    <MudNumericField @bind-Value="@Command.Request.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                                </MudItem>
+                                break;
+                            case "long":
+                                <MudItem xs="4" md="4">
+                                    <MudNumericField @bind-Value="@Command.Request.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                                </MudItem>
+                                break;
+                            case "string":
+                                <MudItem xs="4" md="4">
+                                    <MudTextField @bind-Value="@Command.Request.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                                </MudItem>
+                                break;
+                        }
+                        <MudItem xs="4" md="4">
+                            <MudTextField For="@(() => this.Command.Request.Comment)" @bind-Value="Command.Request.Comment" Label="Comment" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                        </MudItem>
+                        <MudItem xs="4" md="4">
+                            <MudTextField For="@(() => this.Command.Request.Description)" @bind-Value="Command.Request.Description" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                        </MudItem>
+                    }
 
 
                     <MudItem xs="12">
                         <MudSwitch @bind-Checked="@responseOn" LabelPosition="LabelPosition.Start" id="SupportLoRaFeatures" Color="Color.Info" Label="Response"></MudSwitch>
                     </MudItem>
 
-
-                    <MudItem xs="4" md="4">
-                        <MudTextField T="string" Label="Display name *" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-                    </MudItem>
-                    <MudItem xs="4" md="4">
-                        <MudTextField T="string" Label="Name *" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-                    </MudItem>
-                    <MudItem xs="3" md="3">
-                        <MudSelect Margin="Margin.Dense" T="string" Label="Schema" Variant="Variant.Outlined">
-                            <MudSelectItem Value="@("DateTime")" />
-                        </MudSelect>
-                    </MudItem>
-                    <MudItem xs="4" md="4">
-                        <MudTextField T="string" Label="Comment" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-                    </MudItem>
-                    <MudItem xs="4" md="4">
-                        <MudTextField T="string" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-                    </MudItem>
+                    @if (responseOn)
+                    {
+                        <MudItem xs="4" md="4">
+                            <MudTextField For="@(() => this.Command.Response.DisplayName)" Label="Display name *" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                        </MudItem>
+                        <MudItem xs="4" md="4">
+                            <MudTextField For="@(() => this.Command.Response.Name)" Label="Name *" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                        </MudItem>
+                        <MudItem xs="3" md="3">
+                            <MudSelect @bind-Value="@responseSelectedSchema" Margin="Margin.Dense" T="string" Label="Schema" Variant="Variant.Outlined">
+                                @foreach (var schema in PrimitiveSchemaList)
+                                {
+                                    <MudSelectItem Value="@schema">@schema</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="4" md="4">
+                            <MudTextField For="@(() => this.Command.Response.Comment)" @bind-Value="@this.Command.Response.Comment" Label="Comment" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                        </MudItem>
+                        <MudItem xs="4" md="4">
+                            <MudTextField For="@(() => this.Command.Response.Description)" @bind-Value="@this.Command.Response.Description" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                        </MudItem>
+                    }
                 </MudGrid>
             </ChildContent>
         </MudExpansionPanel>
@@ -78,4 +120,34 @@
 @code {
     bool requestOn;
     bool responseOn;
+
+    EdgeModuleCommandDto Command = new EdgeModuleCommandDto();
+
+    string requestSelectedSchema;
+    string responseSelectedSchema;
+
+    private List<string> PrimitiveSchemaList = new List<string>
+    {
+        "boolean",
+        "date",
+        "dateTime",
+        "double	",
+        "duration",
+        "float",
+        "integer",
+        "long",
+        "string",
+        "time",
+    };
+
+    public void InitRequest(){
+        Console.WriteLine("**********************DEBUT********************");
+        if (requestOn)
+        {
+            this.Command.Request = new EdgeModuleCommandPayloadDto();
+        }else
+        {
+            this.Command.Request = null;
+        }
+    }
 }

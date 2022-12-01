@@ -135,6 +135,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IDeviceProvisioningServiceManager, DeviceProvisioningServiceManager>();
             _ = services.AddTransient<IRouterConfigManager, RouterConfigManager>();
             _ = services.AddTransient<IExportManager, ExportManager>();
+            _ = services.AddTransient<IEdgeModuleCommandMethodManager, EdgeModuleCommandMethodManager>();
 
             _ = services.AddTransient<IDeviceTwinMapper<DeviceListItem, DeviceDetails>, DeviceTwinMapper>();
             _ = services.AddTransient<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>, LoRaDeviceTwinMapper>();
@@ -155,6 +156,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient(typeof(IDeviceModelService<,>), typeof(DeviceModelService<,>));
             _ = services.AddTransient<IDeviceService<DeviceDetails>, DeviceService>();
             _ = services.AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
+            _ = services.AddTransient<IEdgeModuleCommandsService, EdgeModuleCommandsService>();
 
             _ = services.AddScoped<IDeviceModelPropertiesRepository, DeviceModelPropertiesRepository>();
             _ = services.AddScoped<IDeviceTagRepository, DeviceTagRepository>();
@@ -168,6 +170,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>();
             _ = services.AddScoped<IConcentratorRepository, ConcentratorRepository>();
             _ = services.AddScoped<ILoRaDeviceTelemetryRepository, LoRaDeviceTelemetryRepository>();
+            _ = services.AddScoped<IEdgeModuleCommandsRepository, EdgeModuleCommandsRepository>();
 
             _ = services.AddMudServices();
 
