@@ -5,10 +5,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
     using System;
     using System.IO;
+    using System.Net.Http;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Managers;
     using FluentAssertions;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Moq;
     using NUnit.Framework;
@@ -97,6 +99,26 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             _ = fileName.Should().Be("Devices_Template.csv");
 
             this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ImportDeviceListShouldReturnErrorReport()
+        {
+            var expectedResult = Guid.NewGuid().ToString();
+            var file = new FormFile(new MemoryStream(),1,1,"a","a");
+
+            _ = this.mockExportManager.Setup(x => x.ImportDeviceList(It.IsAny<Stream>()))
+                .ReturnsAsync(expectedResult);
+
+            var adminController = CreateAdminController();
+
+            var result = await adminController.ImportDeviceList(file);
+            Assert.IsNotNull(result);
+
+            var okObjectResult = result as OkObjectResult;
+            Assert.IsNotNull(okObjectResult);
+
+            _ = okObjectResult.Value.Should().Be(expectedResult);
         }
     }
 }
