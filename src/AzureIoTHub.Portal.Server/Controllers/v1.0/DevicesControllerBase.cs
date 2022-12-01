@@ -50,7 +50,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             int pageSize = 10,
             int pageNumber = 0,
             string[] orderBy = null,
-            string modelId = null)
+            string modelId = null,
+            string[] label = null)
         {
 
             var paginatedDevices = await this.deviceService.GetDevices(
@@ -61,7 +62,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 pageNumber,
                 orderBy,
                 GetTagsFromQueryString(Request.Query),
-                modelId);
+                modelId,
+                label?.ToList());
 
             var nextPage = string.Empty;
 

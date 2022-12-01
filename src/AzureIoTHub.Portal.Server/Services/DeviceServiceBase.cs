@@ -45,7 +45,7 @@ namespace AzureIoTHub.Portal.Server.Services
         }
 
         public async Task<PaginatedResult<DeviceListItem>> GetDevices(string searchText = null, bool? searchStatus = null, bool? searchState = null, int pageSize = 10,
-            int pageNumber = 0, string[] orderBy = null, Dictionary<string, string> tags = default, string modelId = null)
+            int pageNumber = 0, string[] orderBy = null, Dictionary<string, string> tags = default, string modelId = null, List<string> labels = default)
         {
             var deviceListFilter = new DeviceListFilter
             {
@@ -56,7 +56,8 @@ namespace AzureIoTHub.Portal.Server.Services
                 Keyword = searchText,
                 OrderBy = orderBy,
                 Tags = GetSearchableTags(tags),
-                ModelId = modelId
+                ModelId = modelId,
+                Labels = labels
             };
 
             var devicePredicate = PredicateBuilder.True<Device>();
@@ -95,8 +96,19 @@ namespace AzureIoTHub.Portal.Server.Services
                 lorawanDevicePredicate = lorawanDevicePredicate.And(device => device.DeviceModelId.Equals(deviceListFilter.ModelId));
             }
 
+            deviceListFilter.Labels?.ForEach(label =>
+            {
+                devicePredicate = devicePredicate.And(device => device.Labels.Any(value => value.Name.Equals(label)));
+                devicePredicate = devicePredicate.And(device => device.DeviceModel.Labels.Any(value => value.Name.Equals(label)));
+
+                lorawanDevicePredicate = lorawanDevicePredicate.And(device => device.Labels.Any(value => value.Name.Equals(label)));
+                lorawanDevicePredicate = lorawanDevicePredicate.And(device => device.DeviceModel.Labels.Any(value => value.Name.Equals(label)));
+            });
+
             var query = this.portalDbContext.Devices
                 .Include(device => device.Tags)
+                .Include(device => device.Labels)
+                .Include(device => device.DeviceModel.Labels)
                 .Where(devicePredicate)
                 .Select(device => new DeviceListItem
                 {
@@ -110,6 +122,8 @@ namespace AzureIoTHub.Portal.Server.Services
                 })
                 .Union(this.portalDbContext.LorawanDevices
                     .Include(device => device.Tags)
+                    .Include(device => device.Labels)
+                    .Include(device => device.DeviceModel.Labels)
                     .Where(lorawanDevicePredicate)
                     .Select(device => new DeviceListItem
                     {

@@ -22,7 +22,8 @@ namespace AzureIoTHub.Portal.Server.Services
             int pageNumber = 0,
             string[] orderBy = null,
             Dictionary<string, string> tags = default,
-            string modelId = null);
+            string modelId = null,
+            List<string> labels = default);
 
         Task<TDto> GetDevice(string deviceId);
 

@@ -16,5 +16,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0.Filters
         public Dictionary<string, string> Tags { get; set; }
 
         public string ModelId { get; set; }
+
+        public List<string> Labels { get; set; } = new();
     }
 }
