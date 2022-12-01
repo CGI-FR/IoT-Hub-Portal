@@ -5,7 +5,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
     using System;
     using System.IO;
-    using System.Net.Http;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Managers;
@@ -106,7 +105,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         {
             // Arrange
             var expectedResult = Guid.NewGuid().ToString();
-            var file = new FormFile(new MemoryStream(),1,1,"a","a");
+            using var stream = new MemoryStream();
+            var file = new FormFile(stream,1,1,"a","a");
 
             _ = this.mockExportManager.Setup(x => x.ImportDeviceList(It.IsAny<Stream>()))
                 .ReturnsAsync(expectedResult);
