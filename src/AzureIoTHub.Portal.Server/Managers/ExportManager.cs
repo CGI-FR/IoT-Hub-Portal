@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Globalization;
     using System.IO;
     using System.Text;
+    using System.Text.Json;
     using System.Text.Json.Nodes;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Domain.Exceptions;
@@ -161,9 +162,9 @@ namespace AzureIoTHub.Portal.Server.Managers
             }
         }
 
-        public async Task ImportDeviceList(Stream stream)
+        public async Task<string> ImportDeviceList(Stream stream)
         {
-            var reportStringBuilder = new StringBuilder("");
+            var errorReport = new List<string>();
 
             var tags = GetTagsToExport();
             using var reader = new StreamReader(stream);
@@ -188,19 +189,20 @@ namespace AzureIoTHub.Portal.Server.Managers
 
                 if (!csvReader.TryGetField<string>("Id", out var deviceId) || deviceId.IsNullOrEmpty())
                 {
-                    _ = reportStringBuilder.AppendLine(CultureInfo.InvariantCulture, $"Error occured while processing device on line {lineNumber}: The parameter deviceId cannot be null or empty. Device was not imported.");
+                    errorReport.Add($"Error occured while processing device on line {lineNumber}: The parameter deviceId cannot be null or empty. Device was not imported.");
                     continue;
                 }
 
                 if (!csvReader.TryGetField<string>("Name", out var deviceName) || deviceName.IsNullOrEmpty())
                 {
-                    _ = reportStringBuilder.AppendLine(CultureInfo.InvariantCulture, $"Error occured while processing device on line {lineNumber}: The parameter deviceName cannot be null or empty. Device was not imported.");
+                    errorReport.Add($"Error occured while processing device on line {lineNumber}: The parameter deviceName cannot be null or empty. Device was not imported.");
+
                     continue;
                 }
 
                 if (!csvReader.TryGetField<string>("ModelId", out var modelId) || modelId.IsNullOrEmpty())
                 {
-                    _ = reportStringBuilder.AppendLine(CultureInfo.InvariantCulture, $"Error occured while processing device on line {lineNumber}: The parameter modelId cannot be null or empty. Device was not imported.");
+                    errorReport.Add($"Error occured while processing device on line {lineNumber}: The parameter modelId cannot be null or empty. Device was not imported.");
                     continue;
                 }
 
@@ -255,7 +257,7 @@ namespace AzureIoTHub.Portal.Server.Managers
                     }
                     catch (Exception e)
                     {
-                        _ = reportStringBuilder.AppendLine(CultureInfo.InvariantCulture, $"Error occured while processing device {deviceId} on line {lineNumber}: {e.Message}. Device was not imported.");
+                        errorReport.Add($"Error occured while processing device {deviceId} on line {lineNumber}: {e.Message}. Device was not imported.");
                     }
 
                 }
@@ -294,14 +296,12 @@ namespace AzureIoTHub.Portal.Server.Managers
 
                     catch (Exception e)
                     {
-                        _ = reportStringBuilder.AppendLine(CultureInfo.InvariantCulture, $"Error occured while processing device {deviceId} on line {lineNumber}: {e.Message}. Device was not imported.");
+                        errorReport.Add($"Error occured while processing device {deviceId} on line {lineNumber}: {e.Message}. Device was not imported.");
                     }
                 }
             }
 
-            var toWrite = reportStringBuilder.ToString();
-            Console.WriteLine(toWrite);
-
+            return JsonSerializer.Serialize(errorReport.ToArray());
         }
     }
 }

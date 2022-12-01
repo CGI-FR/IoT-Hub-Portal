@@ -69,10 +69,11 @@ namespace AzureIoTHub.Portal.Client.Services
             var response = await this.http.PostAsync($"/api/admin/devices/_template", null);
             return response.Content;
         }
-        public async Task ImportDeviceList(MultipartFormDataContent dataContent)
+        public async Task<string[]> ImportDeviceList(MultipartFormDataContent dataContent)
         {
             var result = await this.http.PostAsync($"/api/admin/devices/_import", dataContent);
             _ = result.EnsureSuccessStatusCode();
+            return await result.Content.ReadFromJsonAsync<string[]>();
         }
     }
 }

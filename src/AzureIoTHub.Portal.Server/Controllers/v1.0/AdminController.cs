@@ -51,8 +51,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         public async Task<IActionResult> ImportDeviceList(IFormFile file)
         {
             using var stream = file.OpenReadStream();
-            await this.exportManager.ImportDeviceList(stream);
-            return Ok();
+            var errorReport = await this.exportManager.ImportDeviceList(stream);
+            return Ok(errorReport);
         }
     }
 }

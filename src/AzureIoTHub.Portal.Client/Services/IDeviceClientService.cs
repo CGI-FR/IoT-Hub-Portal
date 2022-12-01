@@ -30,6 +30,6 @@ namespace AzureIoTHub.Portal.Client.Services
 
         Task<HttpContent> ExportTemplateFile();
 
-        Task ImportDeviceList(MultipartFormDataContent dataContent);
+        Task<string[]> ImportDeviceList(MultipartFormDataContent dataContent);
     }
 }
