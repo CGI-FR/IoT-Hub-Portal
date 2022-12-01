@@ -556,5 +556,39 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Assert
             MockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task CheckIfDeviceExistsShouldReturnFalseIfDeviceDoesNotExist()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId, d => d.Tags))
+                .ReturnsAsync((Device)null);
+
+            // Act
+            var result = await this.deviceService.CheckIfDeviceExists(deviceId);
+
+            // Assert
+            Assert.IsFalse(result);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task CheckIfDeviceExistsShouldReturnTrueIfDeviceExists()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId, d => d.Tags))
+                .ReturnsAsync(new Device());
+
+            // Act
+            var result = await this.deviceService.CheckIfDeviceExists(deviceId);
+
+            // Assert
+            Assert.IsTrue(result);
+            MockRepository.VerifyAll();
+        }
     }
 }
