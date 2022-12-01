@@ -444,14 +444,23 @@
 
     private async Task ImportDeviceList(IBrowserFile file)
     {
-        var fileContent = new StreamContent(file.OpenReadStream());
-        fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+        try
+        {
+            var fileContent = new StreamContent(file.OpenReadStream());
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
 
-        var content = new MultipartFormDataContent();
-        content.Add(content: fileContent,
-                      name: "\"file\"",
-                      fileName: file.Name);
+            var content = new MultipartFormDataContent();
+            content.Add(content: fileContent,
+                          name: "\"file\"",
+                          fileName: file.Name);
 
-        await this.DeviceClientService.ImportDeviceList(content);
+            var parameters = new DialogParameters { { "Content", content } };
+            var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+            await DialogService.Show<ImportReportDialog>("Import summary", parameters, options).Result;
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
     }
 }

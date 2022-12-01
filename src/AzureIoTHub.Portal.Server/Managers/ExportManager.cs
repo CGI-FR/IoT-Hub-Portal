@@ -189,20 +189,20 @@ namespace AzureIoTHub.Portal.Server.Managers
 
                 if (!csvReader.TryGetField<string>("Id", out var deviceId) || deviceId.IsNullOrEmpty())
                 {
-                    errorReport.Add($"Error occured while processing device on line {lineNumber}: The parameter deviceId cannot be null or empty. Device was not imported.");
+                    errorReport.Add($"<b>Error</b> occured while processing device on <b>line {lineNumber}</b>: The parameter deviceId cannot be null or empty. Device was not imported.");
                     continue;
                 }
 
                 if (!csvReader.TryGetField<string>("Name", out var deviceName) || deviceName.IsNullOrEmpty())
                 {
-                    errorReport.Add($"Error occured while processing device on line {lineNumber}: The parameter deviceName cannot be null or empty. Device was not imported.");
+                    errorReport.Add($"<b>Error</b> occured while processing device on <b>line {lineNumber}</b>: The parameter deviceName cannot be null or empty. Device was not imported.");
 
                     continue;
                 }
 
                 if (!csvReader.TryGetField<string>("ModelId", out var modelId) || modelId.IsNullOrEmpty())
                 {
-                    errorReport.Add($"Error occured while processing device on line {lineNumber}: The parameter modelId cannot be null or empty. Device was not imported.");
+                    errorReport.Add($"<b>Error</b> occured while processing device on <b>line {lineNumber}</b>: The parameter modelId cannot be null or empty. Device was not imported.");
                     continue;
                 }
 
@@ -257,7 +257,7 @@ namespace AzureIoTHub.Portal.Server.Managers
                     }
                     catch (Exception e)
                     {
-                        errorReport.Add($"Error occured while processing device {deviceId} on line {lineNumber}: {e.Message}. Device was not imported.");
+                        errorReport.Add($"<b>Error</b> occured while processing device {deviceId} on <b>line {lineNumber}</b>: {e.Message}. Device was not imported.");
                     }
 
                 }
@@ -296,7 +296,7 @@ namespace AzureIoTHub.Portal.Server.Managers
 
                     catch (Exception e)
                     {
-                        errorReport.Add($"Error occured while processing device {deviceId} on line {lineNumber}: {e.Message}. Device was not imported.");
+                        errorReport.Add($"<b>Error</b> occured while processing device {deviceId} on <b>line {lineNumber}</b>: {e.Message}. Device was not imported.");
                     }
                 }
             }
