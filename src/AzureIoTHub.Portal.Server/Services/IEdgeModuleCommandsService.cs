@@ -3,13 +3,15 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand;
+    using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Models.v10;
 
     public interface IEdgeModuleCommandsService
     {
-        Task<EdgeModuleCommandDto[]> GetAllEdgeModule(string edgeModelId);
-        Task SaveEdgeModuleCommandAsync(string edgeModelId, EdgeModuleCommandDto[] commands);
+        Task<IEnumerable<EdgeModuleCommand>> GetAllEdgeModule(string edgeModelId);
+        Task SaveEdgeModuleCommandAsync(string edgeModelId, List<IoTEdgeModule> edgeModules);
         Task ExecuteModuleCommand(string deviceId, string commandId);
     }
 }

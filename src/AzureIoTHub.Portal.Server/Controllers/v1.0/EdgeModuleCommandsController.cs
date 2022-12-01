@@ -3,10 +3,7 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.v1._0
 {
-    using System;
-    using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Services;
-    using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
@@ -24,22 +21,22 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0
             this.edgeModuleCommandsService = edgeModuleCommandsService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostEdgeModuleCommand(string id, EdgeModuleCommandDto[] edgeModuleCommands)
-        {
-            ArgumentNullException.ThrowIfNull(id, nameof(id));
-            ArgumentNullException.ThrowIfNull(edgeModuleCommands, nameof(edgeModuleCommands));
+        //[HttpPost]
+        //public async Task<IActionResult> PostEdgeModuleCommand(string id, List<EdgeModuleCommandDto> edgeModuleCommands)
+        //{
+        //    ArgumentNullException.ThrowIfNull(id, nameof(id));
+        //    ArgumentNullException.ThrowIfNull(edgeModuleCommands, nameof(edgeModuleCommands));
 
-            await this.edgeModuleCommandsService.SaveEdgeModuleCommandAsync(id, edgeModuleCommands);
-            return Ok();
-        }
+        //    await this.edgeModuleCommandsService.SaveEdgeModuleCommandAsync(id, edgeModuleCommands);
+        //    return Ok();
+        //}
 
-        [HttpGet]
-        public async Task<EdgeModuleCommandDto[]> GetEdgeModuleCommandList(string modelId)
-        {
-            ArgumentNullException.ThrowIfNull(modelId, nameof(modelId));
+        //[HttpGet]
+        //public async Task<IEnumerable<EdgeModuleCommandDto>> GetEdgeModuleCommandList(string modelId)
+        //{
+        //    ArgumentNullException.ThrowIfNull(modelId, nameof(modelId));
 
-            return await this.edgeModuleCommandsService.GetAllEdgeModule(modelId);
-        }
+        //    return await this.edgeModuleCommandsService.GetAllEdgeModule(modelId);
+        //}
     }
 }

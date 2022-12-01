@@ -21,6 +21,8 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand
         [JsonProperty("@id")]
         public string? Id { get; set; }
 
+        public string? Comment { get; set; }
+
         public string? Description { get; set; }
 
         public string? DisplayName { get; set; }

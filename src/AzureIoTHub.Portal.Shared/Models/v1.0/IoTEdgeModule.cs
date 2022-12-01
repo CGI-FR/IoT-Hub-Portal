@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Models.v10
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand;
     using AzureIoTHub.Portal.Shared.Models.v10;
 
     /// <summary>
@@ -44,6 +45,6 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The module commands.
         /// </summary>
-        public List<IoTEdgeModuleCommand> Commands { get; set; } = new List<IoTEdgeModuleCommand>();
+        public List<EdgeModuleCommandDto> Commands { get; set; } = new List<EdgeModuleCommandDto>();
     }
 }

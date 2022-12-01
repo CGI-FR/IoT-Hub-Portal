@@ -19,6 +19,8 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using AzureIoTHub.Portal.Infrastructure.Repositories;
+    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand;
 
     public class EdgeModelService : IEdgeModelService
     {
@@ -43,6 +45,7 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IEdgeDeviceModelRepository edgeModelRepository;
         private readonly ILabelRepository labelRepository;
         private readonly IEdgeDeviceModelCommandRepository commandRepository;
+        private readonly IEdgeModuleCommandsService edgeModuleCommandsService;
 
         public EdgeModelService(
             IMapper mapper,
@@ -51,7 +54,8 @@ namespace AzureIoTHub.Portal.Server.Services
             IConfigService configService,
             IDeviceModelImageManager deviceModelImageManager,
             ILabelRepository labelRepository,
-            IEdgeDeviceModelCommandRepository commandRepository)
+            IEdgeDeviceModelCommandRepository commandRepository,
+            IEdgeModuleCommandsService edgeModuleCommandsService)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -60,6 +64,7 @@ namespace AzureIoTHub.Portal.Server.Services
             this.configService = configService;
             this.deviceModelImageManager = deviceModelImageManager;
             this.commandRepository = commandRepository;
+            this.edgeModuleCommandsService = edgeModuleCommandsService;
         }
 
         /// <summary>
@@ -124,26 +129,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <exception cref="InternalServerErrorException"></exception>
         public async Task SaveModuleCommands(IoTEdgeModel deviceModelObject)
         {
-            IEnumerable<IoTEdgeModuleCommand> moduleCommands = deviceModelObject.EdgeModules
-                .SelectMany(x => x.Commands.Select(cmd => new IoTEdgeModuleCommand
-                {
-                    EdgeDeviceModelId = deviceModelObject.ModelId,
-                    CommandId = Guid.NewGuid().ToString(),
-                    ModuleName = x.ModuleName,
-                    Name = cmd.Name,
-                })).ToArray();
-
-            var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == deviceModelObject.ModelId).ToList();
-            foreach (var command in existingCommands)
-            {
-                this.commandRepository.Delete(command.Id);
-            }
-
-            foreach (var cmd in moduleCommands)
-            {
-                await this.commandRepository.InsertAsync(this.mapper.Map<EdgeDeviceModelCommand>(cmd));
-            }
-            await this.unitOfWork.SaveAsync();
+            await this.edgeModuleCommandsService.SaveEdgeModuleCommandAsync(deviceModelObject.ModelId, deviceModelObject.EdgeModules);
         }
 
         /// <summary>
@@ -164,11 +150,9 @@ namespace AzureIoTHub.Portal.Server.Services
             var modules = await this.configService.GetConfigModuleList(modelId);
             var sysModules = await this.configService.GetModelSystemModule(modelId);
             var routes = await this.configService.GetConfigRouteList(modelId);
-            var commands =  this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == modelId).ToList();
+            var commands = await  this.edgeModuleCommandsService.GetAllEdgeModule(modelId);
 
-            //TODO : User a mapper
-            //Previously return this.edgeDeviceModelMapper.CreateEdgeDeviceModel(query.Value, modules, routes, commands);
-            var result = new IoTEdgeModel
+            var edgeModel = new IoTEdgeModel
             {
                 ModelId = edgeModelEntity.Id,
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(edgeModelEntity.Id),
@@ -182,16 +166,16 @@ namespace AzureIoTHub.Portal.Server.Services
 
             foreach (var command in commands)
             {
-                var module = result.EdgeModules.SingleOrDefault(x => x.ModuleName.Equals(command.ModuleName, StringComparison.Ordinal));
+                var module = edgeModel.EdgeModules.SingleOrDefault(x => x.ModuleName.Equals(command.EdgeModuleName, StringComparison.Ordinal));
                 if (module == null)
                 {
                     continue;
                 }
 
-                module.Commands.Add(this.mapper.Map<IoTEdgeModuleCommand>(command));
+                module.Commands.Add(this.mapper.Map<EdgeModuleCommandDto>(command));
             }
 
-            return result;
+            return edgeModel;
         }
 
 

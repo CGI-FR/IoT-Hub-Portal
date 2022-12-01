@@ -15,6 +15,8 @@ namespace AzureIoTHub.Portal.Domain.Entities
 
         public string EdgeModuleName { get; set; }
 
+        public string? Comment { get; set; }
+
         public string? Description { get; set; }
 
         public string? DisplayName { get; set; }
@@ -33,6 +35,8 @@ namespace AzureIoTHub.Portal.Domain.Entities
         public object Schema { get; set; }
 
         public string EdgeModuleCommandId { get; set; }
+
+        public object InitialValue { get; set; }
 
         public string? Comment { get; set; }
 

@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Server.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
@@ -11,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand;
     using Microsoft.Extensions.Logging;
@@ -21,7 +23,6 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly IEdgeModuleCommandMethodManager commandMethodManager;
         private readonly IEdgeModuleCommandsRepository edgeModuleCommandsRepository;
-        private readonly IEdgeDeviceModelCommandRepository edgeDeviceModelCommandRepository;
         private readonly ILogger<EdgeModuleCommandsService> logger;
 
         public EdgeModuleCommandsService(
@@ -29,34 +30,23 @@ namespace AzureIoTHub.Portal.Server.Services
             IUnitOfWork unitOfWork,
             IEdgeModuleCommandMethodManager commandMethodManager,
             IEdgeModuleCommandsRepository edgeModuleCommandsRepository,
-            IEdgeDeviceModelCommandRepository edgeDeviceModelCommandRepository,
             ILogger<EdgeModuleCommandsService> logger)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.commandMethodManager = commandMethodManager;
             this.edgeModuleCommandsRepository = edgeModuleCommandsRepository;
-            this.edgeDeviceModelCommandRepository = edgeDeviceModelCommandRepository;
             this.logger = logger;
         }
 
-        public Task<EdgeModuleCommandDto[]> GetAllEdgeModule(string edgeModelId)
+        public Task<IEnumerable<EdgeModuleCommand>> GetAllEdgeModule(string edgeModelId)
         {
             return Task.Run(() => this.edgeModuleCommandsRepository.GetAll()
-            .Where(command => command.EdgeModelId.Equals(edgeModelId, StringComparison.Ordinal))
-                .Select(command => this.mapper.Map<EdgeModuleCommandDto>(command))
-                .ToArray());
+            .Where(command => command.EdgeModelId.Equals(edgeModelId, StringComparison.Ordinal)));
         }
 
-        public async Task SaveEdgeModuleCommandAsync(string edgeModelId, EdgeModuleCommandDto[] commands)
+        public async Task SaveEdgeModuleCommandAsync(string edgeModelId, List<IoTEdgeModule> edgeModules)
         {
-            var edgeModelEntity = await this.edgeDeviceModelCommandRepository.GetByIdAsync(edgeModelId);
-
-            if (edgeModelEntity == null)
-            {
-                throw new ResourceNotFoundException($"The device model {edgeModelId} doesn't exist");
-            }
-
             var existingCommands = await GetAllEdgeModule(edgeModelId);
 
             foreach (var command in existingCommands)
@@ -64,13 +54,14 @@ namespace AzureIoTHub.Portal.Server.Services
                 this.edgeModuleCommandsRepository.Delete(command.Id);
             }
 
-            foreach (var edgeDeviceModelCommand in commands)
+            edgeModules.ForEach(x => x.Commands.ForEach(async (cmd) =>
             {
-                var deviceModelCommandEntity = this.mapper.Map<EdgeModuleCommand>(edgeDeviceModelCommand);
+                var deviceModelCommandEntity = this.mapper.Map<EdgeModuleCommand>(cmd);
 
                 deviceModelCommandEntity.EdgeModelId = edgeModelId;
+                deviceModelCommandEntity.EdgeModuleName = x.ModuleName;
                 await this.edgeModuleCommandsRepository.InsertAsync(deviceModelCommandEntity);
-            }
+            }));
 
             await this.unitOfWork.SaveAsync();
         }

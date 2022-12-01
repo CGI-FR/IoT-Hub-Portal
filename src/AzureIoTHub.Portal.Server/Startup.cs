@@ -78,6 +78,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddRazorPages();
 
             _ = services.AddTransient<IExportManager, ExportManager>();
+            _ = services.AddTransient<IEdgeModuleCommandMethodManager, EdgeModuleCommandMethodManager>();
 
             _ = services.AddTransient<IExternalDeviceService, ExternalDeviceService>();
             _ = services.AddTransient<IConfigService, ConfigService>();
@@ -92,6 +93,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient(typeof(IDeviceModelService<,>), typeof(DeviceModelService<,>));
             _ = services.AddTransient<IDeviceService<DeviceDetails>, DeviceService>();
             _ = services.AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
+            _ = services.AddTransient<IEdgeModuleCommandsService, EdgeModuleCommandsService>();
 
             _ = services.AddMudServices();
 
