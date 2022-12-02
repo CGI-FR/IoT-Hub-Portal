@@ -210,10 +210,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
         public async Task ImportDeviceListWrongFileFormatShouldThrowInternalServerErrorExceptionAsync()
         {
             // Arrange
-            _ = this.mockDeviceTagService.Setup(x => x.GetAllTagsNames())
-                .Returns(new List<string>() { "Tag1", "Tag2" });
-
-            var stream = new MemoryStream(Guid.NewGuid().ToByteArray());
+            using var stream = new MemoryStream(Guid.NewGuid().ToByteArray());
 
             // Act
             var act = () => this.exportManager.ImportDeviceList(stream);
@@ -273,7 +270,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             _ = textContent.AppendLine("0000000000000002,ImportNonLoRa,f8b7a67a-345d-463e-ae0e-eeb0f6d24e38,false,Tag1-Value2,Tag2-Value2,Property1Value,Property1Value,,,,,,,,,,,,,,,,,,,,");
 
             var bytes = Encoding.UTF8.GetBytes(textContent.ToString());
-            var stream = new MemoryStream(bytes);
+            using var stream = new MemoryStream(bytes);
 
             // Act
             var result = await this.exportManager.ImportDeviceList(stream);
@@ -334,7 +331,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             _ = textContent.AppendLine("0000000000000002,ImportNonLoRa,f8b7a67a-345d-463e-ae0e-eeb0f6d24e38,false,Tag1-Value2,Tag2-Value2,Property1Value,Property1Value,,,,,,,,,,,,,,,,,,,,");
 
             var bytes = Encoding.UTF8.GetBytes(textContent.ToString());
-            var stream = new MemoryStream(bytes);
+            using var stream = new MemoryStream(bytes);
 
             // Act
             var result = await this.exportManager.ImportDeviceList(stream);
@@ -359,7 +356,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             _ = textContent.AppendLine("0000000000000003,ImportNonLoRa,,false,Tag1-Value3,Tag2-Value3,Property1Value,Property1Value,,,,,,,,,,,,,,,,,,,,");
 
             var bytes = Encoding.UTF8.GetBytes(textContent.ToString());
-            var stream = new MemoryStream(bytes);
+            using var stream = new MemoryStream(bytes);
 
             // Act
             var result = await this.exportManager.ImportDeviceList(stream);
@@ -417,7 +414,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             _ = textContent.AppendLine("0000000000000002,ImportNonLoRa,f8b7a67a-345d-463e-ae0e-eeb0f6d24e38,false,Tag1-Value2,Tag2-Value2,Property1Value,Property1Value,,,,,,,,,,,,,,,,,,,,");
 
             var bytes = Encoding.UTF8.GetBytes(textContent.ToString());
-            var stream = new MemoryStream(bytes);
+            using var stream = new MemoryStream(bytes);
 
             // Act
             var result = await this.exportManager.ImportDeviceList(stream);
