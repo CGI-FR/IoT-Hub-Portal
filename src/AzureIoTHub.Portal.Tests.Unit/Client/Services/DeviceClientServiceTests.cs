@@ -257,7 +257,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task ImportDeviceListShouldReturnErrorReport()
         {
             // Arrange
-            var dataContent = new MultipartFormDataContent();
+            using var dataContent = new MultipartFormDataContent();
             var expectedResult = new string[2]{Guid.NewGuid().ToString(),Guid.NewGuid().ToString()};
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/admin/devices/_import")
@@ -265,6 +265,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
                 {
                     _ = m.Content.Should().BeAssignableTo<MultipartFormDataContent>();
                     var body = m.Content as MultipartFormDataContent;
+                    Assert.IsNotNull(body);
                     _ = body.Should().BeEquivalentTo(dataContent);
                     return true;
                 })
