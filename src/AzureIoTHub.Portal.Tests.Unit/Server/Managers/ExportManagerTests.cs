@@ -210,12 +210,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
         public async Task ImportDeviceListWrongFileFormatShouldThrowInternalServerErrorExceptionAsync()
         {
             // Arrange
-            _ = this.mockLoRaWANOptions.Setup(x => x.Value)
-                .Returns(new LoRaWANOptions
-                {
-                    Enabled = true
-                });
-
             _ = this.mockDeviceTagService.Setup(x => x.GetAllTagsNames())
                 .Returns(new List<string>() { "Tag1", "Tag2" });
 
