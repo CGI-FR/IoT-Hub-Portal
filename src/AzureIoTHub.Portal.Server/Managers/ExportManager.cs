@@ -166,7 +166,6 @@ namespace AzureIoTHub.Portal.Server.Managers
         {
             var errorReport = new List<string>();
 
-            var tags = GetTagsToExport();
             using var reader = new StreamReader(stream);
 
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -209,6 +208,8 @@ namespace AzureIoTHub.Portal.Server.Managers
                 var isLoRa = bool.TryParse(csvReader.GetField("TAG:supportLoRaFeatures"), out var supportLoRaFeatures) && supportLoRaFeatures;
 
                 var deviceTags = new Dictionary<string,string>();
+
+                var tags = GetTagsToExport();
 
                 foreach (var tag in tags)
                 {
