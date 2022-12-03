@@ -65,7 +65,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public override async Task<bool> CheckIfDeviceExists(string deviceId)
         {
-            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId, d => d.Tags);
+            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId);
             return deviceEntity != null;
         }
 

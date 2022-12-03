@@ -627,7 +627,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceId = Fixture.Create<string>();
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId, d => d.Tags))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId))
                 .ReturnsAsync((LorawanDevice)null);
 
             // Act
@@ -644,7 +644,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceId = Fixture.Create<string>();
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId, d => d.Tags))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId))
                 .ReturnsAsync(new LorawanDevice());
 
             // Act

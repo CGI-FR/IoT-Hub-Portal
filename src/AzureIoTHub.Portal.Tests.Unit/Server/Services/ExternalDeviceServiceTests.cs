@@ -16,6 +16,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Shared.Constants;
     using FluentAssertions;
     using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Models.v10;
@@ -1735,7 +1736,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var act = () => service.CreateNewTwinFromDeviceId(deviceId);
 
             // Assert
-            _ = await act.Should().ThrowAsync<InternalServerErrorException>();
+            _ = await act.Should().ThrowAsync<DeviceAlreadyExistsException>();
+
             this.mockRepository.VerifyAll();
         }
 

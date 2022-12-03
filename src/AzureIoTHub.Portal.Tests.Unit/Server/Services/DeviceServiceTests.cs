@@ -563,7 +563,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceId = Fixture.Create<string>();
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId, d => d.Tags))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId))
                 .ReturnsAsync((Device)null);
 
             // Act
@@ -580,7 +580,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceId = Fixture.Create<string>();
 
-            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId, d => d.Tags))
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId))
                 .ReturnsAsync(new Device());
 
             // Act
