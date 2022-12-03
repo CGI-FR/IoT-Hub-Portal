@@ -3,8 +3,10 @@
 
 namespace AzureIoTHub.Portal.Server.Managers
 {
+    using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     public interface IExportManager
     {
@@ -12,7 +14,6 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         Task ExportTemplateFile(Stream stream);
 
-        Task<string> ImportDeviceList(Stream stream);
-
+        Task<IEnumerable<ImportResultLine>> ImportDeviceList(Stream stream);
     }
 }

@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Client.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
@@ -258,18 +259,22 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         {
             // Arrange
             using var dataContent = new MultipartFormDataContent();
-            var expectedResult = new string[2]{Guid.NewGuid().ToString(),Guid.NewGuid().ToString()};
+
+            var expectedResult = new []{
+                new ImportResultLine(),
+                new ImportResultLine()
+            };
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/admin/devices/_import")
-                .With(m =>
-                {
-                    _ = m.Content.Should().BeAssignableTo<MultipartFormDataContent>();
-                    var body = m.Content as MultipartFormDataContent;
-                    Assert.IsNotNull(body);
-                    _ = body.Should().BeEquivalentTo(dataContent);
-                    return true;
-                })
-                .RespondJson(expectedResult);
+                    .With(m =>
+                    {
+                        _ = m.Content.Should().BeAssignableTo<MultipartFormDataContent>();
+                        var body = m.Content as MultipartFormDataContent;
+                        Assert.IsNotNull(body);
+                        _ = body.Should().BeEquivalentTo(dataContent);
+                        return true;
+                    })
+                    .RespondJson(expectedResult);
 
             // Act
             var result = await this.deviceClientService.ImportDeviceList(dataContent);

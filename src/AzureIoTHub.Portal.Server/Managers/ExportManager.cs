@@ -7,8 +7,9 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
+    using System.Linq.Expressions;
+    using System.Reflection;
     using System.Text;
-    using System.Text.Json;
     using System.Text.Json.Nodes;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Domain.Exceptions;
@@ -16,6 +17,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using CsvHelper;
     using CsvHelper.Configuration;
     using Microsoft.Extensions.Options;
@@ -30,6 +32,9 @@ namespace AzureIoTHub.Portal.Server.Managers
         private readonly IDeviceModelPropertiesService deviceModelPropertiesService;
         private readonly IDevicePropertyService devicePropertyService;
         private readonly IOptions<LoRaWANOptions> loRaWANOptions;
+
+        private const string TagPrefix = "TAG";
+        private const string PropertyPrefix = "PROPERTY";
 
         public ExportManager(IExternalDeviceService externalDevicesService,
             IDeviceService<DeviceDetails> deviceService,
@@ -107,26 +112,26 @@ namespace AzureIoTHub.Portal.Server.Managers
             if (this.loRaWANOptions.Value.Enabled)
             {
                 properties.AddRange(new[] {
-                    "AppKey",
-                    "AppEUI",
-                    "AppSKey",
-                    "NwkSKey",
-                    "DevAddr",
-                    "GatewayID",
-                    "Downlink",
-                    "ClassType",
-                    "PreferredWindow",
-                    "Deduplication",
-                    "RX1DROffset",
-                    "RX2DataRate",
-                    "RXDelay",
-                    "ABPRelaxMode",
-                    "SensorDecoder",
-                    "FCntUpStart",
-                    "FCntDownStart",
-                    "FCntResetCounter",
-                    "Supports32BitFCnt",
-                    "KeepAliveTimeout"
+                    nameof(LoRaDeviceDetails.AppKey),
+                    nameof(LoRaDeviceDetails.AppEUI),
+                    nameof(LoRaDeviceDetails.AppSKey),
+                    nameof(LoRaDeviceDetails.NwkSKey),
+                    nameof(LoRaDeviceDetails.DevAddr),
+                    nameof(LoRaDeviceDetails.GatewayID),
+                    nameof(LoRaDeviceDetails.Downlink),
+                    nameof(LoRaDeviceDetails.ClassType),
+                    nameof(LoRaDeviceDetails.PreferredWindow),
+                    nameof(LoRaDeviceDetails.Deduplication),
+                    nameof(LoRaDeviceDetails.RX1DROffset),
+                    nameof(LoRaDeviceDetails.RX2DataRate),
+                    nameof(LoRaDeviceDetails.RXDelay),
+                    nameof(LoRaDeviceDetails.ABPRelaxMode),
+                    nameof(LoRaDeviceDetails.SensorDecoder),
+                    nameof(LoRaDeviceDetails.FCntUpStart),
+                    nameof(LoRaDeviceDetails.FCntDownStart),
+                    nameof(LoRaDeviceDetails.FCntResetCounter),
+                    nameof(LoRaDeviceDetails.Supports32BitFCnt),
+                    nameof(LoRaDeviceDetails.KeepAliveTimeout)
                 });
             }
 
@@ -153,18 +158,18 @@ namespace AzureIoTHub.Portal.Server.Managers
 
             foreach (var tag in tags)
             {
-                csvWriter.WriteField(string.Format(CultureInfo.InvariantCulture, $"TAG:{tag}"));
+                csvWriter.WriteField(string.Format(CultureInfo.InvariantCulture, $"{TagPrefix}:{tag}"));
             }
 
             foreach (var property in properties)
             {
-                csvWriter.WriteField(string.Format(CultureInfo.InvariantCulture, $"PROPERTY:{property}"));
+                csvWriter.WriteField(string.Format(CultureInfo.InvariantCulture, $"{PropertyPrefix}:{property}"));
             }
         }
 
-        public async Task<string> ImportDeviceList(Stream stream)
+        public async Task<IEnumerable<ImportResultLine>> ImportDeviceList(Stream stream)
         {
-            var errorReport = new List<string>();
+            var report = new List<ImportResultLine>();
 
             using var reader = new StreamReader(stream);
 
@@ -172,6 +177,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             {
                 MissingFieldFound = null
             };
+
             using var csvReader = new CsvReader(reader, config);
 
             _ = csvReader.Read();
@@ -181,128 +187,204 @@ namespace AzureIoTHub.Portal.Server.Managers
             {
                 throw new InternalServerErrorException("Invalid file format: The submitted file should be a comma-separated values (CSV) file. A template file showing the mandatory fields is available to download on the portal.");
             }
-            var lineNumber=0;
+
+            var lineNumber = 0;
+
+            var tags = GetTagsToExport();
+
             while (csvReader.Read())
             {
                 lineNumber++;
 
-                if (!csvReader.TryGetField<string>("Id", out var deviceId) || deviceId.IsNullOrEmpty())
+                string deviceId = null;
+                string deviceName = null;
+                string modelId = null;
+
+                if (!TryReadMandatoryFields(csvReader, lineNumber, ref deviceId, ref deviceName, ref modelId, ref report))
                 {
-                    errorReport.Add($"<b>Error</b> occured on <b>line {lineNumber}</b>: The parameter deviceId cannot be null or empty. Device was not imported.");
                     continue;
                 }
 
-                if (!csvReader.TryGetField<string>("Name", out var deviceName) || deviceName.IsNullOrEmpty())
+                try
                 {
-                    errorReport.Add($"<b>Error</b> occured on <b>line {lineNumber}</b>: The parameter deviceName cannot be null or empty. Device was not imported.");
+                    var isLoRa = bool.TryParse(csvReader.GetField($"{TagPrefix}:supportLoRaFeatures"), out var supportLoRaFeatures) && supportLoRaFeatures;
+
+                    var deviceTags = ReadTags(csvReader, tags);
+
+                    if (this.loRaWANOptions.Value.Enabled && isLoRa)
+                    {
+                        await ImportLoRaDevice(csvReader, deviceId, deviceName, modelId, deviceTags);
+                    }
+                    else
+                    {
+                        await ImportDevice(csvReader, deviceId, deviceName, modelId, deviceTags);
+                    }
+                }
+                catch (Exception e)
+                {
+                    report.Add(new ImportResultLine
+                    {
+                        DeviceId = deviceId,
+                        LineNumber = lineNumber,
+                        IsErrorMessage = true,
+                        Message = e.Message
+
+                    });
 
                     continue;
-                }
-
-                if (!csvReader.TryGetField<string>("ModelId", out var modelId) || modelId.IsNullOrEmpty())
-                {
-                    errorReport.Add($"<b>Error</b> occured on <b>line {lineNumber}</b>: The parameter modelId cannot be null or empty. Device was not imported.");
-                    continue;
-                }
-
-                var isLoRa = bool.TryParse(csvReader.GetField("TAG:supportLoRaFeatures"), out var supportLoRaFeatures) && supportLoRaFeatures;
-
-                var deviceTags = new Dictionary<string,string>();
-
-                var tags = GetTagsToExport();
-
-                foreach (var tag in tags)
-                {
-                    if (csvReader.TryGetField<string>($"TAG:{tag}", out var tagValue))
-                    {
-                        deviceTags.Add(tag, tagValue);
-                    }
-                }
-
-                if (this.loRaWANOptions.Value.Enabled && isLoRa)
-                {
-                    try
-                    {
-                        var newDevice = new LoRaDeviceDetails()
-                        {
-                            DeviceID = deviceId,
-                            DeviceName = deviceName,
-                            ModelId = modelId,
-                            AppKey = csvReader.TryGetField<string>("PROPERTY:AppKey", out var appKey) ? appKey : string.Empty,
-                            AppEUI = csvReader.TryGetField<string>("PROPERTY:AppEUI", out var appEUI) ? appEUI : string.Empty,
-                            AppSKey = csvReader.TryGetField<string>("PROPERTY:AppSKey", out var appSKey) ? appSKey : string.Empty,
-                            NwkSKey = csvReader.TryGetField<string>("PROPERTY:NwkSKey", out var nwkSKey) ? nwkSKey : string.Empty,
-                            DevAddr = csvReader.TryGetField<string>("PROPERTY:DevAddr", out var devAddr) ? devAddr : string.Empty,
-                            GatewayID = csvReader.TryGetField<string>("PROPERTY:GatewayID", out var gatewayID) ? gatewayID : string.Empty,
-                            Downlink = csvReader.TryGetField<bool?>("PROPERTY:Downlink", out var downlink) ? downlink : null,
-                            ClassType = Enum.TryParse<ClassType>(csvReader.GetField("PROPERTY:ClassType"), out var classType) ? classType : ClassType.A,
-                            PreferredWindow = csvReader.TryGetField<int>("PROPERTY:PreferredWindow", out var preferredWindow) ? preferredWindow : 1,
-                            Deduplication = Enum.TryParse<DeduplicationMode>(csvReader.GetField("PROPERTY:Deduplication"), out var deduplication) ? deduplication : DeduplicationMode.Drop,
-                            RX1DROffset = csvReader.TryGetField<int?>("PROPERTY:RX1DROffset", out var rX1DROffset) ? rX1DROffset : null,
-                            RX2DataRate = csvReader.TryGetField<int?>("PROPERTY:RX1DROffset", out var rX2DataRate) ? rX2DataRate : null,
-                            RXDelay = csvReader.TryGetField<int?>("PROPERTY:RXDelay", out var rXDelay) ? rXDelay : null,
-                            ABPRelaxMode = csvReader.TryGetField<bool?>("PROPERTY:ABPRelaxMode", out var aBPRelaxMode) ? aBPRelaxMode : null,
-                            SensorDecoder = csvReader.TryGetField<string>("PROPERTY:SensorDecoder", out var sensorDecoder) ? sensorDecoder : string.Empty,
-                            FCntUpStart = csvReader.TryGetField<int?>("PROPERTY:FCntUpStart", out var fCntUpStart) ? fCntUpStart : null,
-                            FCntDownStart = csvReader.TryGetField<int?>("PROPERTY:FCntDownStart", out var fCntDownStart) ? fCntDownStart : null,
-                            FCntResetCounter = csvReader.TryGetField<int?>("PROPERTY:FCntResetCounter", out var fCntResetCounter) ? fCntResetCounter : null,
-                            Supports32BitFCnt = csvReader.TryGetField<bool?>("PROPERTY:Supports32BitFCnt", out var supports32BitFCnt) ? supports32BitFCnt : null,
-                            KeepAliveTimeout = csvReader.TryGetField<int?>("PROPERTY:KeepAliveTimeout", out var keepAliveTimeout) ? keepAliveTimeout : null,
-                            IsEnabled = true,
-                            Tags = deviceTags
-                        };
-
-                        _ = await this.loraDeviceService.CheckIfDeviceExists(newDevice.DeviceID)
-                            ? await this.loraDeviceService.UpdateDevice(newDevice)
-                            : await this.loraDeviceService.CreateDevice(newDevice);
-                    }
-                    catch (Exception e)
-                    {
-                        errorReport.Add($"<b>Error</b> occured while processing device {deviceId} on <b>line {lineNumber}</b>: {e.Message}. Device was not imported.");
-                    }
-
-                }
-                else
-                {
-                    try
-                    {
-                        var properties = await this.deviceModelPropertiesService.GetModelProperties(modelId);
-                        var deviceProperties = new List<DevicePropertyValue>();
-
-                        foreach (var property in properties)
-                        {
-                            deviceProperties.Add(new DevicePropertyValue()
-                            {
-                                Name = property.Name,
-                                PropertyType = property.PropertyType,
-                                Value = csvReader.GetField($"PROPERTY:{property.Name}")
-                            });
-                        }
-
-                        var newDevice = new DeviceDetails()
-                        {
-                            DeviceID = deviceId,
-                            DeviceName = deviceName,
-                            ModelId = modelId,
-                            IsEnabled = true,
-                            Tags = deviceTags
-                        };
-
-                        _ = await this.deviceService.CheckIfDeviceExists(newDevice.DeviceID)
-                            ? await this.deviceService.UpdateDevice(newDevice)
-                            : await this.deviceService.CreateDevice(newDevice);
-
-                        await this.devicePropertyService.SetProperties(deviceId, deviceProperties);
-                    }
-
-                    catch (Exception e)
-                    {
-                        errorReport.Add($"<b>Error</b> occured while processing device {deviceId} on <b>line {lineNumber}</b>: {e.Message}. Device was not imported.");
-                    }
                 }
             }
 
-            return JsonSerializer.Serialize(errorReport.ToArray());
+            return report;
+        }
+
+        private static Dictionary<string, string> ReadTags(CsvReader reader, IEnumerable<string> tagsToRead)
+        {
+            var deviceTags = new Dictionary<string,string>();
+
+            foreach (var tag in tagsToRead)
+            {
+                if (reader.TryGetField<string>($"{TagPrefix}:{tag}", out var tagValue))
+                {
+                    deviceTags.Add(tag, tagValue);
+                }
+            }
+
+            return deviceTags;
+        }
+
+        private static bool TryReadMandatoryFields(CsvReader reader, int lineNumber, ref string deviceId, ref string deviceName, ref string modelId, ref List<ImportResultLine> report)
+        {
+            if (!reader.TryGetField<string>("Id", out deviceId) || deviceId.IsNullOrEmpty())
+            {
+                report.Add(new ImportResultLine
+                {
+                    DeviceId = "-1",
+                    LineNumber = lineNumber,
+                    IsErrorMessage = true,
+                    Message = "The parameter Id cannot be null or empty"
+
+                });
+
+                return false;
+            }
+
+            if (!reader.TryGetField<string>("Name", out deviceName) || deviceName.IsNullOrEmpty())
+            {
+                report.Add(new ImportResultLine
+                {
+                    DeviceId = deviceId,
+                    LineNumber = lineNumber,
+                    IsErrorMessage = true,
+                    Message = "The parameter Name cannot be null or empty"
+
+                });
+
+                return false;
+            }
+
+            if (!reader.TryGetField<string>("ModelId", out modelId) || modelId.IsNullOrEmpty())
+            {
+                report.Add(new ImportResultLine
+                {
+                    DeviceId = deviceId,
+                    LineNumber = lineNumber,
+                    IsErrorMessage = true,
+                    Message = "The parameter ModelId cannot be null or empty"
+
+                });
+
+                return false;
+            }
+
+            return true;
+        }
+
+        private async Task ImportLoRaDevice(
+            CsvReader csvReader,
+            string deviceId, string deviceName, string modelId,
+            Dictionary<string, string> deviceTags)
+        {
+            var newDevice = new LoRaDeviceDetails()
+            {
+                DeviceID = deviceId,
+                DeviceName = deviceName,
+                ModelId = modelId,
+                Tags = deviceTags,
+                IsEnabled = true
+            };
+
+            TryReadProperty(csvReader, newDevice, c => c.AppKey, string.Empty);
+            TryReadProperty(csvReader, newDevice, c => c.AppEUI, string.Empty);
+            TryReadProperty(csvReader, newDevice, c => c.AppSKey, string.Empty);
+            TryReadProperty(csvReader, newDevice, c => c.NwkSKey, string.Empty);
+            TryReadProperty(csvReader, newDevice, c => c.DevAddr, string.Empty);
+            TryReadProperty(csvReader, newDevice, c => c.GatewayID, string.Empty);
+            TryReadProperty(csvReader, newDevice, c => c.Downlink, null);
+            TryReadProperty(csvReader, newDevice, c => c.ClassType, ClassType.A);
+            TryReadProperty(csvReader, newDevice, c => c.PreferredWindow, 1);
+            TryReadProperty(csvReader, newDevice, c => c.Deduplication, DeduplicationMode.Drop);
+            TryReadProperty(csvReader, newDevice, c => c.RX1DROffset, null);
+            TryReadProperty(csvReader, newDevice, c => c.RX2DataRate, null);
+            TryReadProperty(csvReader, newDevice, c => c.RXDelay, null);
+            TryReadProperty(csvReader, newDevice, c => c.ABPRelaxMode, null);
+            TryReadProperty(csvReader, newDevice, c => c.SensorDecoder, string.Empty);
+            TryReadProperty(csvReader, newDevice, c => c.FCntUpStart, null);
+            TryReadProperty(csvReader, newDevice, c => c.FCntDownStart, null);
+            TryReadProperty(csvReader, newDevice, c => c.FCntResetCounter, null);
+            TryReadProperty(csvReader, newDevice, c => c.Supports32BitFCnt, null);
+            TryReadProperty(csvReader, newDevice, c => c.KeepAliveTimeout, null);
+
+            _ = await this.loraDeviceService.CheckIfDeviceExists(newDevice.DeviceID)
+                ? await this.loraDeviceService.UpdateDevice(newDevice)
+                : await this.loraDeviceService.CreateDevice(newDevice);
+        }
+
+        private async Task ImportDevice(CsvReader csvReader,
+            string deviceId, string deviceName, string modelId,
+            Dictionary<string, string> deviceTags)
+        {
+            var deviceProperties = new List<DevicePropertyValue>();
+            var properties = await this.deviceModelPropertiesService.GetModelProperties(modelId);
+
+            foreach (var property in properties)
+            {
+                deviceProperties.Add(new DevicePropertyValue()
+                {
+                    Name = property.Name,
+                    PropertyType = property.PropertyType,
+                    Value = csvReader.GetField($"{PropertyPrefix}:{property.Name}")
+                });
+            }
+
+            var newDevice = new DeviceDetails()
+            {
+                DeviceID = deviceId,
+                DeviceName = deviceName,
+                ModelId = modelId,
+                IsEnabled = true,
+                Tags = deviceTags
+            };
+
+            _ = await this.deviceService.CheckIfDeviceExists(newDevice.DeviceID)
+                ? await this.deviceService.UpdateDevice(newDevice)
+                : await this.deviceService.CreateDevice(newDevice);
+
+            await this.devicePropertyService.SetProperties(deviceId, deviceProperties);
+        }
+
+        private static void TryReadProperty<T, TValue>(CsvReader reader, T device, Expression<Func<T, TValue>> expression, TValue defaultValue = default)
+        {
+            if (expression.Body is not MemberExpression)
+            {
+                throw new InvalidProgramException("Expression provided is not a MemberExpression");
+            }
+
+            var memberExpression = expression.Body as MemberExpression;
+
+            var result = reader.TryGetField<TValue>($"{PropertyPrefix}:{memberExpression.Member.Name}", out var property) ? property : defaultValue;
+
+            (memberExpression.Member as PropertyInfo).SetValue(device, result);
         }
     }
 }

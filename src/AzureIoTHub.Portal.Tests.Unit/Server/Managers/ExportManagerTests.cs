@@ -6,8 +6,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Text;
-    using System.Text.Json;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
@@ -276,8 +276,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             var result = await this.exportManager.ImportDeviceList(stream);
 
             // Assert
-            var errorReport = JsonSerializer.Deserialize<string[]>(result);
-            _ = errorReport.Length.Should().Be(0);
+            _ = result.Should().BeNullOrEmpty();
             MockRepository.VerifyAll();
         }
 
@@ -337,8 +336,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             var result = await this.exportManager.ImportDeviceList(stream);
 
             // Assert
-            var errorReport = JsonSerializer.Deserialize<string[]>(result);
-            _ = errorReport.Length.Should().Be(0);
+            _ = result.Should().BeNullOrEmpty();
+
             MockRepository.VerifyAll();
         }
 
@@ -358,12 +357,35 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             var bytes = Encoding.UTF8.GetBytes(textContent.ToString());
             using var stream = new MemoryStream(bytes);
 
+            _ = this.mockDeviceTagService.Setup(x => x.GetAllTagsNames())
+                .Returns(new List<string>() { "Tag1", "Tag2" });
+
+            _ = this.mockLoRaWANOptions.Setup(x => x.Value)
+                .Returns(new LoRaWANOptions
+                {
+                    Enabled = true
+                });
+
             // Act
             var result = await this.exportManager.ImportDeviceList(stream);
 
             // Assert
-            var errorReport = JsonSerializer.Deserialize<string[]>(result);
-            _ = errorReport.Length.Should().Be(3);
+            _ = result.Should().HaveCount(3);
+
+            var resultArray = result.ToArray();
+
+            _ = resultArray[0].LineNumber.Should().Be(1);
+            _ = resultArray[0].DeviceId.Should().Be("-1");
+            _ = resultArray[0].Message.Should().Be("The parameter Id cannot be null or empty");
+
+            _ = resultArray[1].LineNumber.Should().Be(2);
+            _ = resultArray[1].DeviceId.Should().Be("0000000000000002");
+            _ = resultArray[1].Message.Should().Be("The parameter Name cannot be null or empty");
+
+            _ = resultArray[2].LineNumber.Should().Be(3);
+            _ = resultArray[2].DeviceId.Should().Be("0000000000000003");
+            _ = resultArray[2].Message.Should().Be("The parameter ModelId cannot be null or empty");
+
             MockRepository.VerifyAll();
         }
 
@@ -420,8 +442,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             var result = await this.exportManager.ImportDeviceList(stream);
 
             // Assert
-            var errorReport = JsonSerializer.Deserialize<string[]>(result);
-            _ = errorReport.Length.Should().Be(2);
+            _ = result.Should().HaveCount(2);
             MockRepository.VerifyAll();
         }
     }

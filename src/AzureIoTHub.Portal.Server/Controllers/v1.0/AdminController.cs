@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.IO;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -48,10 +49,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         }
 
         [HttpPost("devices/_import", Name = "Import devices")]
-        public async Task<IActionResult> ImportDeviceList(IFormFile file)
+        public async Task<ActionResult<ImportResultLine[]>> ImportDeviceList(IFormFile file)
         {
             using var stream = file.OpenReadStream();
             var errorReport = await this.exportManager.ImportDeviceList(stream);
+
+
             return Ok(errorReport);
         }
     }

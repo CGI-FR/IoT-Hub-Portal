@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Client.Services
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Portal.Models.v10;
 
     public interface IDeviceClientService
@@ -30,6 +31,6 @@ namespace AzureIoTHub.Portal.Client.Services
 
         Task<HttpContent> ExportTemplateFile();
 
-        Task<string[]> ImportDeviceList(MultipartFormDataContent dataContent);
+        Task<ImportResultLine[]> ImportDeviceList(MultipartFormDataContent dataContent);
     }
 }

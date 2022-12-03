@@ -1,4 +1,5 @@
-﻿<MudDialog>
+﻿@using AzureIoTHub.Portal.Shared.Models.v10;
+<MudDialog>
     <DialogContent>
         <MudContainer Style="max-height: 600px; overflow-y: scroll">
             @if (Loading)
@@ -13,9 +14,19 @@
                 }
                 else
                 {
-                    foreach (var imporError in ErrorReport)
+                    foreach (var importError in ErrorReport)
                     {
-                        <MudAlert Severity="Severity.Error" Dense="true">@(new MarkupString(imporError))</MudAlert>
+                        <MudAlert Severity="@(importError.IsErrorMessage ? Severity.Error : Severity.Info)" Dense="true">
+                            @if (importError.IsErrorMessage)
+                            {
+                                <b>Error occured</b>
+                            }
+                            else
+                            {
+                                <b>Info</b>
+                            }
+                            &nbsp;on <b>line {@importError.LineNumber}</b>: @(importError.Message)
+                        </MudAlert>
                     }
                     <MudAlert Severity="Severity.Success" Dense="true">Other devices have been imported successfully!</MudAlert>
                 }
@@ -37,7 +48,7 @@
     public MultipartFormDataContent Content { get; set; }
 
     private bool Loading = false;
-    private string[] ErrorReport;
+    private ImportResultLine[] ErrorReport;
 
     void Close() => MudDialog.Close();
 

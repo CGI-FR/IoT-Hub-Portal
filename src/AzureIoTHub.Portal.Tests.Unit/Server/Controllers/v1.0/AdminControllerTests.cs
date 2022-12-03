@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using FluentAssertions;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -104,7 +105,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         public async Task ImportDeviceListShouldReturnErrorReport()
         {
             // Arrange
-            var expectedResult = Guid.NewGuid().ToString();
+            var expectedResult = Array.Empty<ImportResultLine>();
             using var stream = new MemoryStream();
             var file = new FormFile(stream,1,1,"a","a");
 
@@ -119,10 +120,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             // Assert
             Assert.IsNotNull(result);
 
-            var okObjectResult = result as OkObjectResult;
-            Assert.IsNotNull(okObjectResult);
-
-            _ = okObjectResult.Value.Should().Be(expectedResult);
+            _ = result.Value.Should().BeNullOrEmpty();
 
             this.mockRepository.VerifyAll();
         }
