@@ -24,17 +24,17 @@
                             else
                             {
                                 <b>Info</b>
-                            }
-                            &nbsp;on <b>line {@importError.LineNumber}</b>: @(importError.Message)
+                            }&nbsp;on <b>line {@importError.LineNumber}</b>: @(importError.Message)
                         </MudAlert>
                     }
+
                     <MudAlert Severity="Severity.Success" Dense="true">Other devices have been imported successfully!</MudAlert>
                 }
             }
         </MudContainer>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Close">Close</MudButton>
+        <MudButton id="CloseButton" OnClick="Close">Close</MudButton>
     </DialogActions>
 </MudDialog>
 

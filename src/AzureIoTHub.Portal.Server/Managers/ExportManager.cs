@@ -375,11 +375,6 @@ namespace AzureIoTHub.Portal.Server.Managers
 
         private static void TryReadProperty<T, TValue>(CsvReader reader, T device, Expression<Func<T, TValue>> expression, TValue defaultValue = default)
         {
-            if (expression.Body is not MemberExpression)
-            {
-                throw new InvalidProgramException("Expression provided is not a MemberExpression");
-            }
-
             var memberExpression = expression.Body as MemberExpression;
 
             var result = reader.TryGetField<TValue>($"{PropertyPrefix}:{memberExpression.Member.Name}", out var property) ? property : defaultValue;
