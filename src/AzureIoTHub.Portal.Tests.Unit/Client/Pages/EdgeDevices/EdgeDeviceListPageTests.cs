@@ -412,7 +412,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         }
 
         [Test]
-        public void SearchDeviceModels_InputExisingDeviceModelName_DeviceModelReturned()
+        public void SearchEdgeDeviceModels_InputExisingEdgeDeviceModelName_EdgeDeviceModelReturned()
         {
             // Arrange
             var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";

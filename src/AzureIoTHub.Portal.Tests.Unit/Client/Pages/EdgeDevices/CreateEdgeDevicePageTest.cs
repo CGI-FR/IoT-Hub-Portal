@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Client.Exceptions;
@@ -342,6 +343,41 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
 
             // Assert
             Assert.IsFalse(string.IsNullOrEmpty(ModelImageElement.InnerHtml));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public async Task SearchEdgeDeviceModels_InputExisingEdgeDeviceModelName_EdgeDeviceModelReturned()
+        {
+            // Arrange
+            var edgeDeviceModels = Fixture.CreateMany<IoTEdgeModelListItem>(2).ToList();
+            var expectedEdgeDeviceModel = edgeDeviceModels.First();
+
+            _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList())
+                .ReturnsAsync(edgeDeviceModels);
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(x => x.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>()
+                {
+                    new DeviceTagDto(){ Name = "tag01", Required = true}
+                });
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<CreateEdgeDevicePage>();
+
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<IoTEdgeModel>>();
+
+            // Act
+            autocompleteComponent.Find("input").Input(expectedEdgeDeviceModel.Name);
+
+            // Assert
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-popover-open").Count.Should().Be(1));
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(1));
+
+            var items = popoverProvider.FindComponents<MudListItem>().ToArray();
+            _ = items.Length.Should().Be(1);
+            _ = items.First().Markup.Should().Contain(expectedEdgeDeviceModel.Name);
+
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
