@@ -140,6 +140,8 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public abstract Task<TDto> GetDevice(string deviceId);
 
+        public abstract Task<bool> CheckIfDeviceExists(string deviceId);
+
         public async Task<TDto> CreateDevice(TDto device)
         {
             var newTwin = await this.externalDevicesService.CreateNewTwinFromDeviceId(device.DeviceID);

@@ -26,6 +26,8 @@ namespace AzureIoTHub.Portal.Server.Services
 
         Task<TDto> GetDevice(string deviceId);
 
+        Task<bool> CheckIfDeviceExists(string deviceId);
+
         Task<TDto> CreateDevice(TDto device);
 
         Task<TDto> UpdateDevice(TDto device);

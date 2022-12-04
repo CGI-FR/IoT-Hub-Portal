@@ -1,0 +1,72 @@
+﻿@using AzureIoTHub.Portal.Shared.Models.v10;
+<MudDialog>
+    <DialogContent>
+        <MudContainer Style="max-height: 600px; overflow-y: scroll">
+            @if (Loading)
+            {
+                <MudProgressCircular Indeterminate="true"></MudProgressCircular>
+            }
+            else
+            {
+                if (ErrorReport.Length == 0)
+                {
+                    <MudAlert Severity="Severity.Success">Devices have been imported successfully!</MudAlert>
+                }
+                else
+                {
+                    foreach (var importError in ErrorReport)
+                    {
+                        <MudAlert Severity="@(importError.IsErrorMessage ? Severity.Error : Severity.Info)" Dense="true">
+                            @if (importError.IsErrorMessage)
+                            {
+                                <b>Error occured</b>
+                            }
+                            else
+                            {
+                                <b>Info</b>
+                            }&nbsp;on <b>line {@importError.LineNumber}</b>: @(importError.Message)
+                        </MudAlert>
+                    }
+
+                    <MudAlert Severity="Severity.Success" Dense="true">Other devices have been imported successfully!</MudAlert>
+                }
+            }
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton id="CloseButton" OnClick="Close">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] public Error Error { get; set; }
+
+    [Inject] IDeviceClientService DeviceClientService { get; set; }
+
+    [Parameter]
+    public MultipartFormDataContent Content { get; set; }
+
+    private bool Loading = false;
+    private ImportResultLine[] ErrorReport;
+
+    void Close() => MudDialog.Close();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Loading = true;
+
+        try
+        {
+            ErrorReport = await this.DeviceClientService.ImportDeviceList(Content);
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+            MudDialog.Close();
+        }
+
+        Loading = false;
+    }
+}

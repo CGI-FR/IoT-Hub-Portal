@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Client.Services
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Portal.Models.v10;
 
     public class DeviceClientService : IDeviceClientService
@@ -62,6 +63,18 @@ namespace AzureIoTHub.Portal.Client.Services
         {
             var response = await this.http.PostAsync($"/api/admin/devices/_export", null);
             return response.Content;
+        }
+
+        public async Task<HttpContent> ExportTemplateFile()
+        {
+            var response = await this.http.PostAsync($"/api/admin/devices/_template", null);
+            return response.Content;
+        }
+        public async Task<ImportResultLine[]> ImportDeviceList(MultipartFormDataContent dataContent)
+        {
+            var result = await this.http.PostAsync($"/api/admin/devices/_import", dataContent);
+            _ = result.EnsureSuccessStatusCode();
+            return await result.Content.ReadFromJsonAsync<ImportResultLine[]>();
         }
     }
 }

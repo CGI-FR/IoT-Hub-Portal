@@ -7,7 +7,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.IO;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     [Authorize]
@@ -33,6 +35,27 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             stream.Position = 0;
 
             return this.File(stream, "text/csv", $"Devices_{DateTime.Now:yyyyMMddHHmm}.csv");
+        }
+
+        [HttpPost("devices/_template", Name = "Download template file")]
+        public async Task<IActionResult> ExportTemplateFile()
+        {
+            var stream = new MemoryStream();
+
+            await this.exportManager.ExportTemplateFile(stream);
+            stream.Position = 0;
+
+            return this.File(stream, "text/csv", $"Devices_Template.csv");
+        }
+
+        [HttpPost("devices/_import", Name = "Import devices")]
+        public async Task<ActionResult<ImportResultLine[]>> ImportDeviceList(IFormFile file)
+        {
+            using var stream = file.OpenReadStream();
+            var errorReport = await this.exportManager.ImportDeviceList(stream);
+
+
+            return Ok(errorReport);
         }
     }
 }

@@ -620,5 +620,39 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockLoRaDeviceTelemetryRepository.Verify(repository => repository.Delete(It.IsAny<string>()), Times.Once);
             this.mockUnitOfWork.Verify(work => work.SaveAsync(), Times.Exactly(2));
         }
+
+        [Test]
+        public async Task CheckIfDeviceExistsShouldReturnFalseIfDeviceDoesNotExist()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId))
+                .ReturnsAsync((LorawanDevice)null);
+
+            // Act
+            var result = await this.lorawanDeviceService.CheckIfDeviceExists(deviceId);
+
+            // Assert
+            Assert.IsFalse(result);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task CheckIfDeviceExistsShouldReturnTrueIfDeviceExists()
+        {
+            // Arrange
+            var deviceId = Fixture.Create<string>();
+
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId))
+                .ReturnsAsync(new LorawanDevice());
+
+            // Act
+            var result = await this.lorawanDeviceService.CheckIfDeviceExists(deviceId);
+
+            // Assert
+            Assert.IsTrue(result);
+            MockRepository.VerifyAll();
+        }
     }
 }

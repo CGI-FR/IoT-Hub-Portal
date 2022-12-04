@@ -75,6 +75,12 @@ namespace AzureIoTHub.Portal.Server.Services
             return deviceDto;
         }
 
+        public override async Task<bool> CheckIfDeviceExists(string deviceId)
+        {
+            var deviceEntity = await this.lorawanDeviceRepository.GetByIdAsync(deviceId);
+            return deviceEntity != null;
+        }
+
         protected override async Task<LoRaDeviceDetails> CreateDeviceInDatabase(LoRaDeviceDetails device)
         {
             var deviceEntity = this.mapper.Map<LorawanDevice>(device);

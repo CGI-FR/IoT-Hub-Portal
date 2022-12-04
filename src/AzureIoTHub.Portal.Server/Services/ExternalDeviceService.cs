@@ -17,6 +17,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Shared.Constants;
     using Managers;
     using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Logging;
     using Models.v10;
@@ -662,7 +663,7 @@ namespace AzureIoTHub.Portal.Server.Services
             var existingDevice = await this.GetDevice(deviceId);
             if (existingDevice != null)
             {
-                throw new InternalServerErrorException($"The device with ID {deviceId} already exists");
+                throw new DeviceAlreadyExistsException($"The device with ID {deviceId} already exists");
             }
 
             // Create a new Twin from the form's fields.

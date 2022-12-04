@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -11,6 +12,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Client.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
@@ -227,6 +229,58 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
             var actualStream = await result.ReadAsStreamAsync();
             _ = actualStream.Length.Should().Be(expectedStream.Length);
 
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task ExportTemplateFileShouldExportTemplateFile()
+        {
+            // Arrange
+            var randomBinaryData = new byte[50 * 1024];
+            using var expectedStream = new MemoryStream(randomBinaryData,false);
+
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/admin/devices/_template")
+                .Respond(HttpStatusCode.Created, "text/csv", expectedStream);
+
+            // Act
+            var result = await this.deviceClientService.ExportTemplateFile();
+
+            // Assert
+            var actualStream = await result.ReadAsStreamAsync();
+            _ = actualStream.Length.Should().Be(expectedStream.Length);
+
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task ImportDeviceListShouldReturnErrorReport()
+        {
+            // Arrange
+            using var dataContent = new MultipartFormDataContent();
+
+            var expectedResult = new []{
+                new ImportResultLine(),
+                new ImportResultLine()
+            };
+
+            _ = MockHttpClient.When(HttpMethod.Post, $"/api/admin/devices/_import")
+                    .With(m =>
+                    {
+                        _ = m.Content.Should().BeAssignableTo<MultipartFormDataContent>();
+                        var body = m.Content as MultipartFormDataContent;
+                        Assert.IsNotNull(body);
+                        _ = body.Should().BeEquivalentTo(dataContent);
+                        return true;
+                    })
+                    .RespondJson(expectedResult);
+
+            // Act
+            var result = await this.deviceClientService.ImportDeviceList(dataContent);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedResult);
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }

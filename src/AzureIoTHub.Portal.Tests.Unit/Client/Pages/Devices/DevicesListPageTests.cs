@@ -5,22 +5,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Pages.Devices;
     using AzureIoTHub.Portal.Client.Services;
-    using Models.v10;
-    using UnitTests.Bases;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Bunit;
     using Bunit.TestDoubles;
     using FluentAssertions;
+    using Microsoft.AspNetCore.Components.Forms;
     using Microsoft.Extensions.DependencyInjection;
+    using Models.v10;
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
-    using System.Linq;
+    using UnitTests.Bases;
 
     [TestFixture]
     public class DevicesListPageTests : BlazorUnitTest
@@ -386,5 +388,118 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
+
+        [Test]
+        public async Task ExportDevicesClickedShouldDownloadTheFile()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
+                });
+
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<DeviceListPage>();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+
+            _ = this.mockDeviceClientService.Setup(c => c.ExportDeviceList())
+                .ReturnsAsync(new StringContent(string.Empty));
+
+            cut.WaitForElement("#manageDevicesButtonToggle").Click();
+
+            // Act
+            popoverProvider.WaitForElement("#exportDevicesButton").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public async Task ExportTemplateClickedShouldDownloadTheFile()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
+                });
+
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<DeviceListPage>();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+
+            _ = this.mockDeviceClientService.Setup(c => c.ExportTemplateFile())
+                .ReturnsAsync(new StringContent(string.Empty));
+
+            cut.WaitForElement("#manageDevicesButtonToggle").Click();
+
+            // Act
+            popoverProvider.WaitForElement("#exportTemplateButton").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        //[Test]
+        //public async Task ImportDevicesClickedShouldImportTheFile()
+        //{
+        //    // Arrange
+        //    var deviceId = Guid.NewGuid().ToString();
+
+        //    _ = this.mockDeviceClientService.Setup(service =>
+        //            service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
+        //        .ReturnsAsync(new PaginationResult<DeviceListItem>
+        //        {
+        //            Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
+        //        });
+
+        //    _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+        //    _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+        //        .ReturnsAsync(new List<DeviceTagDto>());
+
+        //    _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+        //        .ReturnsAsync(new List<DeviceModelDto>());
+
+        //    _ = this.mockDeviceClientService.Setup(c => c.ImportDeviceList(It.IsAny<MultipartFormDataContent>()))
+        //        .ReturnsAsync(Array.Empty<ImportResultLine>());
+
+        //    var popoverProvider = RenderComponent<MudPopoverProvider>();
+        //    var cut = RenderComponent<DeviceListPage>();
+
+        //    cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+
+        //    popoverProvider.FindComponent<MudFileUpload<IBrowserFile>>()
+        //        .Instance.
+
+        //    // Act
+        //    popoverProvider.WaitForElement("#importDevicesButton").Click();
+
+        //    // Assert
+        //    cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        //}
     }
 }

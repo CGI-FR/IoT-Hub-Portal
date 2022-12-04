@@ -8,7 +8,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using FluentAssertions;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Moq;
     using NUnit.Framework;
@@ -62,6 +64,63 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var line = reader.ReadLine();
             _ = line.Should().Be(streamContent);
             _ = fileName.Should().StartWith("Devices_");
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ExportTemplateFileShouldReturnFileStreamResult()
+        {
+            var streamContent = Guid.NewGuid().ToString();
+
+            _ = this.mockExportManager.Setup(x => x.ExportTemplateFile(It.IsAny<MemoryStream>()))
+                .Callback((Stream stream) =>
+                {
+                    using var writer = new StreamWriter(stream, leaveOpen: true);
+                    writer.Write(streamContent);
+                }
+                )
+            .Returns(Task.CompletedTask);
+
+            var adminController = CreateAdminController();
+
+            var result = await adminController.ExportTemplateFile();
+            Assert.IsNotNull(result);
+
+            var response = result as FileStreamResult;
+            Assert.IsNotNull(response);
+
+            var stream = response.FileStream;
+            var fileName = response.FileDownloadName;
+
+            using var reader = new StreamReader(stream);
+            var line = reader.ReadLine();
+            _ = line.Should().Be(streamContent);
+            _ = fileName.Should().Be("Devices_Template.csv");
+
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ImportDeviceListShouldReturnErrorReport()
+        {
+            // Arrange
+            var expectedResult = Array.Empty<ImportResultLine>();
+            using var stream = new MemoryStream();
+            var file = new FormFile(stream,1,1,"a","a");
+
+            _ = this.mockExportManager.Setup(x => x.ImportDeviceList(It.IsAny<Stream>()))
+                .ReturnsAsync(expectedResult);
+
+            var adminController = CreateAdminController();
+
+            // Act
+            var result = await adminController.ImportDeviceList(file);
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            _ = result.Value.Should().BeNullOrEmpty();
 
             this.mockRepository.VerifyAll();
         }

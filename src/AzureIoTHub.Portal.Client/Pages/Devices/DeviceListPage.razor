@@ -1,10 +1,10 @@
 ﻿@page "/devices"
 @using AzureIoTHub.Portal
 @using AzureIoTHub.Portal.Models.v10
-@using Microsoft.Net.Http.Headers
 @using System.Web
 @using System.IO
 @using System.Text.RegularExpressions
+@using System.Net.Http.Headers
 
 @attribute [Authorize]
 
@@ -122,9 +122,32 @@
                 <MudTooltip Text="Add device">
                     <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="addDeviceButton" Class="ma-1" />
                 </MudTooltip>
-                <MudTooltip Text="Export device list">
-                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Outlined.Download" Size="Size.Medium" OnClick="ExportDeviceList" id="exportButton" Class="ma-1" />
-                </MudTooltip>
+
+                <MudButton id="manageDevicesButtonToggle"  Variant="Variant.Filled" Color="Color.Primary" OnClick="@ToggleOpen">
+                    Manage devices
+                    <MudPopover Open="@menuIsOpen" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.TopRight">
+                        <MudItem>
+                            <MudButton id="exportDevicesButton" Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Outlined.Download" OnClick="ExportDeviceList">Export device list</MudButton>
+                        </MudItem>
+                        <MudItem>
+                            <MudButton id="exportTemplateButton" Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportTemplateFile">Download template file</MudButton>
+                        </MudItem>
+                        <MudItem>
+                            <MudFileUpload T="IBrowserFile" FilesChanged="ImportDeviceList">
+                                <ButtonTemplate>
+                                    <MudButton id="importDevicesButton" Variant="Variant.Text"
+                                               HtmlTag="label"
+                                               Color="Color.Primary"
+                                               StartIcon="@Icons.Outlined.Upload"
+                                               for="@context">
+                                        Import device list
+                                    </MudButton>
+                                </ButtonTemplate>
+                            </MudFileUpload>
+                        </MudItem>
+                    </MudPopover>
+                </MudButton>
+
             </ToolBarContent>
             <HeaderContent>
                 <MudTh></MudTh>
@@ -132,7 +155,7 @@
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="DeviceListItem">Allowed</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsConnected" T="DeviceListItem">Connection state</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="StatusUpdatedTime" T="DeviceListItem">Last status update</MudTableSortLabel></MudTh>
-                @if(Portal.IsLoRaSupported)
+                @if (Portal.IsLoRaSupported)
                 {
                     <MudTh Style="text-align: center">Telemetry</MudTh>
                 }
@@ -189,7 +212,7 @@
                         }
                     </MudTd>
                 }
-                
+
                 <MudTd DataLabel="Details" Style="text-align: center">
                     <MudTooltip Text="See device details">
                         <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
@@ -216,13 +239,13 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; }
+    public Error? Error { get; set; }
 
-    private string searchID = "";
-    private string searchStatus;
-    private string searchState;
+    private string? searchID = "";
+    private string? searchStatus;
+    private string? searchState;
 
-    private MudTable<DeviceListItem> table;
+    private MudTable<DeviceListItem>? table;
     private Dictionary<string, string> searchTags = new();
 
     private bool IsLoading { get; set; } = true;
@@ -266,7 +289,7 @@
     {
         try
         {
-            string orderBy = null;
+            string? orderBy = null;
 
             switch (state.SortDirection)
             {
@@ -403,8 +426,21 @@
 
     private async Task ExportDeviceList()
     {
+        menuIsOpen = false;
+
         var export = await this.DeviceClientService.ExportDeviceList();
-        var fileName = export.Headers.ContentDisposition.Parameters.Single(c => c.Name == "filename").Value;
+        var fileName = export?.Headers?.ContentDisposition?.Parameters.Single(c => c.Name == "filename").Value;
+
+        using var streamRef = new DotNetStreamReference(stream: await export.ReadAsStreamAsync());
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
+
+    private async Task ExportTemplateFile()
+    {
+        menuIsOpen = false;
+
+        var export = await this.DeviceClientService.ExportTemplateFile();
+        var fileName = export?.Headers?.ContentDisposition?.Parameters.Single(c => c.Name == "filename").Value;
 
         using var streamRef = new DotNetStreamReference(stream: await export.ReadAsStreamAsync());
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
@@ -412,9 +448,39 @@
 
     private async Task ShowDeviceTelemetry(DeviceListItem device)
     {
-        var parameters = new DialogParameters {{"DeviceID", device.DeviceID}};
+        var parameters = new DialogParameters { { "DeviceID", device.DeviceID } };
         var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
 
         await DialogService.Show<LoRaDeviceTelemetryDialog>(string.Empty, parameters, options).Result;
+    }
+
+    private async Task ImportDeviceList(IBrowserFile file)
+    {
+        menuIsOpen = false;
+        try
+        {
+            var fileContent = new StreamContent(file.OpenReadStream());
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+            var content = new MultipartFormDataContent();
+            content.Add(content: fileContent,
+                          name: "\"file\"",
+                          fileName: file.Name);
+
+            var parameters = new DialogParameters { { "Content", content } };
+            var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+            await DialogService.Show<ImportReportDialog>("Import summary", parameters, options).Result;
+        }
+        catch (ProblemDetailsException exception)
+        {
+            Error?.ProcessProblemDetails(exception);
+        }
+    }
+
+    public bool menuIsOpen;
+
+    public void ToggleOpen()
+    {
+        menuIsOpen = !menuIsOpen;
     }
 }
