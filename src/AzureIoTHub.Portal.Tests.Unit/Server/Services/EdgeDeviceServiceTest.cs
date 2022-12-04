@@ -18,6 +18,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;
@@ -732,5 +733,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             MockRepository.VerifyAll();
         }
 
+        [Test]
+        public async Task GetAvailableLabels_LabelsExists_LabelsReturned()
+        {
+            // Arrange
+            var edgeDevices = Fixture.CreateMany<EdgeDevice>(1);
+
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetAllAsync(null, default, new Expression<Func<EdgeDevice, object>>[] { d => d.Labels, d => d.DeviceModel.Labels }))
+                .ReturnsAsync(edgeDevices);
+
+            var expectedLabels = Mapper.Map<List<LabelDto>>(edgeDevices.SelectMany(d => d.Labels)
+                .Union(edgeDevices.SelectMany(d => d.DeviceModel.Labels)));
+
+            // Act
+            var result = await this.edgeDevicesService.GetAvailableLabels();
+
+            // Assert
+            _ = result.Count().Should().Be(expectedLabels.Count);
+            MockRepository.VerifyAll();
+        }
     }
 }

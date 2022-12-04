@@ -628,7 +628,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task GetAvailableLabels_LabelsExists_LabelsReturnd()
+        public async Task GetAvailableLabels_LabelsExists_LabelsReturned()
         {
             // Arrange
             var devices = Fixture.CreateMany<Device>(1);
