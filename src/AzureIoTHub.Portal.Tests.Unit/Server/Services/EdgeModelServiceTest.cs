@@ -163,8 +163,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
 
             // Arrange
-            _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync((EdgeDeviceModel)null);
+            _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>(), m => m.Labels))
+                .ReturnsAsync(value: null);
 
             // Act
             var result = async () => await this.edgeDeviceModelService.GetEdgeModel("test");
@@ -289,8 +289,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
 
-            _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync((EdgeDeviceModel)null);
+            _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>(), m => m.Labels))
+                .ReturnsAsync(value: null);
 
             // Act
             var result = async () => await this.edgeDeviceModelService.UpdateEdgeModel(edgeDeviceModel);
@@ -356,6 +356,22 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Act
             await this.edgeDeviceModelService.DeleteEdgeModel(edgeDeviceModel.ModelId);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteEdgeModel_ModelDoesntExist_NothingIsDone()
+        {
+            // Arrange
+            var edgeModelId = Fixture.Create<string>();
+
+            _ = this.mockEdgeDeviceModelRepository.Setup(repository => repository.GetByIdAsync(edgeModelId, d => d.Labels))
+                .ReturnsAsync(value: null);
+
+            // Act
+            await this.edgeDeviceModelService.DeleteEdgeModel(edgeModelId);
 
             // Assert
             MockRepository.VerifyAll();
