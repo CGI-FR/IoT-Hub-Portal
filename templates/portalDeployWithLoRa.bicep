@@ -85,26 +85,13 @@ resource dps 'Microsoft.Devices/provisioningServices@2021-10-15' = {
   }
 }
 
-resource pgsqlServer 'Microsoft.DBforPostgreSQL/servers@2017-12-01' = {
-  name: pgsqlServerName
-  location: location
-  sku: {
-    name: 'B_Gen5_2'
-    tier: 'Basic'
-    capacity: 2
-    size: '5120'
-    family: 'Gen5'
-  }
-  properties: {
-    createMode: 'Default'
-    version: '11'
-    administratorLogin: pgsqlAdminLogin
-    administratorLoginPassword: pgsqlAdminPassword
-    storageProfile: {
-      storageMB: 5120
-      backupRetentionDays: 7
-      geoRedundantBackup: 'Disabled'
-    }
+module pgsqlServer './database.bicep' = {
+  name: 'pgsqlServer'
+  params: {
+    location: location
+    pgsqlServerName: pgsqlServerName
+    pgsqlAdminLogin: pgsqlAdminLogin
+    pgsqlAdminPassword:pgsqlAdminPassword
   }
 }
 
