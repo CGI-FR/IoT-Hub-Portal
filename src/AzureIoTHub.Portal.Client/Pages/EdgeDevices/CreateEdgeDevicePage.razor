@@ -171,7 +171,7 @@
 
     private IoTEdgeDevice EdgeDevice = new IoTEdgeDevice();
 
-    private IEnumerable<IoTEdgeModel> edgeModelList = new List<IoTEdgeModel>();
+    private IEnumerable<IoTEdgeModelListItem> edgeModelList = new List<IoTEdgeModelListItem>();
     private IoTEdgeModel _edgeModel;
     private IoTEdgeModel edgeModel
     {
@@ -200,7 +200,7 @@
             EdgeDevice = EdgeDeviceLayoutService.GetSharedDevice() ?? this.EdgeDevice;
             edgeModel = EdgeDeviceLayoutService.GetSharedDeviceModel() ?? this.edgeModel;
 
-            this.edgeModelList = (await this.EdgeModelClientService.GetIoTEdgeModelList()).Cast<IoTEdgeModel>().ToList();
+            this.edgeModelList = await this.EdgeModelClientService.GetIoTEdgeModelList();
 
             TagList = await DeviceTagSettingsClientService.GetDeviceTags();
 
@@ -304,17 +304,27 @@
 
         // if text is null or empty, show complete list
         if (string.IsNullOrEmpty(value))
-            return edgeModelList;
+            return edgeModelList
+                    .Select(m => new IoTEdgeModel
+                    {
+                        ModelId = m.ModelId,
+                        Name = m.Name
+                    });;
 
         return edgeModelList
-                    .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+                    .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase))
+                    .Select(m => new IoTEdgeModel
+                    {
+                        ModelId = m.ModelId,
+                        Name = m.Name
+                    });
     }
 
     internal async Task ChangeModel(IoTEdgeModel edgeModel)
     {
         try
         {
-            this._edgeModel = edgeModel;
+            this._edgeModel = await this.EdgeModelClientService.GetIoTEdgeModel(edgeModel.ModelId);
 
             this.EdgeDevice = new IoTEdgeDevice()
                 {

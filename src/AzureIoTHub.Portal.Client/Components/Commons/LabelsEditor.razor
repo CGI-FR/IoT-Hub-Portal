@@ -59,13 +59,14 @@
     {
         if (string.IsNullOrWhiteSpace(labelNameValue) ||
             string.IsNullOrEmpty(labelColorValue) ||
-            Labels.Any(dto => dto.Name.Equals(labelNameValue))) return;
+            Labels.Any(dto => dto.Name.Equals(labelNameValue)) ||
+            (ReadOnlyLabels?.Any(label => label.Name.Equals(labelNameValue)) ?? false)) return;
 
         var labelToAdd = new LabelDto
-            {
-                Name = labelNameValue,
-                Color = labelColorValue
-            };
+        {
+            Name = labelNameValue,
+            Color = labelColorValue
+        };
 
         if(Labels == null)
         {

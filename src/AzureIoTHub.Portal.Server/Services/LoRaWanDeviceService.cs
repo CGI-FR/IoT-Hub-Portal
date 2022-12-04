@@ -48,7 +48,7 @@ namespace AzureIoTHub.Portal.Server.Services
             PortalDbContext portalDbContext,
             IDeviceModelImageManager deviceModelImageManager,
             IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails> deviceTwinMapper)
-            : base(portalDbContext, externalDevicesService, deviceTagService, deviceModelImageManager, deviceTwinMapper)
+            : base(portalDbContext, mapper, externalDevicesService, deviceTagService, deviceModelImageManager, deviceTwinMapper)
         {
             this.logger = logger;
             this.mapper = mapper;

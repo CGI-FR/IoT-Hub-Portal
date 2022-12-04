@@ -32,5 +32,7 @@ namespace AzureIoTHub.Portal.Client.Services
         Task<HttpContent> ExportTemplateFile();
 
         Task<ImportResultLine[]> ImportDeviceList(MultipartFormDataContent dataContent);
+
+        Task<IEnumerable<LabelDto>> GetAvailableLabels();
     }
 }

@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using System.Collections.Generic;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Client.Pages.EdgeDevices;
     using AzureIoTHub.Portal.Client.Services;
     using Models.v10;
@@ -60,6 +61,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                     }
                 });
 
+            _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
+
             _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
@@ -96,6 +100,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                     }
                 });
 
+            _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
+
             // Act
             var cut = RenderComponent<EdgeDeviceListPage>();
 
@@ -122,6 +129,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                         Name = Guid.NewGuid().ToString()
                     }
                 });
+
+            _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
 
             // Act
             var cut = RenderComponent<EdgeDeviceListPage>();
@@ -177,6 +187,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                     }
                 });
 
+            _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
+
             _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
@@ -218,6 +231,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                     }
                 });
 
+            _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
+
             _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
@@ -248,6 +264,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 {
                     Items = Array.Empty<IoTEdgeListItem>()
                 });
+
+            _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
 
             _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
@@ -321,6 +340,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                     }
                 });
 
+            _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
+
             _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
                 .ReturnsAsync(modelList);
 
@@ -360,6 +382,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 {
                     Items = deviceList
                 });
+
+            _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
 
             _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()

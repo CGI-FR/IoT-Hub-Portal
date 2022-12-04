@@ -40,5 +40,7 @@ namespace AzureIoTHub.Portal.Server.Services
         Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId);
 
         Task ProcessTelemetryEvent(EventData eventMessage);
+
+        Task<IEnumerable<LabelDto>> GetAvailableLabels();
     }
 }

@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -51,7 +52,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             int pageNumber = 0,
             string[] orderBy = null,
             string modelId = null,
-            string[] label = null)
+            string[] labels = null)
         {
 
             var paginatedDevices = await this.deviceService.GetDevices(
@@ -63,7 +64,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 orderBy,
                 GetTagsFromQueryString(Request.Query),
                 modelId,
-                label?.ToList());
+                labels?.ToList());
 
             var nextPage = string.Empty;
 
@@ -157,6 +158,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             await this.deviceService.DeleteDevice(deviceID);
 
             return Ok();
+        }
+
+        public virtual Task<IEnumerable<LabelDto>> GetAvailableLabels()
+        {
+            return this.deviceService.GetAvailableLabels();
         }
 
         /// <summary>

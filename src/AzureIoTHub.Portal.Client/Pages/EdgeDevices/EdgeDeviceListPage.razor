@@ -2,6 +2,7 @@
 @using AzureIoTHub.Portal
 @using AzureIoTHub.Portal.Models.v10
 @using System.Web
+@using AzureIoTHub.Portal.Shared.Models.v10;
 
 @attribute [Authorize]
 @inject PortalSettings Portal
@@ -18,6 +19,20 @@
                     <MudItem xs="12" md="6">
                         <MudTextField @bind-Value="searchModel.DeviceId" Placeholder="Name"></MudTextField>
                     </MudItem>
+
+                    <MudItem xs="12" md="6">
+                        <MudSelect T="LabelDto" Label="Labels" MultiSelection="true" @bind-SelectedValues="selectedLabels"
+                                   MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))"
+                                   Variant="Variant.Outlined">
+                            @foreach (var label in labels)
+                            {
+                                <MudSelectItem T="LabelDto" Value="@label">
+                                    <MudChip Text="@label.Name" Color="Color.Primary" Style="@($"background-color: {label.Color};")" />
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+
                     <MudItem xs="12" md="6">
                         <MudAutocomplete T="IoTEdgeModelListItem"
                                          id="@nameof(IoTEdgeModelListItem.ModelId)"
@@ -161,11 +176,15 @@
 
     private bool IsLoading { get; set; } = true;
 
+    private IEnumerable<LabelDto> labels = new List<LabelDto>();
+    private IEnumerable<LabelDto> selectedLabels = new List<LabelDto>();
+
     protected override async Task OnInitializedAsync()
     {
         try
         {
             this.edgeModelList = await EdgeModelClientService.GetIoTEdgeModelList();
+            labels = await EdgeDeviceClientService.GetAvailableLabels();
         }
         catch (ProblemDetailsException exception)
         {
@@ -200,6 +219,12 @@
             }
 
             var uri = $"api/edge/devices?pageNumber={state.Page}&pageSize={state.PageSize}&searchText={HttpUtility.UrlEncode(searchModel.DeviceId)}&searchStatus={searchModel.Status}&orderBy={orderBy}&modelId={this.edgeModel?.ModelId}";
+
+            foreach(var label in selectedLabels)
+            {
+                uri += $"&labels={label.Name}";
+            }
+
             var result = await EdgeDeviceClientService.GetDevices(uri);
 
             return new TableData<IoTEdgeListItem>
@@ -224,6 +249,7 @@
     {
         searchModel = new SearchModel();
         edgeModel = new IoTEdgeModelListItem();
+        selectedLabels = new List<LabelDto>();
 
         Search();
     }
@@ -278,5 +304,10 @@
         }
 
         await InvokeAsync(StateHasChanged);
+    }
+
+    private string GetMultiSelectionText(List<string> selectedValues)
+    {
+        return $"{selectedValues.Count} label{(selectedValues.Count > 1 ? "s have" : " has")} been selected";
     }
 }

@@ -37,7 +37,7 @@ namespace AzureIoTHub.Portal.Server.Services
             IDeviceModelImageManager deviceModelImageManager,
             IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper,
             PortalDbContext portalDbContext)
-            : base(portalDbContext, externalDevicesService, deviceTagService, deviceModelImageManager, deviceTwinMapper)
+            : base(portalDbContext, mapper, externalDevicesService, deviceTagService, deviceModelImageManager, deviceTwinMapper)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;

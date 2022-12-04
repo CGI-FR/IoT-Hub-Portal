@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Dynamic.Core;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using AutoMapper;
     using AzureIoTHub.Portal.Domain;
@@ -19,6 +20,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using AzureIoTHub.Portal.Shared.Models.v1._0.Filters;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.EntityFrameworkCore;
@@ -37,6 +39,7 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly IEdgeDeviceRepository edgeDeviceRepository;
         private readonly IDeviceTagValueRepository deviceTagValueRepository;
+        private readonly ILabelRepository labelRepository;
         private readonly IDeviceModelImageManager deviceModelImageManager;
 
         public EdgeDevicesService(
@@ -46,6 +49,7 @@ namespace AzureIoTHub.Portal.Server.Services
             IUnitOfWork unitOfWork,
             IEdgeDeviceRepository edgeDeviceRepository,
             IDeviceTagValueRepository deviceTagValueRepository,
+            ILabelRepository labelRepository,
             IDeviceModelImageManager deviceModelImageManager)
         {
             this.externalDevicesService = externalDevicesService;
@@ -54,6 +58,7 @@ namespace AzureIoTHub.Portal.Server.Services
             this.unitOfWork = unitOfWork;
             this.edgeDeviceRepository = edgeDeviceRepository;
             this.deviceTagValueRepository = deviceTagValueRepository;
+            this.labelRepository = labelRepository;
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
@@ -63,7 +68,8 @@ namespace AzureIoTHub.Portal.Server.Services
             int pageSize = 10,
             int pageNumber = 0,
             string[] orderBy = null,
-            string modelId = null)
+            string modelId = null,
+            List<string> labels = default)
         {
             var deviceListFilter = new EdgeDeviceListFilter
             {
@@ -72,7 +78,8 @@ namespace AzureIoTHub.Portal.Server.Services
                 IsEnabled = searchStatus,
                 Keyword = searchText,
                 OrderBy = orderBy,
-                ModelId = modelId
+                ModelId = modelId,
+                Labels = labels
             };
 
             var devicePredicate = PredicateBuilder.True<EdgeDevice>();
@@ -92,7 +99,12 @@ namespace AzureIoTHub.Portal.Server.Services
                 devicePredicate = devicePredicate.And(device => device.Id.ToLower().Contains(deviceListFilter.Keyword.ToLower()) || device.Name.ToLower().Contains(deviceListFilter.Keyword.ToLower()));
             }
 
-            var paginatedEdgeDevices = await this.edgeDeviceRepository.GetPaginatedListAsync(pageNumber, pageSize, orderBy, devicePredicate);
+            deviceListFilter.Labels?.ForEach(label =>
+            {
+                devicePredicate = devicePredicate.And(device => device.Labels.Any(value => value.Name.Equals(label)) || device.DeviceModel.Labels.Any(value => value.Name.Equals(label)));
+            });
+
+            var paginatedEdgeDevices = await this.edgeDeviceRepository.GetPaginatedListAsync(pageNumber, pageSize, orderBy, devicePredicate, includes: new Expression<Func<EdgeDevice, object>>[] { d => d.Labels, d => d.DeviceModel.Labels });
             var paginateEdgeDeviceDto = new PaginatedResult<IoTEdgeListItem>
             {
                 Data = paginatedEdgeDevices.Data.Select(x => this.mapper.Map<IoTEdgeListItem>(x, opts =>
@@ -114,7 +126,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <returns>IoTEdgeDevice object.</returns>
         public async Task<IoTEdgeDevice> GetEdgeDevice(string edgeDeviceId)
         {
-            var deviceEntity = await this.edgeDeviceRepository.GetByIdAsync(edgeDeviceId, d => d.Tags);
+            var deviceEntity = await this.edgeDeviceRepository.GetByIdAsync(edgeDeviceId, d => d.Tags, d => d.Labels);
 
             if (deviceEntity is null)
             {
@@ -200,7 +212,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         private async Task<IoTEdgeDevice> UpdateEdgeDeviceInDatabase(IoTEdgeDevice device)
         {
-            var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(device.DeviceId, d => d.Tags);
+            var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(device.DeviceId, d => d.Tags, d => d.Labels);
 
             if (edgeDeviceEntity == null)
             {
@@ -210,6 +222,11 @@ namespace AzureIoTHub.Portal.Server.Services
             foreach (var deviceTagEntity in edgeDeviceEntity.Tags)
             {
                 this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
+            }
+
+            foreach (var labelEntity in edgeDeviceEntity.Labels)
+            {
+                this.labelRepository.Delete(labelEntity.Id);
             }
 
             _ = this.mapper.Map(device, edgeDeviceEntity);
@@ -229,7 +246,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task DeleteEdgeDeviceInDatabase(string deviceId)
         {
-            var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(deviceId, d => d.Tags);
+            var edgeDeviceEntity = await this.edgeDeviceRepository.GetByIdAsync(deviceId, d => d.Tags, d => d.Labels);
 
             if (edgeDeviceEntity == null)
             {
@@ -239,6 +256,11 @@ namespace AzureIoTHub.Portal.Server.Services
             foreach (var deviceTagEntity in edgeDeviceEntity.Tags)
             {
                 this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
+            }
+
+            foreach (var labelEntity in edgeDeviceEntity.Labels)
+            {
+                this.labelRepository.Delete(labelEntity.Id);
             }
 
             this.edgeDeviceRepository.Delete(deviceId);
@@ -306,6 +328,16 @@ namespace AzureIoTHub.Portal.Server.Services
                 Payload = result.GetPayloadAsJson(),
                 Status = result.Status
             };
+        }
+
+        public async Task<IEnumerable<LabelDto>> GetAvailableLabels()
+        {
+            var edgeDevices = await this.edgeDeviceRepository.GetAllAsync(includes: new Expression<Func<EdgeDevice, object>>[] { d => d.Labels, d => d.DeviceModel.Labels });
+
+            var labels = edgeDevices.SelectMany(edgeDevice => edgeDevice.Labels)
+                .Union(edgeDevices.SelectMany(edgeDevice => edgeDevice.DeviceModel.Labels));
+
+            return this.mapper.Map<List<LabelDto>>(labels);
         }
 
         private Dictionary<string, string> FilterDeviceTags(IoTEdgeDevice device)

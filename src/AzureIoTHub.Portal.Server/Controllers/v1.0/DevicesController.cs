@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -39,6 +40,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="pageNumber"></param>
         /// <param name="orderBy"></param>
         /// <param name="modelId"></param>
+        /// <param name="labels"></param>
         [HttpGet(Name = "GET Device list")]
         public Task<PaginationResult<DeviceListItem>> SearchItems(
             string searchText = null,
@@ -47,9 +49,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             int pageSize = 10,
             int pageNumber = 0,
             [FromQuery] string[] orderBy = null,
-            string modelId = null)
+            string modelId = null,
+            [FromQuery] string[] labels = null)
         {
-            return GetItems("GET Device list", searchText, searchStatus, searchState, pageSize, pageNumber, orderBy, modelId);
+            return GetItems("GET Device list", searchText, searchStatus, searchState, pageSize, pageNumber, orderBy, modelId, labels);
         }
 
         /// <summary>
@@ -123,6 +126,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             await this.devicePropertyService.SetProperties(deviceID, values);
 
             return Ok();
+        }
+
+        [HttpGet("available-labels", Name = "GET Available Labels on Devices")]
+        public override Task<IEnumerable<LabelDto>> GetAvailableLabels()
+        {
+            return base.GetAvailableLabels();
         }
     }
 }

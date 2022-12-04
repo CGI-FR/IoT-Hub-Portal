@@ -3,9 +3,11 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     public interface IEdgeDevicesService
     {
@@ -15,7 +17,8 @@ namespace AzureIoTHub.Portal.Server.Services
             int pageSize = 10,
             int pageNumber = 0,
             string[] orderBy = null,
-            string modelId = null);
+            string modelId = null,
+            List<string> labels = default);
 
         Task<IoTEdgeDevice> GetEdgeDevice(string edgeDeviceId);
 
@@ -28,5 +31,7 @@ namespace AzureIoTHub.Portal.Server.Services
         Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName);
 
         Task<C2Dresult> ExecuteModuleCommand(string deviceId, string moduleName, string commandName);
+
+        Task<IEnumerable<LabelDto>> GetAvailableLabels();
     }
 }

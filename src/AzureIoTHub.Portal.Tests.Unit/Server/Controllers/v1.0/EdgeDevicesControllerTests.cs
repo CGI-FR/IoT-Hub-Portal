@@ -76,7 +76,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
                     It.IsAny<int>(),
                     It.IsAny<int>(),
                     It.IsAny<string[]>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<List<string>>()))
                 .ReturnsAsync(expectedPaginedEdgeDevice);
 
             var locationUrl = "http://location/edge/devices";
