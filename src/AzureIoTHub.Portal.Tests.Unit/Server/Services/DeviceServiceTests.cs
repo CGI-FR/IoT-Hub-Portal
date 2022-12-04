@@ -113,6 +113,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 {"location", "FR"}
             };
 
+            var labelFilter = new List<string>()
+            {
+                "label01"
+            };
+
             var device1 = new Device
             {
                 IsConnected = false,
@@ -126,7 +131,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                         Value = "FR"
                     }
                 },
-                DeviceModelId = Fixture.Create<string>()
+                DeviceModelId = Fixture.Create<string>(),
+                Labels = new List<Label>()
+                {
+                    new()
+                    {
+                        Name = "label01",
+                        Color = "green"
+                    }
+                },
+                DeviceModel = Fixture.Create<DeviceModel>()
             };
 
             var device2 = new Device
@@ -142,7 +156,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                         Value = "US"
                     }
                 },
-                DeviceModelId = Fixture.Create<string>()
+                DeviceModelId = Fixture.Create<string>(),
+                Labels = new List<Label>()
+                {
+                    new()
+                    {
+                        Name = "label01",
+                        Color = "green"
+                    }
+                },
+                DeviceModel = Fixture.Create<DeviceModel>()
             };
 
             var expectedTotalDevicesCount = 1;
@@ -160,7 +183,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Fixture.Create<Uri>());
 
             // Act
-            var result = await this.deviceService.GetDevices(searchText: keywordFilter, searchState: false, searchStatus: true, tags: tagFilter);
+            var result = await this.deviceService.GetDevices(searchText: keywordFilter, searchState: false, searchStatus: true, tags: tagFilter, labels: labelFilter);
 
             // Assert
             _ = result.Data.Count.Should().Be(expectedTotalDevicesCount);
