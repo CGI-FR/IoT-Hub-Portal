@@ -603,5 +603,30 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             Assert.IsTrue(result);
             MockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task GetAvailableLabels_LabelsExists_LabelsReturnd()
+        {
+            // Arrange
+            var devices = Fixture.CreateMany<Device>(1);
+            var loraDevices = Fixture.CreateMany<LorawanDevice>(1);
+
+            var expectedLabels = Mapper.Map<List<LabelDto>>(devices.SelectMany(d => d.Labels)
+                .Union(devices.SelectMany(d => d.DeviceModel.Labels))
+                .Union(loraDevices.SelectMany(d => d.Labels))
+                .Union(loraDevices.SelectMany(d => d.DeviceModel.Labels)));
+
+            await DbContext.AddRangeAsync(devices);
+            await DbContext.AddRangeAsync(loraDevices);
+
+            _ = await DbContext.SaveChangesAsync();
+
+            // Act
+            var result = await this.deviceService.GetAvailableLabels();
+
+            // Assert
+            _ = result.Count().Should().Be(expectedLabels.Count);
+            MockRepository.VerifyAll();
+        }
     }
 }
