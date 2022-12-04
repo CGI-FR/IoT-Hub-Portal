@@ -410,5 +410,51 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
+
+        [Test]
+        public void SearchDeviceModels_InputExisingDeviceModelName_DeviceModelReturned()
+        {
+            // Arrange
+            var expectedUrl = "api/edge/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";
+
+            var edgeDeviceModels = Fixture.CreateMany<IoTEdgeModelListItem>(2).ToList();
+            var expectedEdgeDeviceModel = edgeDeviceModels.First();
+
+            _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
+                .ReturnsAsync(new PaginationResult<IoTEdgeListItem>
+                {
+                    Items = new List<IoTEdgeListItem>
+                    {
+                        new(),
+                        new(),
+                        new()
+                    }
+                });
+
+            _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
+
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+                .ReturnsAsync(edgeDeviceModels);
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<EdgeDeviceListPage>();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<IoTEdgeModelListItem>>();
+
+            // Act
+            autocompleteComponent.Find("input").Input(expectedEdgeDeviceModel.Name);
+
+            // Assert
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-popover-open").Count.Should().Be(1));
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(1));
+
+            var items = popoverProvider.FindComponents<MudListItem>().ToArray();
+            _ = items.Length.Should().Be(1);
+            _ = items.First().Markup.Should().Contain(expectedEdgeDeviceModel.Name);
+
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
     }
 }
