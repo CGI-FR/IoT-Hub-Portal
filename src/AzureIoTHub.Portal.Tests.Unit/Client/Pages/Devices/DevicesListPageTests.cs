@@ -432,6 +432,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
                 });
 
+            _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
+
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
@@ -468,6 +471,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 {
                     Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
                 });
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
