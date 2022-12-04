@@ -330,6 +330,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             {
                 DeviceId = Guid.NewGuid().ToString(),
                 Status = DeviceStatus.Enabled.ToString(),
+                Labels = Fixture.CreateMany<LabelDto>(2).ToList()
             };
 
             var mockTwin = new Twin(edgeDevice.DeviceId);
@@ -361,10 +362,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                             Id = Fixture.Create<string>()
                         }
                     },
-                    Labels = new List<Label>()
+                    Labels = Fixture.CreateMany<Label>(1).ToList()
                 });
 
             this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
                 .Verifiable();
 
             this.mockEdgeDeviceRepository.Setup(repository => repository.Update(It.IsAny<EdgeDevice>()))
