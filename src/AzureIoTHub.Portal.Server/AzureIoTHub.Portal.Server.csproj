@@ -16,6 +16,7 @@
   </ProjectExtensions>
   
   <ItemGroup>
+    <ProjectReference Include="..\AzureIoTHub.Portal.Application\AzureIoTHub.Portal.Application.csproj" />
     <ProjectReference Include="..\AzureIoTHub.Portal.Infrastructure\AzureIoTHub.Portal.Infrastructure.csproj" />
     <ProjectReference Include="..\AzureIoTHub.Portal.Domain\AzureIoTHub.Portal.Domain.csproj" />
     <ProjectReference Include="..\AzureIoTHub.Portal.Client\AzureIoTHub.Portal.Client.csproj" />
