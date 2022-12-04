@@ -112,6 +112,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var keywordFilter = "WaNt tHiS DeViCe";
+
+            var labelFilter = new List<string>()
+            {
+                "label01"
+            };
+
             var deviceModelId = Fixture.Create<string>();
             var expectedEdgeDevices = new List<EdgeDevice>
             {
@@ -172,7 +178,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Fixture.Create<Uri>());
 
             // Act
-            var result = await this.edgeDevicesService.GetEdgeDevicesPage(searchText: keywordFilter, searchStatus: true, modelId: deviceModelId);
+            var result = await this.edgeDevicesService.GetEdgeDevicesPage(searchText: keywordFilter, searchStatus: true, modelId: deviceModelId, labels: labelFilter);
 
             _ = result.PageSize.Should().Be(expectedPageSize);
             _ = result.CurrentPage.Should().Be(expectedCurrentPage);
