@@ -62,7 +62,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 });
 
             _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
-                .ReturnsAsync(Array.Empty<LabelDto>());
+                .ReturnsAsync(Fixture.CreateMany<LabelDto>(5).ToList());
 
             _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
