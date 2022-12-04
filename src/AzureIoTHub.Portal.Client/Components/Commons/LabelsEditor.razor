@@ -55,7 +55,7 @@
     private string labelNameValue;
     private string labelColorValue;
 
-    public async Task AddLabel()
+    public void AddLabel()
     {
         if (string.IsNullOrWhiteSpace(labelNameValue) ||
             string.IsNullOrEmpty(labelColorValue) ||
@@ -68,17 +68,12 @@
             Color = labelColorValue
         };
 
-        if(Labels == null)
-        {
-            Labels = new List<LabelDto>();
-        }
-
         Labels.Add(labelToAdd);
 
         labelNameValue = string.Empty;
     }
 
-    public async Task RemoveLabel(MudChip chip)
+    public void RemoveLabel(MudChip chip)
     {
         var labelToDelete = Labels.FirstOrDefault(dto => dto.Name.Equals(chip.Text));
 
