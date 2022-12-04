@@ -17,6 +17,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
     using System.Net;
     using UnitTests.Helpers;
     using UnitTests.Bases;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using System.Linq;
 
     [TestFixture]
     public class EdgeDeviceClientServiceTests : BlazorUnitTest
@@ -252,6 +254,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
 
             // Assert
             _ = result.Should().BeEquivalentTo(c2Dresult);
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [Test]
+        public async Task GetAvailableLabels_ExistingLabels_LabelsReturned()
+        {
+            // Arrange
+            var expectedLabels = Fixture.Build<LabelDto>().CreateMany(3).ToList();
+
+            _ = MockHttpClient.When(HttpMethod.Get, "/api/edge/devices/available-labels")
+                .RespondJson(expectedLabels);
+
+            // Act
+            var result = await this.edgeDeviceClientService.GetAvailableLabels();
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedLabels);
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
         }

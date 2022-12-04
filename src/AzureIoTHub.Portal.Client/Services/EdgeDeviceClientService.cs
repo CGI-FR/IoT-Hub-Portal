@@ -65,7 +65,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public async Task<IEnumerable<LabelDto>> GetAvailableLabels()
         {
-            return await this.http.GetFromJsonAsync<List<LabelDto>>($"api/edge/devices/available-labels");
+            return await this.http.GetFromJsonAsync<List<LabelDto>>("api/edge/devices/available-labels");
         }
     }
 }
