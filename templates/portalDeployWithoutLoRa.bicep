@@ -122,8 +122,6 @@ module site './app_service.bicep' = {
     appServicePlanId: servicePlan.outputs.id
     iotHubName: iotHubName
     iotHubOwnerPolicyName: iotHubOwnerPolicyName
-    iotHubEventHubEndpoint: ''
-    ioTHubEventHubConsumerGroupName: ''
     dpsName: dpsName
     dpsOwnerPolicyName: provisioningserviceownerPolicyName
     dpsIdScope: dps.outputs.idScope
@@ -139,8 +137,6 @@ module site './app_service.bicep' = {
     openIdClientId: clientId
     openIdApiClientId: apiClientId
     openIdScopeName: iamScopeName
-    functionAppName: ''
-    functionAppDefaultHost: ''
     ideasEnabled: ideasEnabled
     ideasUrl: ideasUrl
     ideasAuthenticationHeader: ideasAuthenticationHeader

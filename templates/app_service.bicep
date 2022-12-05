@@ -14,10 +14,10 @@ param iotHubName string
 param iotHubOwnerPolicyName string
 
 @description('IoTHub EnventHub Endpoint.')
-param iotHubEventHubEndpoint string
+param iotHubEventHubEndpoint string = ''
 
 @description('IoTHub EventHub Consumer Group name.')
-param ioTHubEventHubConsumerGroupName string
+param ioTHubEventHubConsumerGroupName string = ''
 
 @description('DPS name.')
 param dpsName string
@@ -63,10 +63,10 @@ param openIdApiClientId string
 param openIdScopeName string
 
 @description('The Function App name')
-param functionAppName string
+param functionAppName string = ''
 
 @description('The Function App Default Host')
-param functionAppDefaultHost string
+param functionAppDefaultHost string = ''
 
 @description('Enable LoRaWAN feature?')
 param isLoRaFeatureEnabled bool
@@ -75,13 +75,13 @@ param isLoRaFeatureEnabled bool
 param ideasEnabled bool
 
 @description('Url of Awesome-Ideas, to publish ideas submitted by users. Required when ideasEnabled is true')
-param ideasUrl string
+param ideasUrl string = ''
 
 @description('Authentication header to interact with Awesome-Ideas. Required when ideasEnabled is true')
-param ideasAuthenticationHeader string
+param ideasAuthenticationHeader string = ''
 
 @description('Authentication token to interact with Awesome-Ideas. Required when ideasEnabled is true')
-param ideasAuthenticationToken string
+param ideasAuthenticationToken string = ''
 
 resource site 'Microsoft.Web/sites@2021-03-01' = {
   name: siteName
