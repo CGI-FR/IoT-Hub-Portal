@@ -38,6 +38,7 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IEdgeDeviceModelRepository edgeModelRepository;
+        private readonly ILabelRepository labelRepository;
         private readonly IEdgeDeviceModelCommandRepository commandRepository;
 
         public EdgeModelService(
@@ -46,11 +47,13 @@ namespace AzureIoTHub.Portal.Server.Services
             IEdgeDeviceModelRepository edgeModelRepository,
             IConfigService configService,
             IDeviceModelImageManager deviceModelImageManager,
+            ILabelRepository labelRepository,
             IEdgeDeviceModelCommandRepository commandRepository)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.edgeModelRepository = edgeModelRepository;
+            this.labelRepository = labelRepository;
             this.configService = configService;
             this.deviceModelImageManager = deviceModelImageManager;
             this.commandRepository = commandRepository;
@@ -137,7 +140,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <exception cref="ResourceNotFoundException">Resource not found if template does not exist.</exception>
         public async Task<IoTEdgeModel> GetEdgeModel(string modelId)
         {
-            var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(modelId);
+            var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(modelId, m => m.Labels);
 
             if (edgeModelEntity == null)
             {
@@ -160,6 +163,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 EdgeModules = modules,
                 EdgeRoutes = routes,
                 SystemModules = sysModules,
+                Labels = this.mapper.Map<List<LabelDto>>(edgeModelEntity.Labels)
             };
 
             foreach (var command in commands)
@@ -185,10 +189,15 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <exception cref="InternalServerErrorException"></exception>
         public async Task UpdateEdgeModel(IoTEdgeModel edgeModel)
         {
-            var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId);
+            var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId, m => m.Labels);
             if (edgeModelEntity == null)
             {
                 throw new ResourceNotFoundException($"The edge model with id {edgeModel?.ModelId} doesn't exist");
+            }
+
+            foreach (var labelEntity in edgeModelEntity.Labels)
+            {
+                this.labelRepository.Delete(labelEntity.Id);
             }
 
             _ = this.mapper.Map(edgeModel, edgeModelEntity);
@@ -208,25 +217,33 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <exception cref="InternalServerErrorException"></exception>
         public async Task DeleteEdgeModel(string edgeModelId)
         {
-            if (!string.IsNullOrEmpty(edgeModelId))
+            var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModelId, m => m.Labels);
+            if (edgeModelEntity == null)
             {
-                this.edgeModelRepository.Delete(edgeModelId);
-
-                var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelId).ToList();
-                foreach (var command in existingCommands)
-                {
-                    this.commandRepository.Delete(command.Id);
-                }
-
-                await this.unitOfWork.SaveAsync();
-
-                var config = this.configService.GetIoTEdgeConfigurations().Result.FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
-
-                if (config != null)
-                {
-                    await this.configService.DeleteConfiguration(config.Id);
-                }
+                return;
             }
+
+            var config = this.configService.GetIoTEdgeConfigurations().Result.FirstOrDefault(x => x.Id.StartsWith(edgeModelId, StringComparison.Ordinal));
+
+            if (config != null)
+            {
+                await this.configService.DeleteConfiguration(config.Id);
+            }
+
+            var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelId).ToList();
+            foreach (var command in existingCommands)
+            {
+                this.commandRepository.Delete(command.Id);
+            }
+
+            foreach (var labelEntity in edgeModelEntity.Labels)
+            {
+                this.labelRepository.Delete(labelEntity.Id);
+            }
+
+            this.edgeModelRepository.Delete(edgeModelId);
+
+            await this.unitOfWork.SaveAsync();
         }
 
         /// <summary>

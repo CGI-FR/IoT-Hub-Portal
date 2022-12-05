@@ -24,30 +24,33 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly IDeviceRepository deviceRepository;
         private readonly IDeviceTagValueRepository deviceTagValueRepository;
+        private readonly ILabelRepository labelRepository;
         private readonly IDeviceModelImageManager deviceModelImageManager;
 
         public DeviceService(IMapper mapper,
             IUnitOfWork unitOfWork,
             IDeviceRepository deviceRepository,
             IDeviceTagValueRepository deviceTagValueRepository,
+            ILabelRepository labelRepository,
             IExternalDeviceService externalDevicesService,
             IDeviceTagService deviceTagService,
             IDeviceModelImageManager deviceModelImageManager,
             IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper,
             PortalDbContext portalDbContext)
-            : base(portalDbContext, externalDevicesService, deviceTagService, deviceModelImageManager, deviceTwinMapper)
+            : base(portalDbContext, mapper, externalDevicesService, deviceTagService, deviceModelImageManager, deviceTwinMapper)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.deviceRepository = deviceRepository;
             this.deviceTagValueRepository = deviceTagValueRepository;
+            this.labelRepository = labelRepository;
             this.deviceModelImageManager = deviceModelImageManager;
         }
 
 
         public override async Task<DeviceDetails> GetDevice(string deviceId)
         {
-            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId, d => d.Tags);
+            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId, d => d.Tags, d => d.Labels);
 
             if (deviceEntity == null)
             {
@@ -81,7 +84,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         protected override async Task<DeviceDetails> UpdateDeviceInDatabase(DeviceDetails device)
         {
-            var deviceEntity = await this.deviceRepository.GetByIdAsync(device.DeviceID, d => d.Tags);
+            var deviceEntity = await this.deviceRepository.GetByIdAsync(device.DeviceID, d => d.Tags, d => d.Labels);
 
             if (deviceEntity == null)
             {
@@ -91,6 +94,11 @@ namespace AzureIoTHub.Portal.Server.Services
             foreach (var deviceTagEntity in deviceEntity.Tags)
             {
                 this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
+            }
+
+            foreach (var labelEntity in deviceEntity.Labels)
+            {
+                this.labelRepository.Delete(labelEntity.Id);
             }
 
             _ = this.mapper.Map(device, deviceEntity);
@@ -104,7 +112,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         protected override async Task DeleteDeviceInDatabase(string deviceId)
         {
-            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId, d => d.Tags);
+            var deviceEntity = await this.deviceRepository.GetByIdAsync(deviceId, d => d.Tags, d => d.Labels);
 
             if (deviceEntity == null)
             {
@@ -114,6 +122,11 @@ namespace AzureIoTHub.Portal.Server.Services
             foreach (var deviceTagEntity in deviceEntity.Tags)
             {
                 this.deviceTagValueRepository.Delete(deviceTagEntity.Id);
+            }
+
+            foreach (var labelEntity in deviceEntity.Labels)
+            {
+                this.labelRepository.Delete(labelEntity.Id);
             }
 
             this.deviceRepository.Delete(deviceId);

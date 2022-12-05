@@ -14,10 +14,10 @@ namespace AzureIoTHub.Portal.Client.Services
         void RefreshDevice();
 
         IoTEdgeDevice GetSharedDevice();
-        IoTEdgeModelListItem GetSharedDeviceModel();
+        IoTEdgeModel GetSharedDeviceModel();
         IoTEdgeDevice ResetSharedDevice(List<DeviceTagDto> tags = null);
-        IoTEdgeModelListItem ResetSharedDeviceModel();
+        IoTEdgeModel ResetSharedDeviceModel();
         IoTEdgeDevice DuplicateSharedDevice(IoTEdgeDevice deviceToDuplicate);
-        IoTEdgeModelListItem DuplicateSharedDeviceModel(IoTEdgeModelListItem deviceModelToDuplicate);
+        IoTEdgeModel DuplicateSharedDeviceModel(IoTEdgeModel deviceModelToDuplicate);
     }
 }

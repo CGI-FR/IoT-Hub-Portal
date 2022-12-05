@@ -6,6 +6,7 @@
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 @using AzureIoTHub.Portal.Shared.Models
+@using AzureIoTHub.Portal.Shared.Models.v10;
 @using Microsoft.AspNetCore.Components
 
 @attribute [Authorize]
@@ -164,6 +165,18 @@
                                 </MudExpansionPanel>
                             </MudItem>
                         </MudGrid>
+
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Labels">
+                                    <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
+                                    <ChildContent>
+                                        <LabelsEditor ReadOnlyLabels="DeviceModel?.Labels" Labels="Device.Labels" />
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
+
                         @if (!IsLoRa && Properties.Any())
                         {
                             <MudGrid>

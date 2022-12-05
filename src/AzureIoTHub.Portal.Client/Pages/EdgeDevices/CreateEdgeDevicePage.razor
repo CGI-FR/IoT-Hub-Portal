@@ -57,8 +57,8 @@
                                                 }
                                                 else
                                                 {
-                                                    <MudAutocomplete T="IoTEdgeModelListItem"
-                                                                 id="@nameof(IoTEdgeModelListItem.ModelId)"
+                                                    <MudAutocomplete T="IoTEdgeModel"
+                                                                 id="@nameof(IoTEdgeModel.ModelId)"
                                                                  @bind-Value="edgeModel"
                                                                  SearchFunc="@Search"
                                                                  Label="Model*"
@@ -143,6 +143,17 @@
                                 </MudExpansionPanel>
                             </MudItem>
                         </MudGrid>
+
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudExpansionPanel Text="Labels">
+                                    <TitleContent><MudText Typo="Typo.h6">Labels</MudText></TitleContent>
+                                    <ChildContent>
+                                        <LabelsEditor ReadOnlyLabels="edgeModel?.Labels" Labels="EdgeDevice.Labels" />
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            </MudItem>
+                        </MudGrid>
                         
                     </MudExpansionPanels>
                 </MudTabPanel>
@@ -161,8 +172,8 @@
     private IoTEdgeDevice EdgeDevice = new IoTEdgeDevice();
 
     private IEnumerable<IoTEdgeModelListItem> edgeModelList = new List<IoTEdgeModelListItem>();
-    private IoTEdgeModelListItem _edgeModel;
-    private IoTEdgeModelListItem edgeModel
+    private IoTEdgeModel _edgeModel;
+    private IoTEdgeModel edgeModel
     {
         get => _edgeModel;
         set
@@ -286,24 +297,34 @@
     /// </summary>
     /// <param name="value">Text entered in the field</param>
     /// <returns>Item of the device model list that matches the user's value</returns>
-    private async Task<IEnumerable<IoTEdgeModelListItem>> Search(string value)
+    private async Task<IEnumerable<IoTEdgeModel>> Search(string value)
     {
         // In real life use an asynchronous function for fetching data from an api.
         await Task.Delay(0);
 
         // if text is null or empty, show complete list
         if (string.IsNullOrEmpty(value))
-            return edgeModelList;
+            return edgeModelList
+                    .Select(m => new IoTEdgeModel
+                    {
+                        ModelId = m.ModelId,
+                        Name = m.Name
+                    });;
 
         return edgeModelList
-                    .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+                    .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase))
+                    .Select(m => new IoTEdgeModel
+                    {
+                        ModelId = m.ModelId,
+                        Name = m.Name
+                    });
     }
 
-    internal async Task ChangeModel(IoTEdgeModelListItem edgeModel)
+    internal async Task ChangeModel(IoTEdgeModel edgeModel)
     {
         try
         {
-            this._edgeModel = edgeModel;
+            this._edgeModel = await this.EdgeModelClientService.GetIoTEdgeModel(edgeModel.ModelId);
 
             this.EdgeDevice = new IoTEdgeDevice()
                 {

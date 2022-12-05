@@ -13,7 +13,7 @@ namespace AzureIoTHub.Portal.Domain
     {
         IEnumerable<T> GetAll();
 
-        Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default);
+        Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
 
         Task<T?> GetByIdAsync(object id, params Expression<Func<T, object>>[] includes);
 
@@ -23,7 +23,7 @@ namespace AzureIoTHub.Portal.Domain
 
         void Delete(object id);
 
-        Task<PaginatedResult<T>> GetPaginatedListAsync(int pageNumber, int pageSize, string[]? orderBy = null, Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default);
+        Task<PaginatedResult<T>> GetPaginatedListAsync(int pageNumber, int pageSize, string[]? orderBy = null, Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
 
         Task<int> CountAsync(Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default);
 

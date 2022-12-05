@@ -1,0 +1,85 @@
+﻿@using AzureIoTHub.Portal.Shared.Models.v10
+
+<MudGrid>
+
+    @if (ReadOnlyLabels != null && ReadOnlyLabels.Any())
+    {
+        <MudItem xs="12">
+            <MudText Typo="Typo.h6">Mandatory labels</MudText>
+        </MudItem>
+        <MudItem xs="12">
+            <MudChipSet ReadOnly="true">
+                @foreach (var label in ReadOnlyLabels)
+                {
+                    <MudChip Text="@label.Name" Color="Color.Primary" Style="@($"background-color: {label.Color};")" />
+                }
+            </MudChipSet>
+        </MudItem>
+    }
+
+    <MudItem xs="12">
+        <MudItem xs="12">
+            <MudText Typo="Typo.h6">Edit labels</MudText>
+        </MudItem>
+        <MudGrid>
+            <MudItem xs="6">
+                <MudTextField T="string" @bind-Value="labelNameValue" Label="Name" Required="true" Variant="Variant.Text" />
+            </MudItem>
+            <MudItem xs="5">
+                <MudColorPicker @bind-Text="labelColorValue" Label="Label color" DisableToolbar="false" PickerVariant="PickerVariant.Inline" Required="true" />
+            </MudItem>
+            <MudItem xs="1">
+                <MudIconButton id="add-label" Icon="@Icons.Material.Filled.Add" aria-label="add-label" OnClick="@AddLabel" />
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+    <MudItem xs="12">
+        <MudChipSet AllClosable="true" OnClose="RemoveLabel">
+            @foreach (var label in Labels)
+            {
+                <MudChip Text="@label.Name" Color="Color.Primary" Style="@($"background-color: {label.Color};")" />
+            }
+        </MudChipSet>
+    </MudItem>
+
+</MudGrid>
+
+@code {
+
+    [Parameter]
+    public List<LabelDto> ReadOnlyLabels { get; set; } = new();
+
+    [Parameter]
+    public List<LabelDto> Labels { get; set; } = new();
+
+    private string labelNameValue;
+    private string labelColorValue;
+
+    public void AddLabel()
+    {
+        if (string.IsNullOrWhiteSpace(labelNameValue) ||
+            string.IsNullOrEmpty(labelColorValue) ||
+            Labels.Any(dto => dto.Name.Equals(labelNameValue)) ||
+            (ReadOnlyLabels?.Any(label => label.Name.Equals(labelNameValue)) ?? false)) return;
+
+        var labelToAdd = new LabelDto
+        {
+            Name = labelNameValue,
+            Color = labelColorValue
+        };
+
+        Labels.Add(labelToAdd);
+
+        labelNameValue = string.Empty;
+    }
+
+    public void RemoveLabel(MudChip chip)
+    {
+        var labelToDelete = Labels.FirstOrDefault(dto => dto.Name.Equals(chip.Text));
+
+        if (labelToDelete == null) return;
+
+        Labels.Remove(labelToDelete);
+    }
+
+}

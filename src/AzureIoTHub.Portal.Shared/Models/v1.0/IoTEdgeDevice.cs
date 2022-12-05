@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Models.v10
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     /// <summary>
     /// IoT Edge device.
@@ -84,6 +85,11 @@ namespace AzureIoTHub.Portal.Models.v10
         ///   <c>true</c> if this instance is enabled; otherwise, <c>false</c>.
         /// </summary>
         public bool IsEnabled { get; set; }
+
+        /// <summary>
+        /// Labels
+        /// </summary>
+        public List<LabelDto> Labels { get; set; } = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IoTEdgeDevice"/> class.

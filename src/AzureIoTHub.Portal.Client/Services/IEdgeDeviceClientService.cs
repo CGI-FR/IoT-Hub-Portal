@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Client.Services
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     public interface IEdgeDeviceClientService
     {
@@ -24,6 +25,8 @@ namespace AzureIoTHub.Portal.Client.Services
         Task<List<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule);
 
         Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName);
+
+        Task<IEnumerable<LabelDto>> GetAvailableLabels();
 
     }
 }

@@ -4,9 +4,11 @@
 namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
     using AzureIoTHub.Portal.Shared.Models;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -60,6 +62,11 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         [DefaultValue(true)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool? Downlink { get; set; }
+
+        /// <summary>
+        /// Labels
+        /// </summary>
+        public List<LabelDto> Labels { get; set; } = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LoRaDeviceModelDto"/> class.

@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using FluentAssertions;
     using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
@@ -99,7 +100,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 
             _ = this.mockDeviceService.Setup(service => service.GetDevices(It.IsAny<string>(), It.IsAny<bool?>(),
                     It.IsAny<bool?>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(),
-                    It.IsAny<Dictionary<string, string>>(), It.IsAny<string>()))
+                    It.IsAny<Dictionary<string, string>>(), It.IsAny<string>(), It.IsAny<List<string>>()))
                 .ReturnsAsync(expectedPaginatedDevices);
 
             var locationUrl = "http://location/devices";
@@ -330,6 +331,28 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var okResult = (OkResult)result.Result;
             Assert.IsNotNull(okResult);
 
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetAvailableLabels_ExistingLabels_ReturnsLabels()
+        {
+            // Arrange
+            var devicesController = CreateDevicesController();
+
+            var expectedLabels = new List<LabelDto>()
+            {
+                new LabelDto()
+            };
+
+            _ = this.mockDeviceService.Setup(service => service.GetAvailableLabels())
+                .ReturnsAsync(expectedLabels);
+
+            // Act
+            var result = await devicesController.GetAvailableLabels();
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedLabels);
             this.mockRepository.VerifyAll();
         }
     }

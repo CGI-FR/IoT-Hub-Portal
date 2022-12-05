@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
@@ -76,7 +77,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
                     It.IsAny<int>(),
                     It.IsAny<int>(),
                     It.IsAny<string[]>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<List<string>>()))
                 .ReturnsAsync(expectedPaginedEdgeDevice);
 
             var locationUrl = "http://location/edge/devices";
@@ -399,6 +401,28 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v10
             // Assert
             Assert.IsNotNull(result);
 
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetAvailableLabels_ExistingLabels_ReturnsLabels()
+        {
+            // Arrange
+            var edgeDeviceController = CreateEdgeDevicesController();
+
+            var expectedLabels = new List<LabelDto>()
+            {
+                new LabelDto()
+            };
+
+            _ = this.mockEdgeDeviceService.Setup(service => service.GetAvailableLabels())
+                .ReturnsAsync(expectedLabels);
+
+            // Act
+            var result = await edgeDeviceController.GetAvailableLabels();
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedLabels);
             this.mockRepository.VerifyAll();
         }
     }

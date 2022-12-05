@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Models.v10
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using AzureIoTHub.Portal.Shared.Models;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     /// <summary>
     /// Device details.
@@ -62,5 +63,10 @@ namespace AzureIoTHub.Portal.Models.v10
         ///   <c>true</c> if this instance is lorawan; otherwise, <c>false</c>.
         /// </summary>
         public virtual bool IsLoraWan { get; }
+
+        /// <summary>
+        /// Labels
+        /// </summary>
+        public List<LabelDto> Labels { get; set; } = new();
     }
 }

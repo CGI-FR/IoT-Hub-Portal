@@ -39,6 +39,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         private Mock<ILorawanDeviceRepository> mockLorawanDeviceRepository;
         private Mock<ILoRaDeviceTelemetryRepository> mockLoRaDeviceTelemetryRepository;
         private Mock<IDeviceTagValueRepository> mockDeviceTagValueRepository;
+        private Mock<ILabelRepository> mockLabelRepository;
         private Mock<IExternalDeviceService> mockExternalDevicesService;
         private Mock<IDeviceTagService> mockDeviceTagService;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
@@ -54,6 +55,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockLorawanDeviceRepository = MockRepository.Create<ILorawanDeviceRepository>();
             this.mockLoRaDeviceTelemetryRepository = MockRepository.Create<ILoRaDeviceTelemetryRepository>();
             this.mockDeviceTagValueRepository = MockRepository.Create<IDeviceTagValueRepository>();
+            this.mockLabelRepository = MockRepository.Create<ILabelRepository>();
             this.mockExternalDevicesService = MockRepository.Create<IExternalDeviceService>();
             this.mockDeviceTagService = MockRepository.Create<IDeviceTagService>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
@@ -63,6 +65,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = ServiceCollection.AddSingleton(this.mockLorawanDeviceRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockLoRaDeviceTelemetryRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagValueRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockLabelRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockExternalDevicesService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
@@ -86,7 +89,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var expectedDeviceDto = Mapper.Map<LoRaDeviceDetails>(expectedDevice);
             expectedDeviceDto.ImageUrl = expectedImageUri;
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedDeviceDto.DeviceID, d => d.Tags))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(expectedDeviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(expectedDevice);
 
             _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
@@ -109,7 +112,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             // Arrange
             var deviceId = Fixture.Create<string>();
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId, d => d.Tags))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync((LorawanDevice)null);
 
             // Act
@@ -213,7 +216,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new LorawanDevice
                 {
                     Tags = new List<DeviceTagValue>
@@ -222,10 +225,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                         {
                             Id = Fixture.Create<string>()
                         }
-                    }
+                    },
+                    Labels = Fixture.CreateMany<Label>(1).ToList()
                 });
 
             this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
                 .Verifiable();
 
             this.mockLorawanDeviceRepository.Setup(repository => repository.Update(It.IsAny<LorawanDevice>()))
@@ -267,7 +274,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync((LorawanDevice)null);
 
             // Act
@@ -303,10 +310,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.UpdateDeviceTwin(It.IsAny<Twin>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new LorawanDevice
                 {
-                    Tags = new List<DeviceTagValue>()
+                    Tags = new List<DeviceTagValue>(),
+                    Labels = new List<Label>()
                 });
 
             this.mockLorawanDeviceRepository.Setup(repository => repository.Update(It.IsAny<LorawanDevice>()))
@@ -335,13 +343,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new LorawanDevice
                 {
-                    Tags = Fixture.CreateMany<DeviceTagValue>(5).ToList()
+                    Tags = Fixture.CreateMany<DeviceTagValue>(5).ToList(),
+                    Labels = Fixture.CreateMany<Label>(5).ToList()
                 });
 
             this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
                 .Verifiable();
 
             this.mockLorawanDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
@@ -369,7 +381,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync((LorawanDevice)null);
 
             // Act
@@ -391,10 +403,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags))
+            _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new LorawanDevice
                 {
-                    Tags = new List<DeviceTagValue>()
+                    Tags = new List<DeviceTagValue>(),
+                    Labels = new List<Label>()
                 });
 
             this.mockLorawanDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))

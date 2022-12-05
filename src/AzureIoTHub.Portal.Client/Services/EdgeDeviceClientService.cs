@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Client.Services
     using System.Net.Http.Json;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     public class EdgeDeviceClientService : IEdgeDeviceClientService
     {
@@ -60,6 +61,11 @@ namespace AzureIoTHub.Portal.Client.Services
             var response = await this.http.PostAsJsonAsync<HttpResponseMessage>($"api/edge/devices/{deviceId}/{moduleName}/{methodName}", null);
 
             return await response.Content.ReadFromJsonAsync<C2Dresult>();
+        }
+
+        public async Task<IEnumerable<LabelDto>> GetAvailableLabels()
+        {
+            return await this.http.GetFromJsonAsync<List<LabelDto>>("api/edge/devices/available-labels");
         }
     }
 }

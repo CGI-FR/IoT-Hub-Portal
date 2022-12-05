@@ -21,23 +21,27 @@ namespace AzureIoTHub.Portal.Server.Services
     using Device = Domain.Entities.Device;
     using Azure.Messaging.EventHubs;
     using AzureIoTHub.Portal.Shared.Models.v10;
+    using AutoMapper;
 
     public abstract class DeviceServiceBase<TDto> : IDeviceService<TDto>
         where TDto : IDeviceDetails
     {
         private readonly PortalDbContext portalDbContext;
+        private readonly IMapper mapper;
         private readonly IExternalDeviceService externalDevicesService;
         private readonly IDeviceTagService deviceTagService;
         private readonly IDeviceModelImageManager deviceModelImageManager;
         private readonly IDeviceTwinMapper<DeviceListItem, TDto> deviceTwinMapper;
 
         protected DeviceServiceBase(PortalDbContext portalDbContext,
+            IMapper mapper,
             IExternalDeviceService externalDevicesService,
             IDeviceTagService deviceTagService,
             IDeviceModelImageManager deviceModelImageManager,
             IDeviceTwinMapper<DeviceListItem, TDto> deviceTwinMapper)
         {
             this.portalDbContext = portalDbContext;
+            this.mapper = mapper;
             this.externalDevicesService = externalDevicesService;
             this.deviceTagService = deviceTagService;
             this.deviceModelImageManager = deviceModelImageManager;
@@ -45,7 +49,7 @@ namespace AzureIoTHub.Portal.Server.Services
         }
 
         public async Task<PaginatedResult<DeviceListItem>> GetDevices(string searchText = null, bool? searchStatus = null, bool? searchState = null, int pageSize = 10,
-            int pageNumber = 0, string[] orderBy = null, Dictionary<string, string> tags = default, string modelId = null)
+            int pageNumber = 0, string[] orderBy = null, Dictionary<string, string> tags = default, string modelId = null, List<string> labels = default)
         {
             var deviceListFilter = new DeviceListFilter
             {
@@ -56,7 +60,8 @@ namespace AzureIoTHub.Portal.Server.Services
                 Keyword = searchText,
                 OrderBy = orderBy,
                 Tags = GetSearchableTags(tags),
-                ModelId = modelId
+                ModelId = modelId,
+                Labels = labels
             };
 
             var devicePredicate = PredicateBuilder.True<Device>();
@@ -95,8 +100,16 @@ namespace AzureIoTHub.Portal.Server.Services
                 lorawanDevicePredicate = lorawanDevicePredicate.And(device => device.DeviceModelId.Equals(deviceListFilter.ModelId));
             }
 
+            deviceListFilter.Labels?.ForEach(label =>
+            {
+                devicePredicate = devicePredicate.And(device => device.Labels.Any(value => value.Name.Equals(label)) || device.DeviceModel.Labels.Any(value => value.Name.Equals(label)));
+                lorawanDevicePredicate = lorawanDevicePredicate.And(device => device.Labels.Any(value => value.Name.Equals(label)) || device.DeviceModel.Labels.Any(value => value.Name.Equals(label)));
+            });
+
             var query = this.portalDbContext.Devices
                 .Include(device => device.Tags)
+                .Include(device => device.Labels)
+                .Include(device => device.DeviceModel.Labels)
                 .Where(devicePredicate)
                 .Select(device => new DeviceListItem
                 {
@@ -110,6 +123,8 @@ namespace AzureIoTHub.Portal.Server.Services
                 })
                 .Union(this.portalDbContext.LorawanDevices
                     .Include(device => device.Tags)
+                    .Include(device => device.Labels)
+                    .Include(device => device.DeviceModel.Labels)
                     .Where(lorawanDevicePredicate)
                     .Select(device => new DeviceListItem
                     {
@@ -194,6 +209,38 @@ namespace AzureIoTHub.Portal.Server.Services
         public abstract Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId);
 
         public abstract Task ProcessTelemetryEvent(EventData eventMessage);
+
+        public async Task<IEnumerable<LabelDto>> GetAvailableLabels()
+        {
+            var deviceLabelsQuery = this.portalDbContext.Devices
+                .Include(device => device.Labels)
+                .Include(device => device.DeviceModel.Labels)
+                .Select(device => new
+                {
+                    DeviceLabels = device.Labels,
+                    ModelLabels = device.DeviceModel.Labels
+                });
+
+            var loRaDeviceLabelsQuery = this.portalDbContext.LorawanDevices
+                .Include(device => device.Labels)
+                .Include(device => device.DeviceModel.Labels)
+                .Select(device => new
+                {
+                    DeviceLabels = device.Labels,
+                    ModelLabels = device.DeviceModel.Labels
+                });
+
+            var deviceLabels = await deviceLabelsQuery.ToListAsync();
+            var loRaDeviceLabels = await loRaDeviceLabelsQuery.ToListAsync();
+
+            var labels = deviceLabels.SelectMany(x => x.DeviceLabels)
+                .Union(deviceLabels.SelectMany(x => x.ModelLabels))
+                .Union(loRaDeviceLabels.SelectMany(x => x.DeviceLabels))
+                .Union(loRaDeviceLabels.SelectMany(x => x.ModelLabels));
+
+
+            return this.mapper.Map<List<LabelDto>>(labels);
+        }
 
         protected Dictionary<string, string> FilterDeviceTags(TDto device)
         {

@@ -35,5 +35,10 @@ namespace AzureIoTHub.Portal.Domain.Entities
         public string? SensorDecoder { get; set; }
 
         public string? AppEUI { get; set; }
+
+        /// <summary>
+        /// Labels
+        /// </summary>
+        public ICollection<Label> Labels { get; set; }
     }
 }

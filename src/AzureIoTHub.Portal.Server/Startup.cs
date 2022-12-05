@@ -168,6 +168,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>();
             _ = services.AddScoped<IConcentratorRepository, ConcentratorRepository>();
             _ = services.AddScoped<ILoRaDeviceTelemetryRepository, LoRaDeviceTelemetryRepository>();
+            _ = services.AddScoped<ILabelRepository, LabelRepository>();
 
             _ = services.AddMudServices();
 

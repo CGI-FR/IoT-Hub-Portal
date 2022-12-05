@@ -76,5 +76,10 @@ namespace AzureIoTHub.Portal.Client.Services
             _ = result.EnsureSuccessStatusCode();
             return await result.Content.ReadFromJsonAsync<ImportResultLine[]>();
         }
+
+        public async Task<IEnumerable<LabelDto>> GetAvailableLabels()
+        {
+            return await this.http.GetFromJsonAsync<List<LabelDto>>($"api/devices/available-labels");
+        }
     }
 }

@@ -4,8 +4,10 @@
 namespace AzureIoTHub.Portal.Models.v10
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using AzureIoTHub.Portal.Shared.Models;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     /// <summary>
     /// Device model.
@@ -42,6 +44,11 @@ namespace AzureIoTHub.Portal.Models.v10
         /// A value indicating whether the LoRa features is supported on this model.
         /// </summary>
         public bool SupportLoRaFeatures { get; set; }
+
+        /// <summary>
+        /// Labels
+        /// </summary>
+        public List<LabelDto> Labels { get; set; } = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceModelDto"/> class.

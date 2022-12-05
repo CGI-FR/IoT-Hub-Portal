@@ -5,10 +5,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -72,7 +74,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             int pageSize = 10,
             int pageNumber = 0,
             [FromQuery] string[] orderBy = null,
-            string modelId = null)
+            string modelId = null,
+            [FromQuery] string[] labels = null)
         {
             var paginatedEdgeDevices = await this.edgeDevicesService.GetEdgeDevicesPage(
                 searchText,
@@ -80,7 +83,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 pageSize,
                 pageNumber,
                 orderBy,
-                modelId);
+                modelId,
+                labels?.ToList());
 
             var nextPage = string.Empty;
 
@@ -205,6 +209,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
             ArgumentNullException.ThrowIfNull(edgeModule, nameof(edgeModule));
 
             return await this.externalDevicesService.GetEdgeDeviceLogs(deviceId, edgeModule);
+        }
+
+        [HttpGet("available-labels", Name = "GET Available Labels on Edge Devices")]
+        public Task<IEnumerable<LabelDto>> GetAvailableLabels()
+        {
+            return this.edgeDevicesService.GetAvailableLabels();
         }
     }
 }

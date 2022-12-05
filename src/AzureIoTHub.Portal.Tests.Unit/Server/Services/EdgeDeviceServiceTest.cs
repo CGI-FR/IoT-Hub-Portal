@@ -18,6 +18,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;
@@ -36,6 +37,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IEdgeDeviceRepository> mockEdgeDeviceRepository;
         private Mock<IDeviceTagValueRepository> mockDeviceTagValueRepository;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
+        private Mock<ILabelRepository> mockLabelRepository;
 
         private IEdgeDevicesService edgeDevicesService;
 
@@ -50,6 +52,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockEdgeDeviceRepository = MockRepository.Create<IEdgeDeviceRepository>();
             this.mockDeviceTagValueRepository = MockRepository.Create<IDeviceTagValueRepository>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
+            this.mockLabelRepository = MockRepository.Create<ILabelRepository>();
 
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceService.Object);
@@ -57,6 +60,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = ServiceCollection.AddSingleton(this.mockEdgeDeviceRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceTagValueRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
+            _ = ServiceCollection.AddSingleton(this.mockLabelRepository.Object);
             _ = ServiceCollection.AddSingleton(DbContext);
             _ = ServiceCollection.AddSingleton<IEdgeDevicesService, EdgeDevicesService>();
 
@@ -78,7 +82,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             await DbContext.AddRangeAsync(expectedEdgeDevices);
             _ = await DbContext.SaveChangesAsync();
 
-            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<Expression<Func<EdgeDevice, bool>>>(), default))
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<Expression<Func<EdgeDevice, bool>>>(), default, new Expression<Func<EdgeDevice, object>>[] { d => d.Labels, d => d.DeviceModel.Labels }))
                 .ReturnsAsync(new PaginatedResult<EdgeDevice>
                 {
                     Data = expectedEdgeDevices.Skip(expectedCurrentPage * expectedPageSize).Take(expectedPageSize).ToList(),
@@ -108,6 +112,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var keywordFilter = "WaNt tHiS DeViCe";
+
+            var labelFilter = new List<string>()
+            {
+                "label01"
+            };
+
             var deviceModelId = Fixture.Create<string>();
             var expectedEdgeDevices = new List<EdgeDevice>
             {
@@ -155,7 +165,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             await DbContext.AddRangeAsync(expectedEdgeDevices);
             _ = await DbContext.SaveChangesAsync();
 
-            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<Expression<Func<EdgeDevice, bool>>>(), default))
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<Expression<Func<EdgeDevice, bool>>>(), default, new Expression<Func<EdgeDevice, object>>[] { d => d.Labels, d => d.DeviceModel.Labels }))
                 .ReturnsAsync(new PaginatedResult<EdgeDevice>
                 {
                     Data = expectedEdgeDevices,
@@ -168,7 +178,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Returns(Fixture.Create<Uri>());
 
             // Act
-            var result = await this.edgeDevicesService.GetEdgeDevicesPage(searchText: keywordFilter, searchStatus: true, modelId: deviceModelId);
+            var result = await this.edgeDevicesService.GetEdgeDevicesPage(searchText: keywordFilter, searchStatus: true, modelId: deviceModelId, labels: labelFilter);
 
             _ = result.PageSize.Should().Be(expectedPageSize);
             _ = result.CurrentPage.Should().Be(expectedCurrentPage);
@@ -187,7 +197,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             expectedEdgeDeviceDto.ImageUrl = expectedImageUri;
 
             _ = this.mockEdgeDeviceRepository
-                .Setup(x => x.GetByIdAsync(It.Is<string>(c => c.Equals(expectedEdgeDevice.Id, StringComparison.Ordinal)), d => d.Tags))
+                .Setup(x => x.GetByIdAsync(It.Is<string>(c => c.Equals(expectedEdgeDevice.Id, StringComparison.Ordinal)), d => d.Tags, d => d.Labels))
                 .ReturnsAsync(expectedEdgeDevice);
 
             _ = this.mockDeviceService
@@ -225,7 +235,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var deviceId = Guid.NewGuid().ToString();
 
             _ = this.mockEdgeDeviceRepository
-                .Setup(x => x.GetByIdAsync(It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal)), d => d.Tags))
+                .Setup(x => x.GetByIdAsync(It.Is<string>(c => c.Equals(deviceId, StringComparison.Ordinal)), d => d.Tags, d => d.Labels))
                 .ReturnsAsync(value: null);
 
             // Act
@@ -326,6 +336,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             {
                 DeviceId = Guid.NewGuid().ToString(),
                 Status = DeviceStatus.Enabled.ToString(),
+                Labels = Fixture.CreateMany<LabelDto>(2).ToList()
             };
 
             var mockTwin = new Twin(edgeDevice.DeviceId);
@@ -347,7 +358,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Setup(x => x.UpdateDeviceTwin(It.Is<Twin>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
                 .ReturnsAsync(mockTwin);
 
-            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(edgeDevice.DeviceId, d => d.Tags))
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(edgeDevice.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new EdgeDevice
                 {
                     Tags = new List<DeviceTagValue>
@@ -356,10 +367,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                         {
                             Id = Fixture.Create<string>()
                         }
-                    }
+                    },
+                    Labels = Fixture.CreateMany<Label>(1).ToList()
                 });
 
             this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
                 .Verifiable();
 
             this.mockEdgeDeviceRepository.Setup(repository => repository.Update(It.IsAny<EdgeDevice>()))
@@ -407,7 +422,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Setup(x => x.UpdateDeviceTwin(It.Is<Twin>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
                 .ReturnsAsync(mockTwin);
 
-            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(edgeDevice.DeviceId, d => d.Tags))
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(edgeDevice.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(value: null);
 
             // Act
@@ -448,7 +463,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Setup(x => x.UpdateDeviceTwin(It.Is<Twin>(c => c.DeviceId.Equals(edgeDevice.DeviceId, StringComparison.Ordinal))))
                 .ReturnsAsync(mockTwin);
 
-            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(edgeDevice.DeviceId, d => d.Tags))
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(edgeDevice.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new EdgeDevice
                 {
                     Tags = new List<DeviceTagValue>
@@ -457,7 +472,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                         {
                             Id = Fixture.Create<string>()
                         }
-                    }
+                    },
+                    Labels = new List<Label>()
                 });
 
             this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
@@ -498,16 +514,20 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockDeviceService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags))
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new EdgeDevice
                 {
-                    Tags = Fixture.CreateMany<DeviceTagValue>(5).ToList()
+                    Tags = Fixture.CreateMany<DeviceTagValue>(5).ToList(),
+                    Labels = Fixture.CreateMany<Label>(5).ToList()
                 });
 
             this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
                 .Verifiable();
 
             this.mockEdgeDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceId))
+                .Verifiable();
+
+            this.mockLabelRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
                 .Verifiable();
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
@@ -532,7 +552,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockDeviceService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags))
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(value: null);
 
             // Act
@@ -554,10 +574,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockDeviceService.Setup(service => service.DeleteDevice(deviceDto.DeviceId))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags))
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceId, d => d.Tags, d => d.Labels))
                 .ReturnsAsync(new EdgeDevice
                 {
-                    Tags = new List<DeviceTagValue>()
+                    Tags = new List<DeviceTagValue>(),
+                    Labels = new List<Label>()
                 });
 
             this.mockEdgeDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceId))
@@ -722,5 +743,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             MockRepository.VerifyAll();
         }
 
+        [Test]
+        public async Task GetAvailableLabels_LabelsExists_LabelsReturned()
+        {
+            // Arrange
+            var edgeDevices = Fixture.CreateMany<EdgeDevice>(1);
+
+            _ = this.mockEdgeDeviceRepository.Setup(repository => repository.GetAllAsync(null, default, new Expression<Func<EdgeDevice, object>>[] { d => d.Labels, d => d.DeviceModel.Labels }))
+                .ReturnsAsync(edgeDevices);
+
+            var expectedLabels = Mapper.Map<List<LabelDto>>(edgeDevices.SelectMany(d => d.Labels)
+                .Union(edgeDevices.SelectMany(d => d.DeviceModel.Labels)));
+
+            // Act
+            var result = await this.edgeDevicesService.GetAvailableLabels();
+
+            // Assert
+            _ = result.Count().Should().Be(expectedLabels.Count);
+            MockRepository.VerifyAll();
+        }
     }
 }

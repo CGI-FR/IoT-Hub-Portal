@@ -134,5 +134,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         {
             return this.deviceService.GetDeviceTelemetry(deviceId);
         }
+
+        [HttpGet("available-labels", Name = "GET Available Labels on LoRaWAN Devices")]
+        public override Task<IEnumerable<LabelDto>> GetAvailableLabels()
+        {
+            return base.GetAvailableLabels();
+        }
     }
 }
