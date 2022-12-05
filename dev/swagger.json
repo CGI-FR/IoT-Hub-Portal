@@ -4043,6 +4043,14 @@
             "type": "string",
             "description": "The device last status updated time.",
             "format": "date-time"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "The device labels.",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -4556,6 +4564,14 @@
             "description": "The device model image Url.",
             "format": "uri",
             "nullable": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Gets the edge device labels.",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -4612,6 +4628,14 @@
             "format": "uri",
             "nullable": true
           },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
+          },
           "edgeModules": {
             "type": "array",
             "items": {
@@ -4632,14 +4656,6 @@
             "items": {
               "$ref": "#/components/schemas/EdgeModelSystemModule"
             },
-            "nullable": true
-          },
-          "labels": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LabelDto"
-            },
-            "description": "Labels",
             "nullable": true
           }
         },
@@ -4669,6 +4685,14 @@
           "imageUrl": {
             "type": "string",
             "format": "uri",
+            "nullable": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Gets the edge model labels.",
             "nullable": true
           }
         },
