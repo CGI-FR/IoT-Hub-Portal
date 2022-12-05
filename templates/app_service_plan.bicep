@@ -28,3 +28,5 @@ resource servicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
     zoneRedundant: false
   }
 }
+
+output id string = servicePlan.id
