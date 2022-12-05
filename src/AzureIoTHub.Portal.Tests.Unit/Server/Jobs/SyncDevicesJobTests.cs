@@ -426,5 +426,45 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
             // Assert
             MockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task Execute_MissingModelId_ShouldNotFail()
+        {
+            // Arrange
+            var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
+
+            var expectedDeviceModel = Fixture.Create<DeviceModel>();
+            expectedDeviceModel.SupportLoRaFeatures = true;
+
+            var expectedTwinDevice = new Twin
+            {
+                DeviceId = Fixture.Create<string>(),
+            };
+
+            _ = this.mockDeviceService
+                .Setup(x => x.GetAllDevice(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.Is<int>(x => x == 100)))
+                .ReturnsAsync(new PaginationResult<Twin>
+                {
+                    Items = new List<Twin>
+                    {
+                        expectedTwinDevice
+                    },
+                    TotalItems = 1
+                });
+
+            // Act
+            await this.syncDevicesJob.Execute(mockJobExecutionContext.Object);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
     }
 }
