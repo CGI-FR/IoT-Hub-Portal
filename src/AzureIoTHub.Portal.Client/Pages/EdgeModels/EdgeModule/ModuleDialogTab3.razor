@@ -19,7 +19,7 @@
             </HeaderContent>
             <RowTemplate Context="Context">
                 <MudTd DataLabel="Key" Style="word-break: break-all;">
-                    <AzureIoTHub.Portal.Client.Components.EdgeModel.EdgeModuleCommand></AzureIoTHub.Portal.Client.Components.EdgeModel.EdgeModuleCommand>
+                    <AzureIoTHub.Portal.Client.Components.EdgeModel.EdgeModuleCommand Command="@(Context)"/>
                 </MudTd>
 
                 <MudTd DataLabel="Delete" Style="text-align: center">
@@ -53,7 +53,9 @@
 
         if (Commands.Count == 0 || (last.Name is not null))
         {
-            Commands.Add(new EdgeModuleCommandDto());
+            Commands.Add(new EdgeModuleCommandDto(){
+                Id = Guid.NewGuid().ToString()
+            });
         }
     }
 

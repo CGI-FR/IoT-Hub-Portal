@@ -1,4 +1,5 @@
 ﻿@using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand
+@using Newtonsoft.Json
 
 <div class="mx-auto" style="max-width: 900px;">
     <MudExpansionPanels>
@@ -7,7 +8,7 @@
                 <div class="d-flex">
                     <MudTextField onclick="event.stopPropagation()" For="@(() => this.Command.DisplayName)" @bind-Value="Command.DisplayName" Label="Display Name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
                     <MudTextField onclick="event.stopPropagation()" For="@(() => this.Command.Name)" @bind-Value="Command.Name" Variant="Variant.Outlined" Label="Name" Margin="Margin.Dense" Required></MudTextField>
-                    <MudSelect onclick="event.stopPropagation()" Margin="Margin.Dense" For="@(() => this.Command.Type)" @bind-Value="Command.Type" Label="Capability type" Variant="Variant.Outlined" Required>
+                    <MudSelect Margin="Margin.Dense" For="@(() => this.Command.Type)" @bind-Value="Command.Type" Label="Capability type" Variant="Variant.Outlined" Required>
                         <MudSelectItem Value="@("Command")" />
                     </MudSelect>
                 </div>
@@ -21,57 +22,96 @@
                         <MudTextField For="@(() => this.Command.Description)" @bind-Value="Command.Description" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
                     </MudItem>
 
-
                     <MudItem xs="12">
-                        <MudSwitch @bind-Checked="@requestOn" @onchange="@(()=> InitRequest())" LabelPosition="LabelPosition.Start" id="SupportLoRaFeatures" Color="Color.Info" Label="Request"></MudSwitch>
+                        <MudSwitch @bind-Checked="@requestOn" LabelPosition="LabelPosition.Start" id="SupportLoRaFeatures" Color="Color.Info" Label="Request"></MudSwitch>
                     </MudItem>
 
                     @if (requestOn)
                     {
                         <MudItem xs="4" md="4">
-                            <MudTextField For="@(() => this.Command.Request.DisplayName)" @bind-Value="Command.Request.DisplayName" Label="Display name *" Variant="Variant.Outlined" Margin="Margin.Dense" Required></MudTextField>
+                            <MudTextField For="@(() => this.Command.Request.DisplayName)" @bind-Value="Command.Request.DisplayName" Label="Display name" Variant="Variant.Outlined" Margin="Margin.Dense" Required></MudTextField>
                         </MudItem>
                         <MudItem xs="4" md="4">
-                            <MudTextField For="@(() => this.Command.Request.Name)" @bind-Value="Command.Request.Name" Label="Name *" Variant="Variant.Outlined" Margin="Margin.Dense" Required></MudTextField>
+                            <MudTextField For="@(() => this.Command.Request.Name)" @bind-Value="Command.Request.Name" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" Required></MudTextField>
                         </MudItem>
                         <MudItem xs="3" md="3">
-                            <MudSelect @bind-Value="@requestSelectedSchema" For="@(() => this.requestSelectedSchema)" Margin="Margin.Dense" Label="Schema" Variant="Variant.Outlined">
-                                @foreach (var schema in PrimitiveSchemaList)
+                            <MudSelect @bind-Value="@Command.Request.SchemaType" For="@(() => this.Command.Request.SchemaType)" Margin="Margin.Dense" Label="Schema" Variant="Variant.Outlined">
+                                @foreach (ModuleCommandSchemaType schema in Enum.GetValues(typeof(ModuleCommandSchemaType)))
                                 {
                                     <MudSelectItem Value="@schema">@schema</MudSelectItem>
                                 }
                             </MudSelect>
                         </MudItem>
-                        @switch (requestSelectedSchema)
+                        @switch (Command.Request.SchemaType)
                         {
-                            case "boolean":
+                            case ModuleCommandSchemaType.Boolean:
                                 <MudItem xs="4" md="4">
-                                    <MudSwitch @bind-Checked="@Command.Request.InitialValue" Label="Initiale Value" Color="Color.Info" />
+                                    <MudSwitch @bind-Checked="@Command.Request.InitialValue" Converter="@(new ObjectToBoolConverter())" Label="Initiale Value" Color="Color.Info" />
                                 </MudItem>
                                 break;
-                            case "double":
+                            case ModuleCommandSchemaType.Double:
                                 <MudItem xs="4" md="4">
-                                    <MudNumericField @bind-Value="@Command.Request.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                                    <MudNumericField
+                                    Label="Initiale Value"
+                                    Variant="Variant.Outlined"
+                                    Validation=@((string c) => double.TryParse(c, out var result))
+                                    @bind-Value="@Command.Request.InitialValue"
+                                    Margin="Margin.Dense"></MudNumericField>
                                 </MudItem>
                                 break;
-                            case "float":
+                            case ModuleCommandSchemaType.Float:
                                 <MudItem xs="4" md="4">
-                                    <MudNumericField @bind-Value="@Command.Request.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                                    <MudNumericField @bind-Value="@Command.Request.InitialValue"
+                                    Label="Initiale Value"
+                                    Variant="Variant.Outlined"
+                                    Validation=@((string c) => float.TryParse(c, out var result))
+                                    Margin="Margin.Dense"></MudNumericField>
                                 </MudItem>
                                 break;
-                            case "integer":
+                            case ModuleCommandSchemaType.Integer:
                                 <MudItem xs="4" md="4">
-                                    <MudNumericField @bind-Value="@Command.Request.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                                    <MudNumericField @bind-Value="@Command.Request.InitialValue"
+                                    Label="Initiale Value"
+                                    Variant="Variant.Outlined"
+                                    Validation=@((string c) => int.TryParse(c, out var result))
+                                    Margin="Margin.Dense"></MudNumericField>
                                 </MudItem>
                                 break;
-                            case "long":
+                            case ModuleCommandSchemaType.Long:
                                 <MudItem xs="4" md="4">
-                                    <MudNumericField @bind-Value="@Command.Request.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                                    <MudNumericField @bind-Value="@Command.Request.InitialValue"
+                                    Label="Initiale Value"
+                                    Variant="Variant.Outlined"
+                                    Validation=@((string c) => long.TryParse(c, out var result))
+                                    Margin="Margin.Dense"></MudNumericField>
                                 </MudItem>
                                 break;
-                            case "string":
+                            case ModuleCommandSchemaType.String:
                                 <MudItem xs="4" md="4">
-                                    <MudTextField @bind-Value="@Command.Request.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                                    <MudTextField @bind-Value="@Command.Request.InitialValue"
+                                    Label="Initiale Value"
+                                    Variant="Variant.Outlined"
+                                    Margin="Margin.Dense"></MudTextField>
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.DateTime:
+                                <MudItem xs="4" md="4">
+                                    <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Picker example" @bind-Value="Command.Request.InitialValue" />
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.Date:
+                                <MudItem xs="4" md="4">
+                                    <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Picker example" @bind-Value="Command.Request.InitialValue" />
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.Time:
+                                <MudItem xs="4" md="4">
+                                    <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Picker example" @bind-Value="Command.Request.InitialValue" />
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.Duration:
+                                <MudItem xs="4" md="4">
+                                    <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Picker example" @bind-Value="Command.Request.InitialValue" />
                                 </MudItem>
                                 break;
                         }
@@ -91,19 +131,72 @@
                     @if (responseOn)
                     {
                         <MudItem xs="4" md="4">
-                            <MudTextField For="@(() => this.Command.Response.DisplayName)" Label="Display name *" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                            <MudTextField For="@(() => this.Command.Response.DisplayName)" @bind-Value="@this.Command.Response.DisplayName" Label="Display name *" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
                         </MudItem>
                         <MudItem xs="4" md="4">
-                            <MudTextField For="@(() => this.Command.Response.Name)" Label="Name *" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                            <MudTextField For="@(() => this.Command.Response.Name)" @bind-Value="@this.Command.Response.Name" Label="Name *" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
                         </MudItem>
                         <MudItem xs="3" md="3">
-                            <MudSelect @bind-Value="@responseSelectedSchema" Margin="Margin.Dense" T="string" Label="Schema" Variant="Variant.Outlined">
-                                @foreach (var schema in PrimitiveSchemaList)
+                            <MudSelect @bind-Value="@Command.Response.SchemaType" For="@(() => this.Command.Request.SchemaType)" Margin="Margin.Dense" Label="Schema" Variant="Variant.Outlined">
+                                @foreach (ModuleCommandSchemaType schema in Enum.GetValues(typeof(ModuleCommandSchemaType)))
                                 {
                                     <MudSelectItem Value="@schema">@schema</MudSelectItem>
                                 }
                             </MudSelect>
                         </MudItem>
+                        @switch (Command.Response.SchemaType)
+                        {
+                            case ModuleCommandSchemaType.Boolean:
+                                <MudItem xs="4" md="4">
+                                    <MudSwitch @bind-Checked="@Command.Response.InitialValue" Label="Initiale Value" Color="Color.Info" />
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.Double:
+                                <MudItem xs="4" md="4">
+                                    <MudNumericField @bind-Value="@Command.Response.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.Float:
+                                <MudItem xs="4" md="4">
+                                    <MudNumericField @bind-Value="@Command.Response.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.Integer:
+                                <MudItem xs="4" md="4">
+                                    <MudNumericField @bind-Value="@Command.Response.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.Long:
+                                <MudItem xs="4" md="4">
+                                    <MudNumericField @bind-Value="@Command.Response.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.String:
+                                <MudItem xs="4" md="4">
+                                    <MudTextField @bind-Value="@Command.Response.InitialValue" Label="Initiale Value" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.DateTime:
+                                <MudItem xs="4" md="4">
+                                    <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Picker example" @bind-Value="Command.Response.InitialValue" />
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.Date:
+                                <MudItem xs="4" md="4">
+                                    <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Picker example" @bind-Value="Command.Response.InitialValue" />
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.Time:
+                                <MudItem xs="4" md="4">
+                                    <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Picker example" @bind-Value="Command.Response.InitialValue" />
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.Duration:
+                                <MudItem xs="4" md="4">
+                                    <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Picker example" @bind-Value="Command.Response.InitialValue" />
+                                </MudItem>
+                                break;
+                        }
                         <MudItem xs="4" md="4">
                             <MudTextField For="@(() => this.Command.Response.Comment)" @bind-Value="@this.Command.Response.Comment" Label="Comment" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
                         </MudItem>
@@ -118,36 +211,48 @@
 </div>
 
 @code {
-    bool requestOn;
-    bool responseOn;
+    private bool requestOn = false;
+    private bool responseOn = false;
 
-    EdgeModuleCommandDto Command = new EdgeModuleCommandDto();
+    [Parameter]
+    public EdgeModuleCommandDto Command { get; set; }
 
     string requestSelectedSchema;
     string responseSelectedSchema;
 
-    private List<string> PrimitiveSchemaList = new List<string>
+    protected override Task OnInitializedAsync()
     {
-        "boolean",
-        "date",
-        "dateTime",
-        "double	",
-        "duration",
-        "float",
-        "integer",
-        "long",
-        "string",
-        "time",
-    };
+        if (Command.Request.Name != null)
+        {
+            requestOn = true;
+        }
 
-    public void InitRequest(){
-        Console.WriteLine("**********************DEBUT********************");
-        if (requestOn)
+        if (Command.Response.Name != null)
         {
-            this.Command.Request = new EdgeModuleCommandPayloadDto();
-        }else
+            responseOn = true;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public class ObjectToBoolConverter : BoolConverter<object>
+    {
+        public ObjectToBoolConverter()
         {
-            this.Command.Request = null;
+            SetFunc = OnSet;
+            GetFunc = OnGet;
+        }
+
+        private string OnGet(bool? value) => value?.ToString()?.ToLowerInvariant();
+
+        private bool? OnSet(object arg)
+        {
+            if (!bool.TryParse(arg.ToString(), out var value))
+            {
+                return null;
+            }
+
+            return value;
         }
     }
 }

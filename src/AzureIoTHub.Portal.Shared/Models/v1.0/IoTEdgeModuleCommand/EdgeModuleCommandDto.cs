@@ -32,5 +32,11 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand
         public EdgeModuleCommandPayloadDto? Request { get; set; }
 
         public EdgeModuleCommandPayloadDto? Response { get; set; }
+
+        public EdgeModuleCommandDto()
+        {
+            Request = new EdgeModuleCommandPayloadDto();
+            Response = new EdgeModuleCommandPayloadDto();
+        }
     }
 }
