@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Domain.Entities
 {
     using AzureIoTHub.Portal.Domain.Base;
+    using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand;
 
     public class EdgeModuleCommand : EntityBase
     {
@@ -32,11 +33,13 @@ namespace AzureIoTHub.Portal.Domain.Entities
     {
         public string Name { get; set; }
 
+        public ModuleCommandSchemaType moduleCommandSchemaType { get; set; }
+
         public object Schema { get; set; }
 
         public string EdgeModuleCommandId { get; set; }
 
-        public object InitialValue { get; set; }
+        public object? InitialValue { get; set; }
 
         public string? Comment { get; set; }
 
