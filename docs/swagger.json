@@ -412,6 +412,18 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "labels",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
           }
         ],
         "responses": {
@@ -714,6 +726,45 @@
         }
       }
     },
+    "/api/devices/available-labels": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "operationId": "GET Available Labels on Devices",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/edge/devices": {
       "get": {
         "tags": [
@@ -781,6 +832,17 @@
             "style": "form",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "labels",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
@@ -1140,6 +1202,45 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/IoTEdgeDeviceLog"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/devices/available-labels": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "operationId": "GET Available Labels on Edge Devices",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
                   }
                 }
               }
@@ -2090,6 +2191,45 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/LoRaDeviceTelemetryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/lorawan/devices/available-labels": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "operationId": "GET Available Labels on LoRaWAN Devices",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
                   }
                 }
               }
@@ -3850,6 +3990,14 @@
             "type": "boolean",
             "description": "`true` if this instance is lorawan; otherwise, `false`.",
             "readOnly": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -4003,6 +4151,14 @@
           "supportLoRaFeatures": {
             "type": "boolean",
             "description": "A value indicating whether the LoRa features is supported on this model."
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -4334,6 +4490,14 @@
           "isEnabled": {
             "type": "boolean",
             "description": "`true` if this instance is enabled; otherwise, `false`."
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -4468,6 +4632,14 @@
             "items": {
               "$ref": "#/components/schemas/EdgeModelSystemModule"
             },
+            "nullable": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
             "nullable": true
           }
         },
@@ -4645,6 +4817,24 @@
             "description": "The route time to live (secs)",
             "format": "int32",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LabelDto": {
+        "required": [
+          "color",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "color": {
+            "minLength": 1,
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -4872,6 +5062,14 @@
             "description": "A value indicating whether the downlinks are enabled (True if not provided)",
             "default": true,
             "nullable": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -5018,6 +5216,14 @@
             "type": "boolean",
             "description": "Allows disabling the downstream (cloud to device) for a device.\r\nBy default downstream messages are enabled.",
             "default": true,
+            "nullable": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
             "nullable": true
           }
         },
