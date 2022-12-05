@@ -21,10 +21,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
             this.context = context;
         }
 
-        public IEnumerable<T> GetAll()
+        public IEnumerable<T> GetAll(params Expression<Func<T, object>>[] includes)
         {
-            return this.context.Set<T>()
-                                .ToList<T>();
+            IQueryable<T> query = this.context.Set<T>();
+
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+
+            return query.ToList<T>();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes)

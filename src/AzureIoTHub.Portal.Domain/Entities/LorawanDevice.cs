@@ -3,48 +3,14 @@
 
 namespace AzureIoTHub.Portal.Domain.Entities
 {
-    using Base;
     using Models.v10.LoRaWAN;
 
-    public class LorawanDevice : EntityBase
+    public class LorawanDevice : Device
     {
-
         public LorawanDevice()
         {
             Telemetry = new HashSet<LoRaDeviceTelemetry>();
         }
-
-        /// <summary>
-        /// The name of the device.
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// The model identifier.
-        /// </summary>
-        public string DeviceModelId { get; set; }
-
-        /// <summary>
-        ///   <c>true</c> if this instance is connected; otherwise, <c>false</c>.
-        /// </summary>
-        public bool IsConnected { get; set; }
-
-        /// <summary>
-        ///   <c>true</c> if this instance is enabled; otherwise, <c>false</c>.
-        /// </summary>
-        public bool IsEnabled { get; set; }
-
-        public int Version { get; set; }
-
-        /// <summary>
-        /// The status updated time.
-        /// </summary>
-        public DateTime StatusUpdatedTime { get; set; }
-
-        /// <summary>
-        /// List of custom device tags and their values.
-        /// </summary>
-        public ICollection<DeviceTagValue> Tags { get; set; }
 
         /// <summary>
         /// A value indicating whether the device uses OTAA to authenticate to LoRaWAN Network, otherwise ABP
@@ -208,15 +174,5 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// Device Telemetries
         /// </summary>
         public ICollection<LoRaDeviceTelemetry> Telemetry { get; set; }
-
-        /// <summary>
-        /// The device model
-        /// </summary>
-        public DeviceModel DeviceModel { get; set; }
-
-        /// <summary>
-        /// Labels
-        /// </summary>
-        public ICollection<Label> Labels { get; set; }
     }
 }

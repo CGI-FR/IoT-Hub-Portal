@@ -59,7 +59,8 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task<IEnumerable<TListItem>> GetDeviceModels()
         {
-            return await Task.Run(() => this.deviceModelRepository.GetAll()
+            return await Task.Run(() => this.deviceModelRepository
+                .GetAll(c => c.Labels)
                 .Select(model =>
                 {
                     var deviceModelDto = this.mapper.Map<TListItem>(model);

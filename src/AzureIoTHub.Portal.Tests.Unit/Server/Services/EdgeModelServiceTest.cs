@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using AutoFixture;
     using AutoMapper;
@@ -80,7 +81,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 item.ImageUrl = expectedImageUri;
             }
 
-            _ = this.mockEdgeDeviceModelRepository.Setup(repo => repo.GetAll())
+            _ = this.mockEdgeDeviceModelRepository.Setup(repo => repo.GetAll(It.IsAny<Expression<Func<EdgeDeviceModel, object>>[]>()))
                 .Returns(expectedEdgeDeviceModels);
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.IsAny<string>()))

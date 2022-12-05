@@ -41,11 +41,13 @@ namespace AzureIoTHub.Portal.Infrastructure
                     v => JsonConvert.DeserializeObject<LoRaTelemetry>(v));
 
             _ = modelBuilder.Entity<Device>()
+                .ToTable($"{nameof(Device)}s")
                 .HasOne(x => x.DeviceModel)
                 .WithMany()
                 .HasForeignKey(x => x.DeviceModelId);
 
             _ = modelBuilder.Entity<LorawanDevice>()
+                .ToTable($"{nameof(LorawanDevice)}s")
                 .HasOne(x => x.DeviceModel)
                 .WithMany()
                 .HasForeignKey(x => x.DeviceModelId);
