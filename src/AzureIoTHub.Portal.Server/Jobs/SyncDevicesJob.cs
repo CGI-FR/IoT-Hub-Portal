@@ -71,6 +71,12 @@ namespace AzureIoTHub.Portal.Server.Jobs
 
             foreach (var twin in deviceTwins)
             {
+                if (!twin.Tags.Contains(ModelId))
+                {
+                    this.logger.LogInformation($"Cannot import device '{twin.DeviceId}' since it doesn't have a model identifier.");
+                    continue;
+                }
+
                 var deviceModel = await this.deviceModelRepository.GetByIdAsync(twin.Tags[ModelId]?.ToString() ?? string.Empty);
 
                 if (deviceModel == null)
