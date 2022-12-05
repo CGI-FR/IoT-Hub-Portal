@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Server.Services;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;

@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using AutoMapper;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand;
+    using Newtonsoft.Json;
 
     public class EdgeModuleCommandProfile : Profile
     {
@@ -45,9 +46,21 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.DisplayName, opts => opts.MapFrom(src => src.DisplayName))
                 .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
-                .ForMember(dest => dest.Schema, opts => opts.MapFrom(src => src.Schema))
+                .ForMember(dest => dest.Schema, opts => opts.MapFrom(src => TryToDeserializeObjectSchema(src.Schema)))
                 .ForMember(dest => dest.Comment, opts => opts.MapFrom(src => src.Comment))
                 .ForMember(dest => dest.InitialValue, opts => opts.MapFrom(src => src.InitialValue));
+        }
+
+        private static object TryToDeserializeObjectSchema(object schema)
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<PayloadDataTypeDto>(schema?.ToString());
+            }
+            catch (JsonReaderException)
+            {
+                return schema;
+            }
         }
     }
 }
