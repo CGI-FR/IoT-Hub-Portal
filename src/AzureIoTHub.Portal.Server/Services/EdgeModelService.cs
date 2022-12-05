@@ -66,7 +66,7 @@ namespace AzureIoTHub.Portal.Server.Services
         public IEnumerable<IoTEdgeModelListItem> GetEdgeModels()
         {
             return this.edgeModelRepository
-                .GetAll()
+                .GetAll(x => x.Labels)
                 .Select(model =>
                 {
                     var edgeDeviceModelListItem = this.mapper.Map<IoTEdgeModelListItem>(model);

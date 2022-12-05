@@ -3,10 +3,13 @@
 
 namespace AzureIoTHub.Portal.Domain.Entities
 {
-    using AzureIoTHub.Portal.Domain.Base;
-
-    public class Device : EntityBase
+    internal interface IDevice
     {
+        /// <summary>
+        /// The device Identifier.
+        /// </summary>
+        public string Id { get; set; }
+
         /// <summary>
         /// The device friendly name.
         /// </summary>
@@ -33,23 +36,8 @@ namespace AzureIoTHub.Portal.Domain.Entities
         public DateTime StatusUpdatedTime { get; set; }
 
         /// <summary>
-        /// The current version of the device stored n he database
-        /// </summary>
-        public int Version { get; set; }
-
-        /// <summary>
-        /// The device model
-        /// </summary>
-        public DeviceModel DeviceModel { get; set; }
-
-        /// <summary>
         /// The device labels.
         /// </summary>
         public ICollection<Label> Labels { get; set; }
-
-        /// <summary>
-        /// List of custom device tags and their values.
-        /// </summary>
-        public ICollection<DeviceTagValue> Tags { get; set; }
     }
 }

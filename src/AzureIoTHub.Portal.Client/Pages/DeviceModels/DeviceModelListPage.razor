@@ -39,7 +39,14 @@
                     <img height="25" src="@context.ImageUrl" />
                 </MudTd>
                 <MudTd DataLabel="Name">
-                    @context.Name
+                    <MudItem>
+                        <MudText Typo="Typo.body1" Inline="true">
+                            @context.Name
+                        </MudText>
+                    </MudItem>
+                    <MudItem>
+                        <Labels Items="@context.Labels" />
+                    </MudItem>
                 </MudTd>
                 <MudTd DataLabel="Description" Style="word-break: break-all; ">
                     @context.Description

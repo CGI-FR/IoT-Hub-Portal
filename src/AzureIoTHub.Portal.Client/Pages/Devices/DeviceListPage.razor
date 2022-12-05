@@ -138,7 +138,7 @@
                     <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="addDeviceButton" Class="ma-1" />
                 </MudTooltip>
 
-                <MudButton id="manageDevicesButtonToggle"  Variant="Variant.Filled" Color="Color.Primary" OnClick="@ToggleOpen">
+                <MudButton id="manageDevicesButtonToggle" Variant="Variant.Filled" Color="Color.Primary" OnClick="@ToggleOpen">
                     Manage devices
                     <MudPopover Open="@menuIsOpen" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.TopRight">
                         <MudItem>
@@ -166,7 +166,7 @@
             </ToolBarContent>
             <HeaderContent>
                 <MudTh></MudTh>
-                <MudTh><MudTableSortLabel SortLabel="DeviceID" T="DeviceListItem">Device</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortLabel="Id" T="DeviceListItem">Device</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsEnabled" T="DeviceListItem">Allowed</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="IsConnected" T="DeviceListItem">Connection state</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align: center"><MudTableSortLabel SortLabel="StatusUpdatedTime" T="DeviceListItem">Last status update</MudTableSortLabel></MudTh>
@@ -182,7 +182,13 @@
                     <img height="25" src="@context.ImageUrl" />
                 </MudTd>
                 <MudTd DataLabel="Device">
-                    <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText><MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceID</MudText>
+                    <MudItem>
+                        <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText>
+                        <MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceID</MudText>
+                    </MudItem>
+                    <MudItem>
+                        <Labels Items="@context.Labels" SearchedLabels="@labels" />
+                    </MudItem>
                 </MudTd>
 
                 <MudTd DataLabel="Allowed" Style="text-align: center">
@@ -327,7 +333,7 @@
                 uri += $"&tag.{searchTag.Key}={searchTag.Value}";
             }
 
-            foreach(var label in selectedLabels)
+            foreach (var label in selectedLabels)
             {
                 uri += $"&labels={label.Name}";
             }

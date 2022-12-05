@@ -112,7 +112,13 @@
                     <img height="25" src="@context.ImageUrl" />
                 </MudTd>
                 <MudTd DataLabel="Device">
-                    <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText><MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceId</MudText>
+                    <MudItem>
+                        <MudText Typo="Typo.body1" Inline="true">@context.DeviceName</MudText>
+                        <MudText Class="pl-2" Typo="Typo.caption" Style="@($"color:{Theme.CurrentTheme.Palette.GrayLight};")" Inline="true">@context.DeviceId</MudText>
+                    </MudItem>
+                    <MudItem>
+                        <Labels Items="@context.Labels" SearchedLabels="@labels" />
+                    </MudItem>
                 </MudTd>
                 <MudTd DataLabel="Status" Style="text-align: center">
                     @if (context.Status == "Enabled")

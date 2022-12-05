@@ -1,0 +1,47 @@
+﻿@using AzureIoTHub.Portal.Shared.Models.v10
+
+@if (displayedLabels != null)
+{
+    <MudChipSet ReadOnly="true">
+        @foreach (var label in displayedLabels)
+        {
+            <MudChip Text="@label.Name" Color="Color.Primary" Size="Size.Small" Style="@($"background-color: {label.Color};")" />
+        }
+    </MudChipSet>
+}
+
+@code {
+
+    private IEnumerable<LabelDto> displayedLabels;
+
+    [Parameter]
+    public int MaxDisplayedLabels { get; set; } = 3;
+
+    [Parameter]
+    public IEnumerable<LabelDto> SearchedLabels { get; set; }
+
+    [Parameter]
+    public IEnumerable<LabelDto> Items { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Items == null)
+        {
+            displayedLabels = Array.Empty<LabelDto>();
+            return;
+        }
+
+        if (SearchedLabels != null)
+        {
+            displayedLabels = SearchedLabels.Where(x => Items.Any(c => c.Name == x.Name))
+                                                    .UnionBy(Items, x => x.Name);
+        }
+        else
+        {
+            displayedLabels = Items;
+        }
+
+        displayedLabels = displayedLabels
+                                .Take(MaxDisplayedLabels);
+    }
+}

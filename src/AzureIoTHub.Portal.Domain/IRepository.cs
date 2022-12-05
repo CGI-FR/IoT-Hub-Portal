@@ -11,7 +11,7 @@ namespace AzureIoTHub.Portal.Domain
 
     public interface IRepository<T> where T : EntityBase
     {
-        IEnumerable<T> GetAll();
+        IEnumerable<T> GetAll(params Expression<Func<T, object>>[] includes);
 
         Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? expression = null, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
 

@@ -4,7 +4,9 @@
 namespace AzureIoTHub.Portal.Models.v10
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using AzureIoTHub.Portal.Shared.Models.v10;
 
     public class IoTEdgeModelListItem
     {
@@ -25,5 +27,10 @@ namespace AzureIoTHub.Portal.Models.v10
         public string Description { get; set; }
 
         public Uri ImageUrl { get; set; }
+
+        /// <summary>
+        /// Gets the edge model labels.
+        /// </summary>
+        public IEnumerable<LabelDto> Labels { get; set; }
     }
 }

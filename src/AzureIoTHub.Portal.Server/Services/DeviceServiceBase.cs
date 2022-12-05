@@ -65,52 +65,52 @@ namespace AzureIoTHub.Portal.Server.Services
             };
 
             var devicePredicate = PredicateBuilder.True<Device>();
-            var lorawanDevicePredicate = PredicateBuilder.True<LorawanDevice>();
 
             if (deviceListFilter.IsConnected != null)
             {
                 devicePredicate = devicePredicate.And(device => device.IsConnected.Equals(deviceListFilter.IsConnected));
-                lorawanDevicePredicate = lorawanDevicePredicate.And(device => device.IsConnected.Equals(deviceListFilter.IsConnected));
             }
 
             if (deviceListFilter.IsEnabled != null)
             {
                 devicePredicate = devicePredicate.And(device => device.IsEnabled.Equals(deviceListFilter.IsEnabled));
-                lorawanDevicePredicate = lorawanDevicePredicate.And(device => device.IsEnabled.Equals(deviceListFilter.IsEnabled));
             }
 
             if (!string.IsNullOrWhiteSpace(deviceListFilter.Keyword))
             {
                 devicePredicate = devicePredicate.And(device => device.Id.ToLower().Contains(deviceListFilter.Keyword.ToLower()) || device.Name.ToLower().Contains(deviceListFilter.Keyword.ToLower()));
-                lorawanDevicePredicate = lorawanDevicePredicate.And(device => device.Id.ToLower().Contains(deviceListFilter.Keyword.ToLower()) || device.Name.ToLower().Contains(deviceListFilter.Keyword.ToLower()));
             }
 
             foreach (var keyValuePair in deviceListFilter.Tags)
             {
                 devicePredicate = devicePredicate.And(device => device.Tags.Any(value =>
                     value.Name.Equals(keyValuePair.Key) && value.Value.Equals(keyValuePair.Value)));
-
-                lorawanDevicePredicate = lorawanDevicePredicate.And(device => device.Tags.Any(value =>
-                    value.Name.Equals(keyValuePair.Key) && value.Value.Equals(keyValuePair.Value)));
             }
 
             if (!string.IsNullOrWhiteSpace(deviceListFilter.ModelId))
             {
                 devicePredicate = devicePredicate.And(device => device.DeviceModelId.Equals(deviceListFilter.ModelId));
-                lorawanDevicePredicate = lorawanDevicePredicate.And(device => device.DeviceModelId.Equals(deviceListFilter.ModelId));
             }
 
             deviceListFilter.Labels?.ForEach(label =>
             {
                 devicePredicate = devicePredicate.And(device => device.Labels.Any(value => value.Name.Equals(label)) || device.DeviceModel.Labels.Any(value => value.Name.Equals(label)));
-                lorawanDevicePredicate = lorawanDevicePredicate.And(device => device.Labels.Any(value => value.Name.Equals(label)) || device.DeviceModel.Labels.Any(value => value.Name.Equals(label)));
             });
 
+            var ordering = deviceListFilter.OrderBy?.Any() == true ? string.Join(",", deviceListFilter.OrderBy) : null;
+
             var query = this.portalDbContext.Devices
-                .Include(device => device.Tags)
-                .Include(device => device.Labels)
-                .Include(device => device.DeviceModel.Labels)
                 .Where(devicePredicate)
+                .OrderBy(!string.IsNullOrWhiteSpace(ordering) ? ordering : nameof(IDevice.Id))
+                .Include(device => device.Labels);
+
+            var resultCount = await query
+                                    .AsNoTracking()
+                                    .CountAsync();
+
+            var devices = await query
+                .Skip(deviceListFilter.PageNumber * deviceListFilter.PageSize)
+                .Take(deviceListFilter.PageSize)
                 .Select(device => new DeviceListItem
                 {
                     DeviceID = device.Id,
@@ -119,31 +119,16 @@ namespace AzureIoTHub.Portal.Server.Services
                     IsConnected = device.IsConnected,
                     StatusUpdatedTime = device.StatusUpdatedTime,
                     DeviceModelId = device.DeviceModelId,
-                    SupportLoRaFeatures = false,
+                    SupportLoRaFeatures = device is LorawanDevice,
+                    Labels = device.Labels
+                        .Union(device.DeviceModel.Labels)
+                        .Select(x => new LabelDto
+                        {
+                            Color = x.Color,
+                            Name = x.Name,
+                        })
                 })
-                .Union(this.portalDbContext.LorawanDevices
-                    .Include(device => device.Tags)
-                    .Include(device => device.Labels)
-                    .Include(device => device.DeviceModel.Labels)
-                    .Where(lorawanDevicePredicate)
-                    .Select(device => new DeviceListItem
-                    {
-                        DeviceID = device.Id,
-                        DeviceName = device.Name,
-                        IsEnabled = device.IsEnabled,
-                        IsConnected = device.IsConnected,
-                        StatusUpdatedTime = device.StatusUpdatedTime,
-                        DeviceModelId = device.DeviceModelId,
-                        SupportLoRaFeatures = true
-                    }));
-
-            var ordering = deviceListFilter.OrderBy?.Any() == true ? string.Join(",", deviceListFilter.OrderBy) : null;
-
-            query = !string.IsNullOrWhiteSpace(ordering) ? query.OrderBy(ordering) : query.OrderBy(device => device.DeviceID);
-
-            var resultCount = await query.AsNoTracking().CountAsync();
-
-            var devices = await query.Skip(deviceListFilter.PageNumber * deviceListFilter.PageSize).Take(deviceListFilter.PageSize).ToListAsync();
+                .ToListAsync();
 
             devices.ForEach(device =>
             {

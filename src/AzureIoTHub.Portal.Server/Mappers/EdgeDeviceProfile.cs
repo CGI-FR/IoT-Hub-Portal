@@ -18,8 +18,6 @@ namespace AzureIoTHub.Portal.Server.Mappers
     {
         public EdgeDeviceProfile()
         {
-            _ = CreateMap<EdgeDevice, EdgeDevice>();
-
             _ = CreateMap<Twin, EdgeDevice>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.DeviceId))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Tags["deviceName"]))
@@ -63,7 +61,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 .ForMember(dest => dest.DeviceName, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.NbDevices, opts => opts.MapFrom(src => src.NbDevices))
                 .ForMember(dest => dest.ImageUrl, opts => opts.MapFrom((src, _, _, context) => context.Items["imageUrl"]))
-                .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.IsEnabled ? DeviceStatus.Enabled.ToString() : DeviceStatus.Disabled.ToString()));
+                .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.IsEnabled ? DeviceStatus.Enabled.ToString() : DeviceStatus.Disabled.ToString()))
+                .ForMember(dest => dest.Labels, opts => opts.MapFrom(src => src.Labels.Union(src.DeviceModel.Labels)));
         }
 
         private static ICollection<DeviceTagValue> GetTags(Twin twin)
