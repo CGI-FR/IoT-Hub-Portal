@@ -5,6 +5,7 @@ coverage:
         target: auto  # auto compares coverage to the previous base commit
 ignore: 
    - "**/Startup.cs"
+   - "**/Startup/*.cs"
    - "**/Program.cs"
    - "**/PortalDbContext.cs"
    - "**/Migrations/*.cs"
