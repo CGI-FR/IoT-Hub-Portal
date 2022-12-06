@@ -10,9 +10,11 @@ namespace AzureIoTHub.Portal.Server
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
     using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Mappers;
     using AzureIoTHub.Portal.Application.Wrappers;
     using AzureIoTHub.Portal.Domain.Options;
     using AzureIoTHub.Portal.Infrastructure.Managers;
+    using AzureIoTHub.Portal.Infrastructure.Mappers;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using AzureIoTHub.Portal.Infrastructure.Wrappers;
     using AzureIoTHub.Portal.Server.Jobs;
@@ -29,7 +31,6 @@ namespace AzureIoTHub.Portal.Server
     using Infrastructure.Repositories;
     using Infrastructure.Seeds;
     using Managers;
-    using Mappers;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;

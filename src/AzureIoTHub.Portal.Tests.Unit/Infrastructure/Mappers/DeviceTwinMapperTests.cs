@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
+namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
     using System;
     using System.Collections.Generic;
@@ -9,7 +9,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
     using AzureIoTHub.Portal.Crosscutting.Extensions;
     using AzureIoTHub.Portal.Infrastructure.Factories;
     using AzureIoTHub.Portal.Infrastructure.Helpers;
-    using AzureIoTHub.Portal.Server.Mappers;
+    using AzureIoTHub.Portal.Infrastructure.Mappers;
     using Microsoft.Azure.Devices.Shared;
     using Models.v10;
     using Moq;

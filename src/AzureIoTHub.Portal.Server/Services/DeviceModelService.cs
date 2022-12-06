@@ -9,13 +9,13 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Threading.Tasks;
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Infrastructure.Mappers;
     using AzureIoTHub.Portal.Shared.Models;
     using Domain;
     using Domain.Entities;
     using Domain.Exceptions;
     using Domain.Repositories;
     using Infrastructure.Helpers;
-    using Managers;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Azure.Devices.Shared;
 

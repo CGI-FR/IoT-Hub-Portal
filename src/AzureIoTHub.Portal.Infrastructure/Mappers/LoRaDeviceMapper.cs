@@ -1,16 +1,17 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Mappers
+namespace AzureIoTHub.Portal.Infrastructure.Mappers
 {
     using System;
     using System.Collections.Generic;
+    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Mappers;
+    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
-    using AzureIoTHub.Portal.Infrastructure.Helpers;
-    using AzureIoTHub.Portal.Application.Managers;
 
     public class LoRaDeviceTwinMapper : IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>
     {

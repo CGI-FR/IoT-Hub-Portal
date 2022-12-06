@@ -3,34 +3,34 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 {
-    using UnitTests.Bases;
-    using NUnit.Framework;
-    using AutoFixture;
-    using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Domain;
-    using Models.v10;
-    using AzureIoTHub.Portal.Server.Mappers;
-    using AzureIoTHub.Portal.Server.Services;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
-    using System.Threading.Tasks;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using Models.v10.LoRaWAN;
-    using FluentAssertions;
-    using Portal.Domain.Entities;
-    using AzureIoTHub.Portal.Domain.Exceptions;
-    using Microsoft.Azure.Devices.Shared;
-    using Microsoft.Azure.Devices;
-    using AutoMapper;
-    using EntityFramework.Exceptions.Common;
-    using Azure.Messaging.EventHubs;
-    using System.Text.Json;
     using System.Globalization;
-    using Microsoft.EntityFrameworkCore;
-    using AzureIoTHub.Portal.Shared.Models.v10;
+    using System.Linq;
+    using System.Text.Json;
+    using System.Threading.Tasks;
+    using AutoFixture;
+    using AutoMapper;
+    using Azure.Messaging.EventHubs;
     using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Mappers;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using EntityFramework.Exceptions.Common;
+    using FluentAssertions;
+    using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Shared;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.DependencyInjection;
+    using Models.v10;
+    using Models.v10.LoRaWAN;
+    using Moq;
+    using NUnit.Framework;
+    using Portal.Domain.Entities;
+    using UnitTests.Bases;
 
     [TestFixture]
     public class LoRaWanDeviceServiceTests : BackendUnitTest

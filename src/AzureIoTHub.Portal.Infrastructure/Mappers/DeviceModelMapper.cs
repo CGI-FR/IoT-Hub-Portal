@@ -1,10 +1,10 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Mappers
+namespace AzureIoTHub.Portal.Infrastructure.Mappers
 {
     using Azure.Data.Tables;
-    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Infrastructure.Managers;
     using AzureIoTHub.Portal.Models.v10;
     using System;
     using System.Collections.Generic;

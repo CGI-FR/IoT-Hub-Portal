@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Infrastructure.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;
@@ -27,7 +28,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Portal.Domain.Entities;
     using Portal.Domain.Exceptions;
     using Portal.Domain.Repositories;
-    using Portal.Server.Managers;
     using UnitTests.Bases;
 
     [TestFixture]
