@@ -1,11 +1,11 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Mappers
+namespace AzureIoTHub.Portal.Application.Mappers
 {
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Helpers;
     using AzureIoTHub.Portal.Domain.Entities;
-    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using Microsoft.Azure.Devices.Shared;
     using Models.v10.LoRaWAN;
     using Shared.Models.v1._0;

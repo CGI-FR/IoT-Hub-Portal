@@ -48,7 +48,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
             _ = ServiceCollection.AddSingleton(httpClient);
 
             // Add AutoMapper Configuration
-            _ = ServiceCollection.AddAutoMapper(typeof(Startup));
+            _ = ServiceCollection.AddAutoMapper(typeof(Startup), typeof(Application.Mappers.DeviceProfile));
 
             // Add InMemory Database
             var contextOptions = new DbContextOptionsBuilder<PortalDbContext>()

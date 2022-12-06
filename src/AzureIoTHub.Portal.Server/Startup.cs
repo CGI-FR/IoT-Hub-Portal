@@ -346,7 +346,7 @@ namespace AzureIoTHub.Portal.Server
             });
 
             // Add AutoMapper Configuration
-            _ = services.AddAutoMapper(typeof(Startup));
+            _ = services.AddAutoMapper(typeof(Startup), typeof(Application.Mappers.DeviceProfile));
 
             _ = services.AddHealthChecks()
                 .AddDbContextCheck<PortalDbContext>()

@@ -1,19 +1,19 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Mappers
+namespace AzureIoTHub.Portal.Application.Mappers
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.Json;
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Helpers;
     using AzureIoTHub.Portal.Domain.Entities;
-    using Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.Azure.Devices.Shared;
     using Models.v10;
-    using AzureIoTHub.Portal.Shared.Models.v10;
-    using AzureIoTHub.Portal.Infrastructure.Helpers;
+    using Models.v10.LoRaWAN;
 
     public class DeviceProfile : Profile
     {
