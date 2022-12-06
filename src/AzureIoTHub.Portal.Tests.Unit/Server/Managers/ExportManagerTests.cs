@@ -10,13 +10,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
     using System.Text;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Options;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Managers;
-    using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;

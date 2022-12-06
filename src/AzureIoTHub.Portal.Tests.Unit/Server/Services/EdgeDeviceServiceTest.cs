@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AutoFixture;
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;

@@ -13,11 +13,11 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Text.Json.Nodes;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Options;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using CsvHelper;
     using CsvHelper.Configuration;

@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Helpers;
     using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;

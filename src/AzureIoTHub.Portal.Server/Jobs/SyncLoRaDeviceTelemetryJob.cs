@@ -3,16 +3,16 @@
 
 namespace AzureIoTHub.Portal.Server.Jobs
 {
+    using System.Threading;
     using System.Threading.Tasks;
+    using Azure.Messaging.EventHubs;
+    using Azure.Messaging.EventHubs.Processor;
+    using Azure.Storage.Blobs;
+    using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Domain;
     using Microsoft.Extensions.Logging;
     using Quartz;
-    using Azure.Messaging.EventHubs;
-    using Azure.Storage.Blobs;
-    using System.Threading;
-    using Azure.Messaging.EventHubs.Processor;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Services;
 
     public class SyncLoRaDeviceTelemetryJob : IJob
     {

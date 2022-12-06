@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Azure.Messaging.EventHubs;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Mappers;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using Domain;

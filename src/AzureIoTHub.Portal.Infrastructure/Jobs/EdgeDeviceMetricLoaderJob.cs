@@ -1,11 +1,11 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Jobs
+namespace AzureIoTHub.Portal.Infrastructure.Jobs
 {
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Application.Services;
     using Microsoft.Extensions.Logging;
     using Quartz;
     using Shared.Models.v1._0;

@@ -7,9 +7,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Controllers.v10;
-    using AzureIoTHub.Portal.Server.Services;
     using Microsoft.AspNetCore.Mvc;
     using Moq;
     using NUnit.Framework;

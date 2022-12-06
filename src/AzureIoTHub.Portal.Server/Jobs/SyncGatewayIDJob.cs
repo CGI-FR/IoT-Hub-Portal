@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Server.Jobs
 {
     using System;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using Microsoft.Extensions.Logging;
     using Quartz;

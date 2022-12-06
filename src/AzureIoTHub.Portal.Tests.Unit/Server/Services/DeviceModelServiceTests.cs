@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Providers;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Infrastructure.Mappers;
     using AzureIoTHub.Portal.Server.Services;

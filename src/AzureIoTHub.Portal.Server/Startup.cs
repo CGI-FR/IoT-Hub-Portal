@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server
     using System.IO;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Application.Startup;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using AzureIoTHub.Portal.Infrastructure.Startup;
@@ -267,9 +268,6 @@ namespace AzureIoTHub.Portal.Server
                     });
                 });
 
-                q.AddMetricsService<DeviceMetricExporterJob, DeviceMetricLoaderJob>(configuration);
-                q.AddMetricsService<EdgeDeviceMetricExporterJob, EdgeDeviceMetricLoaderJob>(configuration);
-                q.AddMetricsService<ConcentratorMetricExporterJob, ConcentratorMetricLoaderJob>(configuration);
 
                 _ = q.AddJob<SyncDevicesJob>(j => j.WithIdentity(nameof(SyncDevicesJob)))
                     .AddTrigger(t => t

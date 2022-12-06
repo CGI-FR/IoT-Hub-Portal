@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 {
     using System;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Filters;
     using Hellang.Middleware.ProblemDetails;
@@ -13,7 +14,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Extensions.Logging;
-    using Services;
 
     [Authorize]
     [ApiController]

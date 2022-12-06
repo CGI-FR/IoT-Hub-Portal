@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 {
     using System;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
-    using AzureIoTHub.Portal.Server.Jobs;
+    using AzureIoTHub.Portal.Infrastructure.Jobs;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using FluentAssertions;
     using Microsoft.Extensions.Logging;

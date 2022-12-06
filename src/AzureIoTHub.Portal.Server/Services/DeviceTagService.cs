@@ -8,12 +8,13 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Services;
     using Domain;
-    using Domain.Exceptions;
-    using Models.v10;
     using Domain.Entities;
+    using Domain.Exceptions;
     using Domain.Repositories;
     using Microsoft.EntityFrameworkCore;
+    using Models.v10;
 
     public class DeviceTagService : IDeviceTagService
     {

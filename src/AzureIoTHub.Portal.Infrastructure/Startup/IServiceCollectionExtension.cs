@@ -5,33 +5,36 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 {
     using System.Net;
     using Azure.Storage.Blobs;
+    using Azure.Storage.Blobs.Models;
+    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Mappers;
     using AzureIoTHub.Portal.Application.Providers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Application.Wrappers;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Options;
+    using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Infrastructure.Extensions;
+    using AzureIoTHub.Portal.Infrastructure.Jobs;
+    using AzureIoTHub.Portal.Infrastructure.Managers;
+    using AzureIoTHub.Portal.Infrastructure.Mappers;
     using AzureIoTHub.Portal.Infrastructure.Providers;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Services;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using AzureIoTHub.Portal.Infrastructure.Wrappers;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using EntityFramework.Exceptions.PostgreSQL;
-    using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Options;
     using Polly;
     using Polly.Extensions.Http;
-    using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Infrastructure.Repositories;
-    using AzureIoTHub.Portal.Application.Mappers;
-    using AzureIoTHub.Portal.Infrastructure.Mappers;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Application.Managers;
-    using AzureIoTHub.Portal.Infrastructure.Managers;
-    using Azure.Storage.Blobs.Models;
-    using Microsoft.Extensions.Configuration;
+    using Quartz;
 
     public static class IServiceCollectionExtension
     {
@@ -44,7 +47,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                             .ConfigureDeviceRegstryDependencies(configuration)
                             .ConfigureServices()
                             .ConfigureMappers()
-                            .ConfigureHealthCheck();
+                            .ConfigureHealthCheck()
+                            .ConfigureMetricsJobs(configuration);
         }
 
         private static IServiceCollection AddLoRaWanSupport(this IServiceCollection services, ConfigHandler configuration)
@@ -180,6 +184,16 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 
                                 opts.BaseUri = container.Uri;
                             });
+        }
+
+        private static IServiceCollection ConfigureMetricsJobs(this IServiceCollection services, ConfigHandler configuration)
+        {
+            return services.AddQuartz(q =>
+            {
+                q.AddMetricsService<DeviceMetricExporterJob, DeviceMetricLoaderJob>(configuration);
+                q.AddMetricsService<EdgeDeviceMetricExporterJob, EdgeDeviceMetricLoaderJob>(configuration);
+                q.AddMetricsService<ConcentratorMetricExporterJob, ConcentratorMetricLoaderJob>(configuration);
+            });
         }
     }
 }

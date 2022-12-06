@@ -9,10 +9,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
     using System.Threading;
     using System.Threading.Tasks;
     using AutoFixture;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Jobs;
-    using AzureIoTHub.Portal.Server.Services;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;

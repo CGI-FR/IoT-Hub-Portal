@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Azure.Messaging.EventHubs;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Mappers;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
