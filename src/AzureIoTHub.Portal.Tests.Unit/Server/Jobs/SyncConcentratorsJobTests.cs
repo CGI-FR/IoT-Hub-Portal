@@ -12,7 +12,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Server.Jobs;
+    using AzureIoTHub.Portal.Infrastructure.Jobs;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;

@@ -48,7 +48,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                             .ConfigureServices()
                             .ConfigureMappers()
                             .ConfigureHealthCheck()
-                            .ConfigureMetricsJobs(configuration);
+                            .ConfigureMetricsJobs(configuration)
+                            .ConfigureSyncJobs(configuration);
         }
 
         private static IServiceCollection AddLoRaWanSupport(this IServiceCollection services, ConfigHandler configuration)
@@ -193,6 +194,53 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                 q.AddMetricsService<DeviceMetricExporterJob, DeviceMetricLoaderJob>(configuration);
                 q.AddMetricsService<EdgeDeviceMetricExporterJob, EdgeDeviceMetricLoaderJob>(configuration);
                 q.AddMetricsService<ConcentratorMetricExporterJob, ConcentratorMetricLoaderJob>(configuration);
+            });
+        }
+
+        private static IServiceCollection ConfigureSyncJobs(this IServiceCollection services, ConfigHandler configuration)
+        {
+            return services.AddQuartz(q =>
+            {
+                _ = q.AddJob<SyncDevicesJob>(j => j.WithIdentity(nameof(SyncDevicesJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncDevicesJob)}")
+                        .ForJob(nameof(SyncDevicesJob))
+                    .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+
+                _ = q.AddJob<SyncConcentratorsJob>(j => j.WithIdentity(nameof(SyncConcentratorsJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncConcentratorsJob)}")
+                        .ForJob(nameof(SyncConcentratorsJob))
+                    .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+
+                _ = q.AddJob<SyncEdgeDeviceJob>(j => j.WithIdentity(nameof(SyncEdgeDeviceJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncEdgeDeviceJob)}")
+                        .ForJob(nameof(SyncEdgeDeviceJob))
+                        .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+
+                _ = q.AddJob<SyncGatewayIDJob>(j => j.WithIdentity(nameof(SyncGatewayIDJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncGatewayIDJob)}")
+                        .ForJob(nameof(SyncGatewayIDJob))
+                        .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                        .RepeatForever()));
+
+                if (configuration.IsLoRaEnabled)
+                {
+                    _ = q.AddJob<SyncLoRaDeviceTelemetryJob>(j => j.WithIdentity(nameof(SyncLoRaDeviceTelemetryJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncLoRaDeviceTelemetryJob)}")
+                        .ForJob(nameof(SyncLoRaDeviceTelemetryJob))
+                        .StartNow());
+                }
             });
         }
     }

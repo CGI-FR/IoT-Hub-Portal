@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
     using System;
     using System.Collections.Generic;
     using AzureIoTHub.Portal.Application.Services;
-    using AzureIoTHub.Portal.Server.Jobs;
+    using AzureIoTHub.Portal.Infrastructure.Jobs;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;

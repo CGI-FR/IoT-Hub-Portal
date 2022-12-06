@@ -65,5 +65,9 @@
     <PackageReference Include="Quartz.Serialization.Json" Version="3.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Jobs\" />
+  </ItemGroup>
   
 </Project>
