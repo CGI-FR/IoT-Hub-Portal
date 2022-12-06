@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System;
     using System.IO;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;

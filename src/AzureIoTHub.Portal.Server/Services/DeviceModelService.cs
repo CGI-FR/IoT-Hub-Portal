@@ -8,15 +8,17 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Domain.Exceptions;
+    using AzureIoTHub.Portal.Application.Helpers;
+    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Providers;
+    using AzureIoTHub.Portal.Infrastructure.Mappers;
     using AzureIoTHub.Portal.Shared.Models;
-    using Domain.Entities;
-    using Domain.Repositories;
     using Domain;
-    using Managers;
+    using Domain.Entities;
+    using Domain.Exceptions;
+    using Domain.Repositories;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Azure.Devices.Shared;
-    using Helpers;
 
     public class DeviceModelService<TListItem, TModel> : IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel
@@ -28,7 +30,7 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IDeviceModelCommandRepository deviceModelCommandRepository;
         private readonly ILabelRepository labelRepository;
 
-        private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
+        private readonly IDeviceRegistryProvider deviceRegistryProvider;
         private readonly IConfigService configService;
         private readonly IDeviceModelImageManager deviceModelImageManager;
         private readonly IDeviceModelMapper<TListItem, TModel> deviceModelMapper;
@@ -39,7 +41,7 @@ namespace AzureIoTHub.Portal.Server.Services
             IDeviceModelRepository deviceModelRepository,
             IDeviceModelCommandRepository deviceModelCommandRepository,
             ILabelRepository labelRepository,
-            IDeviceProvisioningServiceManager deviceProvisioningServiceManager,
+            IDeviceRegistryProvider deviceRegistryProvider,
             IConfigService configService,
             IDeviceModelImageManager deviceModelImageManager,
             IDeviceModelMapper<TListItem, TModel> deviceModelMapper,
@@ -50,7 +52,7 @@ namespace AzureIoTHub.Portal.Server.Services
             this.deviceModelRepository = deviceModelRepository;
             this.deviceModelCommandRepository = deviceModelCommandRepository;
             this.labelRepository = labelRepository;
-            this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
+            this.deviceRegistryProvider = deviceRegistryProvider;
             this.configService = configService;
             this.deviceModelImageManager = deviceModelImageManager;
             this.deviceModelMapper = deviceModelMapper;
@@ -173,7 +175,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             var deviceModelTwin = new TwinCollection();
 
-            _ = await this.deviceProvisioningServiceManager.CreateEnrollmentGroupFromModelAsync(deviceModel.ModelId, deviceModel.Name, deviceModelTwin);
+            _ = await this.deviceRegistryProvider.CreateEnrollmentGroupFromModelAsync(deviceModel.ModelId, deviceModel.Name, deviceModelTwin);
 
             await this.configService.RollOutDeviceModelConfiguration(deviceModel.ModelId, desiredProperties);
         }

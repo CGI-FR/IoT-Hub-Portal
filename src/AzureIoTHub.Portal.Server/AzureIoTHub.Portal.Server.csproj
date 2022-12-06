@@ -66,35 +66,5 @@
     <PackageReference Include="Quartz.Serialization.Json" Version="3.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Resources\default-template-icon.png" />
-    <Content Remove="RouterConfigFiles\CN_470_510_RP1.json" />
-    <Content Remove="RouterConfigFiles\CN_470_510_RP2.json" />
-    <Content Remove="RouterConfigFiles\EU_863_870.json" />
-    <Content Remove="RouterConfigFiles\US_902_928_FSB_1.json" />
-    <Content Remove="RouterConfigFiles\US_902_928_FSB_2.json" />
-    <Content Remove="RouterConfigFiles\US_902_928_FSB_3.json" />
-    <Content Remove="RouterConfigFiles\US_902_928_FSB_4.json" />
-    <Content Remove="RouterConfigFiles\US_902_928_FSB_5.json" />
-    <Content Remove="RouterConfigFiles\US_902_928_FSB_6.json" />
-    <Content Remove="RouterConfigFiles\US_902_928_FSB_7.json" />
-    <Content Remove="RouterConfigFiles\US_902_928_FSB_8.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\default-template-icon.png" />
-    <EmbeddedResource Include="RouterConfigFiles\CN_470_510_RP1.json" />
-    <EmbeddedResource Include="RouterConfigFiles\CN_470_510_RP2.json" />
-    <EmbeddedResource Include="RouterConfigFiles\EU_863_870.json" />
-    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_1.json" />
-    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_2.json" />
-    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_3.json" />
-    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_4.json" />
-    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_5.json" />
-    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_6.json" />
-    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_7.json" />
-    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_8.json" />
-  </ItemGroup>
   
 </Project>

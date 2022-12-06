@@ -14,8 +14,8 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.AspNetCore.Http;
-    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Application.Managers;
 
     public class EdgeModelService : IEdgeModelService
     {

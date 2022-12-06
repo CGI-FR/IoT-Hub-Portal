@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Threading;
     using System.Threading.Tasks;
     using Azure;
+    using AzureIoTHub.Portal.Application.Providers;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Services;
@@ -23,7 +24,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Moq;
     using Newtonsoft.Json;
     using NUnit.Framework;
-    using Portal.Server.Managers;
 
     [TestFixture]
     public class ExternalDeviceServiceTests
@@ -33,7 +33,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         private Mock<RegistryManager> mockRegistryManager;
         private Mock<ServiceClient> mockServiceClient;
         private Mock<ILogger<ExternalDeviceService>> mockLogger;
-        private Mock<IDeviceProvisioningServiceManager> mockProvisioningServiceManager;
+        private Mock<IDeviceRegistryProvider> mockRegistryProvider;
         private Mock<IDeviceModelRepository> mockDeviceModelRepository;
 
         [SetUp]
@@ -44,7 +44,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockRegistryManager = this.mockRepository.Create<RegistryManager>();
             this.mockServiceClient = this.mockRepository.Create<ServiceClient>();
             this.mockLogger = this.mockRepository.Create<ILogger<ExternalDeviceService>>();
-            this.mockProvisioningServiceManager = this.mockRepository.Create<IDeviceProvisioningServiceManager>();
+            this.mockRegistryProvider = this.mockRepository.Create<IDeviceRegistryProvider>();
             this.mockDeviceModelRepository = this.mockRepository.Create<IDeviceModelRepository>();
         }
 
@@ -55,7 +55,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 this.mockRegistryManager.Object,
                 this.mockServiceClient.Object,
                 this.mockDeviceModelRepository.Object,
-                this.mockProvisioningServiceManager.Object);
+                this.mockRegistryProvider.Object);
         }
 
         [Test]
@@ -1218,7 +1218,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 this.mockRegistryManager.Object,
                 this.mockServiceClient.Object,
                 this.mockDeviceModelRepository.Object,
-                this.mockProvisioningServiceManager.Object);
+                this.mockRegistryProvider.Object);
 
             // Act
             var result = await deviceService.GetEdgeDeviceLogs(deviceId, edgeModule);
@@ -1279,7 +1279,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 this.mockRegistryManager.Object,
                 this.mockServiceClient.Object,
                 this.mockDeviceModelRepository.Object,
-                this.mockProvisioningServiceManager.Object);
+                this.mockRegistryProvider.Object);
 
             // Act
             var result = await deviceService.GetEdgeDeviceLogs(deviceId, edgeModule);
@@ -1332,12 +1332,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new RequestFailedException("test"));
 
-            var deviceService = new ExternalDeviceService(
-                logger,
-                this.mockRegistryManager.Object,
-                this.mockServiceClient.Object,
-                this.mockDeviceModelRepository.Object,
-                this.mockProvisioningServiceManager.Object);
+            var deviceService = CreateService();
 
             // Act
             var act = () => deviceService.GetEdgeDeviceLogs(deviceId, edgeModule);
@@ -1623,7 +1618,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     Name = "ccc"
                 });
 
-            _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync(deviceId, "ccc"))
+            _ = this.mockRegistryProvider.Setup(c => c.GetEnrollmentCredentialsAsync(deviceId, "ccc"))
                 .ReturnsAsync(mockRegistrationCredentials);
 
             // Act
@@ -1694,7 +1689,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     Name = "ccc"
                 });
 
-            _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync(deviceId, "ccc"))
+            _ = this.mockRegistryProvider.Setup(c => c.GetEnrollmentCredentialsAsync(deviceId, "ccc"))
                 .Throws(new RequestFailedException("test"));
 
             // Act
@@ -1758,7 +1753,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockRegistryManager.Setup(c => c.GetTwinAsync(It.Is<string>(x => x == mockTwin.DeviceId)))
                 .ReturnsAsync(mockTwin);
 
-            _ = this.mockProvisioningServiceManager.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", It.IsAny<string>()))
+            _ = this.mockRegistryProvider.Setup(c => c.GetEnrollmentCredentialsAsync("aaa", It.IsAny<string>()))
                 .ReturnsAsync(mockRegistrationCredentials);
 
             // Act

@@ -9,7 +9,18 @@ namespace AzureIoTHub.Portal.Server
     using System.Threading.Tasks;
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
+    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Mappers;
+    using AzureIoTHub.Portal.Application.Providers;
+    using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Application.Wrappers;
     using AzureIoTHub.Portal.Domain.Options;
+    using AzureIoTHub.Portal.Infrastructure.Managers;
+    using AzureIoTHub.Portal.Infrastructure.Mappers;
+    using AzureIoTHub.Portal.Infrastructure.Providers;
+    using AzureIoTHub.Portal.Infrastructure.Services;
+    using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
+    using AzureIoTHub.Portal.Infrastructure.Wrappers;
     using AzureIoTHub.Portal.Server.Jobs;
     using Domain;
     using Domain.Exceptions;
@@ -24,7 +35,6 @@ namespace AzureIoTHub.Portal.Server
     using Infrastructure.Repositories;
     using Infrastructure.Seeds;
     using Managers;
-    using Mappers;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -50,9 +60,7 @@ namespace AzureIoTHub.Portal.Server
     using Prometheus;
     using Quartz;
     using Services;
-    using ServicesHealthCheck;
     using Shared.Models.v1._0;
-    using Wrappers;
 
     public class Startup
     {
@@ -132,8 +140,8 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
             _ = services.AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>();
             _ = services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
-            _ = services.AddTransient<IDeviceProvisioningServiceManager, DeviceProvisioningServiceManager>();
-            _ = services.AddTransient<IRouterConfigManager, RouterConfigManager>();
+            _ = services.AddTransient<IDeviceRegistryProvider, AzureDeviceRegistryProvider>();
+            _ = services.AddTransient<ILoRaWanManagementService, LoRaWanManagementService>();
             _ = services.AddTransient<IExportManager, ExportManager>();
 
             _ = services.AddTransient<IDeviceTwinMapper<DeviceListItem, DeviceDetails>, DeviceTwinMapper>();
@@ -180,7 +188,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddHttpClient("RestClient")
                 .AddPolicyHandler(transientHttpErrorPolicy);
 
-            _ = services.AddHttpClient<ILoraDeviceMethodManager, LoraDeviceMethodManager>((sp, client) =>
+            _ = services.AddHttpClient<ILoRaWanManagementService, LoRaWanManagementService>((sp, client) =>
             {
                 var opts = sp.GetService<IOptions<LoRaWANOptions>>().Value;
 
@@ -343,7 +351,7 @@ namespace AzureIoTHub.Portal.Server
             });
 
             // Add AutoMapper Configuration
-            _ = services.AddAutoMapper(typeof(Startup));
+            _ = services.AddAutoMapper(typeof(Startup), typeof(Application.Mappers.DeviceProfile));
 
             _ = services.AddHealthChecks()
                 .AddDbContextCheck<PortalDbContext>()

@@ -7,10 +7,112 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="RouterConfigFiles\AS_923_925_1.json" />
+    <None Remove="RouterConfigFiles\AS_923_925_2.json" />
+    <None Remove="RouterConfigFiles\AS_923_925_3.json" />
+    <None Remove="RouterConfigFiles\AU_915_928_FSB_1.json" />
+    <None Remove="RouterConfigFiles\AU_915_928_FSB_2.json" />
+    <None Remove="RouterConfigFiles\AU_915_928_FSB_3.json" />
+    <None Remove="RouterConfigFiles\AU_915_928_FSB_4.json" />
+    <None Remove="RouterConfigFiles\AU_915_928_FSB_5.json" />
+    <None Remove="RouterConfigFiles\AU_915_928_FSB_6.json" />
+    <None Remove="RouterConfigFiles\AU_915_928_FSB_7.json" />
+    <None Remove="RouterConfigFiles\AU_915_928_FSB_8.json" />
+    <None Remove="RouterConfigFiles\CN_470_510_RP1.json" />
+    <None Remove="RouterConfigFiles\CN_470_510_RP2.json" />
+    <None Remove="RouterConfigFiles\EU_863_870.json" />
+    <None Remove="RouterConfigFiles\US_902_928_FSB_1.json" />
+    <None Remove="RouterConfigFiles\US_902_928_FSB_2.json" />
+    <None Remove="RouterConfigFiles\US_902_928_FSB_3.json" />
+    <None Remove="RouterConfigFiles\US_902_928_FSB_4.json" />
+    <None Remove="RouterConfigFiles\US_902_928_FSB_5.json" />
+    <None Remove="RouterConfigFiles\US_902_928_FSB_6.json" />
+    <None Remove="RouterConfigFiles\US_902_928_FSB_7.json" />
+    <None Remove="RouterConfigFiles\US_902_928_FSB_8.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="RouterConfigFiles\AS_923_925_1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="RouterConfigFiles\AS_923_925_2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="RouterConfigFiles\AS_923_925_3.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="RouterConfigFiles\AU_915_928_FSB_1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="RouterConfigFiles\AU_915_928_FSB_2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="RouterConfigFiles\AU_915_928_FSB_3.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="RouterConfigFiles\AU_915_928_FSB_4.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="RouterConfigFiles\AU_915_928_FSB_5.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="RouterConfigFiles\AU_915_928_FSB_6.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="RouterConfigFiles\AU_915_928_FSB_7.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="RouterConfigFiles\AU_915_928_FSB_8.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="RouterConfigFiles\CN_470_510_RP1.json" />
+    <EmbeddedResource Include="RouterConfigFiles\CN_470_510_RP2.json" />
+    <EmbeddedResource Include="RouterConfigFiles\EU_863_870.json" />
+    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_1.json" />
+    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_2.json" />
+    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_3.json" />
+    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_4.json" />
+    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_5.json" />
+    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_6.json" />
+    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_7.json" />
+    <EmbeddedResource Include="RouterConfigFiles\US_902_928_FSB_8.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Azure.Data.Tables" Version="12.7.1" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.14.1" />
+    <PackageReference Include="CsvHelper" Version="30.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Azure.Devices" Version="1.38.2" />
+    <PackageReference Include="Microsoft.Azure.Devices.Provisioning.Service" Version="1.18.2" />
+    <PackageReference Include="Microsoft.Azure.Devices.Shared" Version="1.30.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0-preview1.22518.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -29,6 +131,8 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\AzureIoTHub.Portal.Application\AzureIoTHub.Portal.Application.csproj" />
+    <ProjectReference Include="..\AzureIoTHub.Portal.Crosscutting\AzureIoTHub.Portal.Crosscutting.csproj" />
     <ProjectReference Include="..\AzureIoTHub.Portal.Domain\AzureIoTHub.Portal.Domain.csproj" />
     
   </ItemGroup>

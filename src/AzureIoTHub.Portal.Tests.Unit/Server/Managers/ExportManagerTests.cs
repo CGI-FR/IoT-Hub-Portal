@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Options;

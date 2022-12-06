@@ -8,11 +8,11 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using Azure;
+    using AzureIoTHub.Portal.Application.Helpers;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Models;
     using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Server.Helpers;
     using AzureIoTHub.Portal.Shared.Models.v10;
 
     public class DeviceConfigurationsService : IDeviceConfigurationsService

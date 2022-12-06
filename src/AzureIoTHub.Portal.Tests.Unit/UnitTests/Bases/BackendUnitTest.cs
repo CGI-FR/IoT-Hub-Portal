@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
 {
     using System;
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Mappers;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Diagnostics;
     using Microsoft.Extensions.DependencyInjection;
@@ -48,7 +49,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases
             _ = ServiceCollection.AddSingleton(httpClient);
 
             // Add AutoMapper Configuration
-            _ = ServiceCollection.AddAutoMapper(typeof(Startup));
+            _ = ServiceCollection.AddAutoMapper(typeof(Startup), typeof(DeviceProfile));
 
             // Add InMemory Database
             var contextOptions = new DbContextOptionsBuilder<PortalDbContext>()

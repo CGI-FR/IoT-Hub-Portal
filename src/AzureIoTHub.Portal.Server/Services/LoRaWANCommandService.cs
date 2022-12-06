@@ -7,11 +7,11 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Services;
     using Domain;
     using Domain.Entities;
     using Domain.Exceptions;
     using Domain.Repositories;
-    using Managers;
     using Microsoft.Extensions.Logging;
     using Models.v10.LoRaWAN;
 
@@ -21,21 +21,21 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly IDeviceModelCommandRepository deviceModelCommandRepository;
         private readonly IDeviceModelRepository deviceModelRepository;
-        private readonly ILoraDeviceMethodManager loraDeviceMethodManager;
+        private readonly ILoRaWanManagementService loRaWanManagementService;
         private readonly ILogger<LoRaWANCommandService> logger;
 
         public LoRaWANCommandService(IMapper mapper,
             IUnitOfWork unitOfWork,
             IDeviceModelCommandRepository deviceModelCommandRepository,
             IDeviceModelRepository deviceModelRepository,
-            ILoraDeviceMethodManager loraDeviceMethodManager,
+            ILoRaWanManagementService loRaWanManagementService,
             ILogger<LoRaWANCommandService> logger)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.deviceModelCommandRepository = deviceModelCommandRepository;
             this.deviceModelRepository = deviceModelRepository;
-            this.loraDeviceMethodManager = loraDeviceMethodManager;
+            this.loRaWanManagementService = loRaWanManagementService;
             this.logger = logger;
         }
 
@@ -83,7 +83,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new ResourceNotFoundException($"The LoRaWAN command {commandId} for the device {deviceId} cannot be found");
             }
 
-            var result = await this.loraDeviceMethodManager.ExecuteLoRaDeviceMessage(deviceId, this.mapper.Map<DeviceModelCommandDto>(commandEntity));
+            var result = await this.loRaWanManagementService.ExecuteLoRaDeviceMessage(deviceId, this.mapper.Map<DeviceModelCommandDto>(commandEntity));
 
             if (!result.IsSuccessStatusCode)
             {

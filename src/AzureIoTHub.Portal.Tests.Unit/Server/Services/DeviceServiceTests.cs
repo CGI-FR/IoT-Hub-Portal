@@ -3,32 +3,32 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 {
-    using UnitTests.Bases;
-    using NUnit.Framework;
-    using Microsoft.Extensions.DependencyInjection;
-    using Models.v10;
-    using AzureIoTHub.Portal.Server.Services;
-    using Moq;
-    using Portal.Domain;
-    using Portal.Domain.Repositories;
-    using Portal.Server.Managers;
-    using Portal.Server.Mappers;
-    using AutoFixture;
-    using System.Threading.Tasks;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using FluentAssertions;
+    using System.Threading.Tasks;
+    using AutoFixture;
+    using AutoMapper;
+    using Azure.Messaging.EventHubs;
+    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Mappers;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using EntityFramework.Exceptions.Common;
+    using FluentAssertions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
-    using Device = Portal.Domain.Entities.Device;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.DependencyInjection;
+    using Models.v10;
+    using Moq;
+    using NUnit.Framework;
+    using Portal.Domain;
     using Portal.Domain.Entities;
-    using AutoMapper;
-    using EntityFramework.Exceptions.Common;
-    using Azure.Messaging.EventHubs;
-    using AzureIoTHub.Portal.Shared.Models.v10;
+    using Portal.Domain.Repositories;
+    using UnitTests.Bases;
+    using Device = Portal.Domain.Entities.Device;
 
     [TestFixture]
     public class DeviceServiceTests : BackendUnitTest
