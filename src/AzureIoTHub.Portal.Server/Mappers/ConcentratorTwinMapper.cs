@@ -4,9 +4,9 @@
 namespace AzureIoTHub.Portal.Server.Mappers
 {
     using System;
-    using AzureIoTHub.Portal.Server.Helpers;
+    using AzureIoTHub.Portal.Crosscutting.Extensions;
+    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using Extensions;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
 

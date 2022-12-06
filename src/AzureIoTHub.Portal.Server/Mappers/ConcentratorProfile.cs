@@ -5,9 +5,9 @@ namespace AzureIoTHub.Portal.Server.Mappers
 {
     using AutoMapper;
     using AzureIoTHub.Portal.Domain.Entities;
-    using Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using Microsoft.Azure.Devices.Shared;
-    using AzureIoTHub.Portal.Server.Helpers;
+    using Models.v10.LoRaWAN;
     using Shared.Models.v1._0;
 
     public class ConcentratorProfile : Profile

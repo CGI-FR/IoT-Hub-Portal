@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Azure;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;
     using Microsoft.Azure.Devices.Shared;
@@ -16,7 +17,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Models.v10;
     using Moq;
     using NUnit.Framework;
-    using Portal.Server.Helpers;
     using UnitTests.Bases;
 
     [TestFixture]

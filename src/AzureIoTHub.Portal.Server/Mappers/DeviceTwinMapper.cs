@@ -5,10 +5,11 @@ namespace AzureIoTHub.Portal.Server.Mappers
 {
     using System;
     using System.Collections.Generic;
-    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
+    using AzureIoTHub.Portal.Infrastructure.Helpers;
+    using AzureIoTHub.Portal.Application.Managers;
 
     public class DeviceTwinMapper : IDeviceTwinMapper<DeviceListItem, DeviceDetails>
     {
@@ -23,14 +24,14 @@ namespace AzureIoTHub.Portal.Server.Mappers
         {
             ArgumentNullException.ThrowIfNull(twin, nameof(twin));
 
-            var modelId = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId));
+            var modelId = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId));
             var customTags = new Dictionary<string, string>();
 
             if (tags != null)
             {
                 foreach (var tag in tags)
                 {
-                    customTags.Add(tag, Helpers.DeviceHelper.RetrieveTagValue(twin, tag));
+                    customTags.Add(tag, DeviceHelper.RetrieveTagValue(twin, tag));
                 }
             }
 
@@ -38,7 +39,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
             {
                 DeviceID = twin.DeviceId,
                 ModelId = modelId,
-                DeviceName = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.DeviceName)),
+                DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.DeviceName)),
                 ImageUrl = this.deviceModelImageManager.ComputeImageUri(modelId),
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
@@ -63,9 +64,9 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
-                DeviceName = Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.DeviceName)),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))),
-                SupportLoRaFeatures = bool.Parse(Helpers.DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ?? "false")
+                DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.DeviceName)),
+                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))),
+                SupportLoRaFeatures = bool.Parse(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceListItem.SupportLoRaFeatures)) ?? "false")
             };
         }
 
@@ -75,8 +76,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
             ArgumentNullException.ThrowIfNull(item, nameof(item));
 
             // Update the twin properties
-            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
-            Helpers.DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
+            DeviceHelper.SetTagValue(twin, nameof(item.DeviceName), item.DeviceName);
+            DeviceHelper.SetTagValue(twin, nameof(item.ModelId), item.ModelId);
 
             if (item.Tags == null)
             {
@@ -85,7 +86,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
 
             foreach (var customTag in item.Tags)
             {
-                Helpers.DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
+                DeviceHelper.SetTagValue(twin, customTag.Key, customTag.Value);
             }
         }
     }

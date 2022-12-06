@@ -5,23 +5,23 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Dynamic.Core;
     using System.Threading.Tasks;
+    using AutoMapper;
+    using Azure.Messaging.EventHubs;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Shared.Models;
+    using AzureIoTHub.Portal.Shared.Models.v10;
     using Domain.Entities;
     using Infrastructure;
     using Infrastructure.Repositories;
+    using Mappers;
+    using Microsoft.Azure.Devices;
     using Microsoft.EntityFrameworkCore;
     using Models.v10;
     using Shared.Models.v1._0;
-    using Managers;
-    using System.Linq.Dynamic.Core;
-    using Microsoft.Azure.Devices;
-    using Mappers;
     using Shared.Models.v1._0.Filters;
     using Device = Domain.Entities.Device;
-    using Azure.Messaging.EventHubs;
-    using AzureIoTHub.Portal.Shared.Models.v10;
-    using AutoMapper;
 
     public abstract class DeviceServiceBase<TDto> : IDeviceService<TDto>
         where TDto : IDeviceDetails

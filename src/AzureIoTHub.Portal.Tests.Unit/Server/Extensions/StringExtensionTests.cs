@@ -3,8 +3,8 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Extensions
 {
+    using AzureIoTHub.Portal.Crosscutting.Extensions;
     using NUnit.Framework;
-    using Portal.Server.Extensions;
 
     [TestFixture]
     public class StringExtensionTests

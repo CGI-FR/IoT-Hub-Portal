@@ -8,8 +8,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using System.Text.Json;
     using AutoMapper;
     using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Server.Helpers;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Shared;
     using Newtonsoft.Json.Linq;

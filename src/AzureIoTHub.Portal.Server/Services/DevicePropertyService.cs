@@ -9,7 +9,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Azure;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using Helpers;
+    using Infrastructure.Helpers;
     using Models.v10;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;

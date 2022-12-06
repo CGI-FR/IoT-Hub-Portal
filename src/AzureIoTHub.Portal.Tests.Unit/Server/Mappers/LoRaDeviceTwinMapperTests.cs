@@ -6,12 +6,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
     using System;
     using System.Collections.Generic;
     using Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Helpers;
-    using AzureIoTHub.Portal.Server.Managers;
+    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Server.Mappers;
     using Microsoft.Azure.Devices.Shared;
     using Moq;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Application.Managers;
 
     [TestFixture]
     public class LoRaDeviceTwinMapperTests

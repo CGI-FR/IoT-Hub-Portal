@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
     using System.Threading.Tasks;
     using AutoFixture;
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Services;
@@ -21,7 +22,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
     using NUnit.Framework;
     using Portal.Domain.Entities;
     using Portal.Domain.Repositories;
-    using Portal.Server.Managers;
     using UnitTests.Bases;
 
     [TestFixture]

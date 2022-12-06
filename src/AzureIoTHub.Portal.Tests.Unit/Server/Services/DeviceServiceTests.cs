@@ -29,6 +29,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using EntityFramework.Exceptions.Common;
     using Azure.Messaging.EventHubs;
     using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Application.Managers;
 
     [TestFixture]
     public class DeviceServiceTests : BackendUnitTest

@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Server.Mappers
     using System;
     using System.Collections.Generic;
     using Azure.Data.Tables;
+    using AzureIoTHub.Portal.Application.Managers;
     using Managers;
     using Models.v10;
     using Models.v10.LoRaWAN;

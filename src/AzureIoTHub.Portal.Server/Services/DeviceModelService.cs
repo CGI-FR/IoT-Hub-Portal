@@ -8,15 +8,16 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Domain.Exceptions;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Shared.Models;
-    using Domain.Entities;
-    using Domain.Repositories;
     using Domain;
+    using Domain.Entities;
+    using Domain.Exceptions;
+    using Domain.Repositories;
+    using Infrastructure.Helpers;
     using Managers;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Azure.Devices.Shared;
-    using Helpers;
 
     public class DeviceModelService<TListItem, TModel> : IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel

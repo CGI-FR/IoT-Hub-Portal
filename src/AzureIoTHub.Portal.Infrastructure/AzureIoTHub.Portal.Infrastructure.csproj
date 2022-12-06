@@ -8,9 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Data.Tables" Version="12.7.1" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.14.1" />
+    <PackageReference Include="CsvHelper" Version="30.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Azure.Devices" Version="1.38.2" />
+    <PackageReference Include="Microsoft.Azure.Devices.Provisioning.Service" Version="1.18.2" />
+    <PackageReference Include="Microsoft.Azure.Devices.Shared" Version="1.30.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0-preview1.22518.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -29,6 +34,8 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\AzureIoTHub.Portal.Application\AzureIoTHub.Portal.Application.csproj" />
+    <ProjectReference Include="..\AzureIoTHub.Portal.Crosscutting\AzureIoTHub.Portal.Crosscutting.csproj" />
     <ProjectReference Include="..\AzureIoTHub.Portal.Domain\AzureIoTHub.Portal.Domain.csproj" />
     
   </ItemGroup>

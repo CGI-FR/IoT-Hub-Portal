@@ -4,9 +4,9 @@
 namespace AzureIoTHub.Portal.Server.Mappers
 {
     using System.Collections.Generic;
+    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Server.Helpers;
-    using AzureIoTHub.Portal.Server.Managers;
     using Microsoft.Azure.Devices.Shared;
 
     public class EdgeDeviceMapper : IEdgeDeviceMapper

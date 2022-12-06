@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Threading;
     using System.Threading.Tasks;
     using Azure;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Services;
@@ -23,7 +24,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Moq;
     using Newtonsoft.Json;
     using NUnit.Framework;
-    using Portal.Server.Managers;
 
     [TestFixture]
     public class ExternalDeviceServiceTests

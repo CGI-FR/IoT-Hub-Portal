@@ -8,13 +8,13 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Threading.Tasks;
     using AutoMapper;
     using Azure.Messaging.EventHubs;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using Domain;
     using Domain.Exceptions;
     using Domain.Repositories;
     using Infrastructure;
-    using Managers;
     using Mappers;
     using Models.v10;
 

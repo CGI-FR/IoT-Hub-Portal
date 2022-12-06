@@ -3,26 +3,26 @@
 
 namespace AzureIoTHub.Portal.Server.Services
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Models.v10.LoRaWAN;
-    using AutoMapper;
-    using Domain.Entities;
-    using Domain.Repositories;
-    using Managers;
-    using Infrastructure;
-    using Domain.Exceptions;
-    using Domain;
-    using Models.v10;
-    using Mappers;
-    using System.Linq;
-    using Microsoft.EntityFrameworkCore;
-    using System.Globalization;
     using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
     using System.Text.Json;
-    using Microsoft.Extensions.Logging;
+    using System.Threading.Tasks;
+    using AutoMapper;
     using Azure.Messaging.EventHubs;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Shared.Models.v10;
+    using Domain;
+    using Domain.Entities;
+    using Domain.Exceptions;
+    using Domain.Repositories;
+    using Infrastructure;
+    using Mappers;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+    using Models.v10;
+    using Models.v10.LoRaWAN;
 
     public class LoRaWanDeviceService : DeviceServiceBase<LoRaDeviceDetails>
     {

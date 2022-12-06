@@ -9,7 +9,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Domain;
     using Models.v10;
-    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using AzureIoTHub.Portal.Server.Services;
     using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +30,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Globalization;
     using Microsoft.EntityFrameworkCore;
     using AzureIoTHub.Portal.Shared.Models.v10;
+    using AzureIoTHub.Portal.Application.Managers;
 
     [TestFixture]
     public class LoRaWanDeviceServiceTests : BackendUnitTest

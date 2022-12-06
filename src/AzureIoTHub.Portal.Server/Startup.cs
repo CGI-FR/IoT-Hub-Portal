@@ -9,7 +9,12 @@ namespace AzureIoTHub.Portal.Server
     using System.Threading.Tasks;
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
+    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Wrappers;
     using AzureIoTHub.Portal.Domain.Options;
+    using AzureIoTHub.Portal.Infrastructure.Managers;
+    using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
+    using AzureIoTHub.Portal.Infrastructure.Wrappers;
     using AzureIoTHub.Portal.Server.Jobs;
     using Domain;
     using Domain.Exceptions;
@@ -50,9 +55,7 @@ namespace AzureIoTHub.Portal.Server
     using Prometheus;
     using Quartz;
     using Services;
-    using ServicesHealthCheck;
     using Shared.Models.v1._0;
-    using Wrappers;
 
     public class Startup
     {

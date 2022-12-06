@@ -5,11 +5,11 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Threading.Tasks;
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Managers;
     using Domain;
     using Domain.Entities;
     using Domain.Exceptions;
     using Domain.Repositories;
-    using Managers;
     using Mappers;
     using Microsoft.Azure.Devices;
     using Models.v10.LoRaWAN;

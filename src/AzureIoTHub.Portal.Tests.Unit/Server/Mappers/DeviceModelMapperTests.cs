@@ -6,11 +6,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Mappers
     using System;
     using Azure.Data.Tables;
     using Models.v10;
-    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Server.Mappers;
     using FluentAssertions;
     using Moq;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Application.Managers;
 
     [TestFixture]
     public class DeviceModelMapperTests

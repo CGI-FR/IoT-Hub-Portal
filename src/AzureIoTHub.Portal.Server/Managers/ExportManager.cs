@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Server.Managers
     using System.Text;
     using System.Text.Json.Nodes;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Options;
     using AzureIoTHub.Portal.Models.v10;
@@ -143,9 +144,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             var tags = new List<string>(this.deviceTagService.GetAllTagsNames());
 
             if (this.loRaWANOptions.Value.Enabled)
-            {
                 tags.Add("supportLoRaFeatures");
-            }
 
             return tags;
         }
@@ -184,9 +183,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             _ = csvReader.ReadHeader();
 
             if (csvReader.HeaderRecord.Length < 3)
-            {
                 throw new InternalServerErrorException("Invalid file format: The submitted file should be a comma-separated values (CSV) file. A template file showing the mandatory fields is available to download on the portal.");
-            }
 
             var lineNumber = 0;
 
@@ -201,9 +198,7 @@ namespace AzureIoTHub.Portal.Server.Managers
                 string modelId = null;
 
                 if (!TryReadMandatoryFields(csvReader, lineNumber, ref deviceId, ref deviceName, ref modelId, ref report))
-                {
                     continue;
-                }
 
                 try
                 {
@@ -245,9 +240,7 @@ namespace AzureIoTHub.Portal.Server.Managers
             foreach (var tag in tagsToRead)
             {
                 if (reader.TryGetField<string>($"{TagPrefix}:{tag}", out var tagValue))
-                {
                     deviceTags.Add(tag, tagValue);
-                }
             }
 
             return deviceTags;
