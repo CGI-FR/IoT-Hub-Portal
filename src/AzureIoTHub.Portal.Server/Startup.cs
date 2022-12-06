@@ -5,34 +5,20 @@ namespace AzureIoTHub.Portal.Server
 {
     using System;
     using System.IO;
-    using System.Net;
     using System.Threading.Tasks;
-    using Azure.Storage.Blobs;
-    using Azure.Storage.Blobs.Models;
     using AzureIoTHub.Portal.Application.Managers;
-    using AzureIoTHub.Portal.Application.Mappers;
-    using AzureIoTHub.Portal.Application.Providers;
-    using AzureIoTHub.Portal.Application.Services;
-    using AzureIoTHub.Portal.Application.Wrappers;
-    using AzureIoTHub.Portal.Domain.Options;
-    using AzureIoTHub.Portal.Infrastructure.Managers;
-    using AzureIoTHub.Portal.Infrastructure.Mappers;
-    using AzureIoTHub.Portal.Infrastructure.Providers;
-    using AzureIoTHub.Portal.Infrastructure.Services;
+    using AzureIoTHub.Portal.Application.Startup;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
-    using AzureIoTHub.Portal.Infrastructure.Wrappers;
+    using AzureIoTHub.Portal.Infrastructure.Startup;
     using AzureIoTHub.Portal.Server.Jobs;
     using Domain;
     using Domain.Exceptions;
-    using Domain.Repositories;
     using EntityFramework.Exceptions.Common;
-    using EntityFramework.Exceptions.PostgreSQL;
     using Extensions;
     using Hellang.Middleware.ProblemDetails;
     using Hellang.Middleware.ProblemDetails.Mvc;
     using Identity;
     using Infrastructure;
-    using Infrastructure.Repositories;
     using Infrastructure.Seeds;
     using Managers;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,21 +28,15 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Versioning;
-    using Microsoft.Azure.Devices;
-    using Microsoft.Azure.Devices.Provisioning.Service;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
     using Microsoft.Extensions.Primitives;
     using Microsoft.OpenApi.Models;
     using Models.v10;
     using Models.v10.LoRaWAN;
     using MudBlazor.Services;
-    using Polly;
-    using Polly.Extensions.Http;
     using Prometheus;
     using Quartz;
     using Services;
@@ -85,70 +65,19 @@ namespace AzureIoTHub.Portal.Server
 
             var configuration = ConfigHandlerFactory.Create(HostEnvironment, Configuration);
 
-            _ = services.Configure<ClientApiIndentityOptions>(opts =>
-            {
-                opts.MetadataUrl = new Uri(configuration.OIDCMetadataUrl);
-                opts.ClientId = configuration.OIDCClientId;
-                opts.Scope = configuration.OIDCScope;
-                opts.Authority = configuration.OIDCAuthority;
-            });
-
-            _ = services.Configure<LoRaWANOptions>(opts =>
-            {
-                opts.Enabled = configuration.IsLoRaEnabled;
-                opts.KeyManagementApiVersion = configuration.LoRaKeyManagementApiVersion;
-                opts.KeyManagementCode = configuration.LoRaKeyManagementCode;
-                opts.KeyManagementUrl = configuration.LoRaKeyManagementUrl;
-            });
-
-            _ = services
-                .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(opts =>
-                {
-                    opts.Authority = configuration.OIDCAuthority;
-                    opts.MetadataAddress = configuration.OIDCMetadataUrl;
-                    opts.Audience = configuration.OIDCApiClientId;
-
-                    opts.TokenValidationParameters.ValidateIssuer = configuration.OIDCValidateIssuer;
-                    opts.TokenValidationParameters.ValidateAudience = configuration.OIDCValidateAudience;
-                    opts.TokenValidationParameters.ValidateLifetime = configuration.OIDCValidateLifetime;
-                    opts.TokenValidationParameters.ValidateIssuerSigningKey = configuration.OIDCValidateIssuerSigningKey;
-                    opts.TokenValidationParameters.ValidateActor = configuration.OIDCValidateActor;
-                    opts.TokenValidationParameters.ValidateTokenReplay = configuration.OIDCValidateTokenReplay;
-                });
-
-            ConfigureDatabase(services, configuration);
-
             _ = services.AddSingleton(configuration);
+
+            _ = services.AddInfrastructureLayer(configuration)
+                        .AddApplicationLayer();
+
+            AddAuthenticationAndAuthorization(services, configuration);
+
             _ = services.AddSingleton(new PortalMetric());
             _ = services.AddSingleton(new LoRaGatewayIDList());
 
             _ = services.AddRazorPages();
 
-            _ = services.AddScoped(_ => RegistryManager.CreateFromConnectionString(configuration.IoTHubConnectionString));
-
-            _ = services.AddScoped(_ => ServiceClient.CreateFromConnectionString(configuration.IoTHubConnectionString));
-
-            _ = services.AddScoped(_ => ProvisioningServiceClient.CreateFromConnectionString(configuration.DPSConnectionString));
-
-            _ = services.AddTransient<IProvisioningServiceClient, ProvisioningServiceClientWrapper>();
-            _ = services.AddTransient(_ => new BlobServiceClient(configuration.StorageAccountConnectionString));
-            _ = services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
-            _ = services.AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>();
-            _ = services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
-            _ = services.AddTransient<IDeviceRegistryProvider, AzureDeviceRegistryProvider>();
-            _ = services.AddTransient<ILoRaWanManagementService, LoRaWanManagementService>();
             _ = services.AddTransient<IExportManager, ExportManager>();
-
-            _ = services.AddTransient<IDeviceTwinMapper<DeviceListItem, DeviceDetails>, DeviceTwinMapper>();
-            _ = services.AddTransient<IDeviceTwinMapper<DeviceListItem, LoRaDeviceDetails>, LoRaDeviceTwinMapper>();
-            _ = services.AddTransient<IDeviceModelMapper<DeviceModelDto, DeviceModelDto>, DeviceModelMapper>();
-            _ = services.AddTransient<IDeviceModelMapper<DeviceModelDto, LoRaDeviceModelDto>, LoRaDeviceModelMapper>();
-            _ = services.AddTransient<IEdgeDeviceMapper, EdgeDeviceMapper>();
 
             _ = services.AddTransient<IExternalDeviceService, ExternalDeviceService>();
             _ = services.AddTransient<IConfigService, ConfigService>();
@@ -164,39 +93,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IDeviceService<DeviceDetails>, DeviceService>();
             _ = services.AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
 
-            _ = services.AddScoped<IDeviceModelPropertiesRepository, DeviceModelPropertiesRepository>();
-            _ = services.AddScoped<IDeviceTagRepository, DeviceTagRepository>();
-            _ = services.AddScoped<IEdgeDeviceModelRepository, EdgeDeviceModelRepository>();
-            _ = services.AddScoped<IEdgeDeviceModelCommandRepository, EdgeDeviceModelCommandRepository>();
-            _ = services.AddScoped<IDeviceModelRepository, DeviceModelRepository>();
-            _ = services.AddScoped<IDeviceRepository, DeviceRepository>();
-            _ = services.AddScoped<IEdgeDeviceRepository, EdgeDeviceRepository>();
-            _ = services.AddScoped<ILorawanDeviceRepository, LorawanDeviceRepository>();
-            _ = services.AddScoped<IDeviceTagValueRepository, DeviceTagValueRepository>();
-            _ = services.AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>();
-            _ = services.AddScoped<IConcentratorRepository, ConcentratorRepository>();
-            _ = services.AddScoped<ILoRaDeviceTelemetryRepository, LoRaDeviceTelemetryRepository>();
-            _ = services.AddScoped<ILabelRepository, LabelRepository>();
-
             _ = services.AddMudServices();
-
-            var transientHttpErrorPolicy = HttpPolicyExtensions
-                                    .HandleTransientHttpError()
-                                    .OrResult(c => c.StatusCode == HttpStatusCode.NotFound)
-                                    .WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(100));
-
-            _ = services.AddHttpClient("RestClient")
-                .AddPolicyHandler(transientHttpErrorPolicy);
-
-            _ = services.AddHttpClient<ILoRaWanManagementService, LoRaWanManagementService>((sp, client) =>
-            {
-                var opts = sp.GetService<IOptions<LoRaWANOptions>>().Value;
-
-                client.BaseAddress = new Uri(opts.KeyManagementUrl);
-                client.DefaultRequestHeaders.Add("x-functions-key", opts.KeyManagementCode);
-                client.DefaultRequestHeaders.Add("api-version", opts.KeyManagementApiVersion ?? "2022-03-04");
-            })
-                .AddPolicyHandler(transientHttpErrorPolicy);
 
             ConfigureIdeasFeature(services, configuration);
 
@@ -350,18 +247,6 @@ namespace AzureIoTHub.Portal.Server
                     new HeaderApiVersionReader("X-Version"));
             });
 
-            // Add AutoMapper Configuration
-            _ = services.AddAutoMapper(typeof(Startup), typeof(Application.Mappers.DeviceProfile));
-
-            _ = services.AddHealthChecks()
-                .AddDbContextCheck<PortalDbContext>()
-                .AddCheck<IoTHubHealthCheck>("iothubHealth")
-                .AddCheck<StorageAccountHealthCheck>("storageAccountHealth")
-                .AddCheck<TableStorageHealthCheck>("tableStorageHealth")
-                .AddCheck<ProvisioningServiceClientHealthCheck>("dpsHealth")
-                .AddCheck<LoRaManagementKeyFacadeHealthCheck>("loraManagementFacadeHealth")
-                .AddCheck<DatabaseHealthCheck>("databaseHealthCheck");
-
             // Add the required Quartz.NET services
             _ = services.AddQuartz(q =>
             {
@@ -431,18 +316,6 @@ namespace AzureIoTHub.Portal.Server
 
             // Add the Quartz.NET hosted service
             _ = services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
-
-            // Options
-            _ = services.Configure<DeviceModelImageOptions>((opts) =>
-                {
-                    var serviceClient = new BlobServiceClient(configuration.StorageAccountConnectionString);
-                    var container = serviceClient.GetBlobContainerClient(opts.ImageContainerName);
-
-                    _ = container.SetAccessPolicy(PublicAccessType.Blob);
-                    _ = container.CreateIfNotExists();
-
-                    opts.BaseUri = container.Uri;
-                });
         }
 
         private static void ConfigureIdeasFeature(IServiceCollection services, ConfigHandler configuration)
@@ -458,25 +331,35 @@ namespace AzureIoTHub.Portal.Server
             });
         }
 
-        private static void ConfigureDatabase(IServiceCollection services, ConfigHandler configuration)
+        private static void AddAuthenticationAndAuthorization(IServiceCollection services, ConfigHandler configuration)
         {
+            _ = services.Configure<ClientApiIndentityOptions>(opts =>
+            {
+                opts.MetadataUrl = new Uri(configuration.OIDCMetadataUrl);
+                opts.ClientId = configuration.OIDCClientId;
+                opts.Scope = configuration.OIDCScope;
+                opts.Authority = configuration.OIDCAuthority;
+            });
+
             _ = services
-                .AddDbContextPool<PortalDbContext>(opts =>
+                .AddAuthentication(options =>
                 {
-                    _ = opts.UseNpgsql(configuration.PostgreSQLConnectionString);
-                    _ = opts.UseExceptionProcessor();
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(opts =>
+                {
+                    opts.Authority = configuration.OIDCAuthority;
+                    opts.MetadataAddress = configuration.OIDCMetadataUrl;
+                    opts.Audience = configuration.OIDCApiClientId;
+
+                    opts.TokenValidationParameters.ValidateIssuer = configuration.OIDCValidateIssuer;
+                    opts.TokenValidationParameters.ValidateAudience = configuration.OIDCValidateAudience;
+                    opts.TokenValidationParameters.ValidateLifetime = configuration.OIDCValidateLifetime;
+                    opts.TokenValidationParameters.ValidateIssuerSigningKey = configuration.OIDCValidateIssuerSigningKey;
+                    opts.TokenValidationParameters.ValidateActor = configuration.OIDCValidateActor;
+                    opts.TokenValidationParameters.ValidateTokenReplay = configuration.OIDCValidateTokenReplay;
                 });
-
-            if (string.IsNullOrEmpty(configuration.PostgreSQLConnectionString))
-                return;
-
-            _ = services.AddScoped<IUnitOfWork, UnitOfWork<PortalDbContext>>();
-
-            var dbContextOptions = new DbContextOptionsBuilder<PortalDbContext>();
-            _ = dbContextOptions.UseNpgsql(configuration.PostgreSQLConnectionString);
-
-            using var ctx = new PortalDbContext(dbContextOptions.Options);
-            ctx.Database.Migrate();
         }
 
         /// <summary>
