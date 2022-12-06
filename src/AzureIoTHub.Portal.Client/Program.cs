@@ -28,6 +28,7 @@ _ = builder.Services.AddHttpClient("api", (sp, client) =>
 {
     client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
     client.DefaultRequestHeaders.Add("X-Version", "1.0");
+    _ = client.EnableIntercept(sp);
 }).AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>()
   .AddHttpMessageHandler<ProblemDetailsHandler>();
 
