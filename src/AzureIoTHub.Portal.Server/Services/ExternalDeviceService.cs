@@ -13,6 +13,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Azure;
     using AzureIoTHub.Portal.Application.Helpers;
     using AzureIoTHub.Portal.Application.Providers;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Shared.Constants;

@@ -5,33 +5,36 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 {
     using System.Net;
     using Azure.Storage.Blobs;
+    using Azure.Storage.Blobs.Models;
+    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Mappers;
     using AzureIoTHub.Portal.Application.Providers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Application.Wrappers;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Options;
+    using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Infrastructure.Extensions;
+    using AzureIoTHub.Portal.Infrastructure.Jobs;
+    using AzureIoTHub.Portal.Infrastructure.Managers;
+    using AzureIoTHub.Portal.Infrastructure.Mappers;
     using AzureIoTHub.Portal.Infrastructure.Providers;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Services;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using AzureIoTHub.Portal.Infrastructure.Wrappers;
+    using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using EntityFramework.Exceptions.PostgreSQL;
-    using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Options;
     using Polly;
     using Polly.Extensions.Http;
-    using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Infrastructure.Repositories;
-    using AzureIoTHub.Portal.Application.Mappers;
-    using AzureIoTHub.Portal.Infrastructure.Mappers;
-    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
-    using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Application.Managers;
-    using AzureIoTHub.Portal.Infrastructure.Managers;
-    using Azure.Storage.Blobs.Models;
-    using Microsoft.Extensions.Configuration;
+    using Quartz;
 
     public static class IServiceCollectionExtension
     {
@@ -44,7 +47,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                             .ConfigureDeviceRegstryDependencies(configuration)
                             .ConfigureServices()
                             .ConfigureMappers()
-                            .ConfigureHealthCheck();
+                            .ConfigureHealthCheck()
+                            .ConfigureMetricsJobs(configuration)
+                            .ConfigureSyncJobs(configuration);
         }
 
         private static IServiceCollection AddLoRaWanSupport(this IServiceCollection services, ConfigHandler configuration)
@@ -180,6 +185,63 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 
                                 opts.BaseUri = container.Uri;
                             });
+        }
+
+        private static IServiceCollection ConfigureMetricsJobs(this IServiceCollection services, ConfigHandler configuration)
+        {
+            return services.AddQuartz(q =>
+            {
+                q.AddMetricsService<DeviceMetricExporterJob, DeviceMetricLoaderJob>(configuration);
+                q.AddMetricsService<EdgeDeviceMetricExporterJob, EdgeDeviceMetricLoaderJob>(configuration);
+                q.AddMetricsService<ConcentratorMetricExporterJob, ConcentratorMetricLoaderJob>(configuration);
+            });
+        }
+
+        private static IServiceCollection ConfigureSyncJobs(this IServiceCollection services, ConfigHandler configuration)
+        {
+            return services.AddQuartz(q =>
+            {
+                _ = q.AddJob<SyncDevicesJob>(j => j.WithIdentity(nameof(SyncDevicesJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncDevicesJob)}")
+                        .ForJob(nameof(SyncDevicesJob))
+                    .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+
+                _ = q.AddJob<SyncConcentratorsJob>(j => j.WithIdentity(nameof(SyncConcentratorsJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncConcentratorsJob)}")
+                        .ForJob(nameof(SyncConcentratorsJob))
+                    .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+
+                _ = q.AddJob<SyncEdgeDeviceJob>(j => j.WithIdentity(nameof(SyncEdgeDeviceJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncEdgeDeviceJob)}")
+                        .ForJob(nameof(SyncEdgeDeviceJob))
+                        .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                            .RepeatForever()));
+
+                _ = q.AddJob<SyncGatewayIDJob>(j => j.WithIdentity(nameof(SyncGatewayIDJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncGatewayIDJob)}")
+                        .ForJob(nameof(SyncGatewayIDJob))
+                        .WithSimpleSchedule(s => s
+                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
+                        .RepeatForever()));
+
+                if (configuration.IsLoRaEnabled)
+                {
+                    _ = q.AddJob<SyncLoRaDeviceTelemetryJob>(j => j.WithIdentity(nameof(SyncLoRaDeviceTelemetryJob)))
+                    .AddTrigger(t => t
+                        .WithIdentity($"{nameof(SyncLoRaDeviceTelemetryJob)}")
+                        .ForJob(nameof(SyncLoRaDeviceTelemetryJob))
+                        .StartNow());
+                }
+            });
         }
     }
 }

@@ -7,10 +7,10 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Models.v10;
-    using AzureIoTHub.Portal.Server.Services;
     using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;

@@ -5,9 +5,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
 {
     using System;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
-    using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
     using Moq;

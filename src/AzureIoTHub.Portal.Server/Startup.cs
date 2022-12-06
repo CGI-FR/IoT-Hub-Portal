@@ -7,10 +7,10 @@ namespace AzureIoTHub.Portal.Server
     using System.IO;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Application.Startup;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using AzureIoTHub.Portal.Infrastructure.Startup;
-    using AzureIoTHub.Portal.Server.Jobs;
     using Domain;
     using Domain.Exceptions;
     using EntityFramework.Exceptions.Common;
@@ -266,52 +266,6 @@ namespace AzureIoTHub.Portal.Server
                         c.ConnectionString = configuration.PostgreSQLConnectionString;
                     });
                 });
-
-                q.AddMetricsService<DeviceMetricExporterJob, DeviceMetricLoaderJob>(configuration);
-                q.AddMetricsService<EdgeDeviceMetricExporterJob, EdgeDeviceMetricLoaderJob>(configuration);
-                q.AddMetricsService<ConcentratorMetricExporterJob, ConcentratorMetricLoaderJob>(configuration);
-
-                _ = q.AddJob<SyncDevicesJob>(j => j.WithIdentity(nameof(SyncDevicesJob)))
-                    .AddTrigger(t => t
-                        .WithIdentity($"{nameof(SyncDevicesJob)}")
-                        .ForJob(nameof(SyncDevicesJob))
-                        .WithSimpleSchedule(s => s
-                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
-                            .RepeatForever()));
-
-                _ = q.AddJob<SyncConcentratorsJob>(j => j.WithIdentity(nameof(SyncConcentratorsJob)))
-                    .AddTrigger(t => t
-                        .WithIdentity($"{nameof(SyncConcentratorsJob)}")
-                        .ForJob(nameof(SyncConcentratorsJob))
-                        .WithSimpleSchedule(s => s
-                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
-                            .RepeatForever()));
-
-                _ = q.AddJob<SyncEdgeDeviceJob>(j => j.WithIdentity(nameof(SyncEdgeDeviceJob)))
-                    .AddTrigger(t => t
-                        .WithIdentity($"{nameof(SyncEdgeDeviceJob)}")
-                        .ForJob(nameof(SyncEdgeDeviceJob))
-                        .WithSimpleSchedule(s => s
-                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
-                            .RepeatForever()));
-
-                _ = q.AddJob<SyncGatewayIDJob>(j => j.WithIdentity(nameof(SyncGatewayIDJob)))
-                    .AddTrigger(t => t
-                        .WithIdentity($"{nameof(SyncGatewayIDJob)}")
-                        .ForJob(nameof(SyncGatewayIDJob))
-                        .WithSimpleSchedule(s => s
-                            .WithIntervalInMinutes(configuration.SyncDatabaseJobRefreshIntervalInMinutes)
-                            .RepeatForever()));
-
-                if (configuration.IsLoRaEnabled)
-                {
-                    _ = q.AddJob<SyncLoRaDeviceTelemetryJob>(j => j.WithIdentity(nameof(SyncLoRaDeviceTelemetryJob)))
-                    .AddTrigger(t => t
-                        .WithIdentity($"{nameof(SyncLoRaDeviceTelemetryJob)}")
-                        .ForJob(nameof(SyncLoRaDeviceTelemetryJob))
-                        .StartNow());
-                }
-
             });
 
             // Add the Quartz.NET hosted service

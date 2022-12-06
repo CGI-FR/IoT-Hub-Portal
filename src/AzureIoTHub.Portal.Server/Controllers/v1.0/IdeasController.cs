@@ -4,9 +4,9 @@
 namespace AzureIoTHub.Portal.Server.Controllers.v1._0
 {
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Application.Services;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Services;
     using Shared.Models.v1._0;
 
     [Authorize]

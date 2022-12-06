@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;

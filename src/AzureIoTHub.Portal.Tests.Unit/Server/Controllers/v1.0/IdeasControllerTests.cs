@@ -5,14 +5,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
     using System.Threading.Tasks;
     using AutoFixture;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Server.Controllers.v1._0;
-    using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
-    using UnitTests.Bases;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
+    using UnitTests.Bases;
 
     [TestFixture]
     public class IdeasControllerTests : BackendUnitTest

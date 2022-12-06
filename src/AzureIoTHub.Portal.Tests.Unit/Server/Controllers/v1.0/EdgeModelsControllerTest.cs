@@ -3,16 +3,16 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
 {
-    using AzureIoTHub.Portal.Models.v10;
+    using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Controllers.v10;
-    using AzureIoTHub.Portal.Server.Services;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
     using Moq;
     using NUnit.Framework;
-    using Microsoft.AspNetCore.Mvc;
-    using System;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Http;
 
     [TestFixture]
     public class EdgeModelsControllerTest

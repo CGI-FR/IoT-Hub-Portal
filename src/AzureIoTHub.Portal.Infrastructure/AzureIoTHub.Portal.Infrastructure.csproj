@@ -107,6 +107,8 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Data.Tables" Version="12.7.1" />
+    <PackageReference Include="Azure.Messaging.EventHubs" Version="5.7.5" />
+    <PackageReference Include="Azure.Messaging.EventHubs.Processor" Version="5.7.5" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.14.1" />
     <PackageReference Include="CsvHelper" Version="30.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
@@ -132,6 +134,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0" />
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
+    <PackageReference Include="prometheus-net" Version="7.0.0" />
+    <PackageReference Include="Quartz" Version="3.5.0" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.5.0" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.23" />
     <PackageReference Include="EntityFrameworkCore.Exceptions.PostgreSQL" Version="6.0.3" />
 

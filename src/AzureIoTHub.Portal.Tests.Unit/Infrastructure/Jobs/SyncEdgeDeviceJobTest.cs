@@ -1,0 +1,232 @@
+// Copyright (c) CGI France. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using AutoFixture;
+    using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Entities;
+    using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Infrastructure.Jobs;
+    using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using Microsoft.Azure.Devices.Shared;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using NUnit.Framework;
+    using Quartz;
+
+    public class SyncEdgeDeviceJobTest : BackendUnitTest
+    {
+        private IJob syncEdgeDeviceJob;
+
+        private Mock<IExternalDeviceService> mockExternalDeviceService;
+        private Mock<IEdgeDeviceRepository> mockEdgeDeviceRepository;
+        private Mock<IDeviceTagValueRepository> mockDeviceTagValueRepository;
+        private Mock<IEdgeDeviceModelRepository> mockEdgeDeviceModelRepository;
+        private Mock<IUnitOfWork> mockUnitOfWork;
+        private Mock<IEdgeDevicesService> mockEdgeDevicesService;
+        private Mock<ILogger<SyncEdgeDeviceJob>> mockLogger;
+
+        public override void Setup()
+        {
+            base.Setup();
+
+            this.mockExternalDeviceService = MockRepository.Create<IExternalDeviceService>();
+            this.mockEdgeDeviceRepository = MockRepository.Create<IEdgeDeviceRepository>();
+            this.mockDeviceTagValueRepository = MockRepository.Create<IDeviceTagValueRepository>();
+            this.mockEdgeDeviceModelRepository = MockRepository.Create<IEdgeDeviceModelRepository>();
+            this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
+            this.mockEdgeDevicesService = MockRepository.Create<IEdgeDevicesService>();
+            this.mockLogger = MockRepository.Create<ILogger<SyncEdgeDeviceJob>>();
+
+            _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
+            _ = ServiceCollection.AddSingleton(this.mockEdgeDeviceRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockDeviceTagValueRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockEdgeDeviceModelRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
+            _ = ServiceCollection.AddSingleton(this.mockEdgeDevicesService.Object);
+            _ = ServiceCollection.AddSingleton<IJob, SyncEdgeDeviceJob>();
+
+            Services = ServiceCollection.BuildServiceProvider();
+
+            this.syncEdgeDeviceJob = Services.GetRequiredService<IJob>();
+        }
+
+        [Test]
+        public async Task ExecuteNewEdgeDeviceDeviceCreated()
+        {
+            // Arrange
+            var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
+
+            var expectedDeviceModel = Fixture.Create<EdgeDeviceModel>();
+
+            var expectedTwinDevice = new Twin
+            {
+                DeviceId = Fixture.Create<string>(),
+                Tags = new TwinCollection
+                {
+                    ["modelId"] = expectedDeviceModel.Id,
+                    ["deviceName"] = Fixture.Create<string>(),
+                    ["test"] = Fixture.Create<string>()
+                },
+                Capabilities = new DeviceCapabilities{ IotEdge = true }
+            };
+
+            _ = this.mockExternalDeviceService
+                .Setup(x => x.GetAllEdgeDevice(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<string>(),
+                    It.Is<int>(x => x == 100)))
+                .ReturnsAsync(new PaginationResult<Twin>
+                {
+                    Items = new List<Twin>
+                    {
+                        expectedTwinDevice
+                    },
+                    TotalItems = 1
+                });
+
+            _ = this.mockExternalDeviceService
+                .Setup(x => x.GetDeviceTwinWithModule(It.Is<string>(c => c.Equals(expectedTwinDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(expectedTwinDevice);
+
+            _ = this.mockExternalDeviceService
+                .Setup(x => x.GetDeviceTwinWithEdgeHubModule(It.Is<string>(c => c.Equals(expectedTwinDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(expectedTwinDevice);
+
+            _ = this.mockEdgeDeviceModelRepository
+                .Setup(x => x.GetByIdAsync(expectedDeviceModel.Id))
+                .ReturnsAsync(expectedDeviceModel);
+
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetByIdAsync(expectedTwinDevice.DeviceId)).
+                ReturnsAsync(value: null);
+
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDevice>()))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDevice, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<EdgeDevice>
+                {
+                    new EdgeDevice
+                    {
+                        Id = expectedTwinDevice.DeviceId
+                    },
+                    new EdgeDevice
+                    {
+                        Id = Guid.NewGuid().ToString()
+                    }
+                });
+
+            this.mockEdgeDeviceRepository.Setup(x => x.Delete(It.IsAny<string>())).Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.syncEdgeDeviceJob.Execute(mockJobExecutionContext.Object);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task ExecuteExistingEdgeDeviceWithGreeterVersionDeviceUpdated()
+        {
+            // Arrange
+            var mockJobExecutionContext = MockRepository.Create<IJobExecutionContext>();
+
+            var expectedDeviceModel = Fixture.Create<EdgeDeviceModel>();
+
+            var expectedTwinDevice = new Twin
+            {
+                DeviceId = Fixture.Create<string>(),
+                Tags = new TwinCollection
+                {
+                    ["modelId"] = expectedDeviceModel.Id,
+                    ["deviceName"] = Fixture.Create<string>()
+                },
+                Capabilities = new DeviceCapabilities{ IotEdge = true },
+                Version = 2
+            };
+
+            var existingDevice = new EdgeDevice
+            {
+                Id = expectedTwinDevice.DeviceId,
+                Version = 1,
+                Tags = new List<DeviceTagValue>
+                {
+                    new()
+                    {
+                        Id = Fixture.Create<string>(),
+                        Name = Fixture.Create<string>(),
+                        Value = Fixture.Create<string>()
+                    }
+                }
+            };
+
+            _ = this.mockExternalDeviceService
+                .Setup(x => x.GetAllEdgeDevice(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<string>(),
+                    It.Is<int>(x => x == 100)))
+                .ReturnsAsync(new PaginationResult<Twin>
+                {
+                    Items = new List<Twin>
+                    {
+                        expectedTwinDevice
+                    },
+                    TotalItems = 1
+                });
+
+            _ = this.mockExternalDeviceService
+                .Setup(x => x.GetDeviceTwinWithModule(It.Is<string>(c => c.Equals(expectedTwinDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(expectedTwinDevice);
+
+            _ = this.mockExternalDeviceService
+                .Setup(x => x.GetDeviceTwinWithEdgeHubModule(It.Is<string>(c => c.Equals(expectedTwinDevice.DeviceId, StringComparison.Ordinal))))
+                .ReturnsAsync(expectedTwinDevice);
+
+            _ = this.mockEdgeDeviceModelRepository
+                .Setup(x => x.GetByIdAsync(expectedDeviceModel.Id))
+                .ReturnsAsync(expectedDeviceModel);
+
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetByIdAsync(expectedTwinDevice.DeviceId)).
+                ReturnsAsync(existingDevice);
+
+            this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
+                .Verifiable();
+
+            this.mockEdgeDeviceRepository.Setup(repository => repository.Update(It.IsAny<EdgeDevice>()))
+                .Verifiable();
+
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<EdgeDevice, bool>>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<EdgeDevice>
+                {
+                    new EdgeDevice
+                    {
+                        Id = expectedTwinDevice.DeviceId
+                    }
+                });
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.syncEdgeDeviceJob.Execute(mockJobExecutionContext.Object);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+    }
+}

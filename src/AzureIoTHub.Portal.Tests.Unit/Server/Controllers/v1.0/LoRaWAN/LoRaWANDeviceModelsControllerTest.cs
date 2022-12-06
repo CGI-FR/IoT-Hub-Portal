@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
-    using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Application.Services;
     using FluentAssertions;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;

@@ -5,12 +5,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using Services;
 
     [Authorize]
     [ApiController]

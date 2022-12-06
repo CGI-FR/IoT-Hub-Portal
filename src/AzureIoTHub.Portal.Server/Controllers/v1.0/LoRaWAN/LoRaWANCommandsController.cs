@@ -5,12 +5,12 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 {
     using System;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Server.Filters;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Server.Filters;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Authorization;
-    using AzureIoTHub.Portal.Server.Services;
 
     [Authorize]
     [ApiController]

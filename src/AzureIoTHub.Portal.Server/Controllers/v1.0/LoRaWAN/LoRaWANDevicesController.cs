@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using Filters;
@@ -13,7 +14,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
     using Microsoft.Extensions.Logging;
     using Models.v10;
     using Models.v10.LoRaWAN;
-    using Services;
 
     [Authorize]
     [ApiController]
