@@ -14,6 +14,13 @@
   <ProjectExtensions>
     <VisualStudio><UserProperties appsettings_1development_1json__JsonSchema="https://cdn.jsdelivr.net/gh/roadrunner-server/roadrunner@latest/schemas/config/2.0.schema.json" properties_4launchsettings_1json__JsonSchema="" routerconfigfiles_4as_3923_3925_33_1json__JsonSchema="https://cdn.jsdelivr.net/gh/roadrunner-server/roadrunner@latest/schemas/config/2.0.schema.json" /></VisualStudio>
   </ProjectExtensions>
+
+  <ItemGroup>
+    <Compile Remove="Jobs\**" />
+    <Content Remove="Jobs\**" />
+    <EmbeddedResource Remove="Jobs\**" />
+    <None Remove="Jobs\**" />
+  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\AzureIoTHub.Portal.Application\AzureIoTHub.Portal.Application.csproj" />
@@ -64,10 +71,6 @@
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.5.0" />
     <PackageReference Include="Quartz.Serialization.Json" Version="3.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Jobs\" />
   </ItemGroup>
   
 </Project>

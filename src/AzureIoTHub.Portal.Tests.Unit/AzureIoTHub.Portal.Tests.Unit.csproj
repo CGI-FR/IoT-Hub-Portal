@@ -48,7 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\" />
     <Folder Include="Infrastructure\Factories\" />
     <Folder Include="Client\Handlers\" />
     <Folder Include="UnitTests\Mocks\" />

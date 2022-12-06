@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
+namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
     using System;
     using System.Collections.Generic;
@@ -53,7 +53,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
             // Assert
             Assert.AreEqual(2, this.loRaGatewayIDList.GatewayIds.Count);
             Assert.AreEqual("GatewayID01", this.loRaGatewayIDList.GatewayIds[0]);
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
 
             // Assert
             Assert.IsNull(this.loRaGatewayIDList.GatewayIds);
-            this.MockRepository.VerifyAll();
+            MockRepository.VerifyAll();
         }
     }
 }

@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
+namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs
 {
     using System;
     using System.Collections.Generic;
@@ -96,11 +96,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
                 });
 
             _ = this.mockExternalDeviceService
-                .Setup(x => x.GetDeviceTwinWithModule(It.Is<string>(c => c.Equals(expectedTwinDevice.DeviceId, System.StringComparison.Ordinal))))
+                .Setup(x => x.GetDeviceTwinWithModule(It.Is<string>(c => c.Equals(expectedTwinDevice.DeviceId, StringComparison.Ordinal))))
                 .ReturnsAsync(expectedTwinDevice);
 
             _ = this.mockExternalDeviceService
-                .Setup(x => x.GetDeviceTwinWithEdgeHubModule(It.Is<string>(c => c.Equals(expectedTwinDevice.DeviceId, System.StringComparison.Ordinal))))
+                .Setup(x => x.GetDeviceTwinWithEdgeHubModule(It.Is<string>(c => c.Equals(expectedTwinDevice.DeviceId, StringComparison.Ordinal))))
                 .ReturnsAsync(expectedTwinDevice);
 
             _ = this.mockEdgeDeviceModelRepository
@@ -190,11 +190,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Jobs
                 });
 
             _ = this.mockExternalDeviceService
-                .Setup(x => x.GetDeviceTwinWithModule(It.Is<string>(c => c.Equals(expectedTwinDevice.DeviceId, System.StringComparison.Ordinal))))
+                .Setup(x => x.GetDeviceTwinWithModule(It.Is<string>(c => c.Equals(expectedTwinDevice.DeviceId, StringComparison.Ordinal))))
                 .ReturnsAsync(expectedTwinDevice);
 
             _ = this.mockExternalDeviceService
-                .Setup(x => x.GetDeviceTwinWithEdgeHubModule(It.Is<string>(c => c.Equals(expectedTwinDevice.DeviceId, System.StringComparison.Ordinal))))
+                .Setup(x => x.GetDeviceTwinWithEdgeHubModule(It.Is<string>(c => c.Equals(expectedTwinDevice.DeviceId, StringComparison.Ordinal))))
                 .ReturnsAsync(expectedTwinDevice);
 
             _ = this.mockEdgeDeviceModelRepository
