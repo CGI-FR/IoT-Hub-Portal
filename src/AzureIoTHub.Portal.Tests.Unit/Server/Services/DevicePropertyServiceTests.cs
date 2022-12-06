@@ -7,9 +7,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Linq;
     using System.Threading.Tasks;
     using Azure;
+    using AzureIoTHub.Portal.Application.Helpers;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Server.Services;
     using FluentAssertions;
     using Microsoft.Azure.Devices.Shared;

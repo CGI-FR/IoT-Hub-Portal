@@ -7,8 +7,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Mappers
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Text;
+    using AzureIoTHub.Portal.Application.Helpers;
     using AzureIoTHub.Portal.Crosscutting.Extensions;
-    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Infrastructure.Mappers;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;

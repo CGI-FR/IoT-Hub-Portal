@@ -5,10 +5,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Helpers
 {
     using System;
     using System.Collections.Generic;
+    using AzureIoTHub.Portal.Application.Helpers;
     using AzureIoTHub.Portal.Crosscutting.Extensions;
     using AzureIoTHub.Portal.Domain.Entities;
-    using AzureIoTHub.Portal.Infrastructure.Helpers;
-    using AzureIoTHub.Portal.Server.Extensions;
     using FluentAssertions;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;

@@ -10,9 +10,9 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Text;
     using System.Threading.Tasks;
     using Azure;
+    using AzureIoTHub.Portal.Application.Helpers;
     using AzureIoTHub.Portal.Crosscutting.Extensions;
     using AzureIoTHub.Portal.Domain.Exceptions;
-    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using Microsoft.Azure.Devices;

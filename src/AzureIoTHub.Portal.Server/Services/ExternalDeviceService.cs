@@ -11,10 +11,10 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Text;
     using System.Threading.Tasks;
     using Azure;
-    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Helpers;
+    using AzureIoTHub.Portal.Application.Providers;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Shared.Constants;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
@@ -29,7 +29,7 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly RegistryManager registryManager;
         private readonly ServiceClient serviceClient;
         private readonly ILogger<ExternalDeviceService> log;
-        private readonly IDeviceProvisioningServiceManager deviceProvisioningServiceManager;
+        private readonly IDeviceRegistryProvider deviceRegistryProvider;
         private readonly IDeviceModelRepository deviceModelRepository;
 
         public ExternalDeviceService(
@@ -37,12 +37,12 @@ namespace AzureIoTHub.Portal.Server.Services
             RegistryManager registryManager,
             ServiceClient serviceClient,
             IDeviceModelRepository deviceModelRepository,
-            IDeviceProvisioningServiceManager deviceProvisioningServiceManager)
+            IDeviceRegistryProvider deviceRegistryProvider)
         {
             this.log = log;
             this.serviceClient = serviceClient;
             this.deviceModelRepository = deviceModelRepository;
-            this.deviceProvisioningServiceManager = deviceProvisioningServiceManager;
+            this.deviceRegistryProvider = deviceRegistryProvider;
             this.registryManager = registryManager;
         }
 
@@ -604,7 +604,7 @@ namespace AzureIoTHub.Portal.Server.Services
             {
                 var model = await this.deviceModelRepository.GetByIdAsync(device.Tags["modelId"].ToString());
 
-                return await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(deviceId, model.Name);
+                return await this.deviceRegistryProvider.GetEnrollmentCredentialsAsync(deviceId, model.Name);
             }
             catch (RequestFailedException e)
             {
@@ -629,7 +629,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             var modelId = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId));
 
-            return await this.deviceProvisioningServiceManager.GetEnrollmentCredentialsAsync(edgeDeviceId, modelId);
+            return await this.deviceRegistryProvider.GetEnrollmentCredentialsAsync(edgeDeviceId, modelId);
         }
 
         /// <summary>

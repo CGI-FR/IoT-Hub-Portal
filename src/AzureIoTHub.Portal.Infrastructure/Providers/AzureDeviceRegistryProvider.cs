@@ -1,27 +1,25 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Infrastructure.Managers
+namespace AzureIoTHub.Portal.Infrastructure.Providers
 {
     using System;
-    using System.Net.Http;
     using System.Security.Cryptography;
-    using System.Threading;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Helpers;
-    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Providers;
     using AzureIoTHub.Portal.Application.Wrappers;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
 
-    public class DeviceProvisioningServiceManager : IDeviceProvisioningServiceManager
+    internal class AzureDeviceRegistryProvider : IDeviceRegistryProvider
     {
         private readonly IProvisioningServiceClient dps;
         private readonly ConfigHandler config;
 
-        public DeviceProvisioningServiceManager(IProvisioningServiceClient dps, ConfigHandler config)
+        public AzureDeviceRegistryProvider(IProvisioningServiceClient dps, ConfigHandler config)
         {
             this.dps = dps;
             this.config = config;

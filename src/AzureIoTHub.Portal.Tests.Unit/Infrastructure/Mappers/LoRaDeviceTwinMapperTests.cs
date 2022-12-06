@@ -5,8 +5,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Mappers
 {
     using System;
     using System.Collections.Generic;
+    using AzureIoTHub.Portal.Application.Helpers;
     using AzureIoTHub.Portal.Application.Managers;
-    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Infrastructure.Mappers;
     using Microsoft.Azure.Devices.Shared;
     using Models.v10.LoRaWAN;

@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Application.Services
+namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services
 {
     using System;
     using System.Net;
@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Application.Services
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Infrastructure.Services;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10.LoRaWAN;

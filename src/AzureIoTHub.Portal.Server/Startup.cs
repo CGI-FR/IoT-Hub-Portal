@@ -11,11 +11,14 @@ namespace AzureIoTHub.Portal.Server
     using Azure.Storage.Blobs.Models;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Mappers;
+    using AzureIoTHub.Portal.Application.Providers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Application.Wrappers;
     using AzureIoTHub.Portal.Domain.Options;
     using AzureIoTHub.Portal.Infrastructure.Managers;
     using AzureIoTHub.Portal.Infrastructure.Mappers;
+    using AzureIoTHub.Portal.Infrastructure.Providers;
+    using AzureIoTHub.Portal.Infrastructure.Services;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using AzureIoTHub.Portal.Infrastructure.Wrappers;
     using AzureIoTHub.Portal.Server.Jobs;
@@ -137,7 +140,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IDeviceModelImageManager, DeviceModelImageManager>();
             _ = services.AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>();
             _ = services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
-            _ = services.AddTransient<IDeviceProvisioningServiceManager, DeviceProvisioningServiceManager>();
+            _ = services.AddTransient<IDeviceRegistryProvider, AzureDeviceRegistryProvider>();
             _ = services.AddTransient<ILoRaWanManagementService, LoRaWanManagementService>();
             _ = services.AddTransient<IExportManager, ExportManager>();
 

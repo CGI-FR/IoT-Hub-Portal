@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Application.Services
+namespace AzureIoTHub.Portal.Infrastructure.Services
 {
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Application.Services
     using System.Text;
     using System.Text.Json;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
     internal class LoRaWanManagementService : ILoRaWanManagementService

@@ -12,6 +12,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AutoFixture;
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Providers;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Infrastructure.Mappers;
     using AzureIoTHub.Portal.Server.Services;
@@ -37,7 +38,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         private Mock<IDeviceModelRepository> mockDeviceModelRepository;
         private Mock<IDeviceModelCommandRepository> mockDeviceModelCommandRepository;
         private Mock<ILabelRepository> mockLabelRepository;
-        private Mock<IDeviceProvisioningServiceManager> mockDeviceProvisioningServiceManager;
+        private Mock<IDeviceRegistryProvider> mockRegistryProvider;
         private Mock<IConfigService> mockConfigService;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
         private Mock<IExternalDeviceService> mockDeviceService;
@@ -53,7 +54,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockDeviceModelRepository = MockRepository.Create<IDeviceModelRepository>();
             this.mockLabelRepository = MockRepository.Create<ILabelRepository>();
             this.mockDeviceModelCommandRepository = MockRepository.Create<IDeviceModelCommandRepository>();
-            this.mockDeviceProvisioningServiceManager = MockRepository.Create<IDeviceProvisioningServiceManager>();
+            this.mockRegistryProvider = MockRepository.Create<IDeviceRegistryProvider>();
             this.mockConfigService = MockRepository.Create<IConfigService>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
             this.mockDeviceService = MockRepository.Create<IExternalDeviceService>();
@@ -63,7 +64,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockLabelRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelCommandRepository.Object);
-            _ = ServiceCollection.AddSingleton(this.mockDeviceProvisioningServiceManager.Object);
+            _ = ServiceCollection.AddSingleton(this.mockRegistryProvider.Object);
             _ = ServiceCollection.AddSingleton(this.mockConfigService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceService.Object);
@@ -154,7 +155,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Setup(mapper => mapper.BuildDeviceModelDesiredProperties(It.IsAny<DeviceModelDto>()))
                 .Returns(new Dictionary<string, object>());
 
-            _ = this.mockDeviceProvisioningServiceManager.Setup(manager =>
+            _ = this.mockRegistryProvider.Setup(manager =>
                     manager.CreateEnrollmentGroupFromModelAsync(deviceModelDto.ModelId, deviceModelDto.Name,
                         It.IsAny<TwinCollection>()))
                 .ReturnsAsync((EnrollmentGroup)null);
@@ -219,7 +220,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 .Setup(mapper => mapper.BuildDeviceModelDesiredProperties(It.IsAny<DeviceModelDto>()))
                 .Returns(new Dictionary<string, object>());
 
-            _ = this.mockDeviceProvisioningServiceManager.Setup(manager =>
+            _ = this.mockRegistryProvider.Setup(manager =>
                     manager.CreateEnrollmentGroupFromModelAsync(deviceModelDto.ModelId, deviceModelDto.Name,
                         It.IsAny<TwinCollection>()))
                 .ReturnsAsync((EnrollmentGroup)null);

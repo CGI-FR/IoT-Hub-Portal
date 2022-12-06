@@ -1,14 +1,14 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
+namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Providers
 {
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Wrappers;
     using AzureIoTHub.Portal.Infrastructure;
-    using AzureIoTHub.Portal.Infrastructure.Managers;
+    using AzureIoTHub.Portal.Infrastructure.Providers;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.Extensions.Configuration;
@@ -16,7 +16,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
     using NUnit.Framework;
 
     [TestFixture]
-    public class DeviceProvisioningServiceManagerTests
+    public class AzureDeviceRegistryProviderTests
     {
         private MockRepository mockRepository;
 
@@ -34,9 +34,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
             this.mockConfigHandler = this.mockRepository.Create<DevelopmentConfigHandler>(this.mockConfiguration.Object);
         }
 
-        private DeviceProvisioningServiceManager CreateManager()
+        private AzureDeviceRegistryProvider CreateManager()
         {
-            return new DeviceProvisioningServiceManager(
+            return new AzureDeviceRegistryProvider(
                 this.mockProvisioningServiceClient.Object,
                 this.mockConfigHandler.Object);
         }
