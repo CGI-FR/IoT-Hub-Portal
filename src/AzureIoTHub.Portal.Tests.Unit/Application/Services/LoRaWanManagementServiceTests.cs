@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
+namespace AzureIoTHub.Portal.Tests.Unit.Application.Services
 {
     using System;
     using System.Net;
@@ -10,8 +10,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
     using System.Text;
     using System.Threading.Tasks;
     using AutoFixture;
-    using AzureIoTHub.Portal.Application.Managers;
-    using AzureIoTHub.Portal.Infrastructure.Managers;
+    using AzureIoTHub.Portal.Application.Services;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10.LoRaWAN;
@@ -20,26 +19,26 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
     using UnitTests.Bases;
 
     [TestFixture]
-    public class LoraDeviceMethodManagerTests : BackendUnitTest
+    public class LoRaWanManagementServiceTests : BackendUnitTest
     {
-        private ILoraDeviceMethodManager loraDeviceMethodManager;
+        private ILoRaWanManagementService loRaWanManagementService;
 
         public override void Setup()
         {
             base.Setup();
 
-            _ = ServiceCollection.AddSingleton<ILoraDeviceMethodManager, LoraDeviceMethodManager>();
+            _ = ServiceCollection.AddSingleton<ILoRaWanManagementService, LoRaWanManagementService>();
 
             Services = ServiceCollection.BuildServiceProvider();
 
-            this.loraDeviceMethodManager = Services.GetRequiredService<ILoraDeviceMethodManager>();
+            this.loRaWanManagementService = Services.GetRequiredService<ILoRaWanManagementService>();
         }
 
         [Test]
         public async Task ExecuteLoRaDeviceMessageThrowsArgumentNullExceptionWhenDeviceIdIsNull()
         {
             // Act
-            var act = () => this.loraDeviceMethodManager.ExecuteLoRaDeviceMessage(null, null);
+            var act = () => this.loRaWanManagementService.ExecuteLoRaDeviceMessage(null, null);
 
             // Assert
             _ = await act.Should().ThrowAsync<ArgumentNullException>();
@@ -52,7 +51,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
             var deviceId = Fixture.Create<string>();
 
             // Act
-            var act = () => this.loraDeviceMethodManager.ExecuteLoRaDeviceMessage(deviceId, null);
+            var act = () => this.loRaWanManagementService.ExecuteLoRaDeviceMessage(deviceId, null);
 
             // Assert
             _ = await act.Should().ThrowAsync<ArgumentNullException>();
@@ -87,13 +86,33 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
                 .Respond(HttpStatusCode.Created);
 
             // Act
-            var result = await this.loraDeviceMethodManager.ExecuteLoRaDeviceMessage(deviceId, command);
+            var result = await this.loRaWanManagementService.ExecuteLoRaDeviceMessage(deviceId, command);
 
             // Assert
             _ = result.Should().NotBeNull();
             _ = result.IsSuccessStatusCode.Should().BeTrue();
             MockHttpClient.VerifyNoOutstandingRequest();
             MockHttpClient.VerifyNoOutstandingExpectation();
+        }
+
+        [TestCase("CN_470_510_RP1")]
+        [TestCase("CN_470_510_RP2")]
+        [TestCase("EU_863_870")]
+        [TestCase("US_902_928_FSB_1")]
+        [TestCase("US_902_928_FSB_2")]
+        [TestCase("US_902_928_FSB_3")]
+        [TestCase("US_902_928_FSB_4")]
+        [TestCase("US_902_928_FSB_5")]
+        [TestCase("US_902_928_FSB_6")]
+        [TestCase("US_902_928_FSB_7")]
+        [TestCase("US_902_928_FSB_8")]
+        public async Task GetRouterConfigStateUnderTestExpectedBehavior(string loraRegion)
+        {
+            // Act
+            var result = await this.loRaWanManagementService.GetRouterConfig(loraRegion);
+
+            // Assert
+            Assert.IsNotNull(result);
         }
     }
 }

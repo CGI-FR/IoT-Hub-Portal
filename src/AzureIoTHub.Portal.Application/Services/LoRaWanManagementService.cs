@@ -1,25 +1,35 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Infrastructure.Managers
+namespace AzureIoTHub.Portal.Application.Services
 {
-    using System;
-    using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
+    using System.Reflection;
     using System.Text;
-    using System.Threading;
+    using System.Text.Json;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
 
-    public class LoraDeviceMethodManager : ILoraDeviceMethodManager
+    internal class LoRaWanManagementService : ILoRaWanManagementService
     {
         private readonly HttpClient httpClient;
 
-        public LoraDeviceMethodManager(HttpClient httpClient)
+        public LoRaWanManagementService(HttpClient httpClient)
         {
             this.httpClient = httpClient;
+        }
+
+        public async Task<RouterConfig> GetRouterConfig(string loRaRegion)
+        {
+            var currentAssembly = Assembly.GetExecutingAssembly();
+
+            using var resourceStream = currentAssembly.GetManifestResourceStream($"{currentAssembly.GetName().Name}.RouterConfigFiles.{loRaRegion}.json");
+
+            if (resourceStream == null)
+                return null;
+
+            return await JsonSerializer.DeserializeAsync<RouterConfig>(resourceStream);
         }
 
         public async Task<HttpResponseMessage> ExecuteLoRaDeviceMessage(string deviceId, DeviceModelCommandDto commandDto)

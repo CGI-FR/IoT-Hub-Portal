@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
     using System.Threading.Tasks;
     using AutoFixture;
     using AutoMapper;
-    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Server.Services;
@@ -30,7 +30,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
         private Mock<IDeviceModelRepository> mockDeviceModelRepository;
         private Mock<IDeviceModelCommandRepository> mockDeviceModelCommandRepository;
         private Mock<IUnitOfWork> mockUnitOfWork;
-        private Mock<ILoraDeviceMethodManager> mockLoraDeviceMethodManager;
+        private Mock<ILoRaWanManagementService> loRaWanManagementService;
 
         private ILoRaWANCommandService loRaWanCommandService;
 
@@ -41,13 +41,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
             this.mockDeviceModelRepository = MockRepository.Create<IDeviceModelRepository>();
             this.mockDeviceModelCommandRepository = MockRepository.Create<IDeviceModelCommandRepository>();
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
-            this.mockLoraDeviceMethodManager = MockRepository.Create<ILoraDeviceMethodManager>();
+            this.loRaWanManagementService = MockRepository.Create<ILoRaWanManagementService>();
 
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelCommandRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
 
-            _ = ServiceCollection.AddSingleton(this.mockLoraDeviceMethodManager.Object);
+            _ = ServiceCollection.AddSingleton(this.loRaWanManagementService.Object);
 
             _ = ServiceCollection.AddSingleton<ILoRaWANCommandService, LoRaWANCommandService>();
 
@@ -185,7 +185,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
 
             using var success = new HttpResponseMessage(HttpStatusCode.Accepted);
 
-            _ = this.mockLoraDeviceMethodManager.Setup(c => c.ExecuteLoRaDeviceMessage(
+            _ = this.loRaWanManagementService.Setup(c => c.ExecuteLoRaDeviceMessage(
                 It.Is<string>(x => x == deviceId),
                 It.Is<DeviceModelCommandDto>(x => x.Id == commandId)))
                 .ReturnsAsync(success);
@@ -215,7 +215,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Domain.Services
 
             using var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
 
-            _ = this.mockLoraDeviceMethodManager.Setup(c => c.ExecuteLoRaDeviceMessage(deviceId, It.IsAny<DeviceModelCommandDto>()))
+            _ = this.loRaWanManagementService.Setup(c => c.ExecuteLoRaDeviceMessage(deviceId, It.IsAny<DeviceModelCommandDto>()))
                 .ReturnsAsync(response);
 
             // Act

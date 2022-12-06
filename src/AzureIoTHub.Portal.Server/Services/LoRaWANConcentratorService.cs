@@ -5,8 +5,8 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Threading.Tasks;
     using AutoMapper;
-    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Mappers;
+    using AzureIoTHub.Portal.Application.Services;
     using Domain;
     using Domain.Entities;
     using Domain.Exceptions;
@@ -28,9 +28,9 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IConcentratorTwinMapper concentratorTwinMapper;
 
         /// <summary>
-        /// The device IRouter config manager.
+        /// The loRaWan management service.
         /// </summary>
-        private readonly IRouterConfigManager routerConfigManager;
+        private readonly ILoRaWanManagementService loRaWanManagementService;
 
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
@@ -40,7 +40,7 @@ namespace AzureIoTHub.Portal.Server.Services
         public LoRaWANConcentratorService(
             IExternalDeviceService externalDevicesService,
             IConcentratorTwinMapper concentratorTwinMapper,
-            IRouterConfigManager routerConfigManager,
+            ILoRaWanManagementService loRaWanManagementService,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IConcentratorRepository concentratorRepository
@@ -48,7 +48,7 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             this.externalDevicesService = externalDevicesService;
             this.concentratorTwinMapper = concentratorTwinMapper;
-            this.routerConfigManager = routerConfigManager;
+            this.loRaWanManagementService = loRaWanManagementService;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.concentratorRepository = concentratorRepository;
@@ -81,7 +81,7 @@ namespace AzureIoTHub.Portal.Server.Services
         public async Task<ConcentratorDto> CreateDeviceAsync(ConcentratorDto concentrator)
         {
             var newTwin = await this.externalDevicesService.CreateNewTwinFromDeviceId(concentrator.DeviceId);
-            concentrator.RouterConfig = await this.routerConfigManager.GetRouterConfig(concentrator.LoraRegion);
+            concentrator.RouterConfig = await this.loRaWanManagementService.GetRouterConfig(concentrator.LoraRegion);
             concentrator.ClientThumbprint ??= string.Empty;
 
             this.concentratorTwinMapper.UpdateTwin(newTwin, concentrator);
@@ -102,7 +102,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             // Get the current twin from the hub, based on the device ID
             var currentTwin = await this.externalDevicesService.GetDeviceTwin(concentrator.DeviceId);
-            concentrator.RouterConfig = await this.routerConfigManager.GetRouterConfig(concentrator.LoraRegion);
+            concentrator.RouterConfig = await this.loRaWanManagementService.GetRouterConfig(concentrator.LoraRegion);
 
             // Update the twin properties
             this.concentratorTwinMapper.UpdateTwin(currentTwin, concentrator);

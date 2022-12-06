@@ -8,10 +8,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
     using System.Security.Cryptography;
     using System.Threading;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Application.Helpers;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Wrappers;
     using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Provisioning.Service;
     using Microsoft.Azure.Devices.Shared;

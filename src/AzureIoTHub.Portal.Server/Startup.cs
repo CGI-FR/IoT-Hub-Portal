@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Server
     using Azure.Storage.Blobs.Models;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Mappers;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Application.Wrappers;
     using AzureIoTHub.Portal.Domain.Options;
     using AzureIoTHub.Portal.Infrastructure.Managers;
@@ -137,7 +138,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IConcentratorTwinMapper, ConcentratorTwinMapper>();
             _ = services.AddTransient<IDeviceModelCommandMapper, DeviceModelCommandMapper>();
             _ = services.AddTransient<IDeviceProvisioningServiceManager, DeviceProvisioningServiceManager>();
-            _ = services.AddTransient<IRouterConfigManager, RouterConfigManager>();
+            _ = services.AddTransient<ILoRaWanManagementService, LoRaWanManagementService>();
             _ = services.AddTransient<IExportManager, ExportManager>();
 
             _ = services.AddTransient<IDeviceTwinMapper<DeviceListItem, DeviceDetails>, DeviceTwinMapper>();
@@ -184,7 +185,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddHttpClient("RestClient")
                 .AddPolicyHandler(transientHttpErrorPolicy);
 
-            _ = services.AddHttpClient<ILoraDeviceMethodManager, LoraDeviceMethodManager>((sp, client) =>
+            _ = services.AddHttpClient<ILoRaWanManagementService, LoRaWanManagementService>((sp, client) =>
             {
                 var opts = sp.GetService<IOptions<LoRaWANOptions>>().Value;
 

@@ -7,8 +7,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Threading.Tasks;
     using AutoFixture;
     using AutoMapper;
-    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Mappers;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
@@ -32,7 +32,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     {
         private Mock<ILogger<LoRaWANConcentratorService>> mockLogger;
         private Mock<IExternalDeviceService> mockExternalDeviceService;
-        private Mock<IRouterConfigManager> mockRouterConfigManager;
+        private Mock<ILoRaWanManagementService> mockLloRaWanManagementService;
         private Mock<IConcentratorTwinMapper> mockConcentratorTwinMapper;
         private Mock<IConcentratorRepository> mockConcentratorRepository;
         private Mock<IUnitOfWork> mockUnitOfWork;
@@ -46,14 +46,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             this.mockLogger = this.MockRepository.Create<ILogger<LoRaWANConcentratorService>>();
             this.mockExternalDeviceService = this.MockRepository.Create<IExternalDeviceService>();
-            this.mockRouterConfigManager = this.MockRepository.Create<IRouterConfigManager>();
+            this.mockLloRaWanManagementService = this.MockRepository.Create<ILoRaWanManagementService>();
             this.mockConcentratorTwinMapper = this.MockRepository.Create<IConcentratorTwinMapper>();
             this.mockConcentratorRepository = this.MockRepository.Create<IConcentratorRepository>();
             this.mockUnitOfWork = this.MockRepository.Create<IUnitOfWork>();
 
             _ = ServiceCollection.AddSingleton(this.mockLogger.Object);
             _ = ServiceCollection.AddSingleton(this.mockExternalDeviceService.Object);
-            _ = ServiceCollection.AddSingleton(this.mockRouterConfigManager.Object);
+            _ = ServiceCollection.AddSingleton(this.mockLloRaWanManagementService.Object);
             _ = ServiceCollection.AddSingleton(this.mockConcentratorTwinMapper.Object);
             _ = ServiceCollection.AddSingleton(this.mockConcentratorRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
@@ -149,7 +149,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDeviceService.Setup(service => service.CreateNewTwinFromDeviceId(It.IsAny<string>()))
                 .ReturnsAsync(new Twin { DeviceId = expectedConcentratorDto.DeviceId });
 
-            _ = this.mockRouterConfigManager.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
+            _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
                 .ReturnsAsync(new RouterConfig());
 
             this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
@@ -182,7 +182,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDeviceService.Setup(service => service.CreateNewTwinFromDeviceId(It.IsAny<string>()))
                 .ReturnsAsync(new Twin { DeviceId = expectedConcentratorDto.DeviceId });
 
-            _ = this.mockRouterConfigManager.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
+            _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
                 .ReturnsAsync(new RouterConfig());
 
             this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
@@ -224,7 +224,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDeviceService.Setup(service => service.GetDeviceTwin(It.IsAny<string>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockRouterConfigManager.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
+            _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
                 .ReturnsAsync(new RouterConfig());
 
             this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
@@ -260,7 +260,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDeviceService.Setup(service => service.GetDeviceTwin(It.IsAny<string>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockRouterConfigManager.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
+            _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
                 .ReturnsAsync(new RouterConfig());
 
             this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))
@@ -302,7 +302,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockExternalDeviceService.Setup(service => service.GetDeviceTwin(It.IsAny<string>()))
                 .ReturnsAsync(new Twin());
 
-            _ = this.mockRouterConfigManager.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
+            _ = this.mockLloRaWanManagementService.Setup(manager => manager.GetRouterConfig(It.IsAny<string>()))
                 .ReturnsAsync(new RouterConfig());
 
             this.mockConcentratorTwinMapper.Setup(mapper => mapper.UpdateTwin(It.IsAny<Twin>(), It.IsAny<ConcentratorDto>()))

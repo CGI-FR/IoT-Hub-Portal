@@ -6,23 +6,23 @@ namespace AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Services;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
 
     public class LoRaManagementKeyFacadeHealthCheck : IHealthCheck
     {
-        private readonly ILoraDeviceMethodManager loraDeviceMethodManager;
+        private readonly ILoRaWanManagementService loRaWanManagementService;
 
-        public LoRaManagementKeyFacadeHealthCheck(ILoraDeviceMethodManager loraDeviceMethodManager)
+        public LoRaManagementKeyFacadeHealthCheck(ILoRaWanManagementService loRaWanManagementService)
         {
-            this.loraDeviceMethodManager = loraDeviceMethodManager;
+            this.loRaWanManagementService = loRaWanManagementService;
         }
 
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             try
             {
-                var result  = await this.loraDeviceMethodManager.CheckAzureFunctionReturn(cancellationToken);
+                var result  = await this.loRaWanManagementService.CheckAzureFunctionReturn(cancellationToken);
 
                 _ = result.EnsureSuccessStatusCode();
 

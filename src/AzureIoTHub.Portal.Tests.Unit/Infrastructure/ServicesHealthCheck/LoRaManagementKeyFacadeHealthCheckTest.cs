@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
-    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
     using Moq;
@@ -18,19 +18,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
     public class LoRaManagementKeyFacadeHealthCheckTest
     {
         private MockRepository mockRepository;
-        private Mock<ILoraDeviceMethodManager> mockoraDeviceMethodManager;
+        private Mock<ILoRaWanManagementService> mockLoRaWanManagementService;
 
         [SetUp]
         public void SetUp()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockoraDeviceMethodManager = this.mockRepository.Create<ILoraDeviceMethodManager>();
+            this.mockLoRaWanManagementService = this.mockRepository.Create<ILoRaWanManagementService>();
         }
 
         private LoRaManagementKeyFacadeHealthCheck CreateService()
         {
-            return new LoRaManagementKeyFacadeHealthCheck(this.mockoraDeviceMethodManager.Object);
+            return new LoRaManagementKeyFacadeHealthCheck(this.mockLoRaWanManagementService.Object);
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
 
             var mockHttpMessage = this.mockRepository.Create<HttpResponseMessage>(System.Net.HttpStatusCode.OK);
 
-            _ = this.mockoraDeviceMethodManager
+            _ = this.mockLoRaWanManagementService
                 .Setup(c => c.CheckAzureFunctionReturn(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mockHttpMessage.Object);
 
@@ -71,7 +71,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.ServicesHealthCheck
 
             var mockHttpMessage = this.mockRepository.Create<HttpResponseMessage>(System.Net.HttpStatusCode.BadRequest);
 
-            _ = this.mockoraDeviceMethodManager
+            _ = this.mockLoRaWanManagementService
                 .Setup(c => c.CheckAzureFunctionReturn(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mockHttpMessage.Object);
 

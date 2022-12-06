@@ -4,9 +4,9 @@
 namespace AzureIoTHub.Portal.Infrastructure.Mappers
 {
     using System.Collections.Generic;
+    using AzureIoTHub.Portal.Application.Helpers;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Mappers;
-    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Azure.Devices.Shared;
 
