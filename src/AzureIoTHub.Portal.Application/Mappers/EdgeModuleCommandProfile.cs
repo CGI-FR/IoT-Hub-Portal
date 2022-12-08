@@ -1,7 +1,7 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Server.Mappers
+namespace AzureIoTHub.Portal.Application.Mappers
 {
     using AutoMapper;
     using AzureIoTHub.Portal.Domain.Entities;
@@ -37,7 +37,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.DisplayName, opts => opts.MapFrom(src => src.DisplayName))
                 .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
-                .ForMember(dest => dest.Schema, opts => opts.MapFrom(src => src.Schema))
+                .ForMember(dest => dest.ComplexSchema, opts => opts.MapFrom(src => src.ComplexSchema))
+                .ForMember(dest => dest.moduleCommandSchemaType, opts => opts.MapFrom(src => src.SchemaType))
                 .ForMember(dest => dest.Comment, opts => opts.MapFrom(src => src.Comment))
                 .ForMember(dest => dest.InitialValue, opts => opts.MapFrom(src => src.InitialValue));
 
@@ -46,7 +47,8 @@ namespace AzureIoTHub.Portal.Server.Mappers
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.DisplayName, opts => opts.MapFrom(src => src.DisplayName))
                 .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
-                .ForMember(dest => dest.Schema, opts => opts.MapFrom(src => TryToDeserializeObjectSchema(src.Schema)))
+                .ForMember(dest => dest.ComplexSchema, opts => opts.MapFrom(src => TryToDeserializeObjectSchema(src.ComplexSchema)))
+                .ForMember(dest => dest.SchemaType, opts => opts.MapFrom(src => src.moduleCommandSchemaType))
                 .ForMember(dest => dest.Comment, opts => opts.MapFrom(src => src.Comment))
                 .ForMember(dest => dest.InitialValue, opts => opts.MapFrom(src => src.InitialValue));
         }

@@ -35,11 +35,11 @@ namespace AzureIoTHub.Portal.Domain.Entities
 
         public ModuleCommandSchemaType moduleCommandSchemaType { get; set; }
 
-        public object Schema { get; set; }
+        public object? ComplexSchema { get; set; }
 
         public string EdgeModuleCommandId { get; set; }
 
-        public object? InitialValue { get; set; }
+        public string? InitialValue { get; set; }
 
         public string? Comment { get; set; }
 
