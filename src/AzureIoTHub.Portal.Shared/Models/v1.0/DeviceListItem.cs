@@ -48,6 +48,11 @@ namespace AzureIoTHub.Portal.Models.v10
         public bool SupportLoRaFeatures { get; set; }
 
         /// <summary>
+        /// A value indicating whether the device has telemetry.
+        /// </summary>
+        public bool HasLoRaTelemetry { get; set; }
+
+        /// <summary>
         /// The device last status updated time.
         /// </summary>
         public DateTime StatusUpdatedTime { get; set; }

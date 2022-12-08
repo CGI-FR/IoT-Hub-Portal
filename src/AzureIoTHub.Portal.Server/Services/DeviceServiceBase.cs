@@ -121,6 +121,7 @@ namespace AzureIoTHub.Portal.Server.Services
                     StatusUpdatedTime = device.StatusUpdatedTime,
                     DeviceModelId = device.DeviceModelId,
                     SupportLoRaFeatures = device is LorawanDevice,
+                    HasLoRaTelemetry = device is LorawanDevice && ((LorawanDevice) device).Telemetry.Any(),
                     Labels = device.Labels
                         .Union(device.DeviceModel.Labels)
                         .Select(x => new LabelDto

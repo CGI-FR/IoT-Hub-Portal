@@ -225,7 +225,7 @@
                 @if (Portal.IsLoRaSupported)
                 {
                     <MudTd DataLabel="Telemetry" Style="text-align: center">
-                        @if (context.SupportLoRaFeatures)
+                        @if (context.HasLoRaTelemetry)
                         {
                             <MudTooltip Text="See device telemetries">
                                 <MudIconButton id="@($"show-device-telemetry-{@context.DeviceID}")" Icon="@Icons.Filled.ShowChart" Color="Color.Default" OnClick="@(() => ShowDeviceTelemetry(context))" />
