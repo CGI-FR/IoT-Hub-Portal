@@ -46,16 +46,15 @@
                         {
                             case ModuleCommandSchemaType.Boolean:
                                 <MudItem xs="4" md="4">
-                                    <MudSwitch @bind-Checked="@Command.Request.InitialValue" Converter="@(new ObjectToBoolConverter())" Label="Initiale Value" Color="Color.Info" />
+                                    <MudSwitch @bind-Checked="@Command.Request.InitialValue" Label="Initiale Value" Color="Color.Info" />
                                 </MudItem>
                                 break;
                             case ModuleCommandSchemaType.Double:
                                 <MudItem xs="4" md="4">
-                                    <MudNumericField
+                                    <MudNumericField @bind-Value="@Command.Request.InitialValue"
                                     Label="Initiale Value"
                                     Variant="Variant.Outlined"
                                     Validation=@((string c) => double.TryParse(c, out var result))
-                                    @bind-Value="@Command.Request.InitialValue"
                                     Margin="Margin.Dense"></MudNumericField>
                                 </MudItem>
                                 break;
@@ -233,26 +232,5 @@
         }
 
         return Task.CompletedTask;
-    }
-
-    public class ObjectToBoolConverter : BoolConverter<object>
-    {
-        public ObjectToBoolConverter()
-        {
-            SetFunc = OnSet;
-            GetFunc = OnGet;
-        }
-
-        private string OnGet(bool? value) => value?.ToString()?.ToLowerInvariant();
-
-        private bool? OnSet(object arg)
-        {
-            if (!bool.TryParse(arg.ToString(), out var value))
-            {
-                return null;
-            }
-
-            return value;
-        }
     }
 }

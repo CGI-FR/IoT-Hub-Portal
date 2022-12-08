@@ -15,9 +15,9 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand
 
         public ModuleCommandSchemaType SchemaType { get; set; }
 
-        public object Schema { get; set; }
+        public PayloadDataTypeDto? ComplexSchema { get; set; }
 
-        public object? InitialValue { get; set; }
+        public string? InitialValue { get; set; }
 
         [JsonPropertyName("@id")]
         [JsonProperty("@id")]

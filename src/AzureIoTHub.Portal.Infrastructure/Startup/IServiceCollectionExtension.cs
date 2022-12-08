@@ -137,6 +137,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                             .AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>()
                             .AddScoped<IConcentratorRepository, ConcentratorRepository>()
                             .AddScoped<ILoRaDeviceTelemetryRepository, LoRaDeviceTelemetryRepository>()
+                            .AddScoped<IEdgeModuleCommandsRepository, EdgeModuleCommandsRepository>()
                             .AddScoped<ILabelRepository, LabelRepository>();
         }
 
