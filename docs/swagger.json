@@ -3968,6 +3968,10 @@
             "type": "boolean",
             "description": "A value indicating whether the LoRa features is supported on this model."
           },
+          "hasLoRaTelemetry": {
+            "type": "boolean",
+            "description": "A value indicating whether the device has telemetry."
+          },
           "statusUpdatedTime": {
             "type": "string",
             "description": "The device last status updated time.",
