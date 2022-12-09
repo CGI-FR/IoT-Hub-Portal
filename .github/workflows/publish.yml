@@ -79,6 +79,7 @@ jobs:
       - name: Get semver
         id: version
         uses: docker/metadata-action@v4
+        with:
           images: |
             ${{ env.registry_name }}/${{ github.repository_owner }}/${{ env.image_name }}
           tags: |
