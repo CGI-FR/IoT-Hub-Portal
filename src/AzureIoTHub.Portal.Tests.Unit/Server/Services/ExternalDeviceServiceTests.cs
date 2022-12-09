@@ -215,6 +215,62 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockRepository.VerifyAll();
         }
 
+        [Test]
+        public async Task GetAllEdgeDevice_CountWithoutTotalNumber_ReturnsEmptyEdgeDevices()
+        {
+            // Arrange
+            var service = CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ toto: 1}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetAllEdgeDevice();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Items.Count());
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetAllEdgeDevice_CountTotalNumberEqualZero_ReturnsEmptyEdgeDevices()
+        {
+            // Arrange
+            var service = CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 0}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetAllEdgeDevice();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Items.Count());
+            this.mockRepository.VerifyAll();
+        }
+
 
         [Test]
         public async Task GetAllEdgeDeviceShouldThrowInternalServerErrorExceptionWhenGettingDevices()
