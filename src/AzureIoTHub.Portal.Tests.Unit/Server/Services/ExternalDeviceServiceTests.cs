@@ -176,6 +176,47 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task GetAllEdgeDevice_SearchTextIsNotNull_ReturnsEdgeDevices()
+        {
+            // Arrange
+            var service = CreateService();
+            var mockQuery = this.mockRepository.Create<IQuery>();
+            var searchText = Guid.NewGuid().ToString();
+
+            var mockCountQuery = this.mockRepository.Create<IQuery>();
+
+            _ = mockQuery.Setup(c => c.GetNextAsTwinAsync(It.IsAny<QueryOptions>()))
+                .ReturnsAsync(new QueryResponse<Twin>(new[]{
+                    new Twin(Guid.NewGuid().ToString())
+                    }, string.Empty));
+
+            _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
+                .ReturnsAsync(new string[]
+                {
+                    /*lang=json*/
+                    "{ totalNumber: 1}"
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT * FROM devices WHERE devices.capabilities.iotEdge = true AND (STARTSWITH(deviceId, '{searchText}') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, '{searchText}')))"),
+                It.Is<int>(x => x == 10)))
+                .Returns(mockQuery.Object);
+
+            _ = this.mockRegistryManager.Setup(c => c.CreateQuery(
+                It.Is<string>(x => x == $"SELECT COUNT() as totalNumber FROM devices WHERE devices.capabilities.iotEdge = true AND (STARTSWITH(deviceId, '{searchText}') OR (is_defined(tags.deviceName) AND STARTSWITH(tags.deviceName, '{searchText}')))")))
+                .Returns(mockCountQuery.Object);
+
+            // Act
+            var result = await service.GetAllEdgeDevice(searchText: searchText );
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Items.Count());
+            this.mockRepository.VerifyAll();
+        }
+
+
+        [Test]
         public async Task GetAllEdgeDeviceShouldThrowInternalServerErrorExceptionWhenGettingDevices()
         {
             // Arrange
