@@ -391,7 +391,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
+                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true, HasLoRaTelemetry = true } }
                 });
 
             _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
