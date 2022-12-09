@@ -19,6 +19,78 @@
         }
       }
     },
+    "/api/admin/devices/_import": {
+      "post": {
+        "tags": [
+          "Admin APIs"
+        ],
+        "operationId": "Import devices",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ImportResultLine"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ImportResultLine"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ImportResultLine"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/devices/_template": {
+      "post": {
+        "tags": [
+          "Admin APIs"
+        ],
+        "operationId": "Download template file",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/api/dashboard/metrics": {
       "get": {
         "tags": [
@@ -129,7 +201,6 @@
             "name": "configurationId",
             "in": "path",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -168,7 +239,6 @@
             "name": "configurationId",
             "in": "path",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -209,7 +279,6 @@
             "name": "configurationId",
             "in": "path",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -233,7 +302,6 @@
             "name": "configurationId",
             "in": "path",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -275,7 +343,6 @@
             "name": "searchText",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "string"
             }
@@ -284,7 +351,6 @@
             "name": "searchStatus",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "boolean"
             }
@@ -293,7 +359,6 @@
             "name": "searchState",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "boolean"
             }
@@ -302,7 +367,6 @@
             "name": "pageSize",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -313,7 +377,6 @@
             "name": "pageNumber",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -324,7 +387,6 @@
             "name": "orderBy",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "array",
               "items": {
@@ -336,9 +398,19 @@
             "name": "modelId",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "labels",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
@@ -443,7 +515,6 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -484,7 +555,6 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -510,7 +580,6 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -553,7 +622,6 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -603,7 +671,6 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -642,6 +709,45 @@
         }
       }
     },
+    "/api/devices/available-labels": {
+      "get": {
+        "tags": [
+          "IoT Devices"
+        ],
+        "operationId": "GET Available Labels on Devices",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/edge/devices": {
       "get": {
         "tags": [
@@ -654,7 +760,6 @@
             "name": "searchText",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "string"
             }
@@ -663,7 +768,6 @@
             "name": "searchStatus",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "boolean"
             }
@@ -672,7 +776,6 @@
             "name": "pageSize",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -683,7 +786,6 @@
             "name": "pageNumber",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -694,7 +796,6 @@
             "name": "orderBy",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "array",
               "items": {
@@ -706,9 +807,18 @@
             "name": "modelId",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "labels",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
@@ -801,7 +911,6 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -841,7 +950,6 @@
             "name": "deviceId",
             "in": "path",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -885,7 +993,6 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -911,7 +1018,6 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -921,7 +1027,6 @@
             "in": "path",
             "description": "The edge module name.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -931,7 +1036,6 @@
             "in": "path",
             "description": "Name of the method.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -974,7 +1078,6 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1017,7 +1120,6 @@
             "in": "path",
             "description": "Device Id",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1068,6 +1170,45 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/IoTEdgeDeviceLog"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/devices/available-labels": {
+      "get": {
+        "tags": [
+          "IoT Edge Devices"
+        ],
+        "operationId": "GET Available Labels on Edge Devices",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
                   }
                 }
               }
@@ -1182,7 +1323,6 @@
             "name": "edgeModelId",
             "in": "path",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1222,7 +1362,6 @@
             "in": "path",
             "description": "the model id.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1248,7 +1387,6 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1309,7 +1447,6 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1390,7 +1527,6 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1483,7 +1619,6 @@
           {
             "name": "pageSize",
             "in": "query",
-            "style": "form",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -1493,7 +1628,6 @@
           {
             "name": "pageNumber",
             "in": "query",
-            "style": "form",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -1503,7 +1637,6 @@
           {
             "name": "orderBy",
             "in": "query",
-            "style": "form",
             "schema": {
               "type": "array",
               "items": {
@@ -1653,7 +1786,6 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1694,7 +1826,6 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1719,7 +1850,6 @@
             "name": "searchText",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "string"
             }
@@ -1728,7 +1858,6 @@
             "name": "searchStatus",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "boolean"
             }
@@ -1737,7 +1866,6 @@
             "name": "searchState",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "boolean"
             }
@@ -1746,7 +1874,6 @@
             "name": "pageSize",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -1757,7 +1884,6 @@
             "name": "pageNumber",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -1768,7 +1894,6 @@
             "name": "orderBy",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "array",
               "items": {
@@ -1780,7 +1905,6 @@
             "name": "modelId",
             "in": "query",
             "description": "",
-            "style": "form",
             "schema": {
               "type": "string"
             }
@@ -1887,7 +2011,6 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1928,7 +2051,6 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1954,7 +2076,6 @@
             "in": "path",
             "description": "The device identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1964,7 +2085,6 @@
             "in": "path",
             "description": "The command identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1987,7 +2107,6 @@
             "name": "deviceId",
             "in": "path",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2018,6 +2137,45 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/LoRaDeviceTelemetryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/lorawan/devices/available-labels": {
+      "get": {
+        "tags": [
+          "LoRa WAN"
+        ],
+        "operationId": "GET Available Labels on LoRaWAN Devices",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelDto"
                   }
                 }
               }
@@ -2201,7 +2359,6 @@
             "in": "path",
             "description": "The devic emodel identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2261,7 +2418,6 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2345,7 +2501,6 @@
             "in": "path",
             "description": "The device model identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2411,7 +2566,6 @@
             "in": "path",
             "description": "The device model identifier",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2472,7 +2626,6 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2553,7 +2706,6 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2599,7 +2751,6 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2652,7 +2803,6 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2796,7 +2946,6 @@
             "in": "path",
             "description": "The devic emodel identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2856,7 +3005,6 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2940,7 +3088,6 @@
             "in": "path",
             "description": "The device model identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -3006,7 +3153,6 @@
             "in": "path",
             "description": "The device model identifier",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -3067,7 +3213,6 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -3148,7 +3293,6 @@
             "in": "path",
             "description": "The model identifier.",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -3194,7 +3338,6 @@
             "in": "path",
             "description": "The device model properties",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -3264,7 +3407,6 @@
             "in": "path",
             "description": "The device model properties",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -3378,7 +3520,6 @@
             "in": "path",
             "description": "Device Tag Name",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -3778,6 +3919,14 @@
             "type": "boolean",
             "description": "`true` if this instance is lorawan; otherwise, `false`.",
             "readOnly": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -3819,10 +3968,22 @@
             "type": "boolean",
             "description": "A value indicating whether the LoRa features is supported on this model."
           },
+          "hasLoRaTelemetry": {
+            "type": "boolean",
+            "description": "A value indicating whether the device has telemetry."
+          },
           "statusUpdatedTime": {
             "type": "string",
             "description": "The device last status updated time.",
             "format": "date-time"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "The device labels.",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -3931,6 +4092,14 @@
           "supportLoRaFeatures": {
             "type": "boolean",
             "description": "A value indicating whether the LoRa features is supported on this model."
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -4159,6 +4328,27 @@
         },
         "additionalProperties": false
       },
+      "ImportResultLine": {
+        "type": "object",
+        "properties": {
+          "lineNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deviceId": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "isErrorMessage": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "IoTEdgeDevice": {
         "required": [
           "deviceId",
@@ -4241,6 +4431,14 @@
           "isEnabled": {
             "type": "boolean",
             "description": "`true` if this instance is enabled; otherwise, `false`."
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -4299,6 +4497,14 @@
             "description": "The device model image Url.",
             "format": "uri",
             "nullable": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Gets the edge device labels.",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -4355,6 +4561,14 @@
             "format": "uri",
             "nullable": true
           },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
+          },
           "edgeModules": {
             "type": "array",
             "items": {
@@ -4404,6 +4618,14 @@
           "imageUrl": {
             "type": "string",
             "format": "uri",
+            "nullable": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Gets the edge model labels.",
             "nullable": true
           }
         },
@@ -4552,6 +4774,24 @@
             "description": "The route time to live (secs)",
             "format": "int32",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LabelDto": {
+        "required": [
+          "color",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "color": {
+            "minLength": 1,
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -4779,6 +5019,14 @@
             "description": "A value indicating whether the downlinks are enabled (True if not provided)",
             "default": true,
             "nullable": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -4925,6 +5173,14 @@
             "type": "boolean",
             "description": "Allows disabling the downstream (cloud to device) for a device.\r\nBy default downstream messages are enabled.",
             "default": true,
+            "nullable": true
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelDto"
+            },
+            "description": "Labels",
             "nullable": true
           }
         },
