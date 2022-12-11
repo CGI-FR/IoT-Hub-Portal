@@ -421,6 +421,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task GetDeviceTwinWhithModule_EqualZero_ReturnsEmptyDevices()
+        {
+            // Arrange
+            var service = CreateService();
+            var deviceId = Guid.NewGuid().ToString();
+
+            // Act
+            var result = () => service.GetDeviceTwinWithModule(deviceId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetAllDeviceShouldThrowInternalServerErrorExceptionWhenIssueOccursOneGettingDevices()
         {
             // Arrange
