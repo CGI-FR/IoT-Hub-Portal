@@ -1,0 +1,71 @@
+﻿@using AzureIoTHub.Portal.Client.Services
+@using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand
+
+@inject ClipboardService ClipboardService
+
+<MudDialog>
+    <DialogContent>
+        <MudCard Outlined="true">
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12">
+                        <MudTable Items="SchemaObject.Fileds" Dense=true Hover=true Bordered=true Striped=true Elevation=0>
+                            <ColGroup>
+                                <col style="width: 20%;" />
+                                <col style="width: 10%;" />
+                                <col style="width: 20%;" />
+                                <col style="width: 20%;" />
+                                <col style="width: 15%;" />
+                                <col style="width: 15%;" />
+                                <col style="width: 10%;" />
+                            </ColGroup>
+                            <HeaderContent>
+                                <MudTh Style="text-align: center">Name</MudTh>
+                                <MudTh Style="text-align: center">Schema</MudTh>
+                                <MudTh Style="text-align: center">Display Name</MudTh>
+                                <MudTh Style="text-align: center">Id</MudTh>
+                                <MudTh Style="text-align: center">Comment</MudTh>
+                                <MudTh Style="text-align: center">Description</MudTh>
+                                <MudTh></MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTextField  For="@(() => context.Name)" @bind-Value="context.Name" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                                <MudSelect @bind-Value="context.SchemaType" For="@(() => context.SchemaType)" Margin="Margin.Dense" Label="Schema" Variant="Variant.Outlined">
+                                    @foreach (ModuleCommandSchemaType schema in Enum.GetValues(typeof(ModuleCommandSchemaType)))
+                                    {
+                                        <MudSelectItem Value="@schema">@schema</MudSelectItem>
+                                    }
+                                </MudSelect>
+                                <MudTextField  For="@(() => context.DisplayName)" @bind-Value="context.DisplayName" Label="Display Name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                                <MudTextField  For="@(() => context.Id)" @bind-Value="context.Id" Label="Id" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                                <MudTextField  For="@(() => context.Comment)" @bind-Value="context.Comment" Label="Comment" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                                <MudTextField  For="@(() => context.Description)" @bind-Value="context.Description" Label="Description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                                <MudButton StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" Color="Color.Success" OnClick="AddNewField" id="addButton">Add new</MudButton>
+                            </RowTemplate>
+                        </MudTable>
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    </DialogContent>
+    <DialogActions>
+        <MudButton id="cancel" OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public Error Error { get; set; }
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public DigitalTwinObjectTypeDto SchemaObject { get; set; }
+
+    void AddNewField()
+    {
+        SchemaObject.Fileds.Add(new DigitalTwinFieldTypeDto());
+    }
+
+    void Cancel() => MudDialog.Cancel();
+}

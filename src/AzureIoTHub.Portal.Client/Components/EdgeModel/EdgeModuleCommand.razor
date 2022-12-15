@@ -1,5 +1,8 @@
 ﻿@using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand
+@using AzureIoTHub.Portal.Client.Pages.EdgeModels.EdgeModule
 @using Newtonsoft.Json
+
+@inject IDialogService DialogService
 
 <div class="mx-auto" style="max-width: 900px;">
     <MudExpansionPanels>
@@ -113,6 +116,18 @@
                                     <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Picker example" @bind-Value="Command.Request.InitialValue" />
                                 </MudItem>
                                 break;
+                            case ModuleCommandSchemaType.Object:
+                                <MudItem xs="4" md="4">
+                                    <MudButton Variant="Variant.Filled" OnClick="@(() => ShowObjectDialog((DigitalTwinObjectTypeDto)Command.Request.ComplexSchema))" StartIcon="@Icons.Filled.BusinessCenter" Color="Color.Primary">Define</MudButton>
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.Enum:
+                                <MudItem xs="4" md="4">
+                                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Filled.BusinessCenter" Color="Color.Primary">Define</MudButton>
+                                </MudItem>
+                                break;
+                            default:
+                                break;
                         }
                         <MudItem xs="4" md="4">
                             <MudTextField For="@(() => this.Command.Request.Comment)" @bind-Value="Command.Request.Comment" Label="Comment" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
@@ -195,6 +210,18 @@
                                     <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Picker example" @bind-Value="Command.Response.InitialValue" />
                                 </MudItem>
                                 break;
+                            case ModuleCommandSchemaType.Object:
+                                <MudItem xs="4" md="4">
+                                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Filled.BusinessCenter" Color="Color.Primary">Define</MudButton>
+                                </MudItem>
+                                break;
+                            case ModuleCommandSchemaType.Enum:
+                                <MudItem xs="4" md="4">
+                                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Filled.BusinessCenter" Color="Color.Primary">Define</MudButton>
+                                </MudItem>
+                                break;
+                            default:
+                                break;
                         }
                         <MudItem xs="4" md="4">
                             <MudTextField For="@(() => this.Command.Response.Comment)" @bind-Value="@this.Command.Response.Comment" Label="Comment" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
@@ -232,5 +259,22 @@
         }
 
         return Task.CompletedTask;
+    }
+
+    private void SetInitialValueToNull()
+    {
+        Command.Request.InitialValue = null;
+    }
+
+    private async Task ShowObjectDialog(DigitalTwinObjectTypeDto shemaObject)
+    {
+        var parameter = new DialogParameters { { "SchemaObject", shemaObject } };
+
+        var result = await DialogService.Show<DefineObjectTypeDialog>("test", parameter).Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
     }
 }
