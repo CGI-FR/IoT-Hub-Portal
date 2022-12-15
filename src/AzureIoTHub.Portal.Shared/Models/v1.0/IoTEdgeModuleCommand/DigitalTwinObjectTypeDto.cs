@@ -13,6 +13,6 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand
         [JsonProperty("@type")]
         public override string Type { get; } = "Object";
 
-        public IEnumerable<DigitalTwinFieldTypeDto> Fileds { get; set; }
+        public List<DigitalTwinFieldTypeDto> Fileds { get; set; } = new List<DigitalTwinFieldTypeDto>();
     }
 }
