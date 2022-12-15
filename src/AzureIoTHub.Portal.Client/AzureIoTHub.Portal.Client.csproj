@@ -8,7 +8,7 @@
   
   <ItemGroup>
     <PackageReference Include="ChartJs.Blazor.Fork" Version="2.0.2" />
-    <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
     <PackageReference Include="Blazored.Modal" Version="7.1.0" />
     <PackageReference Include="FluentValidation" Version="11.4.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
