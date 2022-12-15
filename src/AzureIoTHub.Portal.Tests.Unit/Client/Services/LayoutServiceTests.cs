@@ -55,7 +55,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task ToggleDarkModeShouldUpdateTheValueOfIsDarkModeAndRaiseMajorUpdateOccurredEvent()
         {
             // Arrange
-            _ = this.mockLocalStorageService.Setup(x => x.SetItemAsync(LocalStorageKey.DarkTheme, true, It.IsAny<CancellationToken?>()))
+            _ = this.mockLocalStorageService.Setup(x => x.SetItemAsync(LocalStorageKey.DarkTheme, true, It.IsAny<CancellationToken>()))
                 .Returns(ValueTask.CompletedTask);
 
             var receivedEvents = new List<string>();
@@ -156,7 +156,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
 
             var layoutService = new LayoutService(this.mockLocalStorageService.Object);
 
-            _ = this.mockLocalStorageService.Setup(x => x.SetItemAsync(LocalStorageKey.CollapsibleNavMenu, It.IsAny<Dictionary<string, bool>>(), It.IsAny<CancellationToken?>()))
+            _ = this.mockLocalStorageService.Setup(x => x.SetItemAsync(LocalStorageKey.CollapsibleNavMenu, It.IsAny<Dictionary<string, bool>>(), It.IsAny<CancellationToken>()))
                 .Returns(ValueTask.CompletedTask);
 
             // Act
@@ -182,7 +182,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
                 }
             };
 
-            _ = this.mockLocalStorageService.Setup(x => x.SetItemAsync(LocalStorageKey.CollapsibleNavMenu, It.IsAny<Dictionary<string, bool>>(), It.IsAny<CancellationToken?>()))
+            _ = this.mockLocalStorageService.Setup(x => x.SetItemAsync(LocalStorageKey.CollapsibleNavMenu, It.IsAny<Dictionary<string, bool>>(), It.IsAny<CancellationToken>()))
                 .Returns(ValueTask.CompletedTask);
 
             // Act
