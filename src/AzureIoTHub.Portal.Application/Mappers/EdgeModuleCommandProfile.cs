@@ -37,7 +37,7 @@ namespace AzureIoTHub.Portal.Application.Mappers
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.DisplayName, opts => opts.MapFrom(src => src.DisplayName))
                 .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
-                .ForMember(dest => dest.ComplexSchema, opts => opts.MapFrom(src => src.ComplexSchema))
+                .ForMember(dest => dest.ComplexSchema, opts => opts.MapFrom(src => src.ComplexSchema.ToString()))
                 .ForMember(dest => dest.moduleCommandSchemaType, opts => opts.MapFrom(src => src.SchemaType))
                 .ForMember(dest => dest.Comment, opts => opts.MapFrom(src => src.Comment))
                 .ForMember(dest => dest.InitialValue, opts => opts.MapFrom(src => src.InitialValue));
@@ -61,7 +61,7 @@ namespace AzureIoTHub.Portal.Application.Mappers
             }
             catch (JsonReaderException)
             {
-                return schema;
+                return null;
             }
         }
     }

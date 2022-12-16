@@ -35,10 +35,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     {
         private Mock<IUnitOfWork> mockUnitOfWork;
         private Mock<IEdgeDeviceModelRepository> mockEdgeDeviceModelRepository;
-        private Mock<IEdgeDeviceModelCommandRepository> mockEdgeDeviceModelCommandRepository;
         private Mock<IConfigService> mockConfigService;
         private Mock<IDeviceModelImageManager> mockDeviceModelImageManager;
         private Mock<ILabelRepository> mockLabelRepository;
+        private Mock<IEdgeModuleCommandsService> mockEdgeModuleCommandsService;
 
         private IEdgeModelService edgeDeviceModelService;
 
@@ -50,17 +50,17 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockUnitOfWork = MockRepository.Create<IUnitOfWork>();
             this.mockEdgeDeviceModelRepository = MockRepository.Create<IEdgeDeviceModelRepository>();
 
-            this.mockEdgeDeviceModelCommandRepository = MockRepository.Create<IEdgeDeviceModelCommandRepository>();
             this.mockConfigService = MockRepository.Create<IConfigService>();
             this.mockDeviceModelImageManager = MockRepository.Create<IDeviceModelImageManager>();
             this.mockLabelRepository = MockRepository.Create<ILabelRepository>();
+            this.mockEdgeModuleCommandsService = MockRepository.Create<IEdgeModuleCommandsService>();
 
             _ = ServiceCollection.AddSingleton(this.mockUnitOfWork.Object);
             _ = ServiceCollection.AddSingleton(this.mockEdgeDeviceModelRepository.Object);
-            _ = ServiceCollection.AddSingleton(this.mockEdgeDeviceModelCommandRepository.Object);
             _ = ServiceCollection.AddSingleton(this.mockConfigService.Object);
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelImageManager.Object);
             _ = ServiceCollection.AddSingleton(this.mockLabelRepository.Object);
+            _ = ServiceCollection.AddSingleton(this.mockEdgeModuleCommandsService.Object);
             _ = ServiceCollection.AddSingleton<IEdgeModelService, EdgeModelService>();
 
             Services = ServiceCollection.BuildServiceProvider();
@@ -74,7 +74,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task GetEdgeModelsShouldReturnAList()
         {
             // Arrange
-            var expectedEdgeDeviceModels = Fixture.CreateMany<EdgeDeviceModel>(3).ToList();
+            var expectedEdgeDeviceModels = new List<EdgeDeviceModel>
+            {
+                new EdgeDeviceModel { Id = Guid.NewGuid().ToString() },
+                new EdgeDeviceModel { Id = Guid.NewGuid().ToString() },
+                new EdgeDeviceModel { Id = Guid.NewGuid().ToString() }
+            };
+
             var expectedIoTEdgeDeviceModelListItems = expectedEdgeDeviceModels.Select(model => Mapper.Map<IoTEdgeModelListItem>(model)).ToList();
             var expectedImageUri = Fixture.Create<Uri>();
 
@@ -107,7 +113,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task GetEdgeModelShouldReturnValueAsync()
         {
             // Arrange
-            var expectedModules = Fixture.CreateMany<IoTEdgeModule>(2).ToList();
+            var expectedModules = new List<IoTEdgeModule>
+            {
+                new IoTEdgeModule(){ ModuleName = Guid.NewGuid().ToString() },
+                new IoTEdgeModule(){ ModuleName = Guid.NewGuid().ToString() }
+            };
             var expectedRoutes = Fixture.CreateMany<IoTEdgeRoute>(2).ToList();
             var expectedSysModule = Fixture.CreateMany<EdgeModelSystemModule>(2).ToList();
             var expectedImageUri = Fixture.Create<Uri>();
@@ -123,19 +133,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 SystemModules = expectedSysModule
             };
 
-            var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
+            var expectedCommands = Fixture.CreateMany<EdgeModuleCommand>(5).Select(command =>
             {
-                command.EdgeDeviceModelId = expectedEdgeDeviceModel.ModelId;
-                command.ModuleName = expectedModules[0].ModuleName;
+                command.EdgeModelId = expectedEdgeDeviceModel.ModelId;
+                command.EdgeModuleName = expectedModules[0].ModuleName;
                 return command;
             }) .ToList();
 
-            expectedCommands.Add(new EdgeDeviceModelCommand
+            expectedCommands.Add(new EdgeModuleCommand
             {
-                EdgeDeviceModelId = expectedEdgeDeviceModel.ModelId,
+                EdgeModelId = expectedEdgeDeviceModel.ModelId,
                 Id = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
-                ModuleName = Guid.NewGuid().ToString()
+                EdgeModuleName = expectedModules[0].ModuleName,
+                Request = new EdgeModuleCommandPayload
+                {
+                    moduleCommandSchemaType = Shared.Models.v1._0.IoTEdgeModuleCommand.ModuleCommandSchemaType.Object,
+                    ComplexSchema = /*lang=json*/ "{ \"Type\": \"Object\", \"Comment\": \"DeviceExport01\", \"Description\": \"DeviceExport01\", \"DisplayName\": \"DeviceExport01\", \"Id\": \"01a440ca-9a67-4334-84a8-0f39995612a4\", \"Field\": [ {\"Name\": \"123\", \"SchemaType\": 1 } ]}"
+                }
             });
 
             var expectedEdgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(expectedEdgeDeviceModel);
@@ -155,8 +170,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockConfigService.Setup(x => x.GetConfigRouteList(It.IsAny<string>()))
                 .ReturnsAsync(expectedRoutes);
 
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
-                .Returns(expectedCommands);
+            _ = this.mockEdgeModuleCommandsService.Setup(x => x.GetAllEdgeModuleCommands(It.Is<string>(c => c.Equals(expectedEdgeDeviceModel.ModelId, StringComparison.Ordinal))))
+                .ReturnsAsync(expectedCommands);
 
             // Act
             var result = await this.edgeDeviceModelService.GetEdgeModel(expectedEdgeDeviceModel.ModelId);
@@ -185,8 +200,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task CreateEdgeModelShouldCreateEdgeModel()
         {
             // Arrange
-            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
-            var expectedImageUri = Fixture.Create<Uri>();
+            var edgeDeviceModel = new IoTEdgeModel()
+            {
+                ModelId = Guid.NewGuid().ToString()
+            };
 
             _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync((EdgeDeviceModel)null);
@@ -195,16 +212,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
-            var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
-            {
-                command.EdgeDeviceModelId = edgeDeviceModel.ModelId;
-                return command;
-            }) .ToList();
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
-                .Returns(expectedCommands);
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDeviceModelCommand>()))
-                 .Returns(Task.CompletedTask);
+            _ = this.mockEdgeModuleCommandsService
+                .Setup(x => x.SaveEdgeModuleCommandAsync(It.Is<string>(c => c.Equals(edgeDeviceModel.ModelId, StringComparison.Ordinal)), It.IsAny<List<IoTEdgeModule>>()))
+                .Returns(Task.CompletedTask);
 
             _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
                 .Returns(Task.CompletedTask);
@@ -225,7 +235,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public void CreateEdgeModelShouldThrowResourceAlreadyExistsExceptionIfModelAlreadyExists()
         {
             // Arrange
-            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
+            var edgeDeviceModel = new IoTEdgeModel()
+            {
+                ModelId = Guid.NewGuid().ToString()
+            };
+
             var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edgeDeviceModel);
 
             _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
@@ -242,7 +256,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public void CreateEdgeModelShouldThrowInternalServerErrorExceptionIfDbUpdateExceptionOccurs()
         {
             // Arrange
-            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
+            var edgeDeviceModel = new IoTEdgeModel() { ModelId = Guid.NewGuid().ToString() };
 
             _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync((EdgeDeviceModel)null);
@@ -262,7 +276,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task UpdateEdgeModelShouldUpdateEdgeModel()
         {
             // Arrange
-            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
+            var edgeDeviceModel = new IoTEdgeModel()
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Labels = new List<LabelDto>() { new LabelDto { Name = "test", Color = "bleu" } }
+            };
             var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edgeDeviceModel);
 
             _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>(), d => d.Labels))
@@ -275,16 +293,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
-            var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
-            {
-                command.EdgeDeviceModelId = edgeDeviceModel.ModelId;
-                return command;
-            }) .ToList();
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
-                .Returns(expectedCommands);
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDeviceModelCommand>()))
-                 .Returns(Task.CompletedTask);
+            _ = this.mockEdgeModuleCommandsService
+                .Setup(x => x.SaveEdgeModuleCommandAsync(It.Is<string>(c => c.Equals(edgeDeviceModel.ModelId, StringComparison.Ordinal)), It.IsAny<List<IoTEdgeModule>>()))
+                .Returns(Task.CompletedTask);
 
             _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
                 .Returns(Task.CompletedTask);
@@ -300,7 +311,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public void UpdateEdgeModelShouldThrowResourceNotFoundExceptionIfModelDoesNotExist()
         {
             // Arrange
-            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
+            var edgeDeviceModel = new IoTEdgeModel() { ModelId = Guid.NewGuid().ToString() };
 
             _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>(), m => m.Labels))
                 .ReturnsAsync(value: null);
@@ -316,7 +327,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public void UpdateEdgeModelShouldThrowInternalServerErrorExceptionIfDbUpdateExceptionOccurs()
         {
             // Arrange
-            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
+            var edgeDeviceModel = new IoTEdgeModel() { ModelId = Guid.NewGuid().ToString() };
             var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edgeDeviceModel);
 
             _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
@@ -336,7 +347,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public async Task DeleteEdgeModelShouldDeleteEdgeModel()
         {
             // Arrange
-            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
+            var edgeDeviceModel = new IoTEdgeModel()
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Labels = new List<LabelDto>() { new LabelDto { Name = "test", Color = "bleu" } }
+            };
             var edgeDeviceModelEntity = Mapper.Map<EdgeDeviceModel>(edgeDeviceModel);
 
             _ = this.mockEdgeDeviceModelRepository.Setup(repository => repository.GetByIdAsync(edgeDeviceModelEntity.Id, d => d.Labels))
@@ -349,14 +364,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
-            var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
+            var expectedCommands = Fixture.CreateMany<EdgeModuleCommand>(5).Select(command =>
             {
-                command.EdgeDeviceModelId = edgeDeviceModel.ModelId;
+                command.EdgeModelId = edgeDeviceModel.ModelId;
                 return command;
             }) .ToList();
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
-                .Returns(expectedCommands);
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
+
+            _ = this.mockEdgeModuleCommandsService
+                .Setup(x => x.GetAllEdgeModuleCommands(It.Is<string>(c => c.Equals(edgeDeviceModel.ModelId, StringComparison.Ordinal))))
+                .ReturnsAsync(expectedCommands);
+
+            _ = this.mockEdgeModuleCommandsService
+                .Setup(x => x.DeleteEdgeModuleCommandAsync(It.IsAny<string>()));
 
             var configurations = new List<Configuration>()
             {
@@ -394,20 +413,25 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         public void DeleteEdgeModelShouldThrowInternalServerErrorExceptionIfDbUpdateExceptionOccurs()
         {
             // Arrange
-            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
+            var edgeDeviceModel = new IoTEdgeModel()
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Labels = new List<LabelDto>() { new LabelDto { Name = "test", Color = "bleu" } }
+            };
 
             _ = this.mockEdgeDeviceModelRepository.Setup(repository => repository.Delete(It.IsAny<string>()));
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Throws(new DbUpdateException());
 
-            var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
+            var expectedCommands = Fixture.CreateMany<EdgeModuleCommand>(5).Select(command =>
             {
-                command.EdgeDeviceModelId = edgeDeviceModel.ModelId;
+                command.EdgeModelId = edgeDeviceModel.ModelId;
                 return command;
             }) .ToList();
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
-                .Returns(expectedCommands);
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
+
+            _ = this.mockEdgeModuleCommandsService
+                .Setup(x => x.GetAllEdgeModuleCommands(It.Is<string>(c => c.Equals(edgeDeviceModel.ModelId, StringComparison.Ordinal))))
+                .ReturnsAsync(expectedCommands);
 
             // Act
             var result = async () => await this.edgeDeviceModelService.DeleteEdgeModel(edgeDeviceModel.ModelId);
@@ -468,60 +492,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Assert
             MockRepository.VerifyAll();
-        }
-
-        [Test]
-        public async Task SaveModuleCommandsShouldUpdateDatabase()
-        {
-            // Arrange
-            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
-
-            var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
-            {
-                command.EdgeDeviceModelId = edgeDeviceModel.ModelId;
-                return command;
-            }) .ToList();
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
-                .Returns(expectedCommands);
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDeviceModelCommand>()))
-                 .Returns(Task.CompletedTask);
-
-            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .Returns(Task.CompletedTask);
-
-            // Act
-            await this.edgeDeviceModelService.SaveModuleCommands(edgeDeviceModel);
-
-            // Assert
-            MockRepository.VerifyAll();
-        }
-
-        [Test]
-        public void SaveModuleCommandsShouldThrowInternalServerErrorExceptionIfDbUpdateExceptionOccurs()
-        {
-            // Arrange
-            var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
-
-            var expectedCommands = Fixture.CreateMany<EdgeDeviceModelCommand>(5).Select(command =>
-            {
-                command.EdgeDeviceModelId = edgeDeviceModel.ModelId;
-                return command;
-            }) .ToList();
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.GetAll())
-                .Returns(expectedCommands);
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.Delete(It.IsAny<string>()));
-            _ = this.mockEdgeDeviceModelCommandRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDeviceModelCommand>()))
-                 .Returns(Task.CompletedTask);
-
-            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
-                .Throws(new DbUpdateException());
-
-            // Act
-            var result = async () => await this.edgeDeviceModelService.SaveModuleCommands(edgeDeviceModel);
-
-            // Assert
-            _ = result.Should().ThrowAsync<InternalServerErrorException>();
         }
     }
 }

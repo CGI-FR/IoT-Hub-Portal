@@ -10,8 +10,9 @@ namespace AzureIoTHub.Portal.Server.Services
 
     public interface IEdgeModuleCommandsService
     {
-        Task<IEnumerable<EdgeModuleCommand>> GetAllEdgeModule(string edgeModelId);
+        Task<IEnumerable<EdgeModuleCommand>> GetAllEdgeModuleCommands(string edgeModelId);
         Task SaveEdgeModuleCommandAsync(string edgeModelId, List<IoTEdgeModule> edgeModules);
+        void DeleteEdgeModuleCommandAsync(string commandId);
         Task ExecuteModuleCommand(string deviceId, string commandId);
     }
 }
