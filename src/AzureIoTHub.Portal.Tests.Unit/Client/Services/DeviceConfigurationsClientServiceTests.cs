@@ -17,6 +17,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
     using Shared.Models.v10;
+    using System.Collections.Generic;
+    using System;
 
     [TestFixture]
     public class DeviceConfigurationsClientServiceTests : BlazorUnitTest
@@ -36,7 +38,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetDeviceConfigurationsShouldReturnDeviceConfigurations()
         {
             // Arrange
-            var expectedConfigurations = Fixture.Build<ConfigListItem>().CreateMany(3).ToList();
+            var expectedConfigurations = new List<ConfigListItem>
+            {
+                new ConfigListItem{ ConfigurationID = Guid.NewGuid().ToString() },
+                new ConfigListItem{ ConfigurationID = Guid.NewGuid().ToString() },
+                new ConfigListItem{ ConfigurationID = Guid.NewGuid().ToString() }
+            };
 
             _ = MockHttpClient.When(HttpMethod.Get, "/api/device-configurations")
                 .RespondJson(expectedConfigurations);

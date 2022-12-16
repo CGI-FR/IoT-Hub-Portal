@@ -39,7 +39,7 @@ namespace AzureIoTHub.Portal.Server.Services
             this.logger = logger;
         }
 
-        public Task<IEnumerable<EdgeModuleCommand>> GetAllEdgeModule(string edgeModelId)
+        public Task<IEnumerable<EdgeModuleCommand>> GetAllEdgeModuleCommands(string edgeModelId)
         {
             return Task.Run(() => this.edgeModuleCommandsRepository.GetAll()
             .Where(command => command.EdgeModelId.Equals(edgeModelId, StringComparison.Ordinal)));
@@ -47,7 +47,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task SaveEdgeModuleCommandAsync(string edgeModelId, List<IoTEdgeModule> edgeModules)
         {
-            var existingCommands = await GetAllEdgeModule(edgeModelId);
+            var existingCommands = await GetAllEdgeModuleCommands(edgeModelId);
 
             foreach (var command in existingCommands)
             {
@@ -64,6 +64,11 @@ namespace AzureIoTHub.Portal.Server.Services
             }));
 
             await this.unitOfWork.SaveAsync();
+        }
+
+        public void DeleteEdgeModuleCommandAsync(string commandId)
+        {
+            this.edgeModuleCommandsRepository.Delete(commandId);
         }
 
         public async Task ExecuteModuleCommand(string deviceId, string commandId)

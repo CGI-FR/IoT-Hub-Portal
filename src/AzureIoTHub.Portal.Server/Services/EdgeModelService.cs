@@ -41,7 +41,6 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly IEdgeDeviceModelRepository edgeModelRepository;
         private readonly ILabelRepository labelRepository;
-        private readonly IEdgeDeviceModelCommandRepository commandRepository;
         private readonly IEdgeModuleCommandsService edgeModuleCommandsService;
 
         public EdgeModelService(
@@ -51,7 +50,6 @@ namespace AzureIoTHub.Portal.Server.Services
             IConfigService configService,
             IDeviceModelImageManager deviceModelImageManager,
             ILabelRepository labelRepository,
-            IEdgeDeviceModelCommandRepository commandRepository,
             IEdgeModuleCommandsService edgeModuleCommandsService)
         {
             this.mapper = mapper;
@@ -60,7 +58,6 @@ namespace AzureIoTHub.Portal.Server.Services
             this.labelRepository = labelRepository;
             this.configService = configService;
             this.deviceModelImageManager = deviceModelImageManager;
-            this.commandRepository = commandRepository;
             this.edgeModuleCommandsService = edgeModuleCommandsService;
         }
 
@@ -103,19 +100,8 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new ResourceAlreadyExistsException($"The edge model with id {edgeModel?.ModelId} already exists");
             }
 
-            await SaveModuleCommands(edgeModel);
+            await this.edgeModuleCommandsService.SaveEdgeModuleCommandAsync(edgeModel.ModelId, edgeModel.EdgeModules);
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
-        }
-
-        /// <summary>
-        /// Saves the module commands for a specific model object.
-        /// </summary>
-        /// <param name="deviceModelObject">The device model object.</param>
-        /// <returns></returns>
-        /// <exception cref="InternalServerErrorException"></exception>
-        public async Task SaveModuleCommands(IoTEdgeModel deviceModelObject)
-        {
-            await this.edgeModuleCommandsService.SaveEdgeModuleCommandAsync(deviceModelObject.ModelId, deviceModelObject.EdgeModules);
         }
 
         /// <summary>
@@ -136,7 +122,7 @@ namespace AzureIoTHub.Portal.Server.Services
             var modules = await this.configService.GetConfigModuleList(modelId);
             var sysModules = await this.configService.GetModelSystemModule(modelId);
             var routes = await this.configService.GetConfigRouteList(modelId);
-            var commands = await  this.edgeModuleCommandsService.GetAllEdgeModule(modelId);
+            var commands = await  this.edgeModuleCommandsService.GetAllEdgeModuleCommands(modelId);
 
             var edgeModel = new IoTEdgeModel
             {
@@ -189,7 +175,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             await this.unitOfWork.SaveAsync();
 
-            await SaveModuleCommands(edgeModel);
+            await this.edgeModuleCommandsService.SaveEdgeModuleCommandAsync(edgeModel.ModelId, edgeModel.EdgeModules);
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
         }
 
@@ -214,10 +200,10 @@ namespace AzureIoTHub.Portal.Server.Services
                 await this.configService.DeleteConfiguration(config.Id);
             }
 
-            var existingCommands = this.commandRepository.GetAll().Where(x => x.EdgeDeviceModelId == edgeModelId).ToList();
+            var existingCommands = await this.edgeModuleCommandsService.GetAllEdgeModuleCommands(edgeModelId);
             foreach (var command in existingCommands)
             {
-                this.commandRepository.Delete(command.Id);
+                this.edgeModuleCommandsService.DeleteEdgeModuleCommandAsync(command.Id);
             }
 
             foreach (var labelEntity in edgeModelEntity.Labels)
