@@ -1512,9 +1512,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             _ = method.SetPayloadJson(payload);
 
-
-            var logger = Mock.Of<ILogger<ExternalDeviceService>>();
-
             _ = this.mockServiceClient.Setup(c => c.InvokeDeviceMethodAsync(
                     It.Is<string>(x => x == deviceId),
                     It.Is<string>(x => x == "$edgeAgent"),
