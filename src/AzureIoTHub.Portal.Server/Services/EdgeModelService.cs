@@ -99,32 +99,6 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new ResourceAlreadyExistsException($"The edge model with id {edgeModel?.ModelId} already exists");
             }
 
-            await SaveModuleCommands(edgeModel);
-            await this.configService.RollOutEdgeModelConfiguration(edgeModel);
-        }
-
-        /// <summary>
-        /// Create a new edge model template and roll out
-        /// the edge model configuration.
-        /// </summary>
-        /// <param name="edgeModel">the new edge modle object.</param>
-        /// <returns>nothing.</returns>
-        /// <exception cref="ResourceAlreadyExistsException">If edge model template already exist return ResourceAlreadyExistsException.</exception>
-        /// <exception cref="InternalServerErrorException"></exception>
-        public async Task CreateDefaultImageToEdgeModel(IoTEdgeModel edgeModel)
-        {
-            var edgeModelEntity = await this.edgeModelRepository.GetByIdAsync(edgeModel?.ModelId);
-            if (edgeModelEntity == null)
-            {
-                edgeModelEntity = this.mapper.Map<EdgeDeviceModel>(edgeModel);
-                await this.edgeModelRepository.InsertAsync(edgeModelEntity);
-                await this.unitOfWork.SaveAsync();
-            }
-            else
-            {
-                throw new ResourceAlreadyExistsException($"The edge model with id {edgeModel?.ModelId} already exists");
-            }
-
             _ = this.deviceModelImageManager.SetDefaultImageToModel(edgeModel.ModelId);
 
             await SaveModuleCommands(edgeModel);

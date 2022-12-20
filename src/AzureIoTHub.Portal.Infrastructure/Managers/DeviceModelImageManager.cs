@@ -63,7 +63,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
 
             var currentAssembly = Assembly.GetExecutingAssembly();
 
-            using var defaultImageStream = currentAssembly
+            var defaultImageStream = currentAssembly
                                             .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.deviceModelImageOptions.Value.DefaultImageName}");
 
             _ = await blobClient.UploadAsync(defaultImageStream, true);
