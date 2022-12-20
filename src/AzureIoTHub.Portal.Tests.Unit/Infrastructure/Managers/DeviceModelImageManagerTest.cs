@@ -104,6 +104,54 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
         }
 
         [Test]
+        public async Task ChangeDeviceModelImageShouldSetDefaultImageToModel()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+            var expectedImageUri = Fixture.Create<Uri>();
+            using var imageAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<string>()));
+
+            var mockOptions = new DeviceModelImageOptions()
+            {
+                BaseUri = Fixture.Create<Uri>()
+            };
+
+            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
+
+            _ = this.mockBlobServiceClient
+                .Setup(x => x.GetBlobContainerClient(It.IsAny<string>()))
+                .Returns(this.mockBlobContainerClient.Object);
+
+            _ = this.mockBlobContainerClient
+                .Setup(x => x.GetBlobClient(deviceModelId))
+                .Returns(this.mockBlobClient.Object);
+
+            _ = this.mockBlobClient
+                .Setup(client =>
+                    client.SetHttpHeadersAsync(It.IsAny<BlobHttpHeaders>(), It.IsAny<BlobRequestConditions>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Response.FromValue(BlobsModelFactory.BlobInfo(ETag.All, DateTimeOffset.Now), Mock.Of<Response>()));
+
+            _ = this.mockBlobClient
+                .Setup(client => client.UploadAsync(It.IsAny<Stream>(), true, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Response.FromValue(
+                    BlobsModelFactory.BlobContentInfo(ETag.All, DateTimeOffset.Now, Array.Empty<byte>(), string.Empty,
+                        1L), Mock.Of<Response>()));
+
+            _ = this.mockBlobClient
+                .Setup(client => client.Uri)
+                .Returns(expectedImageUri);
+
+            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(3600);
+
+            // Act
+            var result = await this.deviceModelImageManager.SetDefaultImageToModel(deviceModelId);
+
+            // Assert
+            _ = result.Should().Be(expectedImageUri.ToString());
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task WhenDeleteAsyncFailedDeleteDeviceModelImageAsyncShouldThrowAnInternalServerErrorException()
         {
             // Arrange
