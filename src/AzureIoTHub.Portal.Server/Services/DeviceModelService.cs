@@ -92,6 +92,8 @@ namespace AzureIoTHub.Portal.Server.Services
             await this.deviceModelRepository.InsertAsync(deviceModelEntity);
             await this.unitOfWork.SaveAsync();
 
+            _ = this.deviceModelImageManager.SetDefaultImageToModel(deviceModel.ModelId);
+
             await CreateDeviceModelConfiguration(deviceModel);
         }
 

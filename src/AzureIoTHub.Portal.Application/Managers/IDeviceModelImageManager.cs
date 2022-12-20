@@ -18,5 +18,7 @@ namespace AzureIoTHub.Portal.Application.Managers
         Task InitializeDefaultImageBlob();
 
         Task SyncImagesCacheControl();
+
+        Task<string> SetDefaultImageToModel(string deviceModelId);
     }
 }

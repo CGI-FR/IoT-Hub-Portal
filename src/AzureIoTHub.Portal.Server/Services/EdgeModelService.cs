@@ -125,7 +125,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 throw new ResourceAlreadyExistsException($"The edge model with id {edgeModel?.ModelId} already exists");
             }
 
-            this.deviceModelImageManager.SetDefaultImageToModel(edgeModel.ModelId);
+            _ = this.deviceModelImageManager.SetDefaultImageToModel(edgeModel.ModelId);
 
             await SaveModuleCommands(edgeModel);
             await this.configService.RollOutEdgeModelConfiguration(edgeModel);
