@@ -53,6 +53,26 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
             return blobClient.Uri.ToString();
         }
 
+        public async Task<string> SetDefaultImageToModel(string deviceModelId)
+        {
+            var blobContainer = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);
+
+            var blobClient = blobContainer.GetBlobClient(deviceModelId);
+
+            this.logger.LogInformation($"Uploading to Blob storage as blob:\n\t {blobClient.Uri}\n");
+
+            var currentAssembly = Assembly.GetExecutingAssembly();
+
+            var defaultImageStream = currentAssembly
+                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.deviceModelImageOptions.Value.DefaultImageName}");
+
+            _ = await blobClient.UploadAsync(defaultImageStream, true);
+
+            _ = await blobClient.SetHttpHeadersAsync(new BlobHttpHeaders { CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" });
+
+            return blobClient.Uri.ToString();
+        }
+
         public async Task DeleteDeviceModelImageAsync(string deviceModelId)
         {
             var blobContainer = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);

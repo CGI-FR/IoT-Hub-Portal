@@ -180,6 +180,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var edgeDeviceModel = Fixture.Create<IoTEdgeModel>();
+            var expectedImageUri = Fixture.Create<Uri>();
 
             _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync((EdgeDeviceModel)null);
@@ -201,6 +202,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             _ = this.mockConfigService.Setup(x => x.RollOutEdgeModelConfiguration(It.IsAny<IoTEdgeModel>()))
                 .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceModelImageManager.Setup(manager =>
+                    manager.SetDefaultImageToModel(It.IsAny<string>()))
+                .ReturnsAsync(expectedImageUri.ToString());
 
             // Act
             await this.edgeDeviceModelService.CreateEdgeModel(edgeDeviceModel);

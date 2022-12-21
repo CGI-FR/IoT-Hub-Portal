@@ -145,6 +145,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var deviceModelDto = Fixture.Create<DeviceModelDto>();
+            var expectedAvatarUrl = Fixture.Create<string>();
 
             _ = this.mockDeviceModelRepository.Setup(repository => repository.InsertAsync(It.IsAny<DeviceModel>()))
                 .Returns(Task.CompletedTask);
@@ -165,6 +166,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     service.RollOutDeviceModelConfiguration(deviceModelDto.ModelId,
                         It.IsAny<Dictionary<string, object>>()))
                 .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceModelImageManager.Setup(manager =>
+                    manager.SetDefaultImageToModel(deviceModelDto.ModelId))
+                .ReturnsAsync(expectedAvatarUrl);
 
             // Act
             await this.deviceModelService.CreateDeviceModel(deviceModelDto);
