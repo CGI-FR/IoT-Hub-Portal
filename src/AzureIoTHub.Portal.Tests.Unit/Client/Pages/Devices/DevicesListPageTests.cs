@@ -16,14 +16,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using Bunit;
     using Bunit.TestDoubles;
     using FluentAssertions;
-    using Microsoft.AspNetCore.Components.Forms;
     using Microsoft.Extensions.DependencyInjection;
     using Models.v10;
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
-    using System.Linq;
-    using AzureIoTHub.Portal.Shared.Models.v10;
     using UnitTests.Bases;
     using AutoFixture;
 
@@ -322,7 +319,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         }
 
         [Test]
-        public async Task FliterBySelectModelShould()
+        public async Task TypingSomeCharactersInTheAutocompleteShouldFilterTheDeviceModels()
         {
             // Arrange
             //var expectedUrl = "api/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";
