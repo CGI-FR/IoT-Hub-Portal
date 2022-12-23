@@ -418,6 +418,45 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         }
 
         [Test]
+        public void DeleteDevice_Clicked_DeleteDeviceDialogIsShown()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true, HasLoRaTelemetry = true } }
+                });
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
+
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
+
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
+            _ = this.mockDialogService.Setup(c => c.Show<DeleteDevicePage>(It.IsAny<string>(), It.IsAny<DialogParameters>()))
+                .Returns(mockDialogReference.Object);
+
+            var cut = RenderComponent<DeviceListPage>();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+
+            // Act
+            cut.WaitForElement($"#delete-device-{deviceId}").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
         public async Task ExportDevicesClickedShouldDownloadTheFile()
         {
             // Arrange
