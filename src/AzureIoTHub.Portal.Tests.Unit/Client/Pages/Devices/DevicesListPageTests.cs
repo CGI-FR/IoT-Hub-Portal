@@ -69,18 +69,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = Array.Empty<DeviceListItem>()
+                    Items = new[] { new DeviceListItem { DeviceID = Guid.NewGuid().ToString(), IsEnabled = true, IsConnected = true } }
                 });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             // Act
             var cut = RenderComponent<DeviceListPage>();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
             // Assert
             cut.WaitForAssertion(() => cut.Find(".mud-expansion-panels .mud-expand-panel .mud-expand-panel-header .mud-expand-panel-text").TextContent.Should().Be("Search panel"));
             cut.WaitForAssertion(() => cut.Find(".mud-expansion-panels .mud-expand-panel").ClassList.Should().NotContain("Search panel should be collapsed"));
-
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(1));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
