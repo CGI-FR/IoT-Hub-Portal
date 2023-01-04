@@ -23,6 +23,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using NUnit.Framework;
     using UnitTests.Bases;
     using AutoFixture;
+    using Microsoft.AspNetCore.Components.Forms;
 
     [TestFixture]
     public class DevicesListPageTests : BlazorUnitTest
@@ -582,47 +583,58 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             var items = popoverProvider.FindComponents<MudListItem>().ToArray();
             _ = items.Length.Should().Be(1);
             _ = items.First().Markup.Should().Contain(expectedDeviceModel.Name);
+            items.First().Find("div.mud-list-item").Click();
 
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
-        //[Test]
-        //public async Task ImportDevicesClickedShouldImportTheFile()
-        //{
-        //    // Arrange
-        //    var deviceId = Guid.NewGuid().ToString();
+        [Test]
+        public async Task ImportDevices_FileAdded_DevicesExported()
+        {
+            // Arrange
+            var deviceId = Guid.NewGuid().ToString();
+            List<InputFileContent> Files = new()
+            {
+                InputFileContent.CreateFromText(Guid.NewGuid().ToString(), "upload.csv", contentType: "text/csv")
+            };
 
-        //    _ = this.mockDeviceClientService.Setup(service =>
-        //            service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
-        //        .ReturnsAsync(new PaginationResult<DeviceListItem>
-        //        {
-        //            Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
-        //        });
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = new[] { new DeviceListItem { DeviceID = deviceId, SupportLoRaFeatures = true } }
+                });
 
-        //    _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-        //    _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-        //        .ReturnsAsync(new List<DeviceTagDto>());
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>());
 
-        //    _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-        //        .ReturnsAsync(new List<DeviceModelDto>());
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
 
-        //    _ = this.mockDeviceClientService.Setup(c => c.ImportDeviceList(It.IsAny<MultipartFormDataContent>()))
-        //        .ReturnsAsync(Array.Empty<ImportResultLine>());
+            _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
 
-        //    var popoverProvider = RenderComponent<MudPopoverProvider>();
-        //    var cut = RenderComponent<DeviceListPage>();
+            var mockDialogReference = MockRepository.Create<IDialogReference>();
+            _ = mockDialogReference.Setup(c => c.Result).ReturnsAsync(DialogResult.Ok("Ok"));
+            _ = this.mockDialogService.Setup(c => c.Show<ImportReportDialog>(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsAny<DialogOptions>()))
+                .Returns(mockDialogReference.Object);
 
-        //    cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<DeviceListPage>();
 
-        //    popoverProvider.FindComponent<MudFileUpload<IBrowserFile>>()
-        //        .Instance.
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("loading..."));
 
-        //    // Act
-        //    popoverProvider.WaitForElement("#importDevicesButton").Click();
+            cut.Find("#manageDevicesButtonToggle").Click();
+            var multiple = popoverProvider.FindComponent<MudFileUpload<IBrowserFile>>();
+            var multipleInput = multiple.FindComponent<InputFile>();
 
-        //    // Assert
-        //    cut.WaitForAssertion(() => MockRepository.VerifyAll());
-        //}
+            // Act
+            multipleInput.UploadFiles(Files.ToArray());
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
     }
 }

@@ -148,9 +148,9 @@
                             <MudButton id="exportTemplateButton" Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportTemplateFile">Download template file</MudButton>
                         </MudItem>
                         <MudItem>
-                            <MudFileUpload T="IBrowserFile" FilesChanged="ImportDeviceList">
+                            <MudFileUpload id="importDevicesButton" T="IBrowserFile" FilesChanged="ImportDeviceList">
                                 <ButtonTemplate>
-                                    <MudButton id="importDevicesButton" Variant="Variant.Text"
+                                    <MudButton Variant="Variant.Text"
                                                HtmlTag="label"
                                                Color="Color.Primary"
                                                StartIcon="@Icons.Outlined.Upload"
@@ -271,17 +271,9 @@
 
     private bool IsLoading { get; set; } = true;
 
-    private List<DeviceModelDto> ModelList = new List<DeviceModelDto>();
-    private DeviceModelDto _model;
+    private List<DeviceModelDto> ModelList = new List<DeviceModelDto>();    
 
-    public DeviceModelDto Model
-    {
-        get => _model;
-        set
-        {
-            Task.Run(async () => await ChangeModel(value));
-        }
-    }
+    private DeviceModelDto Model {get; set;}
 
     private IEnumerable<DeviceTagDto> TagList { get; set; } = new List<DeviceTagDto>();
 
@@ -413,29 +405,7 @@
     private void GoToDetails(DeviceListItem item)
     {
         navigationManager.NavigateTo($"devices/{item.DeviceID}{((item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
-    }
-
-    internal async Task ChangeModel(DeviceModelDto Model)
-    {
-        try
-        {
-            this._model = Model;
-
-            if (Model == null || string.IsNullOrWhiteSpace(Model.ModelId))
-            {
-                return;
-            }
-
-        }
-        catch (ProblemDetailsException exception)
-        {
-            Error?.ProcessProblemDetails(exception);
-        }
-        finally
-        {
-            await InvokeAsync(StateHasChanged);
-        }
-    }
+    }    
 
     /// <summary>
     /// Allows to autocomplete the Device Model field in the form.
@@ -488,24 +458,18 @@
     private async Task ImportDeviceList(IBrowserFile file)
     {
         menuIsOpen = false;
-        try
-        {
-            var fileContent = new StreamContent(file.OpenReadStream());
-            fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
 
-            var content = new MultipartFormDataContent();
-            content.Add(content: fileContent,
-                          name: "\"file\"",
-                          fileName: file.Name);
+        var fileContent = new StreamContent(file.OpenReadStream());
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
 
-            var parameters = new DialogParameters { { "Content", content } };
-            var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
-            await DialogService.Show<ImportReportDialog>("Import summary", parameters, options).Result;
-        }
-        catch (ProblemDetailsException exception)
-        {
-            Error?.ProcessProblemDetails(exception);
-        }
+        var content = new MultipartFormDataContent();
+        content.Add(content: fileContent,
+                      name: "\"file\"",
+                      fileName: file.Name);
+
+        var parameters = new DialogParameters { { "Content", content } };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+        await DialogService.Show<ImportReportDialog>("Import summary", parameters, options).Result;
     }
 
     public bool menuIsOpen;
