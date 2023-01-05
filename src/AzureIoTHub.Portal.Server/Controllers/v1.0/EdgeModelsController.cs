@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -27,9 +28,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.v10
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<IoTEdgeModelListItem>> GetEdgeModelList()
+        public async Task<ActionResult<IEnumerable<IoTEdgeModelListItem>>> GetEdgeModelList([FromQuery] EdgeModelFilter edgeModelFilter)
         {
-            return Ok(this.edgeModelService.GetEdgeModels());
+            return Ok(await this.edgeModelService.GetEdgeModels(edgeModelFilter));
         }
 
         [HttpGet("{edgeModelId}")]

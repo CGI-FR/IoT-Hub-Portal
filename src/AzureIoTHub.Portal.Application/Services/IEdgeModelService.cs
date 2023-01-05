@@ -6,11 +6,12 @@ namespace AzureIoTHub.Portal.Application.Services
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
 
     public interface IEdgeModelService
     {
-        IEnumerable<IoTEdgeModelListItem> GetEdgeModels();
+        Task<IEnumerable<IoTEdgeModelListItem>> GetEdgeModels(EdgeModelFilter edgeModelFilter);
 
         Task<IoTEdgeModel> GetEdgeModel(string modelId);
 

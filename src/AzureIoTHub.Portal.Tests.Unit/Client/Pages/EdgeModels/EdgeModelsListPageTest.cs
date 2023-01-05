@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
     using AzureIoTHub.Portal.Client.Pages.EdgeModels;
     using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Bunit;
     using Bunit.TestDoubles;
@@ -41,7 +42,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void EdgeModelListPageRendersCorrectly()
         {
             // Arrange
-            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
@@ -68,7 +69,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
             var modelId = Fixture.Create<string>();
 
-            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem() { ModelId = modelId},
@@ -91,7 +92,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem() { ModelId = deviceId },
@@ -111,7 +112,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void LoadDeviceModelsShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceModels()
         {
             // Arrange
-            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
@@ -128,7 +129,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem() { ModelId = deviceId },
@@ -144,7 +145,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             }
 
             // Assert
-            cut.WaitForAssertion(() => this.mockEdgeModelServiceClient.Verify(service => service.GetIoTEdgeModelList(), Times.Exactly(4)));
+            cut.WaitForAssertion(() => this.mockEdgeModelServiceClient.Verify(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()), Times.Exactly(4)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -154,7 +155,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem() { ModelId = deviceId },
@@ -182,7 +183,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelServiceClient.Setup(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem() { ModelId = deviceId },
@@ -201,7 +202,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             deleteButton.Click();
 
             // Assert
-            cut.WaitForAssertion(() => this.mockEdgeModelServiceClient.Verify(service => service.GetIoTEdgeModelList(), Times.Exactly(2)));
+            cut.WaitForAssertion(() => this.mockEdgeModelServiceClient.Verify(service => service.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()), Times.Exactly(2)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -209,7 +210,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         public void ClickOnSortLabel()
         {
             // Arrange
-            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList(It.IsAny<EdgeModelFilter>()))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem()
