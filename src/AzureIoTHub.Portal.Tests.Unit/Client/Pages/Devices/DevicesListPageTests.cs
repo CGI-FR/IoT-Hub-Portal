@@ -24,6 +24,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using UnitTests.Bases;
     using AutoFixture;
     using Microsoft.AspNetCore.Components.Forms;
+    using AzureIoTHub.Portal.Client.Pages.LoRaWAN.Concentrator;
 
     [TestFixture]
     public class DevicesListPageTests : BlazorUnitTest
@@ -634,6 +635,47 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             multipleInput.UploadFiles(Files.ToArray());
 
             // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public async Task LoadItem_AscSelect()
+        {
+            // Arrange
+            var modelList = new List<DeviceModelDto>();
+
+            var expectedUri = $"api/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId=";
+
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = new List<DeviceListItem>
+                    {
+                        new(),
+                        new(),
+                        new()
+                    }
+                });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
+
+
+            // Act
+            var cut = RenderComponent<DeviceListPage>();
+            cut.WaitForAssertion(() => cut.Find("#ascButton"));
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+
+
+            // Assert
+            _ = cut.FindAll("table tbody tr").Count.Should().Be(3);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
