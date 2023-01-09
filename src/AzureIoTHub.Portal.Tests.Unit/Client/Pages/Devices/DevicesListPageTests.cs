@@ -24,7 +24,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using UnitTests.Bases;
     using AutoFixture;
     using Microsoft.AspNetCore.Components.Forms;
-    using AzureIoTHub.Portal.Client.Pages.LoRaWAN.Concentrator;
 
     [TestFixture]
     public class DevicesListPageTests : BlazorUnitTest
