@@ -64,6 +64,41 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
         }
 
         [Test]
+        public void SearchEdgeModels_ClickOnSearch_EdgeModelsAreSearched()
+        {
+            // Arrange
+            var searchKeyword = Fixture.Create<string>();
+
+            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList(It.Is<EdgeModelFilter>(x => string.IsNullOrEmpty(x.Keyword))))
+                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+                {
+                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
+                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
+                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
+                });
+
+            _ = this.mockEdgeModelServiceClient.Setup(x => x.GetIoTEdgeModelList(It.Is<EdgeModelFilter>(x => searchKeyword.Equals(x.Keyword, StringComparison.Ordinal))))
+                .ReturnsAsync(new List<IoTEdgeModelListItem>()
+                {
+                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
+                    new IoTEdgeModelListItem() { ModelId = Guid.NewGuid().ToString() },
+                });
+
+            var cut = RenderComponent<EdgeModelListPage>();
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(3));
+            cut.WaitForElement("#edge-model-search-keyword").Change(searchKeyword);
+
+            // Act
+            cut.WaitForElement("#edge-model-search-button").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(2));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
         public void WhenClickToItemShouldRedirectToDetailsPage()
         {
             // Arrange
