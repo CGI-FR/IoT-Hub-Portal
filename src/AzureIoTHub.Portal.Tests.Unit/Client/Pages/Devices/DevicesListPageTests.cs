@@ -640,10 +640,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public async Task LoadItem_AscSelect()
         {
-            // Arrange
-            var modelList = new List<DeviceModelDto>();
-
-            var expectedUri = $"api/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId=";
+            // Arrange            
+            //var expectedUri = $"api/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId=";
 
             _ = this.mockDeviceClientService.Setup(service =>
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
