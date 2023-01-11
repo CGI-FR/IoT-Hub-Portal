@@ -21,7 +21,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Microsoft.EntityFrameworkCore;
     using Models.v10;
     using Shared.Models.v1._0;
-    using Shared.Models.v1._0.Filters;
+    using Shared.Models.v10.Filters;
     using Device = Domain.Entities.Device;
 
     public abstract class DeviceServiceBase<TDto> : IDeviceService<TDto>

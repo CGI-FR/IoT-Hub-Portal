@@ -19,6 +19,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
@@ -70,7 +71,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public void GetEdgeModelsShouldReturnAList()
+        public async Task GetEdgeModelsShouldReturnAList()
         {
             // Arrange
             var expectedEdgeDeviceModels = Fixture.CreateMany<EdgeDeviceModel>(3).ToList();
@@ -82,14 +83,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 item.ImageUrl = expectedImageUri;
             }
 
-            _ = this.mockEdgeDeviceModelRepository.Setup(repo => repo.GetAll(It.IsAny<Expression<Func<EdgeDeviceModel, object>>[]>()))
-                .Returns(expectedEdgeDeviceModels);
+            var edgeModelFilter = new EdgeModelFilter
+            {
+                Keyword = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockEdgeDeviceModelRepository.Setup(repository => repository.GetAllAsync(It.IsAny<Expression<Func<EdgeDeviceModel, bool>>>(), default, new Expression<Func<EdgeDeviceModel, object>>[] { d => d.Labels }))
+                .ReturnsAsync(expectedEdgeDeviceModels);
 
             _ = this.mockDeviceModelImageManager.Setup(c => c.ComputeImageUri(It.IsAny<string>()))
                 .Returns(expectedImageUri);
 
             // Act
-            var result = this.edgeDeviceModelService.GetEdgeModels();
+            var result = await this.edgeDeviceModelService.GetEdgeModels(edgeModelFilter);
 
 
             // Assert

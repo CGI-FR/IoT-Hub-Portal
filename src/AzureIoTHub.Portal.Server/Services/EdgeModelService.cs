@@ -17,6 +17,8 @@ namespace AzureIoTHub.Portal.Server.Services
     using Microsoft.AspNetCore.Http;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
 
     public class EdgeModelService : IEdgeModelService
     {
@@ -64,10 +66,19 @@ namespace AzureIoTHub.Portal.Server.Services
         /// Return the edge model template list.
         /// </summary>
         /// <returns>IEnumerable IoTEdgeModelListItem.</returns>
-        public IEnumerable<IoTEdgeModelListItem> GetEdgeModels()
+        public async Task<IEnumerable<IoTEdgeModelListItem>> GetEdgeModels(EdgeModelFilter edgeModelFilter)
         {
-            return this.edgeModelRepository
-                .GetAll(x => x.Labels)
+            var edgeDeviceModelPredicate = PredicateBuilder.True<EdgeDeviceModel>();
+
+            if (!string.IsNullOrWhiteSpace(edgeModelFilter.Keyword))
+            {
+                edgeDeviceModelPredicate = edgeDeviceModelPredicate.And(model => model.Name.ToLower().Contains(edgeModelFilter.Keyword.ToLower()) || model.Description.ToLower().Contains(edgeModelFilter.Keyword.ToLower()));
+            }
+
+            var edgeModels = await this.edgeModelRepository
+                .GetAllAsync(edgeDeviceModelPredicate, default, m => m.Labels);
+
+            return edgeModels
                 .Select(model =>
                 {
                     var edgeDeviceModelListItem = this.mapper.Map<IoTEdgeModelListItem>(model);

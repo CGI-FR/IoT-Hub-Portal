@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Server.Controllers.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Moq;
@@ -35,20 +36,20 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
         }
 
         [Test]
-        public void GetEdgeModelListShouldReturnAList()
+        public async Task GetEdgeModelListShouldReturnAList()
         {
             // Arrange
             var edgeModelController = CreateController();
 
             _ = this.mockEdgeModelService
-                .Setup(x => x.GetEdgeModels())
-                .Returns(new List<IoTEdgeModelListItem>()
+                .Setup(x => x.GetEdgeModels(It.IsAny<EdgeModelFilter>()))
+                .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem()
                 });
 
             // Act
-            var response = edgeModelController.GetEdgeModelList();
+            var response = await edgeModelController.GetEdgeModelList(new EdgeModelFilter());
 
             // Assert
             Assert.IsNotNull(response);

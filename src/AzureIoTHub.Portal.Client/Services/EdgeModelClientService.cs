@@ -8,6 +8,8 @@ namespace AzureIoTHub.Portal.Client.Services
     using System.Net.Http.Json;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
+    using Microsoft.AspNetCore.WebUtilities;
 
     public class EdgeModelClientService : IEdgeModelClientService
     {
@@ -19,14 +21,21 @@ namespace AzureIoTHub.Portal.Client.Services
             this.http = http;
         }
 
+        public async Task<List<IoTEdgeModelListItem>> GetIoTEdgeModelList(EdgeModelFilter? edgeModelFilter = null)
+        {
+            var query = new Dictionary<string, string>
+            {
+                { nameof(EdgeModelFilter.Keyword), edgeModelFilter?.Keyword }
+            };
+
+            var uri = QueryHelpers.AddQueryString(this.apiUrlBase, query);
+
+            return await this.http.GetFromJsonAsync<List<IoTEdgeModelListItem>>(uri);
+        }
+
         public async Task<IoTEdgeModel> GetIoTEdgeModel(string modelId)
         {
             return await this.http.GetFromJsonAsync<IoTEdgeModel>($"{this.apiUrlBase}/{modelId}");
-        }
-
-        public async Task<List<IoTEdgeModelListItem>> GetIoTEdgeModelList()
-        {
-            return await this.http.GetFromJsonAsync<List<IoTEdgeModelListItem>>(this.apiUrlBase);
         }
 
         public Task CreateIoTEdgeModel(IoTEdgeModel model)

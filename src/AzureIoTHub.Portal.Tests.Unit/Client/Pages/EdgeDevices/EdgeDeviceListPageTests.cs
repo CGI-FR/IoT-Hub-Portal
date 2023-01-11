@@ -64,7 +64,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
                 .ReturnsAsync(Fixture.CreateMany<LabelDto>(5).ToList());
 
-            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList(null))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem()
@@ -91,7 +91,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
                 .ReturnsAsync(new PaginationResult<IoTEdgeListItem>());
 
-            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList(null))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem()
@@ -121,7 +121,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = this.mockEdgeDeviceClientService.Setup(service => service.GetDevices(expectedUrl))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
-            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList(null))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem()
@@ -159,7 +159,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                     }
                 });
 
-            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList(null))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
@@ -190,7 +190,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
                 .ReturnsAsync(Array.Empty<LabelDto>());
 
-            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList(null))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem()
@@ -234,7 +234,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
                 .ReturnsAsync(Array.Empty<LabelDto>());
 
-            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList(null))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem()
@@ -268,7 +268,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
                 .ReturnsAsync(Array.Empty<LabelDto>());
 
-            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList(null))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem()
@@ -343,7 +343,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
                 .ReturnsAsync(Array.Empty<LabelDto>());
 
-            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList(null))
                 .ReturnsAsync(modelList);
 
             // Act
@@ -386,7 +386,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
                 .ReturnsAsync(Array.Empty<LabelDto>());
 
-            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList(null))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>()
                 {
                     new IoTEdgeModelListItem()
@@ -434,7 +434,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             _ = this.mockEdgeDeviceClientService.Setup(x => x.GetAvailableLabels())
                 .ReturnsAsync(Array.Empty<LabelDto>());
 
-            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList(null))
                 .ReturnsAsync(edgeDeviceModels);
 
             var popoverProvider = RenderComponent<MudPopoverProvider>();

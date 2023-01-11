@@ -62,7 +62,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 DeviceId = Guid.NewGuid().ToString()
             };
 
-            _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList())
+            _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList(null))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>() { edgeModel });
 
             _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModel(edgeModel.ModelId))
@@ -119,7 +119,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 DeviceId = Guid.NewGuid().ToString()
             };
 
-            _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList())
+            _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList(null))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>() { edgeModel });
 
             _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModel(edgeModel.ModelId))
@@ -154,7 +154,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         public void WhenAnErrorOccurInOnInitializedAsyncShouldProcessProblemDetailsException()
         {
             // Arrange
-            _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList())
+            _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList(null))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
@@ -187,7 +187,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 .Setup(service => service.CreateDevice(It.Is<IoTEdgeDevice>(device => expectedEdgeDevice.DeviceId.Equals(device.DeviceId, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockIEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockIEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList(null))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>
                 {
                     mockEdgeDeviceModel
@@ -259,7 +259,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 .Setup(service => service.CreateDevice(It.Is<IoTEdgeDevice>(device => expectedEdgeDevice.DeviceId.Equals(device.DeviceId, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockIEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList())
+            _ = this.mockIEdgeModelClientService.Setup(service => service.GetIoTEdgeModelList(null))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>
                 {
                     mockEdgeDeviceModel
@@ -323,7 +323,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                 ImageUrl = Fixture.Create<Uri>()
             };
 
-            _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList())
+            _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList(null))
                 .ReturnsAsync(new List<IoTEdgeModelListItem>() { edgeModel });
 
             _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModel(edgeModel.ModelId))
@@ -353,7 +353,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             var edgeDeviceModels = Fixture.CreateMany<IoTEdgeModelListItem>(2).ToList();
             var expectedEdgeDeviceModel = edgeDeviceModels.First();
 
-            _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList())
+            _ = this.mockIEdgeModelClientService.Setup(x => x.GetIoTEdgeModelList(null))
                 .ReturnsAsync(edgeDeviceModels);
 
             _ = this.mockDeviceTagSettingsClientService.Setup(x => x.GetDeviceTags())

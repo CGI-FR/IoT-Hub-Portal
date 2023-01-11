@@ -1,5 +1,6 @@
 ﻿@page "/edge/models"
 
+@using AzureIoTHub.Portal.Shared.Models.v10.Filters;
 @using Microsoft.AspNetCore.Authorization
 @using AzureIoTHub.Portal.Models.v10
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
@@ -10,6 +11,9 @@
 @inject NavigationManager NavigationManager
 
 <MudGrid>
+    <MudItem xs="12">
+        <EdgeModelSearch OnSearch=@Search />
+    </MudItem>
     <MudItem xs="12">
         <MudTable T="IoTEdgeModelListItem" Items="@EdgeModelList" Loading="IsLoading" Dense=true OnRowClick="@((e) => GoToDetails(e.Item))" Hover=true Bordered=true Striped=true RowStyle="cursor: pointer;">
             <ColGroup>
@@ -86,6 +90,8 @@
     private bool IsLoading { get; set; } = true;
     private readonly int[] pageSizeOptions = { 2, 5, 10 };
 
+    private string searchKeyword = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         await LoadEdgeModels();
@@ -96,20 +102,26 @@
         try
         {
             IsLoading = true;
-            EdgeModelList = await EdgeModelService.GetIoTEdgeModelList();
+            EdgeModelList = await EdgeModelService.GetIoTEdgeModelList(new EdgeModelFilter
+            {
+                Keyword = searchKeyword
+            });
         }
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
         }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
-        }
         finally
         {
             IsLoading = false;
         }
+    }
+
+    private async Task Search(string searchKeyword)
+    {
+        this.searchKeyword = searchKeyword;
+
+        await LoadEdgeModels();
     }
 
     public void RedirectToCreatePage()
