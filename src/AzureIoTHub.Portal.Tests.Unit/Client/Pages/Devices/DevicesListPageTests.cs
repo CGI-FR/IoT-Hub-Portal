@@ -324,7 +324,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         public async Task TypingSomeCharactersInTheAutocompleteShouldFilterTheDeviceModels()
         {
             // Arrange
-            //var expectedUrl = "api/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&orderBy=&modelId=";
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
 
@@ -638,22 +637,26 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         }
 
         [Test]
-        public async Task LoadItem_AscSelect()
+        public void Sort_ClickOnSortIdAsc_DevicesSorted()
         {
-            // Arrange            
-            //var expectedUri = $"api/devices?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId=";
-
+            // Arrange
             _ = this.mockDeviceClientService.Setup(service =>
                     service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
                 .ReturnsAsync(new PaginationResult<DeviceListItem>
                 {
-                    Items = new List<DeviceListItem>
-                    {
-                        new(),
-                        new(),
-                        new()
-                    }
+                    Items = Array.Empty<DeviceListItem>()
                 });
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=Id asc&modelId="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = Array.Empty<DeviceListItem>()
+                });
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
+                .ReturnsAsync(Array.Empty<LabelDto>());
+
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
@@ -661,18 +664,56 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
                 .ReturnsAsync(new List<DeviceModelDto>());
 
+            var cut = RenderComponent<DeviceListPage>();
+
+            // Act
+            cut.WaitForElement("#sortDeviceId").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void Sort_ClickOnSortIdDesc_DevicesSorted()
+        {
+            // Arrange
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=&modelId="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = Array.Empty<DeviceListItem>()
+                });
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=Id asc&modelId="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = Array.Empty<DeviceListItem>()
+                });
+            _ = this.mockDeviceClientService.Setup(service =>
+                    service.GetDevices($"{this.apiBaseUrl}?pageNumber=0&pageSize=10&searchText=&searchStatus=&searchState=&orderBy=Id desc&modelId="))
+                .ReturnsAsync(new PaginationResult<DeviceListItem>
+                {
+                    Items = Array.Empty<DeviceListItem>()
+                });
+
             _ = this.mockDeviceClientService.Setup(service => service.GetAvailableLabels())
                 .ReturnsAsync(Array.Empty<LabelDto>());
 
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+                .ReturnsAsync(new List<DeviceModelDto>());
+
+            var cut = RenderComponent<DeviceListPage>();
 
             // Act
-            var cut = RenderComponent<DeviceListPage>();
-            cut.WaitForAssertion(() => cut.Find("#ascButton"));
-            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
-
+            cut.WaitForElement("#sortDeviceId").Click();
+            cut.WaitForElement("#sortDeviceId").Click();
 
             // Assert
-            _ = cut.FindAll("table tbody tr").Count.Should().Be(3);
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
