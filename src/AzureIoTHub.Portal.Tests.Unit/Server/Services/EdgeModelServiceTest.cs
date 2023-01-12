@@ -204,6 +204,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             {
                 ModelId = Guid.NewGuid().ToString()
             };
+            var expectedImageUri = Fixture.Create<Uri>();
 
             _ = this.mockEdgeDeviceModelRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync((EdgeDeviceModel)null);

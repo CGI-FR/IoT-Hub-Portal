@@ -19,7 +19,6 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using AzureIoTHub.Portal.Infrastructure.Repositories;
-    using AzureIoTHub.Portal.Server.Managers;
     using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand;
 
     public class EdgeModelService : IEdgeModelService
