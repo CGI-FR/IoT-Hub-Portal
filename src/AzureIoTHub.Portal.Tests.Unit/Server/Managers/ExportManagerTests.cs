@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using AutoFixture;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain.Entities;
@@ -211,7 +212,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
         public async Task ImportDeviceListWrongFileFormatShouldThrowInternalServerErrorExceptionAsync()
         {
             // Arrange
-            using var stream = new MemoryStream(Guid.NewGuid().ToByteArray());
+            var input = Encoding.UTF8.GetBytes(Fixture.Create<string>());
+            using var stream = new MemoryStream(input);
 
             // Act
             var act = () => this.exportManager.ImportDeviceList(stream);
