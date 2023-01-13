@@ -386,11 +386,11 @@
 <span class="normal"><a href="#__codelineno-0-2">2</a></span>
 <span class="normal"><a href="#__codelineno-0-3">3</a></span>
 <span class="normal"><a href="#__codelineno-0-4">4</a></span>
-<span class="normal"><a href="#__codelineno-0-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="na">[TestFixture]</span><span class="w"></span>
-<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ProductControllerTests</span><span class="w"></span>
-<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">    </span><span class="p">...</span><span class="w"></span>
-<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="p">}</span><span class="w"></span>
+<span class="normal"><a href="#__codelineno-0-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="na">[TestFixture]</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ProductControllerTests</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="p">{</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">    </span><span class="p">...</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
 <h3 id="test-method">Test method<a class="headerlink" href="#test-method" title="Permanent link">¶</a></h3>
 <p>The test method should follow the naming convention <strong><code>[MethodUnderTest]_[BehaviourToTest]_[ExpectedResult]</code></strong>.</p>
@@ -400,11 +400,11 @@ The name of the test should be <code>GetProduct_ProductExist_ProductReturned</co
 <span class="normal"><a href="#__codelineno-1-2">2</a></span>
 <span class="normal"><a href="#__codelineno-1-3">3</a></span>
 <span class="normal"><a href="#__codelineno-1-4">4</a></span>
-<span class="normal"><a href="#__codelineno-1-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="na">[Test]</span><span class="w"></span>
-<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">GetProduct_ProductExist_ProductReturned</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">    </span><span class="p">...</span><span class="w"></span>
-<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="p">}</span><span class="w"></span>
+<span class="normal"><a href="#__codelineno-1-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="na">[Test]</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">GetProduct_ProductExist_ProductReturned</span><span class="p">()</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="p">{</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">    </span><span class="p">...</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
 <h2 id="unit-test-skeleton-three-stepsparts">Unit Test Skeleton: Three Steps/Parts<a class="headerlink" href="#unit-test-skeleton-three-stepsparts" title="Permanent link">¶</a></h2>
 <p>A unit test should be devided into three steps:</p>
@@ -429,22 +429,22 @@ The name of the test should be <code>GetProduct_ProductExist_ProductReturned</co
 <span class="normal"><a href="#__codelineno-2-13">13</a></span>
 <span class="normal"><a href="#__codelineno-2-14">14</a></span>
 <span class="normal"><a href="#__codelineno-2-15">15</a></span>
-<span class="normal"><a href="#__codelineno-2-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="na">[Test]</span><span class="w"></span>
-<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">GetProduct_ProductExist_ProductReturned</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="p">{</span><span class="w"></span>
+<span class="normal"><a href="#__codelineno-2-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="na">[Test]</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">GetProduct_ProductExist_ProductReturned</span><span class="p">()</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="p">{</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">    </span><span class="c1">// Arrange</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">productId</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span><span class="w"></span>
-<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">expectedProduct</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Product</span><span class="w"></span>
-<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">    </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">        </span><span class="n">Id</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">productId</span><span class="w"></span>
-<a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">    </span><span class="p">};</span><span class="w"></span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">productId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">expectedProduct</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Product</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">        </span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">productId</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">    </span><span class="p">};</span>
 <a id="__codelineno-2-10" name="__codelineno-2-10"></a>
 <a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">    </span><span class="c1">// Act</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">productService</span><span class="p">.</span><span class="n">GetProduct</span><span class="p">(</span><span class="n">productId</span><span class="p">);</span><span class="w"></span>
+<a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">productService</span><span class="p">.</span><span class="n">GetProduct</span><span class="p">(</span><span class="n">productId</span><span class="p">);</span>
 <a id="__codelineno-2-13" name="__codelineno-2-13"></a>
 <a id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w">    </span><span class="c1">// Asset</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w">    </span><span class="n">_</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">product</span><span class="p">.</span><span class="n">Should</span><span class="p">().</span><span class="n">BeEquivalentTo</span><span class="p">(</span><span class="n">expectedProduct</span><span class="p">);</span><span class="w"></span>
-<a id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w">    </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">product</span><span class="p">.</span><span class="n">Should</span><span class="p">().</span><span class="n">BeEquivalentTo</span><span class="p">(</span><span class="n">expectedProduct</span><span class="p">);</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -500,49 +500,49 @@ Any execution of unit tests that depend on these external resources can be alter
 <span class="normal"><a href="#__codelineno-3-40">40</a></span>
 <span class="normal"><a href="#__codelineno-3-41">41</a></span>
 <span class="normal"><a href="#__codelineno-3-42">42</a></span>
-<span class="normal"><a href="#__codelineno-3-43">43</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="na">[TestFixture]</span><span class="w"></span>
-<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ProductControllerTests</span><span class="w"></span>
-<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">MockRepository</span><span class="w"> </span><span class="n">mockRepository</span><span class="p">;</span><span class="w"></span>
-<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Mock</span><span class="p">&lt;</span><span class="n">IProductRepository</span><span class="p">&gt;</span><span class="w"> </span><span class="n">mockProductRepository</span><span class="p">;</span><span class="w"></span>
+<span class="normal"><a href="#__codelineno-3-43">43</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="na">[TestFixture]</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ProductControllerTests</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="p">{</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">MockRepository</span><span class="w"> </span><span class="n">mockRepository</span><span class="p">;</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Mock</span><span class="o">&lt;</span><span class="n">IProductRepository</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mockProductRepository</span><span class="p">;</span>
 <a id="__codelineno-3-6" name="__codelineno-3-6"></a>
-<a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">IProductService</span><span class="w"> </span><span class="n">productService</span><span class="p">;</span><span class="w"></span>
+<a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">IProductService</span><span class="w"> </span><span class="n">productService</span><span class="p">;</span>
 <a id="__codelineno-3-8" name="__codelineno-3-8"></a>
-<a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">    </span><span class="na">[SetUp]</span><span class="w"></span>
-<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">SetUp</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">    </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">    </span><span class="na">[SetUp]</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">SetUp</span><span class="p">()</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">    </span><span class="p">{</span>
 <a id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">        </span><span class="c1">// Init MockRepository with strict behaviour</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">mockRepository</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MockRepository</span><span class="p">(</span><span class="n">MockBehavior</span><span class="p">.</span><span class="n">Strict</span><span class="p">);</span><span class="w"></span>
+<a id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">mockRepository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MockRepository</span><span class="p">(</span><span class="n">MockBehavior</span><span class="p">.</span><span class="n">Strict</span><span class="p">);</span>
 <a id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">        </span><span class="c1">// Init the mock of IProductRepository</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">mockProductRepository</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">mockRepository</span><span class="p">.</span><span class="n">Create</span><span class="p">&lt;</span><span class="n">IProductRepository</span><span class="p">&gt;();</span><span class="w"></span>
+<a id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">mockProductRepository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">mockRepository</span><span class="p">.</span><span class="n">Create</span><span class="o">&lt;</span><span class="n">IProductRepository</span><span class="o">&gt;</span><span class="p">();</span>
 <a id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">        </span><span class="c1">// Init the service ProductService. The object mock ProductRepository is passed the contructor of ProductService</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">productService</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ProductService</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">mockProductRepository</span><span class="p">.</span><span class="n">Object</span><span class="p">);</span><span class="w"></span>
-<a id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">productService</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ProductService</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">mockProductRepository</span><span class="p">.</span><span class="n">Object</span><span class="p">);</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">    </span><span class="p">}</span>
 <a id="__codelineno-3-19" name="__codelineno-3-19"></a>
-<a id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">    </span><span class="na">[Test]</span><span class="w"></span>
-<a id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">GetProduct_ProductExist_ProductReturned</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w">    </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">    </span><span class="na">[Test]</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">GetProduct_ProductExist_ProductReturned</span><span class="p">()</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w">    </span><span class="p">{</span>
 <a id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w">        </span><span class="c1">// Arrange</span>
-<a id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">productId</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span><span class="w"></span>
-<a id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">expectedProduct</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Product</span><span class="w"></span>
-<a id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="w">        </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="w">            </span><span class="n">Id</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">productId</span><span class="w"></span>
-<a id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="w">        </span><span class="p">};</span><span class="w"></span>
+<a id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">productId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+<a id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">expectedProduct</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Product</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="w">            </span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">productId</span>
+<a id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="w">        </span><span class="p">};</span>
 <a id="__codelineno-3-29" name="__codelineno-3-29"></a>
 <a id="__codelineno-3-30" name="__codelineno-3-30"></a><span class="w">        </span><span class="c1">// Setup mock of GetByIdAsync of the repository ProductRepository to return the expected product when given the correct product id</span>
-<a id="__codelineno-3-31" name="__codelineno-3-31"></a><span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">mockProductRepository</span><span class="p">.</span><span class="n">Setup</span><span class="p">(</span><span class="n">repository</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">GetByIdAsync</span><span class="p">(</span><span class="n">productId</span><span class="p">))</span><span class="w"></span>
-<a id="__codelineno-3-32" name="__codelineno-3-32"></a><span class="w">                </span><span class="p">.</span><span class="n">ReturnsAsync</span><span class="p">(</span><span class="n">expectedProduct</span><span class="p">);</span><span class="w"></span>
+<a id="__codelineno-3-31" name="__codelineno-3-31"></a><span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">mockProductRepository</span><span class="p">.</span><span class="n">Setup</span><span class="p">(</span><span class="n">repository</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">GetByIdAsync</span><span class="p">(</span><span class="n">productId</span><span class="p">))</span>
+<a id="__codelineno-3-32" name="__codelineno-3-32"></a><span class="w">                </span><span class="p">.</span><span class="n">ReturnsAsync</span><span class="p">(</span><span class="n">expectedProduct</span><span class="p">);</span>
 <a id="__codelineno-3-33" name="__codelineno-3-33"></a>
 <a id="__codelineno-3-34" name="__codelineno-3-34"></a><span class="w">        </span><span class="c1">// Act</span>
-<a id="__codelineno-3-35" name="__codelineno-3-35"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">productService</span><span class="p">.</span><span class="n">GetProduct</span><span class="p">(</span><span class="n">productId</span><span class="p">);</span><span class="w"></span>
+<a id="__codelineno-3-35" name="__codelineno-3-35"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">productService</span><span class="p">.</span><span class="n">GetProduct</span><span class="p">(</span><span class="n">productId</span><span class="p">);</span>
 <a id="__codelineno-3-36" name="__codelineno-3-36"></a>
 <a id="__codelineno-3-37" name="__codelineno-3-37"></a><span class="w">        </span><span class="c1">// Asset</span>
-<a id="__codelineno-3-38" name="__codelineno-3-38"></a><span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">product</span><span class="p">.</span><span class="n">Should</span><span class="p">().</span><span class="n">BeEquivalentTo</span><span class="p">(</span><span class="n">expectedProduct</span><span class="p">);</span><span class="w"></span>
+<a id="__codelineno-3-38" name="__codelineno-3-38"></a><span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">product</span><span class="p">.</span><span class="n">Should</span><span class="p">().</span><span class="n">BeEquivalentTo</span><span class="p">(</span><span class="n">expectedProduct</span><span class="p">);</span>
 <a id="__codelineno-3-39" name="__codelineno-3-39"></a>
 <a id="__codelineno-3-40" name="__codelineno-3-40"></a><span class="w">        </span><span class="c1">// Assert that all mocks setups have been called</span>
-<a id="__codelineno-3-41" name="__codelineno-3-41"></a><span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">MockRepository</span><span class="p">.</span><span class="n">VerifyAll</span><span class="p">();</span><span class="w"></span>
-<a id="__codelineno-3-42" name="__codelineno-3-42"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-3-43" name="__codelineno-3-43"></a><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-3-41" name="__codelineno-3-41"></a><span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MockRepository</span><span class="p">.</span><span class="n">VerifyAll</span><span class="p">();</span>
+<a id="__codelineno-3-42" name="__codelineno-3-42"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-3-43" name="__codelineno-3-43"></a><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
 </article>
 </div>
