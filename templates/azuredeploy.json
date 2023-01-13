@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.13.1.58284",
-      "templateHash": "7326367855553141287"
+      "templateHash": "2297083920799549287"
     }
   },
   "parameters": {
@@ -1662,7 +1662,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.13.1.58284",
-              "templateHash": "8990827820061429358"
+              "templateHash": "14029653314479730098"
             }
           },
           "parameters": {
@@ -2226,7 +2226,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.13.1.58284",
-                      "templateHash": "10391944802090155834"
+                      "templateHash": "8325848551451260004"
                     }
                   },
                   "parameters": {
@@ -2431,7 +2431,7 @@
                         "reserved": true,
                         "siteConfig": {
                           "numberOfWorkers": 1,
-                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.2.0",
+                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.3.0",
                           "connectionStrings": [
                             {
                               "name": "IoTHub__ConnectionString",
@@ -2605,7 +2605,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.13.1.58284",
-              "templateHash": "16062849114947328264"
+              "templateHash": "13057993303098600068"
             }
           },
           "parameters": {
@@ -3281,7 +3281,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.13.1.58284",
-                      "templateHash": "10391944802090155834"
+                      "templateHash": "8325848551451260004"
                     }
                   },
                   "parameters": {
@@ -3486,7 +3486,7 @@
                         "reserved": true,
                         "siteConfig": {
                           "numberOfWorkers": 1,
-                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.2.0",
+                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.3.0",
                           "connectionStrings": [
                             {
                               "name": "IoTHub__ConnectionString",
