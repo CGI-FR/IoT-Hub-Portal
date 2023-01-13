@@ -18,7 +18,7 @@
     <PackageReference Include="Blazored.LocalStorage.TestExtensions" Version="4.3.0" />
     <PackageReference Include="bunit" Version="1.14.4" />
     <PackageReference Include="Docker.DotNet" Version="3.125.12" />
-    <PackageReference Include="FluentAssertions" Version="6.8.0" />
+    <PackageReference Include="FluentAssertions" Version="6.9.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
       <PrivateAssets>all</PrivateAssets>
