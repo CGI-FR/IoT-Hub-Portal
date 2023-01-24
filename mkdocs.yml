@@ -87,6 +87,11 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tilde
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 # Plugins
 plugins:
@@ -112,6 +117,8 @@ nav:
       - 'dev-guide/testing/unit-tests-on-blazor-components.md'
     - 'Migrations':
       - 'dev-guide/migrations/v3-to-v4.md'
+    - 'Project conception':
+      - 'dev-guide/conception/diagrams.md'
   - Concepts: 'concepts.md'
   - Web API Reference: 'open-api.md'
   - About:
