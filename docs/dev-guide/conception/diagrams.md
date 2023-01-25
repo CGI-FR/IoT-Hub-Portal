@@ -49,11 +49,11 @@ C4Deployment
 
     Deployment_Node(api, "Server", "API"){
         Container(controllers, "Controllers", "C#", "They are used to route HTTP requests, they call the methods of the services and they return the content of the HTTP response as well as a HTTP code.")
-	    Container(services, "Services", "C#", "They are used to define the business logic as to call the methods of the data access layer for example.")
+        Container(services, "Services", "C#", "They are used to define the business logic as to call the methods of the data access layer for example.")
     }
 
     Deployment_Node(bll, "Application", "BLL"){
-	    Container(iservices, "Services", C#, "This package represents the interfaces of the services.")
+        Container(iservices, "Services", C#, "This package represents the interfaces of the services.")
     }
 
     Deployment_Node(dal, "Infrastructure", "DAL"){
@@ -64,7 +64,7 @@ C4Deployment
 
     Deployment_Node(domain, "Domain", "Domain"){
         Container(entities, "Entities", "C#", "They are used as object representation of tables in a database.")
-	    Container(irepositories, "Repositories", "C#", "This package represents the interfaces of the repositories.")
+        Container(irepositories, "Repositories", "C#", "This package represents the interfaces of the repositories.")
     }
 
     Rel(iservices, services, "dependency", "")
