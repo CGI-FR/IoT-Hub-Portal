@@ -69,6 +69,10 @@ C4Deployment
 
     Rel(iservices, services, "dependency", "")
     Rel(repositories, services, "dependency", "")
+    Rel(entities, services, "dependency", "")
+    Rel(entities, iservices, "dependency", "")
+    Rel(iservices, repositories, "dependency", "")
+    Rel(entities, repositories, "dependency", "")
 ```
 
 Now, to better understand the technical architecture of the project, here is a class diagram representing it.
