@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Options;
     using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Domain.Shared.Constants;
     using AzureIoTHub.Portal.Infrastructure.Extensions;
     using AzureIoTHub.Portal.Infrastructure.Jobs;
     using AzureIoTHub.Portal.Infrastructure.Managers;
@@ -102,20 +103,43 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 
         private static IServiceCollection ConfigureDatabase(this IServiceCollection services, ConfigHandler configuration)
         {
-            _ = services
+            var dbContextOptions = new DbContextOptionsBuilder<PortalDbContext>();
+
+            if (DbProviders.PostgreSQL.Equals(configuration.DbProvider, StringComparison.Ordinal))
+            {
+                _ = services
                 .AddDbContextPool<PortalDbContext>(opts =>
                 {
                     _ = opts.UseNpgsql(configuration.PostgreSQLConnectionString);
                     _ = opts.UseExceptionProcessor();
                 });
-
-            if (string.IsNullOrEmpty(configuration.PostgreSQLConnectionString))
+                _ = dbContextOptions.UseNpgsql(configuration.PostgreSQLConnectionString);
+            }
+            else if (DbProviders.MySQL.Equals(configuration.DbProvider, StringComparison.Ordinal))
+            {
+                _ = services.AddDbContextPool<PortalDbContext>(opts =>
+                {
+                    _ = opts.UseMySql(configuration.MySQLConnectionString, ServerVersion.AutoDetect(configuration.MySQLConnectionString));
+                    _ = opts.UseExceptionProcessor();
+                });
+                _ = dbContextOptions.UseMySql(configuration.MySQLConnectionString, ServerVersion.AutoDetect(configuration.MySQLConnectionString));
+            }
+            else
+            {
                 return services;
+            }
+            //_ = services
+            //    .AddDbContextPool<PortalDbContext>(opts =>
+            //    {
+            //        _ = opts.UseNpgsql(configuration.PostgreSQLConnectionString);
+            //        _ = opts.UseExceptionProcessor();
+            //    });
+
+            //if (string.IsNullOrEmpty(configuration.PostgreSQLConnectionString))
+            //    return services;
 
             _ = services.AddScoped<IUnitOfWork, UnitOfWork<PortalDbContext>>();
 
-            var dbContextOptions = new DbContextOptionsBuilder<PortalDbContext>();
-            _ = dbContextOptions.UseNpgsql(configuration.PostgreSQLConnectionString);
 
             using var ctx = new PortalDbContext(dbContextOptions.Options);
             ctx.Database.Migrate();
