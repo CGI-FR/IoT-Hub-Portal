@@ -18,6 +18,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: pass
       MYSQL_DATABASE: cgigeiotdemo
+    ports:
+      - 3306:3306
   pgadmin:
     image: dpage/pgadmin4
     environment:

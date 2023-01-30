@@ -12,7 +12,8 @@ namespace AzureIoTHub.Portal.Infrastructure
         {
             var optionsBuilder = new DbContextOptionsBuilder<PortalDbContext>();
 
-            _ = optionsBuilder.UseNpgsql("Server=database;Database=cgigeiotdemo;Port=5432;User Id=postgres;Password=postgrePassword;Pooling=true;Connection Lifetime=0;Command Timeout=0;");
+            var connectionString = "Server=database;Database=cgigeiotdemo;Port=5432;User Id=postgres;Password=postgrePassword;Pooling=true;Connection Lifetime=0;Command Timeout=0;";
+            _ = optionsBuilder.UseNpgsql(connectionString, x => x.MigrationsAssembly("AzureIoTHub.Portal.Postgres"));
 
             return new PortalDbContext(optionsBuilder.Options);
         }

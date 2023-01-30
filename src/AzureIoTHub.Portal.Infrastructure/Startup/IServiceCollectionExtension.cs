@@ -105,41 +105,29 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         {
             var dbContextOptions = new DbContextOptionsBuilder<PortalDbContext>();
 
-            if (DbProviders.PostgreSQL.Equals(configuration.DbProvider, StringComparison.Ordinal))
+            switch (configuration.DbProvider)
             {
-                _ = services
-                .AddDbContextPool<PortalDbContext>(opts =>
-                {
-                    _ = opts.UseNpgsql(configuration.PostgreSQLConnectionString);
-                    _ = opts.UseExceptionProcessor();
-                });
-                _ = dbContextOptions.UseNpgsql(configuration.PostgreSQLConnectionString);
+                case DbProviders.PostgreSQL:
+                    _ = services.AddDbContextPool<PortalDbContext>(opts =>
+                    {
+                        _ = opts.UseNpgsql(configuration.PostgreSQLConnectionString, x => x.MigrationsAssembly("AzureIoTHub.Portal.Postgres"));
+                        _ = opts.UseExceptionProcessor();
+                    });
+                    _ = dbContextOptions.UseNpgsql(configuration.PostgreSQLConnectionString, x => x.MigrationsAssembly("AzureIoTHub.Portal.Postgres"));
+                    break;
+                case DbProviders.MySQL:
+                    _ = services.AddDbContextPool<PortalDbContext>(opts =>
+                    {
+                        _ = opts.UseMySql(configuration.MySQLConnectionString, ServerVersion.AutoDetect(configuration.MySQLConnectionString), x => x.MigrationsAssembly("AzureIoTHub.Portal.MySql"));
+                        _ = opts.UseExceptionProcessor();
+                    });
+                    _ = dbContextOptions.UseMySql(configuration.MySQLConnectionString, ServerVersion.AutoDetect(configuration.MySQLConnectionString), x => x.MigrationsAssembly("AzureIoTHub.Portal.MySql"));
+                    break;
+                default:
+                    return services;
             }
-            else if (DbProviders.MySQL.Equals(configuration.DbProvider, StringComparison.Ordinal))
-            {
-                _ = services.AddDbContextPool<PortalDbContext>(opts =>
-                {
-                    _ = opts.UseMySql(configuration.MySQLConnectionString, ServerVersion.AutoDetect(configuration.MySQLConnectionString));
-                    _ = opts.UseExceptionProcessor();
-                });
-                _ = dbContextOptions.UseMySql(configuration.MySQLConnectionString, ServerVersion.AutoDetect(configuration.MySQLConnectionString));
-            }
-            else
-            {
-                return services;
-            }
-            //_ = services
-            //    .AddDbContextPool<PortalDbContext>(opts =>
-            //    {
-            //        _ = opts.UseNpgsql(configuration.PostgreSQLConnectionString);
-            //        _ = opts.UseExceptionProcessor();
-            //    });
-
-            //if (string.IsNullOrEmpty(configuration.PostgreSQLConnectionString))
-            //    return services;
 
             _ = services.AddScoped<IUnitOfWork, UnitOfWork<PortalDbContext>>();
-
 
             using var ctx = new PortalDbContext(dbContextOptions.Options);
             ctx.Database.Migrate();

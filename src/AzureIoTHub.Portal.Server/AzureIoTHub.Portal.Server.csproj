@@ -27,6 +27,8 @@
     <ProjectReference Include="..\AzureIoTHub.Portal.Infrastructure\AzureIoTHub.Portal.Infrastructure.csproj" />
     <ProjectReference Include="..\AzureIoTHub.Portal.Domain\AzureIoTHub.Portal.Domain.csproj" />
     <ProjectReference Include="..\AzureIoTHub.Portal.Client\AzureIoTHub.Portal.Client.csproj" />
+    <ProjectReference Include="..\AzureIoTHub.Portal.MySql\AzureIoTHub.Portal.MySql.csproj" />
+    <ProjectReference Include="..\AzureIoTHub.Portal.Postgres\AzureIoTHub.Portal.Postgres.csproj" />
     <ProjectReference Include="..\AzureIoTHub.Portal.Shared\AzureIoTHub.Portal.Shared.csproj" />
   </ItemGroup>
 
