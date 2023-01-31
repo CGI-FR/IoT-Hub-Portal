@@ -3,7 +3,7 @@
 
 #nullable disable
 
-namespace AzureIoTHub.Portal.Infrastructure.Migrations
+namespace AzureIoTHub.Portal.Postgres.Migrations
 {
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using Microsoft.EntityFrameworkCore.Migrations;

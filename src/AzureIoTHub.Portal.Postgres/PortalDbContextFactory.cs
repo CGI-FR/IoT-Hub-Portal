@@ -1,8 +1,9 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Infrastructure
+namespace AzureIoTHub.Portal.Postgres
 {
+    using AzureIoTHub.Portal.Infrastructure;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Design;
 

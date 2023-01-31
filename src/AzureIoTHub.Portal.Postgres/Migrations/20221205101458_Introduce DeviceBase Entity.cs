@@ -3,7 +3,7 @@
 
 #nullable disable
 
-namespace AzureIoTHub.Portal.Infrastructure.Migrations
+namespace AzureIoTHub.Portal.Postgres.Migrations
 {
     using System;
     using Microsoft.EntityFrameworkCore.Migrations;

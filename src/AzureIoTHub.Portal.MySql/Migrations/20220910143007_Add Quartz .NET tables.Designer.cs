@@ -8,20 +8,16 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace AzureIoTHub.Portal.Postgres.Migrations
+namespace AzureIoTHub.Portal.MySql.Migrations
 {
     [DbContext(typeof(PortalDbContext))]
-    [Migration("20220903171411_Initial Create")]
-    partial class InitialCreate
+    [Migration("20220910143007_Add Quartz .NET tables")]
+    partial class AddQuartzNETtables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.8")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
-
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            
 #pragma warning restore 612, 618
         }
     }
