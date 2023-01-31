@@ -108,6 +108,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             switch (configuration.DbProvider)
             {
                 case DbProviders.PostgreSQL:
+                    if (string.IsNullOrEmpty(configuration.PostgreSQLConnectionString))
+                    {
+                        return services;
+                    }
                     _ = services.AddDbContextPool<PortalDbContext>(opts =>
                     {
                         _ = opts.UseNpgsql(configuration.PostgreSQLConnectionString, x => x.MigrationsAssembly("AzureIoTHub.Portal.Postgres"));
@@ -116,6 +120,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                     _ = dbContextOptions.UseNpgsql(configuration.PostgreSQLConnectionString, x => x.MigrationsAssembly("AzureIoTHub.Portal.Postgres"));
                     break;
                 case DbProviders.MySQL:
+                    if (string.IsNullOrEmpty(configuration.MySQLConnectionString))
+                    {
+                        return services;
+                    }
                     _ = services.AddDbContextPool<PortalDbContext>(opts =>
                     {
                         _ = opts.UseMySql(configuration.MySQLConnectionString, ServerVersion.AutoDetect(configuration.MySQLConnectionString), x => x.MigrationsAssembly("AzureIoTHub.Portal.MySql"));
