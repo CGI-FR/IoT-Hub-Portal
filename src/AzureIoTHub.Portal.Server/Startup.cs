@@ -9,11 +9,13 @@ namespace AzureIoTHub.Portal.Server
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Application.Startup;
+    using AzureIoTHub.Portal.Domain.Shared.Constants;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using AzureIoTHub.Portal.Infrastructure.Startup;
     using Domain;
     using Domain.Exceptions;
     using EntityFramework.Exceptions.Common;
+    using EntityFramework.Exceptions.PostgreSQL;
     using Extensions;
     using Hellang.Middleware.ProblemDetails;
     using Hellang.Middleware.ProblemDetails.Mvc;
@@ -28,6 +30,7 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Versioning;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -261,10 +264,24 @@ namespace AzureIoTHub.Portal.Server
                     opts.UseClustering();
                     opts.UseProperties = true;
 
-                    opts.UsePostgres(c =>
+                    switch (configuration.DbProvider)
                     {
-                        c.ConnectionString = configuration.PostgreSQLConnectionString;
-                    });
+                        case DbProviders.PostgreSQL:
+                            opts.UsePostgres(c =>
+                            {
+                                c.ConnectionString = configuration.PostgreSQLConnectionString;
+                            });
+                            break;
+                        case DbProviders.MySQL:
+                            opts.UseMySql(c =>
+                            {
+                                c.ConnectionString = configuration.MySQLConnectionString;
+                                c.TablePrefix = "qrtz_";
+                            });
+                            break;
+                        default:
+                            break;
+                    }
                 });
             });
 
