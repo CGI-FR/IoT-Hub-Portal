@@ -15,7 +15,6 @@ namespace AzureIoTHub.Portal.Server
     using Domain;
     using Domain.Exceptions;
     using EntityFramework.Exceptions.Common;
-    using EntityFramework.Exceptions.PostgreSQL;
     using Extensions;
     using Hellang.Middleware.ProblemDetails;
     using Hellang.Middleware.ProblemDetails.Mvc;
@@ -42,6 +41,7 @@ namespace AzureIoTHub.Portal.Server
     using MudBlazor.Services;
     using Prometheus;
     using Quartz;
+    using Quartz.Impl.AdoJobStore;
     using Services;
     using Shared.Models.v1._0;
 
@@ -275,6 +275,7 @@ namespace AzureIoTHub.Portal.Server
                         case DbProviders.MySQL:
                             opts.UseMySql(c =>
                             {
+                                c.UseDriverDelegate<MySQLDelegate>();
                                 c.ConnectionString = configuration.MySQLConnectionString;
                                 c.TablePrefix = "qrtz_";
                             });
