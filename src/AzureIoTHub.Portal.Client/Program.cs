@@ -59,7 +59,6 @@ builder.Services.AddApiAuthorization();
 _ = builder.Services.AddFileReaderService(o => o.UseWasmSharedBuffer = true);
 
 _ = builder.Services.AddBlazoredLocalStorage();
-_ = builder.Services.AddBlazoredModal();
 _ = builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
