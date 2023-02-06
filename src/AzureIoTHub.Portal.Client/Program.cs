@@ -8,7 +8,6 @@ using AzureIoTHub.Portal.Client.Services;
 using AzureIoTHub.Portal.Models.v10;
 using AzureIoTHub.Portal.Settings;
 using Blazored.LocalStorage;
-using Blazored.Modal;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
