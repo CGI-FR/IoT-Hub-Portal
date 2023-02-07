@@ -2,6 +2,8 @@
 
 In order to better understand the needs of the project, here is a use case diagram regrouping the current use cases of the project.
 
+## Connected objects
+
 ``` mermaid
 graph LR
     A[End user] --> B(Display the list of connected objects)
@@ -13,30 +15,66 @@ graph LR
     G(Delete a connected object) -->|Extend| B
     H(Go to the details of a connected object) -->|Extend| B
     I(Search for connected objects) -->|Extend| B
-    A --> J(Display the list of connected object models)
+```
+
+## Connected object models
+
+``` mermaid
+graph LR
+    A[End user] --> J(Display the list of connected object models)
     A --> K(Add a connected object model)
     K -->|Extend| J
     L(Delete a connected object model) -->|Extend| J
     M(Go to the details of a connected object model) -->|Extend| J
-    A --> N(Display the list of connected object configurations)
+```
+
+## Connected object configurations
+
+``` mermaid
+graph LR
+    A[End user] --> N(Display the list of connected object configurations)
     A --> O(Add a connected object configuration)
     O -->|Extend| N
     P(Go to the details of a connected object configuration) --> |Extend| N
-    A --> Q(Display the list of Edge connected object models)
+```
+
+## Edge connected object models
+
+``` mermaid
+graph LR
+    A[End user] --> Q(Display the list of Edge connected object models)
     R(Add an Edge connected object model) -->|Extend| Q
     S(Delete an Edge connected object model) -->|Extend| Q
     T(Go to the details of a model of Edge connected object) -->|Extend| Q
     U(Search for Edge connected object models) -->|Extend| Q
-    A --> V(Display the list of Edge connected objects)
+```
+
+## Edge connected objects
+
+``` mermaid
+graph LR
+    A[End user] --> V(Display the list of Edge connected objects)
     W(Add an Edge connected object) -->|Extend| V
     X(Delete an Edge connected object) -->|Extend| V
     Y(Go to the details of a connected object Edge) -->|Extend| V
     Z(Search for Edge connected objects) -->|Extend| V
-    A --> AA(Display the list of concentrators)
+```
+
+## Concentrators
+
+``` mermaid
+graph LR
+    A[End user] --> AA(Display the list of concentrators)
     AB(Add a concentrator) -->|Extend| AA
     AC(Delete a concentrator) -->|Extend| AA
     AD(Go to the details of a concentrator) -->|Extend| AA
-    A --> AE(Display the list of tags)
+```
+
+## Tags
+
+``` mermaid
+graph LR
+    A[End user] --> AE(Display the list of tags)
     AF(Add a tag) -->|Extend| AE
     AG(Delete a tag) -->|Extend| AE
 ```
