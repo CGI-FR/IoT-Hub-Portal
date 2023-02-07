@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.MySql
 {
     using AzureIoTHub.Portal.Infrastructure;
+    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Design;
 
@@ -14,7 +15,7 @@ namespace AzureIoTHub.Portal.MySql
             var optionsBuilder = new DbContextOptionsBuilder<PortalDbContext>();
 
             var connectionString = "server=localhost;database=cgigeiotdemo;user=root;password=pass";
-            _ = optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), x => x.MigrationsAssembly("AzureIoTHub.Portal.MySql"));
+            _ = optionsBuilder.UseMySql(connectionString, DatabaseHelper.GetMySqlServerVersion(connectionString), x => x.MigrationsAssembly("AzureIoTHub.Portal.MySql"));
 
             return new PortalDbContext(optionsBuilder.Options);
         }
