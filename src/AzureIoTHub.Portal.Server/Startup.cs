@@ -41,7 +41,7 @@ namespace AzureIoTHub.Portal.Server
     using MudBlazor.Services;
     using Prometheus;
     using Quartz;
-    using Quartz.Impl.AdoJobStore;
+    using Quartz.Impl.AdoJobStore.Common;
     using Services;
     using Shared.Models.v1._0;
 
@@ -273,11 +273,25 @@ namespace AzureIoTHub.Portal.Server
                             });
                             break;
                         case DbProviders.MySQL:
-                            opts.UseMySql(c =>
+                            DbProvider.RegisterDbMetadata("IotHubPortalQuartzMySqlConnector", new DbMetadata()
                             {
-                                c.UseDriverDelegate<MySQLDelegate>();
+                                ProductName = "MySQL, MySqlConnector provider",
+                                AssemblyName = "MySqlConnector",
+                                ConnectionType = Type.GetType("MySqlConnector.MySqlConnection, MySqlConnector"),
+                                CommandType = Type.GetType("MySqlConnector.MySqlCommand, MySqlConnector"),
+                                ParameterType = Type.GetType("MySqlConnector.MySqlParameter, MySqlConnector"),
+                                ParameterDbType = Type.GetType("MySqlConnector.MySqlDbType, MySqlConnector"),
+                                ParameterDbTypePropertyName = "MySqlDbType",
+                                ParameterNamePrefix = "?",
+                                ExceptionType = Type.GetType("MySqlConnector.MySqlException, MySqlConnector"),
+                                UseParameterNamePrefixInParameterCollection = true,
+                                BindByName = true,
+                                DbBinaryTypeName = "Blob"
+                            });
+
+                            opts.UseGenericDatabase("IotHubPortalQuartzMySqlConnector", c =>
+                            {
                                 c.ConnectionString = configuration.MySQLConnectionString;
-                                c.TablePrefix = "qrtz_";
                             });
                             break;
                         default:
