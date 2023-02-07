@@ -295,3 +295,29 @@ Below an example on how to:
     }
 }
 ```
+
+## How to create EntityFramework migrations for PostgreSQL and MySQL
+
+For the project need, we need two database providers which are PostgreSQL and MySQL, which led us to review the architecture set up for the EntityFramework migrations. Here is a diagram showing the two architectures.
+
+![images/migrations.png](images/migrations.png)
+
+Follow the next steps to create EF migration:
+
+1. Go into the Server project folder with terminal
+
+    ```console
+    cd .\AzureIoTHub.Portal.Server\
+    ```
+
+1. Execute this command for PostgreSQL provider
+
+    ```console
+    dotnet ef migrations add "<nameofyourmigration>" -p ..\AzureIoTHub.Portal.Postgres\ -v
+    ```
+
+1. Execute this command for MySQL provider
+
+    ```console
+    dotnet ef migrations add "<nameofyourmigration>" -p ..\AzureIoTHub.Portal.MySql\ -v
+    ```
