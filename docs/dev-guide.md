@@ -296,6 +296,16 @@ Below an example on how to:
 }
 ```
 
+## How to install Entity Framework Core
+
+Follow the next step to install EF Core:
+
+1. Open the terminal and run this command:
+
+    ```console
+    dotnet tool install --global dotnet-ef
+    ```
+
 ## How to create EntityFramework migrations for PostgreSQL and MySQL
 
 For the project need, we need two database providers which are PostgreSQL and MySQL, which led us to review the architecture set up for the EntityFramework migrations. Here is a diagram showing the two architectures.
