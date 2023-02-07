@@ -2,6 +2,8 @@
 
 In order to better understand the needs of the project, here is a use case diagram regrouping the current use cases of the project.
 
+## Connected objects
+
 ``` mermaid
 graph LR
     A[End user] --> B(Display the list of connected objects)
@@ -13,32 +15,102 @@ graph LR
     G(Delete a connected object) -->|Extend| B
     H(Go to the details of a connected object) -->|Extend| B
     I(Search for connected objects) -->|Extend| B
-    A --> J(Display the list of connected object models)
+```
+
+## Connected object models
+
+``` mermaid
+graph LR
+    A[End user] --> J(Display the list of connected object models)
     A --> K(Add a connected object model)
     K -->|Extend| J
     L(Delete a connected object model) -->|Extend| J
     M(Go to the details of a connected object model) -->|Extend| J
-    A --> N(Display the list of connected object configurations)
+```
+
+## Connected object configurations
+
+``` mermaid
+graph LR
+    A[End user] --> N(Display the list of connected object configurations)
     A --> O(Add a connected object configuration)
     O -->|Extend| N
     P(Go to the details of a connected object configuration) --> |Extend| N
-    A --> Q(Display the list of Edge connected object models)
+```
+
+## Edge connected object models
+
+``` mermaid
+graph LR
+    A[End user] --> Q(Display the list of Edge connected object models)
     R(Add an Edge connected object model) -->|Extend| Q
     S(Delete an Edge connected object model) -->|Extend| Q
     T(Go to the details of a model of Edge connected object) -->|Extend| Q
     U(Search for Edge connected object models) -->|Extend| Q
-    A --> V(Display the list of Edge connected objects)
+```
+
+## Edge connected objects
+
+``` mermaid
+graph LR
+    A[End user] --> V(Display the list of Edge connected objects)
     W(Add an Edge connected object) -->|Extend| V
     X(Delete an Edge connected object) -->|Extend| V
     Y(Go to the details of a connected object Edge) -->|Extend| V
     Z(Search for Edge connected objects) -->|Extend| V
-    A --> AA(Display the list of concentrators)
+```
+
+## Concentrators
+
+``` mermaid
+graph LR
+    A[End user] --> AA(Display the list of concentrators)
     AB(Add a concentrator) -->|Extend| AA
     AC(Delete a concentrator) -->|Extend| AA
     AD(Go to the details of a concentrator) -->|Extend| AA
-    A --> AE(Display the list of tags)
+```
+
+## Tags
+
+``` mermaid
+graph LR
+    A[End user] --> AE(Display the list of tags)
     AF(Add a tag) -->|Extend| AE
     AG(Delete a tag) -->|Extend| AE
+```
+
+Now, here is a diagram representing the multilayer technical architecture of the project.
+
+``` mermaid
+C4Deployment
+    title Multilayer technical architecture
+
+    Deployment_Node(api, "Server", "API"){
+        Container(controllers, "Controllers", "C#", "They are used to route HTTP requests, they call the methods of the services and they return the content of the HTTP response as well as a HTTP code.")
+        Container(services, "Services", "C#", "They are used to define the business logic as to call the methods of the data access layer for example.")
+    }
+
+    Deployment_Node(bll, "Application", "BLL"){
+        Container(iservices, "Services", C#, "This package represents the interfaces of the services.")
+    }
+
+    Deployment_Node(dal, "Infrastructure", "DAL"){
+        Deployment_Node(uow, "UnitOfWork", "UOW"){
+            Container(repositories, "Repositories", "C# and EntityFramework", "A repository represents all the data management methods of an entity of the project.")
+        }
+    }
+
+    Deployment_Node(domain, "Domain", "Domain"){
+        Container(entities, "Entities", "C#", "They are used as object representation of tables in a database.")
+        Container(irepositories, "Repositories", "C#", "This package represents the interfaces of the repositories.")
+    }
+
+    Rel(iservices, services, "dependency", "")
+    Rel(repositories, services, "dependency", "")
+    Rel(entities, services, "dependency", "")
+    Rel(entities, iservices, "dependency", "")
+    Rel(iservices, repositories, "dependency", "")
+    Rel(entities, repositories, "dependency", "")
 ```
 
 Now, to better understand the technical architecture of the project, here is a class diagram representing it.
