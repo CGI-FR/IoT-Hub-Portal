@@ -29,7 +29,6 @@ namespace AzureIoTHub.Portal.Server
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Versioning;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -353,13 +352,10 @@ namespace AzureIoTHub.Portal.Server
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env, PortalDbContext portalDbContext)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             ArgumentNullException.ThrowIfNull(env, nameof(env));
             ArgumentNullException.ThrowIfNull(app, nameof(app));
-
-            // Migrate database
-            portalDbContext.Database.Migrate();
 
             var configuration = app.ApplicationServices.GetService<ConfigHandler>();
 
