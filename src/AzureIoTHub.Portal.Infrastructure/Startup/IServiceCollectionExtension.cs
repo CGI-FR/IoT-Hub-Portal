@@ -104,6 +104,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 
         private static IServiceCollection ConfigureDatabase(this IServiceCollection services, ConfigHandler configuration)
         {
+            var dbContextOptions = new DbContextOptionsBuilder<PortalDbContext>();
+
             switch (configuration.DbProvider)
             {
                 case DbProviders.PostgreSQL:
@@ -116,6 +118,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                         _ = opts.UseNpgsql(configuration.PostgreSQLConnectionString, x => x.MigrationsAssembly("AzureIoTHub.Portal.Postgres"));
                         _ = opts.UseExceptionProcessor();
                     });
+                    _ = dbContextOptions.UseNpgsql(configuration.PostgreSQLConnectionString, x => x.MigrationsAssembly("AzureIoTHub.Portal.Postgres"));
                     break;
                 case DbProviders.MySQL:
                     if (string.IsNullOrEmpty(configuration.MySQLConnectionString))
@@ -127,12 +130,19 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                         _ = opts.UseMySql(configuration.MySQLConnectionString, DatabaseHelper.GetMySqlServerVersion(configuration.MySQLConnectionString), x => x.MigrationsAssembly("AzureIoTHub.Portal.MySql"));
                         _ = opts.UseExceptionProcessor();
                     });
+                    _ = dbContextOptions.UseMySql(configuration.MySQLConnectionString, DatabaseHelper.GetMySqlServerVersion(configuration.MySQLConnectionString), x => x.MigrationsAssembly("AzureIoTHub.Portal.MySql"));
                     break;
                 default:
                     return services;
             }
 
             _ = services.AddScoped<IUnitOfWork, UnitOfWork<PortalDbContext>>();
+
+            using var portalDbContext = new PortalDbContext(dbContextOptions.Options);
+            if (portalDbContext.Database.CanConnect())
+            {
+                portalDbContext.Database.Migrate();
+            }
 
             return services;
         }
