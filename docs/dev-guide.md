@@ -331,3 +331,11 @@ Follow the next steps to create EF migration:
     ```console
     dotnet ef migrations add "<nameofyourmigration>" -p ..\AzureIoTHub.Portal.MySql\ -v -- --DbProvider MySQL
     ```
+
+1. Open the created migration and follow the following steps:
+
+    1. Move the using directive into the namespace directive
+
+    1. Add "_ =" before each statement of the Up and Down methods
+
+    1. Add the CGI copyright to the top of the file
