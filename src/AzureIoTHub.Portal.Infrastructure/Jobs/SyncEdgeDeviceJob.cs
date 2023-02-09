@@ -121,7 +121,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs
                 opts.Items["TwinClient"] = twinWithClient;
             }) ;
 
-            var deviceEntity = await this.edgeDeviceRepository.GetByIdAsync(device.Id);
+            var deviceEntity = await this.edgeDeviceRepository.GetByIdAsync(device.Id, d => d.Tags);
 
             if (deviceEntity == null)
             {

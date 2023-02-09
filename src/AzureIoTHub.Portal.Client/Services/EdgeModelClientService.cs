@@ -25,7 +25,7 @@ namespace AzureIoTHub.Portal.Client.Services
         {
             var query = new Dictionary<string, string>
             {
-                { nameof(EdgeModelFilter.Keyword), edgeModelFilter?.Keyword }
+                { nameof(EdgeModelFilter.Keyword), edgeModelFilter?.Keyword ?? string.Empty }
             };
 
             var uri = QueryHelpers.AddQueryString(this.apiUrlBase, query);
