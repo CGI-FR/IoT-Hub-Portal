@@ -107,8 +107,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs
                 .Setup(x => x.GetByIdAsync(expectedDeviceModel.Id))
                 .ReturnsAsync(expectedDeviceModel);
 
-            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetByIdAsync(expectedTwinDevice.DeviceId)).
-                ReturnsAsync(value: null);
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetByIdAsync(expectedTwinDevice.DeviceId, d => d.Tags))
+                .ReturnsAsync(value: null);
 
             _ = this.mockEdgeDeviceRepository.Setup(x => x.InsertAsync(It.IsAny<EdgeDevice>()))
                 .Returns(Task.CompletedTask);
@@ -201,8 +201,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs
                 .Setup(x => x.GetByIdAsync(expectedDeviceModel.Id))
                 .ReturnsAsync(expectedDeviceModel);
 
-            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetByIdAsync(expectedTwinDevice.DeviceId)).
-                ReturnsAsync(existingDevice);
+            _ = this.mockEdgeDeviceRepository.Setup(x => x.GetByIdAsync(expectedTwinDevice.DeviceId, d => d.Tags))
+                .ReturnsAsync(existingDevice);
 
             this.mockDeviceTagValueRepository.Setup(repository => repository.Delete(It.IsAny<string>()))
                 .Verifiable();
