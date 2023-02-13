@@ -72,5 +72,9 @@
     <PackageReference Include="Quartz.Serialization.Json" Version="3.6.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Mappers\" />
+  </ItemGroup>
   
 </Project>

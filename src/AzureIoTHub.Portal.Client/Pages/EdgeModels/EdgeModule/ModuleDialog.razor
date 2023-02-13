@@ -1,5 +1,6 @@
 ﻿@using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Shared.Models.v10
+@using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand
 
 <MudDialog DisableSidePadding="true">
     <DialogContent>
@@ -68,7 +69,7 @@
 
     private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables = new();
     private List<IoTEdgeModuleTwinSetting> currentModuleIdentityTwinSettings = new();
-    private List<IoTEdgeModuleCommand> currentCommands = new();
+    private List<EdgeModuleCommandDto> currentCommands = new();
 
 
     public bool IsLoading;
@@ -82,7 +83,7 @@
         currentContainerCreateOptions = Module.ContainerCreateOptions;
         currentEnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(Module.EnvironmentVariables.ToArray());
         currentModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(Module.ModuleIdentityTwinSettings.ToArray());
-        currentCommands = new List<IoTEdgeModuleCommand>(Module.Commands.ToArray());
+        currentCommands = new List<EdgeModuleCommandDto>(Module.Commands.ToArray());
         await Task.Delay(0);
         IsLoading = false;
     }
@@ -94,7 +95,7 @@
         Module.ContainerCreateOptions = currentContainerCreateOptions;
         Module.EnvironmentVariables = new List<IoTEdgeModuleEnvironmentVariable>(currentEnvironmentVariables.ToArray());
         Module.ModuleIdentityTwinSettings = new List<IoTEdgeModuleTwinSetting>(currentModuleIdentityTwinSettings.ToArray());
-        Module.Commands = new List<IoTEdgeModuleCommand>(currentCommands.ToArray());
+        Module.Commands = new List<EdgeModuleCommandDto>(currentCommands.ToArray());
         MudDialog.Close(DialogResult.Ok(true));
     }
 }

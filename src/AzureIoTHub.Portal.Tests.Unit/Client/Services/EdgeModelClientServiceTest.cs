@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
 {
+    using System;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
@@ -75,7 +76,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task CreateIoTEdgeModelShouldCreateEdgeModel()
         {
             // Arrange
-            var expectedEdgeModel = Fixture.Create<IoTEdgeModel>();
+            var expectedEdgeModel = new IoTEdgeModel { ModelId = Guid.NewGuid().ToString() };
 
             _ = MockHttpClient.When(HttpMethod.Post, "api/edge/models")
                 .With(m =>
@@ -103,7 +104,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task UpdateIoTEdgeModelShouldUpdateEdgeModel()
         {
             // Arrange
-            var expectedEdgeModel = Fixture.Create<IoTEdgeModel>();
+            var expectedEdgeModel = new IoTEdgeModel { ModelId = Guid.NewGuid().ToString() };
 
             _ = MockHttpClient.When(HttpMethod.Put, $"api/edge/models/{expectedEdgeModel.ModelId}")
                 .With(m =>
@@ -147,7 +148,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetAvatarUrlShouldReturnAvatarUrl()
         {
             // Arrange
-            var edgeModel = Fixture.Create<IoTEdgeModel>();
+            var edgeModel = new IoTEdgeModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                ImageUrl = Fixture.Create<Uri>()
+            };
 
             _ = MockHttpClient.When(HttpMethod.Get, $"/api/edge/models/{edgeModel.ModelId}/avatar")
                 .RespondJson(edgeModel.ImageUrl.ToString());
@@ -165,7 +170,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task ChangeAvatarPropertiesShouldChangeAvatar()
         {
             // Arrange
-            var deviceModel = Fixture.Create<IoTEdgeModel>();
+            var deviceModel = new IoTEdgeModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+            };
+
             using var content = new MultipartFormDataContent();
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/models/{deviceModel.ModelId}/avatar")
@@ -188,7 +197,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task DeleteAvatarPropertiesShouldChangeAvatar()
         {
             // Arrange
-            var deviceModel = Fixture.Create<IoTEdgeModel>();
+            var deviceModel = new IoTEdgeModel
+            {
+                ModelId = Guid.NewGuid().ToString(),
+            };
 
             _ = MockHttpClient.When(HttpMethod.Post, $"/api/edge/models/{deviceModel.ModelId}/avatar")
                 .Respond(HttpStatusCode.NoContent);

@@ -39,7 +39,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
         public void DeviceConfigurationListPageShouldLoadAndShowConfigurations()
         {
             // Arrange
-            var expectedConfigurations = Fixture.Build<ConfigListItem>().CreateMany(3).ToList();
+            var expectedConfigurations = new List<ConfigListItem>()
+            {
+                new ConfigListItem { ConfigurationID = Guid.NewGuid().ToString() },
+                new ConfigListItem { ConfigurationID = Guid.NewGuid().ToString() },
+                new ConfigListItem { ConfigurationID = Guid.NewGuid().ToString() }
+            };
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service => service.GetDeviceConfigurations())
                 .ReturnsAsync(expectedConfigurations);

@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Components\EdgeModel\DefineObjectTypeDialog.razor" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="ChartJs.Blazor.Fork" Version="2.0.2" />
@@ -38,6 +42,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AzureIoTHub.Portal.Shared\AzureIoTHub.Portal.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\EdgeModel\DefineObjectTypeDialog.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Components\EdgeModel\DefineObjectTypeDialog.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\EdgeModels\EdgeModule\DefineObjectTypeDialog.razor" />
   </ItemGroup>
   
 </Project>

@@ -21,6 +21,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
     using MudBlazor.Services;
     using NUnit.Framework;
     using UnitTests.Mocks;
+    using AzureIoTHub.Portal.Shared.Models.v1._0.IoTEdgeModuleCommand;
 
     [TestFixture]
     public class EdgeDeviceDetailPageTests : BlazorUnitTest
@@ -580,9 +581,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
                         {
                             ModuleName = "moduleTest",
                             ImageURI = Guid.NewGuid().ToString(),
-                            Commands = new List<Portal.Shared.Models.v10.IoTEdgeModuleCommand>()
+                            Commands = new List<EdgeModuleCommandDto>()
                             {
-                                new Portal.Shared.Models.v10.IoTEdgeModuleCommand(){ Name = "commandTest"}
+                                new EdgeModuleCommandDto(){ Name = "commandTest"}
                             }
                         }
                     }

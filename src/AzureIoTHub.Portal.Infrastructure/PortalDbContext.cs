@@ -22,6 +22,7 @@ namespace AzureIoTHub.Portal.Infrastructure
         public DbSet<Concentrator> Concentrators { get; set; }
         public DbSet<LoRaDeviceTelemetry> LoRaDeviceTelemetry { get; set; }
         public DbSet<Label> Labels { get; set; }
+        public DbSet<EdgeModuleCommand> EdgeModuleCommands { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PortalDbContext(DbContextOptions<PortalDbContext> options)
@@ -56,6 +57,18 @@ namespace AzureIoTHub.Portal.Infrastructure
                 .HasOne(x => x.DeviceModel)
                 .WithMany()
                 .HasForeignKey(x => x.DeviceModelId);
+
+            _ = modelBuilder.Entity<EdgeModuleCommand>()
+                .Property(b => b.Request)
+                .HasConversion(
+                v => JsonConvert.SerializeObject(v),
+                v => JsonConvert.DeserializeObject<EdgeModuleCommandPayload>(v));
+
+            _ = modelBuilder.Entity<EdgeModuleCommand>()
+                .Property(b => b.Response)
+                .HasConversion(
+                v => JsonConvert.SerializeObject(v),
+                v => JsonConvert.DeserializeObject<EdgeModuleCommandPayload>(v));
         }
     }
 }

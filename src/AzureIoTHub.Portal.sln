@@ -67,7 +67,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Client",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Application", "AzureIoTHub.Portal.Application\AzureIoTHub.Portal.Application.csproj", "{81FA39E5-DBBF-40DB-B888-F50EE0C363B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureIoTHub.Portal.Crosscutting", "AzureIoTHub.Portal.Crosscutting\AzureIoTHub.Portal.Crosscutting.csproj", "{3523EAFD-81F3-4FC3-BC49-65D3ECE94E4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureIoTHub.Portal.Crosscutting", "AzureIoTHub.Portal.Crosscutting\AzureIoTHub.Portal.Crosscutting.csproj", "{3523EAFD-81F3-4FC3-BC49-65D3ECE94E4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

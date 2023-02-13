@@ -27,6 +27,5 @@ namespace AzureIoTHub.Portal.Application.Services
 
         Task DeleteEdgeModelAvatar(string edgeModelId);
 
-        Task SaveModuleCommands(IoTEdgeModel deviceModelObject);
     }
 }
