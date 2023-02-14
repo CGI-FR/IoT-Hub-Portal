@@ -11,6 +11,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using FluentAssertions;
     using Hellang.Middleware.ProblemDetails;
@@ -73,7 +74,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
             };
 
             _ = this.mockLoRaWANConcentratorService.Setup(service => service.GetAllDeviceConcentrator(
-                    It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>()))
+                    It.IsAny<ConcentratorFilter>()))
                 .ReturnsAsync(expectedPaginatedConcentrator);
 
             var locationUrl = "http://location/concentrators";
@@ -83,7 +84,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
                 .Returns(locationUrl);
 
             // Act
-            var result = await concentratorsController.GetAllDeviceConcentrator().ConfigureAwait(false);
+            var result = await concentratorsController.GetAllDeviceConcentrator(new ConcentratorFilter()).ConfigureAwait(false);
 
 
             // Assert

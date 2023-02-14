@@ -1,5 +1,6 @@
 ﻿@page "/lorawan/concentrators"
 @using AzureIoTHub.Portal
+@using AzureIoTHub.Portal.Client.Components.Concentrators
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 
 @attribute [Authorize]
@@ -8,7 +9,9 @@
 @inject ILoRaWanConcentratorClientService LoRaWanConcentratorsClientService
 
 <MudGrid>
-
+    <MudItem xs="12">
+        <ConcentratorSearch OnSearch=@(async args => await Search(args.SearchKeyword, args.SearchStatus, args.SearchState)) />
+    </MudItem>
     <MudItem xs="12">
         <MudTable T="ConcentratorDto" id="concentrators-listing" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
             <ColGroup>
@@ -96,12 +99,16 @@
 @code {
     [CascadingParameter]
     public Error Error {get; set;}
-    
+
     private MudTable<ConcentratorDto> table;
 
     private readonly Dictionary<int, string> pages = new();
 
     private bool IsLoading { get; set; } = true;
+
+    private string searchKeyword = string.Empty;
+    private string searchStatus = string.Empty;
+    private string searchState = string.Empty;
 
     private async Task<TableData<ConcentratorDto>> LoadItems(TableState state)
     {
@@ -119,7 +126,7 @@
                     break;
             }
 
-            var uri = $"api/lorawan/concentrators?pageNumber={state.Page}&pageSize={state.PageSize}&orderBy={orderBy}";
+            var uri = $"api/lorawan/concentrators?pageNumber={state.Page}&pageSize={state.PageSize}&orderBy={orderBy}&keyword={this.searchKeyword}&status={this.searchStatus}&state={this.searchState}";
 
             var result = await LoRaWanConcentratorsClientService.GetConcentrators(uri);
 
@@ -148,7 +155,7 @@
     private async Task DeleteDevice(ConcentratorDto device)
     {
         var parameters = new DialogParameters {{"deviceId", device.DeviceId}};
-        
+
         var result = await DialogService.Show<DeleteConcentratorPage>("Confirm Deletion", parameters).Result;
 
         if (result.Cancelled)
@@ -157,12 +164,14 @@
         }
 
         // Update the list of devices after the deletion
-        Search();
+        Search("", "", "");
     }
 
-    private void Search()
+    private async Task Search(string searchKeyword, string searchStatus, string searchState)
     {
-        pages.Clear();
+        this.searchKeyword = searchKeyword;
+        this.searchStatus = searchStatus;
+        this.searchState = searchState;
 
         table.ReloadServerData();
     }

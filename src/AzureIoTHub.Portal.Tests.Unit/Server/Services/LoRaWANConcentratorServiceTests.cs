@@ -3,7 +3,9 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 {
+    using System;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using AutoFixture;
     using AutoMapper;
@@ -13,9 +15,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Domain.Entities;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;
@@ -77,7 +81,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             await DbContext.AddRangeAsync(expectedDevices);
             _ = await DbContext.SaveChangesAsync();
 
-            _ = this.mockConcentratorRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), null, default))
+            _ = this.mockConcentratorRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<Expression<Func<Concentrator, bool>>>(), default))
                 .ReturnsAsync(new PaginatedResult<Concentrator>
                 {
                     Data = expectedDevices.Skip(expectedCurrentPage * expectedPageSize).Take(expectedPageSize).ToList(),
@@ -87,7 +91,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 });
 
             // Act
-            var result = await this.concentratorService.GetAllDeviceConcentrator();
+            var result = await this.concentratorService.GetAllDeviceConcentrator(new ConcentratorFilter());
 
             // Assert
             Assert.IsAssignableFrom<PaginatedResult<ConcentratorDto>>(result);

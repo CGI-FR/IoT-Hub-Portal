@@ -1,0 +1,83 @@
+﻿<MudExpansionPanels>
+    <MudExpansionPanel Text="Search panel">
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="searchKeyword" Placeholder="DeviceID / DeviceName" id="searchKeyword"></MudTextField>
+            </MudItem>
+            <MudGrid>
+                <MudItem sm="12" md="6">
+                    <MudText>Status</MudText>
+                    <MudRadioGroup @bind-SelectedOption="@searchStatus" Style="display:flex;align-items:baseline" id="searchStatus">
+                        <MudItem md="4" sm="12">
+                            <MudRadio Option=@("true") Color="Color.Primary" id="searchStatusEnabled">Enabled</MudRadio>
+                        </MudItem>
+                        <MudItem md="4" sm="12">
+                            <MudRadio Option=@("false") Color="Color.Primary" id="searchDisabled">Disabled</MudRadio>
+                        </MudItem>
+                        <MudItem md="4" sm="12">
+                            <MudRadio Option=@("") Color="Color.Secondary" id="searchStatusAll">All</MudRadio>
+                        </MudItem>
+                    </MudRadioGroup>
+
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudText>Connection state</MudText>
+                    <MudRadioGroup @bind-SelectedOption="@searchState" Style="display:flex;align-items:baseline">
+                        <MudItem md="4" sm="12">
+                            <MudRadio Option=@("true") Color="Color.Primary" id="searchStateConnected">Connected</MudRadio>
+                        </MudItem>
+                        <MudItem md="4" sm="12">
+                            <MudRadio Option=@("false") Color="Color.Primary" id="searchStateDisconnected">Disconnected</MudRadio>
+                        </MudItem>
+                        <MudItem md="4" sm="12">
+                            <MudRadio Option=@("") Color="Color.Secondary" id="searchStateAll">All</MudRadio>
+                        </MudItem>
+                    </MudRadioGroup>
+                </MudItem>
+            </MudGrid>
+
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Outlined" Color="Color.Success" Style="margin:0.5em;" id="searchButton" OnClick=Search>Search</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin:0.5em;" OnClick="Reset" id="resetSearch">Reset</MudButton>
+            </MudItem>
+
+        </MudGrid>
+
+    </MudExpansionPanel>
+</MudExpansionPanels>
+
+@code {
+    public class SearchInfo
+    {
+        public string? SearchKeyword { get; set; }
+        public string? SearchStatus { get; set; }
+        public string? SearchState { get; set; }
+    }
+
+    [Parameter]
+    public EventCallback<SearchInfo> OnSearch { get; set; }
+
+    private string? searchKeyword = string.Empty;
+    private string? searchStatus = string.Empty;
+    private string? searchState = string.Empty;
+
+    private async Task Search()
+    {
+        var searchInfo = new SearchInfo
+        {
+            SearchKeyword = searchKeyword,
+            SearchStatus = searchStatus,
+            SearchState = searchState
+        };
+        await OnSearch.InvokeAsync(searchInfo);
+    }
+
+    private async Task Reset()
+    {
+        searchKeyword = string.Empty;
+        searchStatus = string.Empty;
+        searchState = string.Empty;
+
+        await Search();
+    }
+}
