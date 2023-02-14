@@ -47,15 +47,8 @@
 </MudExpansionPanels>
 
 @code {
-    public class SearchInfo
-    {
-        public string? SearchKeyword { get; set; }
-        public string? SearchStatus { get; set; }
-        public string? SearchState { get; set; }
-    }
-
     [Parameter]
-    public EventCallback<SearchInfo> OnSearch { get; set; }
+    public EventCallback<ConcentratorSearchInfo> OnSearch { get; set; }
 
     private string? searchKeyword = string.Empty;
     private string? searchStatus = string.Empty;
@@ -63,7 +56,7 @@
 
     private async Task Search()
     {
-        var searchInfo = new SearchInfo
+        var searchInfo = new ConcentratorSearchInfo
         {
             SearchKeyword = searchKeyword,
             SearchStatus = searchStatus,
