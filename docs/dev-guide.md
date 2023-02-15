@@ -295,3 +295,67 @@ Below an example on how to:
     }
 }
 ```
+
+## How to install Entity Framework Core
+
+Follow the next step to install EF Core:
+
+1. Open the terminal and run this command:
+
+    ```console
+    dotnet tool install --global dotnet-ef
+    ```
+
+## How to create EntityFramework migrations for PostgreSQL and MySQL
+
+For the project need, we need two database providers which are PostgreSQL and MySQL, which led us to review the architecture set up for the EntityFramework migrations. Here is a diagram showing the two architectures.
+
+``` mermaid
+C4Deployment
+  title Architecture for multiple providers
+
+  Deployment_Node(provider1, "Provider1", "Provider1"){
+    Container(provider1dbcontextfactory, "Provider1DbContextFactory", "File", "")
+    Container(provider1migrations, "Provider1Migrations", "Folder", "")
+  }
+
+  Deployment_Node(provider2, "Provider2", "Provider2"){
+    Container(provider2dbcontextfactory, "Provider2DbContextFactory", "File", "")
+    Container(provider2migrations, "Provider2Migrations", "Folder", "")
+  }
+
+  Deployment_Node(dal, "Infrastructure Layer", "Dal"){
+    Container(dbcontext, "DbContext", File, "")
+  }
+
+  Rel(provider1dbcontextfactory, dbcontext, "dependency", "")
+  Rel(provider2dbcontextfactory, dbcontext, "dependency", "")
+```
+
+Follow the next steps to create EF migration:
+
+1. Go into the Server project folder with terminal
+
+    ```console
+    cd .\AzureIoTHub.Portal.Server\
+    ```
+
+1. Execute this command for PostgreSQL provider
+
+    ```console
+    dotnet ef migrations add "<nameofyourmigration>" -p ..\AzureIoTHub.Portal.Postgres\ -v -- --DbProvider PostgreSQL
+    ```
+
+1. Execute this command for MySQL provider
+
+    ```console
+    dotnet ef migrations add "<nameofyourmigration>" -p ..\AzureIoTHub.Portal.MySql\ -v -- --DbProvider MySQL
+    ```
+
+1. Open the created migration and follow the following steps:
+
+    1. Move the using directive into the namespace directive
+
+    1. Add "_ =" before each statement of the Up and Down methods
+
+    1. Add the CGI copyright to the top of the file
