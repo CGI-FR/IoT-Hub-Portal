@@ -19,6 +19,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using AutoFixture;
 
     [TestFixture]
     public class ConcentratorListPageTests : BlazorUnitTest
@@ -46,7 +47,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
         public void ConcentratorListPageShouldLoadAndShowConcentrators()
         {
             // Arrange
-            var expectedUri = "api/lorawan/concentrators?pageNumber=0&pageSize=10&orderBy=";
+            var expectedUri = "api/lorawan/concentrators?pageNumber=0&pageSize=10&orderBy=&keyword=&status=&state=";
 
             _ = this.mockLoRaWanConcentratorClientService.Setup(service =>
                     service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
@@ -74,7 +75,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
         public void ConcentratorListPageShouldProcessProblemDetailsExceptionWhenIssueOccursOnLoadingConcentrators()
         {
             // Arrange
-            var expectedUri = "api/lorawan/concentrators?pageNumber=0&pageSize=10&orderBy=";
+            var expectedUri = "api/lorawan/concentrators?pageNumber=0&pageSize=10&orderBy=&keyword=&status=&state=";
 
             _ = this.mockLoRaWanConcentratorClientService.Setup(service =>
                     service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
@@ -96,7 +97,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
-            var expectedUri = "api/lorawan/concentrators?pageNumber=0&pageSize=10&orderBy=";
+            var expectedUri = "api/lorawan/concentrators?pageNumber=0&pageSize=10&orderBy=&keyword=&status=&state=";
 
             _ = this.mockLoRaWanConcentratorClientService.Setup(service =>
                     service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
@@ -126,7 +127,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
         public void ClickOnAddNewDeviceShouldNavigateToNewDevicePage()
         {
             // Arrange
-            const string expectedUri = "api/lorawan/concentrators?pageNumber=0&pageSize=10&orderBy=";
+            const string expectedUri = "api/lorawan/concentrators?pageNumber=0&pageSize=10&orderBy=&keyword=&status=&state=";
 
             _ = this.mockLoRaWanConcentratorClientService.Setup(service =>
                     service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
@@ -155,7 +156,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
         public void ClickOnRefreshShouldReloadConcentrators()
         {
             // Arrange
-            var expectedUri = "api/lorawan/concentrators?pageNumber=0&pageSize=10&orderBy=";
+            var expectedUri = "api/lorawan/concentrators?pageNumber=0&pageSize=10&orderBy=&keyword=&status=&state=";
 
             _ = this.mockLoRaWanConcentratorClientService.Setup(service =>
                     service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
@@ -170,6 +171,58 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             cut.WaitForElement("#tableRefreshButton").Click();
 
             // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnSearchShouldSearchConcentrators()
+        {
+            // Arrange
+            var searchKeyword = Fixture.Create<string>();
+            var concentratorSearchInfo = new ConcentratorSearchInfo
+            {
+                SearchKeyword = searchKeyword,
+                SearchState = string.Empty,
+                SearchStatus = string.Empty
+            };
+            var expectedUri = $"api/lorawan/concentrators?pageNumber=0&pageSize=10&orderBy=&keyword=&status=&state=";
+
+            _ = this.mockLoRaWanConcentratorClientService.Setup(service =>
+                    service.GetConcentrators(It.Is<string>(s => expectedUri.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new PaginationResult<ConcentratorDto>
+                {
+                    Items = new List<ConcentratorDto>()
+                    {
+                        new (),
+                        new (),
+                        new (),
+                    }
+                });
+
+            var expectedUriWithFilter = $"api/lorawan/concentrators?pageNumber=0&pageSize=10&orderBy=&keyword={concentratorSearchInfo.SearchKeyword}&status={concentratorSearchInfo.SearchStatus}&state={concentratorSearchInfo.SearchState}";
+
+            _ = this.mockLoRaWanConcentratorClientService.Setup(service =>
+                    service.GetConcentrators(It.Is<string>(s => expectedUriWithFilter.Equals(s, StringComparison.Ordinal))))
+                .ReturnsAsync(new PaginationResult<ConcentratorDto>
+                {
+                    Items = new List<ConcentratorDto>()
+                    {
+                        new ()
+                    }
+                });
+
+            var cut = RenderComponent<ConcentratorListPage>();
+
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(3));
+            cut.WaitForElement("#searchKeyword").Change(searchKeyword);
+
+            // Act
+            cut.WaitForElement("#searchButton").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(1));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }

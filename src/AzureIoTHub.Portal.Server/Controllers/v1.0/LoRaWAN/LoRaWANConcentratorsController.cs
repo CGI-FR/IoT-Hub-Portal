@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Filters;
     using Hellang.Middleware.ProblemDetails;
     using Microsoft.AspNetCore.Authorization;
@@ -51,15 +52,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// </summary>
         [HttpGet(Name = "GET LoRaWAN Concentrator list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginationResult<ConcentratorDto>>> GetAllDeviceConcentrator(
-            int pageSize = 10,
-            int pageNumber = 0,
-            [FromQuery] string[] orderBy = null)
+        public async Task<ActionResult<PaginationResult<ConcentratorDto>>> GetAllDeviceConcentrator([FromQuery] ConcentratorFilter concentratorFilter)
         {
-            var paginatedDevices = await this.loRaWANConcentratorService.GetAllDeviceConcentrator(
-                pageSize,
-                pageNumber,
-                orderBy);
+            var paginatedDevices = await this.loRaWANConcentratorService.GetAllDeviceConcentrator(concentratorFilter);
 
             var nextPage = string.Empty;
 
@@ -70,9 +65,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
                     RouteName = "GET LoRaWAN Concentrator list",
                     Values = new
                     {
-                        pageSize,
-                        pageNumber = pageNumber + 1,
-                        orderBy
+                        concentratorFilter.PageSize,
+                        pageNumber = concentratorFilter.PageNumber + 1,
+                        concentratorFilter.OrderBy
                     }
                 });
             }

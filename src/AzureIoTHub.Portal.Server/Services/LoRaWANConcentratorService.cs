@@ -7,6 +7,8 @@ namespace AzureIoTHub.Portal.Server.Services
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Mappers;
     using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Domain;
     using Domain.Entities;
     using Domain.Exceptions;
@@ -55,11 +57,26 @@ namespace AzureIoTHub.Portal.Server.Services
         }
 
         public async Task<PaginatedResult<ConcentratorDto>> GetAllDeviceConcentrator(
-            int pageSize = 10,
-            int pageNumber = 0,
-            string[] orderBy = null)
+            ConcentratorFilter concentratorFilter)
         {
-            var paginatedConcentrator = await this.concentratorRepository.GetPaginatedListAsync(pageNumber, pageSize, orderBy);
+            var concentratorPredicate = PredicateBuilder.True<Concentrator>();
+
+            if (!string.IsNullOrWhiteSpace(concentratorFilter.Keyword))
+            {
+                concentratorPredicate = concentratorPredicate.And(concentrator => concentrator.Id.ToLower().Contains(concentratorFilter.Keyword) || concentrator.Name.ToLower().Contains(concentratorFilter.Keyword));
+            }
+
+            if (concentratorFilter.Status != null)
+            {
+                concentratorPredicate = concentratorPredicate.And(concentrator => concentrator.IsEnabled == concentratorFilter.Status);
+            }
+
+            if (concentratorFilter.State != null)
+            {
+                concentratorPredicate = concentratorPredicate.And(concentrator => concentrator.IsConnected == concentratorFilter.State);
+            }
+
+            var paginatedConcentrator = await this.concentratorRepository.GetPaginatedListAsync(concentratorFilter.PageNumber, concentratorFilter.PageSize, concentratorFilter.OrderBy, concentratorPredicate);
 
             return this.mapper.Map<PaginatedResult<ConcentratorDto>>(paginatedConcentrator);
         }
