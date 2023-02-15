@@ -70,5 +70,9 @@ namespace AzureIoTHub.Portal.Domain
         public abstract string IdeasAuthenticationToken { get; }
 
         public abstract string PostgreSQLConnectionString { get; }
+
+        public abstract string MySQLConnectionString { get; }
+
+        public abstract string DbProvider { get; }
     }
 }

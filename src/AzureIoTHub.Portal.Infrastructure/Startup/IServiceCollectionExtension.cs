@@ -14,7 +14,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Options;
     using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Domain.Shared.Constants;
     using AzureIoTHub.Portal.Infrastructure.Extensions;
+    using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Infrastructure.Jobs;
     using AzureIoTHub.Portal.Infrastructure.Managers;
     using AzureIoTHub.Portal.Infrastructure.Mappers;
@@ -102,23 +104,45 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 
         private static IServiceCollection ConfigureDatabase(this IServiceCollection services, ConfigHandler configuration)
         {
-            _ = services
-                .AddDbContextPool<PortalDbContext>(opts =>
-                {
-                    _ = opts.UseNpgsql(configuration.PostgreSQLConnectionString);
-                    _ = opts.UseExceptionProcessor();
-                });
+            var dbContextOptions = new DbContextOptionsBuilder<PortalDbContext>();
 
-            if (string.IsNullOrEmpty(configuration.PostgreSQLConnectionString))
-                return services;
+            switch (configuration.DbProvider)
+            {
+                case DbProviders.PostgreSQL:
+                    if (string.IsNullOrEmpty(configuration.PostgreSQLConnectionString))
+                    {
+                        return services;
+                    }
+                    _ = services.AddDbContextPool<PortalDbContext>(opts =>
+                    {
+                        _ = opts.UseNpgsql(configuration.PostgreSQLConnectionString, x => x.MigrationsAssembly("AzureIoTHub.Portal.Postgres"));
+                        _ = opts.UseExceptionProcessor();
+                    });
+                    _ = dbContextOptions.UseNpgsql(configuration.PostgreSQLConnectionString, x => x.MigrationsAssembly("AzureIoTHub.Portal.Postgres"));
+                    break;
+                case DbProviders.MySQL:
+                    if (string.IsNullOrEmpty(configuration.MySQLConnectionString))
+                    {
+                        return services;
+                    }
+                    _ = services.AddDbContextPool<PortalDbContext>(opts =>
+                    {
+                        _ = opts.UseMySql(configuration.MySQLConnectionString, DatabaseHelper.GetMySqlServerVersion(configuration.MySQLConnectionString), x => x.MigrationsAssembly("AzureIoTHub.Portal.MySql"));
+                        _ = opts.UseExceptionProcessor();
+                    });
+                    _ = dbContextOptions.UseMySql(configuration.MySQLConnectionString, DatabaseHelper.GetMySqlServerVersion(configuration.MySQLConnectionString), x => x.MigrationsAssembly("AzureIoTHub.Portal.MySql"));
+                    break;
+                default:
+                    return services;
+            }
 
             _ = services.AddScoped<IUnitOfWork, UnitOfWork<PortalDbContext>>();
 
-            var dbContextOptions = new DbContextOptionsBuilder<PortalDbContext>();
-            _ = dbContextOptions.UseNpgsql(configuration.PostgreSQLConnectionString);
-
-            using var ctx = new PortalDbContext(dbContextOptions.Options);
-            ctx.Database.Migrate();
+            using var portalDbContext = new PortalDbContext(dbContextOptions.Options);
+            if (portalDbContext.Database.CanConnect())
+            {
+                portalDbContext.Database.Migrate();
+            }
 
             return services;
         }

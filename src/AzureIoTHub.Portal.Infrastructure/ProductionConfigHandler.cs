@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Infrastructure
 {
+    using AzureIoTHub.Portal.Domain.Shared.Constants;
     using Microsoft.Extensions.Configuration;
 
     internal class ProductionConfigHandler : ConfigHandlerBase
@@ -37,6 +38,10 @@ namespace AzureIoTHub.Portal.Infrastructure
         public override string StorageAccountConnectionString => this.config.GetConnectionString(StorageAccountConnectionStringKey);
 
         public override string PostgreSQLConnectionString => this.config.GetConnectionString(PostgreSQLConnectionStringKey);
+
+        public override string MySQLConnectionString => this.config.GetConnectionString(MySQLConnectionStringKey);
+
+        public override string DbProvider => this.config.GetValue(DbProviderKey, DbProviders.PostgreSQL);
 
         public override int StorageAccountDeviceModelImageMaxAge => this.config.GetValue(StorageAccountDeviceModelImageMaxAgeKey, 86400);
 

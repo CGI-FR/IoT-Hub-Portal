@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
 {
     using System;
     using System.Globalization;
+    using AzureIoTHub.Portal.Domain.Shared.Constants;
     using AzureIoTHub.Portal.Infrastructure;
     using FluentAssertions;
     using Microsoft.Extensions.Configuration;
@@ -46,6 +47,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         [TestCase(ConfigHandlerBase.DPSConnectionStringKey, nameof(ConfigHandlerBase.DPSConnectionString))]
         [TestCase(ConfigHandlerBase.StorageAccountConnectionStringKey, nameof(ConfigHandlerBase.StorageAccountConnectionString))]
         [TestCase(ConfigHandlerBase.PostgreSQLConnectionStringKey, nameof(ConfigHandlerBase.PostgreSQLConnectionString))]
+        [TestCase(ConfigHandlerBase.MySQLConnectionStringKey, nameof(ConfigHandlerBase.MySQLConnectionString))]
         public void SettingsShouldGetValueFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange
@@ -257,6 +259,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
 
             // Assert
             _ = developmentConfigHandler.IoTHubEventHubConsumerGroup.Should().Be("iothub-portal");
+        }
+
+        [Test]
+        public void DbProviderKeyShouldBeExpectedDefaultValue()
+        {
+            // Arrange
+            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = developmentConfigHandler.DbProvider.Should().Be(DbProviders.PostgreSQL);
         }
     }
 }

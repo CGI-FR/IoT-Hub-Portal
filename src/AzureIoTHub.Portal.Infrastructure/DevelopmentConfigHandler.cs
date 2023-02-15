@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Infrastructure
 {
+    using AzureIoTHub.Portal.Domain.Shared.Constants;
     using Microsoft.Extensions.Configuration;
 
     internal class DevelopmentConfigHandler : ConfigHandlerBase
@@ -76,5 +77,9 @@ namespace AzureIoTHub.Portal.Infrastructure
         public override string IdeasAuthenticationToken => this.config.GetValue(IdeasAuthenticationTokenKey, string.Empty);
 
         public override string PostgreSQLConnectionString => this.config[PostgreSQLConnectionStringKey];
+
+        public override string MySQLConnectionString => this.config[MySQLConnectionStringKey];
+
+        public override string DbProvider => this.config.GetValue(DbProviderKey, DbProviders.PostgreSQL);
     }
 }

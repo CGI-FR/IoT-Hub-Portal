@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Server
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Application.Startup;
+    using AzureIoTHub.Portal.Domain.Shared.Constants;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using AzureIoTHub.Portal.Infrastructure.Startup;
     using Domain;
@@ -39,6 +40,7 @@ namespace AzureIoTHub.Portal.Server
     using MudBlazor.Services;
     using Prometheus;
     using Quartz;
+    using Quartz.Impl.AdoJobStore.Common;
     using Services;
     using Shared.Models.v1._0;
 
@@ -261,10 +263,39 @@ namespace AzureIoTHub.Portal.Server
                     opts.UseClustering();
                     opts.UseProperties = true;
 
-                    opts.UsePostgres(c =>
+                    switch (configuration.DbProvider)
                     {
-                        c.ConnectionString = configuration.PostgreSQLConnectionString;
-                    });
+                        case DbProviders.PostgreSQL:
+                            opts.UsePostgres(c =>
+                            {
+                                c.ConnectionString = configuration.PostgreSQLConnectionString;
+                            });
+                            break;
+                        case DbProviders.MySQL:
+                            DbProvider.RegisterDbMetadata("IotHubPortalQuartzMySqlConnector", new DbMetadata()
+                            {
+                                ProductName = "MySQL, MySqlConnector provider",
+                                AssemblyName = "MySqlConnector",
+                                ConnectionType = Type.GetType("MySqlConnector.MySqlConnection, MySqlConnector"),
+                                CommandType = Type.GetType("MySqlConnector.MySqlCommand, MySqlConnector"),
+                                ParameterType = Type.GetType("MySqlConnector.MySqlParameter, MySqlConnector"),
+                                ParameterDbType = Type.GetType("MySqlConnector.MySqlDbType, MySqlConnector"),
+                                ParameterDbTypePropertyName = "MySqlDbType",
+                                ParameterNamePrefix = "?",
+                                ExceptionType = Type.GetType("MySqlConnector.MySqlException, MySqlConnector"),
+                                UseParameterNamePrefixInParameterCollection = true,
+                                BindByName = true,
+                                DbBinaryTypeName = "Blob"
+                            });
+
+                            opts.UseGenericDatabase("IotHubPortalQuartzMySqlConnector", c =>
+                            {
+                                c.ConnectionString = configuration.MySQLConnectionString;
+                            });
+                            break;
+                        default:
+                            break;
+                    }
                 });
             });
 

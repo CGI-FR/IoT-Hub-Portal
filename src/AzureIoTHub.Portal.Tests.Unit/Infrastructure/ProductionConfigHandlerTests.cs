@@ -10,6 +10,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
     using Moq;
     using NUnit.Framework;
     using AzureIoTHub.Portal.Infrastructure;
+    using AzureIoTHub.Portal.Domain.Shared.Constants;
 
     [TestFixture]
     public class ProductionConfigHandlerTests
@@ -36,6 +37,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         [TestCase(ConfigHandlerBase.StorageAccountConnectionStringKey, nameof(ConfigHandlerBase.StorageAccountConnectionString))]
         [TestCase(ConfigHandlerBase.LoRaKeyManagementCodeKey, nameof(ConfigHandlerBase.LoRaKeyManagementCode))]
         [TestCase(ConfigHandlerBase.PostgreSQLConnectionStringKey, nameof(ConfigHandlerBase.PostgreSQLConnectionString))]
+        [TestCase(ConfigHandlerBase.MySQLConnectionStringKey, nameof(ConfigHandlerBase.MySQLConnectionString))]
         [TestCase(ConfigHandlerBase.IoTHubEventHubEndpointKey, nameof(ConfigHandlerBase.IoTHubEventHubEndpoint))]
         public void SecretsShouldGetValueFromConnectionStrings(string configKey, string configPropertyName)
         {
@@ -272,6 +274,16 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
 
             // Assert
             _ = productionConfigHandler.IoTHubEventHubConsumerGroup.Should().Be("iothub-portal");
+        }
+
+        [Test]
+        public void DbProviderKeyShouldBeExpectedDefaultValue()
+        {
+            // Arrange
+            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+
+            // Assert
+            _ = productionConfigHandler.DbProvider.Should().Be(DbProviders.PostgreSQL);
         }
     }
 }
