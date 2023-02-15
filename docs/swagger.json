@@ -1681,12 +1681,24 @@
         "operationId": "GET LoRaWAN Concentrator list",
         "parameters": [
           {
-            "name": "pageSize",
+            "name": "searchText",
             "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
             }
           },
           {
@@ -1694,8 +1706,15 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 0
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           },
           {
