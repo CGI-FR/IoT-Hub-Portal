@@ -14,8 +14,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Helpers
             {
                 return ServerVersion.AutoDetect(mySQLConnectionString);
             }
-            catch
+            catch (ArgumentException ex)
             {
+                Console.WriteLine(ex.Message);
                 return new MySqlServerVersion(new Version(8, 0, 32));
             }
         }
