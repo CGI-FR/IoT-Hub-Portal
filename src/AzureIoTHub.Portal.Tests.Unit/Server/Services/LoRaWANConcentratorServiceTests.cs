@@ -103,6 +103,46 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task GetAllDeviceConcentratorWithPredicateShouldReturnConcentratorsList()
+        {
+            // Arrange
+            var expectedTotalDevicesCount = 50;
+            var expectedPageSize = 10;
+            var expectedCurrentPage = 0;
+            var expectedDevices = Fixture.CreateMany<Concentrator>(expectedTotalDevicesCount).ToList();
+
+            await DbContext.AddRangeAsync(expectedDevices);
+            _ = await DbContext.SaveChangesAsync();
+
+            _ = this.mockConcentratorRepository.Setup(x => x.GetPaginatedListAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<Expression<Func<Concentrator, bool>>>(), default))
+                .ReturnsAsync(new PaginatedResult<Concentrator>
+                {
+                    Data = expectedDevices.Skip(expectedCurrentPage * expectedPageSize).Take(expectedPageSize).ToList(),
+                    PageSize = expectedPageSize,
+                    CurrentPage = expectedCurrentPage,
+                    TotalCount = expectedTotalDevicesCount
+                });
+
+            var concentratorFilter = new ConcentratorFilter
+            {
+                Keyword = "keyword",
+                Status = true,
+                State = false
+            };
+
+            // Act
+            var result = await this.concentratorService.GetAllDeviceConcentrator(concentratorFilter);
+
+            // Assert
+            Assert.IsAssignableFrom<PaginatedResult<ConcentratorDto>>(result);
+            _ = result.Data.Count.Should().Be(expectedPageSize);
+            _ = result.TotalCount.Should().Be(expectedTotalDevicesCount);
+            _ = result.PageSize.Should().Be(expectedPageSize);
+            _ = result.CurrentPage.Should().Be(expectedCurrentPage);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
         public async Task GetConcentratorExpectedBehaviorShouldReturnConcentratorDto()
         {
             // Arrange
