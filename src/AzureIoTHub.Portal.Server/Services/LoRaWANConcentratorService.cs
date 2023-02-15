@@ -61,9 +61,9 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             var concentratorPredicate = PredicateBuilder.True<Concentrator>();
 
-            if (!string.IsNullOrWhiteSpace(concentratorFilter.Keyword))
+            if (!string.IsNullOrWhiteSpace(concentratorFilter.SearchText))
             {
-                concentratorPredicate = concentratorPredicate.And(concentrator => concentrator.Id.ToLower().Contains(concentratorFilter.Keyword) || concentrator.Name.ToLower().Contains(concentratorFilter.Keyword));
+                concentratorPredicate = concentratorPredicate.And(concentrator => concentrator.Id.ToLower().Contains(concentratorFilter.SearchText) || concentrator.Name.ToLower().Contains(concentratorFilter.SearchText));
             }
 
             if (concentratorFilter.Status != null)

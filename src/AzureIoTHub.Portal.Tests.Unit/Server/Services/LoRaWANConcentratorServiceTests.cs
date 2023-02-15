@@ -125,7 +125,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             var concentratorFilter = new ConcentratorFilter
             {
-                Keyword = "keyword",
+                SearchText = "keyword",
                 Status = true,
                 State = false
             };
