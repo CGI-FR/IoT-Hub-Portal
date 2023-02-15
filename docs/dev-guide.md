@@ -310,7 +310,27 @@ Follow the next step to install EF Core:
 
 For the project need, we need two database providers which are PostgreSQL and MySQL, which led us to review the architecture set up for the EntityFramework migrations. Here is a diagram showing the two architectures.
 
-![images/migrations.png](images/migrations.png)
+``` mermaid
+C4Deployment
+  title Architecture for multiple providers
+
+  Deployment_Node(provider1, "Provider1", "Provider1"){
+    Container(provider1dbcontextfactory, "Provider1DbContextFactory", "File", "")
+    Container(provider1migrations, "Provider1Migrations", "Folder", "")
+  }
+
+  Deployment_Node(provider2, "Provider2", "Provider2"){
+    Container(provider2dbcontextfactory, "Provider2DbContextFactory", "File", "")
+    Container(provider2migrations, "Provider2Migrations", "Folder", "")
+  }
+
+  Deployment_Node(dal, "Infrastructure Layer", "Dal"){
+    Container(dbcontext, "DbContext", File, "")
+  }
+
+  Rel(provider1dbcontextfactory, dbcontext, "dependency", "")
+  Rel(provider2dbcontextfactory, dbcontext, "dependency", "")
+```
 
 Follow the next steps to create EF migration:
 
