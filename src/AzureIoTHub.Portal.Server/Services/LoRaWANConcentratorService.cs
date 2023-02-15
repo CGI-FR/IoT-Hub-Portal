@@ -66,14 +66,14 @@ namespace AzureIoTHub.Portal.Server.Services
                 concentratorPredicate = concentratorPredicate.And(concentrator => concentrator.Id.ToLower().Contains(concentratorFilter.Keyword) || concentrator.Name.ToLower().Contains(concentratorFilter.Keyword));
             }
 
-            if (concentratorFilter.Status.HasValue)
+            if (concentratorFilter.Status != null)
             {
-                concentratorPredicate = concentratorPredicate.And(concentrator => concentrator.IsEnabled == concentratorFilter.Status.Value);
+                concentratorPredicate = concentratorPredicate.And(concentrator => concentrator.IsEnabled == concentratorFilter.Status);
             }
 
-            if (concentratorFilter.State.HasValue)
+            if (concentratorFilter.State != null)
             {
-                concentratorPredicate = concentratorPredicate.And(concentrator => concentrator.IsConnected == concentratorFilter.State.Value);
+                concentratorPredicate = concentratorPredicate.And(concentrator => concentrator.IsConnected == concentratorFilter.State);
             }
 
             var paginatedConcentrator = await this.concentratorRepository.GetPaginatedListAsync(concentratorFilter.PageNumber, concentratorFilter.PageSize, concentratorFilter.OrderBy, concentratorPredicate);
