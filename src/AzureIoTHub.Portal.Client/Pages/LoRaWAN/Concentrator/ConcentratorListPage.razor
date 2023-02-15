@@ -10,7 +10,7 @@
 
 <MudGrid>
     <MudItem xs="12">
-        <ConcentratorSearch OnSearch=@(async args => await Search(args.SearchKeyword, args.SearchStatus, args.SearchState)) />
+        <ConcentratorSearch OnSearch=@(async args => await Search(args)) />
     </MudItem>
     <MudItem xs="12">
         <MudTable T="ConcentratorDto" id="concentrators-listing" ServerData=@LoadItems Dense=true Hover=true Bordered=true Striped=true @ref="table" Loading="@IsLoading" OnRowClick="@((e) => GoToDetails(e.Item))" RowStyle="cursor: pointer;">
@@ -106,9 +106,7 @@
 
     private bool IsLoading { get; set; } = true;
 
-    private string searchKeyword = string.Empty;
-    private string searchStatus = string.Empty;
-    private string searchState = string.Empty;
+    private ConcentratorSearchInfo concentratorSearchInfo = new();
 
     private async Task<TableData<ConcentratorDto>> LoadItems(TableState state)
     {
@@ -126,7 +124,7 @@
                     break;
             }
 
-            var uri = $"api/lorawan/concentrators?pageNumber={state.Page}&pageSize={state.PageSize}&orderBy={orderBy}&keyword={this.searchKeyword}&status={this.searchStatus}&state={this.searchState}";
+            var uri = $"api/lorawan/concentrators?pageNumber={state.Page}&pageSize={state.PageSize}&orderBy={orderBy}&keyword={this.concentratorSearchInfo.SearchKeyword}&status={this.concentratorSearchInfo.SearchStatus}&state={this.concentratorSearchInfo.SearchState}";
 
             var result = await LoRaWanConcentratorsClientService.GetConcentrators(uri);
 
@@ -164,14 +162,19 @@
         }
 
         // Update the list of devices after the deletion
-        Search("", "", "");
+        await Search();
     }
 
-    private async Task Search(string searchKeyword, string searchStatus, string searchState)
+    private async Task Search(ConcentratorSearchInfo concentratorSearchInfo = null)
     {
-        this.searchKeyword = searchKeyword;
-        this.searchStatus = searchStatus;
-        this.searchState = searchState;
+        if (concentratorSearchInfo == null)
+        {
+            this.concentratorSearchInfo = new();
+        }
+        else
+        {
+            this.concentratorSearchInfo = concentratorSearchInfo;
+        }
 
         table.ReloadServerData();
     }
