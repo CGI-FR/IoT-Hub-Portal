@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.13.1.58284",
-      "templateHash": "2297083920799549287"
+      "version": "0.14.46.61228",
+      "templateHash": "14325442590232717189"
     }
   },
   "parameters": {
@@ -29,7 +29,7 @@
       }
     },
     "pgsqlAdminPassword": {
-      "type": "secureString",
+      "type": "securestring",
       "metadata": {
         "description": "PostgreSQL password"
       }
@@ -202,8 +202,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.13.1.58284",
-              "templateHash": "13641181571737086733"
+              "version": "0.14.46.61228",
+              "templateHash": "5850302071524442635"
             }
           },
           "parameters": {
@@ -342,8 +342,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "7242993632258552997"
+                      "version": "0.14.46.61228",
+                      "templateHash": "16403838708860154960"
                     }
                   },
                   "parameters": {
@@ -401,8 +401,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "13177461548337479901"
+                      "version": "0.14.46.61228",
+                      "templateHash": "11153092513961770673"
                     }
                   },
                   "parameters": {
@@ -479,8 +479,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "18231218286094100425"
+                      "version": "0.14.46.61228",
+                      "templateHash": "1722119257012027952"
                     }
                   },
                   "parameters": {
@@ -571,8 +571,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "5296547844556490631"
+                      "version": "0.14.46.61228",
+                      "templateHash": "11057976400713586892"
                     }
                   },
                   "parameters": {
@@ -765,8 +765,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "16332595819846932589"
+                      "version": "0.14.46.61228",
+                      "templateHash": "17794065847421622398"
                     }
                   },
                   "parameters": {
@@ -843,8 +843,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.13.1.58284",
-                              "templateHash": "9762327847717885945"
+                              "version": "0.14.46.61228",
+                              "templateHash": "5317910204837414636"
                             }
                           },
                           "parameters": {
@@ -909,8 +909,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.13.1.58284",
-                              "templateHash": "17685346913822440852"
+                              "version": "0.14.46.61228",
+                              "templateHash": "10376939186963572731"
                             }
                           },
                           "parameters": {
@@ -1279,8 +1279,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "16367570607327967198"
+                      "version": "0.14.46.61228",
+                      "templateHash": "15532922444089978260"
                     }
                   },
                   "parameters": {
@@ -1443,8 +1443,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "12115993368601144548"
+                      "version": "0.14.46.61228",
+                      "templateHash": "5506228451793018313"
                     }
                   },
                   "parameters": {
@@ -1661,8 +1661,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.13.1.58284",
-              "templateHash": "14029653314479730098"
+              "version": "0.14.46.61228",
+              "templateHash": "1225781970033681699"
             }
           },
           "parameters": {
@@ -1686,7 +1686,7 @@
               }
             },
             "pgsqlAdminPassword": {
-              "type": "secureString",
+              "type": "securestring",
               "defaultValue": "[format('{0}x!', uniqueString(resourceGroup().id, newGuid()))]",
               "metadata": {
                 "description": "PostgreSQL password"
@@ -1786,8 +1786,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "13468437576978561080"
+                      "version": "0.14.46.61228",
+                      "templateHash": "13727087905058604439"
                     }
                   },
                   "parameters": {
@@ -1840,8 +1840,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "10874612531229907580"
+                      "version": "0.14.46.61228",
+                      "templateHash": "9646134830925234078"
                     }
                   },
                   "parameters": {
@@ -1897,8 +1897,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "4717521359055371771"
+                      "version": "0.14.46.61228",
+                      "templateHash": "9634994859303614150"
                     }
                   },
                   "parameters": {
@@ -1987,8 +1987,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "7078206133100273635"
+                      "version": "0.14.46.61228",
+                      "templateHash": "13974638531488342851"
                     }
                   },
                   "parameters": {
@@ -2011,7 +2011,7 @@
                       }
                     },
                     "pgsqlAdminPassword": {
-                      "type": "secureString",
+                      "type": "securestring",
                       "metadata": {
                         "description": "PostgreSQL password"
                       }
@@ -2069,8 +2069,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "7096524869187912294"
+                      "version": "0.14.46.61228",
+                      "templateHash": "16017890758706852234"
                     }
                   },
                   "parameters": {
@@ -2225,8 +2225,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "8325848551451260004"
+                      "version": "0.14.46.61228",
+                      "templateHash": "11331189605180036257"
                     }
                   },
                   "parameters": {
@@ -2323,7 +2323,7 @@
                       }
                     },
                     "pgsqlAdminPassword": {
-                      "type": "secureString",
+                      "type": "securestring",
                       "metadata": {
                         "description": "PostgreSQL password"
                       }
@@ -2431,7 +2431,7 @@
                         "reserved": true,
                         "siteConfig": {
                           "numberOfWorkers": 1,
-                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.3.0",
+                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.4.0",
                           "connectionStrings": [
                             {
                               "name": "IoTHub__ConnectionString",
@@ -2604,8 +2604,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.13.1.58284",
-              "templateHash": "13057993303098600068"
+              "version": "0.14.46.61228",
+              "templateHash": "2302869904714285876"
             }
           },
           "parameters": {
@@ -2629,7 +2629,7 @@
               }
             },
             "pgsqlAdminPassword": {
-              "type": "secureString",
+              "type": "securestring",
               "defaultValue": "[format('{0}x!', uniqueString(resourceGroup().id, newGuid()))]",
               "metadata": {
                 "description": "PostgreSQL password"
@@ -2726,8 +2726,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "6974845039031339907"
+                      "version": "0.14.46.61228",
+                      "templateHash": "7087254699160598711"
                     }
                   },
                   "parameters": {
@@ -2789,8 +2789,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "4717521359055371771"
+                      "version": "0.14.46.61228",
+                      "templateHash": "9634994859303614150"
                     }
                   },
                   "parameters": {
@@ -2876,8 +2876,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "14670886957624648932"
+                      "version": "0.14.46.61228",
+                      "templateHash": "15922030034033148187"
                     }
                   },
                   "parameters": {
@@ -2932,8 +2932,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "10874612531229907580"
+                      "version": "0.14.46.61228",
+                      "templateHash": "9646134830925234078"
                     }
                   },
                   "parameters": {
@@ -2992,8 +2992,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "7078206133100273635"
+                      "version": "0.14.46.61228",
+                      "templateHash": "13974638531488342851"
                     }
                   },
                   "parameters": {
@@ -3016,7 +3016,7 @@
                       }
                     },
                     "pgsqlAdminPassword": {
-                      "type": "secureString",
+                      "type": "securestring",
                       "metadata": {
                         "description": "PostgreSQL password"
                       }
@@ -3074,8 +3074,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "13206534523855556405"
+                      "version": "0.14.46.61228",
+                      "templateHash": "4908680336811139781"
                     }
                   },
                   "parameters": {
@@ -3136,8 +3136,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "7096524869187912294"
+                      "version": "0.14.46.61228",
+                      "templateHash": "16017890758706852234"
                     }
                   },
                   "parameters": {
@@ -3280,8 +3280,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.13.1.58284",
-                      "templateHash": "8325848551451260004"
+                      "version": "0.14.46.61228",
+                      "templateHash": "11331189605180036257"
                     }
                   },
                   "parameters": {
@@ -3378,7 +3378,7 @@
                       }
                     },
                     "pgsqlAdminPassword": {
-                      "type": "secureString",
+                      "type": "securestring",
                       "metadata": {
                         "description": "PostgreSQL password"
                       }
@@ -3486,7 +3486,7 @@
                         "reserved": true,
                         "siteConfig": {
                           "numberOfWorkers": 1,
-                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.3.0",
+                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.4.0",
                           "connectionStrings": [
                             {
                               "name": "IoTHub__ConnectionString",
