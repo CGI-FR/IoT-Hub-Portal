@@ -317,7 +317,8 @@
             Device.IsEnabled = true;
 
             // Gets a list of device model previously registered to Azure to allow autocomplete field in the form
-            DeviceModelList = await DeviceModelsClientService.GetDeviceModels();
+            var result = await DeviceModelsClientService.GetDeviceModels();
+            DeviceModelList = result.Items.ToList<IDeviceModel>();
 
             // Gets the custom tags that can be set when creating a device
             TagList = await DeviceTagSettingsClientService.GetDeviceTags();

@@ -286,7 +286,7 @@
     {
         try
         {
-            this.ModelList = (await DeviceModelsClientService.GetDeviceModels()).ToList();
+            this.ModelList = (await DeviceModelsClientService.GetDeviceModels()).Items.ToList();
             // Gets the custom tags that can be searched via the panel
             TagList = await DeviceTagSettingsClientService.GetDeviceTags();
             foreach (var tag in TagList)
