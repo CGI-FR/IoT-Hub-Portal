@@ -6,11 +6,11 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="IoT Hub Portal for device management" name="description"/>
-<link href="../../testing/unit-tests-on-blazor-components/" rel="prev"/>
-<link href="../../conception/diagrams/" rel="next"/>
+<link href="../../migrations/v3-to-v4/" rel="prev"/>
+<link href="../../../concepts/" rel="next"/>
 <link href="../../../assets/images/favicon.svg" rel="icon"/>
 <meta content="mkdocs-1.4.2, mkdocs-material-9.0.6" name="generator"/>
-<title>Migrate from v3 to v4 - IoT Hub Portal</title>
+<title>Diagrams - IoT Hub Portal</title>
 <link href="../../../assets/stylesheets/main.558e4712.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.2505c338.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -24,7 +24,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#migrate-from-v3-to-v4">
+<a class="md-skip" href="#diagrams">
           Skip to content
         </a>
 </div>
@@ -50,7 +50,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              Migrate from v3 to v4
+              Diagrams
             
           </span>
 </div>
@@ -214,9 +214,9 @@
 </ul>
 </nav>
 </li>
-<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3" id="__nav_2_3" type="checkbox"/>
-<label aria-expanded="true" class="md-nav__link" for="__nav_2_3" tabindex="0">
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_3" id="__nav_2_3" type="checkbox"/>
+<label aria-expanded="false" class="md-nav__link" for="__nav_2_3" tabindex="0">
           Migrations
           <span class="md-nav__icon md-icon"></span>
 </label>
@@ -226,40 +226,17 @@
           Migrations
         </label>
 <ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item md-nav__item--active">
-<input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
-<label class="md-nav__link md-nav__link--active" for="__toc">
-          Migrate from v3 to v4
-          <span class="md-nav__icon md-icon"></span>
-</label>
-<a class="md-nav__link md-nav__link--active" href="./">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../migrations/v3-to-v4/">
         Migrate from v3 to v4
       </a>
-<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
-<label class="md-nav__title" for="__toc">
-<span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#iothub__eventhub__consumergroup">
-    IoTHub__EventHub__ConsumerGroup
-  </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#iothub__eventhub__endpoint">
-    IoTHub__EventHub__Endpoint
-  </a>
 </li>
 </ul>
 </nav>
 </li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_4" id="__nav_2_4" type="checkbox"/>
-<label aria-expanded="false" class="md-nav__link" for="__nav_2_4" tabindex="0">
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_4" id="__nav_2_4" type="checkbox"/>
+<label aria-expanded="true" class="md-nav__link" for="__nav_2_4" tabindex="0">
           Project conception
           <span class="md-nav__icon md-icon"></span>
 </label>
@@ -269,10 +246,58 @@
           Project conception
         </label>
 <ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../conception/diagrams/">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+          Diagrams
+          <span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
         Diagrams
       </a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#connected-objects">
+    Connected objects
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#connected-object-models">
+    Connected object models
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#connected-object-configurations">
+    Connected object configurations
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-connected-object-models">
+    Edge connected object models
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-connected-objects">
+    Edge connected objects
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#concentrators">
+    Concentrators
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tags">
+    Tags
+  </a>
+</li>
+</ul>
+</nav>
 </li>
 </ul>
 </nav>
@@ -340,13 +365,38 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#iothub__eventhub__consumergroup">
-    IoTHub__EventHub__ConsumerGroup
+<a class="md-nav__link" href="#connected-objects">
+    Connected objects
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#iothub__eventhub__endpoint">
-    IoTHub__EventHub__Endpoint
+<a class="md-nav__link" href="#connected-object-models">
+    Connected object models
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#connected-object-configurations">
+    Connected object configurations
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-connected-object-models">
+    Edge connected object models
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-connected-objects">
+    Edge connected objects
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#concentrators">
+    Concentrators
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tags">
+    Tags
   </a>
 </li>
 </ul>
@@ -356,54 +406,346 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="migrate-from-v3-to-v4">Migrate from v3 to v4<a class="headerlink" href="#migrate-from-v3-to-v4" title="Permanent link">¶</a></h1>
-<p>To migrate from v3 to v4 <code>manually</code>, you have to add two new settings to the portal web app. These two settings are required to to pull devices telemetry from the IoT Hub:</p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Setting Type</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>IoTHub__EventHub__ConsumerGroup</code></td>
-<td>Application setting</td>
-<td>(Default value <code>iothub-portal</code>) The name of the consumer group used to to pull data from the IoT Hub</td>
-</tr>
-<tr>
-<td><code>IoTHub__EventHub__Endpoint</code></td>
-<td>Connection string</td>
-<td>The IotHub Event Hub compatible endpoint</td>
-</tr>
-</tbody>
-</table>
-<p>Below the required steps for each settings:</p>
-<h2 id="iothub__eventhub__consumergroup"><code>IoTHub__EventHub__ConsumerGroup</code><a class="headerlink" href="#iothub__eventhub__consumergroup" title="Permanent link">¶</a></h2>
-<ol>
-<li>Go to your IoT Hub</li>
-<li>Navigate to menu Built-in endpoints</li>
-<li>Create a consumer group with the name <code>iothub-portal</code>
-<img alt="iothub-create-consumer-group.png" src="../../../images/iothub-create-consumer-group.png"/></li>
-<li>Back to the portal web app, add a new application setting with name <code>IoTHub__EventHub__ConsumerGroup</code> and with value <code>iothub-portal</code></li>
-</ol>
-<h2 id="iothub__eventhub__endpoint"><code>IoTHub__EventHub__Endpoint</code><a class="headerlink" href="#iothub__eventhub__endpoint" title="Permanent link">¶</a></h2>
-<ol>
-<li>Go to your IoT Hub</li>
-<li>Navigate to menu Built-in endpoints</li>
-<li>On the section Event Hub compatible endpoint<ol>
-<li>Select the shared access policy <code>service</code></li>
-<li>Copy the value of the event Hub-compatible endpoint
-  <img alt="iothub-get-event-hub-endpoint.png" src="../../../images/iothub-get-event-hub-endpoint.png"/></li>
-</ol>
-</li>
-<li>Back to the portal web app, add a new connection setting with name <code>IoTHub__EventHub__Endpoint</code> and with value the event Hub-compatible endpoint copied earlier</li>
-</ol>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>You can create your own shared access policy. But the portal needs at least the <code>Service Connect</code> permission</p>
-</div>
+<h1 id="diagrams">Diagrams<a class="headerlink" href="#diagrams" title="Permanent link">¶</a></h1>
+<p>In order to better understand the needs of the project, here is a use case diagram regrouping the current use cases of the project.</p>
+<h2 id="connected-objects">Connected objects<a class="headerlink" href="#connected-objects" title="Permanent link">¶</a></h2>
+<pre class="mermaid"><code>graph LR
+    A[End user] --&gt; B(Display the list of connected objects)
+    A --&gt; C(Add a connected object)
+    C --&gt;|Extend| B
+    D(Import a list of connected objects) --&gt;|Extend| B
+    E(Download a model) --&gt;|Extend| B
+    F(Export the list of connected objects) --&gt;|Extend| B
+    G(Delete a connected object) --&gt;|Extend| B
+    H(Go to the details of a connected object) --&gt;|Extend| B
+    I(Search for connected objects) --&gt;|Extend| B</code></pre>
+<h2 id="connected-object-models">Connected object models<a class="headerlink" href="#connected-object-models" title="Permanent link">¶</a></h2>
+<pre class="mermaid"><code>graph LR
+    A[End user] --&gt; J(Display the list of connected object models)
+    A --&gt; K(Add a connected object model)
+    K --&gt;|Extend| J
+    L(Delete a connected object model) --&gt;|Extend| J
+    M(Go to the details of a connected object model) --&gt;|Extend| J</code></pre>
+<h2 id="connected-object-configurations">Connected object configurations<a class="headerlink" href="#connected-object-configurations" title="Permanent link">¶</a></h2>
+<pre class="mermaid"><code>graph LR
+    A[End user] --&gt; N(Display the list of connected object configurations)
+    A --&gt; O(Add a connected object configuration)
+    O --&gt;|Extend| N
+    P(Go to the details of a connected object configuration) --&gt; |Extend| N</code></pre>
+<h2 id="edge-connected-object-models">Edge connected object models<a class="headerlink" href="#edge-connected-object-models" title="Permanent link">¶</a></h2>
+<pre class="mermaid"><code>graph LR
+    A[End user] --&gt; Q(Display the list of Edge connected object models)
+    R(Add an Edge connected object model) --&gt;|Extend| Q
+    S(Delete an Edge connected object model) --&gt;|Extend| Q
+    T(Go to the details of a model of Edge connected object) --&gt;|Extend| Q
+    U(Search for Edge connected object models) --&gt;|Extend| Q</code></pre>
+<h2 id="edge-connected-objects">Edge connected objects<a class="headerlink" href="#edge-connected-objects" title="Permanent link">¶</a></h2>
+<pre class="mermaid"><code>graph LR
+    A[End user] --&gt; V(Display the list of Edge connected objects)
+    W(Add an Edge connected object) --&gt;|Extend| V
+    X(Delete an Edge connected object) --&gt;|Extend| V
+    Y(Go to the details of a connected object Edge) --&gt;|Extend| V
+    Z(Search for Edge connected objects) --&gt;|Extend| V</code></pre>
+<h2 id="concentrators">Concentrators<a class="headerlink" href="#concentrators" title="Permanent link">¶</a></h2>
+<pre class="mermaid"><code>graph LR
+    A[End user] --&gt; AA(Display the list of concentrators)
+    AB(Add a concentrator) --&gt;|Extend| AA
+    AC(Delete a concentrator) --&gt;|Extend| AA
+    AD(Go to the details of a concentrator) --&gt;|Extend| AA</code></pre>
+<h2 id="tags">Tags<a class="headerlink" href="#tags" title="Permanent link">¶</a></h2>
+<pre class="mermaid"><code>graph LR
+    A[End user] --&gt; AE(Display the list of tags)
+    AF(Add a tag) --&gt;|Extend| AE
+    AG(Delete a tag) --&gt;|Extend| AE</code></pre>
+<p>Now, here is a diagram representing the multilayer technical architecture of the project.</p>
+<pre class="mermaid"><code>C4Deployment
+    title Multilayer technical architecture
+
+    Deployment_Node(api, "Server", "API"){
+        Container(controllers, "Controllers", "C#", "They are used to route HTTP requests, they call the methods of the services and they return the content of the HTTP response as well as a HTTP code.")
+        Container(services, "Services", "C#", "They are used to define the business logic as to call the methods of the data access layer for example.")
+    }
+
+    Deployment_Node(bll, "Application", "BLL"){
+        Container(iservices, "Services", C#, "This package represents the interfaces of the services.")
+    }
+
+    Deployment_Node(dal, "Infrastructure", "DAL"){
+        Deployment_Node(uow, "UnitOfWork", "UOW"){
+            Container(repositories, "Repositories", "C# and EntityFramework", "A repository represents all the data management methods of an entity of the project.")
+        }
+    }
+
+    Deployment_Node(domain, "Domain", "Domain"){
+        Container(entities, "Entities", "C#", "They are used as object representation of tables in a database.")
+        Container(irepositories, "Repositories", "C#", "This package represents the interfaces of the repositories.")
+    }
+
+    Rel(iservices, services, "dependency", "")
+    Rel(repositories, services, "dependency", "")
+    Rel(entities, services, "dependency", "")
+    Rel(entities, iservices, "dependency", "")
+    Rel(iservices, repositories, "dependency", "")
+    Rel(entities, repositories, "dependency", "")</code></pre>
+<p>Now, to better understand the technical architecture of the project, here is a class diagram representing it.</p>
+<pre class="mermaid"><code>classDiagram
+    direction LR
+    class AdminController{
+        -String value
+    }
+    class DashboardController{
+        -String value
+    }
+    class DeviceConfigurationsController{
+        -String value
+    }
+    class DeviceModelControllerBase{
+        -String value
+    }
+    class DeviceModelPropertiesController{
+        -String value
+    }
+    class DeviceModelPropertiesControllerBase{
+        -String value
+    }
+    class DeviceModelController{
+        -String value
+    }
+    class DevicesController{
+        -String value
+    }
+    class DevicesControllerBase{
+        -String value
+    }
+    class DeviceTagSettingsController{
+        -String value
+    }
+    class EdgeDevicesController{
+        -String value
+    }
+    class EdgeModelsController{
+        -String value
+    }
+    class IdeasController{
+        -String value
+    }
+    class SettingsController{
+        -String value
+    }
+    class LoRaWANCommandsController{
+        -String value
+    }
+    class LoRaWANConcentratorsController{
+        -String value
+    }
+    class LoRaWANDeviceModelsController{
+        -String value
+    }
+    class LoRaWANDevicesController{
+        -String value
+    }
+    class LoRaWANFrequencyPlansController{
+        -String value
+    }
+    LoRaWANDeviceModelsController --|&gt; DeviceModelsControllerBase
+    LoRaWANDevicesController --|&gt; DevicesControllerBase
+    DeviceModelPropertiesController --|&gt; DeviceModelPropertiesControllerBase
+    DeviceModelsController --|&gt; DeviceModelsControllerBase
+    DevicesController --|&gt; DevicesControllerBase
+    class ConfigService{
+        -String value
+    }
+    class DeviceConfigurationsService{
+        -String value
+    }
+    class DeviceModelPropertiesService{
+        -String value
+    }
+    class DeviceModelService{
+        -String value
+    }
+    class DevicePropertyService{
+        -String value
+    }
+    class DeviceService{
+        -String value
+    }
+    class DeviceServiceBase{
+        -String value
+    }
+    class DeviceTagService{
+        -String value
+    }
+    class EdgeDevicesService{
+        -String value
+    }
+    class EdgeModelService{
+        -String value
+    }
+    class ExternalDeviceService{
+        -String value
+    }
+    class IdeaService{
+        -String value
+    }
+    class LoRaWANCommandService{
+        -String value
+    }
+    class LoRaWANConcentratorService{
+        -String value
+    }
+    class LoRaWanDeviceService{
+        -String value
+    }
+    class SubmitIdeaRequest{
+        -String value
+    }
+    DeviceService --|&gt; DeviceServiceBase
+    LoRaWanDeviceService --|&gt; DeviceServiceBase
+    class IConfigService
+    &lt;&lt;interface&gt;&gt; IConfigService
+    class IDeviceConfigurationsService
+    &lt;&lt;interface&gt;&gt; IDeviceConfigurationsService
+    class IDeviceModelPropertiesService
+    &lt;&lt;interface&gt;&gt; IDeviceModelPropertiesService
+    class IDeviceModelService
+    &lt;&lt;interface&gt;&gt; IDeviceModelService
+    class IDevicePropertyService
+    &lt;&lt;interface&gt;&gt; IDevicePropertyService
+    class IDeviceService
+    &lt;&lt;interface&gt;&gt; IDeviceService
+    class IDeviceTagService
+    &lt;&lt;interface&gt;&gt; IDeviceTagService
+    class IEdgeDevicesService
+    &lt;&lt;interface&gt;&gt; IEdgeDevicesService
+    class IEdgeModelService
+    &lt;&lt;interface&gt;&gt; IEdgeModelService
+    class IExternalDeviceService
+    &lt;&lt;interface&gt;&gt; IExternalDeviceService
+    class IIdeaService
+    &lt;&lt;interface&gt;&gt; IIdeaService
+    class ILoRaWANCommandService
+    &lt;&lt;interface&gt;&gt; ILoRaWANCommandService
+    class ILoRaWANConcentratorService
+    &lt;&lt;interface&gt;&gt; ILoRaWANConcentratorService
+    class ILoRaWanManagementService
+    &lt;&lt;interface&gt;&gt; ILoRaWanManagementService
+    ConfigService ..|&gt; IConfigService
+    DeviceConfigurationsService ..|&gt; IDeviceConfigurationsService
+    DeviceModelPropertiesService ..|&gt; IDeviceModelPropertiesService
+    DeviceModelService ..|&gt; IDeviceModelService
+    DevicePropertyService ..|&gt; IDevicePropertyService
+    DeviceServiceBase ..|&gt; IDeviceService
+    DeviceTagService ..|&gt; IDeviceTagService
+    EdgeDevicesService ..|&gt; IEdgeDevicesService
+    EdgeModelService ..|&gt; IEdgeModelService
+    ExternalDeviceService ..|&gt; IExternalDeviceService
+    IdeaService ..|&gt; IIdeaService
+    LoRaWANCommandService ..|&gt; ILoRaWANCommandService
+    LoRaWANConcentratorService ..|&gt; ILoRaWANConcentratorService
+    class ConcentratorRepository{
+        -String value
+    }
+    class DeviceModelCommandRepository{
+        -String value
+    }
+    class DeviceModelPropertiesRepository{
+        -String value
+    }
+    class DeviceModelRepository{
+        -String value
+    }
+    class DeviceRepository{
+        -String value
+    }
+    class DeviceTagRepository{
+        -String value
+    }
+    class DeviceTagValueRepository{
+        -String value
+    }
+    class EdgeDeviceModelCommandRepository{
+        -String value
+    }
+    class EdgeDeviceModelRepository{
+        -String value
+    }
+    class EdgeDeviceRepository{
+        -String value
+    }
+    class GenericRepository{
+        -String value
+    }
+    class LabelRepository{
+        -String value
+    }
+    class LoRaDeviceTelemetryRepository{
+        -String value
+    }
+    class LorawanDeviceRepository{
+        -String value
+    }
+    class UnitOfWork{
+        -String value
+    }
+    class IConcentratorRepository
+    &lt;&lt;interface&gt;&gt; IConcentratorRepository
+    class IDeviceModelCommandRepository
+    &lt;&lt;interface&gt;&gt; IDeviceModelCommandRepository
+    class IDeviceModelPropertiesRepository
+    &lt;&lt;interface&gt;&gt; IDeviceModelPropertiesRepository
+    class IDeviceModelRepository
+    &lt;&lt;interface&gt;&gt; IDeviceModelRepository
+    class IDeviceRepository
+    &lt;&lt;interface&gt;&gt; IDeviceRepository
+    class IDeviceTagRepository
+    &lt;&lt;interface&gt;&gt; IDeviceTagRepository
+    class IDeviceTagValueRepository
+    &lt;&lt;interface&gt;&gt; IDeviceTagValueRepository
+    class IEdgeDeviceModelCommandRepository
+    &lt;&lt;interface&gt;&gt; IEdgeDeviceModelCommandRepository
+    class IEdgeDeviceModelRepository
+    &lt;&lt;interface&gt;&gt; IEdgeDeviceModelRepository
+    class IEdgeDeviceRepository
+    &lt;&lt;interface&gt;&gt; IEdgeDeviceRepository
+    class ILabelRepository
+    &lt;&lt;interface&gt;&gt; ILabelRepository
+    class ILoRaDeviceTelemetryRepository
+    &lt;&lt;interface&gt;&gt; ILoRaDeviceTelemetryRepository
+    class ILorawanDeviceRepository
+    &lt;&lt;interface&gt;&gt; ILorawanDeviceRepository
+    class IRepository
+    &lt;&lt;interface&gt;&gt; IRepository
+    class IUnitOfWork
+    &lt;&lt;interface&gt;&gt; IUnitOfWork
+    UnitOfWork ..|&gt; IUnitOfWork
+    ConcentratorRepository ..|&gt; IConcentratorRepository
+    ConcentratorRepository --|&gt; GenericRepository
+    DeviceModelCommandRepository ..|&gt; IDeviceModelCommandRepository
+    DeviceModelCommandRepository --|&gt; GenericRepository
+    DeviceModelPropertiesRepository ..|&gt; IDeviceModelPropertiesRepository
+    DeviceModelPropertiesRepository --|&gt; GenericRepository
+    DeviceModelRepository ..|&gt; IDeviceModelRepository
+    DeviceModelRepository --|&gt; GenericRepository
+    DeviceRepository ..|&gt; IDeviceRepository
+    DeviceRepository --|&gt; GenericRepository
+    DeviceTagRepository ..|&gt; IDeviceTagRepository
+    DeviceTagRepository --|&gt; GenericRepository
+    DeviceTagValueRepository ..|&gt; IDeviceTagValueRepository
+    DeviceTagValueRepository --|&gt; GenericRepository
+    EdgeDeviceModelCommandRepository ..|&gt; IEdgeDeviceModelCommandRepository
+    EdgeDeviceModelCommandRepository --|&gt; GenericRepository
+    EdgeDeviceModelRepository ..|&gt; IEdgeDeviceModelRepository
+    EdgeDeviceModelRepository --|&gt; GenericRepository
+    EdgeDeviceRepository ..|&gt; IEdgeDeviceRepository
+    EdgeDeviceRepository --|&gt; GenericRepository
+    GenericRepository ..|&gt; IRepository
+    LabelRepository ..|&gt; ILabelRepository
+    LabelRepository --|&gt; GenericRepository
+    LoRaDeviceTelemetryRepository ..|&gt; ILoRaDeviceTelemetryRepository
+    LoRaDeviceTelemetryRepository --|&gt; GenericRepository
+    LorawanDeviceRepository ..|&gt; ILorawanDeviceRepository
+    LorawanDeviceRepository --|&gt; GenericRepository</code></pre>
 </article>
 </div>
 </div>
