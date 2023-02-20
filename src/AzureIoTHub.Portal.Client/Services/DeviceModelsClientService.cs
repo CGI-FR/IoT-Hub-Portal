@@ -28,7 +28,7 @@ namespace AzureIoTHub.Portal.Client.Services
                 { nameof(DeviceModelFilter.SearchText), deviceModelFilter?.SearchText ?? string.Empty },
                 { nameof(DeviceModelFilter.PageNumber), deviceModelFilter?.PageNumber.ToString() ?? string.Empty },
                 { nameof(DeviceModelFilter.PageSize), deviceModelFilter?.PageSize.ToString() ?? string.Empty },
-                { nameof(DeviceModelFilter.OrderBy), string.Join(",", deviceModelFilter?.OrderBy) ?? string.Empty }
+                { nameof(DeviceModelFilter.OrderBy), string.Join("", deviceModelFilter?.OrderBy) ?? string.Empty }
             };
 
             var uri = QueryHelpers.AddQueryString(this.apiUrlBase, query);
