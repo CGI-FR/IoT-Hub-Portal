@@ -21,6 +21,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using NUnit.Framework;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using System.Collections.Generic;
+    using AzureIoTHub.Portal.Client.Pages.EdgeModels;
 
     [TestFixture]
     public class DeviceModelListPageTests : BlazorUnitTest
@@ -265,6 +266,38 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Assert
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(1));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        [Test]
+        public void ClickOnSortLabel()
+        {
+            // Arrange
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto>
+                {
+                    Items = new List<DeviceModelDto>()
+                    {
+                        new (),
+                        new ()
+                    }
+                });
+
+            // Act
+            var cut = RenderComponent<DeviceModelListPage>();
+
+            cut.WaitForAssertion(() => cut.WaitForElement("#NameLabel").Should().NotBeNull());
+            var sortNameButtons = cut.WaitForElement("#NameLabel");
+            sortNameButtons.Click();
+
+            cut.WaitForAssertion(() => cut.WaitForElement("#DescriptionLabel").Should().NotBeNull());
+            var sortDescriptionButtons = cut.WaitForElement("#DescriptionLabel");
+            sortDescriptionButtons.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => Assert.AreEqual(3, cut.FindAll("tr").Count));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
