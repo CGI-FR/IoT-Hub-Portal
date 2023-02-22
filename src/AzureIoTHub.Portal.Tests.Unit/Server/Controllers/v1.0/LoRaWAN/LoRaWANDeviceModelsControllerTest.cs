@@ -7,6 +7,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using FluentAssertions;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -48,11 +50,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.LoRaWAN
                 return dto;
             }) .ToList();
 
-            _ = this.mockDeviceModelService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(expectedDeviceModels);
+            var filter = new DeviceModelFilter();
+
+            _ = this.mockDeviceModelService.Setup(service => service.GetDeviceModels(filter))
+                .ReturnsAsync(new PaginatedResult<DeviceModelDto> { Data = expectedDeviceModels });
 
             // Act
-            var response = await this.deviceModelsController.GetItems();
+            var response = await this.deviceModelsController.GetItems(filter);
 
             // Assert
             _ = ((OkObjectResult)response.Result)?.Value.Should().BeEquivalentTo(expectedDeviceModels);

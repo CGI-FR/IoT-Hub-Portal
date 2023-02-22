@@ -19,6 +19,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using Moq;
     using MudBlazor;
     using NUnit.Framework;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
 
     [TestFixture]
     public class DeviceModelListPageTests : BlazorUnitTest
@@ -43,8 +44,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             var modelId = Fixture.Create<string>();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new[] { new DeviceModelDto { ModelId = modelId, SupportLoRaFeatures = false } });
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = modelId, SupportLoRaFeatures = false } } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -65,8 +66,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             var modelId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new[] { new DeviceModelDto { ModelId = modelId, SupportLoRaFeatures = true } });
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = modelId, SupportLoRaFeatures = true } } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -85,10 +86,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void DeviceModelListPageRendersCorrectly()
         {
             // Arrange
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new[] {
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto>
+                {
+                    Items = new[] {
                     new DeviceModelDto { ModelId = Guid.NewGuid().ToString() },
                     new DeviceModelDto{  ModelId = Guid.NewGuid().ToString() }
+                }
                 });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
@@ -113,8 +117,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } });
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -131,7 +135,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void LoadDeviceModelsShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceModels()
         {
             // Arrange
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
@@ -150,8 +154,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } });
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -166,7 +170,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             }
 
             // Assert
-            cut.WaitForAssertion(() => this.mockDeviceModelsClientService.Verify(service => service.GetDeviceModels(), Times.Exactly(4)));
+            cut.WaitForAssertion(() => this.mockDeviceModelsClientService.Verify(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()), Times.Exactly(4)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -176,8 +180,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } });
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -199,10 +203,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         [Test]
         public void ClickOnDeleteShouldDisplayConfirmationDialogAndReloadDeviceModelIfConfirmed()
         {
+            // Arrange
             var deviceId = Guid.NewGuid().ToString();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels())
-                .ReturnsAsync(new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } });
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = deviceId, SupportLoRaFeatures = true } } });
 
             _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
@@ -218,7 +223,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             deleteButton.Click();
 
             // Assert            
-            cut.WaitForAssertion(() => this.mockDeviceModelsClientService.Verify(service => service.GetDeviceModels(), Times.Exactly(2)));
+            cut.WaitForAssertion(() => this.mockDeviceModelsClientService.Verify(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()), Times.Exactly(2)));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }

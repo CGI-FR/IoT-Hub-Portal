@@ -21,6 +21,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
     using MudBlazor;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
 
     [TestFixture]
     public class CreateDeviceConfigurationsPageTests : BlazorUnitTest
@@ -49,10 +50,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
         public void DeviceConfigurationDetailPageShouldRenderCorrectly()
         {
             // Arrange
-
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModelDto>());
+                    service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new List<DeviceModelDto>() });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -79,8 +79,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             };
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModelDto>());
+                    service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new List<DeviceModelDto>() });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -115,8 +115,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             };
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModelDto>());
+                    service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new List<DeviceModelDto>() });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -142,7 +142,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
         {
             // Arrange
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels())
+                    service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
@@ -157,8 +157,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
         {
             // Arrange
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModelDto>());
+                    service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new List<DeviceModelDto>() });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -176,8 +176,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
         {
             // Arrange
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModelDto>());
+                    service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new List<DeviceModelDto>() });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service =>
                     service.GetDeviceTags())
@@ -212,15 +212,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             var modelId = Guid.NewGuid().ToString();
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
-                    service.GetDeviceModels())
-                .ReturnsAsync(new List<DeviceModelDto>
-                {
-                    new ()
-                    {
-                        ModelId = modelId,
-                        Name = Guid.NewGuid().ToString()
-                    }
-                });
+                    service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto> { Items = new[] { new DeviceModelDto { ModelId = modelId, Name = Guid.NewGuid().ToString() } } });
 
             _ = MockHttpClient
                 .When(HttpMethod.Get, $"/api/models/{modelId}/properties")

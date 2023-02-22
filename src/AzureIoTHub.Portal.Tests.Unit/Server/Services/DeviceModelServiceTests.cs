@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.IO;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Threading;
     using System.Threading.Tasks;
     using AutoFixture;
     using AutoMapper;
@@ -17,6 +18,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Infrastructure.Mappers;
     using AzureIoTHub.Portal.Server.Services;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;
     using Microsoft.AspNetCore.Http;
@@ -91,17 +94,37 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 return deviceModelDto;
             }).ToList();
 
-            _ = this.mockDeviceModelRepository.Setup(repository => repository.GetAll(It.IsAny<Expression<Func<DeviceModel, object>>[]>()))
-                .Returns(expectedDeviceModels);
+            var filter = new DeviceModelFilter
+            {
+                SearchText = string.Empty,
+                PageNumber = 1,
+                PageSize = 10,
+                OrderBy = new string[]
+                {
+                    null
+                }
+            };
+
+            _ = this.mockDeviceModelRepository.Setup(repository => repository.GetPaginatedListAsync(filter.PageNumber, filter.PageSize, filter.OrderBy, It.IsAny<Expression<Func<DeviceModel, bool>>>(), It.IsAny<CancellationToken>(), It.IsAny<Expression<Func<DeviceModel, object>>[]>()))
+                .ReturnsAsync(new PaginatedResult<DeviceModel>
+                {
+                    Data = expectedDeviceModels,
+                    PageSize = filter.PageSize,
+                    CurrentPage = filter.PageNumber,
+                    TotalCount = 10
+                });
 
             _ = this.mockDeviceModelImageManager.Setup(manager => manager.ComputeImageUri(It.IsAny<string>()))
                 .Returns(expectedImageUri);
 
             // Act
-            var result = await this.deviceModelService.GetDeviceModels();
+            var result = await this.deviceModelService.GetDeviceModels(filter);
 
             // Assert
-            _ = result.Should().BeEquivalentTo(expectedDeviceModelsDto);
+            _ = result.Data.Should().BeEquivalentTo(expectedDeviceModelsDto);
+            _ = result.CurrentPage.Should().Be(filter.PageNumber);
+            _ = result.PageSize.Should().Be(filter.PageSize);
+            _ = result.TotalCount.Should().Be(10);
             MockRepository.VerifyAll();
         }
 

@@ -88,7 +88,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 PageSize = deviceModelFilter.PageSize
             };
 
-            return new PaginatedResult<DeviceModelDto>(paginateDeviceModelsDto.Data, paginateDeviceModelsDto.TotalCount);
+            return new PaginatedResult<DeviceModelDto>(paginateDeviceModelsDto.Data, paginateDeviceModelsDto.TotalCount, paginateDeviceModelsDto.CurrentPage, paginateDeviceModelsDto.PageSize);
         }
 
         public async Task<TModel> GetDeviceModel(string deviceModelId)
