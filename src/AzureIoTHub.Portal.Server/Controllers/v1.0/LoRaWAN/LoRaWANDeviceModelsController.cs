@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Services;
