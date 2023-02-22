@@ -228,36 +228,15 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
+        [Test]
         public void ClickOnSearchShouldSearchDeviceModels()
         {
             // Arrange
-            var searchText = Fixture.Create<string>();
-            var deviceModelSearchInfo = new DeviceModelSearchInfo
-            {
-                SearchText = searchText
-            };
-            var expectedFilter = new DeviceModelFilter
-            {
-                SearchText = string.Empty,
-                PageNumber = 1,
-                PageSize = 10,
-                OrderBy = new string[]
-                {
-                    null
-                }
-            };
-            var expectedFilterWithParam = new DeviceModelFilter
-            {
-                SearchText = deviceModelSearchInfo.SearchText,
-                PageNumber = 1,
-                PageSize = 10,
-                OrderBy = new string[]
-                {
-                    null
-                }
-            };
+            var expectedSearchText = Fixture.Create<string>();
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(expectedFilter)).ReturnsAsync(new PaginationResult<DeviceModelDto>
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.Is<DeviceModelFilter>(x => string.IsNullOrEmpty(x.SearchText)))).ReturnsAsync(new PaginationResult<DeviceModelDto>
             {
                 Items = new List<DeviceModelDto>()
                 {
@@ -266,7 +245,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
                 }
             });
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(expectedFilterWithParam)).ReturnsAsync(new PaginationResult<DeviceModelDto>
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.Is<DeviceModelFilter>(x => expectedSearchText.Equals(x.SearchText)))).ReturnsAsync(new PaginationResult<DeviceModelDto>
             {
                 Items = new List<DeviceModelDto>()
                 {
@@ -278,7 +257,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
             cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(2));
-            cut.WaitForElement("#searchText").Change(searchText);
+            cut.WaitForElement("#searchText").Change(expectedSearchText);
 
             // Act
             cut.WaitForElement("#searchButton").Click();
