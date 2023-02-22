@@ -20,6 +20,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using MudBlazor;
     using NUnit.Framework;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
+    using System.Collections.Generic;
 
     [TestFixture]
     public class DeviceModelListPageTests : BlazorUnitTest
@@ -224,6 +225,67 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             // Assert            
             cut.WaitForAssertion(() => this.mockDeviceModelsClientService.Verify(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()), Times.Exactly(2)));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
+
+        public void ClickOnSearchShouldSearchDeviceModels()
+        {
+            // Arrange
+            var searchText = Fixture.Create<string>();
+            var deviceModelSearchInfo = new DeviceModelSearchInfo
+            {
+                SearchText = searchText
+            };
+            var expectedFilter = new DeviceModelFilter
+            {
+                SearchText = string.Empty,
+                PageNumber = 1,
+                PageSize = 10,
+                OrderBy = new string[]
+                {
+                    null
+                }
+            };
+            var expectedFilterWithParam = new DeviceModelFilter
+            {
+                SearchText = deviceModelSearchInfo.SearchText,
+                PageNumber = 1,
+                PageSize = 10,
+                OrderBy = new string[]
+                {
+                    null
+                }
+            };
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(expectedFilter)).ReturnsAsync(new PaginationResult<DeviceModelDto>
+            {
+                Items = new List<DeviceModelDto>()
+                {
+                    new(),
+                    new()
+                }
+            });
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(expectedFilterWithParam)).ReturnsAsync(new PaginationResult<DeviceModelDto>
+            {
+                Items = new List<DeviceModelDto>()
+                {
+                    new()
+                }
+            });
+
+            var cut = RenderComponent<DeviceModelListPage>();
+
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(2));
+            cut.WaitForElement("#searchText").Change(searchText);
+
+            // Act
+            cut.WaitForElement("#searchButton").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
+            cut.WaitForAssertion(() => cut.FindAll("table tbody tr").Count.Should().Be(1));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
