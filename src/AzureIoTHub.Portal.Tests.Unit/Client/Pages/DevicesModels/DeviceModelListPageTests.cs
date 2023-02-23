@@ -21,7 +21,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using NUnit.Framework;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using System.Collections.Generic;
-    using AzureIoTHub.Portal.Client.Pages.EdgeModels;
 
     [TestFixture]
     public class DeviceModelListPageTests : BlazorUnitTest
@@ -297,6 +296,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             sortDescriptionButtons.Click();
 
             // Assert
+            cut.WaitForAssertion(() => Assert.AreEqual(3, cut.FindAll("tr").Count));
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+
+            sortNameButtons.Click();
+            sortDescriptionButtons.Click();
+
             cut.WaitForAssertion(() => Assert.AreEqual(3, cut.FindAll("tr").Count));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }

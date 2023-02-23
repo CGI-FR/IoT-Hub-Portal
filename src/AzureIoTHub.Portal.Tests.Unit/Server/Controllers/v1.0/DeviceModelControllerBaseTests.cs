@@ -17,37 +17,45 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using System.Linq;
     using AzureIoTHub.Portal.Server.Controllers.V10;
     using FluentAssertions;
+    using System.Collections.Generic;
+    using Microsoft.AspNetCore.Mvc.Routing;
 
     [TestFixture]
     public class DeviceModelControllerBaseTests : BackendUnitTest
     {
         private Mock<IDeviceModelService<DeviceModelDto, DeviceModelDto>> mockDeviceModelService;
+        private Mock<IUrlHelper> mockUrlHelper;
 
         private DeviceModelsController deviceModelsController;
 
+        [SetUp]
         public override void Setup()
         {
             base.Setup();
 
             this.mockDeviceModelService = MockRepository.Create<IDeviceModelService<DeviceModelDto, DeviceModelDto>>();
+            this.mockUrlHelper = MockRepository.Create<IUrlHelper>();
 
             _ = ServiceCollection.AddSingleton(this.mockDeviceModelService.Object);
 
             Services = ServiceCollection.BuildServiceProvider();
 
-            this.deviceModelsController = new DeviceModelsController(Services.GetRequiredService<IDeviceModelService<DeviceModelDto, DeviceModelDto>>());
+            this.deviceModelsController = new DeviceModelsController(Services.GetRequiredService<IDeviceModelService<DeviceModelDto, DeviceModelDto>>())
+            {
+                Url = this.mockUrlHelper.Object
+            };
         }
 
         [Test]
         public async Task GetListGreaterThan10ShouldReturnAListAndNextPage()
         {
             // Arrange
-            var expectedDeviceModels = Fixture.CreateMany<DeviceModelDto>(12).ToList();
+            var expectedDeviceModels = Fixture.CreateMany<DeviceModelDto>(24).ToList();
 
             var filter = new DeviceModelFilter
             {
                 SearchText = string.Empty,
-                PageNumber = 1,
+                PageNumber = 0,
                 PageSize = 10,
                 OrderBy = new string[]
                 {
@@ -56,13 +64,25 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             };
 
             _ = this.mockDeviceModelService.Setup(service => service.GetDeviceModels(filter))
-                .ReturnsAsync(new PaginatedResult<DeviceModelDto> { Data = expectedDeviceModels });
+                .ReturnsAsync((DeviceModelFilter filter) => new PaginatedResult<DeviceModelDto>
+                {
+                    Data = expectedDeviceModels.Skip(filter.PageSize * filter.PageNumber).Take(filter.PageSize).ToList(),
+                    TotalCount = expectedDeviceModels.Count
+                });
+
+            var locationUrl = "http://location/models";
+
+            _ = this.mockUrlHelper
+                .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(locationUrl);
 
             // Act
             var response = await this.deviceModelsController.GetItems(filter);
 
             // Assert
-            _ = ((OkObjectResult)response.Result)?.Value.Should().BeEquivalentTo(expectedDeviceModels);
+            _ = ((OkObjectResult)response.Result)?.Value.Should().BeAssignableTo<IEnumerable<DeviceModelDto>>();
+            var results = (response.Value)?.TotalItems;
+            _ = results.Should().HaveValue("10");
             MockRepository.VerifyAll();
         }
     }
