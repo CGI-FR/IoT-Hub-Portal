@@ -96,7 +96,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             var filter = new DeviceModelFilter
             {
-                SearchText = string.Empty,
+                SearchText = Fixture.Create<string>(),
                 PageNumber = 1,
                 PageSize = 10,
                 OrderBy = new string[]

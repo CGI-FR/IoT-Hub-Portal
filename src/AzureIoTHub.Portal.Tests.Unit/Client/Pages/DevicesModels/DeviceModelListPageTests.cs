@@ -21,6 +21,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using NUnit.Framework;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using System.Collections.Generic;
+    using System.Linq;
 
     [TestFixture]
     public class DeviceModelListPageTests : BlazorUnitTest
@@ -298,11 +299,40 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             // Assert
             cut.WaitForAssertion(() => Assert.AreEqual(3, cut.FindAll("tr").Count));
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
 
-            sortNameButtons.Click();
-            sortDescriptionButtons.Click();
+        [Test]
+        public void SortClickOnSortNameDescDeviceModelsSorted()
+        {
+            // Arrange
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
 
-            cut.WaitForAssertion(() => Assert.AreEqual(3, cut.FindAll("tr").Count));
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModels(It.Is<DeviceModelFilter>(x => string.IsNullOrEmpty(x.OrderBy.First()))))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto>
+                {
+                    Items = new List<DeviceModelDto>()
+                });
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModels(It.Is<DeviceModelFilter>(x => "Name asc".Equals(x.OrderBy.First()))))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto>
+                {
+                    Items = new List<DeviceModelDto>()
+                });
+            _ = this.mockDeviceModelsClientService.Setup(service =>
+                    service.GetDeviceModels(It.Is<DeviceModelFilter>(x => "Name desc".Equals(x.OrderBy.First()))))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto>
+                {
+                    Items = new List<DeviceModelDto>()
+                });
+
+            var cut = RenderComponent<DeviceModelListPage>();
+
+            // Act
+            cut.WaitForElement("#NameLabel").Click();
+            cut.WaitForElement("#NameLabel").Click();
+
+            // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
