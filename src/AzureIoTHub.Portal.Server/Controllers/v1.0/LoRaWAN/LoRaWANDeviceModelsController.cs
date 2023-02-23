@@ -3,12 +3,12 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Models.v10.LoRaWAN;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Filters;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
@@ -40,10 +40,11 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
         /// <returns>An array representing the device models.</returns>
         [HttpGet(Name = "GET LoRaWAN device model list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public override async Task<ActionResult<IEnumerable<DeviceModelDto>>> GetItems()
+        public override async Task<ActionResult<PaginationResult<DeviceModelDto>>> GetItems([FromQuery] DeviceModelFilter deviceModelFilter)
         {
-            var devices = await this.deviceModelService.GetDeviceModels();
-            return Ok(devices.Where(device => device.SupportLoRaFeatures));
+            var devices = await this.deviceModelService.GetDeviceModels(deviceModelFilter);
+
+            return Ok(devices.Data.Where(d => d.SupportLoRaFeatures));
         }
 
         /// <summary>

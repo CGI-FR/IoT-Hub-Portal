@@ -3,16 +3,18 @@
 
 namespace AzureIoTHub.Portal.Application.Services
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
 
     public interface IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel
         where TModel : class, IDeviceModel
     {
-        Task<IEnumerable<TListItem>> GetDeviceModels();
+        Task<PaginatedResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilter deviceModelFilter);
 
         Task<TModel> GetDeviceModel(string deviceModelId);
 

@@ -17,6 +17,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
     using Models.v10;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
 
     [TestFixture]
     public class DeviceModelsClientServiceTests : BlazorUnitTest
@@ -36,13 +37,27 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services
         public async Task GetDeviceModelsShouldReturnDeviceModels()
         {
             // Arrange
-            var expectedDeviceModels = Fixture.Build<DeviceModelDto>().CreateMany(3).ToList();
+            var expectedDeviceModels = new PaginationResult<DeviceModelDto>()
+            {
+                Items = Fixture.Build<DeviceModelDto>().CreateMany(3).ToList()
+            };
 
-            _ = MockHttpClient.When(HttpMethod.Get, "/api/models")
+            _ = MockHttpClient.When(HttpMethod.Get, "/api/models?SearchText=&PageNumber=1&PageSize=10&OrderBy=")
                 .RespondJson(expectedDeviceModels);
 
+            var filter = new DeviceModelFilter
+            {
+                SearchText = string.Empty,
+                PageNumber = 1,
+                PageSize = 10,
+                OrderBy = new string[]
+                {
+                    null
+                }
+            };
+
             // Act
-            var result = await this.deviceModelsClientService.GetDeviceModels();
+            var result = await this.deviceModelsClientService.GetDeviceModels(filter);
 
             // Assert
             _ = result.Should().BeEquivalentTo(expectedDeviceModels);

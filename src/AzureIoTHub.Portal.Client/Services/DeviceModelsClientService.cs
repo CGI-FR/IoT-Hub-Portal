@@ -7,20 +7,33 @@ namespace AzureIoTHub.Portal.Client.Services
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
+    using Microsoft.AspNetCore.WebUtilities;
     using Portal.Models.v10;
 
     public class DeviceModelsClientService : IDeviceModelsClientService
     {
         private readonly HttpClient http;
+        private readonly string apiUrlBase = "api/models";
 
         public DeviceModelsClientService(HttpClient http)
         {
             this.http = http;
         }
 
-        public async Task<IList<DeviceModelDto>> GetDeviceModels()
+        public async Task<PaginationResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilter? deviceModelFilter = null)
         {
-            return await this.http.GetFromJsonAsync<List<DeviceModelDto>>("api/models");
+            var query = new Dictionary<string, string>
+            {
+                { nameof(DeviceModelFilter.SearchText), deviceModelFilter?.SearchText ?? string.Empty },
+                { nameof(DeviceModelFilter.PageNumber), deviceModelFilter?.PageNumber.ToString() ?? string.Empty },
+                { nameof(DeviceModelFilter.PageSize), deviceModelFilter?.PageSize.ToString() ?? string.Empty },
+                { nameof(DeviceModelFilter.OrderBy), string.Join("", deviceModelFilter?.OrderBy) ?? string.Empty }
+            };
+
+            var uri = QueryHelpers.AddQueryString(this.apiUrlBase, query);
+
+            return await this.http.GetFromJsonAsync<PaginationResult<DeviceModelDto>>(uri);
         }
 
         public Task<DeviceModelDto> GetDeviceModel(string deviceModelId)

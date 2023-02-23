@@ -4,8 +4,9 @@
 namespace AzureIoTHub.Portal.Server.Services
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Dynamic.Core;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using AutoMapper;
     using AzureIoTHub.Portal.Application.Helpers;
@@ -13,13 +14,18 @@ namespace AzureIoTHub.Portal.Server.Services
     using AzureIoTHub.Portal.Application.Providers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Infrastructure.Mappers;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models;
+    using AzureIoTHub.Portal.Shared.Models.v1._0;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Domain;
     using Domain.Entities;
     using Domain.Exceptions;
     using Domain.Repositories;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Azure.Devices.Shared;
+    using Microsoft.EntityFrameworkCore;
 
     public class DeviceModelService<TListItem, TModel> : IDeviceModelService<TListItem, TModel>
         where TListItem : class, IDeviceModel
@@ -60,17 +66,29 @@ namespace AzureIoTHub.Portal.Server.Services
             this.externalDeviceService = externalDeviceService;
         }
 
-        public async Task<IEnumerable<TListItem>> GetDeviceModels()
+        public async Task<PaginatedResult<DeviceModelDto>> GetDeviceModels(DeviceModelFilter deviceModelFilter)
         {
-            return await Task.Run(() => this.deviceModelRepository
-                .GetAll(c => c.Labels)
-                .Select(model =>
+            var deviceModelPredicate = PredicateBuilder.True<DeviceModel>();
+
+            if (!string.IsNullOrWhiteSpace(deviceModelFilter.SearchText))
+            {
+                deviceModelPredicate = deviceModelPredicate.And(model => model.Name.ToLower().Contains(deviceModelFilter.SearchText.ToLower()) || model.Description.ToLower().Contains(deviceModelFilter.SearchText.ToLower()));
+            }
+
+            var paginatedDeviceModels = await this.deviceModelRepository.GetPaginatedListAsync(deviceModelFilter.PageNumber, deviceModelFilter.PageSize, deviceModelFilter.OrderBy, deviceModelPredicate, includes: new Expression<Func<DeviceModel, object>>[] { d => d.Labels });
+
+            var paginateDeviceModelsDto = new PaginatedResult<DeviceModelDto>
+            {
+                Data = paginatedDeviceModels.Data.Select(x => this.mapper.Map<DeviceModelDto>(x, opts =>
                 {
-                    var deviceModelDto = this.mapper.Map<TListItem>(model);
-                    deviceModelDto.ImageUrl = this.deviceModelImageManager.ComputeImageUri(deviceModelDto.ModelId);
-                    return deviceModelDto;
-                })
-                .ToList());
+                    opts.AfterMap((src, dest) => dest.ImageUrl = this.deviceModelImageManager.ComputeImageUri(x.Id));
+                })).ToList(),
+                TotalCount = paginatedDeviceModels.TotalCount,
+                CurrentPage = paginatedDeviceModels.CurrentPage,
+                PageSize = deviceModelFilter.PageSize
+            };
+
+            return new PaginatedResult<DeviceModelDto>(paginateDeviceModelsDto.Data, paginateDeviceModelsDto.TotalCount, paginateDeviceModelsDto.CurrentPage, paginateDeviceModelsDto.PageSize);
         }
 
         public async Task<TModel> GetDeviceModel(string deviceModelId)

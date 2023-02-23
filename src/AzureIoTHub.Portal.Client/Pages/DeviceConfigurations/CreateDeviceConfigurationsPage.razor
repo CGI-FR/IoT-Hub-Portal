@@ -243,7 +243,8 @@
             isProcessing = true;
 
             var models = await DeviceModelsClientService.GetDeviceModels();
-            AvailableModels = models.Where(c => !c.SupportLoRaFeatures).ToArray();
+
+            AvailableModels = models.Items.Where(c => !c.SupportLoRaFeatures).ToArray();
 
             AvailableTags = await DeviceTagSettingsClientService.GetDeviceTags();
         }

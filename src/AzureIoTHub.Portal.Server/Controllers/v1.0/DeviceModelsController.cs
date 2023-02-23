@@ -3,13 +3,13 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Application.Services;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
 
     [Authorize]
     [ApiController]
@@ -33,9 +33,9 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <returns>An array representing the device models.</returns>
         [HttpGet(Name = "GET Device model list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public override Task<ActionResult<IEnumerable<DeviceModelDto>>> GetItems()
+        public override async Task<ActionResult<PaginationResult<DeviceModelDto>>> GetItems([FromQuery] DeviceModelFilter deviceModelFilter)
         {
-            return base.GetItems();
+            return await base.GetItems(deviceModelFilter);
         }
 
         /// <summary>

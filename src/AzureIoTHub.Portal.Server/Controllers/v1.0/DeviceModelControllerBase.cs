@@ -3,12 +3,14 @@
 
 namespace AzureIoTHub.Portal.Server.Controllers.V10
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Models.v10;
     using AzureIoTHub.Portal.Shared.Models;
+    using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
 
     public abstract class DeviceModelsControllerBase<TListItemModel, TModel> : ControllerBase
         where TListItemModel : class, IDeviceModel
@@ -36,9 +38,33 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// Gets the device models.
         /// </summary>
         /// <returns>The list of device models.</returns>
-        public virtual async Task<ActionResult<IEnumerable<TListItemModel>>> GetItems()
+        public virtual async Task<ActionResult<PaginationResult<DeviceModelDto>>> GetItems(DeviceModelFilter deviceModelFilter)
         {
-            return Ok(await this.deviceModelService.GetDeviceModels());
+            var paginatedDevices = await this.deviceModelService.GetDeviceModels(deviceModelFilter);
+
+            var nextPage = string.Empty;
+
+            if (paginatedDevices.HasNextPage)
+            {
+                nextPage = Url.RouteUrl(new UrlRouteContext
+                {
+                    RouteName = "GET Device Model list",
+                    Values = new
+                    {
+                        deviceModelFilter.SearchText,
+                        deviceModelFilter.PageSize,
+                        pageNumber = deviceModelFilter.PageNumber + 1,
+                        deviceModelFilter.OrderBy
+                    }
+                });
+            }
+
+            return new PaginationResult<DeviceModelDto>
+            {
+                Items = paginatedDevices.Data,
+                TotalItems = paginatedDevices.TotalCount,
+                NextPage = nextPage
+            };
         }
 
         /// <summary>
