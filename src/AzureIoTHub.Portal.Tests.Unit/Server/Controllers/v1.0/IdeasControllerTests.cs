@@ -47,7 +47,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             {
                 HttpContext = new DefaultHttpContext()
             };
-            ideasController.ControllerContext.HttpContext.Request.Headers["device-id"] = "20317";
+            ideasController.ControllerContext.HttpContext.Request.Headers["idea"] = "test";
 
             _ = this.mockIdeaService.Setup(service => service.SubmitIdea(ideaRequest, It.IsAny<string>()))
                 .ReturnsAsync(expectedIdeaResponse);

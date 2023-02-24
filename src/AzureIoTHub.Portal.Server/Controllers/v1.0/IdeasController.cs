@@ -27,8 +27,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0
         [HttpPost(Name = "Submit Idea to Iot Hub Portal community")]
         public Task<IdeaResponse> SubmitIdea([FromBody] IdeaRequest ideaRequest)
         {
-            var test = Request.Headers.Values.ToString();
-            Console.WriteLine(test);
             return this.ideasService.SubmitIdea(ideaRequest, Request.Headers.UserAgent.ToString());
         }
     }
