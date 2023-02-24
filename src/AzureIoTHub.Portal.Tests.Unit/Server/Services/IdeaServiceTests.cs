@@ -120,5 +120,38 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             _ = await act.Should().ThrowAsync<InternalServerErrorException>();
             MockRepository.VerifyAll();
         }
+
+        [Test]
+        public async Task SubmitIdeaWithoutConsentShouldSubmitIdea()
+        {
+            // Arrange
+            var ideaRequest = Fixture.Create<IdeaRequest>();
+            var expectedIdeaResponse = Fixture.Create<IdeaResponse>();
+            var uaString = "Mozilla/5.0 (iPhone; CPU iPhone OS 5_1_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B206 Safari/7534.48.3";
+
+            ideaRequest.Consent = false;
+
+            _ = this.mockConfigHandler.Setup(handler => handler.IdeasEnabled)
+                .Returns(true);
+
+            _ = MockHttpClient.When(HttpMethod.Post, "/ideas")
+                .With(m =>
+                {
+                    _ = m.Content.Should().BeAssignableTo<StringContent>();
+                    var stringBody = (StringContent) m.Content;
+                    _ = stringBody.Should().NotBeNull();
+                    return true;
+                })
+                .RespondJson(expectedIdeaResponse);
+
+            // Act
+            var result = await this.ideaService.SubmitIdea(ideaRequest, uaString);
+
+            // Assert
+            _ = result.Should().BeEquivalentTo(expectedIdeaResponse);
+            MockHttpClient.VerifyNoOutstandingExpectation();
+            MockHttpClient.VerifyNoOutstandingRequest();
+            MockRepository.VerifyAll();
+        }
     }
 }
