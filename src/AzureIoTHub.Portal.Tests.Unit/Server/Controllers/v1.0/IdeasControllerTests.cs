@@ -9,6 +9,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
     using AzureIoTHub.Portal.Server.Controllers.v1._0;
     using AzureIoTHub.Portal.Shared.Models.v1._0;
     using FluentAssertions;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using NUnit.Framework;
@@ -41,7 +43,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0
             var ideaRequest = Fixture.Create<IdeaRequest>();
             var expectedIdeaResponse = Fixture.Create<IdeaResponse>();
 
-            _ = this.mockIdeaService.Setup(service => service.SubmitIdea(ideaRequest))
+            ideasController.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            ideasController.ControllerContext.HttpContext.Request.Headers["device-id"] = "20317";
+
+            _ = this.mockIdeaService.Setup(service => service.SubmitIdea(ideaRequest, It.IsAny<string>()))
                 .ReturnsAsync(expectedIdeaResponse);
 
             // Act
