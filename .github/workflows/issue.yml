@@ -17,7 +17,7 @@ jobs:
           app_id: ${{ secrets.BOT_APP_ID }}
           private_key: ${{ secrets.BOT_PRIVATE_KEY }}
 
-      - uses: actions/add-to-project@v0.4.0
+      - uses: actions/add-to-project@v0.4.1
         with:
           project-url: https://github.com/orgs/CGI-FR/projects/1
           github-token: ${{ steps.generate_app_token.outputs.token }}
