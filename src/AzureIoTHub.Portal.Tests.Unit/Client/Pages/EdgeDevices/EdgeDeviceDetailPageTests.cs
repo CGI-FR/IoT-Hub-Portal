@@ -541,7 +541,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
-        private IoTEdgeDevice SetupOnInitialisation()
+        [TestCase(false)]
+        [TestCase(true)]
+        public void WhenModulesArePresentCommandAreEnabledIfConnected(bool enabled)
+        {
+            // Arrange
+            _ = SetupOnInitialisation(enabled);
+
+            // Act
+            var cut = RenderComponent<EdgeDeviceDetailPage>(ComponentParameter.CreateParameter("deviceId", this.mockdeviceId));
+            cut.WaitForAssertion(() => cut.Find("#commandTest"));
+
+            var commandButton = cut.Find("#commandTest");
+
+            // Assert
+            Assert.AreEqual(enabled, !commandButton.HasAttribute("disabled"));
+        }
+
+        private IoTEdgeDevice SetupOnInitialisation(bool connected = true)
         {
             var tags = new Dictionary<string, string>()
             {
@@ -553,7 +570,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
             {
                 DeviceId = this.mockdeviceId,
                 DeviceName = "test",
-                ConnectionState = "Connected",
+                ConnectionState = connected ? "Connected" : "Disconnected",
                 ModelId = Guid.NewGuid().ToString(),
                 Tags = tags,
                 Modules = new List<IoTEdgeModule>()
