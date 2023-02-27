@@ -72,15 +72,30 @@ namespace AzureIoTHub.Portal.Infrastructure.Jobs
 
             foreach (var twin in deviceTwins)
             {
-                var deviceModel = await this.edgeDeviceModelRepository.GetByIdAsync(twin.Tags[ModelId]?.ToString() ?? string.Empty);
-
-                if (deviceModel == null)
+                try
                 {
-                    this.logger.LogWarning($"The device with wont be synched, its model id {twin.Tags[ModelId]?.ToString()} doesn't exist");
-                    continue;
-                }
+                    if (!twin.Tags.Contains(ModelId))
+                    {
+                        this.logger.LogWarning($"The device with wont be synchronized since it doesn't have a model identifier.");
+                        continue;
+                    }
 
-                await CreateOrUpdateDevice(twin);
+                    var modelId = twin.Tags[ModelId].ToString();
+
+                    var deviceModel = await this.edgeDeviceModelRepository.GetByIdAsync(modelId);
+
+                    if (deviceModel == null)
+                    {
+                        this.logger.LogWarning($"The device with wont be synchronized, its model id {modelId} doesn't exist");
+                        continue;
+                    }
+
+                    await CreateOrUpdateDevice(twin);
+                }
+                catch (Exception ex)
+                {
+                    this.logger.LogError(ex, $"Failed to synchronize device {twin.DeviceId}");
+                }
             }
 
             foreach (var item in (await this.edgeDeviceRepository.GetAllAsync()).Where(edgeDevice => !deviceTwins.Exists(twin => twin.DeviceId == edgeDevice.Id)))
