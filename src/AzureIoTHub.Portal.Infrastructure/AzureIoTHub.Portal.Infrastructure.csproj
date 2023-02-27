@@ -136,7 +136,7 @@
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
     <PackageReference Include="prometheus-net" Version="8.0.0" />
-    <PackageReference Include="Quartz" Version="3.6.0" />
+    <PackageReference Include="Quartz" Version="3.6.2" />
     <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.6.0" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.25" />
     <PackageReference Include="EntityFrameworkCore.Exceptions.PostgreSQL" Version="6.0.3" />
