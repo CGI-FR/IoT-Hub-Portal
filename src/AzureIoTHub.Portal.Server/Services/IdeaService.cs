@@ -47,11 +47,14 @@ namespace AzureIoTHub.Portal.Server.Services
                 var description = new StringBuilder();
                 _ = description.Append("Description: ");
                 _ = description.Append(ideaRequest.Body);
+                _ = description.AppendLine();
                 //_ = description.Append("Subscription ID: ");
                 //_ = description.Append(configHandler.IdeasAuthenticationToken);
-                _ = description.Append(" Application Version: ");
-                _ = description.Append(Assembly.GetExecutingAssembly().GetName().Version?.ToString());
-                _ = description.Append(" Browser Version: ");
+                //_ = description.AppendLine();
+                _ = description.Append("Application Version: ");
+                _ = description.Append(Assembly.GetExecutingAssembly().GetName().Version);
+                _ = description.AppendLine();
+                _ = description.Append("Browser Version: ");
                 _ = description.Append(string.Concat(c.UA.Family, c.UA.Major, c.UA.Minor));
 
                 submitIdea.Title = ideaRequest.Title;
