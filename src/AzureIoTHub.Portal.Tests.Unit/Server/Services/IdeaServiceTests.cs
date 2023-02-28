@@ -5,6 +5,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 {
     using System.Net;
     using System.Net.Http;
+    using System.Reflection;
+    using System.Text;
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Application.Services;
@@ -17,6 +19,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using Moq;
     using NUnit.Framework;
     using RichardSzalay.MockHttp;
+    using UAParser;
     using UnitTests.Bases;
     using UnitTests.Helpers;
 
@@ -49,6 +52,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var ideaRequest = Fixture.Create<IdeaRequest>();
             var expectedIdeaResponse = Fixture.Create<IdeaResponse>();
             var uaString = "Mozilla/5.0 (iPhone; CPU iPhone OS 5_1_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B206 Safari/7534.48.3";
+            var uaParser = Fixture.Create<Parser>();
+
+            var c = uaParser.Parse(uaString);
+
+            var submitIdea = new SubmitIdeaRequest();
+
+            var description = new StringBuilder();
+            _ = description.Append("Description: ");
+            _ = description.Append(ideaRequest.Body);
+            _ = description.AppendLine();
+            _ = description.Append("Application Version: ");
+            _ = description.Append(Assembly.GetExecutingAssembly().GetName().Version);
+            _ = description.AppendLine();
+            _ = description.Append("Browser Version: ");
+            _ = description.Append(string.Concat(c.UA.Family, c.UA.Major, c.UA.Minor));
+
+            submitIdea.Title = ideaRequest.Title;
+            submitIdea.Description = description.ToString();
 
             _ = this.mockConfigHandler.Setup(handler => handler.IdeasEnabled)
                 .Returns(true);
@@ -128,6 +149,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var ideaRequest = Fixture.Create<IdeaRequest>();
             var expectedIdeaResponse = Fixture.Create<IdeaResponse>();
             var uaString = "Mozilla/5.0 (iPhone; CPU iPhone OS 5_1_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B206 Safari/7534.48.3";
+
+            var submitIdea = new SubmitIdeaRequest
+            {
+                Title = ideaRequest.Title,
+                Description = ideaRequest.Body
+            };
 
             ideaRequest.ConsentToCollectTechnicalDetails = false;
 

@@ -181,5 +181,39 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Ideas
             // Assert
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
+
+        [Test]
+        public async Task SetConsentToCollectTechnicalDetailsByDefault()
+        {
+            // Arrange
+            var ideaRequest = Fixture.Create<IdeaRequest>();
+            ideaRequest.ConsentToCollectTechnicalDetails = true;
+            var expectedIdeaResponse = Fixture.Create<IdeaResponse>();
+
+            _ = this.mockIdeaClientService.Setup(service => service.SubmitIdea(It.Is<IdeaRequest>(request => ideaRequest.Title.Equals(request.Title, StringComparison.Ordinal) &&
+                    ideaRequest.Body.Equals(request.Body, StringComparison.Ordinal))))
+                .ReturnsAsync(expectedIdeaResponse);
+
+            var cut = RenderComponent<MudDialogProvider>();
+            var dialogService = Services.GetService<IDialogService>() as DialogService;
+
+            await cut.InvokeAsync(() => dialogService?.Show<SubmitIdeaDialog>(string.Empty));
+
+            var titleField = cut.FindComponents<MudTextField<string>>()
+                .First(component => component.Instance.FieldId.Equals("idea-title", StringComparison.Ordinal));
+
+            var descriptionField = cut.FindComponents<MudTextField<string>>()
+                .First(component => component.Instance.FieldId.Equals("idea-description", StringComparison.Ordinal));
+
+            await cut.InvokeAsync(() => titleField.Instance.SetText(ideaRequest.Title));
+            await cut.InvokeAsync(() => descriptionField.Instance.SetText(ideaRequest.Body));
+
+            // Act
+            await cut.InvokeAsync(() => cut.FindComponent<MudForm>().Instance.Validate());
+            cut.WaitForElement("#idea-submit").Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        }
     }
 }
