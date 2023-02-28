@@ -42,7 +42,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
             var submitIdea = new SubmitIdeaRequest();
 
-            if (ideaRequest.Consent)
+            if (ideaRequest.ConsentToCollectTechnicalDetails)
             {
                 var description = new StringBuilder();
                 _ = description.Append("Description: ");

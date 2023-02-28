@@ -13,6 +13,6 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0
         [Required]
         public string Body { get; set; } = null!;
 
-        public bool Consent { get; set; }
+        public bool ConsentToCollectTechnicalDetails { get; set; }
     }
 }

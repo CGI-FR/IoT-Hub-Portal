@@ -129,7 +129,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var expectedIdeaResponse = Fixture.Create<IdeaResponse>();
             var uaString = "Mozilla/5.0 (iPhone; CPU iPhone OS 5_1_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B206 Safari/7534.48.3";
 
-            ideaRequest.Consent = false;
+            ideaRequest.ConsentToCollectTechnicalDetails = false;
 
             _ = this.mockConfigHandler.Setup(handler => handler.IdeasEnabled)
                 .Returns(true);
