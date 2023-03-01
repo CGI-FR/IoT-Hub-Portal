@@ -96,7 +96,6 @@ jobs:
           token: ${{ steps.generate_app_token.outputs.token }}
           title: 'Update API documentation'
           labels: 'documentation'
-          team-reviewers: '@CGI-FR/azure-iot-portal-authors'
           body: | 
             Automated changes to the Open API documentation.
             This PR is related to the change **${{ github.event.head_commit.message }}** merged in **${{ github.event.head_commit.id }}**.
