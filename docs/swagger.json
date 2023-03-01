@@ -4532,6 +4532,9 @@
           "body": {
             "minLength": 1,
             "type": "string"
+          },
+          "consentToCollectTechnicalDetails": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
