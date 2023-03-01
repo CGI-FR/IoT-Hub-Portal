@@ -8,6 +8,6 @@ namespace AzureIoTHub.Portal.Application.Services
 
     public interface IIdeaService
     {
-        Task<IdeaResponse> SubmitIdea(IdeaRequest ideaRequest);
+        Task<IdeaResponse> SubmitIdea(IdeaRequest ideaRequest, string? userAgent = null);
     }
 }

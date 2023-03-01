@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Net.Http;
     using System.Net.Http.Json;
+    using System.Reflection;
     using System.Text;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Services;
@@ -13,6 +14,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
     using Shared.Models.v1._0;
+    using UAParser;
 
     public class IdeaService : IIdeaService
     {
@@ -27,18 +29,42 @@ namespace AzureIoTHub.Portal.Server.Services
             this.configHandler = configHandler;
         }
 
-        public async Task<IdeaResponse> SubmitIdea(IdeaRequest ideaRequest)
+        public async Task<IdeaResponse> SubmitIdea(IdeaRequest ideaRequest, string? userAgent = null)
         {
             if (!this.configHandler.IdeasEnabled)
             {
                 throw new InternalServerErrorException("Ideas feature is not enabled. Please check Iot Hub Portal documentation");
             }
 
-            var submitIdea = new SubmitIdeaRequest
+            var uaParser = Parser.GetDefault();
+
+            var c = uaParser.Parse(userAgent);
+
+            var submitIdea = new SubmitIdeaRequest();
+
+            if (ideaRequest.ConsentToCollectTechnicalDetails)
             {
-                Title = ideaRequest.Title,
-                Description = ideaRequest.Body
-            };
+                var description = new StringBuilder();
+                _ = description.Append("Description: ");
+                _ = description.Append(ideaRequest.Body);
+                _ = description.AppendLine();
+                //_ = description.Append("Subscription ID: ");
+                //_ = description.Append(configHandler.IdeasAuthenticationToken);
+                //_ = description.AppendLine();
+                _ = description.Append("Application Version: ");
+                _ = description.Append(Assembly.GetExecutingAssembly().GetName().Version);
+                _ = description.AppendLine();
+                _ = description.Append("Browser Version: ");
+                _ = description.Append(string.Concat(c.UA.Family, c.UA.Major, c.UA.Minor));
+
+                submitIdea.Title = ideaRequest.Title;
+                submitIdea.Description = description.ToString();
+            }
+            else
+            {
+                submitIdea.Title = ideaRequest.Title;
+                submitIdea.Description = ideaRequest.Body;
+            }
 
             var ideaAsJson = JsonConvert.SerializeObject(submitIdea);
 

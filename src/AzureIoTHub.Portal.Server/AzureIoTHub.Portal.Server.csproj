@@ -73,6 +73,7 @@
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.6.0" />
     <PackageReference Include="Quartz.Serialization.Json" Version="3.6.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="UAParser" Version="3.1.47" />
   </ItemGroup>
   
 </Project>
