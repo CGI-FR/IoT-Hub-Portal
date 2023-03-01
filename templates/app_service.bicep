@@ -83,7 +83,7 @@ param ideasAuthenticationHeader string = ''
 @description('Authentication token to interact with Awesome-Ideas. Required when ideasEnabled is true')
 param ideasAuthenticationToken string = ''
 
-resource site 'Microsoft.Web/sites@2021-03-01' = {
+resource site 'Microsoft.Web/sites@2022-03-01' = {
   name: siteName
   location: location
   kind: 'app,linux,container'
