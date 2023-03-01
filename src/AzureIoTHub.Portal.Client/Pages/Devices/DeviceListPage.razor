@@ -6,6 +6,7 @@
 @using System.IO
 @using System.Text.RegularExpressions
 @using System.Net.Http.Headers
+@using AzureIoTHub.Portal.Shared.Models.v10.Filters;
 
 @attribute [Authorize]
 
@@ -286,7 +287,17 @@
     {
         try
         {
-            this.ModelList = (await DeviceModelsClientService.GetDeviceModels()).Items.ToList();
+            var filter = new DeviceModelFilter
+                {
+                    SearchText = string.Empty,
+                    PageNumber = 0,
+                    PageSize = 10,
+                    OrderBy = new string[]
+                    {
+                        null
+                    }
+                };
+            this.ModelList = (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList();
             // Gets the custom tags that can be searched via the panel
             TagList = await DeviceTagSettingsClientService.GetDeviceTags();
             foreach (var tag in TagList)
