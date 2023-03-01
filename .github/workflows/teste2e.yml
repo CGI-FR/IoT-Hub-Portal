@@ -1,0 +1,83 @@
+name: Test_E2E
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3.3.0
+    
+    - name: Install Chrome Driver
+      run: |
+        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
+        sudo apt-get update
+        sudo apt-get install google-chrome-stable
+        LATEST_CHROMEDRIVER=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
+        wget -q -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER}/chromedriver_linux64.zip"
+        sudo unzip -q /tmp/chromedriver.zip -d /usr/local/bin/
+        sudo chmod +x /usr/local/bin/chromedriver
+    
+    - name: Install Chrome
+      run: sudo apt-get install google-chrome-stable
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+
+    - name: Restore Dotnet tools
+      run: dotnet tool restore
+      working-directory: src/
+      
+    - name: Restore dependencies
+      run: dotnet restore AzureIoTHub.Portal.sln 
+      working-directory: src/
+
+    - name: Restore NuGet packages
+      run: dotnet restore
+      working-directory: src/AzureIoTHub.Portal.Tests.E2E/
+    
+    - name: Install SDK
+      run: dotnet add package Microsoft.NET.Test.Sdk
+      working-directory: src/AzureIoTHub.Portal.Tests.E2E/
+      
+    - name: Install NUnit Adapter
+      run: dotnet add package NUnit3TestAdapter
+      working-directory: src/AzureIoTHub.Portal.Tests.E2E/
+    
+    - name: Install NUnit
+      run: dotnet add package NUnit
+      working-directory: src/AzureIoTHub.Portal.Tests.E2E/
+      
+    - name: Install Selenium NuGet package
+      run: dotnet add package Selenium.WebDriver
+      working-directory: src/AzureIoTHub.Portal.Tests.E2E/
+      
+    - name: Install Selenium Support NuGet package
+      run: dotnet add package Selenium.Support
+      working-directory: src/AzureIoTHub.Portal.Tests.E2E/
+    
+    - name: Install Chrome Driver
+      run: dotnet add package Selenium.WebDriver.ChromeDriver
+      working-directory: src/AzureIoTHub.Portal.Tests.E2E/
+      
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    
+    - uses: actions/checkout@v3.3.0
+    
+    - name: Build E2E test project
+      run: dotnet build AzureIoTHub.Portal.Tests.E2E.csproj
+      working-directory: src/AzureIoTHub.Portal.Tests.E2E
+      
+    - name: Run E2E tests
+      run: dotnet test AzureIoTHub.Portal.Tests.E2E.csproj --no-build
+      working-directory: src/AzureIoTHub.Portal.Tests.E2E/
