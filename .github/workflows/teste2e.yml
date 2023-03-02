@@ -54,8 +54,12 @@ jobs:
       run: dotnet add package NUnit
       working-directory: src/AzureIoTHub.Portal.Tests.E2E/
       
-    - name: Install Microsoft Configuration packages
-      run: dotnet add package Microsoft.Extensions.Configuration Microsoft.Extensions.Configuration.Json
+    - name: Install Microsoft Configuration package
+      run: dotnet add package Microsoft.Extensions.Configuration
+      working-directory: src/AzureIoTHub.Portal.Tests.E2E/
+      
+    - name: Install Microsoft Configuration Json package
+      run: dotnet add package Microsoft.Extensions.Configuration.Json
       working-directory: src/AzureIoTHub.Portal.Tests.E2E/
       
     - name: Install Selenium NuGet package
