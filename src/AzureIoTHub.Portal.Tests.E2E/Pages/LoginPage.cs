@@ -12,12 +12,12 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
         public IWebDriver driver;
         public WebDriverWait wait;
 
-        public string username;
+        private readonly string username;
         private readonly string password;
 
         public LoginPage(IWebDriver driver, WebDriverWait wait)
         {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").AddUserSecrets().Build();
 
             var url = config["AppSettings:URL"];
             this.username = config["AppSettings:Username"].Replace("__USERNAME__", Environment.GetEnvironmentVariable("USERNAME"));
