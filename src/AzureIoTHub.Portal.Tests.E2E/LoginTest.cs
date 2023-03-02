@@ -19,7 +19,7 @@ namespace AzureIoTHub.Portal.Tests.E2E
             var options = new ChromeOptions();
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
-            options.AddArgument("headless");
+            options.AddArgument("--headless");
             driver = new ChromeDriver("/usr/local/bin", options);
         }
 
