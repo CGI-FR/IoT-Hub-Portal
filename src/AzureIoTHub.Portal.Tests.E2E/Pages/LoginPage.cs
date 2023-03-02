@@ -22,6 +22,7 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
             var url = config["AppSettings:URL"];
             this.username = config["AppSettings:Username"].Replace("__USERNAME__", Environment.GetEnvironmentVariable("USERNAME"));
             this.password = config["AppSettings:Password"].Replace("__PASSWORD__", Environment.GetEnvironmentVariable("PASSWORD"));
+            Console.WriteLine(username);
 
             this.driver = driver;
             driver.Manage().Window.Maximize();
