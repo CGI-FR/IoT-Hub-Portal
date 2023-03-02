@@ -41,5 +41,7 @@ namespace AzureIoTHub.Portal.Application.Providers
         Task<EnrollmentCredentials> GetEnrollmentCredentialsAsync(string deviceId, string modelId);
 
         Task DeleteEnrollmentGroupAsync(EnrollmentGroup enrollmentGroup, CancellationToken cancellationToken);
+
+        Task DeleteEnrollmentGroupByModelIdAsync(string modelId, CancellationToken cancellationToken);
     }
 }

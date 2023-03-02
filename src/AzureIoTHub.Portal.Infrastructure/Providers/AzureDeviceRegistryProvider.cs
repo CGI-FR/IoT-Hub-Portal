@@ -80,6 +80,35 @@ namespace AzureIoTHub.Portal.Infrastructure.Providers
             await this.dps.DeleteEnrollmentGroupAsync(enrollmentGroup, cancellationToken);
         }
 
+        public async Task DeleteEnrollmentGroupByModelIdAsync(string modelId, CancellationToken cancellationToken = default)
+        {
+            var enrollmentGroupName = ComputeEnrollmentGroupName(modelId);
+            EnrollmentGroup? enrollmentGroup;
+
+            try
+            {
+                enrollmentGroup = await this.dps.GetEnrollmentGroupAsync(enrollmentGroupName);
+            }
+            catch (HttpRequestException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                var enrollmentGroupPrimaryKey = GenerateKey();
+                var enrollmentGroupSecondaryKey = GenerateKey();
+
+                var attestation = new SymmetricKeyAttestation(enrollmentGroupPrimaryKey, enrollmentGroupSecondaryKey);
+
+                enrollmentGroup = new EnrollmentGroup(enrollmentGroupName, attestation)
+                {
+                    ProvisioningStatus = ProvisioningStatus.Enabled,
+                    Capabilities = new DeviceCapabilities
+                    {
+                        IotEdge = false
+                    },
+                };
+            }
+
+            await this.dps.DeleteEnrollmentGroupAsync(enrollmentGroup, cancellationToken);
+        }
+
         /// <summary>
         /// this function get the attestation mechanism of the DPS.
         /// </summary>
