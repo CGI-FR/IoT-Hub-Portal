@@ -17,15 +17,17 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
 
         public LoginPage(IWebDriver driver, WebDriverWait wait)
         {
-            var config = new ConfigurationBuilder().AddUserSecrets<LoginPage>().Build();
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json")
+                                                   .AddUserSecrets<LoginPage>()
+                                                   .Build();
 
-            //var url = config["AppSettings:URL"];
-            this.username = config["USERNAME"];
-            this.password = config["PASSWORD"];
+            var url = config["AppSettings:URL"];
+            this.username = config["AppSettings:Username"].Replace("__USERNAME__", "achraf.boujida@etu.uca.fr");
+            this.password = config["AppSettings:Password"].Replace("__PASSWORD__", "dDpDDhSFL7VvrQA");
 
             this.driver = driver;
             driver.Manage().Window.Maximize();
-            this.driver.Navigate().GoToUrl("https://cgigeiotdemoportal.azurewebsites.net/");
+            this.driver.Navigate().GoToUrl("url");
             this.wait = wait;
         }
 
