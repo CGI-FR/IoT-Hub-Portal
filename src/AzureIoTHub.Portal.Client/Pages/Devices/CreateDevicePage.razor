@@ -7,6 +7,7 @@
 @using AzureIoTHub.Portal.Models.v10.LoRaWAN
 @using AzureIoTHub.Portal.Shared.Models
 @using AzureIoTHub.Portal.Shared.Models.v10;
+@using AzureIoTHub.Portal.Shared.Models.v10.Filters;
 @using Microsoft.AspNetCore.Components
 
 @attribute [Authorize]
@@ -285,7 +286,6 @@
 
     private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];
 
-    private IEnumerable<IDeviceModel> DeviceModelList { get; set; } = new List<IDeviceModel>();
     private IDeviceModel _deviceModel;
 
     private IDeviceModel DeviceModel
@@ -315,10 +315,6 @@
 
             // Enable device by default
             Device.IsEnabled = true;
-
-            // Gets a list of device model previously registered to Azure to allow autocomplete field in the form
-            var result = await DeviceModelsClientService.GetDeviceModels();
-            DeviceModelList = result.Items.ToList<IDeviceModel>();
 
             // Gets the custom tags that can be set when creating a device
             TagList = await DeviceTagSettingsClientService.GetDeviceTags();
@@ -458,15 +454,17 @@
     /// <returns>Item of the device model list that matches the user's value</returns>
     private async Task<IEnumerable<IDeviceModel>> Search(string value)
     {
-        // In real life use an asynchronous function for fetching data from an api.
-        await Task.Delay(0);
-
-        // if text is null or empty, show complete list
-        if (string.IsNullOrEmpty(value))
-            return DeviceModelList;
-
-        return DeviceModelList
-                    .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        var filter = new DeviceModelFilter
+        {
+            SearchText = value,
+            PageNumber = 0,
+            PageSize = 100,
+            OrderBy = new string[]
+            {
+                null
+            }
+        };
+        return (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();
     }
 
     private void SetSaveButtonText(DeviceSaveAction saveAction)

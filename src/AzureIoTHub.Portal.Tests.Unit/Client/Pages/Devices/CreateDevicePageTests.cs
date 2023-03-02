@@ -21,7 +21,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using MudBlazor.Services;
     using NUnit.Framework;
     using UnitTests.Mocks;
+    using AutoFixture;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
+    using AzureIoTHub.Portal.Shared.Models.v10;
+    using System.Linq;
+    using AzureIoTHub.Portal.Shared.Models;
 
     [TestFixture]
     public class CreateDevicePageTests : BlazorUnitTest
@@ -81,15 +85,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
-                .ReturnsAsync(new PaginationResult<DeviceModelDto>
-                {
-                    Items = new List<DeviceModelDto>
-                {
-                    mockDeviceModel
-                }
-                });
-
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
                 {
@@ -136,15 +131,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
-                .ReturnsAsync(new PaginationResult<DeviceModelDto>
-                {
-                    Items = new List<DeviceModelDto>
-                {
-                    mockDeviceModel
-                }
-                });
-
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
                 {
@@ -186,30 +172,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 Name = Guid.NewGuid().ToString()
             };
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
-                .ReturnsAsync(new PaginationResult<DeviceModelDto>
-                {
-                    Items = new List<DeviceModelDto>
-                {
-                    mockDeviceModel
-                }
-                });
-
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
-                .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
-
-            // Act
-            var cut = RenderComponent<CreateDevicePage>();
-
-            // Assert
-            cut.WaitForAssertion(() => cut.Markup.Should().NotBeNullOrEmpty());
-            cut.WaitForAssertion(() => MockRepository.VerifyAll());
-        }
-
-        [Test]
-        public void OnInitializedAsyncShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceModels()
-        {
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
 
             // Act
@@ -240,15 +203,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
-
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
-                .ReturnsAsync(new PaginationResult<DeviceModelDto>
-                {
-                    Items = new List<DeviceModelDto>
-                {
-                    mockDeviceModel
-                }
-                });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
@@ -299,15 +253,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
                 DeviceID = Guid.NewGuid().ToString(),
             };
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
-                .ReturnsAsync(new PaginationResult<DeviceModelDto>
-                {
-                    Items = new List<DeviceModelDto>
-                {
-                    mockDeviceModel
-                }
-                });
-
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
                 {
@@ -355,15 +300,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
-
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
-                .ReturnsAsync(new PaginationResult<DeviceModelDto>
-                {
-                    Items = new List<DeviceModelDto>
-                {
-                    mockDeviceModel
-                }
-                });
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
@@ -435,15 +371,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.IsAny<DeviceModelFilter>()))
-                .ReturnsAsync(new PaginationResult<DeviceModelDto>
-                {
-                    Items = new List<DeviceModelDto>
-                {
-                    mockDeviceModel
-                }
-                });
-
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>
                 {
@@ -491,6 +418,43 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceDetails.DeviceName)}").TextContent.Should().BeEmpty());
             cut.WaitForAssertion(() => cut.Find($"#{nameof(DeviceDetails.DeviceID)}").TextContent.Should().BeEmpty());
             cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().NotEndWith("/devices"));
+        }
+
+        [Test]
+        public void SearchDeviceModels_InputExisingDeviceModelName_DeviceModelReturned()
+        {
+            // Arrange
+            var deviceModels = Fixture.CreateMany<DeviceModelDto>(2).ToList();
+            var expectedDeviceModel = deviceModels.First();
+
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.Is<DeviceModelFilter>(x => expectedDeviceModel.Name.Equals(x.SearchText))))
+                .ReturnsAsync(new PaginationResult<DeviceModelDto>
+                {
+                    Items = deviceModels.Where(x => expectedDeviceModel.Name.Equals(x.Name, StringComparison.Ordinal))
+                });
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>());
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+
+            var cut = RenderComponent<CreateDevicePage>();
+
+            var autocompleteComponent = cut.FindComponent<MudAutocomplete<IDeviceModel>>();
+
+            // Act
+            autocompleteComponent.Find("input").Input(expectedDeviceModel.Name);
+
+            // Assert
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-popover-open").Count.Should().Be(1));
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(1));
+
+            var items = popoverProvider.FindComponents<MudListItem>().ToArray();
+            _ = items.Length.Should().Be(1);
+            _ = items.First().Markup.Should().Contain(expectedDeviceModel.Name);
+            items.First().Find("div.mud-list-item").Click();
+
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
 }
