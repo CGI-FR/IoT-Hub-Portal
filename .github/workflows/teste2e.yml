@@ -65,6 +65,10 @@ jobs:
       run: dotnet add package Microsoft.Extensions.Configuration.Json
       working-directory: src/AzureIoTHub.Portal.Tests.E2E/
       
+    - name: Install Microsoft Configuration UserSecrets package
+      run: dotnet add package Microsoft.Extensions.Configuration.UserSecrets
+      working-directory: src/AzureIoTHub.Portal.Tests.E2E/
+      
     - name: Install Selenium NuGet package
       run: dotnet add package Selenium.WebDriver
       working-directory: src/AzureIoTHub.Portal.Tests.E2E/
