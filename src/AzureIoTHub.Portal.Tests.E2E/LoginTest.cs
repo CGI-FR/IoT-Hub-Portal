@@ -29,7 +29,7 @@ namespace AzureIoTHub.Portal.Tests.E2E
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
             var loginpage = new LoginPage(driver, wait);
 
-            loginpage.Login("achraf.boujida@etu.uca.fr", "dDpDDhSFL7VvrQA");
+            loginpage.Login();
 
             _ = wait.Until(d => d.Url == "https://cgigeiotdemoportal.azurewebsites.net/");
 
