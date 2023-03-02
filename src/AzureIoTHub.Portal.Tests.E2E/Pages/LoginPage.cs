@@ -27,7 +27,7 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
 
             this.driver = driver;
             driver.Manage().Window.Maximize();
-            this.driver.Navigate().GoToUrl("url");
+            this.driver.Navigate().GoToUrl(url);
             this.wait = wait;
         }
 
