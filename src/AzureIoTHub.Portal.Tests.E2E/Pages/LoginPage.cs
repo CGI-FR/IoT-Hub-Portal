@@ -19,13 +19,13 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
         {
             var config = new ConfigurationBuilder().AddUserSecrets<LoginPage>().Build();
 
-            var url = config["AppSettings:URL"];
+            //var url = config["AppSettings:URL"];
             this.username = config["USERNAME"];
             this.password = config["PASSWORD"];
 
             this.driver = driver;
             driver.Manage().Window.Maximize();
-            this.driver.Navigate().GoToUrl(url);
+            this.driver.Navigate().GoToUrl("https://cgigeiotdemoportal.azurewebsites.net/");
             this.wait = wait;
         }
 
