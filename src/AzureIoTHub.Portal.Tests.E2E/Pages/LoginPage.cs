@@ -17,10 +17,9 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
 
         public LoginPage(IWebDriver driver, WebDriverWait wait)
         {
-            var config = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetParent(Directory.GetCurrentDirectory()).ToString())
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .Build();
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
+    .AddJsonFile("appsettings.json");
 
             var url = config["AppSettings:URL"];
             this.username = config["AppSettings:Username"].Replace("__USERNAME__", Environment.GetEnvironmentVariable("USERNAME"));
