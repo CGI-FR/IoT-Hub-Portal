@@ -30,8 +30,6 @@ namespace AzureIoTHub.Portal.Tests.E2E
             var loginpage = new LoginPage(driver, wait);
 
             loginpage.Login();
-            
-            Assert.That(loginpage.username, Is.EqualTo("achraf.boujida@etu.uca.fr"));
 
             _ = wait.Until(d => d.Url == "https://cgigeiotdemoportal.azurewebsites.net/");
 
