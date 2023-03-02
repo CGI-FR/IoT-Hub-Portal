@@ -69,6 +69,10 @@ jobs:
       run: dotnet add package Microsoft.Extensions.Configuration.UserSecrets
       working-directory: src/AzureIoTHub.Portal.Tests.E2E/
       
+    - name: Set user secrets
+      run: dotnet user-secrets init
+      working-directory: src/AzureIoTHub.Portal.Tests.E2E/
+      
     - name: Install Selenium NuGet package
       run: dotnet add package Selenium.WebDriver
       working-directory: src/AzureIoTHub.Portal.Tests.E2E/
@@ -92,6 +96,9 @@ jobs:
     - name: Build E2E test project
       run: dotnet build AzureIoTHub.Portal.Tests.E2E.csproj
       working-directory: src/AzureIoTHub.Portal.Tests.E2E
+      
+    - name: Set Selenium server
+      run: webdriver-manager start
       
     - name: Run E2E tests
       run: dotnet test AzureIoTHub.Portal.Tests.E2E.csproj --no-build
