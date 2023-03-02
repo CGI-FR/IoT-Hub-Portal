@@ -14,6 +14,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3.3.0
     
+    - name: Variables check
+      run: |
+        echo "USERNAME=$USERNAME"
+        echo "PASSWORD=$PASSWORD"
+    
     - name: Install Chrome Driver
       run: |
         wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
