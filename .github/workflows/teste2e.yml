@@ -97,9 +97,6 @@ jobs:
       run: dotnet build AzureIoTHub.Portal.Tests.E2E.csproj
       working-directory: src/AzureIoTHub.Portal.Tests.E2E
       
-    - name: Set Selenium server
-      run: webdriver-manager start
-      
     - name: Run E2E tests
       run: dotnet test AzureIoTHub.Portal.Tests.E2E.csproj --no-build
       working-directory: src/AzureIoTHub.Portal.Tests.E2E/
