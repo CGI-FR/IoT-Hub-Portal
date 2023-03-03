@@ -202,13 +202,26 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task RollOutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties)
         {
-            var configurations = await this.registryManager.GetConfigurationsAsync(0);
-
 #pragma warning disable CA1308 // Normalize strings to uppercase
             var configurationNamePrefix = modelId?.Trim()
                                                 .ToLowerInvariant()
                                                 .Replace(" ", "-", StringComparison.OrdinalIgnoreCase);
 #pragma warning restore CA1308 // Normalize strings to uppercase
+
+            await DeleteDeviceModelConfigurationByConfigurationNamePrefix(configurationNamePrefix);
+
+            var newConfiguration = new Configuration($"{configurationNamePrefix}-{DateTime.UtcNow.Ticks}");
+
+            newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
+            newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'";
+            newConfiguration.Content.DeviceContent = desiredProperties;
+
+            _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
+        }
+
+        public async Task DeleteDeviceModelConfigurationByConfigurationNamePrefix(string configurationNamePrefix)
+        {
+            var configurations = await this.registryManager.GetConfigurationsAsync(0);
 
             foreach (var item in configurations)
             {
@@ -219,14 +232,6 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 await this.registryManager.RemoveConfigurationAsync(item.Id);
             }
-
-            var newConfiguration = new Configuration($"{configurationNamePrefix}-{DateTime.UtcNow.Ticks}");
-
-            newConfiguration.Labels.Add("created-by", "Azure IoT hub Portal");
-            newConfiguration.TargetCondition = $"tags.modelId = '{modelId}'";
-            newConfiguration.Content.DeviceContent = desiredProperties;
-
-            _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }
 
         public async Task RollOutEdgeModelConfiguration(IoTEdgeModel edgeModel)

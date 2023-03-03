@@ -963,5 +963,31 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             this.mockRepository.VerifyAll();
             this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());
         }
+
+        [Test]
+        public async Task WhenConfigurationExistsDeleteDeviceModelConfigurationByConfigurationNamePrefixShouldRemoveIt()
+        {
+            // Arrange
+            var configsServices = CreateConfigsServices();
+            var configurationPrefix = Guid.NewGuid().ToString();
+            var suffix = Guid.NewGuid().ToString();
+
+            _ = this.mockRegistryManager.Setup(c => c.GetConfigurationsAsync(It.IsAny<int>()))
+                .ReturnsAsync(new Configuration[]
+                {
+                    new Configuration($"{configurationPrefix}-{suffix}"),
+                    new Configuration($"null-{suffix}")
+                });
+
+            _ = this.mockRegistryManager.Setup(c => c.RemoveConfigurationAsync(It.Is<string>(x => x == $"{configurationPrefix}-{suffix}")))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await configsServices.DeleteDeviceModelConfigurationByConfigurationNamePrefix(configurationPrefix);
+
+            // Assert
+            this.mockRegistryManager.Verify(c => c.GetConfigurationsAsync(It.IsAny<int>()), Times.Once());
+            this.mockRegistryManager.Verify(c => c.RemoveConfigurationAsync(It.IsAny<string>()), Times.Once());
+        }
     }
 }

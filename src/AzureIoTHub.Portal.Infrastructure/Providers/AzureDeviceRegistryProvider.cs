@@ -80,6 +80,25 @@ namespace AzureIoTHub.Portal.Infrastructure.Providers
             await this.dps.DeleteEnrollmentGroupAsync(enrollmentGroup, cancellationToken);
         }
 
+        public async Task DeleteEnrollmentGroupByDeviceModelIdAsync(string deviceModelId, CancellationToken cancellationToken = default)
+        {
+            var enrollmentGroupName = ComputeEnrollmentGroupName(deviceModelId);
+            EnrollmentGroup? enrollmentGroup;
+
+            try
+            {
+                enrollmentGroup = await this.dps.GetEnrollmentGroupAsync(enrollmentGroupName);
+            }
+            catch (HttpRequestException e)
+                when (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                // Nothing to do, the enrollement group does not exist.
+                return;
+            }
+
+            await this.dps.DeleteEnrollmentGroupAsync(enrollmentGroup, cancellationToken);
+        }
+
         /// <summary>
         /// this function get the attestation mechanism of the DPS.
         /// </summary>

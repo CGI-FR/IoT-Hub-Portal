@@ -23,7 +23,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
     using UnitTests.Mocks;
     using AutoFixture;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
-    using AzureIoTHub.Portal.Shared.Models.v10;
     using System.Linq;
     using AzureIoTHub.Portal.Shared.Models;
 

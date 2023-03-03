@@ -3,8 +3,10 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Providers
 {
+    using System;
     using System.Net;
     using System.Net.Http;
+    using System.Threading;
     using System.Threading.Tasks;
     using AzureIoTHub.Portal.Application.Wrappers;
     using AzureIoTHub.Portal.Infrastructure;
@@ -328,6 +330,52 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Providers
             Assert.AreEqual("FakeScopeID", result.ScopeID);
             Assert.AreEqual("Jsm0lyGpjaVYVP2g3FnmnmG9dI/9qU24wNoykUmermc=", result.SymmetricKey);
 
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteEnrollmentGroupByDeviceModelIdAsyncShouldDeleteEnrollmentGroup()
+        {
+            // Arrange
+            var manager = CreateManager();
+            var deviceModelId = Guid.NewGuid().ToString();
+            var attestation = new SymmetricKeyAttestation("aaa", "bbb");
+
+            _ = this.mockProvisioningServiceClient
+                .Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == deviceModelId)))
+                .ReturnsAsync(new EnrollmentGroup(deviceModelId, attestation)
+                {
+                    Capabilities = new DeviceCapabilities
+                    {
+                        IotEdge = true
+                    }
+                });
+
+            _ = this.mockProvisioningServiceClient.Setup(c => c.DeleteEnrollmentGroupAsync(It.IsAny<EnrollmentGroup>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await manager.DeleteEnrollmentGroupByDeviceModelIdAsync(deviceModelId);
+
+            // Assert
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteEnrollmentGroupByDeviceModelIdAsyncShouldBeNotFound()
+        {
+            // Arrange
+            var manager = CreateManager();
+            var deviceModelId = Guid.NewGuid().ToString();
+
+            _ = this.mockProvisioningServiceClient
+                .Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == deviceModelId)))
+                .Throws(new HttpRequestException(null, null, HttpStatusCode.NotFound));
+
+            // Act
+            await manager.DeleteEnrollmentGroupByDeviceModelIdAsync(deviceModelId);
+
+            // Assert
             this.mockRepository.VerifyAll();
         }
     }
