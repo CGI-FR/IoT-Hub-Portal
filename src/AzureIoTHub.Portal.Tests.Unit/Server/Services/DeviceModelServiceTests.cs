@@ -341,10 +341,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     Items = Array.Empty<Twin>()
                 });
 
-            _ = this.mockRegistryProvider.Setup(repository => repository.DeleteEnrollmentGroupByModelIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _ = this.mockRegistryProvider.Setup(repository => repository.DeleteEnrollmentGroupByDeviceModelIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockConfigService.Setup(repository => repository.RollOutDeviceModelConfigurationByModelIdAsync(It.IsAny<string>()))
+            _ = this.mockConfigService.Setup(repository => repository.DeleteDeviceModelConfigurationByConfigurationNamePrefix(It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceModelCommandRepository.Setup(repository => repository.GetAll())
@@ -405,10 +405,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                     Items = Array.Empty<Twin>()
                 });
 
-            _ = this.mockRegistryProvider.Setup(repository => repository.DeleteEnrollmentGroupByModelIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _ = this.mockRegistryProvider.Setup(repository => repository.DeleteEnrollmentGroupByDeviceModelIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            _ = this.mockConfigService.Setup(repository => repository.RollOutDeviceModelConfigurationByModelIdAsync(It.IsAny<string>()))
+            _ = this.mockConfigService.Setup(repository => repository.DeleteDeviceModelConfigurationByConfigurationNamePrefix(It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceModelCommandRepository.Setup(repository => repository.GetAll())

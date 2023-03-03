@@ -155,9 +155,9 @@ namespace AzureIoTHub.Portal.Server.Services
             }
 
             // TODO : Delete DPS and Configurations
-            await this.deviceRegistryProvider.DeleteEnrollmentGroupByModelIdAsync(deviceModelId, default);
+            await this.deviceRegistryProvider.DeleteEnrollmentGroupByDeviceModelIdAsync(deviceModelId, default);
 
-            await this.configService.RollOutDeviceModelConfigurationByModelIdAsync(deviceModelId);
+            await this.configService.DeleteDeviceModelConfigurationByConfigurationNamePrefix(deviceModelId);
 
             var deviceModelCommands = this.deviceModelCommandRepository.GetAll().Where(command =>
                     command.DeviceModelId.Equals(deviceModelId, StringComparison.Ordinal)).ToList();

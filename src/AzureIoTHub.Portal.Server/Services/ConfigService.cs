@@ -202,23 +202,13 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task RollOutDeviceModelConfiguration(string modelId, Dictionary<string, object> desiredProperties)
         {
-            var configurations = await this.registryManager.GetConfigurationsAsync(0);
-
 #pragma warning disable CA1308 // Normalize strings to uppercase
             var configurationNamePrefix = modelId?.Trim()
                                                 .ToLowerInvariant()
                                                 .Replace(" ", "-", StringComparison.OrdinalIgnoreCase);
 #pragma warning restore CA1308 // Normalize strings to uppercase
 
-            foreach (var item in configurations)
-            {
-                if (!item.Id.StartsWith(configurationNamePrefix, StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                await this.registryManager.RemoveConfigurationAsync(item.Id);
-            }
+            await DeleteDeviceModelConfigurationByConfigurationNamePrefix(configurationNamePrefix);
 
             var newConfiguration = new Configuration($"{configurationNamePrefix}-{DateTime.UtcNow.Ticks}");
 
@@ -229,15 +219,9 @@ namespace AzureIoTHub.Portal.Server.Services
             _ = await this.registryManager.AddConfigurationAsync(newConfiguration);
         }
 
-        public async Task RollOutDeviceModelConfigurationByModelIdAsync(string modelId)
+        public async Task DeleteDeviceModelConfigurationByConfigurationNamePrefix(string configurationNamePrefix)
         {
             var configurations = await this.registryManager.GetConfigurationsAsync(0);
-
-#pragma warning disable CA1308 // Normalize strings to uppercase
-            var configurationNamePrefix = modelId?.Trim()
-                                                .ToLowerInvariant()
-                                                .Replace(" ", "-", StringComparison.OrdinalIgnoreCase);
-#pragma warning restore CA1308 // Normalize strings to uppercase
 
             foreach (var item in configurations)
             {
