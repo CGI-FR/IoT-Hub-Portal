@@ -334,7 +334,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Providers
         }
 
         [Test]
-        public async Task DeleteEnrollmentGroupByModelIdAsyncShouldDeleteEnrollmentGroup()
+        public async Task DeleteEnrollmentGroupByDeviceModelIdAsyncShouldDeleteEnrollmentGroup()
         {
             // Arrange
             var manager = CreateManager();
@@ -353,6 +353,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Providers
 
             _ = this.mockProvisioningServiceClient.Setup(c => c.DeleteEnrollmentGroupAsync(It.IsAny<EnrollmentGroup>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
+
+            // Act
+            await manager.DeleteEnrollmentGroupByDeviceModelIdAsync(deviceModelId);
+
+            // Assert
+            this.mockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteEnrollmentGroupByDeviceModelIdAsyncShouldBeNotFound()
+        {
+            // Arrange
+            var manager = CreateManager();
+            var deviceModelId = Guid.NewGuid().ToString();
+
+            _ = this.mockProvisioningServiceClient
+                .Setup(c => c.GetEnrollmentGroupAsync(It.Is<string>(x => x == deviceModelId)))
+                .Throws(new HttpRequestException(null, null, HttpStatusCode.NotFound));
 
             // Act
             await manager.DeleteEnrollmentGroupByDeviceModelIdAsync(deviceModelId);
