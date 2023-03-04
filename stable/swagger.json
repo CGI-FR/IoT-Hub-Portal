@@ -2344,32 +2344,58 @@
         ],
         "summary": "Gets the device model list.",
         "operationId": "GET LoRaWAN device model list",
+        "parameters": [
+          {
+            "name": "searchText",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DeviceModelDto"
-                  }
+                  "$ref": "#/components/schemas/DeviceModelDtoPaginationResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DeviceModelDto"
-                  }
+                  "$ref": "#/components/schemas/DeviceModelDtoPaginationResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DeviceModelDto"
-                  }
+                  "$ref": "#/components/schemas/DeviceModelDtoPaginationResult"
                 }
               }
             }
@@ -2931,32 +2957,58 @@
         ],
         "summary": "Gets the device model list.",
         "operationId": "GET Device model list",
+        "parameters": [
+          {
+            "name": "searchText",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DeviceModelDto"
-                  }
+                  "$ref": "#/components/schemas/DeviceModelDtoPaginationResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DeviceModelDto"
-                  }
+                  "$ref": "#/components/schemas/DeviceModelDtoPaginationResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DeviceModelDto"
-                  }
+                  "$ref": "#/components/schemas/DeviceModelDtoPaginationResult"
                 }
               }
             }
@@ -4246,6 +4298,31 @@
         "additionalProperties": false,
         "description": "Device model."
       },
+      "DeviceModelDtoPaginationResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeviceModelDto"
+            },
+            "description": "The current page items.",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "description": "The total number of items.",
+            "format": "int32"
+          },
+          "nextPage": {
+            "type": "string",
+            "description": "The query next page Url.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Class representing the page results."
+      },
       "DeviceProperty": {
         "required": [
           "displayName",
@@ -4455,6 +4532,9 @@
           "body": {
             "minLength": 1,
             "type": "string"
+          },
+          "consentToCollectTechnicalDetails": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
