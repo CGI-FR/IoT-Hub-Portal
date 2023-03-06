@@ -53,6 +53,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
+            var model = new DeviceModelDto
+            {
+                ModelId = modelId,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var metrics = new ConfigurationMetrics
+            {
+                CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
+                MetricsApplied = Random.Shared.Next(),
+                MetricsFailure = Random.Shared.Next(),
+                MetricsSuccess = Random.Shared.Next(),
+                MetricsTargeted = Random.Shared.Next()
+            };
+
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
@@ -66,17 +81,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics
-                {
-                    CreationDate = DateTime.MinValue
-                });
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new DeviceModelDto
                 {
                     ModelId = modelId,
-                    Name = Guid.NewGuid().ToString()
+                    Name = model.Name
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -92,6 +104,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
 
             // Assert
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Model: <b>{model.Name}</b></p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(3) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Created at {metrics.CreationDate}</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(4) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsTargeted} devices targeted</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(5) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsApplied} devices applied</p>");
+
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -110,6 +134,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             var cut = RenderComponent<DeviceConfigurationDetailPage>(ComponentParameter.CreateParameter("ConfigId", configurationId));
 
             // Assert
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Model: <b></b></p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(3) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Created at {DateTime.MinValue}</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(4) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">0 devices targeted</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(5) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">0 devices applied</p>");
+
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -119,6 +155,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Arrange
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
+
+            var model = new DeviceModelDto
+            {
+                ModelId = modelId,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var metrics = new ConfigurationMetrics
+            {
+                CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
+                MetricsApplied = Random.Shared.Next(),
+                MetricsFailure = Random.Shared.Next(),
+                MetricsSuccess = Random.Shared.Next(),
+                MetricsTargeted = Random.Shared.Next()
+            };
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
@@ -133,17 +184,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics
-                {
-                    CreationDate = DateTime.MinValue
-                });
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new DeviceModelDto
                 {
                     ModelId = modelId,
-                    Name = Guid.NewGuid().ToString()
+                    Name = model.Name
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -166,6 +214,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             cut.WaitForElement("#delete-device-configuration").Click();
 
             // Assert
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Model: <b>{model.Name}</b></p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(3) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Created at {metrics.CreationDate}</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(4) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsTargeted} devices targeted</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(5) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsApplied} devices applied</p>");
+
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -245,6 +305,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
 
+            var model = new DeviceModelDto
+            {
+                ModelId = modelId,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var metrics = new ConfigurationMetrics
+            {
+                CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
+                MetricsApplied = Random.Shared.Next(),
+                MetricsFailure = Random.Shared.Next(),
+                MetricsSuccess = Random.Shared.Next(),
+                MetricsTargeted = Random.Shared.Next()
+            };
+
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
@@ -263,14 +338,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics());
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new DeviceModelDto
                 {
                     ModelId = modelId,
-                    Name = Guid.NewGuid().ToString()
+                    Name = model.Name
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -292,6 +367,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Assert
             _ = cut.WaitForElement("#tag-tag0");
             _ = cut.WaitForElement("#tag-tag1");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Model: <b>{model.Name}</b></p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(3) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Created at {metrics.CreationDate}</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(4) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsTargeted} devices targeted</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(5) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsApplied} devices applied</p>");
+
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -301,6 +389,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Arrange
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
+
+            var model = new DeviceModelDto
+            {
+                ModelId = modelId,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var metrics = new ConfigurationMetrics
+            {
+                CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
+                MetricsApplied = Random.Shared.Next(),
+                MetricsFailure = Random.Shared.Next(),
+                MetricsSuccess = Random.Shared.Next(),
+                MetricsTargeted = Random.Shared.Next()
+            };
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
@@ -320,14 +423,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics());
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new DeviceModelDto
                 {
                     ModelId = modelId,
-                    Name = Guid.NewGuid().ToString()
+                    Name = model.Name
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -352,6 +455,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             // Assert
             Assert.AreEqual(1, cut.Instance.Configuration.Tags.Count);
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Model: <b>{model.Name}</b></p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(3) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Created at {metrics.CreationDate}</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(4) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsTargeted} devices targeted</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(5) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsApplied} devices applied</p>");
+
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -363,6 +479,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
+
+            var model = new DeviceModelDto
+            {
+                ModelId = modelId,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var metrics = new ConfigurationMetrics
+            {
+                CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
+                MetricsApplied = Random.Shared.Next(),
+                MetricsFailure = Random.Shared.Next(),
+                MetricsSuccess = Random.Shared.Next(),
+                MetricsTargeted = Random.Shared.Next()
+            };
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
@@ -381,14 +512,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics());
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new DeviceModelDto
                 {
                     ModelId = modelId,
-                    Name = Guid.NewGuid().ToString()
+                    Name = model.Name
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -414,6 +545,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Assert
             _ = cut.WaitForElement("#tag-tag1");
             Assert.AreEqual(2, cut.Instance.Configuration.Tags.Count);
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Model: <b>{model.Name}</b></p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(3) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Created at {metrics.CreationDate}</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(4) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsTargeted} devices targeted</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(5) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsApplied} devices applied</p>");
+
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -423,6 +567,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Arrange
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
+
+            var model = new DeviceModelDto
+            {
+                ModelId = modelId,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var metrics = new ConfigurationMetrics
+            {
+                CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
+                MetricsApplied = Random.Shared.Next(),
+                MetricsFailure = Random.Shared.Next(),
+                MetricsSuccess = Random.Shared.Next(),
+                MetricsTargeted = Random.Shared.Next()
+            };
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
@@ -447,14 +606,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics());
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new DeviceModelDto
                 {
                     ModelId = modelId,
-                    Name = Guid.NewGuid().ToString()
+                    Name = model.Name
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -502,6 +661,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = cut.WaitForElement("#property-prop4");
             _ = cut.WaitForElement("#property-prop5");
             _ = cut.WaitForElement("#property-prop6");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Model: <b>{model.Name}</b></p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(3) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Created at {metrics.CreationDate}</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(4) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsTargeted} devices targeted</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(5) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsApplied} devices applied</p>");
+
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -511,6 +683,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Arrange
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
+
+            var model = new DeviceModelDto
+            {
+                ModelId = modelId,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var metrics = new ConfigurationMetrics
+            {
+                CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
+                MetricsApplied = Random.Shared.Next(),
+                MetricsFailure = Random.Shared.Next(),
+                MetricsSuccess = Random.Shared.Next(),
+                MetricsTargeted = Random.Shared.Next()
+            };
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
@@ -531,14 +718,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics());
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new DeviceModelDto
                 {
                     ModelId = modelId,
-                    Name = Guid.NewGuid().ToString()
+                    Name = model.Name
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -584,6 +771,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             // Assert
             Assert.AreEqual(1, cut.Instance.Configuration.Properties.Count);
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Model: <b>{model.Name}</b></p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(3) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Created at {metrics.CreationDate}</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(4) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsTargeted} devices targeted</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(5) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsApplied} devices applied</p>");
+
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -593,6 +793,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Arrange
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
+
+            var model = new DeviceModelDto
+            {
+                ModelId = modelId,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var metrics = new ConfigurationMetrics
+            {
+                CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
+                MetricsApplied = Random.Shared.Next(),
+                MetricsFailure = Random.Shared.Next(),
+                MetricsSuccess = Random.Shared.Next(),
+                MetricsTargeted = Random.Shared.Next()
+            };
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
@@ -613,14 +828,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics());
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new DeviceModelDto
                 {
                     ModelId = modelId,
-                    Name = Guid.NewGuid().ToString()
+                    Name = model.Name
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -668,6 +883,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Assert
             _ = cut.WaitForElement("#property-prop2");
             Assert.AreEqual(2, cut.Instance.Configuration.Properties.Count);
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Model: <b>{model.Name}</b></p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(3) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Created at {metrics.CreationDate}</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(4) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsTargeted} devices targeted</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(5) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsApplied} devices applied</p>");
+
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -677,6 +905,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Arrange
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
+
+            var model = new DeviceModelDto
+            {
+                ModelId = modelId,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var metrics = new ConfigurationMetrics
+            {
+                CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
+                MetricsApplied = Random.Shared.Next(),
+                MetricsFailure = Random.Shared.Next(),
+                MetricsSuccess = Random.Shared.Next(),
+                MetricsTargeted = Random.Shared.Next()
+            };
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
@@ -700,14 +943,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics());
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new DeviceModelDto
                 {
                     ModelId = modelId,
-                    Name = Guid.NewGuid().ToString()
+                    Name = model.Name
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -761,6 +1004,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             // Assert
             cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-configurations"));
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Model: <b>{model.Name}</b></p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(3) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Created at {metrics.CreationDate}</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(4) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsTargeted} devices targeted</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(5) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsApplied} devices applied</p>");
+
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -770,6 +1026,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Arrange
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
+
+            var model = new DeviceModelDto
+            {
+                ModelId = modelId,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var metrics = new ConfigurationMetrics
+            {
+                CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
+                MetricsApplied = Random.Shared.Next(),
+                MetricsFailure = Random.Shared.Next(),
+                MetricsSuccess = Random.Shared.Next(),
+                MetricsTargeted = Random.Shared.Next()
+            };
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
@@ -793,14 +1064,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics());
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new DeviceModelDto
                 {
                     ModelId = modelId,
-                    Name = Guid.NewGuid().ToString()
+                    Name = model.Name
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -856,6 +1127,18 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             cut.Find("#saveButton").Click();
 
             // Assert
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Model: <b>{model.Name}</b></p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(3) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Created at {metrics.CreationDate}</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(4) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsTargeted} devices targeted</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(5) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsApplied} devices applied</p>");
+
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -866,6 +1149,21 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             // Arrange
             var configurationId = Guid.NewGuid().ToString();
             var modelId = Guid.NewGuid().ToString();
+
+            var model = new DeviceModelDto
+            {
+                ModelId = modelId,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var metrics = new ConfigurationMetrics
+            {
+                CreationDate = DateTime.FromOADate(Random.Shared.NextDouble()),
+                MetricsApplied = Random.Shared.Next(),
+                MetricsFailure = Random.Shared.Next(),
+                MetricsSuccess = Random.Shared.Next(),
+                MetricsTargeted = Random.Shared.Next()
+            };
 
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfiguration(It.Is<string>(s =>
@@ -880,17 +1178,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics
-                {
-                    CreationDate = DateTime.MinValue
-                });
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
                 .ReturnsAsync(new DeviceModelDto
                 {
                     ModelId = modelId,
-                    Name = Guid.NewGuid().ToString()
+                    Name = model.Name
                 });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
@@ -910,6 +1205,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
 
             // Assert
             cut.WaitForAssertion(() => Services.GetRequiredService<FakeNavigationManager>().Uri.Should().EndWith("/device-configurations"));
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(1) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Model: <b>{model.Name}</b></p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(3) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">Created at {metrics.CreationDate}</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(4) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsTargeted} devices targeted</p>");
+
+            cut.Find("div.mud-card-content > .mud-grid > .mud-grid-item:nth-child(5) > p")
+                .MarkupMatches($"<p class=\"mud-typography mud-typography-body1\">{metrics.MetricsApplied} devices applied</p>");
+
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }
