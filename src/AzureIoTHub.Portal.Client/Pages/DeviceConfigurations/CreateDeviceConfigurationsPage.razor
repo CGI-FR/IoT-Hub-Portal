@@ -1,6 +1,7 @@
 ﻿@page "/device-configurations/new"
 @using AzureIoTHub.Portal.Models.v10
 @using AzureIoTHub.Portal.Models
+@using AzureIoTHub.Portal.Shared.Models.v10.Filters;
 
 @attribute [Authorize]
 @inject ISnackbar Snackbar
@@ -242,7 +243,15 @@
         {
             isProcessing = true;
 
-            var models = await DeviceModelsClientService.GetDeviceModels();
+            var filter = new DeviceModelFilter
+            {
+                SearchText = string.Empty,
+                PageNumber = 0,
+                PageSize = 100,
+                OrderBy = new string[0]
+            };
+
+            var models = await DeviceModelsClientService.GetDeviceModels(filter);
 
             AvailableModels = models.Items.Where(c => !c.SupportLoRaFeatures).ToArray();
 
