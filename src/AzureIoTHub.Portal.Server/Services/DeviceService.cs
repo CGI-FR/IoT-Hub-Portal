@@ -17,6 +17,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Domain.Exceptions;
     using Domain.Repositories;
     using Infrastructure;
+    using Microsoft.Extensions.Logging;
     using Models.v10;
 
     public class DeviceService : DeviceServiceBase<DeviceDetails>
@@ -37,8 +38,9 @@ namespace AzureIoTHub.Portal.Server.Services
             IDeviceTagService deviceTagService,
             IDeviceModelImageManager deviceModelImageManager,
             IDeviceTwinMapper<DeviceListItem, DeviceDetails> deviceTwinMapper,
-            PortalDbContext portalDbContext)
-            : base(portalDbContext, mapper, externalDevicesService, deviceTagService, deviceModelImageManager, deviceTwinMapper)
+            PortalDbContext portalDbContext,
+            ILogger<DeviceService> logger)
+            : base(portalDbContext, mapper, externalDevicesService, deviceTagService, deviceModelImageManager, deviceTwinMapper, logger)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;

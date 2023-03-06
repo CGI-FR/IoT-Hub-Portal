@@ -18,7 +18,9 @@ namespace AzureIoTHub.Portal.Server.Services
     using Infrastructure;
     using Infrastructure.Repositories;
     using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
     using Models.v10;
     using Shared.Models.v1._0;
     using Shared.Models.v10.Filters;
@@ -33,13 +35,15 @@ namespace AzureIoTHub.Portal.Server.Services
         private readonly IDeviceTagService deviceTagService;
         private readonly IDeviceModelImageManager deviceModelImageManager;
         private readonly IDeviceTwinMapper<DeviceListItem, TDto> deviceTwinMapper;
+        private readonly ILogger<DeviceServiceBase<TDto>> logger;
 
         protected DeviceServiceBase(PortalDbContext portalDbContext,
             IMapper mapper,
             IExternalDeviceService externalDevicesService,
             IDeviceTagService deviceTagService,
             IDeviceModelImageManager deviceModelImageManager,
-            IDeviceTwinMapper<DeviceListItem, TDto> deviceTwinMapper)
+            IDeviceTwinMapper<DeviceListItem, TDto> deviceTwinMapper,
+            ILogger<DeviceServiceBase<TDto>> logger)
         {
             this.portalDbContext = portalDbContext;
             this.mapper = mapper;
@@ -47,6 +51,7 @@ namespace AzureIoTHub.Portal.Server.Services
             this.deviceTagService = deviceTagService;
             this.deviceModelImageManager = deviceModelImageManager;
             this.deviceTwinMapper = deviceTwinMapper;
+            this.logger = logger;
         }
 
         public async Task<PaginatedResult<DeviceListItem>> GetDevices(string searchText = null, bool? searchStatus = null, bool? searchState = null, int pageSize = 10,
@@ -181,7 +186,14 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public virtual async Task DeleteDevice(string deviceId)
         {
-            await this.externalDevicesService.DeleteDevice(deviceId);
+            try
+            {
+                await this.externalDevicesService.DeleteDevice(deviceId);
+            }
+            catch (DeviceNotFoundException e)
+            {
+                this.logger.LogWarning($"Unable to delete the device with ID {deviceId} because it doesn't exist on IoT Hub {e.Message}");
+            }
 
             await DeleteDeviceInDatabase(deviceId);
         }

@@ -19,6 +19,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using EntityFramework.Exceptions.Common;
     using FluentAssertions;
     using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Common.Exceptions;
     using Microsoft.Azure.Devices.Shared;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
@@ -650,6 +651,38 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Assert
             _ = result.Count().Should().Be(expectedLabels.Count);
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task DeleteDevice_DeviceNotFoundOnAzure_DeviceDeletedInDatabase()
+        {
+            // Arrange
+            var deviceDto = new DeviceDetails
+            {
+                DeviceID = Fixture.Create<string>()
+            };
+
+            _ = this.mockExternalDevicesService.Setup(service => service.DeleteDevice(deviceDto.DeviceID))
+                .ThrowsAsync(new DeviceNotFoundException(deviceDto.DeviceID));
+
+            _ = this.mockDeviceRepository.Setup(repository => repository.GetByIdAsync(deviceDto.DeviceID, d => d.Tags, d => d.Labels))
+                .ReturnsAsync(new Device
+                {
+                    Tags = new List<DeviceTagValue>(),
+                    Labels = new List<Label>()
+                });
+
+            this.mockDeviceRepository.Setup(repository => repository.Delete(deviceDto.DeviceID))
+                .Verifiable();
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await this.deviceService.DeleteDevice(deviceDto.DeviceID);
+
+            // Assert
             MockRepository.VerifyAll();
         }
     }
