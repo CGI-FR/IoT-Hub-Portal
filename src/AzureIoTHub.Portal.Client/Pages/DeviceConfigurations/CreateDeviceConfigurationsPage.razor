@@ -248,10 +248,7 @@
                 SearchText = string.Empty,
                 PageNumber = 0,
                 PageSize = 10,
-                OrderBy = new string[]
-                {
-                    null
-                }
+                OrderBy = new string[0]
             };
 
             var models = await DeviceModelsClientService.GetDeviceModels(filter);
