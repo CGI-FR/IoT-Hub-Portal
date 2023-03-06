@@ -81,12 +81,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics
-                {
-                    CreationDate = metrics.CreationDate,
-                    MetricsTargeted = metrics.MetricsTargeted,
-                    MetricsApplied = metrics.MetricsApplied
-                });
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
@@ -189,12 +184,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics
-                {
-                    CreationDate = metrics.CreationDate,
-                    MetricsTargeted = metrics.MetricsTargeted,
-                    MetricsApplied = metrics.MetricsApplied
-                });
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
@@ -348,12 +338,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics
-                {
-                    CreationDate = metrics.CreationDate,
-                    MetricsTargeted = metrics.MetricsTargeted,
-                    MetricsApplied = metrics.MetricsApplied
-                });
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
@@ -438,12 +423,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics
-                {
-                    CreationDate = metrics.CreationDate,
-                    MetricsTargeted = metrics.MetricsTargeted,
-                    MetricsApplied = metrics.MetricsApplied
-                });
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
@@ -532,12 +512,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics
-                {
-                    CreationDate = metrics.CreationDate,
-                    MetricsTargeted = metrics.MetricsTargeted,
-                    MetricsApplied = metrics.MetricsApplied
-                });
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
@@ -631,12 +606,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics
-                {
-                    CreationDate = metrics.CreationDate,
-                    MetricsTargeted = metrics.MetricsTargeted,
-                    MetricsApplied = metrics.MetricsApplied
-                });
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
@@ -748,12 +718,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics
-                {
-                    CreationDate = metrics.CreationDate,
-                    MetricsTargeted = metrics.MetricsTargeted,
-                    MetricsApplied = metrics.MetricsApplied
-                });
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
@@ -863,12 +828,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics
-                {
-                    CreationDate = metrics.CreationDate,
-                    MetricsTargeted = metrics.MetricsTargeted,
-                    MetricsApplied = metrics.MetricsApplied
-                });
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
@@ -983,12 +943,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics
-                {
-                    CreationDate = metrics.CreationDate,
-                    MetricsTargeted = metrics.MetricsTargeted,
-                    MetricsApplied = metrics.MetricsApplied
-                });
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
@@ -1109,12 +1064,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics
-                {
-                    CreationDate = metrics.CreationDate,
-                    MetricsTargeted = metrics.MetricsTargeted,
-                    MetricsApplied = metrics.MetricsApplied
-                });
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
@@ -1228,12 +1178,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             _ = this.mockDeviceConfigurationsClientService.Setup(service =>
                     service.GetDeviceConfigurationMetrics(It.Is<string>(s =>
                         configurationId.Equals(s, StringComparison.Ordinal))))
-                .ReturnsAsync(new ConfigurationMetrics
-                {
-                    CreationDate = metrics.CreationDate,
-                    MetricsTargeted = metrics.MetricsTargeted,
-                    MetricsApplied = metrics.MetricsApplied
-                });
+                .ReturnsAsync(metrics);
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.GetDeviceModel(It.Is<string>(s => modelId.Equals(s, StringComparison.Ordinal))))
