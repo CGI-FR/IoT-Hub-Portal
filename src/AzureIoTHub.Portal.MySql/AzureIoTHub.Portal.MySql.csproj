@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Migrations\SQL\DownQuartzNetTables.sql" />
+    <None Remove="Migrations\SQL\UpQuartzNetTables.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -17,6 +22,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AzureIoTHub.Portal.Infrastructure\AzureIoTHub.Portal.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\SQL\DownQuartzNetTables.sql" />
+    <EmbeddedResource Include="Migrations\SQL\UpQuartzNetTables.sql" />
   </ItemGroup>
 
 </Project>
