@@ -10,4 +10,5 @@ ignore:
    - "**/PortalDbContext.cs"
    - "**/Migrations/*.cs"
    - "**/Seeds/*.cs"
-   - "**/PortalDbContextFactory.cs"   
+   - "**/PortalDbContextFactory.cs"
+   - "**/QuartzConfiguratorExtension.cs"
