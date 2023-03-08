@@ -1,9 +1,6 @@
 @description('Location for the resources.')
 param location string
 
-@description('Prefix used for resource names. Should be unique as this will also be used for domain names.')
-param uniqueSolutionPrefix string
-
 @description('PostgreSQL user')
 param pgsqlAdminLogin string = concat(uniqueString(resourceGroup().id, newGuid()))
 
@@ -35,18 +32,42 @@ param ideasAuthenticationHeader string = 'Ocp-Apim-Subscription-Key'
 @description('Authentication token to interact with Awesome-Ideas. Required when ideasEnabled is true')
 param ideasAuthenticationToken string = ''
 
-var pgsqlServerName = '${uniqueSolutionPrefix}pgsql'
-var iotHubName = '${uniqueSolutionPrefix}hub'
-var dpsName = '${uniqueSolutionPrefix}dps'
-var siteName = '${uniqueSolutionPrefix}portal'
-var servicePlanName = '${uniqueSolutionPrefix}asp'
-var storageAccountName = '${uniqueSolutionPrefix}storage'
-var iotHubOwnerPolicyName = 'iothubowner'
-var provisioningserviceownerPolicyName = 'provisioningserviceowner'
-var deviceImageContainerName = 'device-images'
-var iamScopeName = 'API.Access'
-var storageAccountId = '${resourceGroup().id}/providers/Microsoft.Storage/storageAccounts/${storageAccountName}'
-var appInsightName = '${uniqueSolutionPrefix}insight'
+@description('PostgreSQL Server Name')
+param pgsqlServerName string
+
+@description('IotHub Name')
+param iotHubName string
+
+@description('DPS Name')
+param dpsName string
+
+@description('Site Name')
+param siteName string
+
+@description('Service Plan Name')
+param servicePlanName string
+
+@description('Storage Account Name')
+param storageAccountName string
+
+@description('IotHub Owner Policy Name')
+param iotHubOwnerPolicyName string
+
+@description('Provisioning Service Owner Policy Name')
+param provisioningserviceownerPolicyName string
+
+@description('Device Image Container Name')
+param deviceImageContainerName string
+
+@description('IAM Scope Name')
+param iamScopeName string
+
+@description('Storage Account Id')
+param storageAccountId string
+
+@description('App Insight Name')
+param appInsightName string
+
 
 module iotHub './iothub.bicep' = {
   name: 'iotHub'

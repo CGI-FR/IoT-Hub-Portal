@@ -74,23 +74,21 @@ param ideasAuthenticationHeader string = 'Ocp-Apim-Subscription-Key'
 @description('Authentication token to interact with Awesome-Ideas. Required when ideasEnabled is true')
 param ideasAuthenticationToken string = ''
 
-var starterKitDeploymentName = 'lorawan-starter-kit'
 var portalWithLoRaDeploymentName = 'iothub-portal-with-lora'
 var portalWithoutLoRaDeploymentName = 'iothub-portal-without-lora'
 
-module starterKitDeployment '../iotedge-lorawan-starterkit/TemplateBicep/main.bicep' = if (isLoRaFeatureEnabled) {
-  name: starterKitDeploymentName
-  params: {
-    location: location
-    uniqueSolutionPrefix: uniqueSolutionPrefix
-    edgeGatewayName: edgeGatewayName
-    deployDevice: deployDevice
-    resetPin: resetPin
-    region: region
-    spiSpeed: spiSpeed
-    spiDev: spiDev
-  }
-}
+var pgsqlServerName = '${uniqueSolutionPrefix}pgsql'
+var iotHubName = '${uniqueSolutionPrefix}hub'
+var dpsName = '${uniqueSolutionPrefix}dps'
+var siteName = '${uniqueSolutionPrefix}portal'
+var servicePlanName = '${uniqueSolutionPrefix}asp'
+var storageAccountName = '${uniqueSolutionPrefix}storage'
+var iotHubOwnerPolicyName = 'iothubowner'
+var provisioningserviceownerPolicyName = 'provisioningserviceowner'
+var deviceImageContainerName = 'device-images'
+var iamScopeName = 'API.Access'
+var storageAccountId = '${resourceGroup().id}/providers/Microsoft.Storage/storageAccounts/${storageAccountName}'
+var appInsightName = '${uniqueSolutionPrefix}insight'
 
 module portalWithLoRaDeployment './portalDeployWithLoRa.bicep' = if (isLoRaFeatureEnabled) {
   name: portalWithLoRaDeploymentName
@@ -107,17 +105,31 @@ module portalWithLoRaDeployment './portalDeployWithLoRa.bicep' = if (isLoRaFeatu
     ideasUrl: ideasUrl
     ideasAuthenticationHeader: ideasAuthenticationHeader
     ideasAuthenticationToken: ideasAuthenticationToken
+    edgeGatewayName: edgeGatewayName
+    deployDevice: deployDevice
+    resetPin: resetPin
+    region: region
+    spiSpeed: spiSpeed
+    spiDev: spiDev
+    appInsightName: appInsightName
+    deviceImageContainerName: deviceImageContainerName
+    dpsName: dpsName
+    iamScopeName: iamScopeName
+    iotHubName: iotHubName
+    iotHubOwnerPolicyName: iotHubOwnerPolicyName
+    pgsqlServerName: pgsqlServerName
+    provisioningserviceownerPolicyName: provisioningserviceownerPolicyName
+    servicePlanName: servicePlanName
+    siteName: siteName
+    storageAccountId: storageAccountId
+    storageAccountName: storageAccountName
   }
-  dependsOn: [
-    starterKitDeployment
-  ]
 }
 
 module portalWithoutLoRaDeployment './portalDeployWithoutLoRa.bicep' = if (!isLoRaFeatureEnabled) {
   name: portalWithoutLoRaDeploymentName
   params: {
     location: location
-    uniqueSolutionPrefix: uniqueSolutionPrefix
     pgsqlAdminLogin: pgsqlAdminLogin
     pgsqlAdminPassword: pgsqlAdminPassword
     openIdAuthority: openIdAuthority
@@ -128,5 +140,17 @@ module portalWithoutLoRaDeployment './portalDeployWithoutLoRa.bicep' = if (!isLo
     ideasUrl: ideasUrl
     ideasAuthenticationHeader: ideasAuthenticationHeader
     ideasAuthenticationToken: ideasAuthenticationToken
+    appInsightName: appInsightName
+    deviceImageContainerName: deviceImageContainerName
+    dpsName: dpsName
+    iamScopeName: iamScopeName
+    iotHubName: iotHubName
+    iotHubOwnerPolicyName: iotHubOwnerPolicyName
+    pgsqlServerName: pgsqlServerName
+    provisioningserviceownerPolicyName: provisioningserviceownerPolicyName
+    servicePlanName: servicePlanName
+    siteName: siteName
+    storageAccountId: storageAccountId
+    storageAccountName: storageAccountName
   }
 }
