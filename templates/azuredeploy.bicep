@@ -74,9 +74,6 @@ param ideasAuthenticationHeader string = 'Ocp-Apim-Subscription-Key'
 @description('Authentication token to interact with Awesome-Ideas. Required when ideasEnabled is true')
 param ideasAuthenticationToken string = ''
 
-var portalWithLoRaDeploymentName = 'iothub-portal-with-lora'
-var portalWithoutLoRaDeploymentName = 'iothub-portal-without-lora'
-
 var pgsqlServerName = '${uniqueSolutionPrefix}pgsql'
 var iotHubName = '${uniqueSolutionPrefix}hub'
 var dpsName = '${uniqueSolutionPrefix}dps'
@@ -89,9 +86,10 @@ var deviceImageContainerName = 'device-images'
 var iamScopeName = 'API.Access'
 var storageAccountId = '${resourceGroup().id}/providers/Microsoft.Storage/storageAccounts/${storageAccountName}'
 var appInsightName = '${uniqueSolutionPrefix}insight'
+var functionAppName = '${uniqueSolutionPrefix}function'
 
-module portalWithLoRaDeployment './portalDeployWithLoRa.bicep' = if (isLoRaFeatureEnabled) {
-  name: portalWithLoRaDeploymentName
+module portalWithLoRaDeployment './portal_with_lorawan_and_starter_kit.bicep' = if (isLoRaFeatureEnabled) {
+  name: 'iothub-portal-with-lorawan'
   params: {
     location: location
     uniqueSolutionPrefix: uniqueSolutionPrefix
@@ -123,11 +121,12 @@ module portalWithLoRaDeployment './portalDeployWithLoRa.bicep' = if (isLoRaFeatu
     siteName: siteName
     storageAccountId: storageAccountId
     storageAccountName: storageAccountName
+    functionAppName: functionAppName
   }
 }
 
-module portalWithoutLoRaDeployment './portalDeployWithoutLoRa.bicep' = if (!isLoRaFeatureEnabled) {
-  name: portalWithoutLoRaDeploymentName
+module portalWithoutLoRaDeployment './portal_without_lorawan.bicep' = if (!isLoRaFeatureEnabled) {
+  name: 'iothub-portal-without-lorawan'
   params: {
     location: location
     pgsqlAdminLogin: pgsqlAdminLogin
