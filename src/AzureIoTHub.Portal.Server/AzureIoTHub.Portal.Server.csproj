@@ -67,7 +67,7 @@
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.5.0" />
     <PackageReference Include="MudBlazor" Version="6.1.9" />
     <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.18.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="8.0.0" />
     <PackageReference Include="Quartz" Version="3.6.2" />
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.6.0" />
