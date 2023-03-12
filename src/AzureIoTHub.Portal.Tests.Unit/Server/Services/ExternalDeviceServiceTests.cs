@@ -220,7 +220,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var service = CreateService();
-            var mockQuery = this.mockRepository.Create<IQuery>();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
             _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())
@@ -248,7 +247,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         {
             // Arrange
             var service = CreateService();
-            var mockQuery = this.mockRepository.Create<IQuery>();
             var mockCountQuery = this.mockRepository.Create<IQuery>();
 
             _ = mockCountQuery.Setup(c => c.GetNextAsJsonAsync())

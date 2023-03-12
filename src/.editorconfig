@@ -20,6 +20,9 @@ dotnet_style_qualification_for_method = false:warning
 dotnet_style_qualification_for_event = false:warning
 dotnet_diagnostic.CA1848.severity = silent
 dotnet_style_predefined_type_for_locals_parameters_members = true:silent
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
 
 [*.cs]
 dotnet_naming_rule.private_constants_rule.severity = warning
@@ -69,6 +72,7 @@ csharp_style_inlined_variable_declaration = true:suggestion
 csharp_style_deconstructed_variable_declaration = true:suggestion
 csharp_style_var_when_type_is_apparent = true:suggestion
 csharp_space_around_declaration_statements = ignore
+csharp_style_prefer_top_level_statements = true:silent
 
 [*.md]
 charset = utf-8

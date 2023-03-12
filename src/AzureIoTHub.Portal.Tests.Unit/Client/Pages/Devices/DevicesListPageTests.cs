@@ -467,8 +467,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             var cut = RenderComponent<DeviceListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
+            using var emptyResult = new StringContent(string.Empty);
+
             _ = this.mockDeviceClientService.Setup(c => c.ExportDeviceList())
-                .ReturnsAsync(new StringContent(string.Empty));
+                .ReturnsAsync(emptyResult);
 
             cut.WaitForElement("#manageDevicesButtonToggle").Click();
 
@@ -504,8 +506,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             var cut = RenderComponent<DeviceListPage>();
             cut.WaitForAssertion(() => cut.Markup.Should().NotContain("Loading..."));
 
+            using var emptyResult = new StringContent(string.Empty);
+
             _ = this.mockDeviceClientService.Setup(c => c.ExportTemplateFile())
-                .ReturnsAsync(new StringContent(string.Empty));
+                .ReturnsAsync(emptyResult);
 
             cut.WaitForElement("#manageDevicesButtonToggle").Click();
 

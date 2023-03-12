@@ -163,13 +163,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         [Test]
         public void OnInitializedAsyncShouldProcessProblemDetailsExceptionWhenIssueOccursOnGettingDeviceTags()
         {
-            var mockDeviceModel = new DeviceModelDto
-            {
-                ModelId = Guid.NewGuid().ToString(),
-                Description = Guid.NewGuid().ToString(),
-                SupportLoRaFeatures = false,
-                Name = Guid.NewGuid().ToString()
-            };
 
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
