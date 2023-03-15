@@ -8,8 +8,8 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-        USERNAME: ${{ secrets.E2E_Testing_Credentials.USERNAME }}
-        PASSWORD: ${{ secrets.E2E_Testing_Credentials.PASSWORD }}
+        USERNAME: ${{ secrets.USERNAME }}
+        PASSWORD: ${{ secrets.PASSWORD }}
     
     steps:
     - uses: actions/checkout@v3.3.0
@@ -86,7 +86,7 @@ jobs:
       working-directory: src/AzureIoTHub.Portal.Tests.E2E/
     
     - name: Environment testing
-      run: echo ${USERNAME}
+      run: echo $USERNAME
       
   test:
     name: Test
@@ -104,5 +104,5 @@ jobs:
       run: dotnet test AzureIoTHub.Portal.Tests.E2E.csproj --no-build
       working-directory: src/AzureIoTHub.Portal.Tests.E2E/
       env:
-        USERNAME: ${{ secrets.E2E_Testing_Credentials.USERNAME }}
-        PASSWORD: ${{ secrets.E2E_Testing_Credentials.PASSWORD }}
+        USERNAME: ${{ secrets.USERNAME }}
+        PASSWORD: ${{ secrets.PASSWORD }}
