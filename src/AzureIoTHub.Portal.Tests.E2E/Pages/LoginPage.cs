@@ -5,7 +5,6 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
 {
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.UI;
-    using Microsoft.Extensions.Configuration;
 
     public class LoginPage
     {
