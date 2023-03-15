@@ -17,11 +17,9 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
 
         public LoginPage(IWebDriver driver, WebDriverWait wait)
         {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json")
-                                                   .AddUserSecrets<LoginPage>()
-                                                   .Build();
 
-            var url = config["AppSettings:URL"];
+
+            var url = "https://cgigeiotdemoportal.azurewebsites.net/";
             this.username = Environment.GetEnvironmentVariable("USERNAME");
             this.password = Environment.GetEnvironmentVariable("PASSWORD");
 
