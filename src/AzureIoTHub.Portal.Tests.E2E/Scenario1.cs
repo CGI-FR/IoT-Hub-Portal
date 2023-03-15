@@ -35,9 +35,9 @@ namespace AzureIoTHub.Portal.Tests.E2E
 
             var model = new ModelPage(driver, wait);
 
-            model.AddDeviceModel("Test Model", "Test Model Description");
+            model.AddDeviceModel("Test Model AY", "Test Model Description");
 
-            model.RemoveDeviceModel("Test Model");
+            model.RemoveDeviceModel("Test Model AY");
 
             loginpage.Logout();
         }
