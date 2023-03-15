@@ -1,0 +1,50 @@
+version: '3.4'
+
+services:
+  database:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgrePassword
+    ports:
+      - 5432:5432
+
+  portal:
+    image: ${DOCKER_REGISTRY-}azureiothubportalserver
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_VERSION: 0.0.0
+        GITHUB_RUN_NUMBER: 0
+    environment:    
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      StorageAccount__BlobContainerName: "${STORAGEACCOUNT__BLOBCONTAINERNAME}"
+      PortalName: "${PORTALNAME}"
+      OIDC__ValidateAudience: "${OIDC__VALIDATEAUDIENCE}"
+      OIDC__Scope: "${OIDC__SCOPE}"
+      OIDC__MetadataUrl: "${OIDC__METADATAURL}"
+      OIDC__ClientId: "${OIDC__CLIENTID}"
+      OIDC__Authority: "${OIDC__AUTHORITY}"
+      OIDC__ApiClientId: "${OIDC__APICLIENTID}"
+      LoRaKeyManagement__Url: "${LORAKEYMANAGEMENT__URL}"
+      LoRaFeature_Enabled: "${LORAFEATURE_ENABLED}"
+      IoTHub__EventHub__ConsumerGroup: "${IOTHUB__EVENTHUB__CONSUMERGROUP}"
+      IoTDPS__ServiceEndpoint: "${IOTDPS__SERVICEENDPOINT}"
+      IoTDPS__IDScope: "${IOTDPS__IDSCOPE}"
+      Ideas__Url: "${IDEAS__URL}"
+      Ideas__Enabled: "${IDEAS__ENABLED}"
+      Ideas__Authentication__Header: "${IDEAS__AUTHENTICATION__HEADER}"
+      PostgreSQL__ConnectionString: "${POSTGRESQL__CONNECTIONSTRING}"
+      IoTHub__ConnectionString: "${IOTHUB__CONNECTIONSTRING}"
+      IoTDPS__ConnectionString: "${IOTDPS__CONNECTIONSTRING}"
+      StorageAccount__ConnectionString: "${STORAGEACCOUNT__CONNECTIONSTRING}"
+      JobStore__ConnectionString: "${JOBSTORE__CONNECTIONSTRING}"
+      IoTHub__EventHub__Endpoint: "${IOTHUB__EVENTHUB__ENDPOINT}"
+      LoRaKeyManagement__Code: "${LORAKEYMANAGEMENT__CODE}"
+      Ideas__Authentication__Token: "${IDEAS__AUTHENTICATION__TOKEN}"
+    depends_on:
+      - "database"
+    ports:
+      - 80:80

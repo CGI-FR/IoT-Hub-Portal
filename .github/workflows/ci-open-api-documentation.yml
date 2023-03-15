@@ -1,9 +1,7 @@
-name: Build & Test
+name: Update OpenAPI Documentation
 
 # Controls when the workflow will run
 on:
-  pull_request:
-    branches: [ main, v3/main ]
   push:
     branches: [ main, v3/main ]
 
@@ -26,7 +24,7 @@ jobs:
     - name: Restore Dotnet tools
       run: dotnet tool restore
       working-directory: src/
-      
+
     - name: Restore dependencies
       run: dotnet restore AzureIoTHub.Portal.sln 
       working-directory: src/
@@ -34,11 +32,11 @@ jobs:
     - name: Build
       run: dotnet build AzureIoTHub.Portal.sln --no-restore -p:ClientAssetsRestoreCommand="npm ci"
       working-directory: src/
-    
+
     - name: Generate Open API documentation
       run: dotnet swagger tofile --output ./swagger.json AzureIoTHub.Portal.Server/bin/Debug/net7.0/AzureIoTHub.Portal.Server.dll v1
       working-directory: src/
-    
+
     # Upload swagger docs to GitHub
     - uses: actions/upload-artifact@v3
       if: success()
@@ -57,7 +55,6 @@ jobs:
         name: test-results
         path: |
           src/AzureIoTHub.Portal.Tests.Unit/TestResults
-
     - name: Upload to Codecov test reports
       uses: codecov/codecov-action@v3
       with:
@@ -79,7 +76,7 @@ jobs:
         with:
           name: swagger-doc
           path: docs
-      
+
       - name: Generate app token
         id: generate_app_token
         uses: tibdex/github-app-token@v1

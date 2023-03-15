@@ -5,6 +5,7 @@ EXPOSE 80
 EXPOSE 443
 
 FROM node:14-bullseye AS build
+
 RUN wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 RUN dpkg -i packages-microsoft-prod.deb
 RUN rm packages-microsoft-prod.deb
@@ -14,9 +15,9 @@ RUN  apt-get update; \
 	  apt-get install -y dotnet-sdk-7.0
 
 FROM build AS builder
-WORKDIR /src
 ARG BUILD_VERSION=1.2.3
 ARG GITHUB_RUN_NUMBER=4
+WORKDIR /src
 COPY ["AzureIoTHub.Portal.Server/AzureIoTHub.Portal.Server.csproj", "AzureIoTHub.Portal.Server/"]
 COPY ["AzureIoTHub.Portal.Shared/AzureIoTHub.Portal.Shared.csproj", "AzureIoTHub.Portal.Shared/"]
 COPY ["AzureIoTHub.Portal.Client/AzureIoTHub.Portal.Client.csproj", "AzureIoTHub.Portal.Client/"]
@@ -26,6 +27,8 @@ WORKDIR "/src/AzureIoTHub.Portal.Server"
 RUN dotnet build "AzureIoTHub.Portal.Server.csproj" -c Release -o /app/build -p:Version="${BUILD_VERSION}.${GITHUB_RUN_NUMBER}" -p:ClientAssetsRestoreCommand="npm ci"
 
 FROM builder AS publish
+ARG BUILD_VERSION=1.2.3
+ARG GITHUB_RUN_NUMBER=4
 RUN dotnet publish "AzureIoTHub.Portal.Server.csproj" -c Release -o /app/publish  -p:Version="${BUILD_VERSION}.${GITHUB_RUN_NUMBER}" -p:ClientAssetsRestoreCommand="npm ci"
 
 FROM base AS final

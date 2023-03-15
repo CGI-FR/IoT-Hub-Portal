@@ -1,0 +1,134 @@
+name: Tests
+
+# Controls when the workflow will run
+on:
+  pull_request:
+    branches: [ main, v3/main ]
+  push:
+    branches: [ main, v3/main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+
+  unit-test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps: 
+    
+    - uses: actions/checkout@v3.3.0
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+
+    - uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        # Look to see if there is a cache hit for the corresponding requirements file
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget
+
+    - name: Restore Dotnet tools
+      run: dotnet tool restore
+      working-directory: src/
+      
+    - name: Restore dependencies
+      run: dotnet restore AzureIoTHub.Portal.sln 
+      working-directory: src/
+
+    - name: Build
+      run: dotnet build AzureIoTHub.Portal.sln --no-restore -p:ClientAssetsRestoreCommand="npm ci"
+      working-directory: src/
+  
+    - name: Run unit tests
+      run: dotnet test --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" AzureIoTHub.Portal.Tests.Unit.csproj
+      working-directory: src/AzureIoTHub.Portal.Tests.Unit/
+
+    # Upload test results as artifact
+    - uses: actions/upload-artifact@v3
+      if: success() || failure()
+      with:
+        name: test-results
+        path: |
+          src/AzureIoTHub.Portal.Tests.Unit/TestResults
+
+    - name: Upload to Codecov test reports
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: src/AzureIoTHub.Portal.Tests.Unit/TestResults
+        verbose: true # optional (default = false)
+
+  e2e-tests:
+    name: E2E tests
+    runs-on: ubuntu-latest
+    environment: E2E
+    
+    steps:
+    
+    - uses: actions/checkout@v3.3.0
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+
+    - uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        # Look to see if there is a cache hit for the corresponding requirements file
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget
+
+    - name: Launch the portal locally
+      uses: isbang/compose-action@v1.4.1      
+      with:
+        compose-file: "./src/e2e-docker-compose.yml"
+        down-flags: "--volumes"
+        up-flags: "--build"
+      env:
+        GITHUB_RUN_NUMBER: ${{ github.run_number }}
+
+        STORAGEACCOUNT__BLOBCONTAINERNAME: ${{ vars.STORAGEACCOUNT__BLOBCONTAINERNAME }}
+        PORTALNAME: ${{ vars.PORTALNAME }}
+        OIDC__VALIDATEAUDIENCE: ${{ vars.OIDC__VALIDATEAUDIENCE }}
+        OIDC__SCOPE: ${{ vars.OIDC__SCOPE }}
+        OIDC__METADATAURL: ${{ vars.OIDC__METADATAURL }}
+        OIDC__CLIENTID: ${{ vars.OIDC__CLIENTID }}
+        OIDC__AUTHORITY: ${{ vars.OIDC__AUTHORITY }}
+        OIDC__APICLIENTID: ${{ vars.OIDC__APICLIENTID }}
+        LORAKEYMANAGEMENT__URL: ${{ vars.LORAKEYMANAGEMENT__URL }}
+        LORAFEATURE_ENABLED: ${{ vars.LORAFEATURE_ENABLED }}
+        IOTHUB__EVENTHUB__CONSUMERGROUP: ${{ vars.IOTHUB__EVENTHUB__CONSUMERGROUP }}
+        IOTDPS__SERVICEENDPOINT: ${{ vars.IOTDPS__SERVICEENDPOINT }}
+        IOTDPS__IDSCOPE: ${{ vars.IOTDPS__IDSCOPE }}
+        IDEAS__URL: ${{ vars.IDEAS__URL }}
+        IDEAS__ENABLED: ${{ vars.IDEAS__ENABLED }}
+        IDEAS__AUTHENTICATION__HEADER: ${{ vars.IDEAS__AUTHENTICATION__HEADER }}
+        
+        POSTGRESQL__CONNECTIONSTRING: ${{ secrets.POSTGRESQL__CONNECTIONSTRING }}
+        IOTHUB__CONNECTIONSTRING: ${{ secrets.IOTHUB__CONNECTIONSTRING }}
+        IOTDPS__CONNECTIONSTRING: ${{ secrets.IOTDPS__CONNECTIONSTRING }}
+        STORAGEACCOUNT__CONNECTIONSTRING: ${{ secrets.STORAGEACCOUNT__CONNECTIONSTRING }}
+        JOBSTORE__CONNECTIONSTRING: ${{ secrets.JOBSTORE__CONNECTIONSTRING }}
+        IOTHUB__EVENTHUB__ENDPOINT: ${{ secrets.IOTHUB__EVENTHUB__ENDPOINT }}
+        LORAKEYMANAGEMENT__CODE: ${{ secrets.LORAKEYMANAGEMENT__CODE }}
+        IDEAS__AUTHENTICATION__TOKEN: ${{ secrets.IDEAS__AUTHENTICATION__TOKEN }}
+
+    - name: Wait until portal is up
+      run: |
+        while ! nc -z localhost 80 </dev/null; do sleep 10; done
+      shell: bash
+
+    - name: Run E2E tests
+      run: dotnet test AzureIoTHub.Portal.Tests.E2E.csproj
+      working-directory: src/AzureIoTHub.Portal.Tests.E2E/
+      env:
+        USERNAME: ${{ secrets.E2E_USERNAME }}
+        PASSWORD: ${{ secrets.E2E_PASSWORD }}
+        URL: http://localhost:80/

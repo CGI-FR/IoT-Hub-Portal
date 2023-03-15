@@ -5,7 +5,6 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
 {
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.UI;
-    using Microsoft.Extensions.Configuration;
 
     public class LoginPage
     {
@@ -17,11 +16,11 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
 
         public LoginPage(IWebDriver driver, WebDriverWait wait)
         {
-
-
             var url = Environment.GetEnvironmentVariable("URL");
             this.username = Environment.GetEnvironmentVariable("USERNAME");
             this.password = Environment.GetEnvironmentVariable("PASSWORD");
+
+            Console.WriteLine($"Navigating to {url}");
 
             this.driver = driver;
             driver.Manage().Window.Maximize();
