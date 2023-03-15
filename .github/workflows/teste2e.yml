@@ -100,3 +100,4 @@ jobs:
       env:
         USERNAME: ${{ secrets.USERNAME }}
         PASSWORD: ${{ secrets.PASSWORD }}
+        URL: https://cgigeiotdemoportal.azurewebsites.net/
