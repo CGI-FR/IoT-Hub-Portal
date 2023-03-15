@@ -84,9 +84,6 @@ jobs:
     - name: Install Chrome Driver
       run: dotnet add package Selenium.WebDriver.ChromeDriver
       working-directory: src/AzureIoTHub.Portal.Tests.E2E/
-    
-    - name: Environment testing
-      run: echo $USERNAME
       
   test:
     name: Test
@@ -103,6 +100,3 @@ jobs:
     - name: Run E2E tests
       run: dotnet test AzureIoTHub.Portal.Tests.E2E.csproj --no-build
       working-directory: src/AzureIoTHub.Portal.Tests.E2E/
-      env:
-        USERNAME: ${{ secrets.USERNAME }}
-        PASSWORD: ${{ secrets.PASSWORD }}
