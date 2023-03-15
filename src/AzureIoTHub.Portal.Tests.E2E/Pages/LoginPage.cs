@@ -19,7 +19,7 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
         {
 
 
-            var url = "https://cgigeiotdemoportal.azurewebsites.net/";
+            var url = Environment.GetEnvironmentVariable("URL");
             this.username = Environment.GetEnvironmentVariable("USERNAME");
             this.password = Environment.GetEnvironmentVariable("PASSWORD");
 
