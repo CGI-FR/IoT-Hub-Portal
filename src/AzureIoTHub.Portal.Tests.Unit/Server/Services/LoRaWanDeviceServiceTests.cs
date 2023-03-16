@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using System.Globalization;
     using System.Linq;
     using System.Text.Json;
+    using System.Text.Json.Serialization;
     using System.Threading.Tasks;
     using AutoFixture;
     using AutoMapper;
@@ -18,6 +19,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Infrastructure;
     using AzureIoTHub.Portal.Server.Services;
     using AzureIoTHub.Portal.Shared.Models.v10;
     using EntityFramework.Exceptions.Common;
@@ -78,6 +80,25 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             this.lorawanDeviceService = Services.GetRequiredService<IDeviceService<LoRaDeviceDetails>>();
             Mapper = Services.GetRequiredService<IMapper>();
+        }
+
+        [Test]
+        public void ServiceCanDeserializeEventAuthMethod()
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters =
+                {
+                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                }
+            };
+
+            var authMethodJson = /*lang=json,strict*/ "{\"scope\":\"module\",\"type\":\"sas\",\"issuer\":\"iothub\"}";
+
+            var eventAuthMethod = JsonSerializer.Deserialize<ConnectionAuthMethod>(authMethodJson.ToString(), options);
+
+            Assert.AreEqual(authMethodJson, JsonSerializer.Serialize(eventAuthMethod, options));
         }
 
         [Test]
@@ -476,6 +497,81 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
+        public async Task WhenEventDataIsNull_ShouldNotProcess()
+        {
+            // Arrange
+
+            // Act
+            await this.lorawanDeviceService.ProcessTelemetryEvent(null);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenEventDataDoesntHaveSystemProperties_ShouldNotProcess()
+        {
+            // Arrange
+            var telemeryMessage = Fixture.Create<LoRaTelemetry>();
+            var enqueuedAt = Fixture.Create<DateTimeOffset>();
+            var sequenceNumber = Fixture.Create<long>();
+
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber);
+
+            // Act
+            await this.lorawanDeviceService.ProcessTelemetryEvent(eventMessage);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+
+        [Test]
+        public async Task WhenEventDataIsNotFromDevice_ShouldNotProcess()
+        {
+            // Arrange
+            var telemeryMessage = Fixture.Create<LoRaTelemetry>();
+            var enqueuedAt = Fixture.Create<DateTimeOffset>();
+            var sequenceNumber = Fixture.Create<long>();
+
+            var systemProperties = new Dictionary<string, object>
+            {
+                {  "iothub-connection-auth-method" , /*lang=json,strict*/ "{\"scope\":\"module\",\"type\":\"sas\",\"issuer\":\"iothub\",\"acceptingIpFilterRule\":null}" }
+            }.AsReadOnly();
+
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber, systemProperties: systemProperties);
+
+            // Act
+            await this.lorawanDeviceService.ProcessTelemetryEvent(eventMessage);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public async Task WhenEventDataDoesntHaveDeviceIdInSystemProperties_ShouldNotProcess()
+        {
+            // Arrange
+            var telemeryMessage = Fixture.Create<LoRaTelemetry>();
+            var enqueuedAt = Fixture.Create<DateTimeOffset>();
+            var sequenceNumber = Fixture.Create<long>();
+
+            var systemProperties = new Dictionary<string, object>
+            {
+                {  "iothub-connection-auth-method" , /*lang=json,strict*/ "{\"scope\":\"device\",\"type\":\"sas\",\"issuer\":\"iothub\",\"acceptingIpFilterRule\":null}" }
+            }.AsReadOnly();
+
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber, systemProperties: systemProperties);
+
+            // Act
+            await this.lorawanDeviceService.ProcessTelemetryEvent(eventMessage);
+
+            // Assert
+            MockRepository.VerifyAll();
+        }
+
+
+        [Test]
         public async Task ProcessTelemetryEvent_EventDataForExistingDevice_TelemetryIsAddedToDevice()
         {
             // Arrange
@@ -488,7 +584,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 Id = telemeryMessage.DeviceEUI
             };
 
-            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber);
+            var systemProperties = new Dictionary<string, object>
+            {
+                { "iothub-connection-device-id", telemeryMessage.DeviceEUI },
+                {  "iothub-connection-auth-method" , /*lang=json,strict*/ "{\"scope\":\"device\",\"type\":\"sas\",\"issuer\":\"iothub\",\"acceptingIpFilterRule\":null}" }
+            }.AsReadOnly();
+
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber, systemProperties: systemProperties);
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
                .ReturnsAsync(lorawanDevice);
@@ -516,7 +618,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 Id = telemeryMessage.DeviceEUI
             };
 
-            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber);
+            var systemProperties = new Dictionary<string, object>
+            {
+                { "iothub-connection-device-id", telemeryMessage.DeviceEUI },
+                {  "iothub-connection-auth-method" , /*lang=json,strict*/ "{\"scope\":\"device\",\"type\":\"sas\",\"issuer\":\"iothub\",\"acceptingIpFilterRule\":null}" }
+            }.AsReadOnly();
+
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber, systemProperties: systemProperties);
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
                .ReturnsAsync(lorawanDevice);
@@ -569,7 +677,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 }
             };
 
-            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber);
+            var systemProperties = new Dictionary<string, object>
+            {
+                { "iothub-connection-device-id", telemeryMessage.DeviceEUI },
+                {  "iothub-connection-auth-method" , /*lang=json,strict*/ "{\"scope\":\"device\",\"type\":\"sas\",\"issuer\":\"iothub\",\"acceptingIpFilterRule\":null}" }
+            }.AsReadOnly();
+
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber, systemProperties: systemProperties);
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
                .ReturnsAsync(lorawanDevice);
@@ -589,7 +703,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
             var enqueuedAt = Fixture.Create<DateTimeOffset>();
             var sequenceNumber = Fixture.Create<long>();
 
-            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber);
+            var systemProperties = new Dictionary<string, object>
+            {
+                { "iothub-connection-device-id", telemeryMessage.DeviceEUI },
+                {  "iothub-connection-auth-method" , /*lang=json,strict*/ "{\"scope\":\"device\",\"type\":\"sas\",\"issuer\":\"iothub\",\"acceptingIpFilterRule\":null}" }
+            }.AsReadOnly();
+
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber, systemProperties: systemProperties);
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
                .ReturnsAsync((LorawanDevice)null);
@@ -615,7 +735,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
                 Telemetry = Fixture.CreateMany<LoRaDeviceTelemetry>(100).ToList()
             };
 
-            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber);
+            var systemProperties = new Dictionary<string, object>
+            {
+                { "iothub-connection-device-id", telemeryMessage.DeviceEUI },
+                { "iothub-connection-auth-method" , /*lang=json,strict*/ "{\"scope\":\"device\",\"type\":\"sas\",\"issuer\":\"iothub\",\"acceptingIpFilterRule\":null}" }
+            }.AsReadOnly();
+
+            var eventMessage = EventHubsModelFactory.EventData(new BinaryData(JsonSerializer.Serialize(telemeryMessage)), enqueuedTime: enqueuedAt, sequenceNumber: sequenceNumber, systemProperties: systemProperties);
 
             _ = this.mockLorawanDeviceRepository.Setup(repository => repository.GetByIdAsync(telemeryMessage.DeviceEUI, d => d.Telemetry))
                .ReturnsAsync(lorawanDevice);
@@ -631,8 +757,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
 
             // Assert
             MockRepository.VerifyAll();
-            this.mockLoRaDeviceTelemetryRepository.Verify(repository => repository.Delete(It.IsAny<string>()), Times.Once);
-            this.mockUnitOfWork.Verify(work => work.SaveAsync(), Times.Exactly(2));
+            this.mockUnitOfWork.Verify(work => work.SaveAsync(), Times.Exactly(1));
+            _ = lorawanDevice.Telemetry.Should().HaveCount(100);
         }
 
         [Test]

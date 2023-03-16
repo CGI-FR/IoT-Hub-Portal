@@ -8,6 +8,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using System.Globalization;
     using System.Linq;
     using System.Text.Json;
+    using System.Text.Json.Serialization;
     using System.Threading.Tasks;
     using AutoMapper;
     using Azure.Messaging.EventHubs;
@@ -24,6 +25,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Microsoft.Extensions.Logging;
     using Models.v10;
     using Models.v10.LoRaWAN;
+    using static AzureIoTHub.Portal.Infrastructure.ConnectionAuthMethod;
 
     public class LoRaWanDeviceService : DeviceServiceBase<LoRaDeviceDetails>
     {
@@ -161,27 +163,46 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 LoRaDeviceTelemetry deviceTelemetry;
 
-                try
+                if (!eventMessage.SystemProperties.TryGetValue("iothub-connection-auth-method", out var authMethod))
                 {
-                    deviceTelemetry = new LoRaDeviceTelemetry
-                    {
-                        Id = eventMessage.SequenceNumber.ToString(CultureInfo.InvariantCulture),
-                        EnqueuedTime = eventMessage.EnqueuedTime.UtcDateTime,
-                        Telemetry = eventMessage.EventBody.ToObjectFromJson<LoRaTelemetry>()
-                    };
-                }
-                catch (JsonException)
-                {
-                    this.logger.LogWarning($"Unable to deserialize the event message with id {eventMessage.SequenceNumber} as device telemetry");
+                    this.logger.LogWarning($"Unable read 'iothub-connection-auth-method' property of the message. Please verify that the event is comming from an IoT Device.");
                     return;
                 }
 
-                var loRaWanDevice = await this.lorawanDeviceRepository.GetByIdAsync(deviceTelemetry.Telemetry.DeviceEUI, device => device.Telemetry);
+                var eventAuthMethod = JsonSerializer.Deserialize<ConnectionAuthMethod>(authMethod.ToString(), new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    Converters =
+                        {
+                            new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                        }
+                });
+
+                if (eventAuthMethod.Scope != ConnectionAuthScope.Device)
+                {
+                    this.logger.LogTrace($"Event wasn't issued by a device. Skipping this event.");
+                    return;
+                }
+
+                if (!eventMessage.SystemProperties.TryGetValue("iothub-connection-device-id", out var deviceId))
+                {
+                    this.logger.LogWarning($"Unable read 'iothub-connection-device-id' property of the message. Please verify that the event is comming from an IoT Device.");
+                    return;
+                }
+
+                var loRaWanDevice = await this.lorawanDeviceRepository.GetByIdAsync(deviceId, device => device.Telemetry);
 
                 if (loRaWanDevice == null)
                 {
                     return;
                 }
+
+                deviceTelemetry = new LoRaDeviceTelemetry
+                {
+                    Id = eventMessage.SequenceNumber.ToString(CultureInfo.InvariantCulture),
+                    EnqueuedTime = eventMessage.EnqueuedTime.UtcDateTime,
+                    Telemetry = eventMessage.EventBody.ToObjectFromJson<LoRaTelemetry>()
+                };
 
                 if (loRaWanDevice.Telemetry.Any(telemetry => telemetry.Id.Equals(deviceTelemetry.Id, StringComparison.Ordinal)))
                 {
@@ -190,9 +211,9 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 loRaWanDevice.Telemetry.Add(deviceTelemetry);
 
-                await this.unitOfWork.SaveAsync();
+                KeepOnlyLatestTelemetry(loRaWanDevice);
 
-                await KeepOnlyLatestHundredTelemetry(loRaWanDevice);
+                await this.unitOfWork.SaveAsync();
             }
             catch (DbUpdateException e)
             {
@@ -202,20 +223,19 @@ namespace AzureIoTHub.Portal.Server.Services
             return;
         }
 
-        private async Task KeepOnlyLatestHundredTelemetry(LorawanDevice loRaWanDevice)
+        private void KeepOnlyLatestTelemetry(LorawanDevice loRaWanDevice, int numberOfMessages = 100)
         {
-            if (loRaWanDevice.Telemetry.Count <= 100) return;
+            if (loRaWanDevice.Telemetry.Count <= numberOfMessages) return;
 
             loRaWanDevice.Telemetry
                 .OrderByDescending(telemetry => telemetry.EnqueuedTime)
-                .Skip(100)
+                .Skip(numberOfMessages)
                 .ToList()
                 .ForEach(telemetry =>
                 {
                     this.deviceTelemetryRepository.Delete(telemetry.Id);
+                    _ = loRaWanDevice.Telemetry.Remove(telemetry);
                 });
-
-            await this.unitOfWork.SaveAsync();
         }
     }
 }
