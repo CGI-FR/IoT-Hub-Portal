@@ -69,7 +69,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Jobs
             _ = this.syncGatewayIDJob.Execute(null);
 
             // Assert
-            Assert.IsNull(this.loRaGatewayIDList.GatewayIds);
+            Assert.IsEmpty(this.loRaGatewayIDList.GatewayIds);
             MockRepository.VerifyAll();
         }
     }

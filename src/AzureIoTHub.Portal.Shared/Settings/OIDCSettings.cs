@@ -13,21 +13,21 @@ namespace AzureIoTHub.Portal.Settings
         /// <summary>
         /// The OIDC Authority.
         /// </summary>
-        public string Authority { get; set; }
+        public string Authority { get; set; } = default!;
 
         /// <summary>
         /// The OIDC Metadata Url.
         /// </summary>
-        public Uri MetadataUrl { get; set; }
+        public Uri MetadataUrl { get; set; } = default!;
 
         /// <summary>
         /// The Client Identifier.
         /// </summary>
-        public string ClientId { get; set; }
+        public string ClientId { get; set; } = default!;
 
         /// <summary>
         /// The OIDC Scope.
         /// </summary>
-        public string Scope { get; set; }
+        public string Scope { get; set; } = default!;
     }
 }

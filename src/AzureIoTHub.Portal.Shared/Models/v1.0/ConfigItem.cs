@@ -15,7 +15,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// The IoT Edge configuration name.
         /// </summary>
         [Required(ErrorMessage = "The configuration model name is required.")]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// The IoT Edge configuration creation date.
@@ -25,7 +25,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The IoT Edge configuration status.
         /// </summary>
-        public string Status { get; set; }
+        public string Status { get; set; } = default!;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigItem"/> class.

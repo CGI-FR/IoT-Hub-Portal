@@ -11,6 +11,6 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The current property value.
         /// </summary>
-        public string Value { get; set; }
+        public string Value { get; set; } = default!;
     }
 }

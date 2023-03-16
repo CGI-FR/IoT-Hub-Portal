@@ -5,6 +5,6 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0
 {
     public class IdeaResponse
     {
-        public string Url { get; set; }
+        public string Url { get; set; } = default!;
     }
 }

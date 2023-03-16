@@ -15,22 +15,22 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The device Identifier.
         /// </summary>
-        public string DeviceID { get; set; }
+        public string DeviceID { get; set; } = default!;
 
         /// <summary>
         /// The device friendly name.
         /// </summary>
-        public string DeviceName { get; set; }
+        public string DeviceName { get; set; } = default!;
 
         /// <summary>
         /// The device Model Identifier.
         /// </summary>
-        public string DeviceModelId { get; set; }
+        public string DeviceModelId { get; set; } = default!;
 
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; }
+        public Uri ImageUrl { get; set; } = default!;
 
         /// <summary>
         /// A value indicating whether the device is currently connected.
@@ -60,6 +60,6 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The device labels.
         /// </summary>
-        public IEnumerable<LabelDto> Labels { get; set; }
+        public IEnumerable<LabelDto> Labels { get; set; } = new List<LabelDto>();
     }
 }

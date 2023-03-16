@@ -20,7 +20,7 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// The command name.
         /// </summary>
         [Required(ErrorMessage = "The command name is required.")]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// The command frame in hexa.
@@ -28,7 +28,7 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         [Required(ErrorMessage = "The frame is required.")]
         [MaxLength(255, ErrorMessage = "The frame should be up to 255 characters long.")]
         [RegularExpression("^[0-9a-fA-F]{0,255}$", ErrorMessage = "The frame should only contain hexadecimal characters")]
-        public string Frame { get; set; }
+        public string Frame { get; set; } = default!;
 
         /// <summary>
         /// A value indicating if the command must be confirmed by sensor

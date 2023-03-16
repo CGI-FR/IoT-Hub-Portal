@@ -31,14 +31,14 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// </summary>
         [JsonPropertyName("region")]
         [JsonProperty("region")]
-        public string Region { get; set; }
+        public string Region { get; set; } = default!;
 
         /// <summary>
         /// The hardware specifications.
         /// </summary>
         [JsonPropertyName("hwspec")]
         [JsonProperty("hwspec")]
-        public string Hwspec { get; set; }
+        public string Hwspec { get; set; } = default!;
 
         /// <summary>
         /// The frequency range.

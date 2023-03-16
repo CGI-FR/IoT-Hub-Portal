@@ -7,11 +7,11 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.Filters
 
     public class EdgeDeviceListFilter : PaginationFilter
     {
-        public string Keyword { get; set; }
+        public string Keyword { get; set; } = default!;
 
         public bool? IsEnabled { get; set; }
 
-        public string ModelId { get; set; }
+        public string ModelId { get; set; } = default!;
 
         public List<string> Labels { get; set; } = new();
     }

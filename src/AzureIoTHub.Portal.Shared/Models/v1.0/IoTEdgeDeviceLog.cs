@@ -7,8 +7,8 @@ namespace AzureIoTHub.Portal.Models.v10
 
     public class IoTEdgeDeviceLog
     {
-        public string Id { get; set; }
-        public string Text { get; set; }
+        public string Id { get; set; } = default!;
+        public string Text { get; set; } = default!;
         public int LogLevel { get; set; }
         public DateTime TimeStamp { get; set; }
     }

@@ -8,11 +8,11 @@ namespace AzureIoTHub.Portal.Shared.Models.v10
         /// <summary>
         /// The module identity twin setting name
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// The module identity twin setting value
         /// </summary>
-        public string Value { get; set; }
+        public string Value { get; set; } = default!;
     }
 }

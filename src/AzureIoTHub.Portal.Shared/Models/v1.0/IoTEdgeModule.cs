@@ -16,20 +16,20 @@ namespace AzureIoTHub.Portal.Models.v10
         /// The module name.
         /// </summary>
         [Required(ErrorMessage = "The device model name is required.")]
-        public string ModuleName { get; set; }
+        public string ModuleName { get; set; } = default!;
 
         /// <summary>
         /// the device image URI.
         /// </summary>
         [Required(ErrorMessage = "The device image uri is required.")]
-        public string ImageURI { get; set; }
+        public string ImageURI { get; set; } = default!;
 
-        public string ContainerCreateOptions { get; set; }
+        public string ContainerCreateOptions { get; set; } = default!;
 
         /// <summary>
         /// The module status.
         /// </summary>
-        public string Status { get; set; }
+        public string Status { get; set; } = default!;
 
         /// <summary>
         /// The module environment variables.

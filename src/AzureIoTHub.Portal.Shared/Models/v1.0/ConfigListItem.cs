@@ -22,12 +22,12 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The IoT Edge configuration identifier.
         /// </summary>
-        public string ConfigurationID { get; set; }
+        public string ConfigurationID { get; set; } = default!;
 
         /// <summary>
         /// The IoT Edge configuration target conditions.
         /// </summary>
-        public string Conditions { get; set; }
+        public string Conditions { get; set; } = default!;
 
         /// <summary>
         /// The IoT Edge configuration targeted metrics.

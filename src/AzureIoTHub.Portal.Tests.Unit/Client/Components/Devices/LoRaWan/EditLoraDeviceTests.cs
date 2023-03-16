@@ -355,7 +355,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices.LoRaWan
                 ModelId = mockLoRaModel.ModelId,
                 AppSKey = Guid.NewGuid().ToString(),
                 NwkSKey = Guid.NewGuid().ToString(),
-                DevAddr = Guid.NewGuid().ToString(),
+                DevAddr = Guid.NewGuid().ToString()
             };
             var validator = new LoRaDeviceDetailsValidator();
 

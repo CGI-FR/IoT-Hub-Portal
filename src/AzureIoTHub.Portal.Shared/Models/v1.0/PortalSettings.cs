@@ -16,17 +16,17 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The portal version.
         /// </summary>
-        public string Version { get; set; }
+        public string Version { get; set; } = default!;
 
         /// <summary>
         /// The poral name.
         /// </summary>
-        public string PortalName { get; set; }
+        public string PortalName { get; set; } = default!;
 
         /// <summary>
         /// Copyright Year
         /// </summary>
-        public string CopyrightYear { get; set; }
+        public string CopyrightYear { get; set; } = default!;
 
         public bool IsIdeasFeatureEnabled { get; set; }
     }

@@ -13,24 +13,24 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The device model identifier.
         /// </summary>
-        public string ModelId { get; set; }
+        public string ModelId { get; set; } = default!;
 
         /// <summary>
         /// The IoT Edge device model name.
         /// </summary>
         [Required(ErrorMessage = "The IoT Edge device model name is required.")]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// The device model description.
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = default!;
 
-        public Uri ImageUrl { get; set; }
+        public Uri ImageUrl { get; set; } = default!;
 
         /// <summary>
         /// Gets the edge model labels.
         /// </summary>
-        public IEnumerable<LabelDto> Labels { get; set; }
+        public IEnumerable<LabelDto> Labels { get; set; } = new List<LabelDto>();
     }
 }

@@ -15,24 +15,24 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// </summary>
         [Required]
         [RegularExpression("^[A-F0-9]{16}$", ErrorMessage = "DeviceID must contain 16 hexadecimal characters (numbers from 0 to 9 and/or letters from A to F)")]
-        public string DeviceId { get; set; }
+        public string DeviceId { get; set; } = default!;
 
         /// <summary>
         /// The name of the device.
         /// </summary>
         [Required]
-        public string DeviceName { get; set; }
+        public string DeviceName { get; set; } = default!;
 
         /// <summary>
         /// The lora region.
         /// </summary>
         [Required]
-        public string LoraRegion { get; set; }
+        public string LoraRegion { get; set; } = default!;
 
         /// <summary>
         /// The type of the device.
         /// </summary>
-        public string DeviceType { get; set; }
+        public string DeviceType { get; set; } = default!;
 
         /// <summary>
         /// The client certificate thumbprint.
@@ -58,6 +58,6 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The router configuration.
         /// </summary>
-        public RouterConfig RouterConfig { get; set; }
+        public RouterConfig RouterConfig { get; set; } = new RouterConfig();
     }
 }

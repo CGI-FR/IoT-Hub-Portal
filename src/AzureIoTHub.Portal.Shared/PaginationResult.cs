@@ -15,7 +15,7 @@ namespace AzureIoTHub.Portal
         /// <summary>
         /// The current page items.
         /// </summary>
-        public IEnumerable<TItem> Items { get; set; }
+        public IEnumerable<TItem> Items { get; set; } = new List<TItem>();
 
         /// <summary>
         /// The total number of items.
@@ -25,6 +25,6 @@ namespace AzureIoTHub.Portal
         /// <summary>
         /// The query next page Url.
         /// </summary>
-        public string NextPage { get; set; }
+        public string NextPage { get; set; } = default!;
     }
 }

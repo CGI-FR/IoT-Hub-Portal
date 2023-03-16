@@ -7,9 +7,9 @@ namespace AzureIoTHub.Portal.Shared.Models.v10
     {
         public int LineNumber { get; set; }
 
-        public string DeviceId { get; set; }
+        public string DeviceId { get; set; } = default!;
 
-        public string Message { get; set; }
+        public string Message { get; set; } = default!;
 
         public bool IsErrorMessage { get; set; }
     }

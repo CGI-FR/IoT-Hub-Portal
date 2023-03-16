@@ -8,12 +8,12 @@ namespace AzureIoTHub.Portal.Shared.Models.v10
         /// <summary>
         /// The command name
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
-        public string EdgeDeviceModelId { get; set; }
+        public string EdgeDeviceModelId { get; set; } = default!;
 
-        public string CommandId { get; set; }
+        public string CommandId { get; set; } = default!;
 
-        public string ModuleName { get; set; }
+        public string ModuleName { get; set; } = default!;
     }
 }

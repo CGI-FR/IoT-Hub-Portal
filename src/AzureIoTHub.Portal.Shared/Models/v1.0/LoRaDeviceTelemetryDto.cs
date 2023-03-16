@@ -8,11 +8,11 @@ namespace AzureIoTHub.Portal.Shared.Models.v10
 
     public class LoRaDeviceTelemetryDto
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = default!;
 
         public DateTime EnqueuedTime { get; set; }
 
-        public LoRaTelemetryDto Telemetry { get; set; }
+        public LoRaTelemetryDto Telemetry { get; set; } = new LoRaTelemetryDto();
     }
 
     public class LoRaTelemetryDto
@@ -27,15 +27,15 @@ namespace AzureIoTHub.Portal.Shared.Models.v10
 
         public uint Rfch { get; set; }
 
-        public string Modu { get; set; }
+        public string Modu { get; set; } = default!;
 
-        public string Datr { get; set; }
+        public string Datr { get; set; } = default!;
 
         public double Rssi { get; set; }
 
         public float Lsnr { get; set; }
 
-        public object Data { get; set; }
+        public object Data { get; set; } = new object();
 
         public uint Port { get; set; }
 
@@ -43,13 +43,13 @@ namespace AzureIoTHub.Portal.Shared.Models.v10
 
         public long Edgets { get; set; }
 
-        public string Rawdata { get; set; }
+        public string Rawdata { get; set; } = default!;
 
-        public string DeviceEUI { get; set; }
+        public string DeviceEUI { get; set; } = default!;
 
-        public string GatewayID { get; set; }
+        public string GatewayID { get; set; } = default!;
 
-        public string StationEui { get; set; }
+        public string StationEui { get; set; } = default!;
 
         public bool? DupMsg { get; set; }
 

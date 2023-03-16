@@ -7,6 +7,6 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0
 
     public class LoRaGatewayIDList
     {
-        public List<string> GatewayIds { get; set; }
+        public List<string> GatewayIds { get; set; } = new List<string>();
     }
 }
