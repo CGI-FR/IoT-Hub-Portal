@@ -3,42 +3,42 @@
 
 namespace AzureIoTHub.Portal.Tests.E2E.Pages
 {
+    using FluentAssertions;
     using NUnit.Framework;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.UI;
 
     public class ModelPage
     {
-        public IWebDriver driver;
-        public WebDriverWait wait;
+        private readonly WebDriverWait wait;
 
-        public ModelPage(IWebDriver driver, WebDriverWait wait)
+        public ModelPage()
         {
+            this.wait = new WebDriverWait(WebDriverFactory.Default, TimeSpan.FromSeconds(5));
+
             _ = wait.Until(d => d.FindElement(By.CssSelector(".mud-paper:nth-child(2) .mud-nav-link-text")).Displayed);
-            driver.FindElement(By.CssSelector(".mud-paper:nth-child(2) .mud-nav-link-text")).Click();
-            this.driver = driver;
-            this.wait = wait;
+            WebDriverFactory.Default.FindElement(By.CssSelector(".mud-paper:nth-child(2) .mud-nav-link-text")).Click();
         }
 
         public void AddDeviceModel(string name, string description)
         {
             _ = wait.Until(d => d.FindElement(By.Id("addDeviceModelButton")).Displayed);
 
-            driver.FindElement(By.Id("addDeviceModelButton")).Click();
+            WebDriverFactory.Default.FindElement(By.Id("addDeviceModelButton")).Click();
 
             _ = wait.Until(d => d.FindElement(By.Id("Name")).Displayed);
 
-            driver.FindElement(By.Id("Name")).Click();
-            driver.FindElement(By.Id("Name")).SendKeys(name);
-            driver.FindElement(By.Id("Description")).Click();
-            driver.FindElement(By.Id("Description")).SendKeys(description);
-            driver.FindElement(By.Id("SaveButton")).Click();
+            WebDriverFactory.Default.FindElement(By.Id("Name")).Click();
+            WebDriverFactory.Default.FindElement(By.Id("Name")).SendKeys(name);
+            WebDriverFactory.Default.FindElement(By.Id("Description")).Click();
+            WebDriverFactory.Default.FindElement(By.Id("Description")).SendKeys(description);
+            WebDriverFactory.Default.FindElement(By.Id("SaveButton")).Click();
 
             _ = wait.Until(d => d.FindElement(By.ClassName("mud-snackbar-content-message")).Displayed);
 
-            Assert.That(driver.FindElement(By.ClassName("mud-snackbar-content-message")).Text, Is.EqualTo("Device model successfully created."));
+            Assert.That(WebDriverFactory.Default.FindElement(By.ClassName("mud-snackbar-content-message")).Text, Is.EqualTo("Device model successfully created."));
 
-            driver.FindElement(By.CssSelector("button[class='mud-button-root mud-icon-button mud-ripple mud-ripple-icon mud-icon-button-size-small ms-2']")).Click();
+            WebDriverFactory.Default.FindElement(By.CssSelector("button[class='mud-button-root mud-icon-button mud-ripple mud-ripple-icon mud-icon-button-size-small ms-2']")).Click();
 
             _ = wait.Until(d => !d.FindElement(By.Id("mud-snackbar-container")).Displayed);
 
@@ -48,48 +48,52 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
         {
             _ = wait.Until(d => d.FindElement(By.ClassName("mud-expand-panel")).Displayed);
 
-            driver.FindElement(By.ClassName("mud-expand-panel")).Click();
+            WebDriverFactory.Default.FindElement(By.ClassName("mud-expand-panel")).Click();
 
             _ = wait.Until(d => d.FindElement(By.Id("searchText")).Displayed);
 
-            driver.FindElement(By.Id("searchText")).Click();
-            driver.FindElement(By.Id("searchText")).SendKeys(description);
+            WebDriverFactory.Default.FindElement(By.Id("searchText")).Click();
+            WebDriverFactory.Default.FindElement(By.Id("searchText")).SendKeys(description);
 
-            driver.FindElement(By.CssSelector("button span.mud-button-label:nth-of-type(1)")).Click();
+            WebDriverFactory.Default.FindElement(By.Id("searchButton")).Click();
         }
 
         public void RemoveDeviceModel(string name)
         {
             SearchDeviceModel(name);
 
-            var tableBody = driver.FindElement(By.CssSelector("tbody"));
-
-            var rowsAreDisplayed = false;
+            var tableBody = WebDriverFactory.Default.FindElement(By.CssSelector(".mud-table-root .mud-table-body"));
 
             _ = wait.Until(d =>
-            {
-                var rows = tableBody.FindElements(By.CssSelector("tr"));
-                rowsAreDisplayed = rows.All(row => row.Displayed && row.FindElements(By.CssSelector("td")).Count >= 2 && !string.IsNullOrEmpty(row.FindElements(By.CssSelector("td"))[1].Text));
-                return rowsAreDisplayed;
-            });
+             {
+                 try
+                 {
+                     _ = tableBody.FindElement(By.ClassName("mud-table-loading"));
+                     return false;
+                 }
+                 catch (NoSuchElementException)
+                 {
+                     return true;
+                 }
+             });
 
-            var row = tableBody.FindElements(By.CssSelector("tr"))[0];
+            var rows = tableBody.FindElements(By.CssSelector("tr"));
 
-            var cell = row.FindElements(By.CssSelector("td"))[4];
+            _ = rows.Count.Should().Be(1);
 
-            var buttonElement = cell.FindElement(By.Id("deleteButton"));
-            var js = (IJavaScriptExecutor)driver;
-            _ = js.ExecuteScript("arguments[0].click();", buttonElement);
+            var buttonElement = rows.First().FindElement(By.Id("deleteButton"));
+
+            buttonElement.Click();
 
             _ = wait.Until(d => d.FindElement(By.ClassName("outline-none")).Displayed);
 
-            driver.FindElement(By.CssSelector(".mud-button-text-primary > .mud-button-label")).Click();
+            WebDriverFactory.Default.FindElement(By.CssSelector(".mud-button-text-primary > .mud-button-label")).Click();
 
             _ = wait.Until(d => d.FindElement(By.ClassName("mud-snackbar-content-message")).Displayed);
 
-            Assert.That(driver.FindElement(By.ClassName("mud-snackbar-content-message")).Text, Is.EqualTo("Device model " + name + " has been successfully deleted!"));
+            Assert.That(WebDriverFactory.Default.FindElement(By.ClassName("mud-snackbar-content-message")).Text, Is.EqualTo("Device model " + name + " has been successfully deleted!"));
 
-            driver.FindElement(By.CssSelector("button[class='mud-button-root mud-icon-button mud-ripple mud-ripple-icon mud-icon-button-size-small ms-2']")).Click();
+            WebDriverFactory.Default.FindElement(By.CssSelector("button[class='mud-button-root mud-icon-button mud-ripple mud-ripple-icon mud-icon-button-size-small ms-2']")).Click();
 
             _ = wait.Until(d => !d.FindElement(By.Id("mud-snackbar-container")).Displayed);
         }

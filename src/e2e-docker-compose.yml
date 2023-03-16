@@ -6,11 +6,13 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: postgrePassword
+      POSTGRES_DB: cgigeiotdemo
     ports:
       - 5432:5432
 
   portal:
     image: ${DOCKER_REGISTRY-}azureiothubportalserver
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile

@@ -3,49 +3,45 @@
 
 namespace AzureIoTHub.Portal.Tests.E2E.Pages
 {
+    using Microsoft.Extensions.Configuration;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.UI;
 
     public class LoginPage
     {
-        public IWebDriver driver;
-        public WebDriverWait wait;
+        private readonly WebDriverWait wait;
+        private readonly IConfiguration configuration;
 
-        private readonly string username;
-        private readonly string password;
+        public IWebElement UsernameField => WebDriverFactory.Default.FindElement(By.Id("username"));
+        public IWebElement PasswordField => WebDriverFactory.Default.FindElement(By.Id("password"));
+        public IWebElement LoginButton => WebDriverFactory.Default.FindElement(By.Id("kc-login"));
 
-        public LoginPage(IWebDriver driver, WebDriverWait wait)
+        public LoginPage(IConfiguration configuration)
         {
-            var url = Environment.GetEnvironmentVariable("URL");
-            this.username = Environment.GetEnvironmentVariable("USERNAME");
-            this.password = Environment.GetEnvironmentVariable("PASSWORD");
+            this.configuration = configuration;
 
-            Console.WriteLine($"Navigating to {url}");
+            var url = configuration["E2E_URL"];
 
-            this.driver = driver;
-            driver.Manage().Window.Maximize();
-            this.driver.Navigate().GoToUrl(url);
-            this.wait = wait;
+            WebDriverFactory.Default.Navigate().GoToUrl(url);
+            this.wait = new WebDriverWait(WebDriverFactory.Default, TimeSpan.FromSeconds(5));
         }
-
-        public IWebElement UsernameField => driver.FindElement(By.Id("username"));
-        public IWebElement PasswordField => driver.FindElement(By.Id("password"));
-        public IWebElement LoginButton => driver.FindElement(By.Id("kc-login"));
 
         public void Login()
         {
             _ = wait.Until(d => d.FindElement(By.Id("kc-login")).Displayed);
-            UsernameField.SendKeys(username);
-            PasswordField.SendKeys(password);
+
+            UsernameField.SendKeys(configuration["E2E_USERNAME"]);
+            PasswordField.SendKeys(configuration["E2E_PASSWORD"]);
             LoginButton.Click();
+
+            _ = wait.Until(d => d.Url.StartsWith(this.configuration["URL"] ?? string.Empty, StringComparison.OrdinalIgnoreCase));
         }
 
         public void Logout()
         {
             _ = wait.Until(d => d.FindElement(By.CssSelector(".mud-menu-activator > .mud-button-root .mud-icon-root")).Displayed);
-            driver.FindElement(By.CssSelector(".mud-menu-activator > .mud-button-root .mud-icon-root")).Click();
-            driver.FindElement(By.CssSelector(".mud-list-item-icon")).Click();
+            WebDriverFactory.Default.FindElement(By.CssSelector(".mud-menu-activator > .mud-button-root .mud-icon-root")).Click();
+            WebDriverFactory.Default.FindElement(By.CssSelector(".mud-list-item-icon")).Click();
         }
     }
-
 }

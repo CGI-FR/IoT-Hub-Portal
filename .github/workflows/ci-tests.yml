@@ -125,10 +125,24 @@ jobs:
         while ! nc -z localhost 80 </dev/null; do sleep 10; done
       shell: bash
 
+    - name: Install Chrome Driver
+      run: |
+        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
+        sudo apt-get update
+        sudo apt-get install google-chrome-stable
+        LATEST_CHROMEDRIVER=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
+        wget -q -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER}/chromedriver_linux64.zip"
+        sudo unzip -q /tmp/chromedriver.zip -d /usr/local/bin/
+        sudo chmod +x /usr/local/bin/chromedriver
+    
+    - name: Install Chrome
+      run: sudo apt-get install google-chrome-stable
+
     - name: Run E2E tests
       run: dotnet test AzureIoTHub.Portal.Tests.E2E.csproj
       working-directory: src/AzureIoTHub.Portal.Tests.E2E/
       env:
-        USERNAME: ${{ secrets.E2E_USERNAME }}
-        PASSWORD: ${{ secrets.E2E_PASSWORD }}
-        URL: http://localhost:80/
+        E2E_USERNAME: ${{ vars.E2E_USERNAME }}
+        E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+        E2E_URL: http://localhost:80/
