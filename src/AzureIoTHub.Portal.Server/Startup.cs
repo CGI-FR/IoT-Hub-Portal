@@ -255,6 +255,7 @@ namespace AzureIoTHub.Portal.Server
                 q.UseMicrosoftDependencyInjectionJobFactory();
                 q.InterruptJobsOnShutdownWithWait = true;
 
+
                 q.UsePersistentStore(opts =>
                 {
                     // JSON is recommended persistent format to store data in database for greenfield projects.
