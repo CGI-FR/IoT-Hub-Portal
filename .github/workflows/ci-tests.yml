@@ -146,3 +146,9 @@ jobs:
         E2E_USERNAME: ${{ vars.E2E_USERNAME }}
         E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
         E2E_URL: http://localhost:80/
+
+    - name: Get docker logs
+      run: |
+        docker logs src_portal_1
+      shell: bash
+      if: always()
