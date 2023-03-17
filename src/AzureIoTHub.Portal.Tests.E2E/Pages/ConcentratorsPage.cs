@@ -17,7 +17,6 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
 
             _ = wait.Until(d => d.FindElement(By.XPath("/html/body/div[2]/div[3]/aside/div/div/div[4]/div/div/div/div/div")).Displayed);
             WebDriverFactory.Default.FindElement(By.XPath("/html/body/div[2]/div[3]/aside/div/div/div[4]/div/div/div/div/div")).Click();
-
         }
 
         public void AddConcentrator(string id, string name)
