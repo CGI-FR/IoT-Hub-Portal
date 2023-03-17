@@ -6,6 +6,7 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: postgrePassword
+      POSTGRES_DB: cgigeiotdemo
     ports:
       - 5432:5432
     volumes:

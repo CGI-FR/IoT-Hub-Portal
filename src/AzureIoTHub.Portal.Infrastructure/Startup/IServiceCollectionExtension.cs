@@ -263,7 +263,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                     .AddTrigger(t => t
                         .WithIdentity($"{nameof(SyncLoRaDeviceTelemetryJob)}")
                         .ForJob(nameof(SyncLoRaDeviceTelemetryJob))
-                        .StartNow());
+                        .StartAt(DateTimeOffset.Now.AddMinutes(1)));
                 }
             });
         }
