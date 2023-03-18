@@ -62,10 +62,22 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
             WebDriverFactory.Default.FindElement(By.Id("edge-model-search-keyword")).SendKeys(description);
 
             _ = wait.Until(d => d.FindElement(By.Id("edge-model-search-button")).Displayed);
+
             WebDriverFactory.Default.FindElement(By.Id("edge-model-search-button")).Click();
+
+            _ = wait.Until(d =>
+            {
+                try
+                {
+                    _ = WebDriverFactory.Default.FindElement(By.ClassName("mud-table-loading"));
+                    return false;
+                }
+                catch (NoSuchElementException)
+                {
+                    return true;
+                }
+            });
         }
-
-
 
 
         public void RemoveEdgeModel(string name)
