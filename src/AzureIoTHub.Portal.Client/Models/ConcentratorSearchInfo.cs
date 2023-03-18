@@ -5,8 +5,8 @@ namespace AzureIoTHub.Portal.Client.Models
 {
     public class ConcentratorSearchInfo
     {
-        public string? SearchKeyword { get; set; }
-        public string? SearchStatus { get; set; }
-        public string? SearchState { get; set; }
+        public string? SearchText { get; set; }
+        public string? Status { get; set; }
+        public string? State { get; set; }
     }
 }

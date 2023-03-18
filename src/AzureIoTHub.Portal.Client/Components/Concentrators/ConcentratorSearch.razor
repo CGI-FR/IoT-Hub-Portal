@@ -58,9 +58,9 @@
     {
         var searchInfo = new ConcentratorSearchInfo
         {
-            SearchKeyword = searchKeyword,
-            SearchStatus = searchStatus,
-            SearchState = searchState
+            SearchText = searchKeyword,
+            Status = searchStatus,
+            State = searchState
         };
         await OnSearch.InvokeAsync(searchInfo);
     }
