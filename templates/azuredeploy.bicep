@@ -74,29 +74,61 @@ param ideasAuthenticationHeader string = 'Ocp-Apim-Subscription-Key'
 @description('Authentication token to interact with Awesome-Ideas. Required when ideasEnabled is true')
 param ideasAuthenticationToken string = ''
 
-var starterKitDeploymentName = 'lorawan-starter-kit'
-var portalWithLoRaDeploymentName = 'iothub-portal-with-lora'
-var portalWithoutLoRaDeploymentName = 'iothub-portal-without-lora'
+var pgsqlServerName = '${uniqueSolutionPrefix}pgsql'
+var iotHubName = '${uniqueSolutionPrefix}hub'
+var dpsName = '${uniqueSolutionPrefix}dps'
+var siteName = '${uniqueSolutionPrefix}portal'
+var servicePlanName = '${uniqueSolutionPrefix}asp'
+var storageAccountName = '${uniqueSolutionPrefix}storage'
+var iotHubOwnerPolicyName = 'iothubowner'
+var provisioningserviceownerPolicyName = 'provisioningserviceowner'
+var deviceImageContainerName = 'device-images'
+var iamScopeName = 'API.Access'
+var storageAccountId = '${resourceGroup().id}/providers/Microsoft.Storage/storageAccounts/${storageAccountName}'
+var appInsightName = '${uniqueSolutionPrefix}insight'
+var functionAppName = '${uniqueSolutionPrefix}function'
 
-module starterKitDeployment './iotedge-lorawan-starterkit/main.bicep' = if (isLoRaFeatureEnabled) {
-  name: starterKitDeploymentName
+module portalWithLoRaDeployment './portal_with_lorawan_and_starter_kit.bicep' = if (isLoRaFeatureEnabled) {
+  name: 'iothub-portal-with-lorawan'
   params: {
     location: location
     uniqueSolutionPrefix: uniqueSolutionPrefix
+    pgsqlAdminLogin: pgsqlAdminLogin
+    pgsqlAdminPassword: pgsqlAdminPassword
+    openIdAuthority: openIdAuthority
+    openIdMetadataURL: openIdMetadataURL
+    apiClientId: apiClientId
+    clientId: clientId
+    ideasEnabled: ideasEnabled
+    ideasUrl: ideasUrl
+    ideasAuthenticationHeader: ideasAuthenticationHeader
+    ideasAuthenticationToken: ideasAuthenticationToken
     edgeGatewayName: edgeGatewayName
     deployDevice: deployDevice
     resetPin: resetPin
     region: region
     spiSpeed: spiSpeed
     spiDev: spiDev
+    appInsightName: appInsightName
+    deviceImageContainerName: deviceImageContainerName
+    dpsName: dpsName
+    iamScopeName: iamScopeName
+    iotHubName: iotHubName
+    iotHubOwnerPolicyName: iotHubOwnerPolicyName
+    pgsqlServerName: pgsqlServerName
+    provisioningserviceownerPolicyName: provisioningserviceownerPolicyName
+    servicePlanName: servicePlanName
+    siteName: siteName
+    storageAccountId: storageAccountId
+    storageAccountName: storageAccountName
+    functionAppName: functionAppName
   }
 }
 
-module portalWithLoRaDeployment './portalDeployWithLoRa.bicep' = if (isLoRaFeatureEnabled) {
-  name: portalWithLoRaDeploymentName
+module portalWithoutLoRaDeployment './portal_without_lorawan.bicep' = if (!isLoRaFeatureEnabled) {
+  name: 'iothub-portal-without-lorawan'
   params: {
     location: location
-    uniqueSolutionPrefix: uniqueSolutionPrefix
     pgsqlAdminLogin: pgsqlAdminLogin
     pgsqlAdminPassword: pgsqlAdminPassword
     openIdAuthority: openIdAuthority
@@ -107,26 +139,17 @@ module portalWithLoRaDeployment './portalDeployWithLoRa.bicep' = if (isLoRaFeatu
     ideasUrl: ideasUrl
     ideasAuthenticationHeader: ideasAuthenticationHeader
     ideasAuthenticationToken: ideasAuthenticationToken
-  }
-  dependsOn: [
-    starterKitDeployment
-  ]
-}
-
-module portalWithoutLoRaDeployment './portalDeployWithoutLoRa.bicep' = if (!isLoRaFeatureEnabled) {
-  name: portalWithoutLoRaDeploymentName
-  params: {
-    location: location
-    uniqueSolutionPrefix: uniqueSolutionPrefix
-    pgsqlAdminLogin: pgsqlAdminLogin
-    pgsqlAdminPassword: pgsqlAdminPassword
-    openIdAuthority: openIdAuthority
-    openIdMetadataURL: openIdMetadataURL
-    apiClientId: apiClientId
-    clientId: clientId
-    ideasEnabled: ideasEnabled
-    ideasUrl: ideasUrl
-    ideasAuthenticationHeader: ideasAuthenticationHeader
-    ideasAuthenticationToken: ideasAuthenticationToken
+    appInsightName: appInsightName
+    deviceImageContainerName: deviceImageContainerName
+    dpsName: dpsName
+    iamScopeName: iamScopeName
+    iotHubName: iotHubName
+    iotHubOwnerPolicyName: iotHubOwnerPolicyName
+    pgsqlServerName: pgsqlServerName
+    provisioningserviceownerPolicyName: provisioningserviceownerPolicyName
+    servicePlanName: servicePlanName
+    siteName: siteName
+    storageAccountId: storageAccountId
+    storageAccountName: storageAccountName
   }
 }
