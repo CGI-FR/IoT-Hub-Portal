@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
     
-    - uses: actions/checkout@v3.3.0
+    - uses: actions/checkout@v3.4.0
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
@@ -70,20 +70,12 @@ jobs:
     
     steps:
     
-    - uses: actions/checkout@v3.3.0
+    - uses: actions/checkout@v3.4.0
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 7.0.x
-
-    - uses: actions/cache@v3
-      with:
-        path: ~/.nuget/packages
-        # Look to see if there is a cache hit for the corresponding requirements file
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget
 
     - name: Launch the portal locally
       uses: isbang/compose-action@v1.4.1      
@@ -146,3 +138,9 @@ jobs:
         E2E_USERNAME: ${{ vars.E2E_USERNAME }}
         E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
         E2E_URL: http://localhost:80/
+
+    - name: Get docker logs
+      run: |
+        docker logs src_portal_1
+      shell: bash
+      if: always()

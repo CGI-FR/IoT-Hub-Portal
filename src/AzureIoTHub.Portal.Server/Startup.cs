@@ -263,6 +263,7 @@ namespace AzureIoTHub.Portal.Server
                     opts.UseJsonSerializer();
                     opts.UseClustering();
                     opts.UseProperties = true;
+                    opts.PerformSchemaValidation = false;
 
                     switch (configuration.DbProvider)
                     {

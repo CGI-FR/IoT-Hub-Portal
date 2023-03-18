@@ -9,8 +9,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    name: Build & Test
-
+    name: Generate swagger
     runs-on: ubuntu-latest
 
     steps:
@@ -43,24 +42,6 @@ jobs:
       with:
         name: swagger-doc
         path: ./src/swagger.json
-
-    - name: Run unit tests
-      run: dotnet test --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" AzureIoTHub.Portal.sln
-      working-directory: src/
-
-    # Upload test results as artifact
-    - uses: actions/upload-artifact@v3
-      if: success() || failure()
-      with:
-        name: test-results
-        path: |
-          src/AzureIoTHub.Portal.Tests.Unit/TestResults
-    - name: Upload to Codecov test reports
-      uses: codecov/codecov-action@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        directory: src/AzureIoTHub.Portal.Tests.Unit/TestResults
-        verbose: true # optional (default = false)
 
   add-openapi-docs: 
     name: Import OpenAPI to documentation
