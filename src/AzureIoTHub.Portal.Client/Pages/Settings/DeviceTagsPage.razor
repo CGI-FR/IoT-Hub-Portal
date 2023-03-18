@@ -6,7 +6,7 @@
 
 <MudGrid>
     <MudItem xs="12">
-        <MudTable Items="@Tags" Loading="isProcessing" Dense=true Hover=true Bordered=true Striped=true>
+        <MudTable Items="@Tags" Loading="isProcessing" Dense=true Hover=true Bordered=true Striped=true RowClassFunc="@((DeviceTagModel m, int index) => $"tag-{m.Name}")">
 
             <ToolBarContent>
                 <MudText Typo="Typo.h6">Tags</MudText>
