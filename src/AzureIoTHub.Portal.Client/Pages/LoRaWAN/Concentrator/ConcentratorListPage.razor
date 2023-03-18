@@ -124,7 +124,7 @@
                     break;
             }
 
-            var uri = $"api/lorawan/concentrators?pageNumber={state.Page}&pageSize={state.PageSize}&orderBy={orderBy}&keyword={this.concentratorSearchInfo.SearchKeyword}&status={this.concentratorSearchInfo.SearchStatus}&state={this.concentratorSearchInfo.SearchState}";
+            var uri = $"api/lorawan/concentrators?pageNumber={state.Page}&pageSize={state.PageSize}&orderBy={orderBy}&searchText={this.concentratorSearchInfo.SearchText}&status={this.concentratorSearchInfo.Status}&state={this.concentratorSearchInfo.State}";
 
             var result = await LoRaWanConcentratorsClientService.GetConcentrators(uri);
 
@@ -176,7 +176,7 @@
             this.concentratorSearchInfo = concentratorSearchInfo;
         }
 
-        table.ReloadServerData();
+        await table.ReloadServerData();
     }
 
     private void Refresh()

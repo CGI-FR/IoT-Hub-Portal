@@ -29,9 +29,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Concentrators
             var receivedEvents = new List<ConcentratorSearchInfo>();
             var expectedConcentratorSearchInfo = new ConcentratorSearchInfo
             {
-                SearchKeyword = searchKeyword,
-                SearchState = string.Empty,
-                SearchStatus = string.Empty
+                SearchText = searchKeyword,
+                State = string.Empty,
+                Status = string.Empty
             };
 
             var cut = RenderComponent<ConcentratorSearch>(parameters => parameters.Add(p => p.OnSearch, (searchInfo) =>
@@ -60,9 +60,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Concentrators
             var receivedEvents = new List<ConcentratorSearchInfo>();
             var expectedConcentratorSearchInfo = new ConcentratorSearchInfo
             {
-                SearchKeyword = string.Empty,
-                SearchState = string.Empty,
-                SearchStatus = string.Empty
+                SearchText = string.Empty,
+                State = string.Empty,
+                Status = string.Empty
             };
 
             var cut = RenderComponent<ConcentratorSearch>(parameters => parameters.Add(p => p.OnSearch, (searchInfo) =>
