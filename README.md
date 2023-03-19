@@ -1,5 +1,6 @@
 [![Tests](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/ci-tests.yml/badge.svg?branch=main)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/ci-tests.yml)
 [![Deploy Staging](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/deploy_staging.yml/badge.svg)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/deploy_staging.yml)
+[![Publish](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/publish.yml/badge.svg?event=release)](https://github.com/CGI-FR/IoT-Hub-Portal/actions/workflows/publish.yml)
 [![codecov](https://codecov.io/gh/CGI-FR/IoT-Hub-Portal/branch/main/graph/badge.svg?token=S1A59KMRV6)](https://codecov.io/gh/CGI-FR/IoT-Hub-Portal)
 [![Open Source Helpers](https://img.shields.io/github/contributors/CGI-FR/IoT-Hub-Portal)](https://img.shields.io/github/contributors/CGI-FR/IoT-Hub-Portal)
 [![Version](https://img.shields.io/github/v/release/CGI-FR/IoT-Hub-Portal)](https://img.shields.io/github/v/release/CGI-FR/IoT-Hub-Portal)
