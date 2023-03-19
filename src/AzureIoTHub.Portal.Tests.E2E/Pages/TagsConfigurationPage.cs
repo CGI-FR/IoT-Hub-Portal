@@ -7,11 +7,11 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.UI;
 
-    public class TagsPage
+    public class TagsConfigurationPage
     {
         public WebDriverWait wait;
 
-        public TagsPage()
+        public TagsConfigurationPage()
         {
             this.wait = new WebDriverWait(WebDriverFactory.Default, TimeSpan.FromSeconds(5));
 
