@@ -29,7 +29,7 @@ namespace AzureIoTHub.Portal.Tests.E2E
         }
 
         [Test]
-        public void UserCanAddAndRemoveDeviceTag()
+        public void UserCanAddAndRemoveTagsConfiguration()
         {
             var fixture = new Fixture();
 
@@ -45,7 +45,7 @@ namespace AzureIoTHub.Portal.Tests.E2E
                     .ToArray()
             );
 
-            var tag = new TagsPage();
+            var tag = new TagsConfigurationPage();
 
             tag.AddTag(tagName, tagLabel);
 
