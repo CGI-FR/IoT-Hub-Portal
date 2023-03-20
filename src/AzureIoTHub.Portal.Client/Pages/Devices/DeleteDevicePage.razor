@@ -23,11 +23,11 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
 
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public string deviceID { get; set; }
-    [Parameter] public string deviceName { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public string deviceID { get; set; } = default!;
+    [Parameter] public string deviceName { get; set; } = default!;
     [Parameter] public bool IsLoRaWan { get; set; }
 
     void Submit() => MudDialog.Close(DialogResult.Ok(true));

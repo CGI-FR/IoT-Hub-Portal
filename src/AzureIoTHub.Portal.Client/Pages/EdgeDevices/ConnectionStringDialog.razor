@@ -10,19 +10,19 @@
                     <MudGrid>
                         <MudItem xs="12">
                             <MudText Style="text-decoration:underline"><b>Service Endpoint</b></MudText>
-                            <MudTextField @bind-Value="@Credentials.ProvisioningEndpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.ProvisioningEndpoint))"/>
+                            <MudTextField @bind-Value="@Credentials.ProvisioningEndpoint" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.ProvisioningEndpoint))"/>
                         </MudItem>
                         <MudItem Class="mt-0" xs="12">
                             <MudText Style="text-decoration:underline"><b>Registration Id</b></MudText>
-                            <MudTextField @bind-Value="@Credentials.RegistrationID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.RegistrationID))" />
+                            <MudTextField @bind-Value="@Credentials.RegistrationID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.RegistrationID))" />
                         </MudItem>
                         <MudItem Class="mt-0" xs="12">
                             <MudText Style="text-decoration:underline"><b>Scope Id</b></MudText>
-                            <MudTextField @bind-Value="@Credentials.ScopeID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.ScopeID))" />
+                            <MudTextField @bind-Value="@Credentials.ScopeID" Class="mt-0" Variant="Variant.Text" Margin="Margin.Dense" ReadOnly="true"  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.ScopeID))" />
                         </MudItem>
                         <MudItem Class="mt-0" xs="12">
                             <MudText Style="text-decoration:underline"><b>Symmetric Key</b></MudText>
-                            <MudTextField @bind-Value="@Credentials.SymmetricKey" Variant="Variant.Text" InputType="InputType.Password" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricKey))" />
+                            <MudTextField @bind-Value="@Credentials.SymmetricKey" Variant="Variant.Text" InputType="InputType.Password" Margin="Margin.Dense" ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.ContentCopy" OnAdornmentClick="@(() => ClipboardService.WriteTextAsync(Credentials.SymmetricKey))" />
                         </MudItem>
                     </MudGrid>
                 </MudCardContent>
@@ -35,11 +35,11 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
     
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
 
-    [Parameter] public string deviceId { get; set; }
+    [Parameter] public string deviceId { get; set; } = default!;
 
     private EnrollmentCredentials Credentials = new EnrollmentCredentials();
 

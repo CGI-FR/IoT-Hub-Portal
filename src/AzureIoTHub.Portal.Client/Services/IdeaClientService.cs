@@ -21,7 +21,7 @@ namespace AzureIoTHub.Portal.Client.Services
         {
             var response = await this.http.PostAsJsonAsync("api/ideas", ideaRequest);
 
-            return await response.Content.ReadFromJsonAsync<IdeaResponse>();
+            return await response.Content.ReadFromJsonAsync<IdeaResponse>() ?? new IdeaResponse();
         }
     }
 }

@@ -30,12 +30,12 @@ namespace AzureIoTHub.Portal.Client.Services
 
             var uri = QueryHelpers.AddQueryString(this.apiUrlBase, query);
 
-            return await this.http.GetFromJsonAsync<List<IoTEdgeModelListItem>>(uri);
+            return await this.http.GetFromJsonAsync<List<IoTEdgeModelListItem>>(uri) ?? new List<IoTEdgeModelListItem>();
         }
 
         public async Task<IoTEdgeModel> GetIoTEdgeModel(string modelId)
         {
-            return await this.http.GetFromJsonAsync<IoTEdgeModel>($"{this.apiUrlBase}/{modelId}");
+            return await this.http.GetFromJsonAsync<IoTEdgeModel>($"{this.apiUrlBase}/{modelId}") ?? new IoTEdgeModel();
         }
 
         public Task CreateIoTEdgeModel(IoTEdgeModel model)

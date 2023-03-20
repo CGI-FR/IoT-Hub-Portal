@@ -36,23 +36,26 @@ _ = builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
 using var httpClient = new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
 var settings = await httpClient.GetFromJsonAsync<OIDCSettings>("api/settings/oidc");
 
-_ = builder.Services.Configure<OIDCSettings>(opts =>
+if (settings != null)
 {
-    opts.ClientId = settings.ClientId;
-    opts.MetadataUrl = settings.MetadataUrl;
-    opts.Authority = settings.Authority;
-    opts.Scope = settings.Scope;
-});
+    _ = builder.Services.Configure<OIDCSettings>(opts =>
+    {
+        opts.ClientId = settings.ClientId;
+        opts.MetadataUrl = settings.MetadataUrl;
+        opts.Authority = settings.Authority;
+        opts.Scope = settings.Scope;
+    });
 
-builder.Services.AddOidcAuthentication(options =>
-{
-    options.ProviderOptions.Authority = settings.Authority;
-    options.ProviderOptions.MetadataUrl = settings.MetadataUrl.ToString();
-    options.ProviderOptions.ClientId = settings.ClientId;
-    options.ProviderOptions.ResponseType = "code";
+    _ = builder.Services.AddOidcAuthentication(options =>
+    {
+        options.ProviderOptions.Authority = settings.Authority;
+        options.ProviderOptions.MetadataUrl = settings.MetadataUrl.ToString();
+        options.ProviderOptions.ClientId = settings.ClientId;
+        options.ProviderOptions.ResponseType = "code";
 
-    options.ProviderOptions.DefaultScopes.Add(settings.Scope);
-});
+        options.ProviderOptions.DefaultScopes.Add(settings.Scope);
+    });
+}
 
 builder.Services.AddApiAuthorization();
 
@@ -100,5 +103,5 @@ static async Task ConfigurePortalSettings(WebAssemblyHostBuilder builder)
     using var httpClient = new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
     var settings = await httpClient.GetFromJsonAsync<PortalSettings>("api/settings/portal");
 
-    _ = builder.Services.AddSingleton(settings);
+    _ = builder.Services.AddSingleton(settings!);
 }

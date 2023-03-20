@@ -44,14 +44,14 @@
 
 @code {
     [Parameter]
-    public IList<IoTEdgeModuleCommand> Commands { get; set; }
+    public IList<IoTEdgeModuleCommand> Commands { get; set; } = new List<IoTEdgeModuleCommand>();
     private bool IsLoading = false;
 
     public void AddRow()
     {
         var last = Commands.LastOrDefault();
 
-        if (Commands.Count == 0 || (last.Name is not null))
+        if (Commands.Count == 0 || (last?.Name is not null))
         {
             Commands.Add(new IoTEdgeModuleCommand());
         }

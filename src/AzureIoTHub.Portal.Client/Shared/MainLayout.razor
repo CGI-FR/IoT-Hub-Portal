@@ -49,13 +49,13 @@
 
     protected override void OnInitialized()
     {
-        LayoutService.MajorUpdateOccurred += LayoutServiceOnMajorUpdateOccurred;
+        LayoutService.MajorUpdateOccurred += LayoutServiceOnMajorUpdateOccurred!;
         base.OnInitialized();
     }
 
     public void Dispose()
     {
-        LayoutService.MajorUpdateOccurred -= LayoutServiceOnMajorUpdateOccurred;
+        LayoutService.MajorUpdateOccurred -= LayoutServiceOnMajorUpdateOccurred!;
     }
 
     private void LayoutServiceOnMajorUpdateOccurred(object sender, EventArgs e) => StateHasChanged();

@@ -21,7 +21,7 @@
                 <MudText Typo="Typo.h6">Device configurations</MudText>
                 <MudSpacer />
                 <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick=LoadConfigurations Size="Size.Medium" id="tableRefreshButton" Class="ma-2"></MudIconButton>
-                <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="addDeviceButton" />
+                <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" id="addDeviceButton" />
             </ToolBarContent>
             <HeaderContent>
                 <MudTh>ID</MudTh>
@@ -50,7 +50,7 @@
                 <MudTd DataLabel="Priority" Style="text-align: center">@context.Priority</MudTd>
                 <MudTd DataLabel="Creation date" Style="text-align: center;">@context.CreationDate</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
-                    <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
                 </MudTd>
             </RowTemplate>
             <NoRecordsContent>
@@ -68,7 +68,7 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
     
     private readonly List<ConfigListItem> result = new();
     private bool IsLoading { get; set; } = true;

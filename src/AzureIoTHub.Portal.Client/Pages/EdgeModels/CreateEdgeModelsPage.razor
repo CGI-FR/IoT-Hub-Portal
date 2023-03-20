@@ -32,7 +32,7 @@
                     else
                     {
                         <InputFile id="fileInput" hidden accept=".jpg, .jpeg, .png" OnChange="UploadFiles" />
-                        <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Filled.CloudUpload">Change Picture</MudButton>
+                        <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload">Change Picture</MudButton>
                     }
                 </MudCardActions>
             </MudCard>
@@ -212,7 +212,7 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; }
+    public Error Error { get; set; } = default!;
 
     readonly DialogOptions maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
 
@@ -222,7 +222,7 @@
     public IoTEdgeModuleValidator edgeModuleValidator = new IoTEdgeModuleValidator();
     public IoTEdgeRouteValidator edgeRouteValidator = new IoTEdgeRouteValidator();
 
-    private MudForm form;
+    private MudForm form = default!;
     private bool isProcessing;
 
     private IoTEdgeModel Model = new IoTEdgeModel()
@@ -231,8 +231,8 @@
         };
 
     // Used to manage the picture
-    private MultipartFormDataContent content;
-    private string imageDataUrl;
+    private MultipartFormDataContent? content = default!;
+    private string? imageDataUrl = default!;
 
     private void DeleteAvatar()
     {
@@ -275,7 +275,7 @@
         {
             var result = await DialogService.Show<ModuleDialog>(module.ModuleName, parameters, options).Result;
 
-            if (result.Cancelled)
+            if (result.Canceled)
             {
                 return;
             }
@@ -291,7 +291,7 @@
 
         var result = await DialogService.Show<SystemModuleDialog>(systemModule.Name, parameters, options).Result;
 
-        if (result.Cancelled)
+        if (result.Canceled)
         {
             return;
         }
@@ -370,7 +370,7 @@
     {
         var last = Model.EdgeRoutes.LastOrDefault();
 
-        if (Model.EdgeRoutes.Count == 0 || (last.Name is not null && last.Value is not null))
+        if (Model.EdgeRoutes.Count == 0 || (last?.Name is not null && last?.Value is not null))
         {
             Model.EdgeRoutes.Add(new IoTEdgeRoute());
         }

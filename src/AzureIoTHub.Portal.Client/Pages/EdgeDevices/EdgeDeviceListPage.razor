@@ -96,7 +96,7 @@
                     <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@Refresh" id="tableRefreshButton" Class="ma-2"></MudIconButton>
                 </MudTooltip>
                 <MudTooltip Text="Add device">
-                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="RedirectToCreatePage" />
+                    <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="RedirectToCreatePage" />
                 </MudTooltip>
             </ToolBarContent>
             <HeaderContent>
@@ -124,13 +124,13 @@
                     @if (context.Status == "Enabled")
                     {
                         <MudTooltip Text="Device can connect">
-                            <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
                         </MudTooltip>
                     }
                     else
                     {
                         <MudTooltip Text="Device cannot connect">
-                            <MudIcon Icon="@Icons.Filled.Error" Color="Color.Default" />
+                            <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Default" />
                         </MudTooltip>
                     }
                 </MudTd>
@@ -138,7 +138,7 @@
                 <MudTd DataLabel="NbDevices" Style="text-align: center">@context.NbDevices</MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
                         <MudTooltip Text="See device details">
-                        <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
                         </MudTooltip>
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
@@ -162,13 +162,13 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; }
+    public Error Error { get; set; } = default!;
 
-    private MudTable<IoTEdgeListItem> table;
+    private MudTable<IoTEdgeListItem> table = default!;
     private SearchModel searchModel = new();
 
     private List<IoTEdgeModelListItem> edgeModelList = new List<IoTEdgeModelListItem>();
-    private IoTEdgeModelListItem _edgeModel;
+    private IoTEdgeModelListItem _edgeModel = default!;
     public IoTEdgeModelListItem edgeModel
     {
         get => _edgeModel;
@@ -212,7 +212,7 @@
     {
         try
         {
-            string orderBy = null;
+            string orderBy = default!;
 
             switch (state.SortDirection)
             {
@@ -267,7 +267,7 @@
         var parameters = new DialogParameters { { nameof(IoTEdgeDevice.DeviceId), gateway.DeviceId } };
         var result = await DialogService.Show<EdgeDeviceDeleteConfirmationDialog>("Confirm Deletion", parameters).Result;
 
-        if (result.Cancelled)
+        if (result.Canceled)
         {
             return;
         }

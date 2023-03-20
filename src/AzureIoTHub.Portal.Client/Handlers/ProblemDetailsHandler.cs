@@ -21,6 +21,7 @@ namespace AzureIoTHub.Portal.Client.Handlers
             }
 
             var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetailsWithExceptionDetails>(cancellationToken: cancellationToken);
+
             throw new ProblemDetailsException(problemDetails);
         }
     }

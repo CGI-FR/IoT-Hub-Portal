@@ -21,12 +21,12 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public Task<PaginationResult<DeviceListItem>> GetDevices(string continuationUri)
         {
-            return this.http.GetFromJsonAsync<PaginationResult<DeviceListItem>>(continuationUri);
+            return this.http.GetFromJsonAsync<PaginationResult<DeviceListItem>>(continuationUri)!;
         }
 
         public Task<DeviceDetails> GetDevice(string deviceId)
         {
-            return this.http.GetFromJsonAsync<DeviceDetails>($"api/devices/{deviceId}");
+            return this.http.GetFromJsonAsync<DeviceDetails>($"api/devices/{deviceId}")!;
         }
 
         public Task CreateDevice(DeviceDetails device)
@@ -41,7 +41,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public async Task<IList<DevicePropertyValue>> GetDeviceProperties(string deviceId)
         {
-            return await this.http.GetFromJsonAsync<List<DevicePropertyValue>>($"api/devices/{deviceId}/properties");
+            return await this.http.GetFromJsonAsync<List<DevicePropertyValue>>($"api/devices/{deviceId}/properties") ?? new List<DevicePropertyValue>();
         }
 
         public Task SetDeviceProperties(string deviceId, IList<DevicePropertyValue> deviceProperties)
@@ -51,7 +51,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId)
         {
-            return this.http.GetFromJsonAsync<EnrollmentCredentials>($"api/devices/{deviceId}/credentials");
+            return this.http.GetFromJsonAsync<EnrollmentCredentials>($"api/devices/{deviceId}/credentials")!;
         }
 
         public Task DeleteDevice(string deviceId)
@@ -74,12 +74,12 @@ namespace AzureIoTHub.Portal.Client.Services
         {
             var result = await this.http.PostAsync($"/api/admin/devices/_import", dataContent);
             _ = result.EnsureSuccessStatusCode();
-            return await result.Content.ReadFromJsonAsync<ImportResultLine[]>();
+            return await result.Content.ReadFromJsonAsync<ImportResultLine[]>() ?? Array.Empty<ImportResultLine>();
         }
 
         public async Task<IEnumerable<LabelDto>> GetAvailableLabels()
         {
-            return await this.http.GetFromJsonAsync<List<LabelDto>>($"api/devices/available-labels");
+            return await this.http.GetFromJsonAsync<List<LabelDto>>($"api/devices/available-labels") ?? new List<LabelDto>();
         }
     }
 }

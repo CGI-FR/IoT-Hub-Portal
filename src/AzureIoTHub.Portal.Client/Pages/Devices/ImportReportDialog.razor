@@ -39,16 +39,16 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [CascadingParameter] public Error Error { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [CascadingParameter] public Error Error { get; set; } = default!;
 
-    [Inject] IDeviceClientService DeviceClientService { get; set; }
+    [Inject] IDeviceClientService DeviceClientService { get; set; } = default!;
 
     [Parameter]
-    public MultipartFormDataContent Content { get; set; }
+    public MultipartFormDataContent Content { get; set; } = default!;
 
     private bool Loading = false;
-    private ImportResultLine[] ErrorReport;
+    private ImportResultLine[] ErrorReport = default!;
 
     void Close() => MudDialog.Close();
 

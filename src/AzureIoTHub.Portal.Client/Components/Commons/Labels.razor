@@ -12,16 +12,16 @@
 
 @code {
 
-    private IEnumerable<LabelDto> displayedLabels;
+    private IEnumerable<LabelDto> displayedLabels = Array.Empty<LabelDto>();
 
     [Parameter]
     public int MaxDisplayedLabels { get; set; } = 3;
 
     [Parameter]
-    public IEnumerable<LabelDto> SearchedLabels { get; set; }
+    public IEnumerable<LabelDto> SearchedLabels { get; set; } = Array.Empty<LabelDto>();
 
     [Parameter]
-    public IEnumerable<LabelDto> Items { get; set; }
+    public IEnumerable<LabelDto> Items { get; set; } = Array.Empty<LabelDto>();
 
     protected override void OnInitialized()
     {

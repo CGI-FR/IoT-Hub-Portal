@@ -90,7 +90,7 @@
                                                    Color="Color.Primary"
                                                    Disabled="string.IsNullOrEmpty(SelectedTag)"
                                                    OnClick="AddSelectedTag"
-                                                   StartIcon="@Icons.Filled.Add" id="addTagButton">Add Tag</MudButton>
+                                                   StartIcon="@Icons.Material.Filled.Add" id="addTagButton">Add Tag</MudButton>
                                     </MudItem>
                                 </MudGrid>
                             </MudItem>
@@ -148,7 +148,7 @@
                                                    Color="Color.Primary"
                                                    Disabled="string.IsNullOrEmpty(SelectedProperty)"
                                                    OnClick="AddSelectedProperty"
-                                                   StartIcon="@Icons.Filled.Add" id="addPropertyButton">Add Property</MudButton>
+                                                   StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add Property</MudButton>
                                     </MudItem>
                                 </MudGrid>
                             </MudItem>
@@ -224,7 +224,7 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
 
     public DeviceConfig Configuration { get; set; } = new();
 
@@ -232,8 +232,8 @@
     IEnumerable<DeviceProperty> AvailableProperties = Array.Empty<DeviceProperty>();
     IEnumerable<DeviceModelDto> AvailableModels = Array.Empty<DeviceModelDto>();
 
-    public string SelectedTag { get; set; }
-    public string SelectedProperty { get; set; }
+    public string SelectedTag { get; set; } = default!;
+    public string SelectedProperty { get; set; } = default!;
 
     private bool isProcessing;
 

@@ -53,11 +53,11 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
     
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public string deviceId { get; set; }
-    [Parameter] public IoTEdgeModule edgeModule { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public string deviceId { get; set; } = default!;
+    [Parameter] public IoTEdgeModule edgeModule { get; set; } = default!;
     
     private int[] pageSizeOptions = new int[] { 3, 5 , 10};
     private List<IoTEdgeDeviceLog> logs = new();

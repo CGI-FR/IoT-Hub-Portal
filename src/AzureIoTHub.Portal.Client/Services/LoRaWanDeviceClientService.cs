@@ -22,7 +22,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public Task<LoRaDeviceDetails> GetDevice(string deviceId)
         {
-            return this.http.GetFromJsonAsync<LoRaDeviceDetails>($"api/lorawan/devices/{deviceId}");
+            return this.http.GetFromJsonAsync<LoRaDeviceDetails>($"api/lorawan/devices/{deviceId}")!;
         }
 
         public Task CreateDevice(LoRaDeviceDetails device)
@@ -47,12 +47,12 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public Task<LoRaGatewayIDList> GetGatewayIdList()
         {
-            return this.http.GetFromJsonAsync<LoRaGatewayIDList>($"api/lorawan/devices/gateways");
+            return this.http.GetFromJsonAsync<LoRaGatewayIDList>($"api/lorawan/devices/gateways")!;
         }
 
         public async Task<IEnumerable<LoRaDeviceTelemetryDto>> GetDeviceTelemetry(string deviceId)
         {
-            return await this.http.GetFromJsonAsync<List<LoRaDeviceTelemetryDto>>($"api/lorawan/devices/{deviceId}/telemetry");
+            return await this.http.GetFromJsonAsync<List<LoRaDeviceTelemetryDto>>($"api/lorawan/devices/{deviceId}/telemetry") ?? new List<LoRaDeviceTelemetryDto>();
         }
     }
 }

@@ -53,14 +53,14 @@
 
 @code {
     [Parameter]
-    public IList<IoTEdgeModuleEnvironmentVariable> EnvironmentVariables { get; set; }
+    public IList<IoTEdgeModuleEnvironmentVariable> EnvironmentVariables { get; set; } = new List<IoTEdgeModuleEnvironmentVariable>();
     private bool IsLoading = false;
 
     public void AddRow()
     {
         var last = EnvironmentVariables.LastOrDefault();
 
-        if (EnvironmentVariables.Count == 0 || (last.Name is not null && last.Value is not null))
+        if (EnvironmentVariables.Count == 0 || (last?.Name is not null && last?.Value is not null))
         {
             EnvironmentVariables.Add(new IoTEdgeModuleEnvironmentVariable());
         }

@@ -35,7 +35,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public async Task<IList<DeviceTagDto>> GetDeviceTags()
         {
-            return await this.http.GetFromJsonAsync<List<DeviceTagDto>>("api/settings/device-tags");
+            return await this.http.GetFromJsonAsync<List<DeviceTagDto>>("api/settings/device-tags") ?? new List<DeviceTagDto>();
         }
 
     }

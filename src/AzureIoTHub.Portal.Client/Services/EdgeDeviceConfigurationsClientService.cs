@@ -20,12 +20,12 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public async Task<IList<ConfigListItem>> GetDeviceConfigurations()
         {
-            return await this.http.GetFromJsonAsync<List<ConfigListItem>>("api/edge/configurations");
+            return await this.http.GetFromJsonAsync<List<ConfigListItem>>("api/edge/configurations") ?? new List<ConfigListItem>();
         }
 
         public Task<ConfigListItem> GetDeviceConfiguration(string deviceConfigurationId)
         {
-            return this.http.GetFromJsonAsync<ConfigListItem>($"api/edge/configurations/{deviceConfigurationId}");
+            return this.http.GetFromJsonAsync<ConfigListItem>($"api/edge/configurations/{deviceConfigurationId}")!;
         }
     }
 }

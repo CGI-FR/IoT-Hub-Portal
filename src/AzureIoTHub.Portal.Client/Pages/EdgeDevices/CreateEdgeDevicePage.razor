@@ -165,14 +165,14 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; }
+    public Error Error { get; set; } = default!;
 
-    private MudForm form;
+    private MudForm form = default!;
 
     private IoTEdgeDevice EdgeDevice = new IoTEdgeDevice();
 
     private IEnumerable<IoTEdgeModelListItem> edgeModelList = new List<IoTEdgeModelListItem>();
-    private IoTEdgeModel _edgeModel;
+    private IoTEdgeModel _edgeModel = default!;
     private IoTEdgeModel edgeModel
     {
         get => _edgeModel;
@@ -196,7 +196,7 @@
     {
         try
         {
-            EdgeDeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred;
+            EdgeDeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred!;
             EdgeDevice = EdgeDeviceLayoutService.GetSharedDevice() ?? this.EdgeDevice;
             edgeModel = EdgeDeviceLayoutService.GetSharedDeviceModel() ?? this.edgeModel;
 
@@ -219,7 +219,7 @@
     {
         EdgeDeviceLayoutService.ResetSharedDevice();
         EdgeDeviceLayoutService.ResetSharedDeviceModel();
-        EdgeDeviceLayoutService.RefreshDeviceOccurred -= DeviceServiceOnRefreshDeviceOccurred;
+        EdgeDeviceLayoutService.RefreshDeviceOccurred -= DeviceServiceOnRefreshDeviceOccurred!;
     }
 
     public async void Save()
@@ -330,8 +330,8 @@
                 {
                     DeviceId = this.EdgeDevice.DeviceId,
                     DeviceName = this.EdgeDevice.DeviceName,
-                    ModelId = edgeModel?.ModelId,
-                    ImageUrl = edgeModel?.ImageUrl,
+                    ModelId = edgeModel?.ModelId!,
+                    ImageUrl = edgeModel?.ImageUrl!,
                     Tags = this.EdgeDevice.Tags,
                     IsEnabled = this.EdgeDevice.IsEnabled
                 };

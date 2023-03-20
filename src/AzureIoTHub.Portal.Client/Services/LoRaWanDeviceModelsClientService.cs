@@ -20,7 +20,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public Task<LoRaDeviceModelDto> GetDeviceModel(string deviceModelId)
         {
-            return this.http.GetFromJsonAsync<LoRaDeviceModelDto>($"api/lorawan/models/{deviceModelId}");
+            return this.http.GetFromJsonAsync<LoRaDeviceModelDto>($"api/lorawan/models/{deviceModelId}")!;
         }
 
         public Task CreateDeviceModel(LoRaDeviceModelDto deviceModelDto)
@@ -40,7 +40,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public async Task<IList<DeviceModelCommandDto>> GetDeviceModelCommands(string deviceModelId)
         {
-            return await this.http.GetFromJsonAsync<List<DeviceModelCommandDto>>($"api/lorawan/models/{deviceModelId}/commands");
+            return await this.http.GetFromJsonAsync<List<DeviceModelCommandDto>>($"api/lorawan/models/{deviceModelId}/commands") ?? new List<DeviceModelCommandDto>();
         }
 
         public Task<string> GetAvatarUrl(string deviceModelId)

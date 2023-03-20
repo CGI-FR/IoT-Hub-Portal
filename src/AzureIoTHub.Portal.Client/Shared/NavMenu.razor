@@ -11,9 +11,9 @@
 <AuthorizeView>
     <Authorized>
         <MudNavMenu>
-            <MudNavLink Href="/" Icon="@Icons.Filled.Dashboard">Dashboard</MudNavLink>
+            <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
 
-            <MudNavGroup Title="Devices" Icon="@Icons.Outlined.Memory"
+            <MudNavGroup Title="Devices" Icon="@Icons.Material.Outlined.Memory"
                          Expanded="@LayoutService.GetNavGroupExpanded("Devices")"
                          ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Devices", b))">
                 <MudPaper Class="d-flex align-center flex-grow-1 gap-4" Elevation="0">
@@ -41,7 +41,7 @@
                 </MudPaper>
             </MudNavGroup>
 
-            <MudNavGroup Title="IoT Edge" Icon="@Icons.Outlined.DeveloperBoard"
+            <MudNavGroup Title="IoT Edge" Icon="@Icons.Material.Outlined.DeveloperBoard"
                          Expanded="@LayoutService.GetNavGroupExpanded("IoTEdge")"
                          ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("IoTEdge", b))">
                 <MudNavLink Href="/edge/devices">Devices</MudNavLink>
@@ -50,7 +50,7 @@
 
             @if (Portal.IsLoRaSupported)
             {
-                <MudNavGroup Title="LoRaWAN" Icon="@Icons.Outlined.WifiTethering"
+                <MudNavGroup Title="LoRaWAN" Icon="@Icons.Material.Outlined.WifiTethering"
                              Expanded="@LayoutService.GetNavGroupExpanded("LoRaWAN")"
                              ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("LoRaWAN", b))">
                     <MudNavLink Href="/lorawan/concentrators">
@@ -59,7 +59,7 @@
                 </MudNavGroup>
             }
 
-            <MudNavGroup Title="Settings" Icon="@Icons.Outlined.Settings"
+            <MudNavGroup Title="Settings" Icon="@Icons.Material.Outlined.Settings"
                          Expanded="@LayoutService.GetNavGroupExpanded("Settings")"
                          ExpandedChanged="@(b => LayoutService.SetNavGroupExpanded("Settings", b))">
                 <MudNavLink Href="/settings/device-tag">Device Tags</MudNavLink>
@@ -75,13 +75,13 @@
 
     protected override void OnInitialized()
     {
-        LayoutService.MajorUpdateOccurred += LayoutServiceOnMajorUpdateOccurred;
+        LayoutService.MajorUpdateOccurred += LayoutServiceOnMajorUpdateOccurred!;
         base.OnInitialized();
     }
 
     public void Dispose()
     {
-        LayoutService.MajorUpdateOccurred -= LayoutServiceOnMajorUpdateOccurred;
+        LayoutService.MajorUpdateOccurred -= LayoutServiceOnMajorUpdateOccurred!;
     }
 
     private void LayoutServiceOnMajorUpdateOccurred(object sender, EventArgs e) => StateHasChanged();

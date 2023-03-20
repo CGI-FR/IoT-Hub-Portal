@@ -40,7 +40,7 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
 
     private async Task<IEnumerable<DeviceListItem>> SearchDevicesToDuplicate(string query)
     {

@@ -30,7 +30,7 @@
                     <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" id="tableRefreshButton" OnClick="@LoadEdgeModels" Class="ma-2"></MudIconButton>
                 </MudTooltip>
                 <MudTooltip Text="Add device model">
-                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" OnClick="@RedirectToCreatePage" Size="Size.Medium" id="addEdgeModelButton" />
+                    <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" OnClick="@RedirectToCreatePage" Size="Size.Medium" id="addEdgeModelButton" />
                 </MudTooltip>
             </ToolBarContent>
             <HeaderContent>
@@ -59,7 +59,7 @@
                 </MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
                     <MudTooltip Text="Go to the detail">
-                        <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
                     </MudTooltip>
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
@@ -83,7 +83,7 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
 
     private List<IoTEdgeModelListItem> EdgeModelList = new List<IoTEdgeModelListItem>();
 
@@ -136,7 +136,7 @@
         parameters.Add("deviceModelName", ioTEdgeModel.Name);
         var result = await dialogService.Show<DeleteEdgeModelDialog>("Confirm Deletion", parameters).Result;
 
-        if (result.Cancelled)
+        if (result.Canceled)
         {
             return;
         }

@@ -28,7 +28,7 @@
                     <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@Refresh" Class="ma-2" id="tableRefreshButton"></MudIconButton>
                 </MudTooltip>
                 <MudTooltip Text="Add device model">
-                    <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDeviceModel" id="addDeviceModelButton" />
+                    <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDeviceModel" id="addDeviceModelButton" />
                 </MudTooltip>
             </ToolBarContent>
             <HeaderContent>
@@ -57,7 +57,7 @@
                 </MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
                     <MudTooltip Text="Delete device model">
-                        <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
                     </MudTooltip>
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
@@ -82,9 +82,9 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; }
+    public Error Error { get; set; } = default!;
 
-    private MudTable<DeviceModelDto> table;
+    private MudTable<DeviceModelDto> table = default!;
 
     private readonly Dictionary<int, string> pages = new();
 
@@ -114,7 +114,7 @@
         {
             IsLoading = true;
 
-            string orderBy = null;
+            string orderBy = default!;
 
             switch (state.SortDirection)
             {
@@ -128,7 +128,7 @@
 
             var result = await DeviceModelsClientService.GetDeviceModels(new DeviceModelFilter
                 {
-                    SearchText = this.deviceModelSearchInfo.SearchText,
+                    SearchText = this.deviceModelSearchInfo.SearchText!,
                     PageNumber = state.Page,
                     PageSize = state.PageSize,
                     OrderBy = new string[] { orderBy }
@@ -158,7 +158,7 @@
         parameters.Add("deviceModelName", deviceModel.Name);
         var result = await dialogService.Show<DeleteDeviceModelPage>("Confirm Deletion", parameters).Result;
 
-        if (result.Cancelled)
+        if (result.Canceled)
         {
             return;
         }
@@ -173,7 +173,7 @@
         navigationManager.NavigateTo($"/device-models/{item.ModelId}{((item.SupportLoRaFeatures && Portal.IsLoRaSupported) ? "?isLora=true" : "")}");
     }
 
-    private async Task Search(DeviceModelSearchInfo deviceModelSearchInfo = null)
+    private async Task Search(DeviceModelSearchInfo? deviceModelSearchInfo = null)
     {
         if (deviceModelSearchInfo == null)
         {

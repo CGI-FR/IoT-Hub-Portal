@@ -12,7 +12,7 @@
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
-    <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id = "returnButton" />       
+    <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id = "returnButton" />       
 </MudTooltip>
 <MudTooltip Placement="Placement.Top">
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Device Configuration Details</MudText>
@@ -86,7 +86,7 @@
                                                    Color="Color.Primary"
                                                    Disabled="string.IsNullOrEmpty(SelectedTag)"
                                                    OnClick="AddSelectedTag"
-                                                   StartIcon="@Icons.Filled.Add" id="addTagButton">Add Tag</MudButton>
+                                                   StartIcon="@Icons.Material.Filled.Add" id="addTagButton">Add Tag</MudButton>
                                     </MudItem>
                                 </MudGrid>
                             </MudItem>
@@ -143,7 +143,7 @@
                                                    Color="Color.Primary"
                                                    Disabled="string.IsNullOrEmpty(SelectedProperty)"
                                                    OnClick="AddSelectedProperty"
-                                                   StartIcon="@Icons.Filled.Add" id="addPropertyButton">Add Property</MudButton>
+                                                   StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add Property</MudButton>
                                     </MudItem>
                                 </MudGrid>
                             </MudItem>
@@ -219,16 +219,16 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
 
     IEnumerable<DeviceTagDto> AvailableTags { get; set; } = Array.Empty<DeviceTagDto>();
     IEnumerable<DeviceProperty> AvailableProperties = Array.Empty<DeviceProperty>();
 
-    public string SelectedTag { get; set; }
-    public string SelectedProperty { get; set; }
+    public string SelectedTag { get; set; } = default!;
+    public string SelectedProperty { get; set; } = default!;
 
     [Parameter]
-    public string ConfigId { get; set; }
+    public string ConfigId { get; set; } = default!;
 
     public DeviceConfig Configuration { get; set; } = new();
     public DeviceModelDto DeviceModel { get; set; } = new();
@@ -286,7 +286,7 @@
 
         isProcessing = false;
 
-        if (confirm.Cancelled)
+        if (confirm.Canceled)
         {
             return;
         }

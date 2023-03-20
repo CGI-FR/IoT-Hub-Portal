@@ -3,7 +3,6 @@
 @using AzureIoTHub.Portal.Client.Pages.Ideas
 
 @inject PortalSettings Portal
-@inject SignOutSessionStateManager SignOutManager
 @inject NavigationManager Navigation
 @inject IDialogService DialogService
 @inject ILayoutService LayoutService
@@ -16,16 +15,16 @@
         @if (Portal.IsIdeasFeatureEnabled)
         {
             <MudTooltip id="ideas" Duration="1000" Text="New Ideas ?">
-                <MudIconButton Icon="@Icons.Filled.Lightbulb" Color="Color.Inherit" OnClick="@OpenSubmitIdeaDialog" />
+                <MudIconButton Icon="@Icons.Material.Filled.Lightbulb" Color="Color.Inherit" OnClick="@OpenSubmitIdeaDialog" />
             </MudTooltip>
         }
         <MudTooltip id="dark_light_switch" Duration="1000" Text="@(LayoutService.IsDarkMode ? "Switch to Light Theme" : "Switch to Dark Theme")">
-            <MudIconButton Icon="@(LayoutService.IsDarkMode ? @Icons.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@LayoutService.ToggleDarkMode" />
+            <MudIconButton Icon="@(LayoutService.IsDarkMode ? @Icons.Material.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" Color="Color.Inherit" OnClick="@LayoutService.ToggleDarkMode" />
         </MudTooltip>
         <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" Class="help-menu">
             <ActivatorContent>
                 <MudTooltip id="dark_light_switch" Duration="1000" Text="Support + documentation">
-                    <MudIconButton Icon="@Icons.Rounded.HelpOutline" Style="color: white;" Size="Size.Medium" />
+                    <MudIconButton Icon="@Icons.Material.Rounded.HelpOutline" Style="color: white;" Size="Size.Medium" />
                 </MudTooltip>
             </ActivatorContent>
             <ChildContent>
@@ -62,7 +61,7 @@
                 <MudList Clickable="true">
                     <MudListSubheader>
                         <MudText Typo="Typo.caption">Signed in as</MudText>
-                        <MudText Typo="Typo.body1"><b>@context.User.Identity.Name</b></MudText>
+                        <MudText Typo="Typo.body1"><b>@context.User.Identity?.Name</b></MudText>
                     </MudListSubheader>
                     <MudDivider />
                     <MudListItem Href="#" OnClick="BeginLogout" Icon="@Icons.Material.Filled.Logout">Log out</MudListItem>
@@ -76,10 +75,9 @@
 </AuthorizeView>
 
 @code {
-    private async Task BeginLogout(MouseEventArgs args)
+    private void BeginLogout(MouseEventArgs args)
     {
-        await SignOutManager.SetSignOutState();
-        Navigation.NavigateTo("authentication/logout");
+        Navigation.NavigateToLogout("authentication/logout");
     }
 
     private void BeginLogin(MouseEventArgs args)

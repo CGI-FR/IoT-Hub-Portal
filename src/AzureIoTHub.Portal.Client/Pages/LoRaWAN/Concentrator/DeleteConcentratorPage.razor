@@ -15,11 +15,11 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
-    
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public string deviceId { get; set; }
-    
+    public Error Error { get; set; } = default!;
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public string deviceId { get; set; } = default!;
+
     void Cancel() => MudDialog.Cancel();
 
     /// <summary>

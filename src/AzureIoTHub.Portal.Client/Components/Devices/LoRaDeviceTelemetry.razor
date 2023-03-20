@@ -16,13 +16,13 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; }
+    public Error Error { get; set; } = default!;
 
     [Parameter]
-    public string DeviceId { get; set; }
+    public string DeviceId { get; set; } = default!;
 
     private IEnumerable<LoRaDeviceTelemetryDto> Telemetries = new List<LoRaDeviceTelemetryDto>();
-    private LineConfig chartConfig;
+    private LineConfig chartConfig = default!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

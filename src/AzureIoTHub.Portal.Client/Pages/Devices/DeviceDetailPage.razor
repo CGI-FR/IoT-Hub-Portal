@@ -18,7 +18,7 @@
 @inject IDeviceLayoutService DeviceLayoutService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
-    <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton"/>       
+    <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton"/>       
 </MudTooltip>
 <MudTooltip Placement="Placement.Top">
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Device Details</MudText>
@@ -42,7 +42,7 @@
                 <MudCardActions Class="pb-4 pl-4 justify-center">
                     @if (isLoaded && (!IsLoRa || !(Device is LoRaDeviceDetails)))
                     {
-                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
+                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
                     }
                 </MudCardActions>
             </MudCard>
@@ -223,9 +223,9 @@
 </MudForm>
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
 
-    private MudForm form;
+    private MudForm form = default!;
 
     [Parameter]
     [SupplyParameterFromQuery]
@@ -239,7 +239,7 @@
     private LoRaDeviceDetailsValidator loraValidator = new LoRaDeviceDetailsValidator();
 
     [Parameter]
-    public string DeviceID { get; set; }
+    public string DeviceID { get; set; } = default!;
 
     private IDeviceDetails Device { get; set; } = new DeviceDetails();
 
@@ -254,7 +254,7 @@
 
     private void Return() => NavManager.NavigateTo("devices");
 
-    private IEnumerable<DeviceModelCommandDto> Commands { get; set; }
+    private IEnumerable<DeviceModelCommandDto> Commands { get; set; } = Array.Empty<DeviceModelCommandDto>();
 
     private IEnumerable<DeviceTagDto> TagList { get; set; } = Array.Empty<DeviceTagDto>();
 
@@ -327,11 +327,11 @@
 
             if (IsLoRa)
             {
-                await LoRaWanDeviceClientService.UpdateDevice(Device as LoRaDeviceDetails);
+                await LoRaWanDeviceClientService.UpdateDevice((Device as LoRaDeviceDetails)!);
             }
             else
             {
-                await DeviceClientService.UpdateDevice(Device as DeviceDetails);
+                await DeviceClientService.UpdateDevice((Device as DeviceDetails)!);
 
                 await DeviceClientService.SetDeviceProperties(DeviceID, Properties.ToList());
             }
@@ -418,7 +418,7 @@
 
         isProcessing = false;
 
-        if (result.Cancelled)
+        if (result.Canceled)
         {
             return;
         }

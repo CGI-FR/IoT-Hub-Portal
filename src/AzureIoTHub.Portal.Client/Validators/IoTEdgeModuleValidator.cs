@@ -12,7 +12,7 @@ namespace AzureIoTHub.Portal.Client.Validators
     {
         private class IoTEdgeModuleComparer : IEqualityComparer<IoTEdgeModule>
         {
-            public bool Equals(IoTEdgeModule x, IoTEdgeModule y)
+            public bool Equals(IoTEdgeModule? x, IoTEdgeModule? y)
             {
                 return x?.ModuleName == y?.ModuleName;
             }

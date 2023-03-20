@@ -25,7 +25,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Converters
 
         [TestCase(true, "true")]
         [TestCase(false, "false")]
-        [TestCase(null, null)]
+        [TestCase(null, "")]
         public void GetShouldReturnStringRepresentationOfBool(bool? value, string expected)
         {
             // Arrange
