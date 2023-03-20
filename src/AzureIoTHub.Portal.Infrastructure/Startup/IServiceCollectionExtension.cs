@@ -133,7 +133,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                     _ = dbContextOptions.UseMySql(configuration.MySQLConnectionString, DatabaseHelper.GetMySqlServerVersion(configuration.MySQLConnectionString), x => x.MigrationsAssembly("AzureIoTHub.Portal.MySql"));
                     break;
                 default:
-                    return services;
+                    throw new InvalidOperationException($"'{configuration.DbProvider}' is not valid for the {ConfigHandlerBase.DbProviderKey} option. Please specify one of the valid values ({DbProviders.MySQL},{DbProviders.PostgreSQL}).");
             }
 
             _ = services.AddScoped<IUnitOfWork, UnitOfWork<PortalDbContext>>();
