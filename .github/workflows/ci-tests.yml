@@ -67,6 +67,7 @@ jobs:
     name: E2E tests
     runs-on: ubuntu-latest
     environment: E2E
+    if: contains(github.event.pull_request.labels.*.name, 'e2e-test')
     
     steps:
     
