@@ -843,6 +843,7 @@
           {
             "name": "labels",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "array",
               "items": {
