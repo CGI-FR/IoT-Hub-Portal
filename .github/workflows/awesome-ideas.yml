@@ -2,7 +2,7 @@ name: Create issue for Awesome Ideas
 
 on:
   discussion:
-    types: [created]
+    types: [ created ]
 
 jobs:
   link_issue:

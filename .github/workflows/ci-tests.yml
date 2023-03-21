@@ -3,9 +3,9 @@ name: Tests
 # Controls when the workflow will run
 on:
   pull_request:
-    branches: [ main, v3/main ]
+    branches: [ main* ]
   push:
-    branches: [ main, v3/main ]
+    branches: [ main* ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -67,8 +67,7 @@ jobs:
     name: E2E tests
     runs-on: ubuntu-latest
     environment: E2E
-    if: contains(github.event.pull_request.labels.*.name, 'e2e-test')
-    
+
     steps:
     
     - uses: actions/checkout@v3.4.0
