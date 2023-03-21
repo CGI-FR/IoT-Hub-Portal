@@ -24,7 +24,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public Dictionary<string, bool> CollapsibleNavMenu { get; set; }
 
-        public event EventHandler MajorUpdateOccurred;
+        public event EventHandler? MajorUpdateOccurred;
 
         public async Task LoadLayoutConfigurationFromLocalStorage()
         {

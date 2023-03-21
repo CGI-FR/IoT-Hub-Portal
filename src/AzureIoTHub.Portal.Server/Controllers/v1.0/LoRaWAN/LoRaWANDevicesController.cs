@@ -42,7 +42,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Gets the device list.
         /// </summary>
-        /// <param name="continuationToken"></param>
         /// <param name="searchText"></param>
         /// <param name="searchStatus"></param>
         /// <param name="searchState"></param>

@@ -8,10 +8,10 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
 
     [Parameter]
-    public string DeviceId { get; set; }
+    public string DeviceId { get; set; } = default!;
 
     void Cancel() => MudDialog.Cancel();
 }

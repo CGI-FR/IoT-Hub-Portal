@@ -61,7 +61,7 @@
                 </MudTd>
                 <MudTd DataLabel="Validate" Style="text-align: center;">
                     <MudTooltip Text="Validate device">
-                        <MudIconButton Color="Color.Default" Icon="@Icons.Filled.CheckCircle" Size="Size.Medium" OnClick="@(() => Save(TagContexte))" id="saveButton" Disabled="isProcessing">Save Changes></MudIconButton>
+                        <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.CheckCircle" Size="Size.Medium" OnClick="@(() => Save(TagContexte))" id="saveButton" Disabled="isProcessing">Save Changes></MudIconButton>
                     </MudTooltip>
                 </MudTd>
             </RowTemplate>
@@ -81,12 +81,12 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; }
+    public Error Error { get; set; } = default!;
 
     List<DeviceTagModel> Tags { get; } = new();
-    private MudForm FormName { get; set; }
-    private MudForm FormLabel { get; set; }
-    
+    private MudForm FormName { get; set; } = default!;
+    private MudForm FormLabel { get; set; } = default!;
+
     private bool isProcessing;
 
     protected override async Task OnInitializedAsync()
@@ -119,7 +119,7 @@
     {
         var last = Tags.LastOrDefault();
 
-        if (Tags.Count == 0 || (last.Name is not null && last.Label is not null))
+        if (Tags.Count == 0 || (last!.Name is not null && last.Label is not null))
         {
             Tags.Add(new DeviceTagModel());
         }

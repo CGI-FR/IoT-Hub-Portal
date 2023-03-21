@@ -7,7 +7,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
     public class DashboardLayoutService : IDashboardLayoutService
     {
-        public event EventHandler RefreshDashboardOccurred;
+        public event EventHandler RefreshDashboardOccurred = default!;
 
         public void RefreshDashboard()
         {

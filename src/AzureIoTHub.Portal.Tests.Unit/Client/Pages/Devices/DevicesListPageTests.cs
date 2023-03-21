@@ -443,7 +443,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         }
 
         [Test]
-        public async Task ExportDevicesClickedShouldDownloadTheFile()
+        public void ExportDevicesClickedShouldDownloadTheFile()
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
@@ -482,7 +482,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         }
 
         [Test]
-        public async Task ExportTemplateClickedShouldDownloadTheFile()
+        public void ExportTemplateClickedShouldDownloadTheFile()
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();
@@ -544,7 +544,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
                 .ReturnsAsync(new List<DeviceTagDto>());
 
-            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.Is<DeviceModelFilter>(x => expectedDeviceModel.Name.Equals(x.SearchText))))
+            _ = this.mockDeviceModelsClientService.Setup(service => service.GetDeviceModels(It.Is<DeviceModelFilter>(x => expectedDeviceModel.Name.Equals(x.SearchText, StringComparison.Ordinal))))
                 .ReturnsAsync(new PaginationResult<DeviceModelDto>
                 {
                     Items = deviceModels.Where(x => expectedDeviceModel.Name.Equals(x.Name, StringComparison.Ordinal))
@@ -574,7 +574,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.Devices
         }
 
         [Test]
-        public async Task ImportDevices_FileAdded_DevicesExported()
+        public void ImportDevices_FileAdded_DevicesExported()
         {
             // Arrange
             var deviceId = Guid.NewGuid().ToString();

@@ -23,6 +23,6 @@ namespace AzureIoTHub.Portal.Infrastructure
 
         public ConnectionAuthType Type { get; set; }
 
-        public string Issuer { get; set; }
+        public string Issuer { get; set; } = default!;
     }
 }

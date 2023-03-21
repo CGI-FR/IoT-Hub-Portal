@@ -9,9 +9,9 @@ namespace AzureIoTHub.Portal.Shared.Models.v10
     {
         public string Name { get; internal set; }
 
-        public string ImageUri { get; set; }
+        public string ImageUri { get; set; } = default!;
 
-        public string ContainerCreateOptions { get; set; }
+        public string ContainerCreateOptions { get; set; } = default!;
 
         public List<IoTEdgeModuleEnvironmentVariable> EnvironmentVariables { get; set; }
 

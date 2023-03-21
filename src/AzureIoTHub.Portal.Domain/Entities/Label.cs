@@ -7,8 +7,8 @@ namespace AzureIoTHub.Portal.Domain.Entities
 
     public class Label : EntityBase
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
-        public string Color { get; set; }
+        public string Color { get; set; } = default!;
     }
 }

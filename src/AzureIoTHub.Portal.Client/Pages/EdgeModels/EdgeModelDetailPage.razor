@@ -15,7 +15,7 @@
 @inject IDialogService DialogService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
-    <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />
+    <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />
 </MudTooltip>
 <MudTooltip Placement="Placement.Top">
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4"> Edge Device Model</MudText>
@@ -38,7 +38,7 @@
                     else
                     {
                         <InputFile id="fileInput" hidden accept=".jpg, .jpeg, .png" OnChange="UploadFiles" />
-                        <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Filled.CloudUpload">Change Picture</MudButton>
+                        <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload">Change Picture</MudButton>
                     }
                 </MudCardActions>
             </MudCard>
@@ -221,12 +221,12 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; }
+    public Error Error { get; set; } = default!;
 
     [Parameter]
-    public string ModelID { get; set; }
+    public string ModelID { get; set; } = default!;
 
-    private IoTEdgeModel EdgeModel { get; set; }
+    private IoTEdgeModel EdgeModel { get; set; } = default!;
 
     public EdgeModelValidator edgeModelValidator = new EdgeModelValidator();
     public IoTEdgeModuleValidator edgeModuleValidator = new IoTEdgeModuleValidator();
@@ -234,13 +234,13 @@
 
     private bool isProcessing;
 
-    private MudForm form;
+    private MudForm form = default!;
 
     private void Return() => NavigationManager.NavigateTo("/edge/models");
 
     // Used to manage the picture
-    private MultipartFormDataContent content;
-    private string imageDataUrl;
+    private MultipartFormDataContent? content = default!;
+    private string? imageDataUrl = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -365,7 +365,7 @@
         {
             var result = await DialogService.Show<ModuleDialog>(module.ModuleName, parameters, options).Result;
 
-            if (result.Cancelled)
+            if (result.Canceled)
             {
                 return;
             }
@@ -389,7 +389,7 @@
 
         isProcessing = false;
 
-        if (result.Cancelled)
+        if (result.Canceled)
         {
             return;
         }
@@ -406,7 +406,7 @@
     {
         var last = EdgeModel.EdgeRoutes.LastOrDefault();
 
-        if (EdgeModel.EdgeRoutes.Count == 0 || (last.Name is not null && last.Value is not null))
+        if (EdgeModel.EdgeRoutes.Count == 0 || (last?.Name is not null && last?.Value is not null))
         {
             EdgeModel.EdgeRoutes.Add(new IoTEdgeRoute());
         }
@@ -421,7 +421,7 @@
 
         var result = await DialogService.Show<SystemModuleDialog>(systemModule.Name, parameters, options).Result;
 
-        if (result.Cancelled)
+        if (result.Canceled)
         {
             return;
         }

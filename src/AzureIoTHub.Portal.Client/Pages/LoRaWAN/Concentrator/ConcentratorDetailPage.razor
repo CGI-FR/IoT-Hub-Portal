@@ -10,7 +10,7 @@
 @inject ILoRaWanConcentratorClientService LoRaWanConcentratorsClientService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
-    <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />
+    <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />
 </MudTooltip>
 <MudTooltip Placement="Placement.Top">
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  LoRaWAN Concentrator</MudText>
@@ -28,13 +28,13 @@
                         @if (concentrator.IsConnected)
                         {
                             <MudTooltip Text="Concentrator is connected">
-                                <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
+                                <MudIcon Icon="@Icons.Material.Filled.Wifi" Color="Color.Success" />
                             </MudTooltip>
                         }
                         else
                         {
                             <MudTooltip Text="Concentrator is not connected">
-                                <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
+                                <MudIcon Icon="@Icons.Material.Filled.WifiOff" Color="Color.Error" />
                             </MudTooltip>
                         }
                     </CardHeaderAvatar>
@@ -111,13 +111,13 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; }
+    public Error Error { get; set; } = default!;
 
     [Parameter]
-    public string DeviceID { get; set; }
+    public string DeviceID { get; set; } = default!;
 
     private ConcentratorDto concentrator { get; set; } = new();
-    private MudForm form;
+    private MudForm form = default!;
     private ConcentratorValidator concentratorValidator = new();
     private List<FrequencyPlan> FrequencyPlans = new List<FrequencyPlan>();
 
@@ -202,7 +202,7 @@
 
         isProcessing = false;
 
-        if (result.Cancelled)
+        if (result.Canceled)
         {
             return;
         }

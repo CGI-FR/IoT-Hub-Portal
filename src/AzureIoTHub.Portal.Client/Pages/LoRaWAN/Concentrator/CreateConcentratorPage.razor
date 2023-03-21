@@ -94,10 +94,10 @@
 
     @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
 
     private ConcentratorDto concentrator = new();
-    private MudForm form;
+    private MudForm form = default!;
     private ConcentratorValidator concentratorValidator = new();
 
     private List<FrequencyPlan> FrequencyPlans = new List<FrequencyPlan>();

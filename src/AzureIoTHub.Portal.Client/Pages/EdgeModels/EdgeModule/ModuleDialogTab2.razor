@@ -50,14 +50,14 @@
 
 @code {
     [Parameter]
-    public IList<IoTEdgeModuleTwinSetting> ModuleIdentityTwinSettings { get; set; }
+    public IList<IoTEdgeModuleTwinSetting> ModuleIdentityTwinSettings { get; set; } = new List<IoTEdgeModuleTwinSetting>();
     private bool IsLoading = false;
 
     public void AddRow()
     {
         var last = ModuleIdentityTwinSettings.LastOrDefault();
 
-        if (ModuleIdentityTwinSettings.Count == 0 || (last.Name is not null && last.Value is not null))
+        if (ModuleIdentityTwinSettings.Count == 0 || (last?.Name is not null && last?.Value is not null))
         {
             ModuleIdentityTwinSettings.Add(new IoTEdgeModuleTwinSetting());
         }

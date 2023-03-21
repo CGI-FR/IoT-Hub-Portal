@@ -15,7 +15,7 @@
 @inject ILoRaWanDeviceModelsClientService LoRaWanDeviceModelsClientService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
-    <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />       
+    <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id="returnButton" />       
 </MudTooltip>
 <MudTooltip Placement="Placement.Top">
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Device Model</MudText>
@@ -38,7 +38,7 @@
                     else
                     {
                         <InputFile id="fileInput" hidden accept=".jpg, .jpeg, .png" OnChange="UploadFiles" />
-                        <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Filled.CloudUpload" Disabled="Model.IsBuiltin">Change Picture</MudButton>
+                        <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload" Disabled="Model.IsBuiltin">Change Picture</MudButton>
                     }
                 </MudCardActions>
             </MudCard>
@@ -76,7 +76,7 @@
                                         <TitleContent><MudText Typo="Typo.h6">Properties</MudText></TitleContent>
                                         <ChildContent>
                                             <MudItem xs="12">
-                                                <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() {  Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Filled.Add" id="addPropertyButton">Add property</MudButton>
+                                                <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() {  Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
                                             </MudItem>
                                             <MudItem xs="12">
                                                 @foreach (var item in this.Properties.OrderBy(x => x.Order))
@@ -124,7 +124,7 @@
                                                 <MudInputLabel>Writable</MudInputLabel>
                                             </MudItem>
                                             <MudItem md="1" xs="3">
-                                                <MudIconButton id="DeletePropertyButton" Icon="@Icons.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
+                                                <MudIconButton id="DeletePropertyButton" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
                                             </MudItem>
                                         </MudGrid>
                                                 }
@@ -162,14 +162,14 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
 
     [Parameter]
-    public string ModelID { get; set; }
+    public string ModelID { get; set; } = default!;
 
     private bool isProcessing;
 
-    private MudForm form;
+    private MudForm form = default!;
 
     private void Return() => NavigationManager.NavigateTo("/device-models");
 
@@ -184,6 +184,7 @@
 
     [Parameter]
     [SupplyParameterFromQuery]
+#pragma warning disable BL0007
     public bool IsLoRa
     {
         get
@@ -201,6 +202,7 @@
             SetStandardDeviceModel();
         }
     }
+#pragma warning restore BL0007
 
     private void SetLoRaDeviceModel() => Model = new LoRaDeviceModelDto(Model);
 
@@ -218,8 +220,8 @@
         };
 
     // Used to manage the picture
-    private MultipartFormDataContent content;
-    private string imageDataUrl;
+    private MultipartFormDataContent? content = default!;
+    private string? imageDataUrl = default!;
 
     private bool CheckLoRaValidation()
     {
@@ -324,8 +326,8 @@
             }
         }
 
-        if (!IsLoRa ? !standardValidator.Validate(Model as DeviceModelDto).IsValid :
-            (!this.loraValidator.Validate(this.Model as LoRaDeviceModelDto).IsValid
+        if (!IsLoRa ? !standardValidator.Validate((Model as DeviceModelDto)!).IsValid :
+            (!this.loraValidator.Validate((this.Model as LoRaDeviceModelDto)!).IsValid
             || duplicated
             || cmdValidationError))
         {
@@ -344,13 +346,13 @@
         {
             if (IsLoRa)
             {
-                await LoRaWanDeviceModelsClientService.UpdateDeviceModel(Model as LoRaDeviceModelDto);
+                await LoRaWanDeviceModelsClientService.UpdateDeviceModel((Model as LoRaDeviceModelDto)!);
 
                 await LoRaWanDeviceModelsClientService.SetDeviceModelCommands(Model.ModelId, Commands);
             }
             else
             {
-                await DeviceModelsClientService.UpdateDeviceModel(Model as DeviceModelDto);
+                await DeviceModelsClientService.UpdateDeviceModel((Model as DeviceModelDto)!);
 
                 await DeviceModelsClientService.SetDeviceModelModelProperties(Model.ModelId, Properties);
             }
@@ -396,7 +398,7 @@
 
         isProcessing = false;
 
-        if (result.Cancelled)
+        if (result.Canceled)
         {
             return;
         }

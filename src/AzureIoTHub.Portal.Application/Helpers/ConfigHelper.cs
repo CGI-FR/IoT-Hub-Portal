@@ -148,8 +148,8 @@ namespace AzureIoTHub.Portal.Application.Helpers
             var edgeModule = new IoTEdgeModule
             {
                 ModuleName = module.Name,
-                ImageURI = module.Value["settings"]["image"]?.Value<string>(),
-                ContainerCreateOptions = module.Value["settings"]["createOptions"]?.Value<string>(),
+                ImageURI = module.Value["settings"]?["image"]?.Value<string>(),
+                ContainerCreateOptions = module.Value["settings"]?["createOptions"]?.Value<string>(),
                 Status = module.Value["status"]?.Value<string>(),
             };
 
@@ -211,7 +211,7 @@ namespace AzureIoTHub.Portal.Application.Helpers
             {
                 foreach (var val in environmentVariables.Cast<JProperty>())
                 {
-                    envVariables.Add(val.Name, val.Value["value"].Value<string>());
+                    envVariables.Add(val.Name, val.Value["value"]!.Value<string>()!);
                 }
             }
 
@@ -251,12 +251,12 @@ namespace AzureIoTHub.Portal.Application.Helpers
 
             foreach (var item in edgeModel.SystemModules.Single(x => x.Name == "edgeAgent").EnvironmentVariables)
             {
-                edgeAgentPropertiesDesired.SystemModules.EdgeAgent.EnvironmentVariables.Add(item.Name, new EnvironmentVariable() { EnvValue = item.Value });
+                edgeAgentPropertiesDesired.SystemModules.EdgeAgent.EnvironmentVariables?.Add(item.Name, new EnvironmentVariable() { EnvValue = item.Value });
             }
 
             foreach (var item in edgeModel.SystemModules.Single(x => x.Name == "edgeHub").EnvironmentVariables)
             {
-                edgeAgentPropertiesDesired.SystemModules.EdgeHub.EnvironmentVariables.Add(item.Name, new EnvironmentVariable() { EnvValue = item.Value });
+                edgeAgentPropertiesDesired.SystemModules.EdgeHub.EnvironmentVariables?.Add(item.Name, new EnvironmentVariable() { EnvValue = item.Value });
             }
 
             var modulesContent =  new Dictionary<string, IDictionary<string, object>>();

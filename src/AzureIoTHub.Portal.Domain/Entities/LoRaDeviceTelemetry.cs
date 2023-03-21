@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Domain.Entities
     {
         public DateTime EnqueuedTime { get; set; }
 
-        public LoRaTelemetry Telemetry { get; set; }
+        public LoRaTelemetry Telemetry { get; set; } = default!;
     }
 
     public class LoRaTelemetry
@@ -31,10 +31,10 @@ namespace AzureIoTHub.Portal.Domain.Entities
         public uint Rfch { get; set; }
 
         [JsonPropertyName("modu")]
-        public string Modu { get; set; }
+        public string Modu { get; set; } = default!;
 
         [JsonPropertyName("datr")]
-        public string Datr { get; set; }
+        public string Datr { get; set; } = default!;
 
         [JsonPropertyName("rssi")]
         public double Rssi { get; set; }
@@ -43,7 +43,7 @@ namespace AzureIoTHub.Portal.Domain.Entities
         public float Lsnr { get; set; }
 
         [JsonPropertyName("data")]
-        public object Data { get; set; }
+        public object Data { get; set; } = new object();
 
         [JsonPropertyName("port")]
         public uint Port { get; set; }
@@ -55,16 +55,16 @@ namespace AzureIoTHub.Portal.Domain.Entities
         public long Edgets { get; set; }
 
         [JsonPropertyName("rawdata")]
-        public string Rawdata { get; set; }
+        public string Rawdata { get; set; } = default!;
 
         [JsonPropertyName("eui")]
-        public string DeviceEUI { get; set; }
+        public string DeviceEUI { get; set; } = default!;
 
         [JsonPropertyName("gatewayid")]
-        public string GatewayID { get; set; }
+        public string GatewayID { get; set; } = default!;
 
         [JsonPropertyName("stationeui")]
-        public string StationEui { get; set; }
+        public string StationEui { get; set; } = default!;
 
         [JsonPropertyName("dupmsg")]
         public bool? DupMsg { get; set; }

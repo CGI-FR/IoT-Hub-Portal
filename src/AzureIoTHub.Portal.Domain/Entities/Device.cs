@@ -10,12 +10,12 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// <summary>
         /// The device friendly name.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// The device Model Identifier.
         /// </summary>
-        public string DeviceModelId { get; set; }
+        public string DeviceModelId { get; set; } = default!;
 
         /// <summary>
         /// A value indicating whether the device is currently connected.
@@ -40,16 +40,16 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// <summary>
         /// The device model
         /// </summary>
-        public DeviceModel DeviceModel { get; set; }
+        public DeviceModel DeviceModel { get; set; } = default!;
 
         /// <summary>
         /// The device labels.
         /// </summary>
-        public ICollection<Label> Labels { get; set; }
+        public ICollection<Label> Labels { get; set; } = default!;
 
         /// <summary>
         /// List of custom device tags and their values.
         /// </summary>
-        public ICollection<DeviceTagValue> Tags { get; set; }
+        public ICollection<DeviceTagValue> Tags { get; set; } = default!;
     }
 }

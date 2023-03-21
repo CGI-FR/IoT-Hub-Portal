@@ -19,23 +19,23 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The device model identifier.
         /// </summary>
-        public string ModelId { get; set; }
+        public string ModelId { get; set; } = default!;
 
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; }
+        public Uri ImageUrl { get; set; } = default!;
 
         /// <summary>
         /// The device model name.
         /// </summary>
         [Required(ErrorMessage = "The device model name is required.")]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// The device model description.
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = default!;
 
         /// <summary>
         /// A value indicating whether this instance is builtin.

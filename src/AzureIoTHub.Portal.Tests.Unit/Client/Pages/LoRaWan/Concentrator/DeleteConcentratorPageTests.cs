@@ -70,7 +70,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             var result = await dialogReference.Result;
 
             // Assert
-            _ = result.Cancelled.Should().BeFalse();
+            _ = result.Canceled.Should().BeFalse();
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 
@@ -128,7 +128,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.LoRaWan.Concentrator
             var result = await dialogReference.Result;
 
             // Assert
-            _ = result.Cancelled.Should().BeTrue();
+            _ = result.Canceled.Should().BeTrue();
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }

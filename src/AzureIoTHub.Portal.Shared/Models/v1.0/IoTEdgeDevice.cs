@@ -17,44 +17,44 @@ namespace AzureIoTHub.Portal.Models.v10
         /// The IoT Edge identifier.
         /// </summary>
         [Required(ErrorMessage = "The device identifier is required.")]
-        public string DeviceId { get; set; }
+        public string DeviceId { get; set; } = default!;
 
         /// <summary>
         /// The name of the device.
         /// </summary>
         [Required(ErrorMessage = "The device should have a name.")]
-        public string DeviceName { get; set; }
+        public string DeviceName { get; set; } = default!;
 
         /// <summary>
         /// The model identifier.
         /// </summary>
         [Required(ErrorMessage = "The device should use a model.")]
-        public string ModelId { get; set; }
+        public string ModelId { get; set; } = default!;
 
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; }
+        public Uri ImageUrl { get; set; } = default!;
 
         /// <summary>
         /// The IoT Edge connection state.
         /// </summary>
-        public string ConnectionState { get; set; }
+        public string ConnectionState { get; set; } = default!;
 
         /// <summary>
         /// The IoT Edge scope tag value.
         /// </summary>
-        public string Scope { get; set; }
+        public string Scope { get; set; } = default!;
 
         /// <summary>
         /// The IoT Edge device status.
         /// </summary>
-        public string Status { get; set; }
+        public string Status { get; set; } = default!;
 
         /// <summary>
         /// The IoT Edge runtime response.
         /// </summary>
-        public string RuntimeResponse { get; set; }
+        public string RuntimeResponse { get; set; } = default!;
 
         /// <summary>
         /// The number of connected devices on IoT Edge device.
@@ -69,7 +69,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The IoT Edge configuraton.
         /// </summary>
-        public ConfigItem LastDeployment { get; set; }
+        public ConfigItem LastDeployment { get; set; } = new ConfigItem();
 
         /// <summary>
         /// The IoT Edge modules.

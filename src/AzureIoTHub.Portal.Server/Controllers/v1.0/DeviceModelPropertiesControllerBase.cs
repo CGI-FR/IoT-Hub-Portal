@@ -30,7 +30,6 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <summary>
         /// Initializes a new instance of the Device model properties controller base class.
         /// </summary>
-        /// <param name="log">The logger.</param>
         /// <param name="mapper">The mapper.</param>
         /// <param name="deviceModelPropertiesService">The device model properties services..</param>
         protected DeviceModelPropertiesControllerBase(

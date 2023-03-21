@@ -28,7 +28,7 @@
                     <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="@Refresh" id="tableRefreshButton" Class="ma-2"></MudIconButton>
                 </MudTooltip>
                 <MudTooltip Text="Add LoRaWAN concentrator">
-                    <MudFab id="add-concentrator" Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" />
+                    <MudFab id="add-concentrator" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddDevice" />
                 </MudTooltip>
             </ToolBarContent>
             <HeaderContent>
@@ -46,13 +46,13 @@
                     @if (context.IsEnabled)
                     {
                         <MudTooltip Text="Concentrator can connect">
-                            <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
                         </MudTooltip>
                     }
                     else
                     {
                         <MudTooltip Text="Concentrator cannot connect">
-                            <MudIcon Icon="@Icons.Filled.Error" Color="Color.Default" />
+                            <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Default" />
                         </MudTooltip>
                     }
                 </MudTd>
@@ -61,19 +61,19 @@
                     @if (context.IsConnected)
                     {
                         <MudTooltip Text="Concentrator is connected">
-                            <MudIcon Icon="@Icons.Filled.Wifi" Color="Color.Success" />
+                            <MudIcon Icon="@Icons.Material.Filled.Wifi" Color="Color.Success" />
                         </MudTooltip>
                     }
                     else
                     {
                         <MudTooltip Text="Concentrator is not connected">
-                            <MudIcon Icon="@Icons.Filled.WifiOff" Color="Color.Error" />
+                            <MudIcon Icon="@Icons.Material.Filled.WifiOff" Color="Color.Error" />
                         </MudTooltip>
                     }
                 </MudTd>
                 <MudTd DataLabel="Details" Style="text-align: center">
                     <MudTooltip Text="See concentrator details">
-                        <MudIconButton Icon="@Icons.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" OnClick="@(() => GoToDetails(context))" />
                     </MudTooltip>
                 </MudTd>
                 <MudTd DataLabel="Delete" Style="text-align: center">
@@ -98,9 +98,9 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
 
-    private MudTable<ConcentratorDto> table;
+    private MudTable<ConcentratorDto> table = default!;
 
     private readonly Dictionary<int, string> pages = new();
 
@@ -112,7 +112,7 @@
     {
         try
         {
-            string orderBy = null;
+            string orderBy = default!;
 
             switch (state.SortDirection)
             {
@@ -156,7 +156,7 @@
 
         var result = await DialogService.Show<DeleteConcentratorPage>("Confirm Deletion", parameters).Result;
 
-        if (result.Cancelled)
+        if (result.Canceled)
         {
             return;
         }
@@ -165,7 +165,7 @@
         await Search();
     }
 
-    private async Task Search(ConcentratorSearchInfo concentratorSearchInfo = null)
+    private async Task Search(ConcentratorSearchInfo? concentratorSearchInfo = null)
     {
         if (concentratorSearchInfo == null)
         {

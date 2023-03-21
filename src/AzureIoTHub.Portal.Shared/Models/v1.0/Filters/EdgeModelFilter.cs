@@ -5,6 +5,6 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.Filters
 {
     public class EdgeModelFilter : PaginationFilter
     {
-        public string Keyword { get; set; }
+        public string Keyword { get; set; } = default!;
     }
 }

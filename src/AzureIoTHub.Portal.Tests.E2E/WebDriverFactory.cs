@@ -36,7 +36,7 @@ namespace AzureIoTHub.Portal.Tests.E2E
             Default.Close();
             Default.Quit();
 
-            instance.Dispose();
+            instance?.Dispose();
             instance = null;
         }
     }

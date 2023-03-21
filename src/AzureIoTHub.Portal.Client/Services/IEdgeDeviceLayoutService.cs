@@ -15,7 +15,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         IoTEdgeDevice GetSharedDevice();
         IoTEdgeModel GetSharedDeviceModel();
-        IoTEdgeDevice ResetSharedDevice(List<DeviceTagDto> tags = null);
+        IoTEdgeDevice ResetSharedDevice(List<DeviceTagDto>? tags = null);
         IoTEdgeModel ResetSharedDeviceModel();
         IoTEdgeDevice DuplicateSharedDevice(IoTEdgeDevice deviceToDuplicate);
         IoTEdgeModel DuplicateSharedDeviceModel(IoTEdgeModel deviceModelToDuplicate);

@@ -22,10 +22,10 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
     
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public string DeviceId { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public string DeviceId { get; set; } = default!;
 
     void Cancel() => MudDialog.Cancel();
 

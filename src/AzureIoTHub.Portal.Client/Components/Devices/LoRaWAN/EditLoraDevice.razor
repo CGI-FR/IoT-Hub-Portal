@@ -170,19 +170,19 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; }
+    public Error Error { get; set; } = default!;
 
     [Parameter]
-    public LoRaDeviceDetails LoRaDevice { get; set; }
+    public LoRaDeviceDetails LoRaDevice { get; set; } = default!;
 
     [Parameter]
-    public LoRaDeviceDetailsValidator LoraValidator { get; set; }
+    public LoRaDeviceDetailsValidator LoraValidator { get; set; } = default!;
 
     [Parameter]
-    public LoRaDeviceModelDto LoRaDeviceModelDto { get; set; }
+    public LoRaDeviceModelDto LoRaDeviceModelDto { get; set; } = default!;
 
     [Parameter]
-    public IEnumerable<DeviceModelCommandDto> Commands { get; set; }
+    public IEnumerable<DeviceModelCommandDto> Commands { get; set; } = Array.Empty<DeviceModelCommandDto>();
 
     private bool isProcessing;
 
@@ -202,6 +202,8 @@
 
     private async Task<IEnumerable<string>> SearchGatewayID(string value)
     {
+        await Task.Delay(50);
+
         // if text is null or empty, show complete list
         if (string.IsNullOrEmpty(value))
             return GatewayIdList;

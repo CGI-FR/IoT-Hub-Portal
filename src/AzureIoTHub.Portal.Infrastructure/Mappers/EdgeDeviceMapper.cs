@@ -24,10 +24,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Mappers
             return new IoTEdgeListItem()
             {
                 DeviceId = deviceTwin?.DeviceId,
-                DeviceName = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.DeviceName)),
+                DeviceName = DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.DeviceName)),
                 Status = deviceTwin?.Status.ToString(),
-                NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId)))
+                NbDevices = DeviceHelper.RetrieveConnectedDeviceCount(deviceTwin!),
+                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!)
             };
         }
 
@@ -48,7 +48,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Mappers
             {
                 foreach (var tag in tags)
                 {
-                    customTags.Add(tag, DeviceHelper.RetrieveTagValue(deviceTwin, tag));
+                    customTags.Add(tag, DeviceHelper.RetrieveTagValue(deviceTwin, tag)!);
                 }
             }
 
@@ -58,15 +58,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Mappers
                 Status = deviceTwin?.Status?.ToString(),
                 Scope = deviceTwin?.DeviceScope,
                 ConnectionState = deviceTwin?.ConnectionState?.ToString(),
-                ModelId = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId)),
-                DeviceName = DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.DeviceName)),
+                ModelId = DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId)),
+                DeviceName = DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.DeviceName)),
                 NbDevices = nbConnectedDevice,
-                NbModules = DeviceHelper.RetrieveNbModuleCount(deviceTwinWithModules, deviceTwin?.DeviceId),
+                NbModules = DeviceHelper.RetrieveNbModuleCount(deviceTwinWithModules, deviceTwin?.DeviceId!),
                 RuntimeResponse = DeviceHelper.RetrieveRuntimeResponse(deviceTwinWithModules),
                 Modules = DeviceHelper.RetrieveModuleList(deviceTwinWithModules),
                 LastDeployment = lastConfiguration,
                 Tags = customTags,
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(deviceTwin, nameof(IoTEdgeDevice.ModelId)))
+                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(deviceTwin!, nameof(IoTEdgeDevice.ModelId))!)
             };
         }
     }

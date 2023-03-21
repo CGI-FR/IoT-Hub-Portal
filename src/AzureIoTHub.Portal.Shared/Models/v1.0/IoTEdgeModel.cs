@@ -20,7 +20,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// Labels
         /// </summary>
-        public List<LabelDto> Labels { get; set; } = new();
+        public new List<LabelDto> Labels { get; set; } = new();
 
         public IoTEdgeModel()
         {

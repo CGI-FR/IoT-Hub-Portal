@@ -7,28 +7,28 @@ namespace AzureIoTHub.Portal.Client.Models
 
     public class ProblemDetailsWithExceptionDetails : Microsoft.AspNetCore.Mvc.ProblemDetails
     {
-        public string TraceId { get; set; }
+        public string TraceId { get; set; } = default!;
 
-        public List<ExceptionDetail> ExceptionDetails { get; set; }
+        public List<ExceptionDetail> ExceptionDetails { get; set; } = new();
 
         public class ExceptionDetail
         {
-            public string Message { get; set; }
-            public string Type { get; set; }
-            public string Raw { get; set; }
-            public List<StackFrame> StackFrames { get; set; }
+            public string Message { get; set; } = default!;
+            public string Type { get; set; } = default!;
+            public string Raw { get; set; } = default!;
+            public List<StackFrame> StackFrames { get; set; } = new();
         }
 
         public class StackFrame
         {
-            public string FilePath { get; set; }
-            public string FileName { get; set; }
-            public string Function { get; set; }
+            public string FilePath { get; set; } = default!;
+            public string FileName { get; set; } = default!;
+            public string Function { get; set; } = default!;
             public int? Line { get; set; }
             public int? PreContextLine { get; set; }
-            public List<string> PreContextCode { get; set; }
-            public List<string> ContextCode { get; set; }
-            public List<string> PostContextCode { get; set; }
+            public List<string> PreContextCode { get; set; } = new();
+            public List<string> ContextCode { get; set; } = new();
+            public List<string> PostContextCode { get; set; } = new();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// The route name.
         /// </summary>
         [Required(ErrorMessage = "The route should have a name.")]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// The route value.
@@ -20,7 +20,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// </summary>
         [RegularExpression(@"^(?i)FROM [\S]+( WHERE (NOT )?[\S]+)? INTO [\S]+$", ErrorMessage = "Route should be 'FROM <source> (WHERE <condition>) INTO <sink>'")]
         [Required(ErrorMessage = "The route should have a value.")]
-        public string Value { get; set; }
+        public string Value { get; set; } = default!;
 
         /// <summary>
         /// The route priority

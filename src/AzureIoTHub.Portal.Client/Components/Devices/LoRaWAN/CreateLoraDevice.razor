@@ -66,16 +66,16 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; }
+    public Error Error { get; set; } = default!;
 
     [Parameter]
-    public LoRaDeviceDetails LoRaDevice { get; set; }
+    public LoRaDeviceDetails LoRaDevice { get; set; } = default!;
 
     [Parameter]
-    public LoRaDeviceDetailsValidator LoraValidator { get; set; }
+    public LoRaDeviceDetailsValidator LoraValidator { get; set; } = default!;
 
     [Parameter]
-    public LoRaDeviceModelDto LoraModelDto { get; set; }
+    public LoRaDeviceModelDto LoraModelDto { get; set; } = default!;
 
     public List<string> GatewayIdList = new();
 
@@ -93,6 +93,8 @@
 
     private async Task<IEnumerable<string>> SearchGatewayID(string value)
     {
+        await Task.Delay(50);
+
         // if text is null or empty, show complete list
         if (string.IsNullOrEmpty(value))
             return GatewayIdList;

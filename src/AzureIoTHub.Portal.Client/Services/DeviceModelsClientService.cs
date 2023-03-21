@@ -26,19 +26,21 @@ namespace AzureIoTHub.Portal.Client.Services
             var query = new Dictionary<string, string>
             {
                 { nameof(DeviceModelFilter.SearchText), deviceModelFilter?.SearchText ?? string.Empty },
+#pragma warning disable CA1305
                 { nameof(DeviceModelFilter.PageNumber), deviceModelFilter?.PageNumber.ToString() ?? string.Empty },
                 { nameof(DeviceModelFilter.PageSize), deviceModelFilter?.PageSize.ToString() ?? string.Empty },
-                { nameof(DeviceModelFilter.OrderBy), string.Join("", deviceModelFilter?.OrderBy) ?? string.Empty }
+#pragma warning restore CA1305
+                { nameof(DeviceModelFilter.OrderBy), string.Join("", deviceModelFilter?.OrderBy!) ?? string.Empty }
             };
 
             var uri = QueryHelpers.AddQueryString(this.apiUrlBase, query);
 
-            return await this.http.GetFromJsonAsync<PaginationResult<DeviceModelDto>>(uri);
+            return await this.http.GetFromJsonAsync<PaginationResult<DeviceModelDto>>(uri) ?? new PaginationResult<DeviceModelDto>();
         }
 
         public Task<DeviceModelDto> GetDeviceModel(string deviceModelId)
         {
-            return this.http.GetFromJsonAsync<DeviceModelDto>($"api/models/{deviceModelId}");
+            return this.http.GetFromJsonAsync<DeviceModelDto>($"api/models/{deviceModelId}")!;
         }
 
         public Task CreateDeviceModel(DeviceModelDto deviceModel)
@@ -58,7 +60,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public async Task<IList<DeviceProperty>> GetDeviceModelModelProperties(string deviceModelId)
         {
-            return await this.http.GetFromJsonAsync<List<DeviceProperty>>($"api/models/{deviceModelId}/properties");
+            return await this.http.GetFromJsonAsync<List<DeviceProperty>>($"api/models/{deviceModelId}/properties") ?? new List<DeviceProperty>();
         }
 
         public Task SetDeviceModelModelProperties(string deviceModelId, IList<DeviceProperty> deviceProperties)

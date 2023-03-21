@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
     public class LoRaCloudToDeviceMessage
     {
         [JsonPropertyName("rawPayload")]
-        public string RawPayload { get; set; }
+        public string RawPayload { get; set; } = default!;
 
         [JsonPropertyName("fport")]
         public int Fport { get; set; }

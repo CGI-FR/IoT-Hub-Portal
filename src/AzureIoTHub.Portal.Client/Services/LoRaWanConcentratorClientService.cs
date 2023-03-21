@@ -21,12 +21,12 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public Task<PaginationResult<ConcentratorDto>> GetConcentrators(string continuationUri)
         {
-            return this.http.GetFromJsonAsync<PaginationResult<ConcentratorDto>>(continuationUri);
+            return this.http.GetFromJsonAsync<PaginationResult<ConcentratorDto>>(continuationUri)!;
         }
 
         public Task<ConcentratorDto> GetConcentrator(string deviceId)
         {
-            return this.http.GetFromJsonAsync<ConcentratorDto>($"api/lorawan/concentrators/{deviceId}");
+            return this.http.GetFromJsonAsync<ConcentratorDto>($"api/lorawan/concentrators/{deviceId}")!;
         }
 
         public Task CreateConcentrator(ConcentratorDto concentrator)
@@ -46,7 +46,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public Task<IEnumerable<FrequencyPlan>> GetFrequencyPlans()
         {
-            return this.http.GetFromJsonAsync<IEnumerable<FrequencyPlan>>("api/lorawan/freqencyplans");
+            return this.http.GetFromJsonAsync<IEnumerable<FrequencyPlan>>("api/lorawan/freqencyplans")!;
         }
     }
 }

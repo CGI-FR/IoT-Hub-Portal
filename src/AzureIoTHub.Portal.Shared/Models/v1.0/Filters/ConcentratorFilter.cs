@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.Filters
 
     public class ConcentratorFilter : PaginationFilter
     {
-        public string SearchText { get; set; }
+        public string SearchText { get; set; } = default!;
 
         public bool? Status { get; set; }
 

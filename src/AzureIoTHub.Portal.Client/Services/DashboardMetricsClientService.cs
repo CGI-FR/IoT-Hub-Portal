@@ -19,7 +19,7 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public Task<PortalMetric> GetPortalMetrics()
         {
-            return this.http.GetFromJsonAsync<PortalMetric>("api/dashboard/metrics");
+            return this.http.GetFromJsonAsync<PortalMetric>("api/dashboard/metrics")!;
         }
     }
 }

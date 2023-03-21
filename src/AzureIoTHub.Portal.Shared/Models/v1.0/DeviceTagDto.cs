@@ -17,13 +17,13 @@ namespace AzureIoTHub.Portal.Models.v10
         /// </summary>
         [Required(ErrorMessage = "The tag should have a name.")]
         [RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Name may only contain alphanumeric characters")]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// The label shown to the user.
         /// </summary>
         [Required(ErrorMessage = "The tag should have a label.")]
-        public string Label { get; set; }
+        public string Label { get; set; } = default!;
 
         /// <summary>
         /// Whether the field is required when creating a new device or not.

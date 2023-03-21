@@ -48,14 +48,14 @@
 
 @code {
     [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; }
+    MudDialogInstance MudDialog { get; set; } = default!;
 
     [Parameter]
-    public EdgeModelSystemModule Module { get; set; }
+    public EdgeModelSystemModule Module { get; set; } = default!;
 
-    private string currentModuleName;
-    private string currentImageUri;
-    private string currentContainerCreateOptions;
+    private string currentModuleName = default!;
+    private string currentImageUri = default!;
+    private string currentContainerCreateOptions = default!;
 
     private List<IoTEdgeModuleEnvironmentVariable> currentEnvironmentVariables = new();
 

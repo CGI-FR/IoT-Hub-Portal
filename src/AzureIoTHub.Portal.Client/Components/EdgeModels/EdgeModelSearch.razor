@@ -18,7 +18,7 @@
     [Parameter]
     public EventCallback<string> OnSearch { get; set; }
 
-    private string searchKeyword;
+    private string searchKeyword = default!;
 
     private async Task Search()
     {

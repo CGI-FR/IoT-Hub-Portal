@@ -27,19 +27,19 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
 
     private PortalMetric portalMetric = new();
 
     protected override async Task OnInitializedAsync()
     {
-        DashboardLayoutService.RefreshDashboardOccurred += DashboardLayoutServiceOnRefreshDashboardOccurred;
+        DashboardLayoutService.RefreshDashboardOccurred += DashboardLayoutServiceOnRefreshDashboardOccurred!;
         await LoadMetrics();
     }
 
     public void Dispose()
     {
-        DashboardLayoutService.RefreshDashboardOccurred -= DashboardLayoutServiceOnRefreshDashboardOccurred;
+        DashboardLayoutService.RefreshDashboardOccurred -= DashboardLayoutServiceOnRefreshDashboardOccurred!;
     }
 
     private async Task LoadMetrics()

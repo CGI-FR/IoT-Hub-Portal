@@ -8,9 +8,9 @@ namespace AzureIoTHub.Portal.Shared.Models.v10
     public class LabelDto
     {
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         [Required]
-        public string Color { get; set; }
+        public string Color { get; set; } = default!;
     }
 }

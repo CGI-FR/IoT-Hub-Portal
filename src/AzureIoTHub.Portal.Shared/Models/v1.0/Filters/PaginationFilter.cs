@@ -14,6 +14,9 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.Filters
 
         public int PageSize { get; set; }
 
-        public string[] OrderBy { get; set; }
+        public string[] OrderBy { get; set; } = new string[]
+        {
+            string.Empty
+        };
     }
 }

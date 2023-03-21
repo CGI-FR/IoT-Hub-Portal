@@ -11,21 +11,21 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The registration identifier.
         /// </summary>
-        public string RegistrationID { get; set; }
+        public string RegistrationID { get; set; } = default!;
 
         /// <summary>
         /// The symmetric key.
         /// </summary>
-        public string SymmetricKey { get; set; }
+        public string SymmetricKey { get; set; } = default!;
 
         /// <summary>
         /// The scope identifier.
         /// </summary>
-        public string ScopeID { get; set; }
+        public string ScopeID { get; set; } = default!;
 
         /// <summary>
         /// The provisioning endpoint.
         /// </summary>
-        public string ProvisioningEndpoint { get; set; }
+        public string ProvisioningEndpoint { get; set; } = default!;
     }
 }

@@ -23,7 +23,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Mappers
             {
                 Name = entity.RowKey,
                 Frame = entity[nameof(DeviceModelCommandDto.Frame)].ToString(),
-                Port = int.Parse(entity[nameof(DeviceModelCommandDto.Port)].ToString(), CultureInfo.InvariantCulture),
+                Port = int.Parse(entity[nameof(DeviceModelCommandDto.Port)].ToString()!, CultureInfo.InvariantCulture),
                 IsBuiltin = bool.Parse(entity[nameof(DeviceModelCommandDto.IsBuiltin)]?.ToString() ?? "false"),
                 Confirmed = bool.Parse(entity[nameof(DeviceModelCommandDto.Confirmed)]?.ToString() ?? "false"),
             };

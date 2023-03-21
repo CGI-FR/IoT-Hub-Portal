@@ -14,12 +14,12 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The configuration identifier.
         /// </summary>
-        public string ConfigurationId { get; set; }
+        public string ConfigurationId { get; set; } = default!;
 
         /// <summary>
         /// The model identifier.
         /// </summary>
-        public string ModelId { get; set; }
+        public string ModelId { get; set; } = default!;
 
         /// <summary>
         /// The device tags targeted by the configuration.

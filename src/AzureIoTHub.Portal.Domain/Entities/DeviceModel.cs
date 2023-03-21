@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Domain.Entities
 
     public class DeviceModel : EntityBase
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         public string? Description { get; set; }
 
@@ -39,6 +39,6 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// <summary>
         /// Labels
         /// </summary>
-        public ICollection<Label> Labels { get; set; }
+        public ICollection<Label> Labels { get; set; } = default!;
     }
 }

@@ -13,7 +13,7 @@
 @inject IDeviceTagSettingsClientService DeviceTagSettingsClientService
 
 <MudTooltip Text="Return" Placement="Placement.Left">
-    <MudFab Icon="@Icons.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id = "returnButton"/>       
+    <MudFab StartIcon="@Icons.Material.Outlined.ArrowBack" Color="Color.Secondary" Size="Size.Small" OnClick="Return" id = "returnButton"/>       
 </MudTooltip>
 <MudTooltip Placement="Placement.Top">
 <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">  Edge Device Details</MudText>
@@ -37,7 +37,7 @@
                 <MudCardActions Class="pb-4 pl-4 justify-center">
                     @if (isLoaded)
                     {
-                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Cable" OnClick="ShowConnectionString" id="connectButton">Connect</MudButton>
                     }
                 </MudCardActions>
             </MudCard>
@@ -87,14 +87,14 @@
                                                 @if (edgeDevice.RuntimeResponse == "running")
                                                 {
                                                     <MudTooltip Text="Runtime is running well">
-                                                        <MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" />
+                                                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
                                                     </MudTooltip>
                                                 }
                                                 else
                                                 {
                                                     <MudItem>
                                                         <MudTooltip Text="Runtime has an error">
-                                                            <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                                                            <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" />
                                                         </MudTooltip>
                                                     </MudItem>
                                                 }
@@ -217,17 +217,17 @@
 
 @code {
     [CascadingParameter]
-    public Error Error {get; set;}
+    public Error Error { get; set; } = default!;
 
-    private MudForm form;
+    private MudForm form = default!;
 
     [Parameter]
-    public string deviceId { get; set; }
+    public string deviceId { get; set; } = default!;
 
     private bool btn_disable = false;
     private void Return() => NavigationManager.NavigateTo("edge/devices");
 
-    private IoTEdgeDevice edgeDevice;
+    private IoTEdgeDevice edgeDevice = default!;
     private IoTEdgeModel edgeModel = new IoTEdgeModel();
 
     private IEnumerable<DeviceTagDto> TagList { get; set; } = Array.Empty<DeviceTagDto>();
@@ -402,7 +402,7 @@
 
         isProcessing = false;
 
-        if (result.Cancelled)
+        if (result.Canceled)
         {
             return;
         }

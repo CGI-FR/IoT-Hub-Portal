@@ -11,18 +11,18 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// <summary>
         /// The name of the device.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// The lora region.
         /// </summary>
         [Required]
-        public string LoraRegion { get; set; }
+        public string LoraRegion { get; set; } = default!;
 
         /// <summary>
         /// The type of the device.
         /// </summary>
-        public string DeviceType { get; set; }
+        public string DeviceType { get; set; } = default!;
 
         /// <summary>
         /// The client certificate thumbprint.

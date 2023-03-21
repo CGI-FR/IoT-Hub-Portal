@@ -176,10 +176,10 @@
 
 @code {
     [Parameter]
-    public LoRaDeviceModelDto LoRaDeviceModel { get; set; }
+    public LoRaDeviceModelDto LoRaDeviceModel { get; set; } = default!;
 
     [Parameter]
-    public IList<DeviceModelCommandDto> Commands { get; set; }
+    public IList<DeviceModelCommandDto> Commands { get; set; } = new List<DeviceModelCommandDto>();
 
     private bool loraProperty { get; set; }
 
@@ -189,7 +189,7 @@
     {
         var last = Commands.LastOrDefault();
 
-        if (Commands.Count == 0 || (last.Name is not null && last.Frame is not null))
+        if (Commands.Count == 0 || (last?.Name is not null && last?.Frame is not null))
         {
             Commands.Add(new DeviceModelCommandDto());
         }

@@ -14,7 +14,7 @@ namespace AzureIoTHub.Portal.Client.Converters
         }
 
 #pragma warning disable CA1308 // Normalize strings to uppercase
-        private string OnGet(bool? value) => value?.ToString()?.ToLowerInvariant();
+        private string OnGet(bool? value) => value?.ToString()?.ToLowerInvariant() ?? string.Empty;
 #pragma warning restore CA1308 // Normalize strings to uppercase
 
         private bool? OnSet(string arg)

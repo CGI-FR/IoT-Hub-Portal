@@ -111,6 +111,6 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The sensor decoder API Url.
         /// </summary>
-        public string SensorDecoder { get; set; }
+        public string SensorDecoder { get; set; } = default!;
     }
 }

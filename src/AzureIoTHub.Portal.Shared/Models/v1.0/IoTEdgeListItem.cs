@@ -17,17 +17,17 @@ namespace AzureIoTHub.Portal.Models.v10
         /// The device identifier.
         /// </summary>
         [Required(ErrorMessage = "The device identifier is required.")]
-        public string DeviceId { get; set; }
+        public string DeviceId { get; set; } = default!;
 
         /// <summary>
         /// The device status.
         /// </summary>
-        public string DeviceName { get; set; }
+        public string DeviceName { get; set; } = default!;
 
         /// <summary>
         /// The device status.
         /// </summary>
-        public string Status { get; set; }
+        public string Status { get; set; } = default!;
 
         /// <summary>
         /// The number of devices connected on the IoT Edge.
@@ -37,11 +37,11 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The device model image Url.
         /// </summary>
-        public Uri ImageUrl { get; set; }
+        public Uri ImageUrl { get; set; } = default!;
 
         /// <summary>
         /// Gets the edge device labels.
         /// </summary>
-        public IEnumerable<LabelDto> Labels { get; set; }
+        public IEnumerable<LabelDto> Labels { get; set; } = new List<LabelDto>();
     }
 }

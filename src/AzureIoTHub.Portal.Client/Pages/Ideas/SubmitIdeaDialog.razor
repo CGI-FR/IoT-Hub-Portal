@@ -52,13 +52,13 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
 
-    [CascadingParameter] Error Error { get; set; }
+    [CascadingParameter] Error Error { get; set; } = default!;
 
     bool formIsValid;
     private bool isSubmitting;
-    MudForm form;
+    MudForm form = default!;
 
     private readonly IdeaRequest ideaRequest = new IdeaRequest
     {

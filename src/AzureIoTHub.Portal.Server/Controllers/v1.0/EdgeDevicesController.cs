@@ -66,6 +66,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="pageNumber"></param>
         /// <param name="orderBy"></param>
         /// <param name="modelId"></param>
+        /// <param name="labels"></param>
         [HttpGet(Name = "GET IoT Edge devices")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<IoTEdgeListItem>))]
         public async Task<PaginationResult<IoTEdgeListItem>> Get(

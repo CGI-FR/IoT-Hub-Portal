@@ -33,7 +33,7 @@
                     else
                     {
                         <InputFile id="fileInput" hidden accept=".jpg, .jpeg, .png" OnChange="UploadFiles" />
-                        <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Filled.CloudUpload">Change Picture</MudButton>
+                        <MudButton HtmlTag="label" for="fileInput" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload">Change Picture</MudButton>
                     }
                 </MudCardActions>
             </MudCard>
@@ -86,7 +86,7 @@
                                         <ChildContent>
                                             <MudGrid>
                                                 <MudItem xs="12">
-                                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() {  Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Filled.Add" id="addPropertyButton">Add property</MudButton>
+                                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Properties.Add(new DeviceProperty() {  Order = Properties.Select(x => x.Order).Next() }))" StartIcon="@Icons.Material.Filled.Add" id="addPropertyButton">Add property</MudButton>
                                                 </MudItem>
                                                 <MudItem xs="12">
                                                     @foreach (var item in this.Properties.OrderBy(x => x.Order))
@@ -134,7 +134,7 @@
 
                                                             </MudItem>
                                                             <MudItem md="1" xs="3">
-                                                                <MudIconButton id="deletePropertyButton" Icon="@Icons.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
+                                                                <MudIconButton id="deletePropertyButton" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Properties.Remove(item))">Remove</MudIconButton>
                                                             </MudItem>
                                                         </MudGrid>
                                                     }
@@ -173,14 +173,14 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; }
+    public Error Error { get; set; } = default!;
 
-    private MudForm form;
+    private MudForm form = default!;
 
     private DeviceModelValidator standardValidator = new DeviceModelValidator();
     private LoRaDeviceModelValidator loraValidator = new LoRaDeviceModelValidator();
     private DevicePropertyValidator propertiesValidator = new DevicePropertyValidator();
-    private List<DeviceModelCommandDto> Commands { get; set; }
+    private List<DeviceModelCommandDto> Commands { get; set; } = new();
     private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
 
     private LoRaDeviceModelCommandValidator CommandValidator = new LoRaDeviceModelCommandValidator();
@@ -228,8 +228,8 @@
         };
 
     // Used to manage the picture
-    private MultipartFormDataContent content;
-    private string imageDataUrl;
+    private MultipartFormDataContent? content = default!;
+    private string? imageDataUrl = default!;
 
     private bool CheckLoRaValidation()
     {
@@ -308,8 +308,8 @@
             }
         }
 
-        if (!IsLoRa ? !standardValidator.Validate(Model as DeviceModelDto).IsValid :
-            (!this.loraValidator.Validate(this.Model as LoRaDeviceModelDto).IsValid
+        if (!IsLoRa ? !standardValidator.Validate((Model as DeviceModelDto)!).IsValid :
+            (!this.loraValidator.Validate((this.Model as LoRaDeviceModelDto)!).IsValid
             || duplicated
             || cmdValidationError))
         {
@@ -324,13 +324,13 @@
         {
             if (IsLoRa)
             {
-                await LoRaWanDeviceModelsClientService.CreateDeviceModel(Model as LoRaDeviceModelDto);
+                await LoRaWanDeviceModelsClientService.CreateDeviceModel((Model as LoRaDeviceModelDto)!);
 
                 await LoRaWanDeviceModelsClientService.SetDeviceModelCommands(Model.ModelId, Commands);
             }
             else
             {
-                await DeviceModelsClientService.CreateDeviceModel(Model as DeviceModelDto);
+                await DeviceModelsClientService.CreateDeviceModel((Model as DeviceModelDto)!);
 
                 await DeviceModelsClientService.SetDeviceModelModelProperties(Model.ModelId, Properties);
             }

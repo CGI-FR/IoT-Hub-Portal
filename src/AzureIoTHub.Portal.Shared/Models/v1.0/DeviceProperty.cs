@@ -16,13 +16,13 @@ namespace AzureIoTHub.Portal.Models.v10
         /// </summary>
         [Required(ErrorMessage = "The property name is required.")]
         [RegularExpression(@"^([\w]+\.)+[\w]+|[\w]+$", ErrorMessage = "Property name must be formed by a word or words separated by a dot")]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// The property display name
         /// </summary>
         [Required(ErrorMessage = "The display name is required.")]
-        public string DisplayName { get; set; }
+        public string DisplayName { get; set; } = default!;
 
         /// <summary>
         /// Indicates whether the property is writable from the portal

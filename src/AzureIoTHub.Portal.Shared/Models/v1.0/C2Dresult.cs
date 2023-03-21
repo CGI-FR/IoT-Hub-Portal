@@ -11,7 +11,7 @@ namespace AzureIoTHub.Portal.Models.v10
         /// <summary>
         /// The C2D result payload.
         /// </summary>
-        public string Payload { get; set; }
+        public string Payload { get; set; } = default!;
 
         /// <summary>
         /// The C2D status.

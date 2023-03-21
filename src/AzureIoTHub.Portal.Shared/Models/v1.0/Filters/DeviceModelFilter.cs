@@ -6,6 +6,6 @@ namespace AzureIoTHub.Portal.Shared.Models.v10.Filters
 
     public class DeviceModelFilter : PaginationFilter
     {
-        public string SearchText { get; set; }
+        public string SearchText { get; set; } = default!;
     }
 }

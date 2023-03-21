@@ -11,11 +11,11 @@ namespace AzureIoTHub.Portal.Shared.Models.v10
         /// The module environment variable name
         /// </summary>
         [RegularExpression("^[^\\.^\\$^\\#$\\ ]{1,128}$", ErrorMessage = "Variable name should be less than 128 characters and must not contain Control Characters, '.', '$', '#', or ' '.")]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// The module environment variable value
         /// </summary>
-        public string Value { get; set; }
+        public string Value { get; set; } = default!;
     }
 }

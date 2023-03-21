@@ -21,12 +21,12 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public Task<PaginationResult<IoTEdgeListItem>> GetDevices(string continuationUri)
         {
-            return this.http.GetFromJsonAsync<PaginationResult<IoTEdgeListItem>>(continuationUri);
+            return this.http.GetFromJsonAsync<PaginationResult<IoTEdgeListItem>>(continuationUri)!;
         }
 
         public Task<IoTEdgeDevice> GetDevice(string deviceId)
         {
-            return this.http.GetFromJsonAsync<IoTEdgeDevice>($"api/edge/devices/{deviceId}");
+            return this.http.GetFromJsonAsync<IoTEdgeDevice>($"api/edge/devices/{deviceId}")!;
         }
 
         public Task CreateDevice(IoTEdgeDevice device)
@@ -46,26 +46,26 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public Task<EnrollmentCredentials> GetEnrollmentCredentials(string deviceId)
         {
-            return this.http.GetFromJsonAsync<EnrollmentCredentials>($"api/edge/devices/{deviceId}/credentials");
+            return this.http.GetFromJsonAsync<EnrollmentCredentials>($"api/edge/devices/{deviceId}/credentials")!;
         }
 
         public async Task<List<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule)
         {
             var response = await this.http.PostAsJsonAsync($"api/edge/devices/{deviceId}/logs", edgeModule);
 
-            return await response.Content.ReadFromJsonAsync<List<IoTEdgeDeviceLog>>();
+            return await response.Content.ReadFromJsonAsync<List<IoTEdgeDeviceLog>>() ?? new List<IoTEdgeDeviceLog>();
         }
 
         public async Task<C2Dresult> ExecuteModuleMethod(string deviceId, string moduleName, string methodName)
         {
-            var response = await this.http.PostAsJsonAsync<HttpResponseMessage>($"api/edge/devices/{deviceId}/{moduleName}/{methodName}", null);
+            var response = await this.http.PostAsJsonAsync<HttpResponseMessage?>($"api/edge/devices/{deviceId}/{moduleName}/{methodName}", null);
 
-            return await response.Content.ReadFromJsonAsync<C2Dresult>();
+            return await response.Content.ReadFromJsonAsync<C2Dresult>() ?? new C2Dresult();
         }
 
         public async Task<IEnumerable<LabelDto>> GetAvailableLabels()
         {
-            return await this.http.GetFromJsonAsync<List<LabelDto>>("api/edge/devices/available-labels");
+            return await this.http.GetFromJsonAsync<List<LabelDto>>("api/edge/devices/available-labels") ?? new List<LabelDto>();
         }
     }
 }

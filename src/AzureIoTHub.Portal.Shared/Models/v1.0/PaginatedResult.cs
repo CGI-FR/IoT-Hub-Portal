@@ -1,6 +1,8 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+#nullable enable
+
 namespace AzureIoTHub.Portal.Shared.Models.v1._0
 {
     using System;
@@ -9,7 +11,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0
     public class PaginatedResult<T>
     {
 
-        public PaginatedResult(List<T> data = default, int count = 0, int page = 0, int pageSize = 10)
+        public PaginatedResult(List<T>? data = default, int count = 0, int page = 0, int pageSize = 10)
         {
             Data = data;
             CurrentPage = page;
@@ -17,7 +19,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0
             TotalCount = count;
         }
 
-        public List<T> Data { get; set; }
+        public List<T>? Data { get; set; }
 
         public int CurrentPage { get; set; }
 

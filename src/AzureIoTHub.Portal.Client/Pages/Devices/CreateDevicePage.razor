@@ -259,15 +259,15 @@
 
 @code {
     [CascadingParameter]
-    public Error Error { get; set; }
+    public Error Error { get; set; } = default!;
 
     private IDeviceDetails Device = new DeviceDetails();
 
-    private MudForm form;
+    private MudForm form = default!;
 
     private DeviceDetailsValidator standardValidator = new DeviceDetailsValidator();
     private LoRaDeviceDetailsValidator loraValidator = new LoRaDeviceDetailsValidator();
-    private LoRaDeviceModelDto LoRaDeviceModelDto { get; set; }
+    private LoRaDeviceModelDto LoRaDeviceModelDto { get; set; } = default!;
 
     private bool IsLoRa
     {
@@ -286,7 +286,7 @@
 
     private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];
 
-    private IDeviceModel _deviceModel;
+    private IDeviceModel _deviceModel = default!;
 
     private IDeviceModel DeviceModel
     {
@@ -309,7 +309,7 @@
     {
         try
         {
-            DeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred;
+            DeviceLayoutService.RefreshDeviceOccurred += DeviceServiceOnRefreshDeviceOccurred!;
             Device = DeviceLayoutService.GetSharedDevice() ?? this.Device;
             DeviceModel = DeviceLayoutService.GetSharedDeviceModel() ?? this.DeviceModel;
 
@@ -334,7 +334,7 @@
     {
         DeviceLayoutService.ResetSharedDevice<DeviceDetails>();
         DeviceLayoutService.ResetSharedDeviceModel<DeviceModelDto>();
-        DeviceLayoutService.RefreshDeviceOccurred -= DeviceServiceOnRefreshDeviceOccurred;
+        DeviceLayoutService.RefreshDeviceOccurred -= DeviceServiceOnRefreshDeviceOccurred!;
     }
 
     /// <summary>
@@ -361,10 +361,10 @@
             }
 
             if (IsLoRa)
-                await LoRaWanDeviceClientService.CreateDevice(Device as LoRaDeviceDetails);
+                await LoRaWanDeviceClientService.CreateDevice((Device as LoRaDeviceDetails)!);
             else
             {
-                await DeviceClientService.CreateDevice(Device as DeviceDetails);
+                await DeviceClientService.CreateDevice((Device as DeviceDetails)!);
                 await DeviceClientService.SetDeviceProperties(Device.DeviceID, Properties);
             }
 
@@ -395,7 +395,7 @@
                 DeviceModel = DeviceLayoutService.ResetSharedDeviceModel<DeviceModelDto>();
                 break;
             case DeviceSaveAction.SaveAndDuplicate:
-                Device = DeviceLayoutService.DuplicateSharedDevice(Device as DeviceDetails);
+                Device = DeviceLayoutService.DuplicateSharedDevice((Device as DeviceDetails)!);
                 DeviceModel = DeviceLayoutService.DuplicateSharedDeviceModel(DeviceModel);
                 break;
         }
@@ -461,7 +461,7 @@
             PageSize = 100,
             OrderBy = new string[]
             {
-                null
+                string.Empty
             }
         };
         return (await DeviceModelsClientService.GetDeviceModels(filter)).Items.ToList<IDeviceModel>();
@@ -490,8 +490,8 @@
             Device = new DeviceDetails
                 {
                     DeviceID = Device.DeviceID,
-                    ModelId = model?.ModelId,
-                    ImageUrl = model?.ImageUrl,
+                    ModelId = model?.ModelId!,
+                    ImageUrl = model?.ImageUrl!,
                     DeviceName = Device.DeviceName,
                     IsEnabled = Device.IsEnabled,
                     Tags = Device.Tags

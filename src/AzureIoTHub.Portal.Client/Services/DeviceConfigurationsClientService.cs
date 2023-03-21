@@ -21,17 +21,17 @@ namespace AzureIoTHub.Portal.Client.Services
 
         public async Task<IList<ConfigListItem>> GetDeviceConfigurations()
         {
-            return await this.http.GetFromJsonAsync<List<ConfigListItem>>("api/device-configurations");
+            return await this.http.GetFromJsonAsync<List<ConfigListItem>>("api/device-configurations") ?? new List<ConfigListItem>();
         }
 
         public Task<DeviceConfig> GetDeviceConfiguration(string deviceConfigurationId)
         {
-            return this.http.GetFromJsonAsync<DeviceConfig>($"api/device-configurations/{deviceConfigurationId}");
+            return this.http.GetFromJsonAsync<DeviceConfig>($"api/device-configurations/{deviceConfigurationId}")!;
         }
 
         public Task<ConfigurationMetrics> GetDeviceConfigurationMetrics(string deviceConfigurationId)
         {
-            return this.http.GetFromJsonAsync<ConfigurationMetrics>($"api/device-configurations/{deviceConfigurationId}/metrics");
+            return this.http.GetFromJsonAsync<ConfigurationMetrics>($"api/device-configurations/{deviceConfigurationId}/metrics")!;
         }
 
         public Task CreateDeviceConfiguration(DeviceConfig deviceConfiguration)

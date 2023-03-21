@@ -33,7 +33,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Mappers
             {
                 foreach (var tag in tags)
                 {
-                    customTags.Add(tag, DeviceHelper.RetrieveTagValue(twin, tag));
+                    customTags.Add(tag, DeviceHelper.RetrieveTagValue(twin, tag)!);
                 }
             }
 
@@ -43,7 +43,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Mappers
                 ModelId = modelId,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)),
                 AlreadyLoggedInOnce = DeviceHelper.RetrieveReportedPropertyValue(twin, "DevAddr") != null,
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(modelId),
+                ImageUrl = this.deviceModelImageManager.ComputeImageUri(modelId!),
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,
@@ -92,7 +92,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Mappers
             {
                 DeviceID = twin.DeviceId,
                 DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(LoRaDeviceDetails.DeviceName)),
-                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))),
+                ImageUrl = this.deviceModelImageManager.ComputeImageUri(DeviceHelper.RetrieveTagValue(twin, nameof(DeviceDetails.ModelId))!),
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 StatusUpdatedTime = twin.StatusUpdatedTime ?? DateTime.MinValue,

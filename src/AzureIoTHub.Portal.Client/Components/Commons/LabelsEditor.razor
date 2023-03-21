@@ -52,8 +52,8 @@
     [Parameter]
     public List<LabelDto> Labels { get; set; } = new();
 
-    private string labelNameValue;
-    private string labelColorValue;
+    private string labelNameValue = default!;
+    private string labelColorValue = default!;
 
     public void AddLabel()
     {

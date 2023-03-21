@@ -8,9 +8,9 @@ namespace AzureIoTHub.Portal.Client.Exceptions
 
     public class ProblemDetailsException : Exception
     {
-        public ProblemDetailsException(ProblemDetailsWithExceptionDetails problemDetailsWithExceptionDetails)
+        public ProblemDetailsException(ProblemDetailsWithExceptionDetails? problemDetailsWithExceptionDetails)
         {
-            ProblemDetailsWithExceptionDetails = problemDetailsWithExceptionDetails;
+            ProblemDetailsWithExceptionDetails = problemDetailsWithExceptionDetails ?? new ProblemDetailsWithExceptionDetails();
         }
 
         public ProblemDetailsWithExceptionDetails ProblemDetailsWithExceptionDetails { get; }

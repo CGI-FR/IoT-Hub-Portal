@@ -11,10 +11,10 @@ namespace AzureIoTHub.Portal.Client.Services
 
     public class DeviceLayoutService : IDeviceLayoutService
     {
-        private IDeviceDetails sharedDevice;
-        private IDeviceModel sharedDeviceModel;
+        private IDeviceDetails sharedDevice = default!;
+        private IDeviceModel sharedDeviceModel = default!;
 
-        public event EventHandler RefreshDeviceOccurred;
+        public event EventHandler RefreshDeviceOccurred = default!;
 
         public void RefreshDevice()
         {
@@ -31,7 +31,7 @@ namespace AzureIoTHub.Portal.Client.Services
             return this.sharedDeviceModel;
         }
 
-        public TDevice ResetSharedDevice<TDevice>(List<DeviceTagDto> tags = null)
+        public TDevice ResetSharedDevice<TDevice>(List<DeviceTagDto>? tags = null)
             where TDevice : class, IDeviceDetails, new()
         {
             this.sharedDevice = new TDevice();
@@ -41,7 +41,7 @@ namespace AzureIoTHub.Portal.Client.Services
                 _ = this.sharedDevice.Tags.TryAdd(tag.Name, string.Empty);
             }
 
-            return this.sharedDevice as TDevice;
+            return (TDevice)this.sharedDevice;
         }
 
         public TDeviceModel ResetSharedDeviceModel<TDeviceModel>()
@@ -49,7 +49,7 @@ namespace AzureIoTHub.Portal.Client.Services
         {
             this.sharedDeviceModel = new TDeviceModel();
 
-            return this.sharedDeviceModel as TDeviceModel;
+            return (TDeviceModel)this.sharedDeviceModel;
         }
 
         public TDevice DuplicateSharedDevice<TDevice>(TDevice deviceToDuplicate)

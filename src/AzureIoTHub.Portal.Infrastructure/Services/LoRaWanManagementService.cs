@@ -21,7 +21,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services
             this.httpClient = httpClient;
         }
 
-        public async Task<RouterConfig> GetRouterConfig(string loRaRegion)
+        public async Task<RouterConfig?> GetRouterConfig(string loRaRegion)
         {
             var currentAssembly = Assembly.GetExecutingAssembly();
 

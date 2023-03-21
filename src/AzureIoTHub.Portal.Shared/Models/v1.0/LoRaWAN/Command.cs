@@ -11,11 +11,11 @@ namespace AzureIoTHub.Portal.Models.v10.LoRaWAN
         /// <summary>
         /// The command identifier.
         /// </summary>
-        public string CommandId { get; set; }
+        public string CommandId { get; set; } = default!;
 
         /// <summary>
         /// The frame.
         /// </summary>
-        public string Frame { get; set; }
+        public string Frame { get; set; } = default!;
     }
 }
