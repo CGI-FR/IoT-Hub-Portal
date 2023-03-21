@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Domain.Options
 {
     public class DeviceModelImageOptions
     {
-        public Uri BaseUri { get; set; }
+        public Uri BaseUri { get; set; } = default!;
 
         public string ImageContainerName { get; } = "device-images";
 

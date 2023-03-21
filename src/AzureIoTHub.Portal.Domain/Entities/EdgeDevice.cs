@@ -7,13 +7,13 @@ namespace AzureIoTHub.Portal.Domain.Entities
 
     public class EdgeDevice : EntityBase
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
-        public string DeviceModelId { get; set; }
+        public string DeviceModelId { get; set; } = default!;
 
         public int Version { get; set; }
 
-        public string ConnectionState { get; set; }
+        public string ConnectionState { get; set; } = default!;
 
 
         /// <summary>
@@ -39,16 +39,16 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// <summary>
         /// List of custom device tags and their values.
         /// </summary>
-        public ICollection<DeviceTagValue> Tags { get; set; }
+        public ICollection<DeviceTagValue> Tags { get; set; } = default!;
 
         /// <summary>
         /// The device model
         /// </summary>
-        public EdgeDeviceModel DeviceModel { get; set; }
+        public EdgeDeviceModel DeviceModel { get; set; } = default!;
 
         /// <summary>
         /// Labels
         /// </summary>
-        public ICollection<Label> Labels { get; set; }
+        public ICollection<Label> Labels { get; set; } = default!;
     }
 }

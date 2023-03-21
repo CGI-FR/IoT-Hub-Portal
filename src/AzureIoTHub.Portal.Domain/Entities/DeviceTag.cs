@@ -10,7 +10,7 @@ namespace AzureIoTHub.Portal.Domain.Entities
     {
         [NotMapped] public string Name => Id;
 
-        public string Label { get; set; }
+        public string Label { get; set; } = default!;
 
         public bool Required { get; set; }
 

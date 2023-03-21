@@ -7,9 +7,9 @@ namespace AzureIoTHub.Portal.Domain.Entities
 
     public class DeviceModelCommand : EntityBase
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
-        public string Frame { get; set; }
+        public string Frame { get; set; } = default!;
 
         public bool Confirmed { get; set; }
 
@@ -17,6 +17,6 @@ namespace AzureIoTHub.Portal.Domain.Entities
 
         public bool IsBuiltin { get; set; }
 
-        public string DeviceModelId { get; set; }
+        public string DeviceModelId { get; set; } = default!;
     }
 }

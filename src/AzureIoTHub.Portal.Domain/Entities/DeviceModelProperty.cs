@@ -13,12 +13,12 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// The property name
         /// </summary>
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// The property display name
         /// </summary>
-        public string DisplayName { get; set; }
+        public string DisplayName { get; set; } = default!;
 
         /// <summary>
         /// Indicates whether the property is writable from the portal
@@ -44,6 +44,6 @@ namespace AzureIoTHub.Portal.Domain.Entities
         /// The model identifier.
         /// </summary>
         [Required]
-        public string ModelId { get; set; }
+        public string ModelId { get; set; } = default!;
     }
 }
