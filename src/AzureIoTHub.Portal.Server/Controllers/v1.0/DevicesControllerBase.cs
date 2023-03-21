@@ -43,6 +43,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
         /// <param name="pageNumber"></param>
         /// <param name="orderBy"></param>
         /// <param name="modelId"></param>
+        /// <param name="labels"></param>
         protected async Task<PaginationResult<DeviceListItem>> GetItems(
             string routeName = null,
             string searchText = null,

@@ -1,6 +1,8 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+#nullable enable
+
 namespace AzureIoTHub.Portal.Server.Services
 {
     using System.Net.Http;
@@ -80,7 +82,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
                 this.logger.LogInformation($"User idea has been successfully submitted: {responseBody?.Url}");
 
-                return responseBody;
+                return responseBody!;
             }
 
             this.logger.LogError($"Unable to submit user idea. (Status: {response.StatusCode}, ErrorBody: {await response.Content.ReadAsStringAsync()})");
