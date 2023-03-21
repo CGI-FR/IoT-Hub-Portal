@@ -8,8 +8,10 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
 
     public class DevicePage
     {
+#pragma warning disable CA1051 // Ne pas déclarer de champs d'instances visibles
         public IWebDriver driver;
         public WebDriverWait wait;
+#pragma warning restore CA1051 // Ne pas déclarer de champs d'instances visibles
 
         public DevicePage(IWebDriver driver, WebDriverWait wait)
         {
@@ -44,7 +46,7 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
             _ = js.ExecuteScript("arguments[0].click();", inputElement);
         }
 
-        public void SearchDevice(string id, string model = null)
+        public void SearchDevice(string id, string? model = null)
         {
             _ = wait.Until(d => d.FindElement(By.ClassName("mud-expand-panel")).Displayed);
 
@@ -60,7 +62,7 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
             driver.FindElement(By.Id("searchButton")).Click();
         }
 
-        public void RemoveDevice(string id, string model = null)
+        public void RemoveDevice(string id, string? model = null)
         {
             SearchDevice(id, model);
 
