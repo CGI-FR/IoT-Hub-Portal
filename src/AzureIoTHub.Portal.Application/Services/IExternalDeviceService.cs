@@ -31,20 +31,20 @@ namespace AzureIoTHub.Portal.Application.Services
         Task DeleteDevice(string deviceId);
 
         Task<PaginationResult<Twin>> GetAllDevice(
-            string continuationToken = null,
-            string filterDeviceType = null,
-            string excludeDeviceType = null,
-            string searchText = null,
+            string? continuationToken = null,
+            string? filterDeviceType = null,
+            string? excludeDeviceType = null,
+            string? searchText = null,
             bool? searchStatus = null,
             bool? searchState = null,
-            Dictionary<string, string> searchTags = null,
+            Dictionary<string, string>? searchTags = null,
             int pageSize = 10);
 
         Task<PaginationResult<Twin>> GetAllEdgeDevice(
-            string continuationToken = null,
-            string searchText = null,
+            string? continuationToken = null,
+            string? searchText = null,
             bool? searchStatus = null,
-            string searchType = null,
+            string? searchType = null,
             int pageSize = 10);
 
         Task<IEnumerable<IoTEdgeDeviceLog>> GetEdgeDeviceLogs(string deviceId, IoTEdgeModule edgeModule);

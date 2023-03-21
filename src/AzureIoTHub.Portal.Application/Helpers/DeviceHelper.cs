@@ -42,7 +42,7 @@ namespace AzureIoTHub.Portal.Application.Helpers
         /// <param name="item">the device twin.</param>
         /// <param name="tagName">the tag property.</param>
         /// <returns>The corresponding tag value, or null if it doesn't exist.</returns>
-        public static string RetrieveTagValue(Twin item, string tagName)
+        public static string? RetrieveTagValue(Twin item, string tagName)
         {
             ArgumentNullException.ThrowIfNull(item, nameof(item));
 
@@ -77,7 +77,7 @@ namespace AzureIoTHub.Portal.Application.Helpers
         /// <param name="twin">Device twin.</param>
         /// <param name="propertyName">Property to retrieve.</param>
         /// <returns>The corresponding property value, or null if it doesn't exist.</returns>
-        public static string RetrieveDesiredPropertyValue(Twin twin, string propertyName)
+        public static string? RetrieveDesiredPropertyValue(Twin twin, string propertyName)
         {
             ArgumentNullException.ThrowIfNull(twin, nameof(twin));
 
@@ -105,7 +105,7 @@ namespace AzureIoTHub.Portal.Application.Helpers
         /// <param name="twin">Device twin.</param>
         /// <param name="propertyName">Property to retrieve.</param>
         /// <returns>Corresponding property value, or null if it doesn't exist.</returns>
-        public static string RetrieveReportedPropertyValue(Twin twin, string propertyName)
+        public static string? RetrieveReportedPropertyValue(Twin twin, string propertyName)
         {
             ArgumentNullException.ThrowIfNull(twin, nameof(twin));
 
@@ -149,15 +149,15 @@ namespace AzureIoTHub.Portal.Application.Helpers
         /// </summary>
         /// <param name="twin">the twin of the device we want.</param>
         /// <returns>string.</returns>
-        public static string RetrieveRuntimeResponse(Twin twin)
+        public static string? RetrieveRuntimeResponse(Twin twin)
         {
             ArgumentNullException.ThrowIfNull(twin, nameof(twin));
 
             var reportedProperties = JObject.Parse(twin.Properties.Reported.ToJson());
 
             if (reportedProperties.TryGetValue("systemModules", out var systemModules)
-                && systemModules.Value<JObject>().TryGetValue("edgeAgent", out var edgeAgentModule)
-                && edgeAgentModule.Value<JObject>().TryGetValue("runtimeStatus", out var runtimeStatus))
+                && systemModules.Value<JObject>()!.TryGetValue("edgeAgent", out var edgeAgentModule)
+                && edgeAgentModule.Value<JObject>()!.TryGetValue("runtimeStatus", out var runtimeStatus))
             {
                 return runtimeStatus.Value<string>();
             }
@@ -182,19 +182,19 @@ namespace AzureIoTHub.Portal.Application.Helpers
                 return list;
             }
 
-            foreach (var property in modules.Value<JObject>())
+            foreach (var property in modules.Value<JObject>()!)
             {
-                var propertyObject = property.Value.Value<JObject>();
+                var propertyObject = property.Value?.Value<JObject>();
 
                 var module = new IoTEdgeModule()
                 {
                     ModuleName = property.Key
                 };
 
-                if (propertyObject.TryGetValue("settings", out var moduleSettings))
+                if (propertyObject!.TryGetValue("settings", out var moduleSettings))
                 {
                     var setting = moduleSettings.ToObject<Dictionary<string, string>>();
-                    module.ImageURI = setting["image"];
+                    module.ImageURI = setting?["image"];
                 }
 
                 if (propertyObject.TryGetValue("status", out var status))
@@ -247,7 +247,7 @@ namespace AzureIoTHub.Portal.Application.Helpers
             return new TwinCollection(JsonConvert.SerializeObject(root));
         }
 
-        public static string RetrieveClientThumbprintValue(Twin twin)
+        public static string? RetrieveClientThumbprintValue(Twin twin)
         {
             var serializedClientThumbprint = RetrieveDesiredPropertyValue(twin, nameof(Concentrator.ClientThumbprint).ToCamelCase());
 
@@ -261,13 +261,13 @@ namespace AzureIoTHub.Portal.Application.Helpers
             {
                 var clientThumbprintArray=JsonConvert.DeserializeObject<string[]>(serializedClientThumbprint);
 
-                if (clientThumbprintArray.Length == 0)
+                if (clientThumbprintArray?.Length == 0)
                 {
                     // clientThumbprint array is empty in the device twin
                     return null;
                 }
 
-                return clientThumbprintArray[0];
+                return clientThumbprintArray?[0];
             }
             catch (JsonReaderException)
             {

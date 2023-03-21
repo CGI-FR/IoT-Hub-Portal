@@ -12,13 +12,13 @@ namespace AzureIoTHub.Portal.Application.Services
     public interface IEdgeDevicesService
     {
         Task<PaginatedResult<IoTEdgeListItem>> GetEdgeDevicesPage(
-            string searchText = null,
+            string? searchText = null,
             bool? searchStatus = null,
             int pageSize = 10,
             int pageNumber = 0,
-            string[] orderBy = null,
-            string modelId = null,
-            List<string> labels = default);
+            string[]? orderBy = null,
+            string? modelId = null,
+            List<string>? labels = default);
 
         Task<IoTEdgeDevice> GetEdgeDevice(string edgeDeviceId);
 

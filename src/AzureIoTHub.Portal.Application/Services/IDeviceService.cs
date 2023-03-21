@@ -15,15 +15,15 @@ namespace AzureIoTHub.Portal.Application.Services
         where TDto : IDeviceDetails
     {
         Task<PaginatedResult<DeviceListItem>> GetDevices(
-            string searchText = null,
+            string? searchText = null,
             bool? searchStatus = null,
             bool? searchState = null,
             int pageSize = 10,
             int pageNumber = 0,
-            string[] orderBy = null,
-            Dictionary<string, string> tags = default,
-            string modelId = null,
-            List<string> labels = default);
+            string[]? orderBy = null,
+            Dictionary<string, string>? tags = default,
+            string? modelId = null,
+            List<string>? labels = default);
 
         Task<TDto> GetDevice(string deviceId);
 
