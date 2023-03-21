@@ -7,7 +7,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Mappers
     using System.Collections.Generic;
     using Azure.Data.Tables;
     using AzureIoTHub.Portal.Application.Managers;
-    using Managers;
     using Models.v10;
     using Models.v10.LoRaWAN;
 
@@ -64,24 +63,24 @@ namespace AzureIoTHub.Portal.Infrastructure.Mappers
             };
         }
 
-        public Dictionary<string, object> BuildDeviceModelDesiredProperties(LoRaDeviceModelDto modelDto)
+        public Dictionary<string, object> BuildDeviceModelDesiredProperties(LoRaDeviceModelDto model)
         {
             var desiredProperties = new Dictionary<string, object>();
 
-            AddOptionalProperties(nameof(LoRaDeviceModelDto.SensorDecoder), modelDto.SensorDecoder, desiredProperties);
-            AddOptionalProperties(nameof(LoRaDeviceModelDto.Supports32BitFCnt), modelDto.Supports32BitFCnt, desiredProperties);
-            AddOptionalProperties(nameof(LoRaDeviceModelDto.ABPRelaxMode), modelDto.ABPRelaxMode, desiredProperties);
-            AddOptionalProperties(nameof(LoRaDeviceModelDto.KeepAliveTimeout), modelDto.KeepAliveTimeout, desiredProperties);
-            AddOptionalProperties(nameof(LoRaDeviceModelDto.PreferredWindow), modelDto.PreferredWindow, desiredProperties);
-            AddOptionalProperties(nameof(LoRaDeviceModelDto.Downlink), modelDto.Downlink, desiredProperties);
-            AddOptionalProperties(nameof(LoRaDeviceModelDto.Deduplication), modelDto.Deduplication.ToString(), desiredProperties);
-            AddOptionalProperties(nameof(LoRaDeviceModelDto.FCntDownStart), modelDto.FCntDownStart, desiredProperties);
-            AddOptionalProperties(nameof(LoRaDeviceModelDto.FCntResetCounter), modelDto.FCntResetCounter, desiredProperties);
-            AddOptionalProperties(nameof(LoRaDeviceModelDto.FCntUpStart), modelDto.FCntUpStart, desiredProperties);
-            AddOptionalProperties(nameof(LoRaDeviceModelDto.RX1DROffset), modelDto.RX1DROffset, desiredProperties);
-            AddOptionalProperties(nameof(LoRaDeviceModelDto.RX2DataRate), modelDto.RX2DataRate, desiredProperties);
-            AddOptionalProperties(nameof(LoRaDeviceModelDto.RXDelay), modelDto.RXDelay, desiredProperties);
-            AddOptionalProperties(nameof(LoRaDeviceModelDto.ClassType), modelDto.ClassType.ToString(), desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.SensorDecoder), model.SensorDecoder, desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.Supports32BitFCnt), model.Supports32BitFCnt!, desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.ABPRelaxMode), model.ABPRelaxMode!, desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.KeepAliveTimeout), model.KeepAliveTimeout!, desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.PreferredWindow), model.PreferredWindow, desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.Downlink), model.Downlink!, desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.Deduplication), model.Deduplication.ToString(), desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.FCntDownStart), model.FCntDownStart!, desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.FCntResetCounter), model.FCntResetCounter!, desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.FCntUpStart), model.FCntUpStart!, desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.RX1DROffset), model.RX1DROffset!, desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.RX2DataRate), model.RX2DataRate!, desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.RXDelay), model.RXDelay!, desiredProperties);
+            AddOptionalProperties(nameof(LoRaDeviceModelDto.ClassType), model.ClassType.ToString(), desiredProperties);
 
             return desiredProperties;
         }

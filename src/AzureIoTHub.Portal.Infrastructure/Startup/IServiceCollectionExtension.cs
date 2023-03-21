@@ -79,11 +79,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 
             _ = services.AddHttpClient<ILoRaWanManagementService, LoRaWanManagementService>((sp, client) =>
             {
-                var opts = sp.GetService<IOptions<LoRaWANOptions>>().Value;
+                var opts = sp.GetService<IOptions<LoRaWANOptions>>()?.Value;
 
-                client.BaseAddress = new Uri(opts.KeyManagementUrl);
-                client.DefaultRequestHeaders.Add("x-functions-key", opts.KeyManagementCode);
-                client.DefaultRequestHeaders.Add("api-version", opts.KeyManagementApiVersion ?? "2022-03-04");
+                client.BaseAddress = new Uri(opts?.KeyManagementUrl!);
+                client.DefaultRequestHeaders.Add("x-functions-key", opts?.KeyManagementCode);
+                client.DefaultRequestHeaders.Add("api-version", opts?.KeyManagementApiVersion ?? "2022-03-04");
             })
                 .AddPolicyHandler(transientHttpErrorPolicy);
 

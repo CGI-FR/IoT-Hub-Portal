@@ -27,7 +27,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Seeds
                 _ = await set.AddAsync(new DeviceTag
                 {
                     Id = item.RowKey,
-                    Label = item[nameof(DeviceTag.Label)].ToString(),
+                    Label = item[nameof(DeviceTag.Label)].ToString()!,
                     Required = bool.Parse(item[nameof(DeviceTag.Required)].ToString() ?? "false"),
                     Searchable = bool.Parse(item[nameof(DeviceTag.Searchable)].ToString() ?? "false")
                 });

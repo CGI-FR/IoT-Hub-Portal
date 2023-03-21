@@ -68,7 +68,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Repositories
                     .Set<T>()
                     .Find(id);
 
-            _ = this.context.Set<T>().Remove(existing);
+            _ = this.context.Set<T>().Remove(existing!);
         }
 
         public async Task<PaginatedResult<T>> GetPaginatedListAsync(

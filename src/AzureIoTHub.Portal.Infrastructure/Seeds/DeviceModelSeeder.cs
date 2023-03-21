@@ -28,7 +28,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Seeds
                 _ = await set.AddAsync(new DeviceModel
                 {
                     Id = item.RowKey,
-                    Name = item[nameof(DeviceModel.Name)]?.ToString(),
+                    Name = item[nameof(DeviceModel.Name)]?.ToString()!,
                     Description = item[nameof(DeviceModel.Description)]?.ToString(),
                     IsBuiltin = bool.Parse(item[nameof(DeviceModel.IsBuiltin)]?.ToString() ?? "false"),
                     SupportLoRaFeatures = bool.Parse(item[nameof(DeviceModel.SupportLoRaFeatures)]?.ToString() ?? "false"),

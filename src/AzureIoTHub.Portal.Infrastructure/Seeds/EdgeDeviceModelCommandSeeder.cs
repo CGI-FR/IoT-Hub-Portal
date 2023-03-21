@@ -28,7 +28,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Seeds
                 {
                     Id = Guid.NewGuid().ToString(),
                     ModuleName = item.RowKey.Split("-")[0].ToString(),
-                    Name = item[nameof(EdgeDeviceModelCommand.Name)].ToString(),
+                    Name = item[nameof(EdgeDeviceModelCommand.Name)].ToString()!,
                     EdgeDeviceModelId = item.PartitionKey
                 });
 #pragma warning restore CS8629 // Nullable value type may be null.

@@ -20,13 +20,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Mappers
             return new ConcentratorDto
             {
                 DeviceId = twin.DeviceId,
-                DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(ConcentratorDto.DeviceName)),
-                LoraRegion = DeviceHelper.RetrieveTagValue(twin, nameof(ConcentratorDto.LoraRegion)),
+                DeviceName = DeviceHelper.RetrieveTagValue(twin, nameof(ConcentratorDto.DeviceName))!,
+                LoraRegion = DeviceHelper.RetrieveTagValue(twin, nameof(ConcentratorDto.LoraRegion))!,
                 ClientThumbprint = DeviceHelper.RetrieveClientThumbprintValue(twin),
                 IsEnabled = twin.Status == DeviceStatus.Enabled,
                 IsConnected = twin.ConnectionState == DeviceConnectionState.Connected,
                 AlreadyLoggedInOnce = DeviceHelper.RetrieveReportedPropertyValue(twin, "DevAddr") != null,
-                DeviceType = DeviceHelper.RetrieveTagValue(twin, nameof(ConcentratorDto.DeviceType))
+                DeviceType = DeviceHelper.RetrieveTagValue(twin, nameof(ConcentratorDto.DeviceType))!
             };
         }
 

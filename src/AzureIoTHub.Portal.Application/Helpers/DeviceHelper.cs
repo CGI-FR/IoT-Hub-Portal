@@ -91,7 +91,7 @@ namespace AzureIoTHub.Portal.Application.Helpers
         /// <param name="twin">Device twin.</param>
         /// <param name="propertyName">Property to set.</param>
         /// <param name="value">Property value.</param>
-        public static void SetDesiredProperty(Twin twin, string propertyName, object value)
+        public static void SetDesiredProperty(Twin twin, string propertyName, object? value)
         {
             ArgumentNullException.ThrowIfNull(twin, nameof(twin));
 

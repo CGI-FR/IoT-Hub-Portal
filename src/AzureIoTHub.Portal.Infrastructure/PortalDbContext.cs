@@ -38,7 +38,7 @@ namespace AzureIoTHub.Portal.Infrastructure
                 .Property(b => b.Telemetry)
                 .HasConversion(
                     v => JsonConvert.SerializeObject(v),
-                    v => JsonConvert.DeserializeObject<LoRaTelemetry>(v));
+                    v => JsonConvert.DeserializeObject<LoRaTelemetry>(v)!);
 
             _ = modelBuilder.Entity<Device>()
                 .ToTable($"{nameof(Device)}s")
