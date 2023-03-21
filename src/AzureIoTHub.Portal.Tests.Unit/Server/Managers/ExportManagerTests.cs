@@ -3,7 +3,6 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -65,7 +64,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
         }
 
         [Test]
-        public async Task ExportDeviceListLoRaDisabledShouldWriteStream()
+        public void ExportDeviceListLoRaDisabledShouldWriteStream()
         {
             // Arrange
             _ = this.mockLoRaWANOptions.Setup(x => x.Value)
@@ -105,7 +104,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
         }
 
         [Test]
-        public async Task ExportDeviceListLoRaEnabledShouldWriteStreamAndDisplayLoRaSpecificField()
+        public void ExportDeviceListLoRaEnabledShouldWriteStreamAndDisplayLoRaSpecificField()
         {
             // Arrange
             _ = this.mockLoRaWANOptions.Setup(x => x.Value)

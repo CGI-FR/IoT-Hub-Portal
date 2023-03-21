@@ -419,7 +419,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Services
         }
 
         [Test]
-        public async Task GetDeviceTwinWhithModule_EqualZero_ReturnsEmptyDevices()
+        public void GetDeviceTwinWhithModule_EqualZero_ReturnsEmptyDevices()
         {
             // Arrange
             var service = CreateService();

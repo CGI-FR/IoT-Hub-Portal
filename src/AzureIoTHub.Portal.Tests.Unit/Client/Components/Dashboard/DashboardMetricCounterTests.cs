@@ -21,7 +21,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Components.Dashboard
             const string expectedTitle = "test";
             const int expectedCounter = 15;
             const Color expectedColor = Color.Dark;
-            var expectedIcon = Icons.Filled.Devices;
+            var expectedIcon = Icons.Material.Filled.Devices;
 
             // Act
             var cut = RenderComponent<DashboardMetricCounter>(

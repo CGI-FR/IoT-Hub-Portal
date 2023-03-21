@@ -74,7 +74,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DeviceConfigurations
             var result = await dialogReference.Result;
 
             // Assert
-            _ = result.Cancelled.Should().BeFalse();
+            _ = result.Canceled.Should().BeFalse();
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
 

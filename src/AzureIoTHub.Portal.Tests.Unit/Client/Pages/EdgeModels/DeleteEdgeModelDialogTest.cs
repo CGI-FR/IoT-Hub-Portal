@@ -143,7 +143,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeModels
             var result = await dialogReference.Result;
 
             // Assert
-            _ = result.Cancelled.Should().BeTrue();
+            _ = result.Canceled.Should().BeTrue();
             cut.WaitForAssertion(() => MockRepository.VerifyAll());
         }
     }

@@ -90,7 +90,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
         }
 
         [Test]
-        public async Task UpdateAsyncTest()
+        public void UpdateAsyncTest()
         {
             // Arrange
             var entityId = Guid.NewGuid().ToString();
@@ -126,7 +126,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Repositories
         }
 
         [Test]
-        public async Task DeleteTest()
+        public void DeleteTest()
         {
             // Arrange
             var entityId = Guid.NewGuid().ToString();

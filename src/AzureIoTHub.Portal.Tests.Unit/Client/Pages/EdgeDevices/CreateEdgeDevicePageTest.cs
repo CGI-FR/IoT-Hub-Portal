@@ -347,7 +347,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.EdgeDevices
         }
 
         [Test]
-        public async Task SearchEdgeDeviceModels_InputExisingEdgeDeviceModelName_EdgeDeviceModelReturned()
+        public void SearchEdgeDeviceModels_InputExisingEdgeDeviceModelName_EdgeDeviceModelReturned()
         {
             // Arrange
             var edgeDeviceModels = Fixture.CreateMany<IoTEdgeModelListItem>(2).ToList();
