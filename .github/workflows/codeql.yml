@@ -2,9 +2,9 @@ name: "Code Scanning"
 
 on:
   pull_request:
-    branches: [ main* ]
+    branches: [ main, main-vnext ]
   push:
-    branches: [ main* ]
+    branches: [ main, main-vnext ]
   schedule:
     #        ┌───────────── minute (0 - 59)
     #        │  ┌───────────── hour (0 - 23)
