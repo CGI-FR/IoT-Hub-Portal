@@ -6,6 +6,9 @@ namespace AzureIoTHub.Portal.Server
     using System;
     using System.IO;
     using System.Threading.Tasks;
+    using Amazon;
+    using Amazon.IoT;
+    using Amazon.IotData;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Application.Startup;
@@ -76,6 +79,22 @@ namespace AzureIoTHub.Portal.Server
 
             _ = services.AddSingleton(new PortalMetric());
             _ = services.AddSingleton(new LoRaGatewayIDList());
+
+            if (configuration.CloudProvider.Equals(CloudProviders.AWS))
+            {
+                var AWSIoTClient = new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion));
+                var endPoint = AWSIoTClient.DescribeEndpointAsync(new Amazon.IoT.Model.DescribeEndpointRequest
+                {
+                    EndpointType = "iot:Data-ATS"
+                }).Result;
+                var AWSIoTDataClient = new AmazonIotDataClient(configuration.AWSAccess, configuration.AWSAccessSecret, new AmazonIotDataConfig
+                {
+                    ServiceURL = $"https://{endPoint.EndpointAddress}"
+                });
+
+                _ = services.AddSingleton(AWSIoTClient);
+                _ = services.AddSingleton(AWSIoTDataClient);
+            }
 
             _ = services.AddRazorPages();
 
