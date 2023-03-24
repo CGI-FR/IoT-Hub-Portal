@@ -80,7 +80,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddSingleton(new PortalMetric());
             _ = services.AddSingleton(new LoRaGatewayIDList());
 
-            if (configuration.CloudProvider.Equals(CloudProviders.AWS))
+            if (configuration.CloudProvider.Equals(CloudProviders.AWS, StringComparison.Ordinal))
             {
                 var AWSIoTClient = new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion));
                 var endPoint = AWSIoTClient.DescribeEndpointAsync(new Amazon.IoT.Model.DescribeEndpointRequest
