@@ -82,18 +82,19 @@ namespace AzureIoTHub.Portal.Server
 
             if (configuration.CloudProvider.Equals(CloudProviders.AWS, StringComparison.Ordinal))
             {
-                var AWSIoTClient = new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion));
-                var endPoint = AWSIoTClient.DescribeEndpointAsync(new Amazon.IoT.Model.DescribeEndpointRequest
+_ = services.AddSingleton(() => new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
+                _ = services.AddSingleton(async sp =>
                 {
-                    EndpointType = "iot:Data-ATS"
-                }).Result;
-                var AWSIoTDataClient = new AmazonIotDataClient(configuration.AWSAccess, configuration.AWSAccessSecret, new AmazonIotDataConfig
-                {
-                    ServiceURL = $"https://{endPoint.EndpointAddress}"
-                });
+                    var endpoint = await sp.GetService<AmazonIoTClient>().DescribeEndpointAsync(new DescribeEndpointRequest
+                    {
+                        EndpointType = "iot:Data-ATS"
+                    });
 
-                _ = services.AddSingleton(AWSIoTClient);
-                _ = services.AddSingleton(AWSIoTDataClient);
+                    return new AmazonIotDataClient(configuration.AWSAccess, configuration.AWSAccessSecret, new AmazonIotDataConfig
+                    {
+                        ServiceURL = $"https://{endpoint.EndpointAddress}"
+                    });
+                });
             }
 
             _ = services.AddRazorPages();
