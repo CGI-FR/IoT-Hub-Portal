@@ -82,10 +82,10 @@ namespace AzureIoTHub.Portal.Server
 
             if (configuration.CloudProvider.Equals(CloudProviders.AWS, StringComparison.Ordinal))
             {
-_ = services.AddSingleton(() => new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
+                _ = services.AddSingleton(() => new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
                 _ = services.AddSingleton(async sp =>
                 {
-                    var endpoint = await sp.GetService<AmazonIoTClient>().DescribeEndpointAsync(new DescribeEndpointRequest
+                    var endpoint = await sp.GetService<AmazonIoTClient>().DescribeEndpointAsync(new Amazon.IoT.Model.DescribeEndpointRequest
                     {
                         EndpointType = "iot:Data-ATS"
                     });
