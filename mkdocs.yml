@@ -119,6 +119,8 @@ nav:
       - 'dev-guide/migrations/v3-to-v4.md'
     - 'Project conception':
       - 'dev-guide/conception/diagrams.md'
+  - AWS: 'aws.md'
+  - Azure: 'azure.md'
   - Concepts: 'concepts.md'
   - Web API Reference: 'open-api.md'
   - About:
