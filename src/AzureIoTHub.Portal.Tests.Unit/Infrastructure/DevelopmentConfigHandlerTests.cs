@@ -51,6 +51,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         [TestCase(ConfigHandlerBase.AWSAccessKey, nameof(ConfigHandlerBase.AWSAccess))]
         [TestCase(ConfigHandlerBase.AWSAccessSecretKey, nameof(ConfigHandlerBase.AWSAccessSecret))]
         [TestCase(ConfigHandlerBase.AWSRegionKey, nameof(ConfigHandlerBase.AWSRegion))]
+        [TestCase(ConfigHandlerBase.CloudProviderKey, nameof(ConfigHandlerBase.CloudProvider))]
         public void SettingsShouldGetValueFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange
