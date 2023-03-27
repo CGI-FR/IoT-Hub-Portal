@@ -111,6 +111,8 @@ jobs:
         IOTHUB__EVENTHUB__ENDPOINT: ${{ secrets.IOTHUB__EVENTHUB__ENDPOINT }}
         LORAKEYMANAGEMENT__CODE: ${{ secrets.LORAKEYMANAGEMENT__CODE }}
         IDEAS__AUTHENTICATION__TOKEN: ${{ secrets.IDEAS__AUTHENTICATION__TOKEN }}
+        
+        CLOUDPROVIDER: Azure
 
     - name: Wait until portal is up
       run: |
