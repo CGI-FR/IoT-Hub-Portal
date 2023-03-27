@@ -50,6 +50,8 @@ namespace AzureIoTHub.Portal.Infrastructure
         internal const string IdeasAuthenticationHeaderKey = "Ideas:Authentication:Header";
         internal const string IdeasAuthenticationTokenKey = "Ideas:Authentication:Token";
 
+        internal const string CloudProviderKey = "CloudProvider";
+
         internal const string AWSAccessKey = "AWS:Access";
         internal const string AWSAccessSecretKey = "AWS:AccessSecret";
         internal const string AWSRegionKey = "AWS:Region";

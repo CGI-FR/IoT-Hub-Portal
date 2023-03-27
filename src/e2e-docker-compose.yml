@@ -46,6 +46,7 @@ services:
       IoTHub__EventHub__Endpoint: "${IOTHUB__EVENTHUB__ENDPOINT}"
       LoRaKeyManagement__Code: "${LORAKEYMANAGEMENT__CODE}"
       Ideas__Authentication__Token: "${IDEAS__AUTHENTICATION__TOKEN}"
+      CloudProvider: "${CLOUDPROVIDER}"
     depends_on:
       - "database"
     ports:
