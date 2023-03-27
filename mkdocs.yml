@@ -110,6 +110,8 @@ extra:
 # Navigation
 nav:
   - index.md
+  - AWS: 'aws.md'
+  - Azure: 'azure.md'
   - Dev Guide:
     - 'Developer Guide': 'dev-guide.md'
     - 'Testing':
@@ -119,8 +121,6 @@ nav:
       - 'dev-guide/migrations/v3-to-v4.md'
     - 'Project conception':
       - 'dev-guide/conception/diagrams.md'
-  - AWS: 'aws.md'
-  - Azure: 'azure.md'
   - Concepts: 'concepts.md'
   - Web API Reference: 'open-api.md'
   - About:

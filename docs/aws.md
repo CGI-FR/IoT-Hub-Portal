@@ -3,7 +3,7 @@
 ## Overall Architecture
 
 ## Configurations
-Here is the configuration the AWS configuration options:
+This configurations are used to get access to AWS cloud Platform. You have to enter them in a `json` file to be able to connect to the Iot Hub Portal. Here is a template of a such `json` file.
 ```json
 {
   "CloudProvider": "AWS",
