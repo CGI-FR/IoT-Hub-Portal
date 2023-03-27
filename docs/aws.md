@@ -2,6 +2,17 @@
 
 ## Overall Architecture
 
+This schema represent the various components and how they interact to have a better understanding of the various solution elements.
+
+![images/architecture_AWS.png](images/architecture_AWS.png)
+
+1. The user is authenticated by the OpenID Connect server.
+1. The user access to the IoT Hub Portal with the OAuth2.0 token.
+1. The IoT Hub portal uses the AWS IoT REST API to retrieve the data.
+1. The IoT Hub portal uses the AWS S3 storage to store the device models configuration (Images, Commands, etc.).
+1. The IoT Hub portal synchronizes its data with the IoT Hub to provide a consistent view of the data.
+
+
 ## Configurations
 This configurations are used to get access to AWS cloud Platform. You have to enter them in a `json` file to be able to connect to the Iot Hub Portal. Here is a template of a such `json` file.
 ```json
