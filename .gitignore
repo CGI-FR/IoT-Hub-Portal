@@ -267,3 +267,6 @@ __pycache__/
 # MkDocs
 /src
 /site
+
+# Folder for iotedge-lorawan-starterkit bicep templates
+iotedge-lorawan-starterkit/

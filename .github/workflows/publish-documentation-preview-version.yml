@@ -1,7 +1,9 @@
 name: Publish Documentation with Preview Version
 on:
   push:
-    branches: [ docs/main ]
+    branches:
+      - docs/main
+      - docs/main-vnext
   workflow_dispatch:
 jobs:
   deploy-documentation-preview-version:
@@ -21,5 +23,9 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-      - name: Deploy docs
+      - name: Deploy docs to dev version
+        if: github.ref == 'refs/heads/docs/main'
         run: mike deploy --push dev
+      - name: Deploy docs to vnext version
+        if: github.ref == 'refs/heads/docs/main-vnext'
+        run: mike deploy --push vnext
