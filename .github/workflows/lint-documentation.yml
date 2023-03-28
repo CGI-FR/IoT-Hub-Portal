@@ -1,7 +1,9 @@
 name: Lint Documentation
 on:
   pull_request:
-    branches: [ docs/main ]
+    branches:
+      - docs/main
+      - docs/main-vnext
   workflow_dispatch:
 jobs:
   lint-documentation:
