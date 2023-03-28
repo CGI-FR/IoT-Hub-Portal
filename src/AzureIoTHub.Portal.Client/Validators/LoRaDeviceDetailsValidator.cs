@@ -46,6 +46,12 @@ namespace AzureIoTHub.Portal.Client.Validators
                 .NotEmpty()
                 .When(x => !x.UseOTAA)
                 .WithMessage("DevAddr is required.");
+
+            _ = RuleFor(x => x.DeviceID)
+                .NotEmpty()
+                .Length(1, 16)
+                .Matches("[A-F0-9]{16}")
+                .WithMessage("DeviceID is required. It should be a 16 bit hex string.");
         }
 
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
