@@ -110,6 +110,8 @@ extra:
 # Navigation
 nav:
   - index.md
+  - AWS: 'aws.md'
+  - Azure: 'azure.md'
   - Dev Guide:
     - 'Developer Guide': 'dev-guide.md'
     - 'Testing':
