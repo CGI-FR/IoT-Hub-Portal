@@ -65,6 +65,29 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
         }
 
         [Test]
+        public void SaveButtonShouldRenderCorrectly()
+        {
+            // Arrange
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>
+                {
+                    new()
+                    {
+                        Label = Guid.NewGuid().ToString(),
+                        Name = Guid.NewGuid().ToString(),
+                        Required = false,
+                        Searchable = false
+                    }
+                });
+
+            // Act
+            var cut = RenderComponent<EditDevice>();
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Find("#SaveButton").TextContent.Should().Be("Save"));
+        }
+
+        [Test]
         public async Task ClickOnSaveShouldPostDeviceDetailsAsync()
         {
             var mockDeviceModel = new DeviceModelDto
