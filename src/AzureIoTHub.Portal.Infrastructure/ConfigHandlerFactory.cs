@@ -5,6 +5,8 @@ namespace AzureIoTHub.Portal.Infrastructure
 {
     using System;
     using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
+    using AzureIoTHub.Portal.Domain.Shared.Constants;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
 
@@ -15,9 +17,19 @@ namespace AzureIoTHub.Portal.Infrastructure
             ArgumentNullException.ThrowIfNull(env, nameof(env));
             ArgumentNullException.ThrowIfNull(config, nameof(config));
 
+            if (config[ConfigHandlerBase.CloudProviderKey] == null)
+            {
+                throw new InvalidCloudProviderException(ErrorTitles.InvalidCloudProviderUndefined);
+            }
+
             if (env.IsProduction())
             {
-                return new ProductionConfigHandler(config);
+                return config[ConfigHandlerBase.CloudProviderKey] switch
+                {
+                    CloudProviders.AWS => new ProductionAWSConfigHandler(config),
+                    CloudProviders.Azure => new ProductionAzureConfigHandler(config),
+                    _ => throw new InvalidCloudProviderException(ErrorTitles.InvalidCloudProviderIncorrect),
+                };
             }
 
             return new DevelopmentConfigHandler(config);

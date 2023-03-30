@@ -5,6 +5,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
 {
     using System;
     using System.Globalization;
+    using System.Reflection;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
     using AzureIoTHub.Portal.Infrastructure;
     using FluentAssertions;
@@ -13,7 +14,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
     using NUnit.Framework;
 
     [TestFixture]
-    public class DevelopmentConfigHandlerTests
+    public class ProductionAWSConfigHandlerTests
     {
         private MockRepository mockRepository;
 
@@ -27,9 +28,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
             this.mockConfiguration = this.mockRepository.Create<IConfiguration>();
         }
 
-        private DevelopmentConfigHandler CreateDevelopmentConfigHandler()
+        private ProductionAWSConfigHandler CreateProductionAWSConfigHandler()
         {
-            return new DevelopmentConfigHandler(this.mockConfiguration.Object);
+            return new ProductionAWSConfigHandler(this.mockConfiguration.Object);
         }
 
         [TestCase(ConfigHandlerBase.PortalNameKey, nameof(ConfigHandlerBase.PortalName))]
@@ -45,7 +46,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         [TestCase(ConfigHandlerBase.LoRaKeyManagementApiVersionKey, nameof(ConfigHandlerBase.LoRaKeyManagementApiVersion))]
         [TestCase(ConfigHandlerBase.IoTHubConnectionStringKey, nameof(ConfigHandlerBase.IoTHubConnectionString))]
         [TestCase(ConfigHandlerBase.DPSConnectionStringKey, nameof(ConfigHandlerBase.DPSConnectionString))]
-        [TestCase(ConfigHandlerBase.StorageAccountConnectionStringKey, nameof(ConfigHandlerBase.StorageAccountConnectionString))]
         [TestCase(ConfigHandlerBase.PostgreSQLConnectionStringKey, nameof(ConfigHandlerBase.PostgreSQLConnectionString))]
         [TestCase(ConfigHandlerBase.MySQLConnectionStringKey, nameof(ConfigHandlerBase.MySQLConnectionString))]
         [TestCase(ConfigHandlerBase.AWSAccessKey, nameof(ConfigHandlerBase.AWSAccess))]
@@ -57,7 +57,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         {
             // Arrange
             var expected = Guid.NewGuid().ToString();
-            var configHandler = CreateDevelopmentConfigHandler();
+            var configHandler = CreateProductionAWSConfigHandler();
 
             _ = this.mockConfiguration.SetupGet(c => c[It.Is<string>(x => x == configKey)])
                 .Returns(expected);
@@ -73,6 +73,22 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
             this.mockRepository.VerifyAll();
         }
 
+        [TestCase(nameof(ConfigHandlerBase.StorageAccountConnectionString))]
+        [TestCase(nameof(ConfigHandlerBase.StorageAccountDeviceModelImageMaxAge))]
+        public void SettingsShouldThrowError(string configPropertyName)
+        {
+            // Arrange
+            var productionConfigHandler = CreateProductionAWSConfigHandler();
+
+            // Act
+            var result = () => productionConfigHandler.GetType().GetProperty(configPropertyName).GetValue(productionConfigHandler, null);
+
+            // Assert
+            _ = result.Should().Throw<TargetInvocationException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
         [TestCase(ConfigHandlerBase.OIDCValidateAudienceKey, nameof(ConfigHandlerBase.OIDCValidateAudience))]
         [TestCase(ConfigHandlerBase.OIDCValidateIssuerKey, nameof(ConfigHandlerBase.OIDCValidateIssuer))]
         [TestCase(ConfigHandlerBase.OIDCValidateIssuerSigningKeyKey, nameof(ConfigHandlerBase.OIDCValidateIssuerSigningKey))]
@@ -81,7 +97,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void SecuritySwitchesShouldBeEnabledByDefault(string configKey, string configPropertyName)
         {
             // Arrange
-            var configHandler = CreateDevelopmentConfigHandler();
+            var configHandler = CreateProductionAWSConfigHandler();
             var mockConfigurationSection = this.mockRepository.Create<IConfigurationSection>();
 
             _ = mockConfigurationSection.SetupGet(c => c.Value)
@@ -108,7 +124,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void SecuritySwitchesShouldBeDisabledByDefault(string configKey, string configPropertyName)
         {
             // Arrange
-            var configHandler = CreateDevelopmentConfigHandler();
+            var configHandler = CreateProductionAWSConfigHandler();
             var mockConfigurationSection = this.mockRepository.Create<IConfigurationSection>();
 
             _ = mockConfigurationSection.SetupGet(c => c.Value)
@@ -135,7 +151,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         {
             // Arrange
             var expected = false;
-            var productionConfigHandler = CreateDevelopmentConfigHandler();
+            var productionConfigHandler = CreateProductionAWSConfigHandler();
 
             _ = this.mockConfiguration.SetupGet(c => c[It.Is<string>(x => x == configKey)])
                 .Returns(Convert.ToString(expected, CultureInfo.InvariantCulture));
@@ -170,110 +186,100 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void SyncDatabaseJobRefreshIntervalInMinutesConfigMustHaveDefaultValue()
         {
             // Arrange
-            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+            var productionAWSConfigHandler = new ProductionAWSConfigHandler(new ConfigurationManager());
 
             // Assert
-            _ = developmentConfigHandler.SyncDatabaseJobRefreshIntervalInMinutes.Should().Be(5);
+            _ = productionAWSConfigHandler.SyncDatabaseJobRefreshIntervalInMinutes.Should().Be(5);
         }
 
         [Test]
         public void MetricExporterRefreshIntervalInSecondsConfigMustHaveDefaultValue()
         {
             // Arrange
-            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+            var productionAWSConfigHandler = new ProductionAWSConfigHandler(new ConfigurationManager());
 
             // Assert
-            _ = developmentConfigHandler.MetricExporterRefreshIntervalInSeconds.Should().Be(30);
+            _ = productionAWSConfigHandler.MetricExporterRefreshIntervalInSeconds.Should().Be(30);
         }
 
         [Test]
         public void MetricLoaderRefreshIntervalInMinutesConfigMustHaveDefaultValue()
         {
             // Arrange
-            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+            var productionAWSConfigHandler = new ProductionAWSConfigHandler(new ConfigurationManager());
 
             // Assert
-            _ = developmentConfigHandler.MetricLoaderRefreshIntervalInMinutes.Should().Be(10);
+            _ = productionAWSConfigHandler.MetricLoaderRefreshIntervalInMinutes.Should().Be(10);
         }
 
         [Test]
         public void IdeasEnabledMustHaveDefaultValue()
         {
             // Arrange
-            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+            var productionAWSConfigHandler = new ProductionAWSConfigHandler(new ConfigurationManager());
 
             // Assert
-            _ = developmentConfigHandler.IdeasEnabled.Should().BeFalse();
+            _ = productionAWSConfigHandler.IdeasEnabled.Should().BeFalse();
         }
 
         [Test]
         public void IdeasUrlMustHaveDefaultValue()
         {
             // Arrange
-            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+            var productionAWSConfigHandler = new ProductionAWSConfigHandler(new ConfigurationManager());
 
             // Assert
-            _ = developmentConfigHandler.IdeasUrl.Should().BeEmpty();
+            _ = productionAWSConfigHandler.IdeasUrl.Should().BeEmpty();
         }
 
         [Test]
         public void IdeasAuthenticationHeaderMustHaveDefaultValue()
         {
             // Arrange
-            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+            var productionAWSConfigHandler = new ProductionAWSConfigHandler(new ConfigurationManager());
 
             // Assert
-            _ = developmentConfigHandler.IdeasAuthenticationHeader.Should().Be("Ocp-Apim-Subscription-Key");
+            _ = productionAWSConfigHandler.IdeasAuthenticationHeader.Should().Be("Ocp-Apim-Subscription-Key");
         }
 
         [Test]
         public void IdeasAuthenticationTokenMustHaveDefaultValue()
         {
             // Arrange
-            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+            var productionAWSConfigHandler = new ProductionAWSConfigHandler(new ConfigurationManager());
 
             // Assert
-            _ = developmentConfigHandler.IdeasAuthenticationToken.Should().BeEmpty();
-        }
-
-        [Test]
-        public void StorageAccountDeviceModelImageMaxAgeMustHaveDefaultValue()
-        {
-            // Arrange
-            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
-
-            // Assert
-            _ = developmentConfigHandler.StorageAccountDeviceModelImageMaxAge.Should().Be(86400);
+            _ = productionAWSConfigHandler.IdeasAuthenticationToken.Should().BeEmpty();
         }
 
         [Test]
         public void IoTHubEventHubEndpoint_GetDefaultValue_ReturnsEmpty()
         {
             // Arrange
-            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+            var productionAWSConfigHandler = new ProductionAWSConfigHandler(new ConfigurationManager());
 
             // Assert
-            _ = developmentConfigHandler.IoTHubEventHubEndpoint.Should().BeEmpty();
+            _ = productionAWSConfigHandler.IoTHubEventHubEndpoint.Should().BeEmpty();
         }
 
         [Test]
         public void IoTHubEventHubConsumerGroup_GetDefaultValue_ReturnsExpectedDefaultValue()
         {
             // Arrange
-            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+            var productionAWSConfigHandler = new ProductionAWSConfigHandler(new ConfigurationManager());
 
             // Assert
-            _ = developmentConfigHandler.IoTHubEventHubConsumerGroup.Should().Be("iothub-portal");
+            _ = productionAWSConfigHandler.IoTHubEventHubConsumerGroup.Should().Be("iothub-portal");
         }
 
         [Test]
         public void DbProviderKeyShouldBeExpectedDefaultValue()
         {
             // Arrange
-            var developmentConfigHandler = new DevelopmentConfigHandler(new ConfigurationManager());
+            var productionAWSConfigHandler = new ProductionAWSConfigHandler(new ConfigurationManager());
 
             // Assert
-            _ = developmentConfigHandler.DbProvider.Should().Be(DbProviders.PostgreSQL);
+            _ = productionAWSConfigHandler.DbProvider.Should().Be(DbProviders.PostgreSQL);
         }
     }
 }
