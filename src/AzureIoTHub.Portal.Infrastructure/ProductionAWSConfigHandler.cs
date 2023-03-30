@@ -80,13 +80,13 @@ namespace AzureIoTHub.Portal.Infrastructure
 
         public override string MySQLConnectionString => this.config[MySQLConnectionStringKey]!;
 
-        public override string DbProvider => this.config.GetValue(DbProviderKey, DbProviders.PostgreSQL);
+        public override string DbProvider => this.config.GetValue(DbProviderKey, DbProviders.PostgreSQL)!;
 
-        public override string CloudProvider => this.config[CloudProviderKey];
+        public override string CloudProvider => this.config[CloudProviderKey]!;
 
-        public override string AWSAccess => this.config[AWSAccessKey];
-        public override string AWSAccessSecret => this.config[AWSAccessSecretKey];
-        public override string AWSRegion => this.config[AWSRegionKey];
-        public override string AWSS3StorageConnectionString => this.config[AWSS3StorageConnectionStringKey];
+        public override string AWSAccess => this.config[AWSAccessKey]!;
+        public override string AWSAccessSecret => this.config[AWSAccessSecretKey]!;
+        public override string AWSRegion => this.config[AWSRegionKey]!;
+        public override string AWSS3StorageConnectionString => this.config[AWSS3StorageConnectionStringKey]!;
     }
 }

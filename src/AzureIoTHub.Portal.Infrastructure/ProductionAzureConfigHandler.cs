@@ -78,11 +78,11 @@ namespace AzureIoTHub.Portal.Infrastructure
         public override string LoRaKeyManagementApiVersion => this.config[LoRaKeyManagementApiVersionKey]!;
 
         public override bool IdeasEnabled => this.config.GetValue(IdeasEnabledKey, false);
-        public override string IdeasUrl => this.config.GetValue(IdeasUrlKey, string.Empty);
-        public override string IdeasAuthenticationHeader => this.config.GetValue(IdeasAuthenticationHeaderKey, "Ocp-Apim-Subscription-Key");
-        public override string IdeasAuthenticationToken => this.config.GetValue(IdeasAuthenticationTokenKey, string.Empty);
+        public override string IdeasUrl => this.config.GetValue(IdeasUrlKey, string.Empty)!;
+        public override string IdeasAuthenticationHeader => this.config.GetValue(IdeasAuthenticationHeaderKey, "Ocp-Apim-Subscription-Key")!;
+        public override string IdeasAuthenticationToken => this.config.GetValue(IdeasAuthenticationTokenKey, string.Empty)!;
 
-        public override string CloudProvider => this.config[CloudProviderKey];
+        public override string CloudProvider => this.config[CloudProviderKey]!;
 
         public override string AWSAccess => throw new NotImplementedException();
 
