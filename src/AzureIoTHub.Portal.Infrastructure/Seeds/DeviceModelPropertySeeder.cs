@@ -36,7 +36,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Seeds
                 });
 #pragma warning restore CS8629 // Nullable value type may be null.
 
-                if (config is ProductionConfigHandler)
+                if (config is ProductionAzureConfigHandler)
                 {
                     _ = await table.DeleteEntityAsync(item.PartitionKey, item.RowKey);
                 }
