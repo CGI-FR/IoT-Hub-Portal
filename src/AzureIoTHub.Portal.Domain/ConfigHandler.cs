@@ -78,5 +78,6 @@ namespace AzureIoTHub.Portal.Domain
         public abstract string AWSAccess { get; }
         public abstract string AWSAccessSecret { get; }
         public abstract string AWSRegion { get; }
+        public abstract string AWSS3StorageConnectionString { get; }
     }
 }

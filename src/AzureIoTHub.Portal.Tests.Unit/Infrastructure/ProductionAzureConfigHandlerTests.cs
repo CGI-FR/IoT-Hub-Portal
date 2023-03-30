@@ -11,9 +11,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
     using NUnit.Framework;
     using AzureIoTHub.Portal.Infrastructure;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
+    using System.Reflection;
 
     [TestFixture]
-    public class ProductionConfigHandlerTests
+    public class ProductionAzureConfigHandlerTests
     {
         private MockRepository mockRepository;
 
@@ -27,9 +28,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
             this.mockConfiguration = this.mockRepository.Create<IConfiguration>();
         }
 
-        private ProductionConfigHandler CreateProductionConfigHandler()
+        private ProductionAzureConfigHandler CreateProductionAzureConfigHandler()
         {
-            return new ProductionConfigHandler(this.mockConfiguration.Object);
+            return new ProductionAzureConfigHandler(this.mockConfiguration.Object);
         }
 
         [TestCase(ConfigHandlerBase.IoTHubConnectionStringKey, nameof(ConfigHandlerBase.IoTHubConnectionString))]
@@ -43,7 +44,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         {
             // Arrange
             var expected = Guid.NewGuid().ToString();
-            var productionConfigHandler = CreateProductionConfigHandler();
+            var productionConfigHandler = CreateProductionAzureConfigHandler();
             var mockConfigurationSection = this.mockRepository.Create<IConfigurationSection>();
 
             _ = this.mockConfiguration.Setup(c => c.GetSection(It.Is<string>(x => x == "ConnectionStrings")))
@@ -73,15 +74,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         [TestCase(ConfigHandlerBase.OIDCApiClientIdKey, nameof(ConfigHandlerBase.OIDCApiClientId))]
         [TestCase(ConfigHandlerBase.LoRaKeyManagementUrlKey, nameof(ConfigHandlerBase.LoRaKeyManagementUrl))]
         [TestCase(ConfigHandlerBase.LoRaKeyManagementApiVersionKey, nameof(ConfigHandlerBase.LoRaKeyManagementApiVersion))]
-        [TestCase(ConfigHandlerBase.AWSAccessKey, nameof(ConfigHandlerBase.AWSAccess))]
-        [TestCase(ConfigHandlerBase.AWSAccessSecretKey, nameof(ConfigHandlerBase.AWSAccessSecret))]
-        [TestCase(ConfigHandlerBase.AWSRegionKey, nameof(ConfigHandlerBase.AWSRegion))]
         [TestCase(ConfigHandlerBase.CloudProviderKey, nameof(ConfigHandlerBase.CloudProvider))]
         public void SettingsShouldGetValueFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange
             var expected = Guid.NewGuid().ToString();
-            var productionConfigHandler = CreateProductionConfigHandler();
+            var productionConfigHandler = CreateProductionAzureConfigHandler();
 
             _ = this.mockConfiguration.SetupGet(c => c[It.Is<string>(x => x == configKey)])
                 .Returns(expected);
@@ -97,6 +95,24 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
             this.mockRepository.VerifyAll();
         }
 
+        [TestCase(nameof(ConfigHandlerBase.AWSAccess))]
+        [TestCase(nameof(ConfigHandlerBase.AWSAccessSecret))]
+        [TestCase(nameof(ConfigHandlerBase.AWSRegion))]
+        [TestCase(nameof(ConfigHandlerBase.AWSS3StorageConnectionString))]
+        public void SettingsShouldThrowError(string configPropertyName)
+        {
+            // Arrange
+            var productionConfigHandler = CreateProductionAzureConfigHandler();
+
+            // Act
+            var result = () => productionConfigHandler.GetType().GetProperty(configPropertyName).GetValue(productionConfigHandler, null);
+
+            // Assert
+            _ = result.Should().Throw<TargetInvocationException>();
+
+            this.mockRepository.VerifyAll();
+        }
+
         [TestCase(ConfigHandlerBase.OIDCValidateAudienceKey, nameof(ConfigHandlerBase.OIDCValidateAudience))]
         [TestCase(ConfigHandlerBase.OIDCValidateIssuerKey, nameof(ConfigHandlerBase.OIDCValidateIssuer))]
         [TestCase(ConfigHandlerBase.OIDCValidateIssuerSigningKeyKey, nameof(ConfigHandlerBase.OIDCValidateIssuerSigningKey))]
@@ -105,7 +121,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void SecuritySwitchesShouldBeEnabledByDefault(string configKey, string configPropertyName)
         {
             // Arrange
-            var configHandler = CreateProductionConfigHandler();
+            var configHandler = CreateProductionAzureConfigHandler();
             var mockConfigurationSection = this.mockRepository.Create<IConfigurationSection>();
 
             _ = mockConfigurationSection.SetupGet(c => c.Value)
@@ -132,7 +148,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void SecuritySwitchesShouldBeDisabledByDefault(string configKey, string configPropertyName)
         {
             // Arrange
-            var configHandler = CreateProductionConfigHandler();
+            var configHandler = CreateProductionAzureConfigHandler();
             var mockConfigurationSection = this.mockRepository.Create<IConfigurationSection>();
 
             _ = mockConfigurationSection.SetupGet(c => c.Value)
@@ -159,7 +175,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         {
             // Arrange
             var expected = false;
-            var productionConfigHandler = CreateProductionConfigHandler();
+            var productionConfigHandler = CreateProductionAzureConfigHandler();
 
             _ = this.mockConfiguration.SetupGet(c => c[It.Is<string>(x => x == configKey)])
                 .Returns(Convert.ToString(expected, CultureInfo.InvariantCulture));
@@ -194,7 +210,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void SyncDatabaseJobRefreshIntervalInMinutesConfigMustHaveDefaultValue()
         {
             // Arrange
-            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+            var productionConfigHandler = new ProductionAzureConfigHandler(new ConfigurationManager());
 
             // Assert
             _ = productionConfigHandler.SyncDatabaseJobRefreshIntervalInMinutes.Should().Be(5);
@@ -204,7 +220,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void MetricExporterRefreshIntervalInSecondsConfigMustHaveDefaultValue()
         {
             // Arrange
-            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+            var productionConfigHandler = new ProductionAzureConfigHandler(new ConfigurationManager());
 
             // Assert
             _ = productionConfigHandler.MetricExporterRefreshIntervalInSeconds.Should().Be(30);
@@ -214,7 +230,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void MetricLoaderRefreshIntervalInMinutesConfigMustHaveDefaultValue()
         {
             // Arrange
-            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+            var productionConfigHandler = new ProductionAzureConfigHandler(new ConfigurationManager());
 
             // Assert
             _ = productionConfigHandler.MetricLoaderRefreshIntervalInMinutes.Should().Be(10);
@@ -224,7 +240,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void IdeasEnabledMustHaveDefaultValue()
         {
             // Arrange
-            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+            var productionConfigHandler = new ProductionAzureConfigHandler(new ConfigurationManager());
 
             // Assert
             _ = productionConfigHandler.IdeasEnabled.Should().BeFalse();
@@ -234,7 +250,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void IdeasUrlMustHaveDefaultValue()
         {
             // Arrange
-            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+            var productionConfigHandler = new ProductionAzureConfigHandler(new ConfigurationManager());
 
             // Assert
             _ = productionConfigHandler.IdeasUrl.Should().BeEmpty();
@@ -244,7 +260,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void IdeasAuthenticationHeaderMustHaveDefaultValue()
         {
             // Arrange
-            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+            var productionConfigHandler = new ProductionAzureConfigHandler(new ConfigurationManager());
 
             // Assert
             _ = productionConfigHandler.IdeasAuthenticationHeader.Should().Be("Ocp-Apim-Subscription-Key");
@@ -254,7 +270,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void IdeasAuthenticationTokenMustHaveDefaultValue()
         {
             // Arrange
-            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+            var productionConfigHandler = new ProductionAzureConfigHandler(new ConfigurationManager());
 
             // Assert
             _ = productionConfigHandler.IdeasAuthenticationToken.Should().BeEmpty();
@@ -264,7 +280,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void StorageAccountDeviceModelImageMaxAgeMustHaveDefaultValue()
         {
             // Arrange
-            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+            var productionConfigHandler = new ProductionAzureConfigHandler(new ConfigurationManager());
 
             // Assert
             _ = productionConfigHandler.StorageAccountDeviceModelImageMaxAge.Should().Be(86400);
@@ -274,7 +290,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void IoTHubEventHubConsumerGroup_GetDefaultValue_ReturnsExpectedDefaultValue()
         {
             // Arrange
-            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+            var productionConfigHandler = new ProductionAzureConfigHandler(new ConfigurationManager());
 
             // Assert
             _ = productionConfigHandler.IoTHubEventHubConsumerGroup.Should().Be("iothub-portal");
@@ -284,7 +300,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         public void DbProviderKeyShouldBeExpectedDefaultValue()
         {
             // Arrange
-            var productionConfigHandler = new ProductionConfigHandler(new ConfigurationManager());
+            var productionConfigHandler = new ProductionAzureConfigHandler(new ConfigurationManager());
 
             // Assert
             _ = productionConfigHandler.DbProvider.Should().Be(DbProviders.PostgreSQL);

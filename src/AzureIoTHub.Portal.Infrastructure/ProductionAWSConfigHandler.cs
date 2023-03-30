@@ -6,11 +6,11 @@ namespace AzureIoTHub.Portal.Infrastructure
     using AzureIoTHub.Portal.Domain.Shared.Constants;
     using Microsoft.Extensions.Configuration;
 
-    internal class DevelopmentConfigHandler : ConfigHandlerBase
+    internal class ProductionAWSConfigHandler : ConfigHandlerBase
     {
         private readonly IConfiguration config;
 
-        internal DevelopmentConfigHandler(IConfiguration config)
+        internal ProductionAWSConfigHandler(IConfiguration config)
         {
             this.config = config;
         }
@@ -35,9 +35,9 @@ namespace AzureIoTHub.Portal.Infrastructure
 
         public override string DPSScopeID => this.config[DPSIDScopeKey]!;
 
-        public override string StorageAccountConnectionString => this.config[StorageAccountConnectionStringKey]!;
+        public override string StorageAccountConnectionString => throw new NotImplementedException();
 
-        public override int StorageAccountDeviceModelImageMaxAge => this.config.GetValue(StorageAccountDeviceModelImageMaxAgeKey, 86400);
+        public override int StorageAccountDeviceModelImageMaxAge => throw new NotImplementedException();
 
         public override bool UseSecurityHeaders => this.config.GetValue(UseSecurityHeadersKey, true);
 

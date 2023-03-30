@@ -6,11 +6,11 @@ namespace AzureIoTHub.Portal.Infrastructure
     using AzureIoTHub.Portal.Domain.Shared.Constants;
     using Microsoft.Extensions.Configuration;
 
-    internal class ProductionConfigHandler : ConfigHandlerBase
+    internal class ProductionAzureConfigHandler : ConfigHandlerBase
     {
         private readonly IConfiguration config;
 
-        internal ProductionConfigHandler(IConfiguration config)
+        internal ProductionAzureConfigHandler(IConfiguration config)
         {
             this.config = config;
         }
@@ -84,8 +84,11 @@ namespace AzureIoTHub.Portal.Infrastructure
 
         public override string CloudProvider => this.config[CloudProviderKey];
 
-        public override string AWSAccess => this.config[AWSAccessKey];
-        public override string AWSAccessSecret => this.config[AWSAccessSecretKey];
-        public override string AWSRegion => this.config[AWSRegionKey];
+        public override string AWSAccess => throw new NotImplementedException();
+
+        public override string AWSAccessSecret => throw new NotImplementedException();
+
+        public override string AWSRegion => throw new NotImplementedException();
+        public override string AWSS3StorageConnectionString => throw new NotImplementedException();
     }
 }

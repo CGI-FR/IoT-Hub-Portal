@@ -10,5 +10,11 @@ namespace AzureIoTHub.Portal.Domain.Shared.Constants
         public const string ResourceNotFound = "Resource Not Found";
 
         public const string ResourceAlreadyExists = "Resource Already Exists";
+
+        public const string InvalidCloudProvider = "Invalid Cloud Provider";
+
+        public const string InvalidCloudProviderUndefined = "The CloudProvider configuration is undefined";
+
+        public const string InvalidCloudProviderIncorrect = "The CloudProvider configuration is incorrect";
     }
 }
