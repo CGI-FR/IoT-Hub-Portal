@@ -46,7 +46,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10.LoRaWAN
                 new FrequencyPlan { FrequencyPlanID = "AU_915_928_FSB_5",   Name = "Australia 915-928 MHz, FSB 5"},
                 new FrequencyPlan { FrequencyPlanID = "AU_915_928_FSB_6",   Name = "Australia 915-928 MHz, FSB 6"},
                 new FrequencyPlan { FrequencyPlanID = "AU_915_928_FSB_7",   Name = "Australia 915-928 MHz, FSB 7"},
-                new FrequencyPlan { FrequencyPlanID = "AU_915_928_FSB_7",   Name = "Australia 915-928 MHz, FSB 8"}
+                new FrequencyPlan { FrequencyPlanID = "AU_915_928_FSB_8",   Name = "Australia 915-928 MHz, FSB 8"}
             });
         }
     }
