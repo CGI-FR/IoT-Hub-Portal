@@ -169,7 +169,7 @@
                                             @if (context.Equals(CreateEditMode.Create))
                                             {
                                                 <MudItem xs="12">
-                                                    <MudSwitch @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
+                                                    <MudSwitch id="duplicate-device-switch" @bind-Checked="@duplicateDevice" Label="Or select a device to copy" />
                                                 </MudItem>
                                             }
 
