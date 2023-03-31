@@ -9,6 +9,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
     using System.Threading.Tasks;
     using AutoFixture;
     using AzureIoTHub.Portal.Client.Components.Devices;
+    using AzureIoTHub.Portal.Client.Enums;
     using AzureIoTHub.Portal.Client.Exceptions;
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Services;
@@ -331,6 +332,84 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             var items = popoverProvider.FindAll("div.mud-list-item");
 
             // Click on Save and Duplicate
+            items[0].Click();
+
+            // Act
+            saveButton.Click();
+
+            // Assert
+            cut.WaitForAssertion(() => MockRepository.VerifyAll());
+            cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/devices"));
+        }
+
+        [Test]
+        public async Task ClickOnSaveShouldUpdateDeviceInEditDevice()
+        {
+            var mockDeviceModel = new DeviceModelDto
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                SupportLoRaFeatures = false,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            var expectedDeviceDetails = new DeviceDetails
+            {
+                DeviceName = Guid.NewGuid().ToString(),
+                ModelId = mockDeviceModel.ModelId,
+                DeviceID = Guid.NewGuid().ToString(),
+            };
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetDevice(It.IsAny<string>()))
+                .ReturnsAsync(new DeviceDetails());
+
+            _ = this.mockDeviceClientService.Setup(service => service.GetDeviceProperties(It.IsAny<string>()))
+                .ReturnsAsync(new List<DevicePropertyValue>());
+
+            _ = this.mockDeviceModelsClientService
+                .Setup(service => service.GetDeviceModel(It.IsAny<string>()))
+                .ReturnsAsync(new DeviceModelDto());
+
+            _ = this.mockDeviceClientService.Setup(service => service.UpdateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>
+                {
+                    new()
+                    {
+                        Label = Guid.NewGuid().ToString(),
+                        Name = Guid.NewGuid().ToString(),
+                        Required = false,
+                        Searchable = false
+                    }
+                });
+
+            _ = this.mockDeviceModelsClientService
+                .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+                .ReturnsAsync(new List<DeviceProperty>());
+
+            _ = this.mockDeviceClientService
+                .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValue>>()))
+                .Returns(Task.CompletedTask);
+
+            var popoverProvider = RenderComponent<MudPopoverProvider>();
+            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Edit).Add(p => p.DeviceID, expectedDeviceDetails.DeviceID));
+            var saveButton = cut.WaitForElement("#saveButton");
+
+            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+            cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+            await cut.Instance.ChangeModel(mockDeviceModel);
+
+            var mudButtonGroup = cut.FindComponent<MudButtonGroup>();
+
+            mudButtonGroup.Find(".mud-menu button").Click();
+
+            popoverProvider.WaitForAssertion(() => popoverProvider.FindAll("div.mud-list-item").Count.Should().Be(2));
+
+            var items = popoverProvider.FindAll("div.mud-list-item");
+
+            // Click on Save
             items[0].Click();
 
             // Act
