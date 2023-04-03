@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
     using AzureIoTHub.Portal.Client.Models;
     using AzureIoTHub.Portal.Client.Services;
     using AzureIoTHub.Portal.Models.v10;
+    using AzureIoTHub.Portal.Models.v10.LoRaWAN;
     using AzureIoTHub.Portal.Shared.Models;
     using AzureIoTHub.Portal.Shared.Models.v10.Filters;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
@@ -614,7 +615,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
         }
 
         [Test]
-        public void DisplayValidationErrorMessageRederCorrectly()
+        public void DisplayValidationErrorMessageRenderCorrectly()
         {
             // Arrange
             _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
@@ -627,6 +628,91 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
 
             // Assert
             cut.WaitForAssertion(() => cut.Find("p.validation-error-message").TextContent.Should().Be("The Model is required."));
+        }
+
+        //[Test]
+        //public async Task DisplayPropertiesRenderCorrectly()
+        //{
+        //    // Arrange
+        //    var mockDeviceModel = new DeviceModelDto
+        //    {
+        //        ModelId = Guid.NewGuid().ToString(),
+        //        Description = Guid.NewGuid().ToString(),
+        //        SupportLoRaFeatures = false,
+        //        Name = Guid.NewGuid().ToString()
+        //    };
+
+        //    var expectedDeviceDetails = new DeviceDetails
+        //    {
+        //        DeviceName = Guid.NewGuid().ToString(),
+        //        ModelId = mockDeviceModel.ModelId,
+        //        DeviceID = Guid.NewGuid().ToString(),
+        //    };
+
+        //    _ = this.mockDeviceClientService.Setup(service => service.CreateDevice(It.Is<DeviceDetails>(details => expectedDeviceDetails.DeviceID.Equals(details.DeviceID, StringComparison.Ordinal))))
+        //        .Returns(Task.CompletedTask);
+
+        //    _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+        //        .ReturnsAsync(new List<DeviceTagDto>
+        //        {
+        //            new()
+        //            {
+        //                Label = Guid.NewGuid().ToString(),
+        //                Name = Guid.NewGuid().ToString(),
+        //                Required = false,
+        //                Searchable = false
+        //            }
+        //        });
+
+        //    _ = this.mockDeviceModelsClientService
+        //        .Setup(service => service.GetDeviceModelModelProperties(mockDeviceModel.ModelId))
+        //        .ReturnsAsync(new List<DeviceProperty>());
+
+        //    _ = this.mockDeviceClientService
+        //        .Setup(service => service.SetDeviceProperties(expectedDeviceDetails.DeviceID, It.IsAny<IList<DevicePropertyValue>>()))
+        //        .Returns(Task.CompletedTask);
+
+        //    var cut = RenderComponent<EditDevice>();
+        //    var saveButton = cut.WaitForElement("#SaveButton");
+
+        //    // Act
+        //    cut.WaitForElement($"#{nameof(DeviceDetails.DeviceName)}").Change(expectedDeviceDetails.DeviceName);
+        //    cut.WaitForElement($"#{nameof(DeviceDetails.DeviceID)}").Change(expectedDeviceDetails.DeviceID);
+        //    await cut.Instance.ChangeModel(mockDeviceModel);
+
+        //    saveButton.Click();
+
+        //    // Assert
+        //    cut.WaitForAssertion(() => MockRepository.VerifyAll());
+        //    cut.WaitForAssertion(() => this.mockNavigationManager.Uri.Should().EndWith("/devices"));
+        //}
+
+        [Test]
+        public async Task DisplayCreateLoraDeviceComponentRenderCorrectly()
+        {
+            // Arrange
+            var mockDeviceModel = new DeviceModelDto
+            {
+                ModelId = Guid.NewGuid().ToString(),
+                Description = Guid.NewGuid().ToString(),
+                SupportLoRaFeatures = true,
+                Name = Guid.NewGuid().ToString()
+            };
+
+            _ = this.mockDeviceTagSettingsClientService.Setup(service => service.GetDeviceTags())
+                .ReturnsAsync(new List<DeviceTagDto>());
+
+            _ = this.mockLoRaWanDeviceModelsClientService
+                .Setup(service => service.GetDeviceModel(It.IsAny<string>()))
+                .ReturnsAsync(new LoRaDeviceModelDto());
+
+            var cut = RenderComponent<EditDevice>(parameters => parameters.Add(p => p.context, CreateEditMode.Create));
+
+            // Act
+            await cut.Instance.ChangeModel(mockDeviceModel);
+
+            // Assert
+            cut.WaitForAssertion(() => cut.Find("#tab-lorawan").TextContent.Should().Be("LoRaWAN"));
         }
     }
 }
