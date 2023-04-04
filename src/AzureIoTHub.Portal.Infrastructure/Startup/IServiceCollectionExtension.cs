@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
     using AzureIoTHub.Portal.Infrastructure.Helpers;
+    using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using EntityFramework.Exceptions.PostgreSQL;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +17,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)
         {
             //Common configuration
-            services = services.ConfigureDatabase(configuration);
+            services = services.ConfigureDatabase(configuration)
+                               .ConfigureHealthCheck();
 
             //CloudProvider-dependant configurations
             return configuration.CloudProvider switch
@@ -68,6 +70,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             {
                 portalDbContext.Database.Migrate();
             }
+
+            return services;
+        }
+
+        private static IServiceCollection ConfigureHealthCheck(this IServiceCollection services)
+        {
+            _ = services.AddHealthChecks()
+               .AddDbContextCheck<PortalDbContext>()
+               .AddCheck<DatabaseHealthCheck>("databaseHealthCheck");
 
             return services;
         }

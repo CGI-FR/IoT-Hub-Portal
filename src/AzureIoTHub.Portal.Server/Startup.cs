@@ -86,7 +86,7 @@ namespace AzureIoTHub.Portal.Server
                 case CloudProviders.AWS:
                     ConfigureServicesAWS(services, configuration);
                     break;
-                //
+                // Code line not reachable
                 default:
                     break;
             }

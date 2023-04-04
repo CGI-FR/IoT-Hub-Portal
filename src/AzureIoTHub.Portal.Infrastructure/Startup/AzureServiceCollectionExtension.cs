@@ -136,13 +136,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         private static IServiceCollection ConfigureHealthCheck(this IServiceCollection services)
         {
             _ = services.AddHealthChecks()
-               .AddDbContextCheck<PortalDbContext>()
                .AddCheck<IoTHubHealthCheck>("iothubHealth")
                .AddCheck<StorageAccountHealthCheck>("storageAccountHealth")
                .AddCheck<TableStorageHealthCheck>("tableStorageHealth")
                .AddCheck<ProvisioningServiceClientHealthCheck>("dpsHealth")
-               .AddCheck<LoRaManagementKeyFacadeHealthCheck>("loraManagementFacadeHealth")
-               .AddCheck<DatabaseHealthCheck>("databaseHealthCheck");
+               .AddCheck<LoRaManagementKeyFacadeHealthCheck>("loraManagementFacadeHealth");
 
             return services;
         }
