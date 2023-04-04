@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "8976723203862929554"
+      "templateHash": "9763919335023270168"
     }
   },
   "parameters": {
@@ -282,7 +282,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.15.31.15270",
-              "templateHash": "16014143816750502772"
+              "templateHash": "1601327370890931254"
             }
           },
           "parameters": {
@@ -2038,7 +2038,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.15.31.15270",
-                      "templateHash": "7983041582322525635"
+                      "templateHash": "13343833300350081589"
                     }
                   },
                   "parameters": {
@@ -2661,7 +2661,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.15.31.15270",
-                              "templateHash": "5876431430729819050"
+                              "templateHash": "5396940877310262456"
                             }
                           },
                           "parameters": {
@@ -2866,7 +2866,7 @@
                                 "reserved": true,
                                 "siteConfig": {
                                   "numberOfWorkers": 1,
-                                  "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.8.1",
+                                  "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.8.2",
                                   "connectionStrings": [
                                     {
                                       "name": "IoTHub__ConnectionString",
@@ -3077,7 +3077,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.15.31.15270",
-              "templateHash": "11983705303918431536"
+              "templateHash": "17142303494270026132"
             }
           },
           "parameters": {
@@ -3805,7 +3805,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.15.31.15270",
-                      "templateHash": "5876431430729819050"
+                      "templateHash": "5396940877310262456"
                     }
                   },
                   "parameters": {
@@ -4010,7 +4010,7 @@
                         "reserved": true,
                         "siteConfig": {
                           "numberOfWorkers": 1,
-                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.8.1",
+                          "linuxFxVersion": "DOCKER|ghcr.io/cgi-fr/iothub-portal:4.8.2",
                           "connectionStrings": [
                             {
                               "name": "IoTHub__ConnectionString",
