@@ -1,17 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Parameters:	
-    location:
-        Type: String
-        Description: Location for the resources
-    pgsqlServerName:
-        Type: String
-        Description: PostgreSQL server name
-    pgsqlAdminLogin:
-        Type: String
-        Description: PostgreSQL user
-    pgsqlAdminPassword:
-        Type: String
-        Description: PostgreSQL password
+Description: AWS S3 storage template
 Resources:
     s3Bucket:
         Type: 'AWS::S3::Bucket'

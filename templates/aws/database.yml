@@ -1,1 +1,57 @@
 AWSTemplateFormatVersion: 2010-09-09
+Description: PostgreSQL database storage template
+
+Parameters:	
+    dBName:
+        Type: String
+        default: cgigeiotdemo
+        Description: Database name
+    pgsqlServerName:
+        Type: String
+        Description: PostgreSQL server name
+    pgsqlAdminLogin:
+        Type: String
+        Description: PostgreSQL user
+    pgsqlAdminPassword:
+        Type: String
+        NoEcho: True
+        Description: PostgreSQL password
+
+Resources:
+  PostgreSQLDB:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: pgDB
+      AllocatedStorage: 20
+      DBInstanceClass: db.t2.micro # A voir quel instance utilisé : https://instances.vantage.sh/rds/
+      Engine: postgres
+      MasterUsername: 
+        Ref: pgsqlAdminLogin
+      MasterUserPassword: 
+        Ref: pgsqlAdminPassword
+      DBName: 
+        Ref: dBName
+      VPCSecurityGroups:
+        - !Ref MyDBSecurityGroup
+      DBSubnetGroupName: !Ref MyDBSubnetGroup
+
+  MyDBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable access to the database instance
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+          IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: 0.0.0.0/0
+
+  MyDBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupName: mydbsubnetgroup
+      DBSubnetGroupDescription: Subnets available for the database
+      SubnetIds:
+        - !Ref Subnet1
+        - !Ref Subnet2
+        - !Ref Subnet3
