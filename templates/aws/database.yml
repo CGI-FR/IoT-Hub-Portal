@@ -6,9 +6,6 @@ Parameters:
         Type: String
         default: cgigeiotdemo
         Description: Database name
-    pgsqlServerName:
-        Type: String
-        Description: PostgreSQL server name
     pgsqlAdminLogin:
         Type: String
         Description: PostgreSQL user
@@ -16,26 +13,47 @@ Parameters:
         Type: String
         NoEcho: True
         Description: PostgreSQL password
+    databaseInstanceClass:
+      AllowedValues:
+        - db.t1.micro
+        - db.t2.micro
+        - db.m1.small
+        - db.m1.medium
+        - db.m1.large
+      Type: String
+      ConstraintDescription: Must select a valid database instance
+      Default: db.t2.micro
+      Description: The dataabse instance type
+    AllocatedStorage:
+      Type: String
+      Description: Allocated Storage
+    storageType:
+      AllowedValues:
+        - gp2
+        - gp3
+        - io1
+        - standard
+      Type: String
+
 
 Resources:
   PostgreSQLDB:
     Type: AWS::RDS::DBInstance
     Properties:
       DBInstanceIdentifier: pgDB
-      AllocatedStorage: 20
-      DBInstanceClass: db.t2.micro # A voir quel instance utilisé : https://instances.vantage.sh/rds/
+      AllocatedStorage: 20 # En attente de la valeur {General Purpose (SSD) storage (gp2): Must be an integer from 20 to 65536.Provisioned IOPS storage (io1): Must be an integer from 100 to 65536. Magnetic storage (standard): Must be an integer from 5 to 3072.}
+      MaxAllocatedStorage: 3072
+      StorageType: !Ref storageType
+      DBInstanceClass: !Ref databaseInstanceClass # A voir quel instance utilisé : https://instances.vantage.sh/rds/
       Engine: postgres
-      MasterUsername: 
-        Ref: pgsqlAdminLogin
-      MasterUserPassword: 
-        Ref: pgsqlAdminPassword
-      DBName: 
-        Ref: dBName
+      MasterUsername: !Ref pgsqlAdminLogin
+      MasterUserPassword: !Ref pgsqlAdminPassword
+      DBName: !Ref dBName
       VPCSecurityGroups:
-        - !Ref MyDBSecurityGroup
-      DBSubnetGroupName: !Ref MyDBSubnetGroup
+        - !Ref PgSQLSecurityGroup
+      DBSubnetGroupName: !Ref PgSQLSubnetGroup
 
-  MyDBSecurityGroup:
+  PgSQLSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable access to the database instance
@@ -46,12 +64,12 @@ Resources:
           ToPort: 5432
           CidrIp: 0.0.0.0/0
 
-  MyDBSubnetGroup:
+  PgSQLSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
-      DBSubnetGroupName: mydbsubnetgroup
+      DBSubnetGroupName: pgSqlsubnetgroup
       DBSubnetGroupDescription: Subnets available for the database
-      SubnetIds:
-        - !Ref Subnet1
-        - !Ref Subnet2
-        - !Ref Subnet3
+      SubnetIds: # A voir le nombre de subnets qu'on veut dans le groupe
+        - !Ref Subnet-1
+        - !Ref Subnet-2
+        - !Ref Subnet-3

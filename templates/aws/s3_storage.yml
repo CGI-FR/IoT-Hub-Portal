@@ -1,6 +1,13 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: AWS S3 storage template
+
+Parameters:
+  bucketName:
+    Type: String 
+    Description: Please provide the bucket name
 Resources:
     s3Bucket:
-        Type: 'AWS::S3::Bucket'
-        Description: S3 bucket
+        Type: AWS::S3::Bucket
+        Description: Please provide a bucket name
+        Properties: 
+          BucketName: !Ref bucketName 
