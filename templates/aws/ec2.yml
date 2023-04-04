@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: EC2 instance template
+
+Parameters:
+  imageId:
+    Type: AWS::EC2::Image::Id
+    Default: ami-0c94855ba95c71c99 # Amazon Linux 2 AMI
+    Description: Please provide an AMI ID
+    MinLength: '1'
+    MaxLength: '100'
+  instanceType:
+    Type: String
+    Default: t2.micro
+    Description: Put the instance Tye. You can see all the allowed values here https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-instance.html#cfn-ec2-instance-instancetype
+  keyName:
+    Type: String
+    Description: You can create a key pair using CreateKeyPair or ImportKeyPair.*
+  cidrBlock:
+    Type: String
+    Description: The IPv4 CIDR block assigned to the subnet.
+    AllowedPattern: '^((([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\.){3}([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5]))$'
+  VPC:
+    Type: AWS::EC2::VPC::Id
+  availabilityZone:
+    Type: String
+    Default: eu-west-1
+    Description: Availability zone
+    AllowedPattern: '^[a-z]{2}(-[a-z]+)?-\d+[a-z]?$'
+
+Resources:
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref imageId
+      InstanceType: !Ref instanceType
+      KeyName: !Ref keyName
+      SecurityGroupIds:
+        - !Ref EC2InstanceSecurityGroup
+      SubnetId: !Ref EC2InstanceSubnet
+  EC2InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable access to the EC2 instance
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+  EC2InstanceSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref cidrBlock
+      AvailabilityZone: !Ref availabilityZone
+
