@@ -330,7 +330,7 @@
                 {
                     if (IsLoRa)
                     {
-                        <MudTabPanel id="tab-lorawan" Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
+                        <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
                             <CreateLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraModelDto="@(LoRaDeviceModelDto)" LoraValidator="@(loraValidator)" />
                         </MudTabPanel>
                     }
@@ -339,7 +339,7 @@
                 {
                     if (IsLoRa && Device != null && Commands != null)
                     {
-                        <MudTabPanel id="tab-lorawan" Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
+                        <MudTabPanel Text="LoRaWAN" Style=@(this.CheckLoRaValidation() ? "color: red": "")>
                             <EditLoraDevice LoRaDevice="@(Device as LoRaDeviceDetails)" LoraValidator="@(loraValidator)" LoRaDeviceModelDto="@(DeviceModel as LoRaDeviceModelDto)" Commands="@Commands" />
                         </MudTabPanel>
                     }
