@@ -26,6 +26,12 @@ Parameters:
     Default: eu-west-1
     Description: Availability zone
     AllowedPattern: '^[a-z]{2}(-[a-z]+)?-\d+[a-z]?$'
+  AllowedCIDR:
+    Type: String
+    Description: CIDR block that is allowed to access the EC2
+    Default: 0.0.0.0/0
+    AllowedPattern: '^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([0-9]|[1-2][0-9]|3[0-2]))?$'
+
 
 Resources:
   EC2Instance:
@@ -46,7 +52,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: 0.0.0.0/0
+          CidrIp: !Ref AllowedCIDR
   EC2InstanceSubnet:
     Type: AWS::EC2::Subnet
     Properties:
