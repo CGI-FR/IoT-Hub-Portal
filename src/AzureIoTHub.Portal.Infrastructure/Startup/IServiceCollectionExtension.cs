@@ -24,7 +24,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             return configuration.CloudProvider switch
             {
                 CloudProviders.Azure => services.AddAzureInfrastructureLayer(configuration),
-                CloudProviders.AWS => services.AddAWSInfrastructureLayer(),
+                CloudProviders.AWS => services.AddAWSInfrastructureLayer(configuration),
                 _ => services
             };
         }

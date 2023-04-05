@@ -6,9 +6,6 @@ namespace AzureIoTHub.Portal.Server
     using System;
     using System.IO;
     using System.Threading.Tasks;
-    using Amazon;
-    using Amazon.IoT;
-    using Amazon.IotData;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Application.Startup;
@@ -84,7 +81,6 @@ namespace AzureIoTHub.Portal.Server
                     ConfigureServicesAzure(services);
                     break;
                 case CloudProviders.AWS:
-                    ConfigureServicesAWS(services, configuration);
                     break;
                 // Code line not reachable
                 default:
@@ -322,23 +318,6 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient(typeof(IDeviceModelService<,>), typeof(DeviceModelService<,>));
             _ = services.AddTransient<IDeviceService<DeviceDetails>, DeviceService>();
             _ = services.AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
-        }
-
-        private static void ConfigureServicesAWS(IServiceCollection services, ConfigHandler configuration)
-        {
-            _ = services.AddSingleton(() => new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
-            _ = services.AddSingleton(async sp =>
-            {
-                var endpoint = await sp.GetService<AmazonIoTClient>().DescribeEndpointAsync(new Amazon.IoT.Model.DescribeEndpointRequest
-                {
-                    EndpointType = "iot:Data-ATS"
-                });
-
-                return new AmazonIotDataClient(configuration.AWSAccess, configuration.AWSAccessSecret, new AmazonIotDataConfig
-                {
-                    ServiceURL = $"https://{endpoint.EndpointAddress}"
-                });
-            });
         }
 
         private static void ConfigureIdeasFeature(IServiceCollection services, ConfigHandler configuration)
