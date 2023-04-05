@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: PostgreSQL database storage template
 
-Parameters:	
+Parameters:
   dBInstanceID:
     Default: pgdbinstance
     Description: PostgreSQL database instance
@@ -24,17 +24,13 @@ Parameters:
       Type: String
       Description: PostgreSQL user
       MinLength: '1'
-      MaxLength: '16'
-      AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
-      ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+      MaxLength: '30'
   pgsqlAdminPassword:
       Type: String
       NoEcho: 'true'
       Description: PostgreSQL password
       MinLength: '8'
       MaxLength: '41'
-      AllowedPattern: '[a-zA-Z0-9]*'
-      ConstraintDescription: must contain only alphanumeric characters.
   databaseInstanceClass:
     AllowedValues:
       - db.t1.micro

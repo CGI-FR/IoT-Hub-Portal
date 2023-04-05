@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Application Runner template
+
+Parameters:
+  serviceName:
+    Type: String
+    Description: Name for the App Runner service
+  connectionArn:
+    Type: String
+    Description: The Amazon Resource Name (ARN) of the App Runner connection that enables the App Runner service to connect to a source repository. It's required for GitHub code repositories.
+    AllowedPattern: 'arn:aws(-[\w]+)*:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[0-9]{12}:(\w|\/|-){1,1011}'
+  ContainerImage:
+    Type: String
+    Description: URI of the Docker image to deploy
+  SourceRepository:
+    Type: String
+    Description: URL of the source repository containing the Dockerfile and application code
+  EnvironmentVariables:
+    Type: CommaDelimitedList
+    Description: Comma-separated list of environment variables to set
+  instanceRoleArn:
+    Type: String 
+    AllowedPattern: 'arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):iam::[0-9]{12}:(role|role\/service-role)\/[\w+=,.@\-/]{1,1000}'
+    Description: The Amazon Resource Name (ARN) of an IAM role that provides permissions to your App Runner service. These are permissions that your code needs when it calls any AWS APIs.
+  memory:
+    Type: String
+    AllowedPattern: '2048|3072|4096|(2|3|4) GB'
+    Description: The amount of memory, in MB or GB, reserved for each instance of your App Runner service.
+    Default: 2 GB
+
+Resources:
+  AppRunnerService:
+    Type: AWS::AppRunner::Service
+    Properties:
+      ServiceName: !Ref serviceName
+      SourceConfiguration:
+        AuthenticationConfiguration:
+          ConnectionArn: !Ref connectionArn
+        AutoDeploymentsEnabled: true
+        CodeRepository: 
+          RepositoryUrl: !Ref SourceRepository
+      InstanceConfiguration:
+        InstanceRoleArn: !Ref instanceRoleArn
+        Memory: !Ref memory
+      EncryptionConfiguration:
+        KmsKey: <kms-key>
+      HealthCheckConfiguration:
+        Protocol: "HTTPS"
+        Path: "/"
+        Interval: 30
+        Timeout: 5
+        HealthyThreshold: 2
+        UnhealthyThreshold: 5
+      Tags:
+        - Key: Name
+          Value: !Ref AppRunnerName
+      RuntimeConfiguration:
+        ImageConfiguration:
+          Port: 80
+          RuntimeEnvironmentVariables:
+            {% for env_var in EnvironmentVariables %}
+            {{ env_var.split("=")[0] }}: "{{ env_var.split("=")[1] }}"
+            {% endfor %}
+          ImageIdentifier: !Ref ContainerImage
+
