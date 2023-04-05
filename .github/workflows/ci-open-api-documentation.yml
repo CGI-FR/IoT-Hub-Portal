@@ -67,7 +67,7 @@ jobs:
           private_key: ${{ secrets.BOT_PRIVATE_KEY }}
 
       - name: Push Open API Markdown to GitHub
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v5
         with:
           base: 'docs/main'
           branch: 'docs/feature/open-api'
