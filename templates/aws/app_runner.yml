@@ -5,61 +5,108 @@ Parameters:
   serviceName:
     Type: String
     Description: Name for the App Runner service
-  connectionArn:
-    Type: String
-    Description: The Amazon Resource Name (ARN) of the App Runner connection that enables the App Runner service to connect to a source repository. It's required for GitHub code repositories.
-    AllowedPattern: 'arn:aws(-[\w]+)*:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[0-9]{12}:(\w|\/|-){1,1011}'
-  ContainerImage:
-    Type: String
-    Description: URI of the Docker image to deploy
-  SourceRepository:
-    Type: String
-    Description: URL of the source repository containing the Dockerfile and application code
-  EnvironmentVariables:
-    Type: CommaDelimitedList
-    Description: Comma-separated list of environment variables to set
-  instanceRoleArn:
-    Type: String 
-    AllowedPattern: 'arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):iam::[0-9]{12}:(role|role\/service-role)\/[\w+=,.@\-/]{1,1000}'
-    Description: The Amazon Resource Name (ARN) of an IAM role that provides permissions to your App Runner service. These are permissions that your code needs when it calls any AWS APIs.
   memory:
     Type: String
     AllowedPattern: '2048|3072|4096|(2|3|4) GB'
     Description: The amount of memory, in MB or GB, reserved for each instance of your App Runner service.
     Default: 2 GB
+  imageIdentifier:
+    Type: String
+    Description: The docker image identifier
+    AllowedPattern: '([0-9]{12}.dkr.ecr.[a-z\-]+-[0-9]{1}.amazonaws.com\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(:([\w\d+\-=._:\/@])+|@([\w\d\:]+))?)|(^public\.ecr\.aws\/.+\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(:([\w\d+\-=._:\/@])+|@([\w\d\:]+))?)'
+  dBName:
+      Type: String
+      Default: cgigeiotdemo
+      Description: Database name
+      MinLength: '1'
+      MaxLength: '64'
+      AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+      ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
+  pgsqlAdminLogin:
+      Type: String
+      Description: PostgreSQL user
+      MinLength: '1'
+      MaxLength: '30'
+  pgsqlAdminPassword:
+      Type: String
+      NoEcho: 'true'
+      Description: PostgreSQL password
+      MinLength: '8'
+      MaxLength: '41'
+  pgsqlHostName:
+    Type: String
+    Description: PostgreSQL Host name
+  regionCode:
+    Type: String
+    Description: Region code
+  bucketName:
+    Type: String
+    Description: Bucket Name
+  awsAccess:
+    Type: String
+    Description: Access Sectet
+  awsAccessSecretkey:
+    Type: String
+    Description: Bucket Name
+  openIdApiClientId:
+    Type: String 
+    Description: The Open ID API client ID for the B2C tenant
+  openIdClientId:
+    Type: String 
+    Description: The Open ID client ID for the B2C tenant
+  openIdAuthority:
+    Type: String 
+    Description: The Open ID Authority
+  openIdMetadataURL:
+    Type: String 
+    Description: The Open ID metadata Url from the Identity provider
+  openIdScopeName:
+    Type: String 
+    Description: The Open ID Scope name
 
 Resources:
   AppRunnerService:
     Type: AWS::AppRunner::Service
     Properties:
       ServiceName: !Ref serviceName
-      SourceConfiguration:
-        AuthenticationConfiguration:
-          ConnectionArn: !Ref connectionArn
-        AutoDeploymentsEnabled: true
-        CodeRepository: 
-          RepositoryUrl: !Ref SourceRepository
       InstanceConfiguration:
-        InstanceRoleArn: !Ref instanceRoleArn
         Memory: !Ref memory
-      EncryptionConfiguration:
-        KmsKey: <kms-key>
       HealthCheckConfiguration:
-        Protocol: "HTTPS"
+        Protocol: "HTTP"
         Path: "/"
         Interval: 30
         Timeout: 5
         HealthyThreshold: 2
         UnhealthyThreshold: 5
-      Tags:
-        - Key: Name
-          Value: !Ref AppRunnerName
-      RuntimeConfiguration:
-        ImageConfiguration:
-          Port: 80
-          RuntimeEnvironmentVariables:
-            {% for env_var in EnvironmentVariables %}
-            {{ env_var.split("=")[0] }}: "{{ env_var.split("=")[1] }}"
-            {% endfor %}
-          ImageIdentifier: !Ref ContainerImage
+      SourceConfiguration:
+        AutoDeploymentsEnabled: false
+        ImageRepository: 
+          ImageConfiguration: 
+            Port: 8080 # This is The port that your application listens to in the container. It can be changed (To see)
+            RuntimeEnvironmentSecrets: 
+              - Name: AWS__S3Storage__ConnectionString
+                Value: !Sub https://s3.${regionCode}.amazonaws.com/${bucketName}
+              - Name: AWS:Access
+                Value: !Sub ${awsAccess}
+              - Name: AWS__AccessSecret
+                Value: !Sub ${awsAccessSecretkey}
+              - Name: AWS__Region
+                Value: !Sub ${regionCode}
+              - Name: PostgreSQL__ConnectionString
+                Value: !Sub postgresql://${pgsqlAdminLogin}:${pgsqlAdminPassword}@${pgsqlHostName}:5432/${dBName}
+            RuntimeEnvironmentVariables: 
+              - Name: OIDC__ApiClientId
+                Value: !Sub ${openIdApiClientId}
+              - Name: OIDC__ClientId
+                Value: !Sub ${openIdClientId}
+              - Name: OIDC__Authority
+                Value: !Sub ${openIdAuthority}
+              - Name: OIDC__MetadataUrl
+                Value: !Sub ${openIdMetadataURL}
+              - Name: OIDC__Scope
+                Value: !Sub ${openIdScopeName}
+          ImageIdentifier: !Ref imageIdentifier # Since we are using ECR_PUBLIC, we need to create mannually the ECR and put the ImageIdentifier here
+          ImageRepositoryType: ECR_PUBLIC
+
+          
 
