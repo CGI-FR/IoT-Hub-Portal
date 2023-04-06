@@ -13,6 +13,7 @@ Parameters:
   imageIdentifier:
     Type: String
     Description: The docker image identifier
+    Default: public.ecr.aws/d7e3t8n4/cgigeiotdemoecr:latest
     AllowedPattern: '([0-9]{12}.dkr.ecr.[a-z\-]+-[0-9]{1}.amazonaws.com\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(:([\w\d+\-=._:\/@])+|@([\w\d\:]+))?)|(^public\.ecr\.aws\/.+\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(:([\w\d+\-=._:\/@])+|@([\w\d\:]+))?)'
   dBName:
       Type: String
@@ -105,6 +106,8 @@ Resources:
                 Value: !Sub ${openIdMetadataURL}
               - Name: OIDC__Scope
                 Value: !Sub ${openIdScopeName}
+              - Name: CloudProvider
+                Value: AWS
           ImageIdentifier: !Ref imageIdentifier # Since we are using ECR_PUBLIC, we need to create mannually the ECR and put the ImageIdentifier here
           ImageRepositoryType: ECR_PUBLIC
 

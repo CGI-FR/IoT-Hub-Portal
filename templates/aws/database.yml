@@ -74,6 +74,7 @@ Resources:
       AllocatedStorage: !Ref allocatedStorage 
       DBInstanceClass: !Ref databaseInstanceClass # A voir quel instance utilisé : https://instances.vantage.sh/rds/
       Engine: postgres
+      EngineVersion: 11
       MasterUsername: !Ref pgsqlAdminLogin
       MasterUserPassword: !Ref pgsqlAdminPassword
       DBName: !Ref dBName
