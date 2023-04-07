@@ -5,25 +5,19 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using IoTHub.Portal.Client.Exceptions;
-    using IoTHub.Portal.Client.Models;
-    using IoTHub.Portal.Client.Pages.Devices;
-    using IoTHub.Portal.Client.Services;
-    using Models.v10;
-    using UnitTests.Bases;
     using Bunit;
     using Bunit.TestDoubles;
     using FluentAssertions;
+    using IoTHub.Portal.Client.Pages.Devices;
+    using IoTHub.Portal.Client.Services;
+    using IoTHub.Portal.Models.v10;
+    using IoTHub.Portal.Tests.Unit.UnitTests.Bases;
+    using IoTHub.Portal.Tests.Unit.UnitTests.Mocks;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
     using MudBlazor;
     using MudBlazor.Services;
     using NUnit.Framework;
-    using UnitTests.Mocks;
-    using Models.v10.LoRaWAN;
-    using IoTHub.Portal.Client.Pages.DeviceModels;
-    using IoTHub.Portal.Shared.Constants;
 
     [TestFixture]
     public class DeviceDetailPageTests : BlazorUnitTest
@@ -60,7 +54,7 @@ namespace IoTHub.Portal.Tests.Unit.Client.Pages.Devices
 
             _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = CloudProviders.Azure });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 

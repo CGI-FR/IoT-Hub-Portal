@@ -37,6 +37,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
     public class EditDeviceTests : BlazorUnitTest
     {
         private Mock<IDialogService> mockDialogService;
+        //private Mock<ISnackbar> mockSnackbarService;
         private FakeNavigationManager mockNavigationManager;
         private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
         private Mock<ILoRaWanDeviceModelsClientService> mockLoRaWanDeviceModelsClientService;
@@ -49,6 +50,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             base.Setup();
 
             this.mockDialogService = MockRepository.Create<IDialogService>();
+            //this.mockSnackbarService = MockRepository.Create<ISnackbar>();
             this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
             this.mockLoRaWanDeviceModelsClientService = MockRepository.Create<ILoRaWanDeviceModelsClientService>();
             this.mockDeviceTagSettingsClientService = MockRepository.Create<IDeviceTagSettingsClientService>();
@@ -56,6 +58,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             this.mockLoRaWanDeviceClientService = MockRepository.Create<ILoRaWanDeviceClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
+            //_ = Services.AddSingleton(this.mockSnackbarService.Object);
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceModelsClientService.Object);
             _ = Services.AddSingleton(this.mockDeviceTagSettingsClientService.Object);
@@ -64,6 +67,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Components.Devices
             _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
 
             _ = Services.AddSingleton(new PortalSettings { CloudProvider = CloudProviders.Azure });
+            _ = Services.AddSingleton<IDeviceLayoutService, DeviceLayoutService>();
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
 
