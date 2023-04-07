@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: 
       name: AWS Staging
+    outputs:
+      aws_public_registry: ${{ steps.login-ecr-public.outputs.registry }}
     steps:
       - uses: actions/checkout@v3.4.0
 
@@ -87,9 +89,6 @@ jobs:
       - name: Configure AWS credentials
         id: aws-credentials
         uses: aws-actions/configure-aws-credentials@v2
-        env:
-          CLOUDPROVIDER: AWS
-          PORTALNAME: ${{ vars.PORTALNAME }}
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -97,9 +96,13 @@ jobs:
       - name: Deploy to App Runner Image
         id: deploy-apprunner
         uses: awslabs/amazon-app-runner-deploy@main
+        env:
+          CLOUDPROVIDER: AWS
+          PORTALNAME: ${{ vars.PORTALNAME }}
         with:
           service: ${{ vars.AWS_APP_RUNNER_NAME }}
-          image: ${{ steps.login-ecr-public.outputs.registry }}/${{ vars.AWS_ECR_REGISTRY_ALIAS }}/${{ vars.AWS_ECR_REPOSITORY }}
+          image: ${{ needs.build.outputs.aws_public_registry }}/${{ vars.AWS_ECR_REGISTRY_ALIAS }}/${{ vars.AWS_ECR_REPOSITORY }}
+          access-role-arn: ${{ secrets.AWS_ROLE_ARN }}
           region: ${{ secrets.AWS_REGION }}
           cpu : 1
           memory : 3
