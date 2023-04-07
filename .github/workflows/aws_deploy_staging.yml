@@ -1,0 +1,92 @@
+name: AWS Deploy Staging
+on:
+  push:
+    branches: [ main-vnext ]
+  push:
+    branches: [ main-vnext ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: 
+      name: AWS Staging
+
+    steps:
+      - uses: actions/checkout@v3.4.0
+
+      - id: docker-tag
+        uses: yuya-takeyama/docker-tag-from-github-ref-action@v1
+      
+      - name: Configure AWS credentials
+        id: aws-credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+        
+      - name: Login to Amazon ECR
+        id: login-ecr-public
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public
+
+      - name: Get a latest Git tag
+        uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
+        with: 
+            semver_only: true
+
+      - name: Bump the semver version up
+        uses: actions-ecosystem/action-bump-semver@v1
+        id: bump-semver
+        with:
+          current_version: ${{ steps.get-latest-tag.outputs.tag }}
+          level: minor
+
+      - name: Remove leading v to semver
+        id: final-version
+        run: |
+            echo "::set-output name=new_version::$(echo ${{ steps.bump-semver.outputs.new_version }} | sed 's/^v//')"
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            ${{ steps.login-ecr-public.outputs.registry }}/${{ vars.AWS_ECR_REGISTRY_ALIAS }}/${{ vars.AWS_ECR_REPOSITORY }}
+          tags: |
+            type=raw,enable=true,priority=200,prefix=,suffix=,value=${{ steps.final-version.outputs.new_version }}
+          flavor: |
+            latest=true
+
+      - name: Build and push
+        # You may pin to the exact commit or the version.
+        uses: docker/build-push-action@v4.0.0
+        with:
+          # Build's context is the set of files located in the specified PATH or URL
+          context: src/
+          # Push is a shorthand for --output=type=registry
+          push: true
+          build-args: | 
+            BUILD_VERSION=${{ steps.final-version.outputs.new_version }}
+            GITHUB_RUN_NUMBER=${{ github.run_number }}
+          tags: 
+            ${{ steps.meta.outputs.tags }}
+      
+      - name: Deploy to App Runner Image
+        id: deploy-apprunner
+        uses: awslabs/amazon-app-runner-deploy@main
+        with:
+          service: ${{ vars.AWS_APP_RUNNER_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+          access-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+          region: ${{ secrets.AWS_REGION }}
+          cpu : 1
+          memory : 2
+          wait-for-service-stability-seconds: 1200
+      
+      - name: App Runner URL
+        run: echo "App runner URL ${{ steps.deploy-apprunner.outputs.service-url }}" 
