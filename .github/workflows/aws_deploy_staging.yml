@@ -7,9 +7,6 @@ on:
     branches: [ main-vnext ]
   workflow_dispatch:
 
-env:
-  AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -28,7 +25,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: us-east-1
         
       - name: Login to Amazon ECR
         id: login-ecr-public
