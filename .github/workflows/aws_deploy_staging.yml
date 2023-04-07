@@ -7,6 +7,9 @@ on:
     branches: [ main-vnext ]
   workflow_dispatch:
 
+env:
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
