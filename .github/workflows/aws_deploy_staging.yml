@@ -8,11 +8,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build:
+    name: Build and push to ECR
     runs-on: ubuntu-latest
     environment: 
       name: AWS Staging
-
     steps:
       - uses: actions/checkout@v3.4.0
 
@@ -76,18 +76,37 @@ jobs:
             GITHUB_RUN_NUMBER=${{ github.run_number }}
           tags: 
             ${{ steps.meta.outputs.tags }}
-      
+
+  deploy:
+    name: Deploy to AWS
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: AWS Staging
+    steps:
+      - name: Configure AWS credentials
+        id: aws-credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        env:
+          CLOUDPROVIDER: AWS
+          PORTALNAME: ${{ vars.PORTALNAME }}
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
       - name: Deploy to App Runner Image
         id: deploy-apprunner
         uses: awslabs/amazon-app-runner-deploy@main
         with:
           service: ${{ vars.AWS_APP_RUNNER_NAME }}
-          image: ${{ steps.build-image.outputs.image }}
-          access-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+          image: ${{ steps.login-ecr-public.outputs.registry }}/${{ vars.AWS_ECR_REGISTRY_ALIAS }}/${{ vars.AWS_ECR_REPOSITORY }}
           region: ${{ secrets.AWS_REGION }}
           cpu : 1
-          memory : 2
+          memory : 3
           wait-for-service-stability-seconds: 1200
+          copy-env-vars: |
+            CLOUDPROVIDER
+            PORTALNAME
       
       - name: App Runner URL
         run: echo "App runner URL ${{ steps.deploy-apprunner.outputs.service-url }}" 
