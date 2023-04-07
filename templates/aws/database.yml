@@ -33,15 +33,30 @@ Parameters:
       MaxLength: '41'
   databaseInstanceClass:
     AllowedValues:
-      - db.t1.micro
       - db.t2.micro
-      - db.m1.small
-      - db.m1.medium
-      - db.m1.large
+      - db.t2.small
+      - db.t2.medium
+      - db.t2.large
+      - db.t2.xlarge
+      - db.t2.2xlarge
+      - db.t3.micro
+      - db.t3.small
+      - db.t3.medium
+      - db.t3.large
+      - db.t3.xlarge
+      - db.t3.2xlarge
     Type: String
     ConstraintDescription: Must select a valid database instance
     Default: db.t2.micro
     Description: The dataabse instance type
+  pgVersion:
+    Type: String
+    AllowedValues:
+      - 12
+      - 11
+      - 10
+    Default: 12
+    Description: PostgreSql Version. The Allowed values is given according to the database Instance Class
   allocatedStorage:
     Default: '20'
     Description: The size of the database (GiB)
@@ -74,7 +89,8 @@ Resources:
       AllocatedStorage: !Ref allocatedStorage 
       DBInstanceClass: !Ref databaseInstanceClass # A voir quel instance utilisé : https://instances.vantage.sh/rds/
       Engine: postgres
-      EngineVersion: 11
+      EngineVersion: !Ref pgVersion
+      LicenseModel: postgresql-license
       MasterUsername: !Ref pgsqlAdminLogin
       MasterUserPassword: !Ref pgsqlAdminPassword
       DBName: !Ref dBName

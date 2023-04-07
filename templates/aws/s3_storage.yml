@@ -4,7 +4,7 @@ Description: AWS S3 storage template
 Parameters:
   bucketName:
     Type: String 
-    Description: Please provide the bucket name
+    Description: Please provide the bucket name. The bucket name must contain only lowercase letters, numbers, periods (.), and dashes (-) 
 Resources:
     s3Bucket:
         Type: AWS::S3::Bucket
