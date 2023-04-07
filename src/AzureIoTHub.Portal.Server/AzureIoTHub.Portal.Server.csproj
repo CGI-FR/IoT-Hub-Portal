@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ProjectExtensions>
-    <VisualStudio><UserProperties appsettings_1development_1json__JsonSchema="https://cdn.jsdelivr.net/gh/roadrunner-server/roadrunner@latest/schemas/config/2.0.schema.json" properties_4launchsettings_1json__JsonSchema="" routerconfigfiles_4as_3923_3925_33_1json__JsonSchema="https://cdn.jsdelivr.net/gh/roadrunner-server/roadrunner@latest/schemas/config/2.0.schema.json" /></VisualStudio>
+    <VisualStudio><UserProperties appsettings_1development_1json__JsonSchema="https://cdn.jsdelivr.net/gh/roadrunner-server/roadrunner@latest/schemas/config/2.0.schema.json" properties_4launchsettings_1json__JsonSchema="" /></VisualStudio>
   </ProjectExtensions>
 
   <ItemGroup>
@@ -35,8 +35,6 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-    <PackageReference Include="AWSSDK.IoT" Version="3.7.105.14" />
-    <PackageReference Include="AWSSDK.IotData" Version="3.7.101.74" />
     <PackageReference Include="Azure.Data.Tables" Version="12.8.0" />
     <PackageReference Include="Azure.Messaging.EventHubs" Version="5.9.2" />
     <PackageReference Include="Azure.Messaging.EventHubs.Processor" Version="5.9.2" />

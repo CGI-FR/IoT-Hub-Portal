@@ -6,9 +6,6 @@ namespace AzureIoTHub.Portal.Server
     using System;
     using System.IO;
     using System.Threading.Tasks;
-    using Amazon;
-    using Amazon.IoT;
-    using Amazon.IotData;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Application.Startup;
@@ -77,44 +74,24 @@ namespace AzureIoTHub.Portal.Server
 
             AddAuthenticationAndAuthorization(services, configuration);
 
+            //CloudProvider-dependant configurations
+            switch (configuration.CloudProvider)
+            {
+                case CloudProviders.Azure:
+                    ConfigureServicesAzure(services);
+                    break;
+                case CloudProviders.AWS:
+                    break;
+                // Code line not reachable
+                default:
+                    break;
+            }
+
+            //Common configurations
             _ = services.AddSingleton(new PortalMetric());
             _ = services.AddSingleton(new LoRaGatewayIDList());
 
-            if (configuration.CloudProvider.Equals(CloudProviders.AWS, StringComparison.Ordinal))
-            {
-                _ = services.AddSingleton(() => new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
-                _ = services.AddSingleton(async sp =>
-                {
-                    var endpoint = await sp.GetService<AmazonIoTClient>().DescribeEndpointAsync(new Amazon.IoT.Model.DescribeEndpointRequest
-                    {
-                        EndpointType = "iot:Data-ATS"
-                    });
-
-                    return new AmazonIotDataClient(configuration.AWSAccess, configuration.AWSAccessSecret, new AmazonIotDataConfig
-                    {
-                        ServiceURL = $"https://{endpoint.EndpointAddress}"
-                    });
-                });
-            }
-
             _ = services.AddRazorPages();
-
-            _ = services.AddTransient<IExportManager, ExportManager>();
-
-            _ = services.AddTransient<IExternalDeviceService, ExternalDeviceService>();
-            _ = services.AddTransient<IConfigService, ConfigService>();
-            _ = services.AddTransient<IDeviceTagService, DeviceTagService>();
-            _ = services.AddTransient<ILoRaWANCommandService, LoRaWANCommandService>();
-            _ = services.AddTransient<IEdgeModelService, EdgeModelService>();
-            _ = services.AddTransient<ILoRaWANConcentratorService, LoRaWANConcentratorService>();
-            _ = services.AddTransient<IEdgeDevicesService, EdgeDevicesService>();
-            _ = services.AddTransient<IDevicePropertyService, DevicePropertyService>();
-            _ = services.AddTransient<IDeviceConfigurationsService, DeviceConfigurationsService>();
-            _ = services.AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();
-            _ = services.AddTransient(typeof(IDeviceModelService<,>), typeof(DeviceModelService<,>));
-            _ = services.AddTransient<IDeviceService<DeviceDetails>, DeviceService>();
-            _ = services.AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
-
             _ = services.AddMudServices();
 
             ConfigureIdeasFeature(services, configuration);
@@ -325,6 +302,24 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         }
 
+        private static void ConfigureServicesAzure(IServiceCollection services)
+        {
+            _ = services.AddTransient<IExportManager, ExportManager>();
+            _ = services.AddTransient<IExternalDeviceService, ExternalDeviceService>();
+            _ = services.AddTransient<IConfigService, ConfigService>();
+            _ = services.AddTransient<IDeviceTagService, DeviceTagService>();
+            _ = services.AddTransient<ILoRaWANCommandService, LoRaWANCommandService>();
+            _ = services.AddTransient<IEdgeModelService, EdgeModelService>();
+            _ = services.AddTransient<ILoRaWANConcentratorService, LoRaWANConcentratorService>();
+            _ = services.AddTransient<IEdgeDevicesService, EdgeDevicesService>();
+            _ = services.AddTransient<IDevicePropertyService, DevicePropertyService>();
+            _ = services.AddTransient<IDeviceConfigurationsService, DeviceConfigurationsService>();
+            _ = services.AddTransient<IDeviceModelPropertiesService, DeviceModelPropertiesService>();
+            _ = services.AddTransient(typeof(IDeviceModelService<,>), typeof(DeviceModelService<,>));
+            _ = services.AddTransient<IDeviceService<DeviceDetails>, DeviceService>();
+            _ = services.AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
+        }
+
         private static void ConfigureIdeasFeature(IServiceCollection services, ConfigHandler configuration)
         {
             _ = services.AddTransient<IIdeaService, IdeaService>();
@@ -445,12 +440,28 @@ namespace AzureIoTHub.Portal.Server
                 });
             });
 
+
+            //CloudProvider-dependant configurations
+            switch (configuration.CloudProvider)
+            {
+                case CloudProviders.Azure:
+                    await ConfigureAzureAsync(app);
+                    break;
+                case CloudProviders.AWS:
+                    break;
+                default:
+                    break;
+            }
+
+            await EnsureDatabaseCreatedAndUpToDate(app)!;
+        }
+
+        private static async Task ConfigureAzureAsync(IApplicationBuilder app)
+        {
             var deviceModelImageManager = app.ApplicationServices.GetService<IDeviceModelImageManager>();
 
             await deviceModelImageManager?.InitializeDefaultImageBlob()!;
             await deviceModelImageManager?.SyncImagesCacheControl()!;
-
-            await EnsureDatabaseCreatedAndUpToDate(app)!;
         }
 
         private static void UseApiExceptionMiddleware(IApplicationBuilder app)
