@@ -6,6 +6,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using Amazon;
     using Amazon.IoT;
     using Amazon.IotData;
+    using Amazon.SecretsManager;
     using AzureIoTHub.Portal.Domain;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -30,6 +31,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                     ServiceURL = $"https://{endpoint.EndpointAddress}"
                 });
             });
+
+            _ = services.AddSingleton(() => new AmazonSecretsManagerClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
 
             return services;
         }
