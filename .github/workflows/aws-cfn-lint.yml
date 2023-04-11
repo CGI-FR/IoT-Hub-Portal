@@ -2,11 +2,11 @@ name: Validate CloudFormation templates
 
 on:
   pull_request:
-    branches: [ main-vnext ]
+    branches: [ main, main-vnext ]
     paths:
       - 'templates/aws/**'
   push:
-    branches: [ main-vnext ]
+    branches: [ main, main-vnext ]
     paths:
       - 'templates/aws/**'
   workflow_dispatch:
