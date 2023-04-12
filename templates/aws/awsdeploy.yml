@@ -2,27 +2,13 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: AWS S3 storage template | PostgreSQL database storage template | Application Runner template
 
 Parameters:
-  bucketName:
-    Type: String 
-    Description: Please provide the bucket name. The bucket name must contain only lowercase letters, numbers, periods (.), and dashes (-) 
-  dBInstanceID:
-    Default: pgdbinstance
-    Description: PostgreSQL database instance
+  UniqueSolutionPrefix:
     Type: String
+    Description: Prefix used for resource names. Should be unique as this will also be used for bucket and database name. Should not contain uppercase letters
     MinLength: '1'
-    MaxLength: '63'
-    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
-    ConstraintDescription: >-
-      Must begin with a letter and must not end with a hyphen or contain two
-      consecutive hyphens.
-  dBName:
-      Type: String
-      Default: cgigeiotdemo
-      Description: Database name
-      MinLength: '1'
-      MaxLength: '64'
-      AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
-      ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
+    MaxLength: '20'
+    ConstraintDescription: Should be less than 20 letters
+    AllowedPattern: '^[a-z]+$'
   pgsqlAdminLogin:
       Type: String
       Description: PostgreSQL user
@@ -34,39 +20,6 @@ Parameters:
       Description: PostgreSQL password
       MinLength: '8'
       MaxLength: '41'
-  databaseInstanceClass:
-    AllowedValues:
-      - db.t2.micro
-      - db.t2.small
-      - db.t2.medium
-      - db.t2.large
-      - db.t2.xlarge
-      - db.t2.2xlarge
-      - db.t3.micro
-      - db.t3.small
-      - db.t3.medium
-      - db.t3.large
-      - db.t3.xlarge
-      - db.t3.2xlarge
-    Type: String
-    ConstraintDescription: Must select a valid database instance
-    Default: db.t2.micro
-    Description: The dataabse instance type
-  pgVersion:
-    Type: String
-    AllowedValues:
-      - 12
-      - 11
-      - 10
-    Default: 12
-    Description: PostgreSql Version. The Allowed values is given according to the database Instance Class
-  allocatedStorage:
-    Default: '20'
-    Description: The size of the database (GiB)
-    Type: Number
-    MinValue: '20'
-    MaxValue: '65536'
-    ConstraintDescription: must be between 20 and 65536 GiB.
   VPC:
     Type: AWS::EC2::VPC::Id
   Subnet1:
@@ -75,75 +28,63 @@ Parameters:
     Type: AWS::EC2::Subnet::Id
   Subnet3:
     Type: AWS::EC2::Subnet::Id
-  AllowedCIDR:
-    Type: String
-    Description: CIDR block that is allowed to access the database
-    Default: 0.0.0.0/0
-    AllowedPattern: '^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([0-9]|[1-2][0-9]|3[0-2]))?$'
-  serviceName:
-    Type: String
-    Description: Name for the App Runner service
-  memory:
-    Type: String
-    AllowedPattern: '2048|3072|4096|(2|3|4) GB'
-    Description: The amount of memory, in MB or GB, reserved for each instance of your App Runner service.
-    Default: 2 GB
-  imageIdentifier:
-    Type: String
-    Description: The docker image identifier
-    Default: public.ecr.aws/d7e3t8n4/iothub-portal:latest
-    AllowedPattern: '([0-9]{12}.dkr.ecr.[a-z\-]+-[0-9]{1}.amazonaws.com\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(:([\w\d+\-=._:\/@])+|@([\w\d\:]+))?)|(^public\.ecr\.aws\/.+\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(:([\w\d+\-=._:\/@])+|@([\w\d\:]+))?)'
-  pgsqlHostName:
-    Type: String
-    Description: 'PostgreSQL Host name. Ex: {myHostName}.rds.amazonaws.com'
-  regionCode:
-    Type: String
-    Description: Region code
   awsAccess:
     Type: String
     Description: Access Sectet
   awsAccessSecretkey:
     Type: String
     Description: Bucket Name
+    Default: <Secret>
+  regionCode:
+    Type: String
+    Description: Region code
+    Default: eu-west-1
   openIdApiClientId:
     Type: String 
     Description: The Open ID API client ID for the B2C tenant
+    Default: iot-portal-api
   openIdClientId:
     Type: String 
     Description: The Open ID client ID for the B2C tenant
+    Default: iot-portal
   openIdAuthority:
     Type: String 
     Description: The Open ID Authority
+    Default: https://cgigeiotdemoauth.azurewebsites.net/auth/realms/iot-portal
   openIdMetadataURL:
     Type: String 
     Description: The Open ID metadata Url from the Identity provider
+    Default: https://cgigeiotdemoauth.azurewebsites.net/auth/realms/iot-portal/.well-known/openid-configuration
   openIdScopeName:
     Type: String 
     Description: The Open ID Scope name
+    Default: iot_access
 
 Resources:
+#======== S3 Storage ==========
   s3Bucket:
       Type: AWS::S3::Bucket
       Properties: 
-        BucketName: !Ref bucketName 
+        BucketName: !Join [ "-", [!Ref UniqueSolutionPrefix, "bucket"] ] 
+
+#======== PostgreSQL database ==========
   PostgreSQLDB:
     Type: AWS::RDS::DBInstance
     DeletionPolicy: Retain # CloudFormation keeps the resource without deleting the resource or its contents when the resource is replaced 
     UpdateReplacePolicy: Retain # see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
     Properties:
-      DBInstanceIdentifier: !Ref dBInstanceID
-      AllocatedStorage: !Ref allocatedStorage 
-      DBInstanceClass: !Ref databaseInstanceClass # A voir quel instance utilisé : https://instances.vantage.sh/rds/
+      DBInstanceIdentifier: !Join [ "-", [!Ref UniqueSolutionPrefix, "pgdbinstance"] ] 
+      AllocatedStorage: '20' 
+      DBInstanceClass: 'db.t2.micro' # A voir quel instance utilisé : https://instances.vantage.sh/rds/
       Engine: postgres
-      EngineVersion: !Ref pgVersion
+      EngineVersion: 12
       LicenseModel: postgresql-license
       MasterUsername: !Ref pgsqlAdminLogin
       MasterUserPassword: !Ref pgsqlAdminPassword
-      DBName: !Ref dBName
+      DBName: !Join [ "_", [!Ref UniqueSolutionPrefix, "cgigeiotdemo"] ] 
       VPCSecurityGroups:
         - !Ref PgSQLSecurityGroup
       DBSubnetGroupName: !Ref PgSQLSubnetGroup
-
   PgSQLSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -153,8 +94,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 5432
           ToPort: 5432
-          CidrIp: !Ref AllowedCIDR
-
+          CidrIp: 0.0.0.0/0
   PgSQLSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
@@ -164,3 +104,51 @@ Resources:
         - !Ref Subnet1
         - !Ref Subnet2
         - !Ref Subnet3
+
+#============= App Runner - To Lunch the App ==============
+  AppRunnerService:
+    Type: AWS::AppRunner::Service
+    Properties:
+      ServiceName: !Join [ "-", [!Ref UniqueSolutionPrefix, "appRunner"] ]
+      InstanceConfiguration:
+        Memory: 2 GB
+        InstanceRoleArn: arn:aws:iam::578920151383:role/aws-service-role/apprunner.amazonaws.com/AWSServiceRoleForAppRunner
+      HealthCheckConfiguration:
+        Protocol: "HTTP"
+        Path: "/"
+        Interval: 20
+        Timeout: 5
+        HealthyThreshold: 2
+        UnhealthyThreshold: 5
+      SourceConfiguration:
+        AutoDeploymentsEnabled: false
+        ImageRepository: 
+          ImageConfiguration: 
+            Port: 80 # This is The port that your application listens to in the container. It can be changed (To see)
+            RuntimeEnvironmentSecrets: 
+              #- Name: AWS__S3Storage__ConnectionString
+                # Value: !Sub https://s3.${regionCode}.amazonaws.com/${bucketName}
+              - Name: AWS__Access
+                Value: !Sub ${awsAccess}
+              - Name: AWS__AccessSecret
+                Value: !Sub ${awsAccessSecretkey}
+              - Name: AWS__Region
+                Value: !Sub ${regionCode}
+              #- Name: PostgreSQL__ConnectionString
+                # Value: !Join [ "/", [ !Join ["@", [!Sub postgres://${pgsqlAdminLogin}:${pgsqlAdminPassword}, !Sub ${pgsqlHostName}:5432]], !Join [ "_", [!Ref UniqueSolutionPrefix, "cgigeiotdemo"] ]] ]
+            RuntimeEnvironmentVariables: 
+              - Name: OIDC__ApiClientId
+                Value: !Sub '${openIdApiClientId}'
+              - Name: OIDC__ClientId
+                Value: !Sub '${openIdClientId}'
+              - Name: OIDC__Authority
+                Value: !Sub '${openIdAuthority}'
+              - Name: OIDC__MetadataUrl
+                Value: !Sub '${openIdMetadataURL}'
+              - Name: OIDC__Scope
+                Value: !Sub '${openIdScopeName}'
+              - Name: CloudProvider
+                Value: AWS
+          ImageIdentifier: 'public.ecr.aws/d7e3t8n4/iothub-portal:latest' # Since we are using ECR_PUBLIC, we need to create mannually the ECR and put the ImageIdentifier here
+          ImageRepositoryType: ECR_PUBLIC
+
