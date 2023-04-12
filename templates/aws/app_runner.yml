@@ -13,8 +13,7 @@ Parameters:
   imageIdentifier:
     Type: String
     Description: The docker image identifier
-    #Default: public.ecr.aws/d7e3t8n4/iothub-portal:latest
-    Default: public.ecr.aws/nginx/nginx:1-alpine-perl
+    Default: public.ecr.aws/d7e3t8n4/iothub-portal:latest
     AllowedPattern: '([0-9]{12}.dkr.ecr.[a-z\-]+-[0-9]{1}.amazonaws.com\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(:([\w\d+\-=._:\/@])+|@([\w\d\:]+))?)|(^public\.ecr\.aws\/.+\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(:([\w\d+\-=._:\/@])+|@([\w\d\:]+))?)'
   dBName:
       Type: String
@@ -37,8 +36,7 @@ Parameters:
       MaxLength: '41'
   pgsqlHostName:
     Type: String
-    Description: 'PostgreSQL Host name. Ex: {myHostName}.rds.amazonaws.com'
-    Default: pgdbinstance.cko0iojqijil
+    Description: 'PostgreSQL Host name. Ex: pgdbinstance.cko0iojqijil.eu-west-1.rds.amazonaws.com'
   regionCode:
     Type: String
     Description: Region code
@@ -50,7 +48,6 @@ Parameters:
   awsAccess:
     Type: String
     Description: Access Sectet
-    Default: AKIAYNSSUPFL2XLIGTWM
   awsAccessSecretkey:
     Type: String
     Description: Bucket Name
@@ -106,7 +103,8 @@ Resources:
               - Name: AWS__Region
                 Value: !Sub ${regionCode}
               - Name: PostgreSQL__ConnectionString
-                Value: !Sub 'Server=${pgsqlHostName}.rds.amazonaws.com;Port=5432;Database=${dBName};User Id=${pgsqlAdminLogin};Password=${pgsqlAdminPassword};SslMode=Require'
+                Value: !Sub postgres://${pgsqlAdminLogin}:${pgsqlAdminPassword}@${pgsqlHostName}:5432/${dBName}
+
             RuntimeEnvironmentVariables: 
               - Name: OIDC__ApiClientId
                 Value: !Sub '${openIdApiClientId}'
