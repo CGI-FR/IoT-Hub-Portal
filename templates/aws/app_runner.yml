@@ -13,7 +13,8 @@ Parameters:
   imageIdentifier:
     Type: String
     Description: The docker image identifier
-    Default: public.ecr.aws/d7e3t8n4/iothub-portal:latest
+    #Default: public.ecr.aws/d7e3t8n4/iothub-portal:latest
+    Default: public.ecr.aws/nginx/nginx:1-alpine-perl
     AllowedPattern: '([0-9]{12}.dkr.ecr.[a-z\-]+-[0-9]{1}.amazonaws.com\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(:([\w\d+\-=._:\/@])+|@([\w\d\:]+))?)|(^public\.ecr\.aws\/.+\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(:([\w\d+\-=._:\/@])+|@([\w\d\:]+))?)'
   dBName:
       Type: String
@@ -36,34 +37,44 @@ Parameters:
       MaxLength: '41'
   pgsqlHostName:
     Type: String
-    Description: PostgreSQL Host name
+    Description: 'PostgreSQL Host name. Ex: {myHostName}.rds.amazonaws.com'
+    Default: pgdbinstance.cko0iojqijil
   regionCode:
     Type: String
     Description: Region code
+    Default: eu-west-1
   bucketName:
     Type: String
     Description: Bucket Name
+    Default: bucket-iothub
   awsAccess:
     Type: String
     Description: Access Sectet
+    Default: AKIAYNSSUPFL2XLIGTWM
   awsAccessSecretkey:
     Type: String
     Description: Bucket Name
+    Default: <Secret>
   openIdApiClientId:
     Type: String 
     Description: The Open ID API client ID for the B2C tenant
+    Default: iot-portal-api
   openIdClientId:
     Type: String 
     Description: The Open ID client ID for the B2C tenant
+    Default: iot-portal
   openIdAuthority:
     Type: String 
     Description: The Open ID Authority
+    Default: https://cgigeiotdemoauth.azurewebsites.net/auth/realms/iot-portal
   openIdMetadataURL:
     Type: String 
     Description: The Open ID metadata Url from the Identity provider
+    Default: https://cgigeiotdemoauth.azurewebsites.net/auth/realms/iot-portal/.well-known/openid-configuration
   openIdScopeName:
     Type: String 
     Description: The Open ID Scope name
+    Default: iot_access
 
 Resources:
   AppRunnerService:
@@ -72,10 +83,11 @@ Resources:
       ServiceName: !Ref serviceName
       InstanceConfiguration:
         Memory: !Ref memory
+        InstanceRoleArn: arn:aws:iam::578920151383:role/aws-service-role/apprunner.amazonaws.com/AWSServiceRoleForAppRunner
       HealthCheckConfiguration:
         Protocol: "HTTP"
         Path: "/"
-        Interval: 30
+        Interval: 20
         Timeout: 5
         HealthyThreshold: 2
         UnhealthyThreshold: 5
@@ -83,7 +95,7 @@ Resources:
         AutoDeploymentsEnabled: false
         ImageRepository: 
           ImageConfiguration: 
-            Port: 8080 # This is The port that your application listens to in the container. It can be changed (To see)
+            Port: 80 # This is The port that your application listens to in the container. It can be changed (To see)
             RuntimeEnvironmentSecrets: 
               - Name: AWS__S3Storage__ConnectionString
                 Value: !Sub https://s3.${regionCode}.amazonaws.com/${bucketName}
@@ -94,18 +106,18 @@ Resources:
               - Name: AWS__Region
                 Value: !Sub ${regionCode}
               - Name: PostgreSQL__ConnectionString
-                Value: !Sub postgresql://${pgsqlAdminLogin}:${pgsqlAdminPassword}@${pgsqlHostName}:5432/${dBName}
+                Value: !Sub 'Server=${pgsqlHostName}.rds.amazonaws.com;Port=5432;Database=${dBName};User Id=${pgsqlAdminLogin};Password=${pgsqlAdminPassword};SslMode=Require'
             RuntimeEnvironmentVariables: 
               - Name: OIDC__ApiClientId
-                Value: !Sub ${openIdApiClientId}
+                Value: !Sub '${openIdApiClientId}'
               - Name: OIDC__ClientId
-                Value: !Sub ${openIdClientId}
+                Value: !Sub '${openIdClientId}'
               - Name: OIDC__Authority
-                Value: !Sub ${openIdAuthority}
+                Value: !Sub '${openIdAuthority}'
               - Name: OIDC__MetadataUrl
-                Value: !Sub ${openIdMetadataURL}
+                Value: !Sub '${openIdMetadataURL}'
               - Name: OIDC__Scope
-                Value: !Sub ${openIdScopeName}
+                Value: !Sub '${openIdScopeName}'
               - Name: CloudProvider
                 Value: AWS
           ImageIdentifier: !Ref imageIdentifier # Since we are using ECR_PUBLIC, we need to create mannually the ECR and put the ImageIdentifier here

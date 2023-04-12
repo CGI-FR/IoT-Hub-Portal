@@ -1,0 +1,166 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: AWS S3 storage template | PostgreSQL database storage template | Application Runner template
+
+Parameters:
+  bucketName:
+    Type: String 
+    Description: Please provide the bucket name. The bucket name must contain only lowercase letters, numbers, periods (.), and dashes (-) 
+  dBInstanceID:
+    Default: pgdbinstance
+    Description: PostgreSQL database instance
+    Type: String
+    MinLength: '1'
+    MaxLength: '63'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: >-
+      Must begin with a letter and must not end with a hyphen or contain two
+      consecutive hyphens.
+  dBName:
+      Type: String
+      Default: cgigeiotdemo
+      Description: Database name
+      MinLength: '1'
+      MaxLength: '64'
+      AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+      ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
+  pgsqlAdminLogin:
+      Type: String
+      Description: PostgreSQL user
+      MinLength: '1'
+      MaxLength: '30'
+  pgsqlAdminPassword:
+      Type: String
+      NoEcho: 'true'
+      Description: PostgreSQL password
+      MinLength: '8'
+      MaxLength: '41'
+  databaseInstanceClass:
+    AllowedValues:
+      - db.t2.micro
+      - db.t2.small
+      - db.t2.medium
+      - db.t2.large
+      - db.t2.xlarge
+      - db.t2.2xlarge
+      - db.t3.micro
+      - db.t3.small
+      - db.t3.medium
+      - db.t3.large
+      - db.t3.xlarge
+      - db.t3.2xlarge
+    Type: String
+    ConstraintDescription: Must select a valid database instance
+    Default: db.t2.micro
+    Description: The dataabse instance type
+  pgVersion:
+    Type: String
+    AllowedValues:
+      - 12
+      - 11
+      - 10
+    Default: 12
+    Description: PostgreSql Version. The Allowed values is given according to the database Instance Class
+  allocatedStorage:
+    Default: '20'
+    Description: The size of the database (GiB)
+    Type: Number
+    MinValue: '20'
+    MaxValue: '65536'
+    ConstraintDescription: must be between 20 and 65536 GiB.
+  VPC:
+    Type: AWS::EC2::VPC::Id
+  Subnet1:
+    Type: AWS::EC2::Subnet::Id
+  Subnet2:
+    Type: AWS::EC2::Subnet::Id
+  Subnet3:
+    Type: AWS::EC2::Subnet::Id
+  AllowedCIDR:
+    Type: String
+    Description: CIDR block that is allowed to access the database
+    Default: 0.0.0.0/0
+    AllowedPattern: '^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([0-9]|[1-2][0-9]|3[0-2]))?$'
+  serviceName:
+    Type: String
+    Description: Name for the App Runner service
+  memory:
+    Type: String
+    AllowedPattern: '2048|3072|4096|(2|3|4) GB'
+    Description: The amount of memory, in MB or GB, reserved for each instance of your App Runner service.
+    Default: 2 GB
+  imageIdentifier:
+    Type: String
+    Description: The docker image identifier
+    Default: public.ecr.aws/d7e3t8n4/iothub-portal:latest
+    AllowedPattern: '([0-9]{12}.dkr.ecr.[a-z\-]+-[0-9]{1}.amazonaws.com\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(:([\w\d+\-=._:\/@])+|@([\w\d\:]+))?)|(^public\.ecr\.aws\/.+\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(:([\w\d+\-=._:\/@])+|@([\w\d\:]+))?)'
+  pgsqlHostName:
+    Type: String
+    Description: 'PostgreSQL Host name. Ex: {myHostName}.rds.amazonaws.com'
+  regionCode:
+    Type: String
+    Description: Region code
+  awsAccess:
+    Type: String
+    Description: Access Sectet
+  awsAccessSecretkey:
+    Type: String
+    Description: Bucket Name
+  openIdApiClientId:
+    Type: String 
+    Description: The Open ID API client ID for the B2C tenant
+  openIdClientId:
+    Type: String 
+    Description: The Open ID client ID for the B2C tenant
+  openIdAuthority:
+    Type: String 
+    Description: The Open ID Authority
+  openIdMetadataURL:
+    Type: String 
+    Description: The Open ID metadata Url from the Identity provider
+  openIdScopeName:
+    Type: String 
+    Description: The Open ID Scope name
+
+Resources:
+  s3Bucket:
+      Type: AWS::S3::Bucket
+      Properties: 
+        BucketName: !Ref bucketName 
+  PostgreSQLDB:
+    Type: AWS::RDS::DBInstance
+    DeletionPolicy: Retain # CloudFormation keeps the resource without deleting the resource or its contents when the resource is replaced 
+    UpdateReplacePolicy: Retain # see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
+    Properties:
+      DBInstanceIdentifier: !Ref dBInstanceID
+      AllocatedStorage: !Ref allocatedStorage 
+      DBInstanceClass: !Ref databaseInstanceClass # A voir quel instance utilisé : https://instances.vantage.sh/rds/
+      Engine: postgres
+      EngineVersion: !Ref pgVersion
+      LicenseModel: postgresql-license
+      MasterUsername: !Ref pgsqlAdminLogin
+      MasterUserPassword: !Ref pgsqlAdminPassword
+      DBName: !Ref dBName
+      VPCSecurityGroups:
+        - !Ref PgSQLSecurityGroup
+      DBSubnetGroupName: !Ref PgSQLSubnetGroup
+
+  PgSQLSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable access to the database instance
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: !Ref AllowedCIDR
+
+  PgSQLSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupName: pgSqlsubnetgroup
+      DBSubnetGroupDescription: Subnets available for the database
+      SubnetIds: # A voir le nombre de subnets qu'on veut dans le groupe
+        - !Ref Subnet1
+        - !Ref Subnet2
+        - !Ref Subnet3
