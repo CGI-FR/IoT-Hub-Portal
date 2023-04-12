@@ -33,4 +33,4 @@ jobs:
       - name: Check CloudFormation Syntax
         uses: scottbrenner/cfn-lint-action@v2
         with:
-          path: templates/aws/
+          command: cfn-lint templates/aws/*.yml
