@@ -101,7 +101,7 @@ jobs:
           PORTALNAME: ${{ vars.PORTALNAME }}
         with:
           service: ${{ vars.AWS_APP_RUNNER_NAME }}
-          image: ${{ needs.build.outputs.aws_public_registry }}/${{ vars.AWS_ECR_REGISTRY_ALIAS }}/${{ vars.AWS_ECR_REPOSITORY }}
+          image: ${{ needs.build.outputs.aws_public_registry }}/${{ vars.AWS_ECR_REGISTRY_ALIAS }}/${{ vars.AWS_ECR_REPOSITORY }}:latest
           access-role-arn: ${{ secrets.AWS_ROLE_ARN }}
           region: ${{ secrets.AWS_REGION }}
           cpu : 1
