@@ -23,8 +23,7 @@ It leverages on Azure IoT Hub or AWS IoT Core for connectivity and device manage
 
 ## Known Issues and Limitations
 
-Refer to [Known Issues](https://github.com/CGI-FR/IoT-Hub-Portal/issues) 
-for known issues, gotchas and limitations.
+Refer to [Known Issues](https://github.com/CGI-FR/IoT-Hub-Portal/issues) for known issues, gotchas and limitations.
 
 ## Support
 

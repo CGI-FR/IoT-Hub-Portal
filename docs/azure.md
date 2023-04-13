@@ -44,10 +44,12 @@ The template will deploy in your Azure subscription the Following resources:
 
 1. Configure your AD to connect to the portal.
     Use [Portal AD applications configuration](https://cgi-fr.github.io/IoT-Hub-Portal/stable/b2c-applications) page to configure your AD B2C Tenant :
-    > You should have recorded the following information:
-    > * OpenID authority: `<your-openid-authority>`
-    > * OpenID metadata URL: `<your-openid-provider-metadata-url>`
-    > * Client ID: `<your-client-id>`
+
+    > You should have recorded the following information:  
+    >
+    > * OpenID authority: `<your-openid-authority>`  
+    > * OpenID metadata URL: `<your-openid-provider-metadata-url>`  
+    > * Client ID: `<your-client-id>`  
     > * API Client ID: `<your-client-id>`
 
 1. Press on the button here below to start your deployment on Azure:  
