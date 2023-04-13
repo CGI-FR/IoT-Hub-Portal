@@ -6,8 +6,8 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="IoT Hub Portal for device management" name="description"/>
-<link href="../aws/" rel="prev"/>
-<link href="../dev-guide/" rel="next"/>
+<link href=".." rel="prev"/>
+<link href="../aws/" rel="next"/>
 <link href="../assets/images/favicon.svg" rel="icon"/>
 <meta content="mkdocs-1.4.2, mkdocs-material-9.0.6" name="generator"/>
 <title>Azure - IoT Hub Portal</title>
@@ -122,13 +122,13 @@
     </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../aws/">
-      AWS
+<a class="md-tabs__link md-tabs__link--active" href="./">
+      Azure
     </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link md-tabs__link--active" href="./">
-      Azure
+<a class="md-tabs__link" href="../aws/">
+      AWS
     </a>
 </li>
 <li class="md-tabs__item">
@@ -182,11 +182,6 @@
         IoT Hub Portal
       </a>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../aws/">
-        AWS
-      </a>
-</li>
 <li class="md-nav__item md-nav__item--active">
 <input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
 <label class="md-nav__link md-nav__link--active" for="__toc">
@@ -208,12 +203,41 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#quick-start">
+    Quick Start
+  </a>
+<nav aria-label="Quick Start" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prerequisites">
+    Prerequisites
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#deployed-resources">
+    Deployed Resources
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#instructions">
+    Instructions
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#configurationssecrets">
     Configurations/Secrets
   </a>
 </li>
 </ul>
 </nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../aws/">
+        AWS
+      </a>
 </li>
 <li class="md-nav__item md-nav__item--nested">
 <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_4" id="__nav_4" type="checkbox"/>
@@ -365,6 +389,30 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#quick-start">
+    Quick Start
+  </a>
+<nav aria-label="Quick Start" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prerequisites">
+    Prerequisites
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#deployed-resources">
+    Deployed Resources
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#instructions">
+    Instructions
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#configurationssecrets">
     Configurations/Secrets
   </a>
@@ -394,6 +442,69 @@
 <blockquote>
 <p>Note: For more information about the LoRa Key Management Facade, see the <a href="https://azure.github.io/iotedge-lorawan-starterkit">Azure IoT Edge LoRaWAN Starter Kit</a> page.</p>
 </blockquote>
+<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">¶</a></h2>
+<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h3>
+<ul>
+<li>You must have an Azure subscription. Get an <a href="https://azure.microsoft.com/en-us/offers/ms-azr-0044p/">Azure Free account</a> to get started.</li>
+<li>You must have configured an Azure AD B2C Tenant with applications. See <a href="https://cgi-fr.github.io/IoT-Hub-Portal/stable/b2c-applications">Portal AD applications configuration</a> page.</li>
+<li>Understand how IoT Edge LoraWAN StarterKit work. Have a look at <a href="https://azure.github.io/iotedge-lorawan-starterkit">https://azure.github.io/iotedge-lorawan-starterkit</a> to get started.</li>
+</ul>
+<h3 id="deployed-resources">Deployed Resources<a class="headerlink" href="#deployed-resources" title="Permanent link">¶</a></h3>
+<p>The template will deploy in your Azure subscription the Following resources:  </p>
+<ul>
+<li>IoT Hub</li>
+<li>Azure Function and Consumption Service Plan</li>
+<li>Redis Cache</li>
+<li>Application Insights</li>
+<li>Log Analytics (when opted in to use Azure Monitor)</li>
+<li>Azure WebApp and Service Plan</li>
+<li>Azure Database for PostgreSQL</li>
+</ul>
+<h3 id="instructions">Instructions<a class="headerlink" href="#instructions" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>Choose a solution prefix for your Azure Deployment.</p>
+</li>
+<li>
+<p>Configure your AD to connect to the portal.
+    Use <a href="https://cgi-fr.github.io/IoT-Hub-Portal/stable/b2c-applications">Portal AD applications configuration</a> page to configure your AD B2C Tenant :</p>
+<blockquote>
+<p>You should have recorded the following information:  </p>
+<ul>
+<li>OpenID authority: <code>&lt;your-openid-authority&gt;</code> </li>
+<li>OpenID metadata URL: <code>&lt;your-openid-provider-metadata-url&gt;</code> </li>
+<li>Client ID: <code>&lt;your-client-id&gt;</code> </li>
+<li>API Client ID: <code>&lt;your-client-id&gt;</code></li>
+</ul>
+</blockquote>
+</li>
+<li>
+<p>Press on the button here below to start your deployment on Azure:<br/>
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Farm%2Fmain%2Ftemplates%2Fazuredeploy.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FCGI-FR%2FIoT-Hub-Portal%2Farm%2Fmain%2Ftemplates%2FazuredeployUI.json"><img alt="Deploy to Azure" src="https://aka.ms/deploytoazurebutton"/></a></p>
+</li>
+<li>
+<p>You will get to a page asking you to fill the following fields:</p>
+<ul>
+<li><strong>Resource Group</strong>: A logical "folder" where all the template resource would be put into, just choose a meaningful name.</li>
+<li><strong>Location</strong>: In which DataCenter the resources should be deployed. Make sure to choose a location where IoT Hub is available</li>
+<li><strong>Unique Solution Prefix</strong>: A string that would be used as prefix for all the resources name to ensure their uniqueness.</li>
+<li><strong>PostgreSQL user</strong>: The PostgreSQL user name to be used for the IoT Hub Portal database.</li>
+<li><strong>PostgreSQL password</strong>: The PostgreSQL password to be used for the IoT Hub Portal database.</li>
+<li><strong>Confirm PostgreSQL password</strong>: The PostgreSQL password to be used for the IoT Hub Portal database.</li>
+<li><strong>Open Id Authority</strong>: The OpenID authority used by the portal.</li>
+<li><strong>OpenId Metadata URL</strong>: The OpenID metadata URL used by the portal.</li>
+<li><strong>Client Id</strong>: the ID of the web client that will be used to authenticate the portal.</li>
+<li><strong>Api Client Id</strong>: the ID of the API client that will be used to authenticate the portal.</li>
+<li><strong>Edge gateway name</strong>: the name of your LoRa Gateway node in the IoT Hub.</li>
+<li><strong>Deploy Device</strong>: Do you want demo end devices to be already provisioned (one using OTAA and one using ABP)? If yes set this to true, the code located in the Arduino folder would be ready to use immediately.</li>
+<li><strong>Reset pin</strong>:  The reset pin of your gateway (the value should be 7 for the Seed Studio LoRaWan, 25 for the IC880A)</li>
+<li><strong>Region</strong>:  In what region are you operating your device (currently only EU868 and US915 is supported)</li>
+</ul>
+<blockquote>
+<p>see: <a href="https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure">https://azure.github.io/iotedge-lorawan-starterkit/dev/quickstart/#deployed-azure-infrastructure</a> for more information about the LoRaWan IoT Hub and Azure deployment.</p>
+</blockquote>
+</li>
+</ol>
 <h2 id="configurationssecrets">Configurations/Secrets<a class="headerlink" href="#configurationssecrets" title="Permanent link">¶</a></h2>
 <p><em>Secrets</em> are used to fill in the login credentials to the cloud platform. You have to enter them in a <code>json</code> file to be able to connect to the IoT Hub Portal. Here is a template of a such <code>json</code> file :</p>
 <div class="highlight"><table class="highlighttable"><tr><th class="filename" colspan="2"><span class="filename">JSON</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
