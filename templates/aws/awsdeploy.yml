@@ -22,23 +22,22 @@ Parameters:
       MaxLength: '41'
   VPC:
     Type: AWS::EC2::VPC::Id
+    Description: Value Given randomly. Just chose the one suggested.
   Subnet1:
     Type: AWS::EC2::Subnet::Id
+    Description: Values Given randomly. Just choose One among the three. Do not choose the same values for the 3 subnets.
   Subnet2:
     Type: AWS::EC2::Subnet::Id
+    Description: Values Given randomly. Just choose One among the three. Do not choose the same values for the 3 subnets..
   Subnet3:
     Type: AWS::EC2::Subnet::Id
+    Description: Values Given randomly. Just choose One among the three. Do not choose the same values for the 3 subnets.
   awsAccess:
     Type: String
-    Description: Access Sectet
+    Description: AWS Access Sectet
   awsAccessSecretkey:
     Type: String
-    Description: Bucket Name
-    Default: <Secret>
-  regionCode:
-    Type: String
-    Description: Region code
-    Default: eu-west-1
+    Description: AWS Access Secret Key
   openIdApiClientId:
     Type: String 
     Description: The Open ID API client ID for the B2C tenant
@@ -105,14 +104,55 @@ Resources:
         - !Ref Subnet2
         - !Ref Subnet3
 
+#InstanceRoleArn
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - tasks.apprunner.amazonaws.com
+            Action: 'sts:AssumeRole'
+
+# Création du secret dans AWS Secrets Manager
+  SecretManager:
+    Type: AWS::SecretsManager::Secret
+    DeletionPolicy: Retain # CloudFormation keeps the resource without deleting the resource or its contents when the resource is replaced 
+    UpdateReplacePolicy: Retain # see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
+    Properties:
+      Name: iotHub-secretsmanager
+      SecretString:
+        !Join
+          - ""
+          - - '{"AWS__S3Storage__ConnectionString":'
+            - !Sub '"https://s3.${AWS::Region}.amazonaws.com/'
+            - !Join [ "-", [!Ref UniqueSolutionPrefix, "bucket"] ]
+            - '",'
+            - '"AWS__Access":'
+            - !Sub '"${awsAccess}",'
+            - '"AWS__AccessSecret":'
+            - !Sub '"${awsAccessSecretkey}",'
+            - '"AWS__Region":'
+            - !Sub '"${AWS::Region}",'
+            - '"PostgreSQL__ConnectionString":'
+            - !Sub '"postgresql://${pgsqlAdminLogin}:${pgsqlAdminPassword}@'
+            - !GetAtt PostgreSQLDB.Endpoint.Address
+            - ':5432/'
+            - !Join [ "_", [!Ref UniqueSolutionPrefix, "cgigeiotdemo"] ]
+            - '"}'
+
 #============= App Runner - To Lunch the App ==============
   AppRunnerService:
     Type: AWS::AppRunner::Service
     Properties:
       ServiceName: !Join [ "-", [!Ref UniqueSolutionPrefix, "appRunner"] ]
       InstanceConfiguration:
+        Cpu: 1 vCPU
         Memory: 2 GB
-        InstanceRoleArn: arn:aws:iam::578920151383:role/aws-service-role/apprunner.amazonaws.com/AWSServiceRoleForAppRunner
+        InstanceRoleArn: !GetAtt InstanceRole.Arn
       HealthCheckConfiguration:
         Protocol: "HTTP"
         Path: "/"
@@ -126,16 +166,8 @@ Resources:
           ImageConfiguration: 
             Port: 80 # This is The port that your application listens to in the container. It can be changed (To see)
             RuntimeEnvironmentSecrets: 
-              #- Name: AWS__S3Storage__ConnectionString
-                # Value: !Sub https://s3.${regionCode}.amazonaws.com/${bucketName}
-              - Name: AWS__Access
-                Value: !Sub ${awsAccess}
-              - Name: AWS__AccessSecret
-                Value: !Sub ${awsAccessSecretkey}
-              - Name: AWS__Region
-                Value: !Sub ${regionCode}
-              #- Name: PostgreSQL__ConnectionString
-                # Value: !Join [ "/", [ !Join ["@", [!Sub postgres://${pgsqlAdminLogin}:${pgsqlAdminPassword}, !Sub ${pgsqlHostName}:5432]], !Join [ "_", [!Ref UniqueSolutionPrefix, "cgigeiotdemo"] ]] ]
+              - Name: IOT_HUB_SECRETS_MANAGER
+                Value: !Ref SecretManager
             RuntimeEnvironmentVariables: 
               - Name: OIDC__ApiClientId
                 Value: !Sub '${openIdApiClientId}'
@@ -149,6 +181,6 @@ Resources:
                 Value: !Sub '${openIdScopeName}'
               - Name: CloudProvider
                 Value: AWS
-          ImageIdentifier: 'public.ecr.aws/d7e3t8n4/iothub-portal:latest' # Since we are using ECR_PUBLIC, we need to create mannually the ECR and put the ImageIdentifier here
+          ImageIdentifier: 'public.ecr.aws/cgi-fr/iothub-portal:latest' # Since we are using ECR_PUBLIC, we need to create mannually the ECR and put the ImageIdentifier here
           ImageRepositoryType: ECR_PUBLIC
 
