@@ -48,11 +48,12 @@ The template will deploy in your AWS Account the Following resources:
         > see: [https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-cli-deploy.html](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-cli-deploy.html) for more option about aws cloudformation deploy
 
 1. You will get to a page asking you to fill the following fields:
-    * **Stack Name**: A name for the stack, just choose a meaningful name.
-    * **Service Name**: A name for the App Runner service.
+    * **Stack Name**: A name for the stack where all the template resource would be put into, just choose a meaningful name.
+    * **Unique Solution Prefix**: A string that would be used as prefix for all the resources name to ensure their uniqueness.
     * **PostgreSQL user**: The PostgreSQL user name to be used for the IoT Hub Portal database.
     * **PostgreSQL password**: The PostgreSQL password to be used for the IoT Hub Portal database.
-    * **Region**: Region code
+    * **AWS Access Key**: The AWS Access Key of your AWS environment.
+    * **AWS Access Secret Key**: The AWS Access Secret Key of your AWS environment.
     * **Api Client Id**: the ID of the API client that will be used to authenticate the portal.
     * **Client Id**: the ID of the web client that will be used to authenticate the portal.
     * **Open Id Authority**: The OpenID authority used by the portal.
@@ -66,16 +67,16 @@ This configurations are used to get access to AWS cloud Platform. You have to en
 ```json
 {
   "CloudProvider": "AWS",
-  "S3Storage:ConnectionString": "<CONNECTION_STRING_S3_STORAGE>",
+  "AWS:Access": "<AWS_ACCESS_KEY>",
+  "AWS:AccessSecret": "<AWS_ACCESS_SECRET_KEY>",
+  "AWS:Region": "<AWS_REGION_KEY>",
+  "AWS:S3Storage:ConnectionString": "<CONNECTION_STRING_S3_STORAGE>",
   "OIDC:Scope": "<SCOPE>",
   "OIDC:MetadataUrl": "<METADATA_URL>",
   "OIDC:ClientId": "<CLIENT_ID>",
   "OIDC:Authority": "<AUTHORITY>",
   "OIDC:ApiClientId": "<API_CLIENT_ID>",
   "PostgreSQL:ConnectionString": "<POSTGRE_SQL_CONNECTION_STRING>",
-  "AWS:Access": "<AWS_ACCESS_KEY>",
-  "AWS:AccessSecret": "<AWS_ACCESS_SECRET_KEY>",
-  "AWS:Region": "<AWS_REGION_KEY>"
 }
 ```
 
