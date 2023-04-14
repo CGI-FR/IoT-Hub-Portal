@@ -21,7 +21,7 @@ It leverages on Azure IoT Hub or AWS IoT Core for connectivity and device manage
 
 ## Quick Start
 
-### Azure
+### Step 1: Choose Your Cloud Provider
 
 [Quick Start](https://cgi-fr.github.io/IoT-Hub-Portal/vnext/azure/#quick-start) for Azure environment.
 
