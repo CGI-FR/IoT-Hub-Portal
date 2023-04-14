@@ -28,13 +28,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           # Should use us-east-1 region to push to ECR public registry
-          aws-region: us-east-1
+          aws-region: ${{ secrets.AWS_REGION }}
         
       - name: Login to Amazon ECR
-        id: login-ecr-public
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-        with:
-          registry-type: public
 
       - name: Get a latest Git tag
         uses: actions-ecosystem/action-get-latest-tag@v1
@@ -60,7 +58,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ${{ steps.login-ecr-public.outputs.registry }}/${{ vars.AWS_ECR_REGISTRY_ALIAS }}/${{ vars.AWS_ECR_REPOSITORY }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}
           tags: |
             type=raw,enable=true,priority=200,prefix=,suffix=,value=${{ steps.final-version.outputs.new_version }}
           flavor: |
@@ -95,6 +93,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
       - name: Deploy to App Runner Image
         id: deploy-apprunner
         uses: awslabs/amazon-app-runner-deploy@main
@@ -103,7 +105,7 @@ jobs:
           PORTALNAME: ${{ vars.PORTALNAME }}
         with:
           service: ${{ vars.AWS_APP_RUNNER_NAME }}
-          image: ${{ needs.build.outputs.aws_public_registry }}/${{ vars.AWS_ECR_REGISTRY_ALIAS }}/${{ vars.AWS_ECR_REPOSITORY }}:latest
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:latest
           access-role-arn: ${{ secrets.AWS_ROLE_ARN }}
           region: ${{ secrets.AWS_REGION }}
           cpu : 1
