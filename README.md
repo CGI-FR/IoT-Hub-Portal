@@ -23,7 +23,10 @@ It leverages on Azure IoT Hub or AWS IoT Core for connectivity and device manage
 
 ### Step 1: Choose Your Cloud Provider
 
-[Quick Start](https://cgi-fr.github.io/IoT-Hub-Portal/vnext/azure/#quick-start) for Azure environment.
+IoT Hub Portal works seamlessly with both Azure and Amazon Web Services. Simply click on the link below that corresponds to your cloud provider of choice:
+
+* For Azure users, follow the [Quick Start](https://cgi-fr.github.io/IoT-Hub-Portal/vnext/azure/#quick-start) guide.
+* For Amazon Web Services users, follow the [Quick Start](https://cgi-fr.github.io/IoT-Hub-Portal/vnext/aws/#quick-start) guide.
 
 ### Amazon Web Services
 
