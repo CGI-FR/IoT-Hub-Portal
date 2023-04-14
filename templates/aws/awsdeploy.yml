@@ -20,18 +20,6 @@ Parameters:
       Description: PostgreSQL password
       MinLength: '8'
       MaxLength: '41'
-  VPC:
-    Type: AWS::EC2::VPC::Id
-    Description: Value Given randomly. Just chose the one suggested.
-  Subnet1:
-    Type: AWS::EC2::Subnet::Id
-    Description: Values Given randomly. Just choose One among the three. Do not choose the same values for the 3 subnets.
-  Subnet2:
-    Type: AWS::EC2::Subnet::Id
-    Description: Values Given randomly. Just choose One among the three. Do not choose the same values for the 3 subnets..
-  Subnet3:
-    Type: AWS::EC2::Subnet::Id
-    Description: Values Given randomly. Just choose One among the three. Do not choose the same values for the 3 subnets.
   awsAccess:
     Type: String
     Description: AWS Access Sectet
@@ -100,14 +88,31 @@ Resources:
       DBSubnetGroupName: pgSqlsubnetgroup
       DBSubnetGroupDescription: Subnets available for the database
       SubnetIds: # A voir le nombre de subnets qu'on veut dans le groupe
-        - !Ref Subnet1
-        - !Ref Subnet2
-        - !Ref Subnet3
+        - !Ref Subnet 
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+  Subnet:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Select 
+        - 0
+        - !GetAZs 
+          Ref: 'AWS::Region'
+      CidrBlock: 10.0.1.0/24
+      Tags: 
+        - Key: stack
+          Value: production
+      VpcId: !Ref VPC
 
 #InstanceRoleArn
   InstanceRole:
     Type: AWS::IAM::Role
     Properties:
+      RoleName: AWSAppRunner
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
