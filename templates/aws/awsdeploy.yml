@@ -46,6 +46,15 @@ Parameters:
     Type: String 
     Description: The Open ID Scope name
     Default: iot_access
+  VPC:
+    Type: AWS::EC2::VPC::id
+  Subnet1:
+    Type: AWS::EC2::Subnet::Id
+  Subnet2:
+    Type: AWS::EC2::Subnet::Id
+  Subnet3:
+    Type: AWS::EC2::Subnet::Id
+
 
 Resources:
 #======== S3 Storage ==========
@@ -88,25 +97,9 @@ Resources:
       DBSubnetGroupName: pgSqlsubnetgroup
       DBSubnetGroupDescription: Subnets available for the database
       SubnetIds: # A voir le nombre de subnets qu'on veut dans le groupe
-        - !Ref Subnet 
-  VPC:
-    Type: AWS::EC2::VPC
-    Properties: 
-      CidrBlock: 10.0.0.0/16
-      EnableDnsHostnames: true
-      EnableDnsSupport: true
-  Subnet:
-    Type: AWS::EC2::Subnet
-    Properties: 
-      AvailabilityZone: !Select 
-        - 0
-        - !GetAZs 
-          Ref: 'AWS::Region'
-      CidrBlock: 10.0.1.0/24
-      Tags: 
-        - Key: stack
-          Value: production
-      VpcId: !Ref VPC
+        - !Ref Subnet1
+        - !Ref Subnet2
+        - !Ref Subnet3 
 
 #InstanceRoleArn
   InstanceRole:
