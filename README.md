@@ -21,6 +21,8 @@ It leverages on Azure IoT Hub or AWS IoT Core for connectivity and device manage
 
 ## Quick Start
 
+Ready to get started with IoT Hub Portal? Great! Follow these simple steps to quickly set up your environment:
+
 ### Step 1: Choose Your Cloud Provider
 
 IoT Hub Portal works seamlessly with both Azure and Amazon Web Services. Simply click on the link below that corresponds to your cloud provider of choice:
