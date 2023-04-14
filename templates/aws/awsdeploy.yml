@@ -47,7 +47,7 @@ Parameters:
     Description: The Open ID Scope name
     Default: iot_access
   VPC:
-    Type: AWS::EC2::VPC::id
+    Type: AWS::EC2::VPC::Id
   Subnet1:
     Type: AWS::EC2::Subnet::Id
   Subnet2:
