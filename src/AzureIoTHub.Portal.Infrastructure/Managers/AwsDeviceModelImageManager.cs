@@ -13,89 +13,85 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Options;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 
-    public class AwsDeviceModelImageManager : IAwsDeviceModelImageManager
+    public class AwsDeviceModelImageManager : IDeviceModelImageManager
     {
         private readonly ILogger<AwsDeviceModelImageManager> logger;
         private readonly ConfigHandler configHandler;
         private readonly IOptions<DeviceModelImageOptions> imageOptions;
+        private readonly IAmazonS3 s3Client;
 
         public AwsDeviceModelImageManager(
             ILogger<AwsDeviceModelImageManager> logger,
             ConfigHandler configHandler,
-            IOptions<DeviceModelImageOptions> options)
+            IOptions<DeviceModelImageOptions> options,
+            IAmazonS3 s3Client)
         {
             this.logger = logger;
             this.configHandler = configHandler;
             this.imageOptions = options;
+            this.s3Client = s3Client;
         }
 
 
-        public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, IFormFile file, string bucketName)
+        public async Task<string> ChangeDeviceModelImageAsync(string deviceModelId, Stream stream)
         {
-            var credentials = new Amazon.Runtime.BasicAWSCredentials(this.configHandler.AWSAccess, this.configHandler.AWSAccessSecret);
-            var s3Client = new AmazonS3Client(credentials, RegionEndpoint.GetBySystemName(this.configHandler.AWSRegion));
-
             this.logger.LogInformation($"Uploading Image to AWS S3 storage");
 
-            PutObjectResponse putObjectResponse = null;
             //Portal must be able to upload images to Amazon S3
-            if (file != null && file.Length > 0)
+            var putObjectRequest = new PutObjectRequest
             {
-                var putObjectRequest = new PutObjectRequest
-                {
-                    BucketName = bucketName,
-                    Key = deviceModelId,
-                    InputStream = file.OpenReadStream(),
-                    ContentType = file.ContentType, // image content type
-                    Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
-                };
+                BucketName = this.configHandler.AWSBucketName,
+                Key = deviceModelId,
+                InputStream = stream,
+                ContentType = "image/*",
+                Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
+            };
 
-                putObjectResponse = await s3Client.PutObjectAsync(putObjectRequest);
-            }
-
+            var putObjectResponse = await this.s3Client.PutObjectAsync(putObjectRequest);
 
             //Images on S3 are publicly accessible and read-only 
             var putAclRequest = new PutACLRequest
             {
-                BucketName = bucketName,
+                BucketName = this.configHandler.AWSBucketName,
                 Key = deviceModelId,
                 CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
             };
 
-            _ = await s3Client.PutACLAsync(putAclRequest);
+            _ = await this.s3Client.PutACLAsync(putAclRequest);
 
             if (putObjectResponse != null)
             {
-                return putObjectResponse.HttpStatusCode.ToString();
+                return ComputeImageUrl(deviceModelId);
 
             }
-            else { return ""; }
+            else { throw new AmazonS3Exception("ObjectResponse should not be null"); }
         }
 
-        public Uri ComputeImageUri(string deviceModelId, string bucketName)
+        public Uri ComputeImageUri(string deviceModelId)
         {
-            return new Uri($"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(this.configHandler.AWSRegion)}.amazonaws.com/{deviceModelId}");
+            return new Uri($"https://{this.configHandler.AWSBucketName}.s3.{RegionEndpoint.GetBySystemName(this.configHandler.AWSRegion)}.amazonaws.com/{deviceModelId}");
         }
 
-        public async Task DeleteDeviceModelImageAsync(string deviceModelId, string bucketName)
+        private string ComputeImageUrl(string deviceModelId)
         {
-            var credentials = new Amazon.Runtime.BasicAWSCredentials(this.configHandler.AWSAccess, this.configHandler.AWSAccessSecret);
-            var s3Client = new AmazonS3Client(credentials, RegionEndpoint.GetBySystemName(this.configHandler.AWSRegion));
+            return $"https://{this.configHandler.AWSBucketName}.s3.{RegionEndpoint.GetBySystemName(this.configHandler.AWSRegion)}.amazonaws.com/{deviceModelId}";
+        }
+        public async Task DeleteDeviceModelImageAsync(string deviceModelId)
+        {
 
             this.logger.LogInformation($"Deleting image from AWS S3 storage");
 
             var deleteImageObject = new DeleteObjectRequest
             {
-                BucketName = bucketName,
+                BucketName = this.configHandler.AWSBucketName,
                 Key = deviceModelId
             };
             try
             {
-                _ = await s3Client.DeleteObjectAsync(deleteImageObject);
+                _ = await this.s3Client.DeleteObjectAsync(deleteImageObject);
 
             }
             catch (RequestFailedException e)
@@ -104,94 +100,87 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
             }
         }
 
-        public async Task<string> SetDefaultImageToModel(string deviceModelId, string bucketName)
+        public async Task<string> SetDefaultImageToModel(string deviceModelId)
         {
-            var credentials = new Amazon.Runtime.BasicAWSCredentials(this.configHandler.AWSAccess, this.configHandler.AWSAccessSecret);
-            var s3Client = new AmazonS3Client(credentials, RegionEndpoint.GetBySystemName(this.configHandler.AWSRegion));
-
             this.logger.LogInformation($"Uploading Default Image to AWS S3 storage");
 
             //Portal must be able to upload images to Amazon S3
             var putObjectRequest = new PutObjectRequest
             {
-                BucketName = bucketName,
+                BucketName = this.configHandler.AWSBucketName,
                 Key = deviceModelId,
                 FilePath = $"../Resources/{this.imageOptions.Value.DefaultImageName}",
-                ContentType = "image/png", // image content type
+                ContentType = "image/*", // image content type
                 Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
 
             };
 
-            var putObjectResponse = await s3Client.PutObjectAsync(putObjectRequest);
+            var putObjectResponse = await this.s3Client.PutObjectAsync(putObjectRequest);
 
             //Images on S3 are publicly accessible and read-only 
             var putAclRequest = new PutACLRequest
             {
-                BucketName = bucketName,
+                BucketName = this.configHandler.AWSBucketName,
                 Key = deviceModelId,
                 CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
             };
 
-            _ = await s3Client.PutACLAsync(putAclRequest);
+            _ = await this.s3Client.PutACLAsync(putAclRequest);
 
             return putObjectResponse.HttpStatusCode.ToString();
 
         }
 
-        public async Task InitializeDefaultImageBlob(string bucketName)
+        public async Task InitializeDefaultImageBlob()
         {
-            var credentials = new Amazon.Runtime.BasicAWSCredentials(this.configHandler.AWSAccess, this.configHandler.AWSAccessSecret);
-            var s3Client = new AmazonS3Client(credentials, RegionEndpoint.GetBySystemName(this.configHandler.AWSRegion));
 
             this.logger.LogInformation($"Initializing default Image to AWS S3 storage");
 
             var putObjectRequest = new PutObjectRequest
             {
-                BucketName = bucketName,
+                BucketName = this.configHandler.AWSBucketName,
                 Key = this.imageOptions.Value.DefaultImageName,
                 FilePath = $"../Resources/{this.imageOptions.Value.DefaultImageName}",
-                ContentType = "image/png" // image content type
+                ContentType = "image/*" // image content type
             };
 
-            _ = await s3Client.PutObjectAsync(putObjectRequest);
+            _ = await this.s3Client.PutObjectAsync(putObjectRequest);
 
             //Images on S3 are publicly accessible and read-only 
             var putAclRequest = new PutACLRequest
             {
-                BucketName = bucketName,
+                BucketName = this.configHandler.AWSBucketName,
                 Key = this.imageOptions.Value.DefaultImageName,
                 CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
             };
 
-            _ = await s3Client.PutACLAsync(putAclRequest);
+            _ = await this.s3Client.PutACLAsync(putAclRequest);
 
         }
 
-        public async Task SyncImagesCacheControl(string bucketName)
+        public async Task SyncImagesCacheControl()
         {
-            var credentials = new Amazon.Runtime.BasicAWSCredentials(this.configHandler.AWSAccess, this.configHandler.AWSAccessSecret);
-            var s3Client = new AmazonS3Client(credentials, RegionEndpoint.GetBySystemName(this.configHandler.AWSRegion));
 
             this.logger.LogInformation($"Synchronize Cache control images");
 
             var listImagesObjects = new ListObjectsRequest
             {
-                BucketName = bucketName
+                BucketName = this.configHandler.AWSBucketName
             };
 
             //Get All images from AWS S3
-            var response = await s3Client.ListObjectsAsync(listImagesObjects);
+            var response = await this.s3Client.ListObjectsAsync(listImagesObjects);
             foreach (var item in response.S3Objects)
             {
                 var copyObjectRequest = new CopyObjectRequest
                 {
-                    SourceBucket = bucketName,
+                    SourceBucket = this.configHandler.AWSBucketName,
                     SourceKey = item.Key,
-                    DestinationBucket = bucketName,
+                    DestinationBucket = this.configHandler.AWSBucketName,
                     DestinationKey = item.Key,
                     Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
                 };
-                _ = await s3Client.CopyObjectAsync(copyObjectRequest);
+                _ = await this.s3Client.CopyObjectAsync(copyObjectRequest);
             }
         }
     }

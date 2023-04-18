@@ -56,5 +56,7 @@ namespace AzureIoTHub.Portal.Infrastructure
         internal const string AWSAccessSecretKey = "AWS:AccessSecret";
         internal const string AWSRegionKey = "AWS:Region";
         internal const string AWSS3StorageConnectionStringKey = "AWS:S3Storage:ConnectionString";
+        internal const string AWSBucketNameKey = "AWS:BucketName";
+
     }
 }
