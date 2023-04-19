@@ -210,7 +210,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
                     var copyObjectResponse = await this.s3Client.CopyObjectAsync(copyObjectRequest);
                     if (copyObjectResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
                     {
-                        throw new InternalServerErrorException($"Cache control Synchronization failed for object {item.ToString}");
+                        throw new InternalServerErrorException($"Cache control Synchronization failed for object {item}");
 
                     }
                 }

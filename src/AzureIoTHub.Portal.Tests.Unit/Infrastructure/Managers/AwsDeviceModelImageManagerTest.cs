@@ -79,13 +79,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutObjectResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                    HttpStatusCode = HttpStatusCode.OK
                 });
 
             _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutACLResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                    HttpStatusCode = HttpStatusCode.OK
                 });
 
             var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
@@ -117,10 +117,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutObjectResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.BadGateway
+                    HttpStatusCode = HttpStatusCode.BadGateway
                 });
-
-            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
 
 
             // Assert
@@ -150,15 +148,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutObjectResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                    HttpStatusCode = HttpStatusCode.OK
                 });
             _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutACLResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.BadGateway
+                    HttpStatusCode = HttpStatusCode.BadGateway
                 });
-            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
-
 
             // Assert
             _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
@@ -229,13 +225,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutObjectResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                    HttpStatusCode = HttpStatusCode.OK
                 });
 
             _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutACLResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                    HttpStatusCode = HttpStatusCode.OK
                 });
 
             var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
@@ -266,10 +262,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutObjectResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.BadGateway
+                    HttpStatusCode = HttpStatusCode.BadGateway
                 });
-
-            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
 
 
             // Assert
@@ -298,15 +292,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutObjectResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                    HttpStatusCode = HttpStatusCode.OK
                 });
             _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutACLResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.BadGateway
+                    HttpStatusCode = HttpStatusCode.BadGateway
                 });
-            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
-
 
             // Assert
             _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
@@ -333,13 +325,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutObjectResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                    HttpStatusCode = HttpStatusCode.OK
                 });
 
             _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutACLResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                    HttpStatusCode = HttpStatusCode.OK
                 });
 
 
@@ -362,7 +354,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutObjectResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.BadGateway
+                    HttpStatusCode = HttpStatusCode.BadGateway
                 });
 
 
@@ -388,12 +380,12 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutObjectResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                    HttpStatusCode = HttpStatusCode.OK
                 });
             _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PutACLResponse
                 {
-                    HttpStatusCode = System.Net.HttpStatusCode.BadGateway
+                    HttpStatusCode = HttpStatusCode.BadGateway
                 });
 
             // Assert
