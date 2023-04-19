@@ -52,22 +52,26 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
 
             var putObjectResponse = await this.s3Client.PutObjectAsync(putObjectRequest);
 
-            //Images on S3 are publicly accessible and read-only 
-            var putAclRequest = new PutACLRequest
+            if (putObjectResponse.HttpStatusCode == System.Net.HttpStatusCode.OK)
             {
-                BucketName = this.configHandler.AWSBucketName,
-                Key = deviceModelId,
-                CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
-            };
+                //Images on S3 are publicly accessible and read-only 
+                var putAclRequest = new PutACLRequest
+                {
+                    BucketName = this.configHandler.AWSBucketName,
+                    Key = deviceModelId,
+                    CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
+                };
+                var putACLResponse = await this.s3Client.PutACLAsync(putAclRequest);
 
-            _ = await this.s3Client.PutACLAsync(putAclRequest);
-
-            if (putObjectResponse != null)
-            {
-                return ComputeImageUrl(deviceModelId);
-
+                return putACLResponse.HttpStatusCode == System.Net.HttpStatusCode.OK
+                    ? ComputeImageUrl(deviceModelId)
+                    : throw new InternalServerErrorException("Error by setting the image access to public and read-only");
             }
-            else { throw new AmazonS3Exception("ObjectResponse should not be null"); }
+            else
+            {
+                throw new InternalServerErrorException("Error by uploading the image in S3 Storage");
+            }
+
         }
 
         public Uri ComputeImageUri(string deviceModelId)
@@ -96,7 +100,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
             }
             catch (RequestFailedException e)
             {
-                throw new InternalServerErrorException("Unable to delete the image from the blob storage.", e);
+                throw new InternalServerErrorException("Unable to delete the image from S3 storage.", e);
             }
         }
 
@@ -117,17 +121,25 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
 
             var putObjectResponse = await this.s3Client.PutObjectAsync(putObjectRequest);
 
-            //Images on S3 are publicly accessible and read-only 
-            var putAclRequest = new PutACLRequest
+            if (putObjectResponse.HttpStatusCode == System.Net.HttpStatusCode.OK)
             {
-                BucketName = this.configHandler.AWSBucketName,
-                Key = deviceModelId,
-                CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
-            };
+                //Images on S3 are publicly accessible and read-only 
+                var putAclRequest = new PutACLRequest
+                {
+                    BucketName = this.configHandler.AWSBucketName,
+                    Key = deviceModelId,
+                    CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
+                };
+                var putACLResponse = await this.s3Client.PutACLAsync(putAclRequest);
 
-            _ = await this.s3Client.PutACLAsync(putAclRequest);
-
-            return putObjectResponse.HttpStatusCode.ToString();
+                return putACLResponse.HttpStatusCode == System.Net.HttpStatusCode.OK
+                    ? ComputeImageUrl(deviceModelId)
+                    : throw new InternalServerErrorException("Error by setting the image access to public and read-only");
+            }
+            else
+            {
+                throw new InternalServerErrorException("Error by uploading the image in S3 Storage");
+            }
 
         }
 
@@ -141,20 +153,33 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
                 BucketName = this.configHandler.AWSBucketName,
                 Key = this.imageOptions.Value.DefaultImageName,
                 FilePath = $"../Resources/{this.imageOptions.Value.DefaultImageName}",
-                ContentType = "image/*" // image content type
+                ContentType = "image/*", // image content type
+                Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
+
             };
 
-            _ = await this.s3Client.PutObjectAsync(putObjectRequest);
+            var putObjectResponse = await this.s3Client.PutObjectAsync(putObjectRequest);
 
-            //Images on S3 are publicly accessible and read-only 
-            var putAclRequest = new PutACLRequest
+            if (putObjectResponse.HttpStatusCode == System.Net.HttpStatusCode.OK)
             {
-                BucketName = this.configHandler.AWSBucketName,
-                Key = this.imageOptions.Value.DefaultImageName,
-                CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
-            };
+                //Images on S3 are publicly accessible and read-only 
+                var putAclRequest = new PutACLRequest
+                {
+                    BucketName = this.configHandler.AWSBucketName,
+                    Key = this.imageOptions.Value.DefaultImageName,
+                    CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
+                };
+                var putACLResponse = await this.s3Client.PutACLAsync(putAclRequest);
 
-            _ = await this.s3Client.PutACLAsync(putAclRequest);
+                if (putACLResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    throw new InternalServerErrorException("Error by setting the image access to public and read-only");
+                }
+            }
+            else
+            {
+                throw new InternalServerErrorException("Error by uploading the image in S3 Storage");
+            }
 
         }
 
@@ -170,17 +195,29 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
 
             //Get All images from AWS S3
             var response = await this.s3Client.ListObjectsAsync(listImagesObjects);
-            foreach (var item in response.S3Objects)
+            if (response != null && response.HttpStatusCode == System.Net.HttpStatusCode.OK)
             {
-                var copyObjectRequest = new CopyObjectRequest
+                foreach (var item in response.S3Objects)
                 {
-                    SourceBucket = this.configHandler.AWSBucketName,
-                    SourceKey = item.Key,
-                    DestinationBucket = this.configHandler.AWSBucketName,
-                    DestinationKey = item.Key,
-                    Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
-                };
-                _ = await this.s3Client.CopyObjectAsync(copyObjectRequest);
+                    var copyObjectRequest = new CopyObjectRequest
+                    {
+                        SourceBucket = this.configHandler.AWSBucketName,
+                        SourceKey = item.Key,
+                        DestinationBucket = this.configHandler.AWSBucketName,
+                        DestinationKey = item.Key,
+                        Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
+                    };
+                    var copyObjectResponse = await this.s3Client.CopyObjectAsync(copyObjectRequest);
+                    if (copyObjectResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                    {
+                        throw new InternalServerErrorException($"Cache control Synchronization failed for object {item.ToString}");
+
+                    }
+                }
+            }
+            else
+            {
+                throw new InternalServerErrorException($"Can not retreive list of images to synchronize");
             }
         }
     }

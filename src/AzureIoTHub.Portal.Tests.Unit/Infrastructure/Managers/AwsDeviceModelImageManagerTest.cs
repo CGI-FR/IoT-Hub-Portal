@@ -3,8 +3,9 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
 {
-    using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Net;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
@@ -12,8 +13,10 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
     using Amazon.S3;
     using Amazon.S3.Model;
     using AutoFixture;
+    using Azure;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Options;
     using AzureIoTHub.Portal.Infrastructure.Managers;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
@@ -58,6 +61,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
             this.awsDeviceModelImageManager = Services.GetRequiredService<IDeviceModelImageManager>();
         }
 
+        /*===========================*** Tests for ChangeDeviceModelImageAsync() **===========================*/
         [Test]
         public async Task ChangeDeviceModelImageShouldUploadImageAndReturnAUri()
         {
@@ -73,23 +77,441 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
 
 
             _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new PutObjectResponse());
+                .ReturnsAsync(new PutObjectResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                });
 
             _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new PutACLResponse());
+                .ReturnsAsync(new PutACLResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                });
 
-            var expectedRetunUri = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
+            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
 
 
             // Act
-
             var result = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(expectedRetunUri, result);
+            _ = result.Should().Be(expectedRetunUrl);
             this.s3ClientMock.VerifyAll();
         }
 
+        [Test]
+        public void ChangeDeviceModelImageShouldThrowsAnExceptionForPutObjectResStatusCode()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+            using var imageAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<string>()));
+            var bucketName = "invalid bucket Name for example";
+            var region = Fixture.Create<string>();
+
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns(region);
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
+
+
+            _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PutObjectResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.BadGateway
+                });
+
+            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
+
+
+            // Assert
+            _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
+            {
+                // Act
+                _ = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
+
+            }, "Error by uploading the image in S3 Storage");
+            this.s3ClientMock.VerifyAll();
+        }
+
+        [Test]
+        public void ChangeDeviceModelImageShouldThrowsAnExceptionForPutACLStatusCode()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+            using var imageAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<string>()));
+            var bucketName = "invalid bucket Name for example";
+            var region = Fixture.Create<string>();
+
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns(region);
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
+
+
+            _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PutObjectResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                });
+            _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PutACLResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.BadGateway
+                });
+            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
+
+
+            // Assert
+            _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
+            {
+                // Act
+                _ = await this.awsDeviceModelImageManager.ChangeDeviceModelImageAsync(deviceModelId, imageAsMemoryStream);
+
+            }, "Error by setting the image access to public and read-only");
+            this.s3ClientMock.VerifyAll();
+        }
+
+        /*===========================*** Tests for DeleteDeviceModelImageAsync() **===========================*/
+
+        [Test]
+        public async Task FailedDeletingDeviceModelImageShouldThrowsAnInternalServerError()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+            var bucketName = Fixture.Create<string>();
+
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+
+            _ = this.s3ClientMock.Setup(s3 => s3.DeleteObjectAsync(It.IsAny<DeleteObjectRequest>(), It.IsAny<CancellationToken>()))
+                .Throws(new RequestFailedException(""));
+
+            // Act
+            var act = async () => await this.awsDeviceModelImageManager.DeleteDeviceModelImageAsync(deviceModelId);
+
+            // Assert
+            _ = await act.Should().ThrowAsync<InternalServerErrorException>("Unable to delete the image from the blob storage.");
+            this.s3ClientMock.VerifyAll();
+        }
+
+        [Test]
+        public async Task SucessDeletingDeviceModelImageShouldNotThrowsAnInternalServerError()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+            var bucketName = Fixture.Create<string>();
+
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+
+            _ = this.s3ClientMock.Setup(s3 => s3.DeleteObjectAsync(It.IsAny<DeleteObjectRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DeleteObjectResponse());
+
+            // Act
+            await this.awsDeviceModelImageManager.DeleteDeviceModelImageAsync(deviceModelId);
+
+            // Assert
+            this.s3ClientMock.VerifyAll();
+        }
+
+        /*===========================*** Tests for SetDefaultImageToModel() **===========================*/
+
+        [Test]
+        public async Task SetDefaultImageToModeShouldUploadImageAndReturnAUri()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+            var bucketName = Fixture.Create<string>();
+            var region = Fixture.Create<string>();
+
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns(region);
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
+
+
+            _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PutObjectResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                });
+
+            _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PutACLResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                });
+
+            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
+
+
+            // Act
+            var result = await this.awsDeviceModelImageManager.SetDefaultImageToModel(deviceModelId);
+
+            // Assert
+            Assert.NotNull(result);
+            _ = result.Should().Be(expectedRetunUrl);
+            this.s3ClientMock.VerifyAll();
+        }
+
+        [Test]
+        public void SetDefaultImageToModeShouldThrowsAnExceptionForPutObjectResStatusCode()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+            var bucketName = "invalid bucket Name for example";
+            var region = Fixture.Create<string>();
+
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns(region);
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
+
+
+            _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PutObjectResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.BadGateway
+                });
+
+            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
+
+
+            // Assert
+            _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
+            {
+                // Act
+                _ = await this.awsDeviceModelImageManager.SetDefaultImageToModel(deviceModelId);
+
+            }, "Error by uploading the image in S3 Storage");
+            this.s3ClientMock.VerifyAll();
+        }
+
+        [Test]
+        public void SetDefaultImageToModelShouldThrowsAnExceptionForPutACLStatusCode()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+            var bucketName = "invalid bucket Name for example";
+            var region = Fixture.Create<string>();
+
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns(region);
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
+
+
+            _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PutObjectResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                });
+            _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PutACLResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.BadGateway
+                });
+            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}";
+
+
+            // Assert
+            _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
+            {
+                // Act
+                _ = await this.awsDeviceModelImageManager.SetDefaultImageToModel(deviceModelId);
+
+            }, "Error by setting the image access to public and read-only");
+            this.s3ClientMock.VerifyAll();
+        }
+
+
+        /*===========================*** Tests for InitializeDefaultImageBlob() **===========================*/
+
+        [Test]
+        public async Task InitializeDefaultImageBlobShouldUploadDefaultImage()
+        {
+            // Arrange
+            var bucketName = Fixture.Create<string>();
+
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
+
+            _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PutObjectResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                });
+
+            _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PutACLResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                });
+
+
+            // Act
+            await this.awsDeviceModelImageManager.InitializeDefaultImageBlob();
+
+            // Assert
+            this.s3ClientMock.VerifyAll();
+        }
+
+        [Test]
+        public void InitializeDefaultImageBlobShouldThrowsAnExceptionForPutObjectResStatusCode()
+        {
+            // Arrange
+            var bucketName = "invalid bucket Name for example";
+
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
+
+            _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PutObjectResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.BadGateway
+                });
+
+
+            // Assert
+            _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
+            {
+                // Act
+                await this.awsDeviceModelImageManager.InitializeDefaultImageBlob();
+
+            }, "Error by uploading the image in S3 Storage");
+            this.s3ClientMock.VerifyAll();
+        }
+
+        [Test]
+        public void InitializeDefaultImageBlobShouldThrowsAnExceptionForPutACLStatusCode()
+        {
+            // Arrange
+            var bucketName = "invalid bucket Name for example";
+
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
+
+            _ = this.s3ClientMock.Setup(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PutObjectResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.OK
+                });
+            _ = this.s3ClientMock.Setup(s3 => s3.PutACLAsync(It.IsAny<PutACLRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new PutACLResponse
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.BadGateway
+                });
+
+            // Assert
+            _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
+            {
+                // Act
+                await this.awsDeviceModelImageManager.InitializeDefaultImageBlob();
+
+            }, "Error by setting the image access to public and read-only");
+            this.s3ClientMock.VerifyAll();
+        }
+
+        /*===========================*** Tests for SyncImagesCacheControl() **===========================*/
+
+
+        [Test]
+        public void SyncImagesCacheControlShouldThrowsAnExceptionForCopyObjectAsyncStatusCode()
+        {
+            // Arrange
+            var bucketName = "invalid bucket Name for example";
+
+            var listObjectsResponse = new ListObjectsResponse
+            {
+                HttpStatusCode = HttpStatusCode.OK,
+                S3Objects = new List<S3Object>
+                {
+                    new S3Object { Key = "image1.jpg" },
+                    new S3Object { Key = "image2.png" }
+                }
+            };
+
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
+
+            _ = this.s3ClientMock.Setup(s3 => s3.ListObjectsAsync(It.IsAny<ListObjectsRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(listObjectsResponse);
+            _ = this.s3ClientMock.Setup(s3 => s3.CopyObjectAsync(It.IsAny<CopyObjectRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CopyObjectResponse
+                {
+                    HttpStatusCode = HttpStatusCode.BadGateway
+                });
+
+            // Assert
+            _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
+            {
+                // Act
+                await this.awsDeviceModelImageManager.SyncImagesCacheControl();
+
+            }, "Cache control Synchronization failed");
+            this.s3ClientMock.VerifyAll();
+        }
+
+        [Test]
+        public void SyncImagesCacheControlShouldThrowsAnExceptionForListObjectsAsyncStatusCode()
+        {
+            // Arrange
+            var bucketName = "invalid bucket Name for example";
+
+            var listObjectsResponse = new ListObjectsResponse
+            {
+                HttpStatusCode = HttpStatusCode.BadGateway,
+                S3Objects = new List<S3Object>
+                {
+                    new S3Object { Key = "image1.jpg" },
+                    new S3Object { Key = "image2.png" }
+                }
+            };
+
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
+
+            _ = this.s3ClientMock.Setup(s3 => s3.ListObjectsAsync(It.IsAny<ListObjectsRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(listObjectsResponse);
+
+
+            // Assert
+            _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
+            {
+                // Act
+                await this.awsDeviceModelImageManager.SyncImagesCacheControl();
+
+            }, "Can not retreive list of images to synchronize");
+            this.s3ClientMock.VerifyAll();
+        }
+
+        [Test]
+        public async Task SyncImagesCacheControlShouldSucceed()
+        {
+            // Arrange
+            var bucketName = "invalid bucket Name for example";
+
+            var listObjectsResponse = new ListObjectsResponse
+            {
+                HttpStatusCode = HttpStatusCode.OK,
+                S3Objects = new List<S3Object>
+                {
+                    new S3Object { Key = "image1.jpg" },
+                    new S3Object { Key = "image2.png" }
+                }
+            };
+
+            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
+            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
+
+            _ = this.s3ClientMock.Setup(s3 => s3.ListObjectsAsync(It.IsAny<ListObjectsRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(listObjectsResponse);
+
+            _ = this.s3ClientMock.Setup(s3 => s3.CopyObjectAsync(It.IsAny<CopyObjectRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CopyObjectResponse
+                {
+                    HttpStatusCode = HttpStatusCode.OK
+                });
+
+            // Act
+            await this.awsDeviceModelImageManager.SyncImagesCacheControl();
+
+            // Assert
+            this.s3ClientMock.VerifyAll();
+        }
     }
 }
