@@ -452,8 +452,6 @@ namespace AzureIoTHub.Portal.Server
                 default:
                     break;
             }
-
-            await EnsureDatabaseCreatedAndUpToDate(app)!;
         }
 
         private static async Task ConfigureAzureAsync(IApplicationBuilder app)
@@ -462,6 +460,8 @@ namespace AzureIoTHub.Portal.Server
 
             await deviceModelImageManager?.InitializeDefaultImageBlob()!;
             await deviceModelImageManager?.SyncImagesCacheControl()!;
+
+            await EnsureDatabaseCreatedAndUpToDate(app)!;
         }
 
         private static void UseApiExceptionMiddleware(IApplicationBuilder app)
