@@ -76,7 +76,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
 
         public Uri ComputeImageUri(string deviceModelId)
         {
-            return new Uri($"https://{this.configHandler.AWSBucketName}.s3.{RegionEndpoint.GetBySystemName(this.configHandler.AWSRegion)}.amazonaws.com/{deviceModelId}");
+            throw new NotImplementedException();
         }
 
         private string ComputeImageUrl(string deviceModelId)
@@ -183,42 +183,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
 
         }
 
-        public async Task SyncImagesCacheControl()
+        public Task SyncImagesCacheControl()
         {
+            /* We don't need an implementation of
+             this mehod for AWS because new images will processed by the method SetDefaultImageToModel
+             */
+            throw new NotImplementedException();
 
-            this.logger.LogInformation($"Synchronize Cache control images");
-
-            var listImagesObjects = new ListObjectsRequest
-            {
-                BucketName = this.configHandler.AWSBucketName
-            };
-
-            //Get All images from AWS S3
-            var response = await this.s3Client.ListObjectsAsync(listImagesObjects);
-            if (response != null && response.HttpStatusCode == System.Net.HttpStatusCode.OK)
-            {
-                foreach (var item in response.S3Objects)
-                {
-                    var copyObjectRequest = new CopyObjectRequest
-                    {
-                        SourceBucket = this.configHandler.AWSBucketName,
-                        SourceKey = item.Key,
-                        DestinationBucket = this.configHandler.AWSBucketName,
-                        DestinationKey = item.Key,
-                        Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
-                    };
-                    var copyObjectResponse = await this.s3Client.CopyObjectAsync(copyObjectRequest);
-                    if (copyObjectResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
-                    {
-                        throw new InternalServerErrorException($"Cache control Synchronization failed for object {item}");
-
-                    }
-                }
-            }
-            else
-            {
-                throw new InternalServerErrorException($"Can not retreive list of images to synchronize");
-            }
         }
     }
 }

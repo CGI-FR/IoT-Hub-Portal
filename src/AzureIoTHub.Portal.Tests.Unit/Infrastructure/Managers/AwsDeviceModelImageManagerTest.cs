@@ -3,6 +3,7 @@
 
 namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Net;
@@ -402,108 +403,33 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
 
 
         [Test]
-        public void SyncImagesCacheControlShouldThrowsAnExceptionForCopyObjectAsyncStatusCode()
+        public void SyncImagesCacheControlShouldThrowsANotImplmentedException()
         {
             // Arrange
-            var bucketName = "invalid bucket Name for example";
-
-            var listObjectsResponse = new ListObjectsResponse
-            {
-                HttpStatusCode = HttpStatusCode.OK,
-                S3Objects = new List<S3Object>
-                {
-                    new S3Object { Key = "image1.jpg" },
-                    new S3Object { Key = "image2.png" }
-                }
-            };
-
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
-            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
-
-            _ = this.s3ClientMock.Setup(s3 => s3.ListObjectsAsync(It.IsAny<ListObjectsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(listObjectsResponse);
-            _ = this.s3ClientMock.Setup(s3 => s3.CopyObjectAsync(It.IsAny<CopyObjectRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new CopyObjectResponse
-                {
-                    HttpStatusCode = HttpStatusCode.BadGateway
-                });
-
-            // Assert
-            _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
-            {
-                // Act
-                await this.awsDeviceModelImageManager.SyncImagesCacheControl();
-
-            }, "Cache control Synchronization failed");
-            this.s3ClientMock.VerifyAll();
-        }
-
-        [Test]
-        public void SyncImagesCacheControlShouldThrowsAnExceptionForListObjectsAsyncStatusCode()
-        {
-            // Arrange
-            var bucketName = "invalid bucket Name for example";
-
-            var listObjectsResponse = new ListObjectsResponse
-            {
-                HttpStatusCode = HttpStatusCode.BadGateway,
-                S3Objects = new List<S3Object>
-                {
-                    new S3Object { Key = "image1.jpg" },
-                    new S3Object { Key = "image2.png" }
-                }
-            };
-
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
-            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
-
-            _ = this.s3ClientMock.Setup(s3 => s3.ListObjectsAsync(It.IsAny<ListObjectsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(listObjectsResponse);
-
-
-            // Assert
-            _ = Assert.ThrowsAsync<InternalServerErrorException>(async () =>
-            {
-                // Act
-                await this.awsDeviceModelImageManager.SyncImagesCacheControl();
-
-            }, "Can not retreive list of images to synchronize");
-            this.s3ClientMock.VerifyAll();
-        }
-
-        [Test]
-        public async Task SyncImagesCacheControlShouldSucceed()
-        {
-            // Arrange
-            var bucketName = "invalid bucket Name for example";
-
-            var listObjectsResponse = new ListObjectsResponse
-            {
-                HttpStatusCode = HttpStatusCode.OK,
-                S3Objects = new List<S3Object>
-                {
-                    new S3Object { Key = "image1.jpg" },
-                    new S3Object { Key = "image2.png" }
-                }
-            };
-
-            _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
-            _ = this.mockConfigHandler.Setup(handler => handler.StorageAccountDeviceModelImageMaxAge).Returns(Fixture.Create<int>());
-
-            _ = this.s3ClientMock.Setup(s3 => s3.ListObjectsAsync(It.IsAny<ListObjectsRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(listObjectsResponse);
-
-            _ = this.s3ClientMock.Setup(s3 => s3.CopyObjectAsync(It.IsAny<CopyObjectRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new CopyObjectResponse
-                {
-                    HttpStatusCode = HttpStatusCode.OK
-                });
+            // We just verify that the method throw NotImplmentedExeception()
 
             // Act
-            await this.awsDeviceModelImageManager.SyncImagesCacheControl();
+            var act = () => this.awsDeviceModelImageManager.SyncImagesCacheControl();
 
             // Assert
-            this.s3ClientMock.VerifyAll();
+            _ = act.Should().ThrowAsync<NotImplementedException>();
+        }
+
+        /*===========================*** Tests for ComputeImageUri() **===========================*/
+
+
+        [Test]
+        public void ComputeImageUriShouldThrowsANotImplmentedException()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+
+            // Assert
+            _ = Assert.Throws<NotImplementedException>(() =>
+            {
+                // Act
+                _ = this.awsDeviceModelImageManager.ComputeImageUri(deviceModelId);
+            });
         }
     }
 }
