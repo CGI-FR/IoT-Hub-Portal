@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Server.Services
     using Domain.Exceptions;
     using Domain.Repositories;
     using Microsoft.Azure.Devices;
+    using Microsoft.Azure.Devices.Shared;
     using Models.v10.LoRaWAN;
     using Shared.Models.v1._0;
 
@@ -97,7 +98,7 @@ namespace AzureIoTHub.Portal.Server.Services
 
         public async Task<ConcentratorDto> CreateDeviceAsync(ConcentratorDto concentrator)
         {
-            var newTwin = await this.externalDevicesService.CreateNewTwinFromDeviceId(concentrator.DeviceId);
+            var newTwin = (Twin) await this.externalDevicesService.CreateNewTwinFromDeviceId(concentrator.DeviceId);
             concentrator.RouterConfig = await this.loRaWanManagementService.GetRouterConfig(concentrator.LoraRegion);
             concentrator.ClientThumbprint ??= string.Empty;
 
@@ -112,7 +113,7 @@ namespace AzureIoTHub.Portal.Server.Services
         public async Task<ConcentratorDto> UpdateDeviceAsync(ConcentratorDto concentrator)
         {
             // Device status (enabled/disabled) has to be dealt with afterwards
-            var currentConcentrator = await this.externalDevicesService.GetDevice(concentrator.DeviceId);
+            var currentConcentrator = (Microsoft.Azure.Devices.Device)await this.externalDevicesService.GetDevice(concentrator.DeviceId);
             currentConcentrator.Status = concentrator.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
             _ = await this.externalDevicesService.UpdateDevice(currentConcentrator);

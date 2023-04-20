@@ -263,7 +263,7 @@ namespace AzureIoTHub.Portal.Server.Services
         /// </summary>
         /// <param name="deviceId">device id.</param>
         /// <returns>Device.</returns>
-        public async Task<Device> GetDevice(string deviceId)
+        public async Task<Object> GetDevice(string deviceId)
         {
             try
             {
@@ -342,17 +342,19 @@ namespace AzureIoTHub.Portal.Server.Services
         /// <param name="twin">the twin of my new device.</param>
         /// <param name="isEnabled">the status of the device(disabled by default).</param>
         /// <returns>BulkRegistryOperation.</returns>
-        public async Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled = DeviceStatus.Disabled)
+        public async Task<Object> CreateDeviceWithTwin(string deviceId, bool isEdge, Object twin, Object isEnabled)
         {
-            var device = new Device(deviceId)
-            {
-                Capabilities = new DeviceCapabilities { IotEdge = isEdge },
-                Status = isEnabled
-            };
-
             try
             {
-                return await this.registryManager.AddDeviceWithTwinAsync(device, twin);
+                isEnabled ??= DeviceStatus.Disabled;
+
+                var device = new Device(deviceId)
+                {
+                    Capabilities = new DeviceCapabilities { IotEdge = isEdge },
+                    Status = (DeviceStatus)isEnabled
+                };
+
+                return await this.registryManager.AddDeviceWithTwinAsync(device, (Twin)twin);
             }
             catch (RequestFailedException e)
             {
@@ -659,7 +661,7 @@ namespace AzureIoTHub.Portal.Server.Services
             return null;
         }
 
-        public async Task<Twin> CreateNewTwinFromDeviceId(string deviceId)
+        public async Task<Object> CreateNewTwinFromDeviceId(string deviceId)
         {
             var existingDevice = await this.GetDevice(deviceId);
             if (existingDevice != null)

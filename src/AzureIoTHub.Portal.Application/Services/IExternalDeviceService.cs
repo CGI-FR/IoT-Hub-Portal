@@ -11,14 +11,14 @@ namespace AzureIoTHub.Portal.Application.Services
 
     public interface IExternalDeviceService
     {
-        Task<Device> GetDevice(string deviceId);
+        Task<Object> GetDevice(string deviceId);
 
         Task<Twin> GetDeviceTwin(string deviceId);
 
         Task<Twin> GetDeviceTwinWithModule(string deviceId);
         Task<Twin> GetDeviceTwinWithEdgeHubModule(string deviceId);
 
-        Task<BulkRegistryOperationResult> CreateDeviceWithTwin(string deviceId, bool isEdge, Twin twin, DeviceStatus isEnabled);
+        Task<Object> CreateDeviceWithTwin(string deviceId, bool isEdge, Object twin, Object isEnabled);
 
         Task<Device> UpdateDevice(Device device);
 
@@ -65,7 +65,7 @@ namespace AzureIoTHub.Portal.Application.Services
 
         Task<ConfigItem> RetrieveLastConfiguration(Twin twin);
 
-        Task<Twin> CreateNewTwinFromDeviceId(string deviceId);
+        Task<Object> CreateNewTwinFromDeviceId(string deviceId);
 
         Task<List<string>> GetAllGatewayID();
 

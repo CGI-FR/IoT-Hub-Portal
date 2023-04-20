@@ -7,14 +7,18 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using Amazon.IoT;
     using Amazon.IotData;
     using Amazon.SecretsManager;
+    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Infrastructure.Services.AWS;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class AWSServiceCollectionExtension
     {
         public static IServiceCollection AddAWSInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)
         {
-            return services.ConfigureAWSClient(configuration);
+            return services.ConfigureAWSClient(configuration)
+                           .ConfigureServices();
         }
         private static IServiceCollection ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
         {
@@ -33,7 +37,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             });
 
             _ = services.AddSingleton(() => new AmazonSecretsManagerClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
+            return services;
+        }
 
+        private static IServiceCollection ConfigureServices(this IServiceCollection services)
+        {
+            _ = services.AddTransient<IDeviceService<DeviceDetails>, AWSDeviceService>();
+            _ = services.AddTransient<IExternalDeviceService, AWSExternalDeviceService>();
+            _ = services.AddTransient<IDevicePropertyService, AWSDevicePropertyService>();
             return services;
         }
     }

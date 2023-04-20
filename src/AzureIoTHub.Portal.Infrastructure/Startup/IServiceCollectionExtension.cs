@@ -4,8 +4,10 @@
 namespace AzureIoTHub.Portal.Infrastructure.Startup
 {
     using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
     using AzureIoTHub.Portal.Infrastructure.Helpers;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
     using EntityFramework.Exceptions.PostgreSQL;
     using Microsoft.EntityFrameworkCore;
@@ -18,7 +20,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         {
             //Common configuration
             services = services.ConfigureDatabase(configuration)
-                               .ConfigureHealthCheck();
+                               .ConfigureHealthCheck()
+                               .ConfigureRepositories();
 
             //CloudProvider-dependant configurations
             return configuration.CloudProvider switch
@@ -81,6 +84,23 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                .AddCheck<DatabaseHealthCheck>("databaseHealthCheck");
 
             return services;
+        }
+
+        private static IServiceCollection ConfigureRepositories(this IServiceCollection services)
+        {
+            return services.AddScoped<IDeviceModelPropertiesRepository, DeviceModelPropertiesRepository>()
+                            .AddScoped<IDeviceTagRepository, DeviceTagRepository>()
+                            .AddScoped<IEdgeDeviceModelRepository, EdgeDeviceModelRepository>()
+                            .AddScoped<IEdgeDeviceModelCommandRepository, EdgeDeviceModelCommandRepository>()
+                            .AddScoped<IDeviceModelRepository, DeviceModelRepository>()
+                            .AddScoped<IDeviceRepository, DeviceRepository>()
+                            .AddScoped<IEdgeDeviceRepository, EdgeDeviceRepository>()
+                            .AddScoped<ILorawanDeviceRepository, LorawanDeviceRepository>()
+                            .AddScoped<IDeviceTagValueRepository, DeviceTagValueRepository>()
+                            .AddScoped<IDeviceModelCommandRepository, DeviceModelCommandRepository>()
+                            .AddScoped<IConcentratorRepository, ConcentratorRepository>()
+                            .AddScoped<ILoRaDeviceTelemetryRepository, LoRaDeviceTelemetryRepository>()
+                            .AddScoped<ILabelRepository, LabelRepository>();
         }
     }
 }

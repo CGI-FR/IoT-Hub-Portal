@@ -19,12 +19,13 @@ namespace AzureIoTHub.Portal.Server.Services
     using Infrastructure.Repositories;
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
+    using Microsoft.Azure.Devices.Shared;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
     using Models.v10;
     using Shared.Models.v1._0;
     using Shared.Models.v10.Filters;
-    using Device = Domain.Entities.Device;
+    using Device = Microsoft.Azure.Devices.Device;
 
     public abstract class DeviceServiceBase<TDto> : IDeviceService<TDto>
         where TDto : IDeviceDetails
@@ -70,7 +71,7 @@ namespace AzureIoTHub.Portal.Server.Services
                 Labels = labels
             };
 
-            var devicePredicate = PredicateBuilder.True<Device>();
+            var devicePredicate = PredicateBuilder.True<Domain.Entities.Device>();
 
             if (deviceListFilter.IsConnected != null)
             {
@@ -153,7 +154,7 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             var newTwin = await this.externalDevicesService.CreateNewTwinFromDeviceId(device.DeviceID);
 
-            this.deviceTwinMapper.UpdateTwin(newTwin, device);
+            this.deviceTwinMapper.UpdateTwin((Twin)newTwin, device);
             var status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
             _ = await this.externalDevicesService.CreateDeviceWithTwin(device.DeviceID, false, newTwin, status);
@@ -167,9 +168,9 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             // Device status (enabled/disabled) has to be dealt with afterwards
             var currentDevice = await this.externalDevicesService.GetDevice(device.DeviceID);
-            currentDevice.Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
+            ((Device)currentDevice).Status = device.IsEnabled ? DeviceStatus.Enabled : DeviceStatus.Disabled;
 
-            _ = await this.externalDevicesService.UpdateDevice(currentDevice);
+            _ = await this.externalDevicesService.UpdateDevice((Device)currentDevice);
 
             // Get the current twin from the hub, based on the device ID
             var currentTwin = await this.externalDevicesService.GetDeviceTwin(device.DeviceID);

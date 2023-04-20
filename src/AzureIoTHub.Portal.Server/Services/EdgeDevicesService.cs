@@ -195,7 +195,7 @@ namespace AzureIoTHub.Portal.Server.Services
         {
             ArgumentNullException.ThrowIfNull(edgeDevice, nameof(edgeDevice));
 
-            var device = await this.externalDevicesService.GetDevice(edgeDevice.DeviceId);
+            var device = (Microsoft.Azure.Devices.Device)await this.externalDevicesService.GetDevice(edgeDevice.DeviceId);
 
             if (Enum.TryParse(edgeDevice.Status, out DeviceStatus status))
             {
