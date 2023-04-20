@@ -11,6 +11,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Infrastructure.Managers;
+    using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Entities.AWS;
+    using AzureIoTHub.Portal.Infrastructure.Services.AWS;
+    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class AWSServiceCollectionExtension
@@ -36,6 +41,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             });
 
             _ = services.AddSingleton(() => new AmazonSecretsManagerClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
+
 
             _ = services.AddSingleton(() => new AmazonS3Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
 
