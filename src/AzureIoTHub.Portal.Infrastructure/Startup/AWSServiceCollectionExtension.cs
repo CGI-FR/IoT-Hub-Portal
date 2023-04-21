@@ -7,22 +7,25 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using Amazon.IoT;
     using Amazon.IotData;
     using Amazon.SecretsManager;
-    using AzureIoTHub.Portal.Application.Services;
+    using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain;
-    using AzureIoTHub.Portal.Domain.Entities.AWS;
+    using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
-    using AzureIoTHub.Portal.Models.v10;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class AWSServiceCollectionExtension
     {
         public static IServiceCollection AddAWSInfrastructureLayer(this IServiceCollection services, ConfigHandler configuration)
         {
-            return services.ConfigureAWSClient(configuration);
+            return services
+                .ConfigureAWSClient(configuration)
+                .ConfigureAWSServices()
+                .ConfigureAWSRepositories();
         }
         private static IServiceCollection ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
         {
-            _ = services.AddSingleton(() => new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
+            _ = services.AddSingleton(new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
             _ = services.AddSingleton(async sp =>
             {
                 var endpoint = await sp.GetService<AmazonIoTClient>()!.DescribeEndpointAsync(new Amazon.IoT.Model.DescribeEndpointRequest
@@ -37,9 +40,22 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             });
 
             _ = services.AddSingleton(() => new AmazonSecretsManagerClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
+            //_ = services.AddTransient<AmazonIoTClient>();
 
-            //Put Think Type dependency injection here
 
+            return services;
+        }
+
+        private static IServiceCollection ConfigureAWSServices(this IServiceCollection services)
+        {
+            _ = services.AddTransient<IThingTypeService, ThingTypeService>();
+
+            return services;
+        }
+
+        private static IServiceCollection ConfigureAWSRepositories(this IServiceCollection services)
+        {
+            _ = services.AddScoped<IThingTypeRepository, ThingTypeRepository>();
 
             return services;
         }

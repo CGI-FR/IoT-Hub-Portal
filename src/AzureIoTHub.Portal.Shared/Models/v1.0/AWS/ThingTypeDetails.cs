@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0.AWS
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-    public class ThingTypeDetails : IThingTypeDetails
+    public class ThingTypeDetails
     {
         [Required(ErrorMessage = "The device should have a unique identifier.")]
         [MaxLength(ErrorMessage = "The device identifier should be up to 128 characters long.")]

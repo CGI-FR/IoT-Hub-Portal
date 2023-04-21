@@ -320,6 +320,7 @@ namespace AzureIoTHub.Portal.Server
             _ = services.AddTransient<IDeviceService<LoRaDeviceDetails>, LoRaWanDeviceService>();
         }
 
+
         private static void ConfigureIdeasFeature(IServiceCollection services, ConfigHandler configuration)
         {
             _ = services.AddTransient<IIdeaService, IdeaService>();
