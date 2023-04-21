@@ -108,6 +108,7 @@
   <ItemGroup>
     <PackageReference Include="AWSSDK.IoT" Version="3.7.105.22" />
     <PackageReference Include="AWSSDK.IotData" Version="3.7.102.5" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.103.50" />
     <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.102.21" />
     <PackageReference Include="Azure.Data.Tables" Version="12.8.0" />
     <PackageReference Include="Azure.Messaging.EventHubs" Version="5.9.2" />
@@ -126,8 +127,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.7" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="7.0.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.7">
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="7.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

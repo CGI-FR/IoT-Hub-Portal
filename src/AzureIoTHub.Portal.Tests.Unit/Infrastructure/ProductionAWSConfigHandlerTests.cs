@@ -53,6 +53,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         [TestCase(ConfigHandlerBase.AWSRegionKey, nameof(ConfigHandlerBase.AWSRegion))]
         [TestCase(ConfigHandlerBase.AWSS3StorageConnectionStringKey, nameof(ConfigHandlerBase.AWSS3StorageConnectionString))]
         [TestCase(ConfigHandlerBase.CloudProviderKey, nameof(ConfigHandlerBase.CloudProvider))]
+        [TestCase(ConfigHandlerBase.AWSBucketNameKey, nameof(ConfigHandlerBase.AWSBucketName))]
+
         public void SettingsShouldGetValueFromAppSettings(string configKey, string configPropertyName)
         {
             // Arrange
