@@ -448,6 +448,7 @@ namespace AzureIoTHub.Portal.Server
                     await ConfigureAzureAsync(app);
                     break;
                 case CloudProviders.AWS:
+                    await ConfigureAwsAsync(app);
                     break;
                 default:
                     break;
@@ -462,6 +463,12 @@ namespace AzureIoTHub.Portal.Server
             await deviceModelImageManager?.SyncImagesCacheControl()!;
 
             await EnsureDatabaseCreatedAndUpToDate(app)!;
+        }
+        private static async Task ConfigureAwsAsync(IApplicationBuilder app)
+        {
+            var deviceModelImageManager = app.ApplicationServices.GetService<IDeviceModelImageManager>();
+
+            await deviceModelImageManager?.InitializeDefaultImageBlob()!;
         }
 
         private static void UseApiExceptionMiddleware(IApplicationBuilder app)
