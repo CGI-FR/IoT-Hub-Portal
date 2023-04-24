@@ -18,11 +18,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
         private readonly IThingTypeRepository thingTypeRepository;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
-        private readonly AmazonIoTClient client;
+        private readonly IAmazonIoT amazonIoTClient;
 
 
         public ThingTypeService(
-            AmazonIoTClient client,
+            IAmazonIoT amazonIoTClient,
             IThingTypeRepository thingTypeRepository,
             IMapper mapper,
             IUnitOfWork unitOfWork
@@ -31,19 +31,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             this.thingTypeRepository = thingTypeRepository;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
-            this.client = client;
+            this.amazonIoTClient = amazonIoTClient;
         }
 
         public async Task<ThingTypeDetails> CreateThingType(ThingTypeDetails thingType)
         {
             ArgumentNullException.ThrowIfNull(thingType, nameof(thingType));
 
-            var searchableAttributes = new List<string>();
+            var searchableAttributes = thingType.ThingTypeSearchableAttDtos.Select(s => s.Name).ToList();
 
-            foreach (var s in thingType.ThingTypeSearchableAttDtos)
-            {
-                searchableAttributes.Add(s.Name);
-            }
 
             var createThingTypeRequest = new CreateThingTypeRequest
             {
@@ -54,15 +50,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                     SearchableAttributes = searchableAttributes
                 }
             };
-            var request = await this.client.CreateThingTypeAsync(createThingTypeRequest);
-            if (request.HttpStatusCode == System.Net.HttpStatusCode.OK)
-            {
-                return await CreateThingTypeInDatabase(thingType);
-            }
-            else
-            {
-                throw new InternalServerErrorException("Thing Type is not created in Amazon IoT");
-            }
+            var request = await this.amazonIoTClient.CreateThingTypeAsync(createThingTypeRequest);
+            return request.HttpStatusCode == System.Net.HttpStatusCode.OK
+                ? await CreateThingTypeInDatabase(thingType)
+                : throw new InternalServerErrorException("Thing Type is not created in Amazon IoT");
         }
         private async Task<ThingTypeDetails> CreateThingTypeInDatabase(ThingTypeDetails thingType)
         {
