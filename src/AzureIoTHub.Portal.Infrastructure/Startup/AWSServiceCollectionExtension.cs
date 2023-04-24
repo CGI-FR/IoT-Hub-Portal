@@ -25,7 +25,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         }
         private static IServiceCollection ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
         {
-            _ = services.AddSingleton(new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
+            _ = services.AddSingleton<IAmazonIoT>(new AmazonIoTClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
             _ = services.AddSingleton(async sp =>
             {
                 var endpoint = await sp.GetService<AmazonIoTClient>()!.DescribeEndpointAsync(new Amazon.IoT.Model.DescribeEndpointRequest
@@ -39,8 +39,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                 });
             });
 
-            _ = services.AddSingleton(() => new AmazonSecretsManagerClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
-            //_ = services.AddTransient<AmazonIoTClient>();
+            _ = services.AddSingleton<IAmazonSecretsManager>(new AmazonSecretsManagerClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
 
 
             return services;
