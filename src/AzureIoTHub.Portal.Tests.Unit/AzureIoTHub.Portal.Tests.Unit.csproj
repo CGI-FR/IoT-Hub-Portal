@@ -14,12 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Infrastructure\Services\NewFolder\**" />
-    <EmbeddedResource Remove="Infrastructure\Services\NewFolder\**" />
-    <None Remove="Infrastructure\Services\NewFolder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.18.0" />
     <PackageReference Include="Blazored.LocalStorage.TestExtensions" Version="4.3.0" />
     <PackageReference Include="bunit" Version="1.18.4" />

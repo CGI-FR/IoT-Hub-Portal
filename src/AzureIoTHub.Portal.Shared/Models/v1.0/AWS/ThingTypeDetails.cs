@@ -18,5 +18,6 @@ namespace AzureIoTHub.Portal.Shared.Models.v1._0.AWS
         public string ThingTypeDescription { get; set; }
         public Dictionary<string, string> Tags { get; set; }
         public List<ThingTypeSearchableAttDto> ThingTypeSearchableAttDtos { get; set; }
+
     }
 }
