@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0.AWS
     using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Shared.Models.v1._0.AWS;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     [Authorize]
@@ -28,6 +29,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0.AWS
         /// </summary>
         /// <param name="thingtype">The thing type.</param>
         [HttpPost(Name = "POST Create AWS Thing type")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateThingTypeAsync(ThingTypeDetails thingtype)
         {
             _ = await this.thingTypeService.CreateThingType(thingtype);
