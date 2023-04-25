@@ -113,6 +113,7 @@ Resources:
             Principal:
               Service:
                 - tasks.apprunner.amazonaws.com
+                - cloudformation.amazonaws.com
             Action: 'sts:AssumeRole'
 
 # Création du secret dans AWS Secrets Manager
@@ -179,6 +180,7 @@ Resources:
                 Value: !Sub '${openIdScopeName}'
               - Name: CloudProvider
                 Value: AWS
-          ImageIdentifier: 'public.ecr.aws/cgi-fr/iothub-portal:latest' # Since we are using ECR_PUBLIC, we need to create mannually the ECR and put the ImageIdentifier here
-          ImageRepositoryType: ECR_PUBLIC
-
+              - Name: PortalName
+                Value: IoT Portal DEMO - AWS
+          ImageIdentifier: !Sub '${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/iothub-portal:latest'
+          ImageRepositoryType: ECR
