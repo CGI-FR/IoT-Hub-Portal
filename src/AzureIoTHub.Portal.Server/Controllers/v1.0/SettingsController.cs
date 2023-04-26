@@ -71,7 +71,8 @@ namespace AzureIoTHub.Portal.Server.Controllers.V10
                 PortalName = this.configHandler.PortalName ?? "Azure IoT Hub Portal",
                 Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
                 CopyrightYear = DateTime.Now.Year.ToString(CultureInfo.InvariantCulture),
-                IsIdeasFeatureEnabled = this.configHandler.IdeasEnabled
+                IsIdeasFeatureEnabled = this.configHandler.IdeasEnabled,
+                CloudProvider = this.configHandler.CloudProvider
             });
         }
     }

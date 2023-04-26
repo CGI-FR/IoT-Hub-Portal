@@ -8,7 +8,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.AWS
     using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Server.Controllers.v1._0.AWS;
-    using AzureIoTHub.Portal.Shared.Models.v1._0.AWS;
+    using AzureIoTHub.Portal.Models.v10.AWS;
     using Microsoft.AspNetCore.Mvc;
     using Moq;
     using NUnit.Framework;
