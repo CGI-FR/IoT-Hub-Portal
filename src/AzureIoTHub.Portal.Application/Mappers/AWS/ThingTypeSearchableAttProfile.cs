@@ -5,7 +5,7 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
 {
     using AutoMapper;
     using AzureIoTHub.Portal.Domain.Entities.AWS;
-    using AzureIoTHub.Portal.Shared.Models.v1._0.AWS;
+    using AzureIoTHub.Portal.Models.v10.AWS;
 
     public class ThingTypeSearchableAttProfile : Profile
     {

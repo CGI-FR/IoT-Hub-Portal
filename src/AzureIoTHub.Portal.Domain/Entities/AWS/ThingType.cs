@@ -10,8 +10,8 @@ namespace AzureIoTHub.Portal.Domain.Entities.AWS
     {
         [Required]
         public string Name { get; set; } = default!;
-        public string Description { get; set; } = default!;
-        public ICollection<ThingTypeTag> Tags { get; set; } = default!;
-        public ICollection<ThingTypeSearchableAtt> ThingTypeSearchableAttributes { get; set; } = default!;
+        public string? Description { get; set; } = default!;
+        public ICollection<ThingTypeTag>? Tags { get; set; } = default!;
+        public ICollection<ThingTypeSearchableAtt>? ThingTypeSearchableAttributes { get; set; } = default!;
     }
 }

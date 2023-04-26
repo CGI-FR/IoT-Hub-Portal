@@ -18,7 +18,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
-    using AzureIoTHub.Portal.Shared.Models.v1._0.AWS;
+    using AzureIoTHub.Portal.Models.v10.AWS;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
@@ -104,6 +104,43 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             MockRepository.VerifyAll();
         }
 
+        [Test]
+        public async Task CreateAThingTypeWithNullDescriptionTagsAndSearchableAttributeShouldReturnAValue()
+        {
+            // Arrange
+
+
+            var thingDevice = new ThingTypeDetails()
+            {
+                ThingTypeID = Fixture.Create<string>(),
+                ThingTypeName = Fixture.Create<string>(),
+                ThingTypeDescription = null,
+                Tags = null,
+                ThingTypeSearchableAttDtos = null
+            };
+
+            _ = this.amazonIotClient.Setup(s3 => s3.CreateThingTypeAsync(It.IsAny<CreateThingTypeRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CreateThingTypeResponse
+                {
+                    HttpStatusCode = HttpStatusCode.OK
+                });
+
+
+            _ = this.mockThingTypeRepository.Setup(repository => repository.InsertAsync(It.IsAny<ThingType>()))
+                .Returns(Task.CompletedTask);
+
+            _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
+                .Returns(Task.CompletedTask);
+
+            //Act
+            var result = await this.thingTypeService.CreateThingType(thingDevice);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(thingDevice.ThingTypeID, result.ThingTypeID);
+
+            MockRepository.VerifyAll();
+        }
         [Test]
         public void CreateANullThingTypeShouldThrowNUllPointerException()
         {

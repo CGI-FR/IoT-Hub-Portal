@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Infrastructure
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Shared.Constants;
+    using AzureIoTHub.Portal.Shared.Constants;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
 

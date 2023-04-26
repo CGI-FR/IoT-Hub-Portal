@@ -11,7 +11,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using AzureIoTHub.Portal.Domain.Entities.AWS;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Shared.Models.v1._0.AWS;
+    using AzureIoTHub.Portal.Models.v10.AWS;
 
     public class ThingTypeService : IThingTypeService
     {
@@ -39,7 +39,11 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             ArgumentNullException.ThrowIfNull(thingType, nameof(thingType));
 
             var searchableAttributes = thingType.ThingTypeSearchableAttDtos.Select(s => s.Name).ToList();
-
+            var tags = thingType.Tags.Select(pair => new Tag
+            {
+                Key = pair.Key,
+                Value = pair.Value
+            }).ToList();
 
             var createThingTypeRequest = new CreateThingTypeRequest
             {
@@ -48,7 +52,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 {
                     ThingTypeDescription = thingType.ThingTypeDescription,
                     SearchableAttributes = searchableAttributes
-                }
+                },
+                Tags = tags
             };
             var request = await this.amazonIoTClient.CreateThingTypeAsync(createThingTypeRequest);
             return request.HttpStatusCode == System.Net.HttpStatusCode.OK

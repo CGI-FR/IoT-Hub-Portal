@@ -7,6 +7,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Domain.Shared.Constants;
     using AzureIoTHub.Portal.Infrastructure.Helpers;
     using AzureIoTHub.Portal.Infrastructure.ServicesHealthCheck;
+    using AzureIoTHub.Portal.Shared.Constants;
     using EntityFramework.Exceptions.PostgreSQL;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;

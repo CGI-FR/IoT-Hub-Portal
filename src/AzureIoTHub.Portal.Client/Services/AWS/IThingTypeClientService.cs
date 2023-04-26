@@ -1,13 +1,13 @@
 // Copyright (c) CGI France. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AzureIoTHub.Portal.Application.Services.AWS
+namespace AzureIoTHub.Portal.Client.Services.AWS
 {
     using AzureIoTHub.Portal.Models.v10.AWS;
 
-    public interface IThingTypeService
+    public interface IThingTypeClientService
     {
-        //Create a thing type
-        Task<ThingTypeDetails> CreateThingType(ThingTypeDetails thingType);
+        Task CreateThingType(ThingTypeDetails thingType);
+
     }
 }
