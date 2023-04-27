@@ -99,6 +99,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure
         [TestCase(nameof(ConfigHandlerBase.AWSAccessSecret))]
         [TestCase(nameof(ConfigHandlerBase.AWSRegion))]
         [TestCase(nameof(ConfigHandlerBase.AWSS3StorageConnectionString))]
+        [TestCase(nameof(ConfigHandlerBase.AWSBucketName))]
         public void SettingsShouldThrowError(string configPropertyName)
         {
             // Arrange

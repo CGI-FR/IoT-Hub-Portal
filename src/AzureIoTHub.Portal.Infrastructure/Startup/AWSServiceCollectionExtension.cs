@@ -6,12 +6,15 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using Amazon;
     using Amazon.IoT;
     using Amazon.IotData;
+    using Amazon.S3;
     using Amazon.SecretsManager;
     using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
+    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Infrastructure.Managers;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class AWSServiceCollectionExtension
@@ -55,6 +58,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         private static IServiceCollection ConfigureAWSRepositories(this IServiceCollection services)
         {
             _ = services.AddScoped<IThingTypeRepository, ThingTypeRepository>();
+
+            _ = services.AddSingleton(() => new AmazonS3Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
+
+            _ = services.AddTransient<IDeviceModelImageManager, AwsDeviceModelImageManager>();
 
             return services;
         }
