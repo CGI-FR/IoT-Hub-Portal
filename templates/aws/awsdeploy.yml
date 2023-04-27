@@ -105,16 +105,89 @@ Resources:
   InstanceRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: AWSAppRunner
+      RoleName: !Join [ "-", [!Ref UniqueSolutionPrefix, "AWSAppRunner"] ]
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
               Service:
+                - apprunner.amazonaws.com
                 - tasks.apprunner.amazonaws.com
+                - build.apprunner.amazonaws.com
                 - cloudformation.amazonaws.com
             Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: SMPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                Resource: !Join
+                  - ''
+                  - - !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:'
+                    - !Ref UniqueSolutionPrefix
+                    - '-secretsmanager-*'
+        - PolicyName: AmazonElasticContainerRegistryPublicReadOnly
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'ecr-public:GetAuthorizationToken'
+                  - 'sts:GetServiceBearerToken'
+                  - 'ecr-public:BatchCheckLayerAvailability'
+                  - 'ecr-public:GetRepositoryPolicy'
+                  - 'ecr-public:DescribeRepositories'
+                  - 'ecr-public:DescribeRegistries'
+                  - 'ecr-public:DescribeImages'
+                  - 'ecr-public:DescribeImageTags'
+                  - 'ecr-public:GetRepositoryCatalogData'
+                  - 'ecr-public:GetRegistryCatalogData'
+                Resource: '*'
+        - PolicyName: AWSAppRunnerFullAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: 'iam:CreateServiceLinkedRole'
+                Resource: 'arn:aws:iam::*:role/aws-service-role/apprunner.amazonaws.com/AWSServiceRoleForAppRunner'
+                Condition:
+                  StringLike:
+                    iam:AWSServiceName: 'apprunner.amazonaws.com'
+              - Effect: Allow
+                Action: 'iam:PassRole'
+                Resource: '*'
+                Condition:
+                  StringLike:
+                    iam:PassedToService: 'apprunner.amazonaws.com'
+              - Sid: AppRunnerAdminAccess
+                Effect: Allow
+                Action: 'apprunner:*'
+                Resource: '*'
+        - PolicyName: AWSAppRunnerServicePolicyForECRAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'ecr:GetDownloadUrlForLayer'
+                  - 'ecr:BatchGetImage'
+                  - 'ecr:DescribeImages'
+                  - 'ecr:GetAuthorizationToken'
+                  - 'ecr:BatchCheckLayerAvailability'
+                Resource: '*'
+        - PolicyName: ECR-all
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'ecr:*'
+                  - 'ecr-public:*'
+                Resource: '*'
 
 # Création du secret dans AWS Secrets Manager
   SecretManager:
@@ -126,10 +199,11 @@ Resources:
       SecretString:
         !Join
           - ""
-          - - '{"AWS__S3Storage__ConnectionString":'
-            - !Sub '"https://s3.${AWS::Region}.amazonaws.com/'
-            - !Join [ "-", [!Ref UniqueSolutionPrefix, "bucket"] ]
-            - '",'
+          - - '{'
+            - '"AWS__S3Storage__ConnectionString":'
+            - !Sub 'https://s3.${AWS::Region}.amazonaws.com/'
+            - !Ref UniqueSolutionPrefix
+            - '-bucket",'
             - '"AWS__Access":'
             - !Sub '"${awsAccess}",'
             - '"AWS__AccessSecret":'
@@ -137,11 +211,10 @@ Resources:
             - '"AWS__Region":'
             - !Sub '"${AWS::Region}",'
             - '"PostgreSQL__ConnectionString":'
-            - !Sub '"postgresql://${pgsqlAdminLogin}:${pgsqlAdminPassword}@'
+            - '"Server="'
             - !GetAtt PostgreSQLDB.Endpoint.Address
-            - ':5432/'
-            - !Join [ "_", [!Ref UniqueSolutionPrefix, "cgigeiotdemo"] ]
-            - '"}'
+            - !Sub ';Database=${UniqueSolutionPrefix}_cgigeiotdemo;Port=5432;User Id=${pgsqlAdminLogin};Password=${pgsqlAdminPassword};Pooling=true;Connection Lifetime=0;Command Timeout=0;"'
+            - '}'
 
 #============= App Runner - To Lunch the App ==============
   AppRunnerService:
