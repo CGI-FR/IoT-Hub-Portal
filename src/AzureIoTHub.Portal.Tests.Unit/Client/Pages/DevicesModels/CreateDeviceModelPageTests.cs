@@ -23,6 +23,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
     using MudBlazor.Services;
     using NUnit.Framework;
     using UnitTests.Mocks;
+    using AzureIoTHub.Portal.Client.Services.AWS;
 
     [TestFixture]
     public class CreateDeviceModelPageTests : BlazorUnitTest
@@ -30,6 +31,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         private Mock<IDialogService> mockDialogService;
         private Mock<ISnackbar> mockSnackbarService;
         private Mock<IDeviceModelsClientService> mockDeviceModelsClientService;
+        private Mock<IThingTypeClientService> mockThingTypeClientService;
         private Mock<ILoRaWanDeviceModelsClientService> mockLoRaWanDeviceModelsClientService;
 
         public override void Setup()
@@ -39,11 +41,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             this.mockDialogService = MockRepository.Create<IDialogService>();
             this.mockSnackbarService = MockRepository.Create<ISnackbar>();
             this.mockDeviceModelsClientService = MockRepository.Create<IDeviceModelsClientService>();
+            this.mockThingTypeClientService = MockRepository.Create<IThingTypeClientService>();
             this.mockLoRaWanDeviceModelsClientService = MockRepository.Create<ILoRaWanDeviceModelsClientService>();
 
             _ = Services.AddSingleton(this.mockDialogService.Object);
             _ = Services.AddSingleton(this.mockSnackbarService.Object);
             _ = Services.AddSingleton(this.mockDeviceModelsClientService.Object);
+            _ = Services.AddSingleton(this.mockThingTypeClientService.Object);
+            _ = Services.AddSingleton(this.mockLoRaWanDeviceModelsClientService.Object);
             _ = Services.AddSingleton(this.mockLoRaWanDeviceModelsClientService.Object);
 
             Services.Add(new ServiceDescriptor(typeof(IResizeObserver), new MockResizeObserver()));
@@ -56,7 +61,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var modelName = Guid.NewGuid().ToString();
             var description = Guid.NewGuid().ToString();
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.CreateDeviceModel(It.Is<DeviceModelDto>(model =>
@@ -90,7 +95,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var modelName = Guid.NewGuid().ToString();
             var description = Guid.NewGuid().ToString();
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.CreateDeviceModel(It.Is<DeviceModelDto>(model =>
@@ -118,7 +123,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var propertyName = Guid.NewGuid().ToString();
             var displayName = Guid.NewGuid().ToString();
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.CreateDeviceModel(It.IsAny<DeviceModelDto>()))
@@ -161,7 +166,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void ClickOnRemovePropertyShouldRemoveTheProperty()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             _ = this.mockDeviceModelsClientService.Setup(service =>
                     service.CreateDeviceModel(It.IsAny<DeviceModelDto>()))
@@ -201,7 +206,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void WhenLoraFeatureIsDisabledModelDetailsShouldNotDisplayLoRaWANSwitch()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = false, CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<CreateDeviceModelPage>();
@@ -216,7 +221,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void WhenLoraFeatureIsEnabledModelDetailsShouldDisplayLoRaWANSwitch()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<CreateDeviceModelPage>();
@@ -231,7 +236,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
         public void WhenLoraFeatureIsEnabledModelDetailsShouldDisplayLoRaWANTab()
         {
             // Arrange
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             // Act
             var cut = RenderComponent<CreateDeviceModelPage>();
@@ -258,7 +263,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var modelName = Guid.NewGuid().ToString();
             var description = Guid.NewGuid().ToString();
 
-            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true });
+            _ = Services.AddSingleton(new PortalSettings { IsLoRaSupported = true, CloudProvider = "Azure" });
 
             _ = this.mockLoRaWanDeviceModelsClientService.Setup(service =>
                     service.CreateDeviceModel(It.Is<LoRaDeviceModelDto>(model =>
