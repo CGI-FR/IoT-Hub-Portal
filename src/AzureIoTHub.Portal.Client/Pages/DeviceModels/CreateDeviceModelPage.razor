@@ -23,7 +23,7 @@
 @if (Portal.CloudProvider.Equals(CloudProviders.AWS))
 {
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Create Thing Type</MudText>
-
+    
 }
 else
 {
@@ -57,7 +57,7 @@ else
             }
 
             <MudItem xs="12" Class="d-flex justify-center py-2 px-1 mt-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Save())" id="SaveButton" Disabled="isProcessing">Save Changes</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" id="SaveButton" Disabled="isProcessing">Save Changes</MudButton>
             </MudItem>
         </MudItem>
         <MudItem xs="12" sm="8" md="9">
@@ -124,29 +124,28 @@ else
                                             <TitleContent><MudText Typo="Typo.h6">Tags</MudText></TitleContent>
                                             <ChildContent>
                                                 <MudGrid>
+                                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => ThingTypeTags.Add(new ThingTypeTagDetails()))" StartIcon="@Icons.Material.Filled.Add" id="addTagButton">Add tag</MudButton>
                                                     <MudItem xs="12">
-                                                        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Tags.Add("", ""))" StartIcon="@Icons.Material.Filled.Add" id="addTagButton">Add tag</MudButton>
-                                                    </MudItem>
-                                                    <MudItem xs="12">
-                                                        @foreach (var tag in this.Tags)
+                                                        @foreach (var tag in this.ThingTypeTags)
                                                         {
                                                             <MudGrid id="@($"tag-{tag.Key}")">
                                                                 <MudItem md="4" xs="12">
-                                                                    <MudTextField id="@nameof(tag.Key)"  
-                                                                      Label="Key"
-                                                                      Variant="Variant.Outlined"
-                                                                      For="@(()=> tag.Key)"/>
+                                                                    <MudTextField id="@nameof(tag.Key)"
+                                                                          Label="Key"
+                                                                          @bind-Value="@tag.Key"
+                                                                          Variant="Variant.Outlined"
+                                                                          For="@(()=> tag.Key)" />
                                                                 </MudItem>
                                                                 <MudItem md="3" xs="12">
                                                                     <MudTextField id="@nameof(tag.Value)"
-                                                                      Label="Value"
-                                                                      Variant="Variant.Outlined"
-                                                                      For="@(()=> tag.Value)"
-                                                                      Required="true" />
+                                                                          Label="Value"
+                                                                          @bind-Value="@tag.Value"
+                                                                          Variant="Variant.Outlined"
+                                                                          For="@(()=> tag.Value)" />
                                                                 </MudItem>
-                                       
+
                                                                 <MudItem md="1" xs="3">
-                                                                    <MudIconButton id="deleteTagButton" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Tags.Remove(tag.Key))">Remove</MudIconButton>
+                                                                    <MudIconButton id="deleteTagButton" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => ThingTypeTags.Remove(tag))">Remove</MudIconButton>
                                                                 </MudItem>
                                                             </MudGrid>
                                                         }
@@ -245,6 +244,7 @@ else
                                                             <MudItem md="4" xs="12">
                                                                 <MudTextField id="@nameof(search.Name)"
                                                                       Label="Name"
+                                                                      @bind-Value="@search.Name"
                                                                       Variant="Variant.Outlined"
                                                                       For="@(()=> search.Name)" />
                                                             </MudItem>
@@ -290,8 +290,8 @@ else
 </MudForm>
 
 @code {
-        [CascadingParameter]
-        public Error Error { get; set; } = default!;
+    [CascadingParameter]
+    public Error Error { get; set; } = default!;
 
     private MudForm form = default!;
 
@@ -301,8 +301,9 @@ else
     private DevicePropertyValidator propertiesValidator = new DevicePropertyValidator();
     private List<DeviceModelCommandDto> Commands { get; set; } = new();
     private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
-    private Dictionary<string, string> Tags { get; set; } = default!;
+    private Dictionary<string, string> Tags { get; set; } = new Dictionary<string, string>();
     private List<ThingTypeSearchableAttDto> searchableAtt { get; set; } = new List<ThingTypeSearchableAttDto>();
+    private List<ThingTypeTagDetails> ThingTypeTags { get; set; } = new List<ThingTypeTagDetails>();
     private LoRaDeviceModelCommandValidator CommandValidator = new LoRaDeviceModelCommandValidator();
     internal ThingTypeDetails ThingType { get; set; } = new ThingTypeDetails()
     {
@@ -521,7 +522,7 @@ else
         // Displays validation error message for each field
         await form.Validate();
 
-        Console.WriteLine(ThingType);
+
         if (!thingTypeValidator.Validate(ThingType).IsValid)
         {
             Snackbar.Add("One or more validation errors occurred", Severity.Error);
@@ -533,6 +534,21 @@ else
 
         try
         {
+
+            if(this.ThingTypeTags != null)
+            {
+                if(this.ThingTypeTags.Count() > 0)
+                {
+                    foreach (var tag in this.ThingTypeTags)
+                    {
+                        this.Tags.Add(tag.Key, tag.Value);
+                    }
+                }
+            }
+
+            ThingType.Tags = this.Tags;
+            ThingType.ThingTypeSearchableAttDtos = searchableAtt;
+
             await ThingTypeClientService.CreateThingType(ThingType);
             Snackbar.Add("Thing Type successfully created.", Severity.Success);
 
@@ -543,6 +559,8 @@ else
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
+            //Reinitialize Tags When an error occured
+            this.Tags = new Dictionary<string, string>();
         }
         finally
         {
