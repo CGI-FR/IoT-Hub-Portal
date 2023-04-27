@@ -38,12 +38,22 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
         {
             ArgumentNullException.ThrowIfNull(thingType, nameof(thingType));
 
-            var searchableAttributes = thingType.ThingTypeSearchableAttDtos.Select(s => s.Name).ToList();
-            var tags = thingType.Tags.Select(pair => new Tag
+            List<string> searchableAttributes = null!;
+            List<Tag> tags = null!;
+
+            if (thingType.ThingTypeSearchableAttDtos != null)
             {
-                Key = pair.Key,
-                Value = pair.Value
-            }).ToList();
+                searchableAttributes = thingType.ThingTypeSearchableAttDtos.Select(s => s.Name).ToList();
+            }
+            if (thingType.Tags != null)
+            {
+                tags = thingType.Tags.Select(pair => new Tag
+                {
+                    Key = pair.Key,
+                    Value = pair.Value
+                }).ToList();
+            }
+
 
             var createThingTypeRequest = new CreateThingTypeRequest
             {
