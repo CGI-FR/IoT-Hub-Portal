@@ -24,7 +24,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             return services
                 .ConfigureAWSClient(configuration)
                 .ConfigureAWSServices()
-                .ConfigureAWSRepositories();
+                .ConfigureAWSRepositories()
+                .ConfigureAWSDeviceModelImage();
         }
         private static IServiceCollection ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
         {
@@ -44,6 +45,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 
             _ = services.AddSingleton<IAmazonSecretsManager>(new AmazonSecretsManagerClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
 
+            _ = services.AddSingleton<IAmazonS3>(new AmazonS3Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
 
             return services;
         }
@@ -59,7 +61,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         {
             _ = services.AddScoped<IThingTypeRepository, ThingTypeRepository>();
 
-            _ = services.AddSingleton(() => new AmazonS3Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
+            return services;
+        }
+        private static IServiceCollection ConfigureAWSDeviceModelImage(this IServiceCollection services)
+        {
 
             _ = services.AddTransient<IDeviceModelImageManager, AwsDeviceModelImageManager>();
 

@@ -4,6 +4,7 @@
 namespace AzureIoTHub.Portal.Infrastructure.Managers
 {
     using System;
+    using System.Reflection;
     using System.Threading.Tasks;
     using Amazon;
     using Amazon.S3;
@@ -107,13 +108,16 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
         public async Task<string> SetDefaultImageToModel(string deviceModelId)
         {
             this.logger.LogInformation($"Uploading Default Image to AWS S3 storage");
+            var currentAssembly = Assembly.GetExecutingAssembly();
+            var defaultImageStream = currentAssembly
+                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
 
             //Portal must be able to upload images to Amazon S3
             var putObjectRequest = new PutObjectRequest
             {
                 BucketName = this.configHandler.AWSBucketName,
                 Key = deviceModelId,
-                FilePath = $"../Resources/{this.imageOptions.Value.DefaultImageName}",
+                InputStream = defaultImageStream,
                 ContentType = "image/*", // image content type
                 Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
 
@@ -148,11 +152,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
 
             this.logger.LogInformation($"Initializing default Image to AWS S3 storage");
 
+            var currentAssembly = Assembly.GetExecutingAssembly();
+            var defaultImageStream = currentAssembly
+                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
             var putObjectRequest = new PutObjectRequest
             {
                 BucketName = this.configHandler.AWSBucketName,
                 Key = this.imageOptions.Value.DefaultImageName,
-                FilePath = $"../Resources/{this.imageOptions.Value.DefaultImageName}",
+                InputStream = defaultImageStream,
                 ContentType = "image/*", // image content type
                 Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
 
