@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AzureIoTHub.Portal.Postgres.Migrations
 {
     [DbContext(typeof(PortalDbContext))]
-    [Migration("20230426115705_ThingType")]
+    [Migration("20230427183626_ThingType")]
     partial class ThingType
     {
         /// <inheritdoc />
