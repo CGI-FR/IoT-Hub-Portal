@@ -251,6 +251,8 @@ Resources:
         UnhealthyThreshold: 5
       SourceConfiguration:
         AutoDeploymentsEnabled: false
+        AuthenticationConfiguration:
+          AccessRoleArn: !GetAtt InstanceRole.Arn
         ImageRepository: 
           ImageConfiguration: 
             Port: 80 # This is The port that your application listens to in the container. It can be changed (To see)
