@@ -112,10 +112,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
             var defaultImageStream = currentAssembly
                                             .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
 
-            var currentAssembly = Assembly.GetExecutingAssembly();
-
-            var defaultImageStream = currentAssembly
-                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
 
             //Portal must be able to upload images to Amazon S3
             var putObjectRequest = new PutObjectRequest
@@ -161,7 +157,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
 
             var defaultImageStream = currentAssembly
                                             .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
- 
             var putObjectRequest = new PutObjectRequest
             {
                 BucketName = this.configHandler.AWSBucketName,
