@@ -22,6 +22,7 @@ namespace AzureIoTHub.Portal.Tests.E2E.Pages
 
         public void AddDeviceModel(string name, string description)
         {
+
             _ = wait.Until(d => d.FindElement(By.Id("addDeviceModelButton")).Displayed);
 
             WebDriverFactory.Default.FindElement(By.Id("addDeviceModelButton")).Click();

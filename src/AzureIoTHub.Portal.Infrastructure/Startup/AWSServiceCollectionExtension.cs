@@ -8,8 +8,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using Amazon.IotData;
     using Amazon.S3;
     using Amazon.SecretsManager;
-    using AzureIoTHub.Portal.Application.Managers;
+    using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain;
+    using AzureIoTHub.Portal.Domain.Repositories;
+    using AzureIoTHub.Portal.Infrastructure.Repositories;
+    using AzureIoTHub.Portal.Infrastructure.Services.AWS;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Infrastructure.Managers;
     using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain.Repositories;
@@ -43,7 +47,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
                 });
             });
 
-
             _ = services.AddSingleton<IAmazonSecretsManager>(new AmazonSecretsManagerClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
 
             _ = services.AddSingleton<IAmazonS3>(new AmazonS3Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
@@ -64,7 +67,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 
             return services;
         }
-
+   
         private static IServiceCollection ConfigureAWSDeviceModelImages(this IServiceCollection services)
         {
             _ = services.AddTransient<IDeviceModelImageManager, AwsDeviceModelImageManager>();

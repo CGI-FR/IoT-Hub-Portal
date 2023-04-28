@@ -108,6 +108,9 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
         public async Task<string> SetDefaultImageToModel(string deviceModelId)
         {
             this.logger.LogInformation($"Uploading Default Image to AWS S3 storage");
+            var currentAssembly = Assembly.GetExecutingAssembly();
+            var defaultImageStream = currentAssembly
+                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
 
             var currentAssembly = Assembly.GetExecutingAssembly();
 
@@ -158,7 +161,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
 
             var defaultImageStream = currentAssembly
                                             .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
-
+ 
             var putObjectRequest = new PutObjectRequest
             {
                 BucketName = this.configHandler.AWSBucketName,

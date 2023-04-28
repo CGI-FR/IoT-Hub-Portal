@@ -8,5 +8,6 @@ namespace AzureIoTHub.Portal.Domain.Entities.AWS
     public class ThingTypeSearchableAtt : EntityBase
     {
         public string Name { get; set; } = default!;
+
     }
 }
