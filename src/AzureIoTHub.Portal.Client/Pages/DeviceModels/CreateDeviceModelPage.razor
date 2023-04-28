@@ -124,7 +124,7 @@ else
                                             <TitleContent><MudText Typo="Typo.h6">Tags</MudText></TitleContent>
                                             <ChildContent>
                                                 <MudGrid>
-                                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => ThingTypeTags.Add(new ThingTypeTagDetails()))" StartIcon="@Icons.Material.Filled.Add" id="addTagButton">Add tag</MudButton>
+                                                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => ThingTypeTags.Add(new ThingTypeTagDto()))" StartIcon="@Icons.Material.Filled.Add" id="addTagButton">Add tag</MudButton>
                                                     <MudItem xs="12">
                                                         @foreach (var tag in this.ThingTypeTags)
                                                         {
@@ -303,7 +303,7 @@ else
     private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
     private Dictionary<string, string> Tags { get; set; } = new Dictionary<string, string>();
     private List<ThingTypeSearchableAttDto> searchableAtt { get; set; } = new List<ThingTypeSearchableAttDto>();
-    private List<ThingTypeTagDetails> ThingTypeTags { get; set; } = new List<ThingTypeTagDetails>();
+    private List<ThingTypeTagDto> ThingTypeTags { get; set; } = new List<ThingTypeTagDto>();
     private LoRaDeviceModelCommandValidator CommandValidator = new LoRaDeviceModelCommandValidator();
     internal ThingTypeDetails ThingType { get; set; } = new ThingTypeDetails()
     {
@@ -417,15 +417,15 @@ else
 
         if(Portal.CloudProvider.Equals(CloudProviders.AWS))
         {
-            await this.saveThingType();
+            await this.SaveThingType();
         }
         else
         {
-            await this.saveDeviceModel();
+            await this.SaveDeviceModel();
         }
     }
 
-    private async Task saveDeviceModel()
+    private async Task SaveDeviceModel()
     {
         isProcessing = true;
 
@@ -515,7 +515,8 @@ else
             isProcessing = false;
         }
     }
-    private async Task saveThingType()
+
+    private async Task SaveThingType()
     {
         isProcessing = true;
 

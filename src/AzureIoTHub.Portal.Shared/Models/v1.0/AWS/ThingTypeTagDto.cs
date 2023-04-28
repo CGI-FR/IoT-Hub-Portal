@@ -3,7 +3,7 @@
 
 namespace AzureIoTHub.Portal.Models.v10.AWS
 {
-    public class ThingTypeTagDetails
+    public class ThingTypeTagDto
     {
         public string Key { get; set; } = default!;
         public string Value { get; set; } = default!;

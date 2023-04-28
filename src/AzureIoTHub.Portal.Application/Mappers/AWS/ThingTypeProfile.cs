@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
     using AutoMapper;
     using AzureIoTHub.Portal.Domain.Entities.AWS;
     using AzureIoTHub.Portal.Models.v10.AWS;
-
+    using Amazon.IoT.Model;
     public class ThingTypeProfile : Profile
     {
         public ThingTypeProfile()
@@ -31,6 +31,25 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
                 .ForMember(dest => dest.ThingTypeDescription, opts => opts.MapFrom(src => src.Description))
                 .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.ToDictionary(tag => tag.Key, tag => tag.Value)))
                 .ForMember(dest => dest.ThingTypeSearchableAttDtos, opts => opts.MapFrom(src => src.ThingTypeSearchableAttributes.ToList()));
+
+            _ = CreateMap<ThingTypeDetails, CreateThingTypeRequest>()
+                .ForMember(dest => dest.ThingTypeName, opts => opts.MapFrom(src => src.ThingTypeName))
+                .ForMember(dest => dest.ThingTypeProperties, opts => opts.MapFrom(src => new ThingTypeProperties
+                {
+                    ThingTypeDescription = src.ThingTypeDescription,
+                    SearchableAttributes = src.ThingTypeSearchableAttDtos.Select(pair => pair.Name).ToList() ?? new List<string>()
+                }))
+                .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.Select(pair => new Tag
+                {
+                    Key = pair.Key,
+                    Value = pair.Value
+                }).ToList() ?? new List<Tag>()));
+
+            _ = CreateMap<CreateThingTypeRequest, ThingTypeDetails>()
+                .ForMember(dest => dest.ThingTypeName, opts => opts.MapFrom(src => src.ThingTypeName))
+                .ForMember(dest => dest.ThingTypeDescription, opts => opts.MapFrom(src => src.ThingTypeProperties.ThingTypeDescription))
+                .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.ToDictionary(tag => tag.Key, tag => tag.Value)))
+                .ForMember(dest => dest.ThingTypeSearchableAttDtos, opts => opts.MapFrom(src => src.ThingTypeProperties.SearchableAttributes.ToList()));
 
         }
     }

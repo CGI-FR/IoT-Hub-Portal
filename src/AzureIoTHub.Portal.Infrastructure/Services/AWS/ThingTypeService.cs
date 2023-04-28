@@ -38,37 +38,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
         {
             ArgumentNullException.ThrowIfNull(thingType, nameof(thingType));
 
-            List<string> searchableAttributes = null!;
-            List<Tag> tags = null!;
+            var createThingTypeRequest = this.mapper.Map<CreateThingTypeRequest>(thingType);
 
-            if (thingType.ThingTypeSearchableAttDtos != null)
-            {
-                searchableAttributes = thingType.ThingTypeSearchableAttDtos.Select(s => s.Name).ToList();
-            }
-            if (thingType.Tags != null)
-            {
-                tags = thingType.Tags.Select(pair => new Tag
-                {
-                    Key = pair.Key,
-                    Value = pair.Value
-                }).ToList();
-            }
-
-
-            var createThingTypeRequest = new CreateThingTypeRequest
-            {
-                ThingTypeName = thingType.ThingTypeName,
-                ThingTypeProperties = new ThingTypeProperties
-                {
-                    ThingTypeDescription = thingType.ThingTypeDescription,
-                    SearchableAttributes = searchableAttributes
-                },
-                Tags = tags
-            };
             var request = await this.amazonIoTClient.CreateThingTypeAsync(createThingTypeRequest);
             return request.HttpStatusCode == System.Net.HttpStatusCode.OK
                 ? await CreateThingTypeInDatabase(thingType)
-                : throw new InternalServerErrorException("Thing Type is not created in Amazon IoT");
+                : throw new InternalServerErrorException("The creation of the thing type failed due to an error in the Amazon IoT API.");
         }
         private async Task<ThingTypeDetails> CreateThingTypeInDatabase(ThingTypeDetails thingType)
         {

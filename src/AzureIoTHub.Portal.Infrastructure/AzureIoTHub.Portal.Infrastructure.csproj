@@ -4,7 +4,6 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <UserSecretsId>626a6788-9750-42c8-ab3c-5b9e6c95260e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -107,7 +106,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.IoT" Version="3.7.105.22" />
+    <PackageReference Include="AWSSDK.IoT" Version="3.7.107.5" />
     <PackageReference Include="AWSSDK.IotData" Version="3.7.102.5" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.104.6" />
     <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.102.21" />
