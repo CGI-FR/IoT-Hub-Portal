@@ -7,7 +7,6 @@ namespace AzureIoTHub.Portal.Domain.Entities.AWS
 
     public class ThingTypeTag : EntityBase
     {
-        
         public string Key { get; set; } = default!;
         public string Value { get; set; } = default!;
 
