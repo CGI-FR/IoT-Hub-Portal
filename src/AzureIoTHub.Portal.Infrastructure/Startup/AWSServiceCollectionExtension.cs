@@ -15,10 +15,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Infrastructure.Managers;
-    using AzureIoTHub.Portal.Application.Services.AWS;
-    using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Infrastructure.Repositories;
-    using AzureIoTHub.Portal.Infrastructure.Services.AWS;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class AWSServiceCollectionExtension
@@ -67,7 +63,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
 
             return services;
         }
-   
         private static IServiceCollection ConfigureAWSDeviceModelImages(this IServiceCollection services)
         {
             _ = services.AddTransient<IDeviceModelImageManager, AwsDeviceModelImageManager>();
