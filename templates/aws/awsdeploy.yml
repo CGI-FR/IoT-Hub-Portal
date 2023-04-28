@@ -99,7 +99,7 @@ Resources:
   PgSQLSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
-      DBSubnetGroupName: pgSqlsubnetgroup
+      DBSubnetGroupName: !Join [ "-", [!Ref UniqueSolutionPrefix, "pgSqlsubnetgroup"] ]
       DBSubnetGroupDescription: Subnets available for the database
       SubnetIds: # A voir le nombre de subnets qu'on veut dans le groupe
         - !Ref Subnet1
