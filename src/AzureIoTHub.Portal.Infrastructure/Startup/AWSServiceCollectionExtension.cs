@@ -11,9 +11,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
     using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Infrastructure.Managers;
-    using AzureIoTHub.Portal.Application.Services;
     using AzureIoTHub.Portal.Application.Services.AWS;
-    using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Repositories;
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
@@ -26,7 +24,8 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             return services
                 .ConfigureAWSClient(configuration)
                 .ConfigureAWSServices()
-                .ConfigureAWSRepositories();
+                .ConfigureAWSRepositories()
+                .ConfigureAWSDeviceModelImages();
         }
         private static IServiceCollection ConfigureAWSClient(this IServiceCollection services, ConfigHandler configuration)
         {
@@ -48,7 +47,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
             _ = services.AddSingleton<IAmazonSecretsManager>(new AmazonSecretsManagerClient(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
 
             _ = services.AddSingleton<IAmazonS3>(new AmazonS3Client(configuration.AWSAccess, configuration.AWSAccessSecret, RegionEndpoint.GetBySystemName(configuration.AWSRegion)));
-            _ = services.AddTransient<IDeviceModelImageManager, AwsDeviceModelImageManager>();
+
             return services;
         }
 
@@ -62,6 +61,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Startup
         private static IServiceCollection ConfigureAWSRepositories(this IServiceCollection services)
         {
             _ = services.AddScoped<IThingTypeRepository, ThingTypeRepository>();
+
+            return services;
+        }
+
+        private static IServiceCollection ConfigureAWSDeviceModelImages(this IServiceCollection services)
+        {
+            _ = services.AddTransient<IDeviceModelImageManager, AwsDeviceModelImageManager>();
 
             return services;
         }
