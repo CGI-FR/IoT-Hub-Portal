@@ -62,6 +62,11 @@ Resources:
       Type: AWS::S3::Bucket
       Properties: 
         BucketName: !Join [ "-", [!Ref UniqueSolutionPrefix, "bucket"] ] 
+        PublicAccessBlockConfiguration: 
+          BlockPublicAcls: false
+          BlockPublicPolicy: false
+          IgnorePublicAcls: false 
+          RestrictPublicBuckets: false
 
 #======== PostgreSQL database ==========
   PostgreSQLDB:
@@ -189,32 +194,44 @@ Resources:
                   - 'ecr-public:*'
                 Resource: '*'
 
-# Création du secret dans AWS Secrets Manager
-  SecretManager:
+# AWS Secrets Manager
+  SMAWSKey:
     Type: AWS::SecretsManager::Secret
     DeletionPolicy: Retain # CloudFormation keeps the resource without deleting the resource or its contents when the resource is replaced 
     UpdateReplacePolicy: Retain # see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
     Properties:
-      Name: iotHub-secretsmanager
-      SecretString:
-        !Join
+      Name: !Join [ "-", [!Ref UniqueSolutionPrefix, "SMAWSKey"] ]
+      SecretString: !Sub '${awsAccess}'
+  SMAWSSecretKey:
+    Type: AWS::SecretsManager::Secret
+    DeletionPolicy: Retain # CloudFormation keeps the resource without deleting the resource or its contents when the resource is replaced 
+    UpdateReplacePolicy: Retain # see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
+    Properties:
+      Name: !Join [ "-", [!Ref UniqueSolutionPrefix, "SMAWSSecretKey"] ]
+      SecretString: !Sub '${awsAccessSecretkey}'
+  SMPostgreConnection:
+    Type: AWS::SecretsManager::Secret
+    DeletionPolicy: Retain # CloudFormation keeps the resource without deleting the resource or its contents when the resource is replaced 
+    UpdateReplacePolicy: Retain # see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
+    Properties:
+      Name: !Join [ "-", [!Ref UniqueSolutionPrefix, "SMPostgreConnection"] ]
+      SecretString: !Join
           - ""
-          - - '{'
-            - '"AWS__S3Storage__ConnectionString":'
-            - !Sub 'https://s3.${AWS::Region}.amazonaws.com/'
-            - !Ref UniqueSolutionPrefix
-            - '-bucket",'
-            - '"AWS__Access":'
-            - !Sub '"${awsAccess}",'
-            - '"AWS__AccessSecret":'
-            - !Sub '"${awsAccessSecretkey}",'
-            - '"AWS__Region":'
-            - !Sub '"${AWS::Region}",'
-            - '"PostgreSQL__ConnectionString":'
-            - '"Server="'
+          - - 'Server='
             - !GetAtt PostgreSQLDB.Endpoint.Address
-            - !Sub ';Database=${UniqueSolutionPrefix}_cgigeiotdemo;Port=5432;User Id=${pgsqlAdminLogin};Password=${pgsqlAdminPassword};Pooling=true;Connection Lifetime=0;Command Timeout=0;"'
-            - '}'
+            - !Sub ';Database=${UniqueSolutionPrefix}_cgigeiotdemo;Port=5432;User Id=${pgsqlAdminLogin};Password=${pgsqlAdminPassword};Pooling=true;Connection Lifetime=0;Command Timeout=0;'
+  SMAWSStorageConnection:
+    Type: AWS::SecretsManager::Secret
+    DeletionPolicy: Retain # CloudFormation keeps the resource without deleting the resource or its contents when the resource is replaced 
+    UpdateReplacePolicy: Retain # see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
+    Properties:
+      Name: !Join [ "-", [!Ref UniqueSolutionPrefix, "SMAWSStorageConnection"] ]
+      SecretString: !Join
+          - ""
+          - - !Sub 'https://s3.${AWS::Region}.amazonaws.com/'
+            - !Ref UniqueSolutionPrefix
+            - '-bucket'
+            
 
 #============= App Runner - To Lunch the App ==============
   AppRunnerService:
@@ -238,8 +255,14 @@ Resources:
           ImageConfiguration: 
             Port: 80 # This is The port that your application listens to in the container. It can be changed (To see)
             RuntimeEnvironmentSecrets: 
-              - Name: IOT_HUB_SECRETS_MANAGER
-                Value: !Ref SecretManager
+              - Name: AWS__Access
+                Value: !Ref SMAWSKey
+              - Name: AWS__AccessSecret
+                Value: !Ref SMAWSSecretKey
+              - Name: PostgreSQL__ConnectionString
+                Value: !Ref SMPostgreConnection
+              - Name: AWS__S3Storage__ConnectionString
+                Value: !Ref SMAWSStorageConnection
             RuntimeEnvironmentVariables: 
               - Name: OIDC__ApiClientId
                 Value: !Sub '${openIdApiClientId}'
@@ -255,5 +278,5 @@ Resources:
                 Value: AWS
               - Name: PortalName
                 Value: IoT Portal DEMO - AWS
-          ImageIdentifier: !Sub '${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/iothub-portal:latest'
+          ImageIdentifier: !Sub '${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/iot-hub-portal:latest'
           ImageRepositoryType: ECR
