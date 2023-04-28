@@ -90,5 +90,7 @@ namespace AzureIoTHub.Portal.Infrastructure
 
         public override string AWSRegion => throw new NotImplementedException();
         public override string AWSS3StorageConnectionString => throw new NotImplementedException();
+
+        public override string AWSBucketName => throw new NotImplementedException();
     }
 }
