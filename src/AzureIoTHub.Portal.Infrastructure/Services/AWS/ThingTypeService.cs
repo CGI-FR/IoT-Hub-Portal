@@ -6,12 +6,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
     using Amazon.IoT;
     using Amazon.IoT.Model;
     using AutoMapper;
+    using AzureIoTHub.Portal.Application.Managers;
     using AzureIoTHub.Portal.Application.Services.AWS;
     using AzureIoTHub.Portal.Domain;
     using AzureIoTHub.Portal.Domain.Entities.AWS;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
     using AzureIoTHub.Portal.Models.v10.AWS;
+    using Microsoft.AspNetCore.Http;
 
     public class ThingTypeService : IThingTypeService
     {
@@ -19,19 +21,23 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IAmazonIoT amazonIoTClient;
+        private readonly IDeviceModelImageManager thingTypeImageManager;
 
 
         public ThingTypeService(
             IAmazonIoT amazonIoTClient,
             IThingTypeRepository thingTypeRepository,
             IMapper mapper,
-            IUnitOfWork unitOfWork
+            IUnitOfWork unitOfWork,
+            IDeviceModelImageManager thingTypeImageManager
+
         )
         {
             this.thingTypeRepository = thingTypeRepository;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.amazonIoTClient = amazonIoTClient;
+            this.thingTypeImageManager = thingTypeImageManager;
         }
 
         public async Task<ThingTypeDto> CreateThingType(ThingTypeDto thingType)
@@ -59,7 +65,24 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             await this.thingTypeRepository.InsertAsync(thingTypeEntity);
             await this.unitOfWork.SaveAsync();
 
+            _ = this.thingTypeImageManager.SetDefaultImageToModel(thingType.ThingTypeID);
+
             return thingType;
+        }
+
+        public Task<string> GetDeviceModelAvatar(string deviceModelId)
+        {
+            return Task.Run(() => this.thingTypeImageManager.ComputeImageUrl(deviceModelId).ToString());
+        }
+
+        public Task<string> UpdateDeviceModelAvatar(string deviceModelId, IFormFile file)
+        {
+            return Task.Run(() => this.thingTypeImageManager.ChangeDeviceModelImageAsync(deviceModelId, file.OpenReadStream()));
+        }
+
+        public Task DeleteDeviceModelAvatar(string deviceModelId)
+        {
+            return this.thingTypeImageManager.DeleteDeviceModelImageAsync(deviceModelId);
         }
     }
 }

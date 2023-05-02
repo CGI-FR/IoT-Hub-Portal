@@ -284,5 +284,22 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Managers
             // Assert
             MockRepository.VerifyAll();
         }
+
+        /*===========================*** Tests for ComputeImageUrl() **===========================*/
+
+
+        [Test]
+        public void ComputeImageUrlShouldThrowsANotImplmentedException()
+        {
+            // Arrange
+            var deviceModelId = Fixture.Create<string>();
+
+            // Assert
+            _ = Assert.Throws<NotImplementedException>(() =>
+            {
+                // Act
+                _ = this.deviceModelImageManager.ComputeImageUrl(deviceModelId);
+            });
+        }
     }
 }

@@ -4,7 +4,6 @@
 namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Net;
     using System.Text;
@@ -422,13 +421,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
         public void ComputeImageUriShouldThrowsANotImplmentedException()
         {
             // Arrange
-            var deviceModelId = Fixture.Create<string>();
+            var thingTypelId = Fixture.Create<string>();
 
             // Assert
             _ = Assert.Throws<NotImplementedException>(() =>
             {
                 // Act
-                _ = this.awsDeviceModelImageManager.ComputeImageUri(deviceModelId);
+                _ = this.awsDeviceModelImageManager.ComputeImageUri(thingTypelId);
             });
         }
     }

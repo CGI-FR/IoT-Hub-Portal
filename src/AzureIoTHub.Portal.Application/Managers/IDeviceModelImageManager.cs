@@ -14,6 +14,7 @@ namespace AzureIoTHub.Portal.Application.Managers
         Task DeleteDeviceModelImageAsync(string deviceModelId);
 
         Uri ComputeImageUri(string deviceModelId);
+        string ComputeImageUrl(string deviceModelId);
 
         Task InitializeDefaultImageBlob();
 

@@ -41,12 +41,16 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
         {
             this.logger.LogInformation($"Uploading Image to AWS S3 storage");
 
+            var currentAssembly = Assembly.GetExecutingAssembly();
+            var defaultImageStream = currentAssembly
+                                            .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
+
             //Portal must be able to upload images to Amazon S3
             var putObjectRequest = new PutObjectRequest
             {
                 BucketName = this.configHandler.AWSBucketName,
                 Key = deviceModelId,
-                InputStream = stream,
+                InputStream = stream??defaultImageStream,
                 ContentType = "image/*",
                 Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
             };
@@ -80,7 +84,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
             throw new NotImplementedException();
         }
 
-        private string ComputeImageUrl(string deviceModelId)
+        public string ComputeImageUrl(string deviceModelId)
         {
             return $"https://{this.configHandler.AWSBucketName}.s3.{RegionEndpoint.GetBySystemName(this.configHandler.AWSRegion)}.amazonaws.com/{deviceModelId}";
         }
