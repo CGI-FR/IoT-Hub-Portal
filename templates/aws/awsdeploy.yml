@@ -62,12 +62,15 @@ Resources:
       Type: AWS::S3::Bucket
       Properties: 
         BucketName: !Join [ "-", [!Ref UniqueSolutionPrefix, "bucket"] ] 
-        PublicAccessBlockConfiguration: 
-          BlockPublicAcls: false
-          BlockPublicPolicy: false
-          IgnorePublicAcls: false 
-          RestrictPublicBuckets: false
-
+        PublicAccessBlockConfiguration:
+              BlockPublicAcls: false
+              IgnorePublicAcls: false
+              BlockPublicPolicy: false
+              RestrictPublicBuckets: false
+        OwnershipControls:
+          Rules:
+          - ObjectOwnership: BucketOwnerPreferred
+        AccessControl: AwsExecRead
 #======== PostgreSQL database ==========
   PostgreSQLDB:
     Type: AWS::RDS::DBInstance
