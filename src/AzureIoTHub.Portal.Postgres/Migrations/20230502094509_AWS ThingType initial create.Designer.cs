@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AzureIoTHub.Portal.Postgres.Migrations
 {
     [DbContext(typeof(PortalDbContext))]
-    [Migration("20230428083710_Add ThingType")]
-    partial class AddThingType
+    [Migration("20230502094509_AWS ThingType initial create")]
+    partial class AWSThingTypeinitialcreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -8,6 +8,6 @@ namespace AzureIoTHub.Portal.Application.Services.AWS
     public interface IThingTypeService
     {
         //Create a thing type
-        Task<ThingTypeDetails> CreateThingType(ThingTypeDetails thingType);
+        Task<ThingTypeDto> CreateThingType(ThingTypeDto thingType);
     }
 }

@@ -33,13 +33,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services.AWS
         public async Task CreateThingTypeShouldCreateThingType()
         {
             // Arrange
-            var thingType = Fixture.Create<ThingTypeDetails>();
+            var thingType = Fixture.Create<ThingTypeDto>();
 
             _ = MockHttpClient.When(HttpMethod.Post, "/api/aws/thingtypes")
                 .With(m =>
                 {
-                    _ = m.Content.Should().BeAssignableTo<ObjectContent<ThingTypeDetails>>();
-                    var body = m.Content as ObjectContent<ThingTypeDetails>;
+                    _ = m.Content.Should().BeAssignableTo<ObjectContent<ThingTypeDto>>();
+                    var body = m.Content as ObjectContent<ThingTypeDto>;
                     _ = body.Value.Should().BeEquivalentTo(thingType);
                     return true;
                 })

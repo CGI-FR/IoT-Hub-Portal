@@ -11,7 +11,7 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
     {
         public ThingTypeProfile()
         {
-            _ = CreateMap<ThingTypeDetails, ThingType>()
+            _ = CreateMap<ThingTypeDto, ThingType>()
                 .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.ThingTypeID))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.ThingTypeName))
                 .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.ThingTypeDescription))
@@ -25,14 +25,14 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
                     Value = pair.Value
                 })));
 
-            _ = CreateMap<ThingType, ThingTypeDetails>()
+            _ = CreateMap<ThingType, ThingTypeDto>()
                 .ForMember(dest => dest.ThingTypeID, opts => opts.MapFrom(src => src.Id))
                 .ForMember(dest => dest.ThingTypeName, opts => opts.MapFrom(src => src.Name))
                 .ForMember(dest => dest.ThingTypeDescription, opts => opts.MapFrom(src => src.Description))
-                .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.ToDictionary(tag => tag.Key, tag => tag.Value)))
+                .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.ToList()))
                 .ForMember(dest => dest.ThingTypeSearchableAttDtos, opts => opts.MapFrom(src => src.ThingTypeSearchableAttributes.ToList()));
 
-            _ = CreateMap<ThingTypeDetails, CreateThingTypeRequest>()
+            _ = CreateMap<ThingTypeDto, CreateThingTypeRequest>()
                 .ForMember(dest => dest.ThingTypeName, opts => opts.MapFrom(src => src.ThingTypeName))
                 .ForMember(dest => dest.ThingTypeProperties, opts => opts.MapFrom(src => new ThingTypeProperties
                 {
@@ -45,10 +45,10 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
                     Value = pair.Value
                 }).ToList() ?? new List<Tag>()));
 
-            _ = CreateMap<CreateThingTypeRequest, ThingTypeDetails>()
+            _ = CreateMap<CreateThingTypeRequest, ThingTypeDto>()
                 .ForMember(dest => dest.ThingTypeName, opts => opts.MapFrom(src => src.ThingTypeName))
                 .ForMember(dest => dest.ThingTypeDescription, opts => opts.MapFrom(src => src.ThingTypeProperties.ThingTypeDescription))
-                .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.ToDictionary(tag => tag.Key, tag => tag.Value)))
+                .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.ToList()))
                 .ForMember(dest => dest.ThingTypeSearchableAttDtos, opts => opts.MapFrom(src => src.ThingTypeProperties.SearchableAttributes.ToList()));
 
         }

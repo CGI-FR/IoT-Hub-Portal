@@ -47,13 +47,13 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.AWS
             // Arrange
             var thingTypeController = CreateThingTypeController();
 
-            var thingType = new ThingTypeDetails()
+            var thingType = new ThingTypeDto()
             {
                 ThingTypeID = Guid.NewGuid().ToString()
             };
 
             _ = this.mockThingTypeService
-                .Setup(x => x.CreateThingType(It.Is<ThingTypeDetails>(c => c.ThingTypeID.Equals(thingType.ThingTypeID, StringComparison.Ordinal))))
+                .Setup(x => x.CreateThingType(It.Is<ThingTypeDto>(c => c.ThingTypeID.Equals(thingType.ThingTypeID, StringComparison.Ordinal))))
                 .ReturnsAsync(thingType);
 
             // Act
@@ -69,9 +69,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Server.Controllers.v1._0.AWS
             Assert.AreEqual(200, okObjectResult.StatusCode);
 
             Assert.IsNotNull(okObjectResult.Value);
-            Assert.IsAssignableFrom<ThingTypeDetails>(okObjectResult.Value);
+            Assert.IsAssignableFrom<ThingTypeDto>(okObjectResult.Value);
 
-            var thingTypeObject = okObjectResult.Value as ThingTypeDetails;
+            var thingTypeObject = okObjectResult.Value as ThingTypeDto;
             Assert.IsNotNull(thingTypeObject);
             Assert.AreEqual(thingType.ThingTypeID, thingTypeObject.ThingTypeID);
 

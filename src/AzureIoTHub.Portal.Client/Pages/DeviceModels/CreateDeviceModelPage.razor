@@ -301,11 +301,10 @@ else
     private DevicePropertyValidator propertiesValidator = new DevicePropertyValidator();
     private List<DeviceModelCommandDto> Commands { get; set; } = new();
     private List<DeviceProperty> Properties { get; set; } = new List<DeviceProperty>();
-    private Dictionary<string, string> Tags { get; set; } = new Dictionary<string, string>();
     private List<ThingTypeSearchableAttDto> searchableAtt { get; set; } = new List<ThingTypeSearchableAttDto>();
     private List<ThingTypeTagDto> ThingTypeTags { get; set; } = new List<ThingTypeTagDto>();
     private LoRaDeviceModelCommandValidator CommandValidator = new LoRaDeviceModelCommandValidator();
-    internal ThingTypeDetails ThingType { get; set; } = new ThingTypeDetails()
+    internal ThingTypeDto ThingType { get; set; } = new ThingTypeDto()
     {
         ThingTypeID = Guid.NewGuid().ToString()
     };
@@ -536,18 +535,7 @@ else
         try
         {
 
-            if(this.ThingTypeTags != null)
-            {
-                if(this.ThingTypeTags.Count() > 0)
-                {
-                    foreach (var tag in this.ThingTypeTags)
-                    {
-                        this.Tags.Add(tag.Key, tag.Value);
-                    }
-                }
-            }
-
-            ThingType.Tags = this.Tags;
+            ThingType.Tags = this.ThingTypeTags;
             ThingType.ThingTypeSearchableAttDtos = searchableAtt;
 
             await ThingTypeClientService.CreateThingType(ThingType);
@@ -560,8 +548,6 @@ else
         catch (ProblemDetailsException exception)
         {
             Error?.ProcessProblemDetails(exception);
-            //Reinitialize Tags When an error occured
-            this.Tags = new Dictionary<string, string>();
         }
         finally
         {

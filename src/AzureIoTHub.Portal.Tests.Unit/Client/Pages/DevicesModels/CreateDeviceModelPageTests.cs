@@ -304,7 +304,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
 
             _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
             _ = this.mockThingTypeClientService.Setup(service =>
-                    service.CreateThingType(It.Is<ThingTypeDetails>(thingType =>
+                    service.CreateThingType(It.Is<ThingTypeDto>(thingType =>
                         thingTypeName.Equals(thingType.ThingTypeName, StringComparison.Ordinal)
                         && ThingTypeDescription.Equals(thingType.ThingTypeDescription, StringComparison.Ordinal)
                         )))
@@ -317,8 +317,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var cut = RenderComponent<CreateDeviceModelPage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(ThingTypeDetails.ThingTypeName)}").Change(thingTypeName);
-            cut.WaitForElement($"#{nameof(ThingTypeDetails.ThingTypeDescription)}").Change(ThingTypeDescription);
+            cut.WaitForElement($"#{nameof(ThingTypeDto.ThingTypeName)}").Change(thingTypeName);
+            cut.WaitForElement($"#{nameof(ThingTypeDto.ThingTypeDescription)}").Change(ThingTypeDescription);
 
             saveButton.Click();
 
@@ -337,7 +337,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
 
             _ = this.mockThingTypeClientService.Setup(service =>
-                    service.CreateThingType(It.Is<ThingTypeDetails>(thingType =>
+                    service.CreateThingType(It.Is<ThingTypeDto>(thingType =>
                         thingTypeName.Equals(thingType.ThingTypeName, StringComparison.Ordinal)
                         && thingTypeDescription.Equals(thingType.ThingTypeDescription, StringComparison.Ordinal))))
                 .ThrowsAsync(new ProblemDetailsException(new ProblemDetailsWithExceptionDetails()));
@@ -346,8 +346,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var cut = RenderComponent<CreateDeviceModelPage>();
             var saveButton = cut.WaitForElement("#SaveButton");
 
-            cut.WaitForElement($"#{nameof(ThingTypeDetails.ThingTypeName)}").Change(thingTypeName);
-            cut.WaitForElement($"#{nameof(ThingTypeDetails.ThingTypeDescription)}").Change(thingTypeDescription);
+            cut.WaitForElement($"#{nameof(ThingTypeDto.ThingTypeName)}").Change(thingTypeName);
+            cut.WaitForElement($"#{nameof(ThingTypeDto.ThingTypeDescription)}").Change(thingTypeDescription);
 
             saveButton.Click();
 
@@ -366,7 +366,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
 
             _ = this.mockThingTypeClientService.Setup(service =>
-                    service.CreateThingType(It.IsAny<ThingTypeDetails>()))
+                    service.CreateThingType(It.IsAny<ThingTypeDto>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
@@ -376,8 +376,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var saveButton = cut.WaitForElement("#SaveButton");
             var addPropertyButton = cut.WaitForElement("#addTagButton");
 
-            cut.WaitForElement($"#{nameof(ThingTypeDetails.ThingTypeName)}").Change(Guid.NewGuid().ToString());
-            cut.WaitForElement($"#{nameof(ThingTypeDetails.ThingTypeDescription)}").Change(Guid.NewGuid().ToString());
+            cut.WaitForElement($"#{nameof(ThingTypeDto.ThingTypeName)}").Change(Guid.NewGuid().ToString());
+            cut.WaitForElement($"#{nameof(ThingTypeDto.ThingTypeDescription)}").Change(Guid.NewGuid().ToString());
 
             addPropertyButton.Click();
 
@@ -406,7 +406,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             _ = Services.AddSingleton(new PortalSettings { CloudProvider = "AWS" });
 
             _ = this.mockThingTypeClientService.Setup(service =>
-                    service.CreateThingType(It.IsAny<ThingTypeDetails>()))
+                    service.CreateThingType(It.IsAny<ThingTypeDto>()))
                 .Returns(Task.CompletedTask);
 
             _ = this.mockSnackbarService.Setup(c => c.Add(It.IsAny<string>(), Severity.Success, It.IsAny<Action<SnackbarOptions>>(), It.IsAny<string>())).Returns((Snackbar)null);
@@ -416,8 +416,8 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Pages.DevicesModels
             var saveButton = cut.WaitForElement("#SaveButton");
             var addPropertyButton = cut.WaitForElement("#addSearchableAttButton");
 
-            cut.WaitForElement($"#{nameof(ThingTypeDetails.ThingTypeName)}").Change(Guid.NewGuid().ToString());
-            cut.WaitForElement($"#{nameof(ThingTypeDetails.ThingTypeDescription)}").Change(Guid.NewGuid().ToString());
+            cut.WaitForElement($"#{nameof(ThingTypeDto.ThingTypeName)}").Change(Guid.NewGuid().ToString());
+            cut.WaitForElement($"#{nameof(ThingTypeDto.ThingTypeDescription)}").Change(Guid.NewGuid().ToString());
 
             addPropertyButton.Click();
 

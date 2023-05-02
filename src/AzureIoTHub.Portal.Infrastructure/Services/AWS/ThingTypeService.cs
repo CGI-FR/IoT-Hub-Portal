@@ -34,7 +34,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             this.amazonIoTClient = amazonIoTClient;
         }
 
-        public async Task<ThingTypeDetails> CreateThingType(ThingTypeDetails thingType)
+        public async Task<ThingTypeDto> CreateThingType(ThingTypeDto thingType)
         {
             ArgumentNullException.ThrowIfNull(thingType, nameof(thingType));
 
@@ -45,7 +45,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
                 ? await CreateThingTypeInDatabase(thingType)
                 : throw new InternalServerErrorException("The creation of the thing type failed due to an error in the Amazon IoT API.");
         }
-        private async Task<ThingTypeDetails> CreateThingTypeInDatabase(ThingTypeDetails thingType)
+        private async Task<ThingTypeDto> CreateThingTypeInDatabase(ThingTypeDto thingType)
         {
             var thingTypeEntity = this.mapper.Map<ThingType>(thingType);
 

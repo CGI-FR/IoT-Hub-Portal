@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Models.v10.AWS
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-    public class ThingTypeDetails
+    public class ThingTypeDto
     {
         [Required(ErrorMessage = "The thing type should have a unique identifier.")]
         [MaxLength(ErrorMessage = "The thing type identifier should be up to 128 characters long.")]
@@ -16,7 +16,7 @@ namespace AzureIoTHub.Portal.Models.v10.AWS
         [Required(ErrorMessage = "The thing type should have a name.")]
         public string ThingTypeName { get; set; }
         public string ThingTypeDescription { get; set; }
-        public Dictionary<string, string> Tags { get; set; }
+        public List<ThingTypeTagDto> Tags { get; set; }
         public List<ThingTypeSearchableAttDto> ThingTypeSearchableAttDtos { get; set; }
 
     }

@@ -6,7 +6,7 @@ namespace AzureIoTHub.Portal.Client.Validators
     using AzureIoTHub.Portal.Models.v10.AWS;
     using FluentValidation;
 
-    public class ThingTypeValidator : AbstractValidator<ThingTypeDetails>
+    public class ThingTypeValidator : AbstractValidator<ThingTypeDto>
     {
         public ThingTypeValidator()
         {

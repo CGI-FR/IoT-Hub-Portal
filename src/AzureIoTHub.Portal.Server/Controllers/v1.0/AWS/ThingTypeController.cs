@@ -31,7 +31,7 @@ namespace AzureIoTHub.Portal.Server.Controllers.v1._0.AWS
         [HttpPost(Name = "POST Create AWS Thing type")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateThingTypeAsync(ThingTypeDetails thingtype)
+        public async Task<IActionResult> CreateThingTypeAsync(ThingTypeDto thingtype)
         {
             _ = await this.thingTypeService.CreateThingType(thingtype);
 

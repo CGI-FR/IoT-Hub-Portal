@@ -68,17 +68,20 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
                 Name = Fixture.Create<string>()
             };
 
-            var thingDevice = new ThingTypeDetails()
+            var thingDevice = new ThingTypeDto()
             {
                 ThingTypeID = Fixture.Create<string>(),
                 ThingTypeName = Fixture.Create<string>(),
                 ThingTypeDescription = Fixture.Create<string>(),
-                Tags = new Dictionary<string, string>()
-                 {
-                     {Fixture.Create<string>(), Fixture.Create<string>() },
-                     {Fixture.Create<string>(), Fixture.Create<string>() }
-                 },
-                ThingTypeSearchableAttDtos = new List<ThingTypeSearchableAttDto>(){searchAttr1, searchAttr2}
+                Tags = new List<ThingTypeTagDto>(){
+                    new ThingTypeTagDto() { Key = Fixture.Create<string>(), Value = Fixture.Create<string>()},
+                    new ThingTypeTagDto() { Key = Fixture.Create<string>(), Value = Fixture.Create<string>()},
+
+                },
+                ThingTypeSearchableAttDtos = new List<ThingTypeSearchableAttDto>(){
+                    new ThingTypeSearchableAttDto(){ Name = Fixture.Create<string>()},
+                    new ThingTypeSearchableAttDto(){ Name = Fixture.Create<string>()},
+                }
             };
 
             _ = this.amazonIotClient.Setup(s3 => s3.CreateThingTypeAsync(It.IsAny<CreateThingTypeRequest>(), It.IsAny<CancellationToken>()))
@@ -110,7 +113,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             // Arrange
 
 
-            var thingDevice = new ThingTypeDetails()
+            var thingDevice = new ThingTypeDto()
             {
                 ThingTypeID = Fixture.Create<string>(),
                 ThingTypeName = Fixture.Create<string>(),
@@ -169,17 +172,20 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
                 Name = Fixture.Create<string>()
             };
 
-            var thingDevice = new ThingTypeDetails()
+            var thingDevice = new ThingTypeDto()
             {
                 ThingTypeID = Fixture.Create<string>(),
                 ThingTypeName = Fixture.Create<string>(),
                 ThingTypeDescription = Fixture.Create<string>(),
-                Tags = new Dictionary<string, string>()
-                 {
-                     {Fixture.Create<string>(), Fixture.Create<string>() },
-                     {Fixture.Create<string>(), Fixture.Create<string>() }
-                 },
-                ThingTypeSearchableAttDtos = new List<ThingTypeSearchableAttDto>(){searchAttr1, searchAttr2}
+                Tags = new List<ThingTypeTagDto>(){
+                    new ThingTypeTagDto() { Key = Fixture.Create<string>(), Value = Fixture.Create<string>()},
+                    new ThingTypeTagDto() { Key = Fixture.Create<string>(), Value = Fixture.Create<string>()},
+
+                },
+                ThingTypeSearchableAttDtos = new List<ThingTypeSearchableAttDto>(){
+                    new ThingTypeSearchableAttDto(){ Name = Fixture.Create<string>()},
+                    new ThingTypeSearchableAttDto(){ Name = Fixture.Create<string>()},
+                }
             };
 
             _ = this.amazonIotClient.Setup(s3 => s3.CreateThingTypeAsync(It.IsAny<CreateThingTypeRequest>(), It.IsAny<CancellationToken>()))

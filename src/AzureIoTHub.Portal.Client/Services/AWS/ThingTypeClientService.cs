@@ -15,7 +15,7 @@ namespace AzureIoTHub.Portal.Client.Services.AWS
             this.http = http;
         }
 
-        public Task CreateThingType(ThingTypeDetails thingType)
+        public Task CreateThingType(ThingTypeDto thingType)
         {
             return this.http.PostAsJsonAsync("api/aws/thingtypes", thingType);
         }
