@@ -45,12 +45,6 @@ namespace AzureIoTHub.Portal.Application.Mappers.AWS
                     Value = pair.Value
                 }).ToList() ?? new List<Tag>()));
 
-            _ = CreateMap<CreateThingTypeRequest, ThingTypeDto>()
-                .ForMember(dest => dest.ThingTypeName, opts => opts.MapFrom(src => src.ThingTypeName))
-                .ForMember(dest => dest.ThingTypeDescription, opts => opts.MapFrom(src => src.ThingTypeProperties.ThingTypeDescription))
-                .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.ToList()))
-                .ForMember(dest => dest.ThingTypeSearchableAttDtos, opts => opts.MapFrom(src => src.ThingTypeProperties.SearchableAttributes.ToList()));
-
         }
     }
 }

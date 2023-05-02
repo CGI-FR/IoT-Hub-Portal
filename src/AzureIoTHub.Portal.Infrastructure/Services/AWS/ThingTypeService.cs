@@ -40,10 +40,17 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
 
             var createThingTypeRequest = this.mapper.Map<CreateThingTypeRequest>(thingType);
 
-            var request = await this.amazonIoTClient.CreateThingTypeAsync(createThingTypeRequest);
-            return request.HttpStatusCode == System.Net.HttpStatusCode.OK
-                ? await CreateThingTypeInDatabase(thingType)
-                : throw new InternalServerErrorException("The creation of the thing type failed due to an error in the Amazon IoT API.");
+            var response = await this.amazonIoTClient.CreateThingTypeAsync(createThingTypeRequest);
+
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InternalServerErrorException("The creation of the thing type failed due to an error in the Amazon IoT API.");
+            }
+            else
+            {
+                thingType.ThingTypeID = response.ThingTypeId;
+                return await CreateThingTypeInDatabase(thingType);
+            }
         }
         private async Task<ThingTypeDto> CreateThingTypeInDatabase(ThingTypeDto thingType)
         {

@@ -8,10 +8,7 @@ namespace AzureIoTHub.Portal.Models.v10.AWS
 
     public class ThingTypeDto
     {
-        [Required(ErrorMessage = "The thing type should have a unique identifier.")]
-        [MaxLength(ErrorMessage = "The thing type identifier should be up to 128 characters long.")]
-        [RegularExpression("^[a-zA-Z0-9\\-.+%_#*?!(),:=@$']{1,128}$", ErrorMessage = "The thing type identifier should be of ASCII 7-bit alphanumeric characters plus certain special characters: - . + % _ # * ? ! ( ) , : = @ $ '.")]
-        public virtual string ThingTypeID { get; set; }
+        public string ThingTypeID { get; set; }
 
         [Required(ErrorMessage = "The thing type should have a name.")]
         public string ThingTypeName { get; set; }

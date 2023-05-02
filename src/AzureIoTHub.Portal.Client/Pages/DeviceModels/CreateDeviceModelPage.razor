@@ -304,10 +304,7 @@ else
     private List<ThingTypeSearchableAttDto> searchableAtt { get; set; } = new List<ThingTypeSearchableAttDto>();
     private List<ThingTypeTagDto> ThingTypeTags { get; set; } = new List<ThingTypeTagDto>();
     private LoRaDeviceModelCommandValidator CommandValidator = new LoRaDeviceModelCommandValidator();
-    internal ThingTypeDto ThingType { get; set; } = new ThingTypeDto()
-    {
-        ThingTypeID = Guid.NewGuid().ToString()
-    };
+    private ThingTypeDto ThingType { get; set; } = new ThingTypeDto();
 
     private bool isProcessing;
 
