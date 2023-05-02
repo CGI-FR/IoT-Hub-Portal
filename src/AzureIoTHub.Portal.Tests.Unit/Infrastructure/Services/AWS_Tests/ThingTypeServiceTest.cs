@@ -58,16 +58,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         public async Task CreateAThingTypeShouldReturnAValue()
         {
             // Arrange
-
-            var searchAttr1 = new ThingTypeSearchableAttDto()
-            {
-                Name = Fixture.Create<string>()
-            };
-            var searchAttr2 = new ThingTypeSearchableAttDto()
-            {
-                Name = Fixture.Create<string>()
-            };
-
             var thingDevice = new ThingTypeDto()
             {
                 ThingTypeID = Fixture.Create<string>(),
@@ -162,16 +152,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         public void CreateThingTypeShouldThrowError500WhenCreateThigFails()
         {
             // Arrange
-
-            var searchAttr1 = new ThingTypeSearchableAttDto()
-            {
-                Name = Fixture.Create<string>()
-            };
-            var searchAttr2 = new ThingTypeSearchableAttDto()
-            {
-                Name = Fixture.Create<string>()
-            };
-
             var thingDevice = new ThingTypeDto()
             {
                 ThingTypeID = Fixture.Create<string>(),
