@@ -18,7 +18,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
     using AzureIoTHub.Portal.Domain.Entities.AWS;
     using AzureIoTHub.Portal.Domain.Exceptions;
     using AzureIoTHub.Portal.Domain.Repositories;
-    using AzureIoTHub.Portal.Infrastructure.Managers;
     using AzureIoTHub.Portal.Infrastructure.Services.AWS;
     using AzureIoTHub.Portal.Models.v10.AWS;
     using AzureIoTHub.Portal.Tests.Unit.UnitTests.Bases;
@@ -65,9 +64,9 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         {
             // Arrange
             var expectedAvatarUrl = Fixture.Create<string>();
+            var ThingTypeID = Fixture.Create<string>();
             var thingDevice = new ThingTypeDto()
             {
-                ThingTypeID = Fixture.Create<string>(),
                 ThingTypeName = Fixture.Create<string>(),
                 ThingTypeDescription = Fixture.Create<string>(),
                 Tags = new List<ThingTypeTagDto>(){
@@ -84,19 +83,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             _ = this.amazonIotClient.Setup(s3 => s3.CreateThingTypeAsync(It.IsAny<CreateThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CreateThingTypeResponse
                 {
-                    ThingTypeId = Fixture.Create<string>(),
+                    ThingTypeId = ThingTypeID,
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
 
             _ = this.mockThingTypeRepository.Setup(repository => repository.InsertAndGetIdAsync(It.IsAny<ThingType>()))
-                .Returns(Task.FromResult(Fixture.Create<string>()));
+                .Returns(Task.FromResult(ThingTypeID));
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
             _ = this.mockDeviceModelImageManager.Setup(manager =>
-                    manager.SetDefaultImageToModel(thingDevice.ThingTypeID))
+                    manager.SetDefaultImageToModel(ThingTypeID))
                 .ReturnsAsync(expectedAvatarUrl);
 
             //Act
@@ -112,11 +111,11 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
         public async Task CreateAThingTypeWithNullDescriptionTagsAndSearchableAttributeShouldReturnAValue()
         {
             // Arrange
-
+            var ThingTypeID = Fixture.Create<string>();
+            var expectedAvatarUrl = Fixture.Create<string>();
 
             var thingDevice = new ThingTypeDto()
             {
-                ThingTypeID = Fixture.Create<string>(),
                 ThingTypeName = Fixture.Create<string>(),
                 ThingTypeDescription = null,
                 Tags = null,
@@ -126,16 +125,19 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Services.AWS_Tests
             _ = this.amazonIotClient.Setup(s3 => s3.CreateThingTypeAsync(It.IsAny<CreateThingTypeRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CreateThingTypeResponse
                 {
+                    ThingTypeId = ThingTypeID,
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
 
-            _ = this.mockThingTypeRepository.Setup(repository => repository.InsertAsync(It.IsAny<ThingType>()))
-                .Returns(Task.CompletedTask);
+            _ = this.mockThingTypeRepository.Setup(repository => repository.InsertAndGetIdAsync(It.IsAny<ThingType>()))
+                .Returns(Task.FromResult(ThingTypeID));
 
             _ = this.mockUnitOfWork.Setup(work => work.SaveAsync())
                 .Returns(Task.CompletedTask);
 
+            _ = this.mockDeviceModelImageManager.Setup(manager => manager.SetDefaultImageToModel(ThingTypeID))
+                .ReturnsAsync(expectedAvatarUrl);
             //Act
             var result = await this.thingTypeService.CreateThingType(thingDevice);
 

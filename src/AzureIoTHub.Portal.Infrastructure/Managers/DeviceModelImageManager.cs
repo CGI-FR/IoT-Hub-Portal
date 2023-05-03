@@ -95,10 +95,7 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
         {
             return new Uri(this.deviceModelImageOptions.Value.BaseUri, $"{this.deviceModelImageOptions.Value.BaseUri}/{deviceModelId}");
         }
-        public string ComputeImageUrl(string deviceModelId)
-        {
-            throw new NotImplementedException();
-        }
+
         public async Task InitializeDefaultImageBlob()
         {
             var container = this.blobService.GetBlobContainerClient(this.deviceModelImageOptions.Value.ImageContainerName);

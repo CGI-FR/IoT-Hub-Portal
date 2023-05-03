@@ -6,7 +6,6 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
     using System;
     using System.Reflection;
     using System.Threading.Tasks;
-    using Amazon;
     using Amazon.S3;
     using Amazon.S3.Model;
     using Azure;
@@ -41,13 +40,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
         {
             this.logger.LogInformation($"Uploading Image to AWS S3 storage");
 
-            var key = $"{deviceModelId}.png";
 
             //Portal must be able to upload images to Amazon S3
             var putObjectRequest = new PutObjectRequest
             {
                 BucketName = this.configHandler.AWSBucketName,
-                Key = key,
+                Key = deviceModelId,
                 InputStream = stream,
                 ContentType = "image/*",
                 Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
@@ -60,13 +58,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
                 var putAclRequest = new PutACLRequest
                 {
                     BucketName = this.configHandler.AWSBucketName,
-                    Key = key,
+                    Key = deviceModelId,
                     CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
                 };
                 var putACLResponse = await this.s3Client.PutACLAsync(putAclRequest);
 
                 return putACLResponse.HttpStatusCode == System.Net.HttpStatusCode.OK
-                    ? ComputeImageUrl(deviceModelId)
+                    ? ComputeImageUri(deviceModelId).ToString()
                     : throw new InternalServerErrorException("Error by setting the image access to public and read-only");
             }
             else
@@ -77,13 +75,10 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
 
         public Uri ComputeImageUri(string deviceModelId)
         {
-            throw new NotImplementedException();
+            var url = $"https://{this.configHandler.AWSBucketName}.s3.{this.configHandler.AWSRegion}.amazonaws.com/{deviceModelId}";
+            return new Uri(url);
         }
 
-        public string ComputeImageUrl(string deviceModelId)
-        {
-            return $"https://{this.configHandler.AWSBucketName}.s3.{RegionEndpoint.GetBySystemName(this.configHandler.AWSRegion)}.amazonaws.com/{deviceModelId}.png";
-        }
         public async Task DeleteDeviceModelImageAsync(string deviceModelId)
         {
 
@@ -112,13 +107,12 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
             var defaultImageStream = currentAssembly
                                             .GetManifestResourceStream($"{currentAssembly.GetName().Name}.Resources.{this.imageOptions.Value.DefaultImageName}");
 
-            var key = $"{deviceModelId}.png";
 
             //Portal must be able to upload images to Amazon S3
             var putObjectRequest = new PutObjectRequest
             {
                 BucketName = this.configHandler.AWSBucketName,
-                Key = key,
+                Key = deviceModelId,
                 InputStream = defaultImageStream,
                 ContentType = "image/*", // image content type
                 Headers = {CacheControl = $"max-age={this.configHandler.StorageAccountDeviceModelImageMaxAge}, must-revalidate" }
@@ -133,13 +127,13 @@ namespace AzureIoTHub.Portal.Infrastructure.Managers
                 var putAclRequest = new PutACLRequest
                 {
                     BucketName = this.configHandler.AWSBucketName,
-                    Key = key,
+                    Key = deviceModelId,
                     CannedACL = S3CannedACL.PublicRead // Set the object's ACL to public read
                 };
                 var putACLResponse = await this.s3Client.PutACLAsync(putAclRequest);
 
                 return putACLResponse.HttpStatusCode == System.Net.HttpStatusCode.OK
-                    ? ComputeImageUrl(deviceModelId)
+                    ? ComputeImageUri(deviceModelId).ToString()
                     : throw new InternalServerErrorException("Error by setting the image access to public and read-only");
             }
             else

@@ -46,7 +46,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Client.Services.AWS
                 .Respond(HttpStatusCode.Created);
 
             // Act
-            await this.thingTypeClientService.CreateThingType(thingType);
+            _ = await this.thingTypeClientService.CreateThingType(thingType);
 
             // Assert
             MockHttpClient.VerifyNoOutstandingRequest();

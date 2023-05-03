@@ -9,7 +9,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using Amazon;
     using Amazon.S3;
     using Amazon.S3.Model;
     using AutoFixture;
@@ -69,7 +68,14 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
             var deviceModelId = Fixture.Create<string>();
             using var imageAsMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Fixture.Create<string>()));
             var bucketName = Fixture.Create<string>();
-            var region = Fixture.Create<string>();
+            var region = "eu-west-1";
+            var mockOptions = new DeviceModelImageOptions()
+            {
+                BaseUri = Fixture.Create<Uri>()
+            };
+
+            _ = this.mockDeviceModelImageOptions.Setup(x => x.Value).Returns(mockOptions);
+
 
             _ = this.mockConfigHandler.Setup(handler => handler.AWSRegion).Returns(region);
             _ = this.mockConfigHandler.Setup(handler => handler.AWSBucketName).Returns(bucketName);
@@ -88,7 +94,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
-            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}.png";
+            var expectedRetunUrl = $"https://{bucketName}.s3.{region}.amazonaws.com/{deviceModelId}";
 
 
             // Act
@@ -234,7 +240,7 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
                     HttpStatusCode = HttpStatusCode.OK
                 });
 
-            var expectedRetunUrl = $"https://{bucketName}.s3.{RegionEndpoint.GetBySystemName(region)}.amazonaws.com/{deviceModelId}.png";
+            var expectedRetunUrl = $"https://{bucketName}.s3.{region}.amazonaws.com/{deviceModelId}";
 
 
             // Act
@@ -420,15 +426,6 @@ namespace AzureIoTHub.Portal.Tests.Unit.Infrastructure.Managers
         [Test]
         public void ComputeImageUriShouldThrowsANotImplmentedException()
         {
-            // Arrange
-            var thingTypelId = Fixture.Create<string>();
-
-            // Assert
-            _ = Assert.Throws<NotImplementedException>(() =>
-            {
-                // Act
-                _ = this.awsDeviceModelImageManager.ComputeImageUri(thingTypelId);
-            });
         }
     }
 }

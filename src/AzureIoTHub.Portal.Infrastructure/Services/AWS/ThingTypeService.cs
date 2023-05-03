@@ -65,14 +65,14 @@ namespace AzureIoTHub.Portal.Infrastructure.Services.AWS
             var GetThingType = this.thingTypeRepository.InsertAndGetIdAsync(thingTypeEntity);
             await this.unitOfWork.SaveAsync();
 
-            _ = this.thingTypeImageManager.SetDefaultImageToModel(thingType.ThingTypeID);
+            _ = await this.thingTypeImageManager.SetDefaultImageToModel(thingType.ThingTypeID);
 
             return await GetThingType;
         }
 
         public Task<string> GetThingTypeAvatar(string thingTypeId)
         {
-            return Task.Run(() => this.thingTypeImageManager.ComputeImageUrl(thingTypeId).ToString());
+            return Task.Run(() => this.thingTypeImageManager.ComputeImageUri(thingTypeId).ToString());
         }
 
         public Task<string> UpdateThingTypeAvatar(string thingTypeId, IFormFile file)
